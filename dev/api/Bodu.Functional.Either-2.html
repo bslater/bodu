@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Functional_Either_2" data-uid="Bodu.Functional.Either`2" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Either&lt;TLeft, TRight&gt; Struct
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ Either&lt;TLeft, TRight&gt; Struct
   <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Factories.cs">Either{T,T}.Factories.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Factories.cs">Either{T,T}.Factories.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents a disjoint union of two possibilities: either <code>Left(value)</code> carrying a non-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>
@@ -211,7 +211,7 @@ type <code class="typeparamref">TRight</code>.</p>
   <h2 id="Bodu_Functional_Either_2_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 <a class="xref" href="Bodu.Functional.Either-2.html">Either&lt;TLeft, TRight&gt;</a> is a symmetric choice type: neither side is privileged, and no side carries a
-success or failure connotation — <a class="xref" href="Bodu.Functional.Result-1.html">Result&lt;T&gt;</a> owns the railway-oriented bias. Use it when a value is
+success or failure connotation - <a class="xref" href="Bodu.Functional.Result-1.html">Result&lt;T&gt;</a> owns the railway-oriented bias. Use it when a value is
 legitimately one of two shapes (for example, a parsed literal that is either a number or a string). Project each
 side independently with <a class="xref" href="Bodu.Functional.Either-2.html#Bodu_Functional_Either_2_MapLeft__1_System_Func__0___0__">MapLeft&lt;TResult&gt;(Func&lt;TLeft, TResult&gt;)</a> and
 <a class="xref" href="Bodu.Functional.Either-2.html#Bodu_Functional_Either_2_MapRight__1_System_Func__1___0__">MapRight&lt;TResult&gt;(Func&lt;TRight, TResult&gt;)</a>, exchange the sides with <a class="xref" href="Bodu.Functional.Either-2.html#Bodu_Functional_Either_2_Swap">Swap()</a>, and collapse
@@ -220,11 +220,11 @@ to a single value with <a class="xref" href="Bodu.Functional.Either-2.html#Bodu_
 <p>
 <code>default(Either&lt;TLeft, TRight&gt;)</code> carries neither side. On an uninitialized instance <a class="xref" href="Bodu.Functional.Either-2.html#Bodu_Functional_Either_2_IsLeft">IsLeft</a>
 and <a class="xref" href="Bodu.Functional.Either-2.html#Bodu_Functional_Either_2_IsRight">IsRight</a> are both <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, <a class="xref" href="Bodu.Functional.Either-2.html#Bodu_Functional_Either_2_TryGetLeft__0__">TryGetLeft(out TLeft)</a> and
-<a class="xref" href="Bodu.Functional.Either-2.html#Bodu_Functional_Either_2_TryGetRight__1__">TryGetRight(out TRight)</a> return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, and every operation that requires a side —
-<code>Match</code>, <code>MapLeft</code>, <code>MapRight</code>, and <code>Swap</code> — throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.
+<a class="xref" href="Bodu.Functional.Either-2.html#Bodu_Functional_Either_2_TryGetRight__1__">TryGetRight(out TRight)</a> return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, and every operation that requires a side -
+<code>Match</code>, <code>MapLeft</code>, <code>MapRight</code>, and <code>Swap</code> - throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.
 </p>
 <p>
-The type throws on <code>default</code> rather than defaulting to a side because no privileged side exists to default to —
+The type throws on <code>default</code> rather than defaulting to a side because no privileged side exists to default to -
 unlike <a class="xref" href="Bodu.Functional.Option-1.html">Option&lt;T&gt;</a>, whose <code>default</code> is <code>None</code>, and <a class="xref" href="Bodu.Functional.Result-1.html">Result&lt;T&gt;</a>, whose
 <code>default</code> is a failure carrying the empty error. Silently treating <code>default</code> as <code>Left(default!)</code>
 would fabricate a value the <a class="xref" href="Bodu.Functional.Either-2.html#Bodu_Functional_Either_2_Left__0_">Left(TLeft)</a> factory refuses to accept. This mirrors the
@@ -243,7 +243,7 @@ state is observable but unusable.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_IsLeft" data-uid="Bodu.Functional.Either`2.IsLeft">
   IsLeft
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -262,7 +262,7 @@ state is observable but unusable.
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the left side is active; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> — including for
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the left side is active; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> - including for
 <code>default(Either&lt;TLeft, TRight&gt;)</code>, which carries neither side.</p>
 </dd>
   </dl>
@@ -288,7 +288,7 @@ The type deliberately exposes no throwing value accessor; retrieve the active si
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_IsRight" data-uid="Bodu.Functional.Either`2.IsRight">
   IsRight
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -307,7 +307,7 @@ The type deliberately exposes no throwing value accessor; retrieve the active si
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the right side is active; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> — including for
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the right side is active; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> - including for
 <code>default(Either&lt;TLeft, TRight&gt;)</code>, which carries neither side.</p>
 </dd>
   </dl>
@@ -337,7 +337,7 @@ The type deliberately exposes no throwing value accessor; retrieve the active si
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_Equals_Bodu_Functional_Either__0__1__" data-uid="Bodu.Functional.Either`2.Equals(Bodu.Functional.Either{`0,`1})">
   Equals(Either&lt;TLeft, TRight&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -388,7 +388,7 @@ Two uninitialized (<code>default</code>) instances compare equal.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_Equals_System_Object_" data-uid="Bodu.Functional.Either`2.Equals(System.Object)">
   Equals(object?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -433,7 +433,7 @@ instance; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_GetHashCode" data-uid="Bodu.Functional.Either`2.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -471,7 +471,7 @@ hash differently where possible; <code>0</code> for an uninitialized instance.</
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_Left__0_" data-uid="Bodu.Functional.Either`2.Left(`0)">
   Left(TLeft)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -530,7 +530,7 @@ modelled by <a class="xref" href="Bodu.Functional.Option-1.html">Option&lt;T&gt;
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_MapLeft__1_System_Func__0___0__" data-uid="Bodu.Functional.Either`2.MapLeft``1(System.Func{`0,``0})">
   MapLeft&lt;TResult&gt;(Func&lt;TLeft, TResult&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -570,7 +570,7 @@ right value.</p>
 
   <h4 class="section" id="Bodu_Functional_Either_2_MapLeft__1_System_Func__0___0___examples">Examples</h4>
   <pre><code class="lang-csharp">var doubled = Either&lt;int, string&gt;.Left(21).MapLeft(l =&gt; l * 2);   // Left(42)
-var same = Either&lt;int, string&gt;.Right("text").MapLeft(l =&gt; l * 2); // Right(text) — selector not invoked</code></pre>
+var same = Either&lt;int, string&gt;.Right("text").MapLeft(l =&gt; l * 2); // Right(text) - selector not invoked</code></pre>
 
 
   <h4 class="section" id="Bodu_Functional_Either_2_MapLeft__1_System_Func__0___0___remarks">Remarks</h4>
@@ -600,7 +600,7 @@ projection result is rejected by the <a class="xref" href="Bodu.Functional.Eithe
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_MapRight__1_System_Func__1___0__" data-uid="Bodu.Functional.Either`2.MapRight``1(System.Func{`1,``0})">
   MapRight&lt;TResult&gt;(Func&lt;TRight, TResult&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -666,7 +666,7 @@ projection result is rejected by the <a class="xref" href="Bodu.Functional.Eithe
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_Match_System_Action__0__System_Action__1__" data-uid="Bodu.Functional.Either`2.Match(System.Action{`0},System.Action{`1})">
   Match(Action&lt;TLeft&gt;, Action&lt;TRight&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -715,7 +715,7 @@ projection result is rejected by the <a class="xref" href="Bodu.Functional.Eithe
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_Match__1_System_Func__0___0__System_Func__1___0__" data-uid="Bodu.Functional.Either`2.Match``1(System.Func{`0,``0},System.Func{`1,``0})">
   Match&lt;TResult&gt;(Func&lt;TLeft, TResult&gt;, Func&lt;TRight, TResult&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -779,7 +779,7 @@ projection result is rejected by the <a class="xref" href="Bodu.Functional.Eithe
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_Right__1_" data-uid="Bodu.Functional.Either`2.Right(`1)">
   Right(TRight)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -834,7 +834,7 @@ modelled by <a class="xref" href="Bodu.Functional.Option-1.html">Option&lt;T&gt;
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_Swap" data-uid="Bodu.Functional.Either`2.Swap">
   Swap()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -883,7 +883,7 @@ Swapping twice yields an either equal to the original.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_ToString" data-uid="Bodu.Functional.Either`2.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -921,7 +921,7 @@ Swapping twice yields an either equal to the original.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_TryGetLeft__0__" data-uid="Bodu.Functional.Either`2.TryGetLeft(`0@)">
   TryGetLeft(out TLeft)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -955,7 +955,7 @@ Swapping twice yields an either equal to the original.
 
   <h4 class="section" id="Bodu_Functional_Either_2_TryGetLeft__0___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
-Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> — and never throws — for a right-carrying either and for
+Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> - and never throws - for a right-carrying either and for
 <code>default(Either&lt;TLeft, TRight&gt;)</code>.
 </p>
 </div>
@@ -970,7 +970,7 @@ Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/bu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_TryGetRight__1__" data-uid="Bodu.Functional.Either`2.TryGetRight(`1@)">
   TryGetRight(out TRight)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1004,7 +1004,7 @@ Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/bu
 
   <h4 class="section" id="Bodu_Functional_Either_2_TryGetRight__1___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
-Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> — and never throws — for a left-carrying either and for
+Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> - and never throws - for a left-carrying either and for
 <code>default(Either&lt;TLeft, TRight&gt;)</code>.
 </p>
 </div>
@@ -1023,7 +1023,7 @@ Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/bu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_op_Equality_Bodu_Functional_Either__0__1__Bodu_Functional_Either__0__1__" data-uid="Bodu.Functional.Either`2.op_Equality(Bodu.Functional.Either{`0,`1},Bodu.Functional.Either{`0,`1})">
   operator ==(Either&lt;TLeft, TRight&gt;, Either&lt;TLeft, TRight&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1070,7 +1070,7 @@ comparer, or both are uninitialized; otherwise, <a href="https://learn.microsoft
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Functional_Either_2_op_Inequality_Bodu_Functional_Either__0__1__Bodu_Functional_Either__0__1__" data-uid="Bodu.Functional.Either`2.op_Inequality(Bodu.Functional.Either{`0,`1},Bodu.Functional.Either{`0,`1})">
   operator !=(Either&lt;TLeft, TRight&gt;, Either&lt;TLeft, TRight&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Functional/Either%7BT%2CT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1138,7 +1138,7 @@ comparer, or both are uninitialized; otherwise, <a href="https://learn.microsoft
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

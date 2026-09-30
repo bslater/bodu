@@ -8,7 +8,7 @@
       <meta name="title" content="CrcLookupTableCache Class
  | BODU ">
       
-      <meta name="description" content="Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection — amortizes the per-tuple build cost of  across every  instance that uses the same .">
+      <meta name="description" content="Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection - amortizes the per-tuple build cost of  across every  instance that uses the same .">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Hashing_Checksums_CrcLookupTableCache" data-uid="Bodu.IO.Hashing.Checksums.CrcLookupTableCache" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 CrcLookupTableCache Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcLookupTableCache.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcLookupTableCache.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,10 +104,10 @@ CrcLookupTableCache Class
   <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcLookupTableCache.cs">CrcLookupTableCache.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcLookupTableCache.cs">CrcLookupTableCache.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection — amortizes the
+  <div class="markdown summary"><p>Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection - amortizes the
 per-tuple build cost of <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.html#Bodu_IO_Hashing_Checksums_CrcLookupTableBuilder_BuildLookupTable_System_Int32_System_UInt64_System_Boolean_">BuildLookupTable(int, ulong, bool)</a> across every
 <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> instance that uses the same <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a>.</p>
 </div>
@@ -184,7 +184,7 @@ per-tuple build cost of <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLooku
   <h2 id="Bodu_IO_Hashing_Checksums_CrcLookupTableCache_examples">Examples</h2>
   <pre><code class="lang-csharp">using Bodu.IO.Hashing.Checksums;
 
-// Most callers do not interact with the cache directly — Crc resolves it through Crc.GlobalCache.
+// Most callers do not interact with the cache directly - Crc resolves it through Crc.GlobalCache.
 var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
 
 // Use a scoped cache for an isolated test, then restore the default.
@@ -209,7 +209,7 @@ first lookup for a tuple builds and stores the table; subsequent lookups return 
 </p>
 <p>
 <strong>Default and custom caches.</strong> A process-wide default lives at <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html#Bodu_IO_Hashing_Checksums_Crc_GlobalCache">GlobalCache</a> and is
-used implicitly by every <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> instance — most callers never need to construct a cache by hand. Reach
+used implicitly by every <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> instance - most callers never need to construct a cache by hand. Reach
 for a custom <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableCache.html">CrcLookupTableCache</a> only when you want a scoped cache (e.g. per AppDomain, per test
 fixture) that the global default should not see, or when running diagnostic code that needs deterministic cache
 state. Custom caches can be installed by assigning to <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html#Bodu_IO_Hashing_Checksums_Crc_GlobalCache">GlobalCache</a>.
@@ -218,7 +218,7 @@ state. Custom caches can be installed by assigning to <a class="xref" href="Bodu
 <strong>Thread safety and aliasing.</strong> Internally backed by <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.concurrent.concurrentdictionary-2">ConcurrentDictionary&lt;TKey, TValue&gt;</a>;
 concurrent <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableCache.html#Bodu_IO_Hashing_Checksums_CrcLookupTableCache_GetLookupTable_System_Int32_System_UInt64_System_Boolean_">GetLookupTable(int, ulong, bool)</a> calls are safe and the build delegate runs at most once
 per key. The returned array is <strong>shared across all callers</strong> with the same parameters and must be
-treated as read-only — mutating it would corrupt every <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> instance that uses the same standard.
+treated as read-only - mutating it would corrupt every <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> instance that uses the same standard.
 </p>
 </div>
 
@@ -232,7 +232,7 @@ treated as read-only — mutating it would corrupt every <a class="xref" href="B
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcLookupTableCache__ctor" data-uid="Bodu.IO.Hashing.Checksums.CrcLookupTableCache.#ctor">
   CrcLookupTableCache()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcLookupTableCache.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcLookupTableCache.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -267,7 +267,7 @@ treated as read-only — mutating it would corrupt every <a class="xref" href="B
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcLookupTableCache_GetLookupTable_System_Int32_System_UInt64_System_Boolean_" data-uid="Bodu.IO.Hashing.Checksums.CrcLookupTableCache.GetLookupTable(System.Int32,System.UInt64,System.Boolean)">
   GetLookupTable(int, ulong, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcLookupTableCache.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcLookupTableCache.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -356,7 +356,7 @@ internal callers that require a raw <a class="xref" href="https://learn.microsof
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

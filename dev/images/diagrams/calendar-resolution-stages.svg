@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 660" role="img" aria-labelledby="crs-t crs-d">
-  <title id="crs-t">NotableDateService — eight-stage resolution pipeline</title>
+  <title id="crs-t">NotableDateService - eight-stage resolution pipeline</title>
   <desc id="crs-d">The resolution pipeline executes in eight ordered stages between a Resolve call and the returned list. Stage 1 loads rules from the rule document and materialises Import/Use directives. Stage 2 merges overrides, applying removals and additions. Stage 3 assembles the effective rule list, dropping rules outside the year range, excluded by year filters, or unable to match the territory. Stage 4 resolves each rule's date by strategy. Stage 5 evaluates the adjustment chain by priority. Stage 6 resolves collisions. Stage 7 settles the result per ResolutionPolicy. Stage 8, used only by filtered queries, applies primary and secondary filter gates.</desc>
 
   <defs>
@@ -30,7 +30,7 @@
     <rect class="crs-pan" width="740" height="640" rx="8"/>
     <rect class="crs-hdr" width="740" height="46" rx="8"/>
     <rect class="crs-hdr" y="38" width="740" height="8"/>
-    <text class="crs-ttl" x="16" y="29">Resolution pipeline — eight ordered stages</text>
+    <text class="crs-ttl" x="16" y="29">Resolution pipeline - eight ordered stages</text>
     <text class="crs-form" x="724" y="29" text-anchor="end">Resolve(year)  →  IReadOnlyList&lt;NotableDate&gt;</text>
 
     <!-- Stage cards -->
@@ -88,7 +88,7 @@
       <rect class="crs-cardo" x="20" y="550" width="700" height="58" rx="7"/>
       <circle class="crs-badgo" cx="50" cy="579" r="15"/>
       <text class="crs-numo" x="50" y="584">8</text>
-      <text class="crs-name" x="82" y="574">Filter gate <tspan class="crs-sub">— filtered queries only</tspan></text>
+      <text class="crs-name" x="82" y="574">Filter gate <tspan class="crs-sub">- filtered queries only</tspan></text>
       <text class="crs-sub" x="82" y="593">Primary gate: rule-level, pre-resolution · secondary gate: date-level, post-resolution · per query</text>
     </g>
 
@@ -103,6 +103,6 @@
       <line x1="50" y1="538" x2="50" y2="548" stroke-dasharray="4 3" marker-end="url(#crs-arr)"/>
     </g>
 
-    <text class="crs-foot" x="20" y="628">Stages 1–7 run for each Resolve query against the immutable resource; Stage 8 adds the filter gates for filtered queries.</text>
+    <text class="crs-foot" x="20" y="628">Stages 1-7 run for each Resolve query against the immutable resource; Stage 8 adds the filter gates for filtered queries.</text>
   </g>
 </svg>

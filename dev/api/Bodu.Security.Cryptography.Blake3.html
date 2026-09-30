@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_Blake3" data-uid="Bodu.Security.Cryptography.Blake3" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Blake3 Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ Blake3 Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs">Blake3.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs">Blake3.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Computes a 256-bit cryptographic hash using the <code>BLAKE3</code> algorithm designed by Jack O'Connor, Jean-Philippe
@@ -385,9 +385,9 @@ exposed.
 </p>
 <ul><li>Output size: 256 bits (32 bytes), fixed.</li><li>Block size: 64 bytes; chunk size: 1024 bytes (the leaf of the hash tree).</li><li>
 Construction: binary Merkle tree over chunks, ARX compression derived from BLAKE2 / ChaCha.
-</li><li>Mode: standard unkeyed hash only — keyed hash and KDF modes are not exposed.</li></ul>
+</li><li>Mode: standard unkeyed hash only - keyed hash and KDF modes are not exposed.</li></ul>
 <p>
-<strong>When to choose BLAKE3.</strong> Reach for BLAKE3 when raw throughput on long inputs is the priority — its
+<strong>When to choose BLAKE3.</strong> Reach for BLAKE3 when raw throughput on long inputs is the priority - its
 tree structure is naturally parallel-friendly and outperforms <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a>, SHA-2, and SHA-3 on
 multi-megabyte messages. For short inputs the difference shrinks and any of the BLAKE2 / SHA-2 variants is fine. Use
 <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a> if a configurable output size or RFC 7693-compatible MAC mode is required; use
@@ -406,7 +406,7 @@ underlying leaf hash.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake3__ctor" data-uid="Bodu.Security.Cryptography.Blake3.#ctor">
   Blake3()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -440,7 +440,7 @@ underlying leaf hash.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake3__ctor_System_Int32_" data-uid="Bodu.Security.Cryptography.Blake3.#ctor(System.Int32)">
   Blake3(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -492,7 +492,7 @@ processor.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake3_AlgorithmName" data-uid="Bodu.Security.Cryptography.Blake3.AlgorithmName">
   AlgorithmName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -523,7 +523,7 @@ processor.</p>
   <h4 class="section" id="Bodu_Security_Cryptography_Blake3_AlgorithmName_remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Derived classes implement this property to expose a stable, consumer-facing identifier suitable for logging,
 telemetry, registry keys, or interop with hash-name catalogues. Implementations should be pure and
-side-effect-free — the value may be queried before any input has been consumed and after disposal as part of
+side-effect-free - the value may be queried before any input has been consumed and after disposal as part of
 error reporting.</p>
 </div>
 
@@ -537,7 +537,7 @@ error reporting.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake3_CanReuseTransform" data-uid="Bodu.Security.Cryptography.Blake3.CanReuseTransform">
   CanReuseTransform
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -575,7 +575,7 @@ error reporting.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake3_CanTransformMultipleBlocks" data-uid="Bodu.Security.Cryptography.Blake3.CanTransformMultipleBlocks">
   CanTransformMultipleBlocks
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -613,7 +613,7 @@ error reporting.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake3_MaxDegreeOfParallelism" data-uid="Bodu.Security.Cryptography.Blake3.MaxDegreeOfParallelism">
   MaxDegreeOfParallelism
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -674,7 +674,7 @@ would only add hand-offs. Raise it to hash one large input faster: a file, a dow
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake3_Dispose_System_Boolean_" data-uid="Bodu.Security.Cryptography.Blake3.Dispose(System.Boolean)">
   Dispose(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -722,7 +722,7 @@ Derived classes that hold algorithm-specific state, buffers, keys, or other secr
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake3_HashCore_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Blake3.HashCore(System.ReadOnlySpan{System.Byte})">
   HashCore(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -767,7 +767,7 @@ base class, which keeps the final block deferred.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake3_Initialize" data-uid="Bodu.Security.Cryptography.Blake3.Initialize">
   Initialize()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -819,7 +819,7 @@ Once the base call returns, the residual buffer is empty, <span class="xref">Bod
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake3_ProcessBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Boolean_" data-uid="Bodu.Security.Cryptography.Blake3.ProcessBlock(System.ReadOnlySpan{System.Byte},System.UInt64,System.Boolean)">
   ProcessBlock(ReadOnlySpan&lt;byte&gt;, ulong, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -866,7 +866,7 @@ otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake3_ProcessFinalBlock" data-uid="Bodu.Security.Cryptography.Blake3.ProcessFinalBlock">
   ProcessFinalBlock()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake3.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -936,7 +936,7 @@ expected by consumers of the algorithm (typically little-endian for Blake-family
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -48,7 +48,7 @@
     <rect class="panel" width="800" height="300" rx="8"/>
     <rect class="header" width="800" height="46" rx="8"/>
     <rect class="header" y="38" width="800" height="8"/>
-    <text class="title" x="16" y="20">Poly1305 — polynomial evaluation in r over 2¹³⁰ − 5</text>
+    <text class="title" x="16" y="20">Poly1305 - polynomial evaluation in r over 2¹³⁰ − 5</text>
     <text class="formula" x="784" y="38" text-anchor="end">acc ← (acc + blockᵢ) · r  mod (2¹³⁰ − 5)</text>
 
     <!-- incoming 16-byte block -->
@@ -100,7 +100,7 @@
 
     <!-- reduced value loops back into accumulator -->
     <path class="wire-acc" d="M 490 129 L 490 200 L 281 200" stroke-dasharray="4 3" marker-end="url(#pl-arr-acc)"/>
-    <text class="sub-muted" x="486" y="172" text-anchor="end">updated acc — loop for next block</text>
+    <text class="sub-muted" x="486" y="172" text-anchor="end">updated acc - loop for next block</text>
 
     <!-- finalisation: + s -->
     <g transform="translate(635 110)">
@@ -128,7 +128,7 @@
     <!-- legend / key note -->
     <g transform="translate(40 254)">
       <rect class="panel" x="0" y="-16" width="720" height="30" rx="6" stroke-dasharray="5 3"/>
-      <text class="sub" x="14" y="3">Key = (r ‖ s), 32 bytes — one-time use. Reusing (r, s) across two messages reveals r and breaks forgery resistance.</text>
+      <text class="sub" x="14" y="3">Key = (r ‖ s), 32 bytes - one-time use. Reusing (r, s) across two messages reveals r and breaks forgery resistance.</text>
     </g>
 
     <!-- footer note -->

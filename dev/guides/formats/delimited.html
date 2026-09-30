@@ -88,7 +88,7 @@
 <h1 id="using-delimited-csv--tsv">Using delimited (CSV / TSV)</h1>
 
 <p><code>Bodu.Text.Delimited</code> reads and writes RFC 4180 delimited text through the quartet surfaces: the read-only <code>DelimitedDocument</code>, the <code>DelimitedSerializer</code> record binder, the mutable <code>DelimitedNode</code> DOM, and the token-level <code>Utf8DelimitedReader</code> / <code>Utf8DelimitedWriter</code>.</p>
-<h2 id="pattern-1--query-a-document">Pattern 1 — query a document</h2>
+<h2 id="pattern-1---query-a-document">Pattern 1 - query a document</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.Delimited.Document;
 
@@ -102,7 +102,7 @@ for (int i = 0; i &lt; root.GetArrayLength(); i++)
 }
 </code></pre>
 <p>In header mode, records are object elements (<code>GetProperty</code> / <code>TryGetProperty</code> / <code>EnumerateObject</code>); with <code>NoHeader = true</code>, they are positional arrays (<code>this[int]</code> / <code>GetArrayLength</code> / <code>EnumerateArray</code>).</p>
-<h2 id="pattern-2--typed-records-via-the-serializer">Pattern 2 — typed records via the serializer</h2>
+<h2 id="pattern-2---typed-records-via-the-serializer">Pattern 2 - typed records via the serializer</h2>
 <pre><code class="lang-csharp">using Bodu.Text.Delimited;
 using Bodu.Text.Serialization;
 
@@ -119,16 +119,16 @@ List&lt;Trade&gt; trades = DelimitedSerializer.Deserialize&lt;Trade&gt;(csvText,
 string back = DelimitedSerializer.Serialize(trades, options);                  // header row from the record type
 </code></pre>
 <p>Scalars parse and format with <code>InvariantCulture</code>; <code>[PropertyName]</code>, <code>[Ignore]</code>, <code>[Required]</code>, and <code>[PropertyOrder]</code> apply per member.</p>
-<h2 id="pattern-3--stream-records-from-a-large-file">Pattern 3 — stream records from a large file</h2>
+<h2 id="pattern-3---stream-records-from-a-large-file">Pattern 3 - stream records from a large file</h2>
 <pre><code class="lang-csharp">await foreach (Trade trade in DelimitedSerializer.DeserializeAsyncEnumerableAsync&lt;Trade&gt;(stream, options))
 {
     Process(trade);
 }
 </code></pre>
-<p>Both directions are genuinely incremental: records are parsed and yielded as stream segments arrive (memory is bounded by the longest record, not the document), and the write direction — <code>SerializeAsync(stream, records)</code> where <code>records</code> is an <code>IAsyncEnumerable&lt;Trade&gt;</code> — encodes each record as it is produced, flushing in bounded batches.</p>
+<p>Both directions are genuinely incremental: records are parsed and yielded as stream segments arrive (memory is bounded by the longest record, not the document), and the write direction - <code>SerializeAsync(stream, records)</code> where <code>records</code> is an <code>IAsyncEnumerable&lt;Trade&gt;</code> - encodes each record as it is produced, flushing in bounded batches.</p>
 <h3 id="reflection-free-binding">Reflection-free binding</h3>
-<p>Annotate a partial record type with <code>[DelimitedRecord]</code> and reference the <code>Bodu.Text.Formats.Generators</code> source generator, and a static <code>DelimitedFactory</code> property (<code>IDelimitedRecordFactory&lt;Trade&gt;</code>) is emitted at compile time. Passing it to the factory overloads — <code>Serialize(records, Trade.DelimitedFactory)</code> / <code>Deserialize(csvText, Trade.DelimitedFactory)</code> — avoids the reflection binder entirely, making the path trimming- and AOT-safe. The interface can also be implemented by hand.</p>
-<h2 id="pattern-4--tsv-and-other-dialects">Pattern 4 — TSV and other dialects</h2>
+<p>Annotate a partial record type with <code>[DelimitedRecord]</code> and reference the <code>Bodu.Text.Formats.Generators</code> source generator, and a static <code>DelimitedFactory</code> property (<code>IDelimitedRecordFactory&lt;Trade&gt;</code>) is emitted at compile time. Passing it to the factory overloads - <code>Serialize(records, Trade.DelimitedFactory)</code> / <code>Deserialize(csvText, Trade.DelimitedFactory)</code> - avoids the reflection binder entirely, making the path trimming- and AOT-safe. The interface can also be implemented by hand.</p>
+<h2 id="pattern-4---tsv-and-other-dialects">Pattern 4 - TSV and other dialects</h2>
 <p>The delimiter, quote, and comment characters live on the reader/writer options:</p>
 <pre><code class="lang-csharp">using Bodu.Text.Delimited.Reader;
 
@@ -147,7 +147,7 @@ var writer = new Utf8DelimitedWriter(buffer, new DelimitedWriterOptions { Delimi
 records.WriteTo(ref writer);
 writer.Flush();
 </code></pre>
-<h2 id="pattern-5--dirty-input">Pattern 5 — dirty input</h2>
+<h2 id="pattern-5---dirty-input">Pattern 5 - dirty input</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">var lenient = new DelimitedReaderOptions
 {
@@ -184,7 +184,7 @@ writer.Flush();
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

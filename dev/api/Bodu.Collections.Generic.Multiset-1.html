@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Collections_Generic_Multiset_1" data-uid="Bodu.Collections.Generic.Multiset`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Multiset&lt;T&gt; Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ Multiset&lt;T&gt; Class
   <dl><dt>Assembly</dt><dd>Bodu.Collections.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Collections">Bodu.Collections</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.ICollection.cs">Multiset{T}.ICollection.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.ICollection.cs">Multiset{T}.ICollection.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents an unordered collection that tracks the multiplicity (occurrence count) of each element. Unlike
@@ -200,14 +200,14 @@ var histogram = new Multiset&lt;char&gt;();
 foreach (char c in "mississippi")
     histogram.Add(c);
 
-Console.WriteLine(histogram.Count);         // 11 — total occurrences
-Console.WriteLine(histogram.DistinctCount); // 4  — distinct letters
-Console.WriteLine(histogram["s"[0]]);       // 4  — count for 's'
+Console.WriteLine(histogram.Count);         // 11 - total occurrences
+Console.WriteLine(histogram.DistinctCount); // 4  - distinct letters
+Console.WriteLine(histogram["s"[0]]);       // 4  - count for 's'
 
 foreach (KeyValuePair&lt;char, int&gt; kv in histogram.Frequencies())
     Console.WriteLine($"{kv.Key}: {kv.Value}");
 
-// Multiset algebra — combine two histograms without mutating either operand.
+// Multiset algebra - combine two histograms without mutating either operand.
 var other = new Multiset&lt;char&gt; { 'i', 'i', 's' };
 Multiset&lt;char&gt; combined = histogram.Sum(other);</code></pre>
 
@@ -222,18 +222,18 @@ frequency analysis, histogram construction, vote counting, and duplicate-aware s
 The <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Count">Count</a> property returns the total element count <em>including</em> multiplicity. A multiset
 containing <code>"a"</code> twice and <code>"b"</code> once has a <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Count">Count</a> of 3 and a <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_DistinctCount">DistinctCount</a>
 of 2. Enumerating the multiset yields each element as many times as it appears; use <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Distinct">Distinct()</a> to
-iterate over each distinct element once, or <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Frequencies">Frequencies()</a> to obtain element–count pairs.
+iterate over each distinct element once, or <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Frequencies">Frequencies()</a> to obtain element-count pairs.
 </p>
 <p>
 Set-theoretic operations (<a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Union_Bodu_Collections_Generic_Multiset__0__">Union(Multiset&lt;T&gt;)</a>, <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Intersect_Bodu_Collections_Generic_Multiset__0__">Intersect(Multiset&lt;T&gt;)</a>, <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Except_Bodu_Collections_Generic_Multiset__0__">Except(Multiset&lt;T&gt;)</a>, <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Sum_Bodu_Collections_Generic_Multiset__0__">Sum(Multiset&lt;T&gt;)</a>)
 return new <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html">Multiset&lt;T&gt;</a> instances and do not mutate either operand. The semantics follow multiset
 algebra:
 </p>
-<ul><li><a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Union_Bodu_Collections_Generic_Multiset__0__">Union(Multiset&lt;T&gt;)</a> — each element appears max(a, b) times.</li><li>
-<a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Intersect_Bodu_Collections_Generic_Multiset__0__">Intersect(Multiset&lt;T&gt;)</a> — each element appears min(a, b) times; elements absent from either operand are omitted.
+<ul><li><a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Union_Bodu_Collections_Generic_Multiset__0__">Union(Multiset&lt;T&gt;)</a> - each element appears max(a, b) times.</li><li>
+<a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Intersect_Bodu_Collections_Generic_Multiset__0__">Intersect(Multiset&lt;T&gt;)</a> - each element appears min(a, b) times; elements absent from either operand are omitted.
 </li><li>
-<a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Except_Bodu_Collections_Generic_Multiset__0__">Except(Multiset&lt;T&gt;)</a> — each element appears max(0, a − b) times; elements whose count reaches zero are omitted.
-</li><li><a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Sum_Bodu_Collections_Generic_Multiset__0__">Sum(Multiset&lt;T&gt;)</a> — each element appears a + b times.</li></ul>
+<a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Except_Bodu_Collections_Generic_Multiset__0__">Except(Multiset&lt;T&gt;)</a> - each element appears max(0, a − b) times; elements whose count reaches zero are omitted.
+</li><li><a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Sum_Bodu_Collections_Generic_Multiset__0__">Sum(Multiset&lt;T&gt;)</a> - each element appears a + b times.</li></ul>
 <p>
 Set operations produce correct results only when both operands use equivalent equality comparers. The result uses
 this instance's comparer.
@@ -253,7 +253,7 @@ this instance's comparer.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1__ctor" data-uid="Bodu.Collections.Generic.Multiset`1.#ctor">
   Multiset()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -285,7 +285,7 @@ comparer.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1__ctor_System_Collections_Generic_IEnumerable__0__" data-uid="Bodu.Collections.Generic.Multiset`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
   Multiset(IEnumerable&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -329,7 +329,7 @@ specified collection and uses the default equality comparer.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1__ctor_System_Collections_Generic_IEnumerable__0__System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.Multiset`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEqualityComparer{`0})">
   Multiset(IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -377,7 +377,7 @@ comparer for <code class="typeparamref">T</code> is used.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1__ctor_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.Multiset`1.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
   Multiset(IEqualityComparer&lt;T&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -420,7 +420,7 @@ comparer for <code class="typeparamref">T</code> is used.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_Comparer" data-uid="Bodu.Collections.Generic.Multiset`1.Comparer">
   Comparer
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -457,7 +457,7 @@ comparer for <code class="typeparamref">T</code> is used.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_Count" data-uid="Bodu.Collections.Generic.Multiset`1.Count">
   Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -496,7 +496,7 @@ separately.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_DistinctCount" data-uid="Bodu.Collections.Generic.Multiset`1.DistinctCount">
   DistinctCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -539,7 +539,7 @@ occurrence counts.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_Add__0_" data-uid="Bodu.Collections.Generic.Multiset`1.Add(`0)">
   Add(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -583,7 +583,7 @@ multiset is unchanged when this exception is thrown.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_Add__0_System_Int32_" data-uid="Bodu.Collections.Generic.Multiset`1.Add(`0,System.Int32)">
   Add(T, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -633,7 +633,7 @@ above <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_Clear" data-uid="Bodu.Collections.Generic.Multiset`1.Clear">
   Clear()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -664,7 +664,7 @@ above <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_Contains__0_" data-uid="Bodu.Collections.Generic.Multiset`1.Contains(`0)">
   Contains(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -708,7 +708,7 @@ above <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_CopyTo__0___System_Int32_" data-uid="Bodu.Collections.Generic.Multiset`1.CopyTo(`0[],System.Int32)">
   CopyTo(T[], int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -762,7 +762,7 @@ end of <code class="paramref">array</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_CountOf__0_" data-uid="Bodu.Collections.Generic.Multiset`1.CountOf(`0)">
   CountOf(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -805,7 +805,7 @@ end of <code class="paramref">array</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_Distinct" data-uid="Bodu.Collections.Generic.Multiset`1.Distinct">
   Distinct()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -855,7 +855,7 @@ any structural modification; iterating after a modification throws <a class="xre
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_Except_Bodu_Collections_Generic_Multiset__0__" data-uid="Bodu.Collections.Generic.Multiset`1.Except(Bodu.Collections.Generic.Multiset{`0})">
   Except(Multiset&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -907,11 +907,11 @@ CountOf(x) − other.CountOf(x)).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_Frequencies" data-uid="Bodu.Collections.Generic.Multiset`1.Frequencies">
   Frequencies()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns an enumerable sequence of element–count pairs for each distinct element in the
+  <div class="markdown level1 summary"><p>Returns an enumerable sequence of element-count pairs for each distinct element in the
 <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html">Multiset&lt;T&gt;</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -956,7 +956,7 @@ element and each value is that element's occurrence count. The order of pairs is
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_GetEnumerator" data-uid="Bodu.Collections.Generic.Multiset`1.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.IEnumerable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.IEnumerable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -984,8 +984,8 @@ many times as its occurrence count.</p>
 
 
   <h4 class="section" id="Bodu_Collections_Generic_Multiset_1_GetEnumerator_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>The enumerator captures a structural-version token at creation. Any subsequent structural modification —
-including <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Add__0_">Add(T)</a>, <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Remove__0_">Remove(T)</a>, <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_RemoveAll__0_">RemoveAll(T)</a>, and <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Clear">Clear()</a> —
+  <div class="markdown level1 remarks"><p>The enumerator captures a structural-version token at creation. Any subsequent structural modification -
+including <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Add__0_">Add(T)</a>, <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Remove__0_">Remove(T)</a>, <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_RemoveAll__0_">RemoveAll(T)</a>, and <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html#Bodu_Collections_Generic_Multiset_1_Clear">Clear()</a> -
 invalidates the enumerator. The next call to <a class="xref" href="Bodu.Collections.Generic.Multiset-1.Enumerator.html#Bodu_Collections_Generic_Multiset_1_Enumerator_MoveNext">MoveNext()</a> or
 <a class="xref" href="Bodu.Collections.Generic.Multiset-1.Enumerator.html#Bodu_Collections_Generic_Multiset_1_Enumerator_Reset">Reset()</a> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.</p>
 </div>
@@ -1000,7 +1000,7 @@ invalidates the enumerator. The next call to <a class="xref" href="Bodu.Collecti
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_Intersect_Bodu_Collections_Generic_Multiset__0__" data-uid="Bodu.Collections.Generic.Multiset`1.Intersect(Bodu.Collections.Generic.Multiset{`0})">
   Intersect(Multiset&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1052,7 +1052,7 @@ min(CountOf(x), other.CountOf(x)), with elements at zero count omitted.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_Remove__0_" data-uid="Bodu.Collections.Generic.Multiset`1.Remove(`0)">
   Remove(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1096,7 +1096,7 @@ min(CountOf(x), other.CountOf(x)), with elements at zero count omitted.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_RemoveAll__0_" data-uid="Bodu.Collections.Generic.Multiset`1.RemoveAll(`0)">
   RemoveAll(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1140,7 +1140,7 @@ min(CountOf(x), other.CountOf(x)), with elements at zero count omitted.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_Sum_Bodu_Collections_Generic_Multiset__0__" data-uid="Bodu.Collections.Generic.Multiset`1.Sum(Bodu.Collections.Generic.Multiset{`0})">
   Sum(Multiset&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1195,7 +1195,7 @@ CountOf(x) + other.CountOf(x).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_Union_Bodu_Collections_Generic_Multiset__0__" data-uid="Bodu.Collections.Generic.Multiset`1.Union(Bodu.Collections.Generic.Multiset{`0})">
   Union(Multiset&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1253,7 +1253,7 @@ max(CountOf(x), other.CountOf(x)).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_System_Collections_Generic_ICollection_T__IsReadOnly" data-uid="Bodu.Collections.Generic.Multiset`1.System#Collections#Generic#ICollection{T}#IsReadOnly">
   ICollection&lt;T&gt;.IsReadOnly
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1290,7 +1290,7 @@ max(CountOf(x), other.CountOf(x)).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_System_Collections_Generic_IEnumerable_T__GetEnumerator" data-uid="Bodu.Collections.Generic.Multiset`1.System#Collections#Generic#IEnumerable{T}#GetEnumerator">
   IEnumerable&lt;T&gt;.GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.IEnumerable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.IEnumerable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1327,7 +1327,7 @@ max(CountOf(x), other.CountOf(x)).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_System_Collections_ICollection_CopyTo_System_Array_System_Int32_" data-uid="Bodu.Collections.Generic.Multiset`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
   ICollection.CopyTo(Array, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1383,7 +1383,7 @@ unmodified (no elements are written).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_System_Collections_ICollection_IsSynchronized" data-uid="Bodu.Collections.Generic.Multiset`1.System#Collections#ICollection#IsSynchronized">
   ICollection.IsSynchronized
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1424,7 +1424,7 @@ returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/bu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_System_Collections_ICollection_SyncRoot" data-uid="Bodu.Collections.Generic.Multiset`1.System#Collections#ICollection#SyncRoot">
   ICollection.SyncRoot
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1461,7 +1461,7 @@ returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/bu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Multiset_1_System_Collections_IEnumerable_GetEnumerator" data-uid="Bodu.Collections.Generic.Multiset`1.System#Collections#IEnumerable#GetEnumerator">
   IEnumerable.GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.IEnumerable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic/Multiset%7BT%7D.IEnumerable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1520,7 +1520,7 @@ returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/bu
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

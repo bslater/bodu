@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Numerics.Serialization.Json — Introduction | BODU </title>
+      <title>Bodu.Numerics.Serialization.Json - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Numerics.Serialization.Json — Introduction | BODU ">
+      <meta name="title" content="Bodu.Numerics.Serialization.Json - Introduction | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -88,8 +88,8 @@
 <h1 id="bodunumericsserializationjson">Bodu.Numerics.Serialization.Json</h1>
 
 <p><img src="../../images/hero-numerics-json.svg" alt="Bodu.Numerics.Serialization.Json"></p>
-<p><strong>Bodu.Numerics.Serialization.Json</strong> is the <code>System.Text.Json</code> companion to <a href="../numerics/index.html"><code>Bodu.Numerics</code></a>. It ships the converters and converter factories that round-trip the numeric value types — <a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.BigDecimal.html">BigDecimal</a>, and <a class="xref" href="../../api/Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> — a single <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a> that selects one coherent wire shape for all of them, the one-call <code>AddNumericsJsonConverters</code> registration, and the <code>ToJson</code> / <code>FromJson</code> convenience helpers for fractions. Part of the <strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial</a></strong> topic.</p>
-<p><code>Bodu.Numerics.Serialization.Json</code> is a <strong>Preview</strong> package. The core library is deliberately serialization-agnostic — its value types carry no <code>[JsonConverter]</code> attribute and take no dependency on <code>System.Text.Json</code> — so JSON support is opt-in, and a consumer of just <code>Fraction&lt;T&gt;</code> pays nothing for the serializer.</p>
+<p><strong>Bodu.Numerics.Serialization.Json</strong> is the <code>System.Text.Json</code> companion to <a href="../numerics/index.html"><code>Bodu.Numerics</code></a>. It ships the converters and converter factories that round-trip the numeric value types - <a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.BigDecimal.html">BigDecimal</a>, and <a class="xref" href="../../api/Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> - a single <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a> that selects one coherent wire shape for all of them, the one-call <code>AddNumericsJsonConverters</code> registration, and the <code>ToJson</code> / <code>FromJson</code> convenience helpers for fractions. Part of the <strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial</a></strong> topic.</p>
+<p><code>Bodu.Numerics.Serialization.Json</code> is a <strong>Preview</strong> package. The core library is deliberately serialization-agnostic - its value types carry no <code>[JsonConverter]</code> attribute and take no dependency on <code>System.Text.Json</code> - so JSON support is opt-in, and a consumer of just <code>Fraction&lt;T&gt;</code> pays nothing for the serializer.</p>
 <h2 id="core-mental-model">Core mental model</h2>
 <p>One policy, six registrations, one options instance. Five of the six types are open generics, so what is registered for them is a <em>factory</em> that binds the concrete <code>T</code> per request:</p>
 <pre><code>JsonSerializerOptions
@@ -115,7 +115,7 @@
 <tbody>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.NumericsJsonSerializerOptionsExtensions.html">NumericsJsonSerializerOptionsExtensions</a></td>
-<td><code>AddNumericsJsonConverters(this JsonSerializerOptions options, NumericsJsonPolicy policy = Strict)</code> — adds the five factories and the <code>BigDecimal</code> converter and returns the same options instance for chaining.</td>
+<td><code>AddNumericsJsonConverters(this JsonSerializerOptions options, NumericsJsonPolicy policy = Strict)</code> - adds the five factories and the <code>BigDecimal</code> converter and returns the same options instance for chaining.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a></td>
@@ -123,7 +123,7 @@
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.FractionJsonExtensions.html">FractionJsonExtensions</a></td>
-<td><code>value.ToJson(policy)</code> and <code>FractionJsonExtensions.FromJson&lt;T&gt;(json, policy)</code> — one-shot helpers that configure a fresh options instance per call (reflection-based; annotated for trimming and AOT).</td>
+<td><code>value.ToJson(policy)</code> and <code>FractionJsonExtensions.FromJson&lt;T&gt;(json, policy)</code> - one-shot helpers that configure a fresh options instance per call (reflection-based; annotated for trimming and AOT).</td>
 </tr>
 </tbody>
 </table>
@@ -142,7 +142,7 @@
 <tr>
 <td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.FractionJsonConverterFactory.html">FractionJsonConverterFactory</a> → <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.FractionJsonConverter-1.html">FractionJsonConverter&lt;T&gt;</a></td>
 <td><a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a></td>
-<td><code>{ &quot;numerator&quot;: 3, &quot;denominator&quot;: 4 }</code> — components as raw JSON numbers, so <code>BigInteger</code> round-trips exactly</td>
+<td><code>{ &quot;numerator&quot;: 3, &quot;denominator&quot;: 4 }</code> - components as raw JSON numbers, so <code>BigInteger</code> round-trips exactly</td>
 <td><code>&quot;3/4&quot;</code></td>
 </tr>
 <tr>
@@ -172,7 +172,7 @@
 <tr>
 <td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.ComplexJsonConverterFactory.html">ComplexJsonConverterFactory</a> → <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.ComplexJsonConverter-1.html">ComplexJsonConverter&lt;T&gt;</a></td>
 <td><a class="xref" href="../../api/Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a></td>
-<td><code>{ &quot;real&quot;: 3, &quot;imaginary&quot;: 4 }</code> — non-finite components as <code>&quot;NaN&quot;</code> / <code>&quot;Infinity&quot;</code> / <code>&quot;-Infinity&quot;</code></td>
+<td><code>{ &quot;real&quot;: 3, &quot;imaginary&quot;: 4 }</code> - non-finite components as <code>&quot;NaN&quot;</code> / <code>&quot;Infinity&quot;</code> / <code>&quot;-Infinity&quot;</code></td>
 <td><code>&quot;&lt;3; 4&gt;&quot;</code></td>
 </tr>
 </tbody>
@@ -208,7 +208,7 @@
 <ul>
 <li><a class="xref" href="../../api/Bodu.Numerics.IntervalPair-1.html">IntervalPair&lt;T&gt;</a> and <a class="xref" href="../../api/Bodu.Numerics.DiscreteIntervalPair-1.html">DiscreteIntervalPair&lt;T&gt;</a> are transient operation results, not storage shapes; call <code>ToIntervalSet()</code> and serialize the resulting <a class="xref" href="../../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a>.</li>
 <li>The streaming statistics aggregates (<code>RunningStatistics&lt;T&gt;</code>, <code>RunningQuantile&lt;T&gt;</code>, <code>MovingSum&lt;T&gt;</code>, <code>MovingMinMax&lt;T&gt;</code>) are accumulators with internal state, not values; they have no converter.</li>
-<li>No source-generated <code>JsonSerializerContext</code> ships here: the converters are reflection-free at the value level and slot into a context you own — see <a href="../../guides/numerics/json-serialization.html#trimming-and-aot">Trimming and AOT</a>.</li>
+<li>No source-generated <code>JsonSerializerContext</code> ships here: the converters are reflection-free at the value level and slot into a context you own - see <a href="../../guides/numerics/json-serialization.html#trimming-and-aot">Trimming and AOT</a>.</li>
 </ul>
 <h2 id="scenarios-this-library-covers">Scenarios this library covers</h2>
 <table>
@@ -221,15 +221,15 @@
 <tbody>
 <tr>
 <td>Persist an exact rational without floating-point drift</td>
-<td><code>Fraction&lt;T&gt;</code> under <code>Strict</code> — components are raw JSON numbers, any <code>T</code> including <code>BigInteger</code></td>
+<td><code>Fraction&lt;T&gt;</code> under <code>Strict</code> - components are raw JSON numbers, any <code>T</code> including <code>BigInteger</code></td>
 </tr>
 <tr>
 <td>Interchange with a system that cannot carry big JSON numbers</td>
-<td>quote the components — the reader accepts numeric strings for every component</td>
+<td>quote the components - the reader accepts numeric strings for every component</td>
 </tr>
 <tr>
 <td>Store a range with independent endpoint inclusivity or an open side</td>
-<td><code>Interval&lt;T&gt;</code> under <code>Strict</code> — the inclusivity flags and unbounded markers are explicit</td>
+<td><code>Interval&lt;T&gt;</code> under <code>Strict</code> - the inclusivity flags and unbounded markers are explicit</td>
 </tr>
 <tr>
 <td>Emit a readable <code>&quot;[1, 5)&quot;</code> in a log line or a query string</td>
@@ -241,11 +241,11 @@
 </tr>
 <tr>
 <td>Persist an arbitrary-precision decimal without narrowing to <code>double</code></td>
-<td><code>BigDecimal</code> — an exact <code>unscaledValue</code> / <code>scale</code> object, or the decimal string under <code>Compact</code></td>
+<td><code>BigDecimal</code> - an exact <code>unscaledValue</code> / <code>scale</code> object, or the decimal string under <code>Compact</code></td>
 </tr>
 <tr>
 <td>Round-trip a <code>NaN</code> or infinite complex component</td>
-<td><code>Complex&lt;T&gt;</code> under <code>Strict</code> — non-finite components are strings, accepted either way on read</td>
+<td><code>Complex&lt;T&gt;</code> under <code>Strict</code> - non-finite components are strings, accepted either way on read</td>
 </tr>
 <tr>
 <td>Serialize the result of a set operation</td>
@@ -263,13 +263,13 @@
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — policy, factories vs closed converters, each type's wire shape, raw-number precision, trimming and AOT, failure modes.</li>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install + minimal samples for each policy and each type.</li>
-<li><strong><a href="../../guides/numerics/json-serialization.html">Numerics JSON serialization guide</a></strong> — the full wire-format reference and worked examples.</li>
-<li><strong><a href="../numerics/index.html">Bodu.Numerics introduction</a></strong> — the value types being serialized.</li>
-<li><strong><a href="../financial-serialization-json/index.html">Bodu.Financial.Serialization.Json</a></strong> — the sibling companion package for money and exchange rates, with the same policy model.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.html">Bodu.Numerics.Serialization.Json API reference</a></strong> — full type-by-type docs.</li>
-<li><strong><a href="../../samples/numerics.html">Runnable samples</a></strong> — the <code>JsonConverters</code> sample project.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - policy, factories vs closed converters, each type's wire shape, raw-number precision, trimming and AOT, failure modes.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install + minimal samples for each policy and each type.</li>
+<li><strong><a href="../../guides/numerics/json-serialization.html">Numerics JSON serialization guide</a></strong> - the full wire-format reference and worked examples.</li>
+<li><strong><a href="../numerics/index.html">Bodu.Numerics introduction</a></strong> - the value types being serialized.</li>
+<li><strong><a href="../financial-serialization-json/index.html">Bodu.Financial.Serialization.Json</a></strong> - the sibling companion package for money and exchange rates, with the same policy model.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.html">Bodu.Numerics.Serialization.Json API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="../../samples/numerics.html">Runnable samples</a></strong> - the <code>JsonConverters</code> sample project.</li>
 </ul>
 
 </article>
@@ -289,7 +289,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Text.Encoding — Getting started | BODU </title>
+      <title>Bodu.Text.Encoding - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Text.Encoding — Getting started | BODU ">
+      <meta name="title" content="Bodu.Text.Encoding - Getting started | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,7 +85,7 @@
         </div>
 
         <article data-uid="">
-<h1 id="bodutextencoding--getting-started">Bodu.Text.Encoding — Getting started</h1>
+<h1 id="bodutextencoding---getting-started">Bodu.Text.Encoding - Getting started</h1>
 
 <p>Unfamiliar with terms like <em>alphabet</em>, <em>terminal quantum</em>, <em>padding</em>, or <em>variant</em>? Read <a href="concepts.html">Core concepts</a>
 first.</p>
@@ -151,7 +151,7 @@ if (Base16.TryDecode(userInput.AsSpan(), buffer, out int bytesWritten))
 }
 else
 {
-    // malformed input — show an error
+    // malformed input - show an error
 }
 </code></pre>
 <h3 id="stream-decode-hex-from-a-network-buffer">Stream-decode hex from a network buffer</h3>
@@ -206,7 +206,7 @@ byte[] backFromHex = hex.FromBase16String();
 <h3 id="encode-a-qr-code-payload-with-base45">Encode a QR-code payload with Base45</h3>
 <pre><code class="lang-csharp">using Bodu.Text.Encoding;
 
-// RFC 9285 — the encoding the EU Digital COVID Certificate carries in a QR code.
+// RFC 9285 - the encoding the EU Digital COVID Certificate carries in a QR code.
 byte[] payload = &quot;Hello!!&quot;u8.ToArray();
 string base45 = Base45.Encode(payload);   // &quot;%69 VD92EX0&quot;
 
@@ -215,7 +215,7 @@ byte[] back = Base45.Decode(base45);
 <h3 id="generate-a-compact-identifier-with-base62">Generate a compact identifier with Base62</h3>
 <pre><code class="lang-csharp">using Bodu.Text.Encoding;
 
-// URL-safe, no special characters — ideal for short links and slugs.
+// URL-safe, no special characters - ideal for short links and slugs.
 byte[] random = RandomNumberGenerator.GetBytes(16);
 string id = Base62.Encode(random);
 
@@ -224,7 +224,7 @@ byte[] bytes = Base62.Decode(id);
 <h3 id="encode-a-guid-as-a-compact-token">Encode a GUID as a compact token</h3>
 <pre><code class="lang-csharp">using Bodu.Text.Encoding;
 
-// Each core family (Base16/32/58/64/85) encodes a Guid directly — no manual 16-byte buffer.
+// Each core family (Base16/32/58/64/85) encodes a Guid directly - no manual 16-byte buffer.
 Guid id = Guid.NewGuid();
 
 string b58 = Base58.Encode(id);                  // ~22 chars, no 0/O/I/l ambiguity
@@ -260,11 +260,11 @@ byte[] decoded = Base58Check.Decode(encoded);   // verifies the checksum, then s
 <h3 id="encode-a-git-binary-patch-payload-base85-git">Encode a Git binary-patch payload (Base85 Git)</h3>
 <pre><code class="lang-csharp">using Bodu.Text.Encoding;
 
-// Compact, self-delimiting — round-trips without external metadata.
+// Compact, self-delimiting - round-trips without external metadata.
 string compact = Base85.Encode(&quot;hello&quot;u8.ToArray(), Base85Variant.GitCompact);   // &quot;Xk~0{Zv&quot;
 byte[] back    = Base85.Decode(compact, Base85Variant.GitCompact);
 
-// Exact Git line primitive — always five characters per group; caller tracks the length.
+// Exact Git line primitive - always five characters per group; caller tracks the length.
 string padded  = Base85.EncodeGitPadded(new byte[] { 0x01 });             // &quot;0RR91&quot;
 byte[] bytes   = Base85.DecodeGitPadded(padded, decodedLength: 1);
 </code></pre>
@@ -282,7 +282,7 @@ byte[] decoded = QuotedPrintable.Decode(encoded);
 // URI component (default).
 string component = PercentEncoding.EncodeString(&quot;a/b?c=d&quot;);   // &quot;a%2Fb%3Fc%3Dd&quot;
 
-// HTML form field — space becomes '+'.
+// HTML form field - space becomes '+'.
 string field = PercentEncoding.EncodeString(&quot;a b+c&quot;, mode: PercentEncodingMode.FormUrlEncoded); // &quot;a+b%2Bc&quot;
 
 string value = PercentEncoding.DecodeString(&quot;a%2Fb&quot;);         // &quot;a/b&quot;
@@ -309,10 +309,10 @@ Debug.Assert(original.SequenceEqual(recovered));
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="../../guides/text-encoding/index.html">Bodu.Text.Encoding guides</a></strong> — per-encoding deep dives.</li>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — vocabulary refresher.</li>
-<li><strong><a href="index.html">Introduction</a></strong> — type map and scenario index.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Text.Encoding.html">Bodu.Text.Encoding API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="../../guides/text-encoding/index.html">Bodu.Text.Encoding guides</a></strong> - per-encoding deep dives.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - vocabulary refresher.</li>
+<li><strong><a href="index.html">Introduction</a></strong> - type map and scenario index.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Text.Encoding.html">Bodu.Text.Encoding API reference</a></strong> - full type-by-type docs.</li>
 </ul>
 
 </article>
@@ -332,7 +332,7 @@ Debug.Assert(original.SequenceEqual(recovered));
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

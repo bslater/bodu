@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="builder-round-trip-guarantees">Builder round-trip guarantees</h1>
 
-<p>The <a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> serializes notable-date documents to XML and to a JSON subset, parses both back, and materializes a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a> through the canonical loader. This page states exactly what those conversions guarantee — and what they do not — so you can rely on the contract rather than infer it. Every guarantee below is pinned by a test in <code>Bodu.Globalization.Calendar.Builder/test</code>; the citation names the test so a change to the contract cannot land silently.</p>
+<p>The <a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> serializes notable-date documents to XML and to a JSON subset, parses both back, and materializes a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a> through the canonical loader. This page states exactly what those conversions guarantee - and what they do not - so you can rely on the contract rather than infer it. Every guarantee below is pinned by a test in <code>Bodu.Globalization.Calendar.Builder/test</code>; the citation names the test so a change to the contract cannot land silently.</p>
 <h2 id="the-guarantee-matrix">The guarantee matrix</h2>
 <table>
 <thead>
@@ -125,7 +125,7 @@
 </tr>
 <tr>
 <td><code>ToXml()</code> → canonical loader</td>
-<td><strong>Loader parity.</strong> XML the builder emits, loaded through <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>, assembles the same resource as calling <code>Build()</code> directly — <code>Build()</code> <em>is</em> the canonical loader over <code>ToXml()</code>.</td>
+<td><strong>Loader parity.</strong> XML the builder emits, loaded through <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>, assembles the same resource as calling <code>Build()</code> directly - <code>Build()</code> <em>is</em> the canonical loader over <code>ToXml()</code>.</td>
 <td><code>…Serialization.ToXml_WhenLoadedByResourceLoader_ShouldMatchDirectBuild</code></td>
 </tr>
 <tr>
@@ -147,13 +147,13 @@
 </table>
 <h2 id="xml-is-the-full-fidelity-format">XML is the full-fidelity format</h2>
 <p>Every document the builder can express serializes to XML, and builder-canonical XML round-trips byte-for-byte. The byte-identity guarantee applies to <strong>builder-emitted</strong> XML: parse the output of <code>ToXml()</code> (or a file written by <code>Save</code>) and re-serialize it, and you get the same bytes back.</p>
-<p>Hand-authored XML is normalized, not preserved: the builder parses into its object model and re-emits its canonical form, so insignificant whitespace, attribute ordering, XML comments, and alternative lexical forms from a hand-written file are replaced by the canonical rendering. What <em>is</em> guaranteed for any accepted XML — hand-authored or generated — is semantic equivalence: the re-emitted document builds a resource that resolves the same occurrences, which is the guarantee the bundled-catalogue sweep pins across every shipped catalogue.</p>
-<h2 id="json-is-a-subset--the-lossiness-runs-one-way">JSON is a subset — the lossiness runs one way</h2>
+<p>Hand-authored XML is normalized, not preserved: the builder parses into its object model and re-emits its canonical form, so insignificant whitespace, attribute ordering, XML comments, and alternative lexical forms from a hand-written file are replaced by the canonical rendering. What <em>is</em> guaranteed for any accepted XML - hand-authored or generated - is semantic equivalence: the re-emitted document builds a resource that resolves the same occurrences, which is the guarantee the bundled-catalogue sweep pins across every shipped catalogue.</p>
+<h2 id="json-is-a-subset---the-lossiness-runs-one-way">JSON is a subset - the lossiness runs one way</h2>
 <p><code>ToJson()</code> emits the narrower JSON-subset form. The subset is closed under round-trip in both directions <strong>once a document is inside it</strong>:</p>
 <ul>
 <li><strong>JSON → builder → JSON</strong> is identity.</li>
-<li><strong>JSON → builder → XML</strong> always succeeds, normalizing JSON lexical forms into the canonical XML rendering (a numeric month becomes its English name, Boolean flags become lowercase literals, <code>null</code> attributes become empty attributes — pinned by <code>…JsonSubset.FromJson_WhenStrategyAttributeVaries_ShouldNormalizeInXml</code>).</li>
-<li><strong>XML → builder → JSON</strong> is the lossy direction. A document using a feature outside the subset throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> from <code>ToJson()</code> / <code>ToJsonObject()</code> / <code>Save(*.json)</code> naming the offending feature — it never silently drops it.</li>
+<li><strong>JSON → builder → XML</strong> always succeeds, normalizing JSON lexical forms into the canonical XML rendering (a numeric month becomes its English name, Boolean flags become lowercase literals, <code>null</code> attributes become empty attributes - pinned by <code>…JsonSubset.FromJson_WhenStrategyAttributeVaries_ShouldNormalizeInXml</code>).</li>
+<li><strong>XML → builder → JSON</strong> is the lossy direction. A document using a feature outside the subset throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> from <code>ToJson()</code> / <code>ToJsonObject()</code> / <code>Save(*.json)</code> naming the offending feature - it never silently drops it.</li>
 </ul>
 <p>Features outside the JSON subset (each rejection pinned by <code>…JsonSubset.ToJson_WhenDocumentUsesUnsupportedJsonFeature_ShouldThrowNotSupportedException</code> and the <code>…Serialization</code> import/calendar cases):</p>
 <table>
@@ -194,7 +194,7 @@
 </tr>
 </tbody>
 </table>
-<p>Serialize such documents as XML. Scopes confined to territories, calendars, and categories — and lunisolar strategy flags — are inside the subset and round-trip through JSON unchanged.</p>
+<p>Serialize such documents as XML. Scopes confined to territories, calendars, and categories - and lunisolar strategy flags - are inside the subset and round-trip through JSON unchanged.</p>
 <h2 id="build-parity-what-you-serialize-is-what-the-runtime-loads">Build parity: what you serialize is what the runtime loads</h2>
 <p><code>Build()</code> does not maintain a private assembly path: it serializes the document to XML and loads it through the canonical <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>, so validation and assembly behave identically whether a document is built in-process or shipped as a file and loaded by the runtime. The same applies to the JSON form: a JSON document loaded through the loader's JSON entry point assembles a resource equivalent to <code>Build()</code> (<code>…Serialization.ToJson_WhenLoadedByResourceLoader_ShouldAssembleEquivalentResource</code>).</p>
 <h2 id="what-is-not-guaranteed">What is not guaranteed</h2>
@@ -205,10 +205,10 @@
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="notable-date-builder.html">Authoring with the notable-date builder</a> — the authoring API these guarantees apply to.</li>
-<li><a href="rule-authoring.html">Authoring notable date rules</a> — the XML / JSON document model.</li>
-<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.html"><code>Bodu.Globalization.Calendar.Builder</code> API reference</a> — the full type list.</li>
-<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+<li><a href="notable-date-builder.html">Authoring with the notable-date builder</a> - the authoring API these guarantees apply to.</li>
+<li><a href="rule-authoring.html">Authoring notable date rules</a> - the XML / JSON document model.</li>
+<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.html"><code>Bodu.Globalization.Calendar.Builder</code> API reference</a> - the full type list.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
 </ul>
 
 </article>
@@ -228,7 +228,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

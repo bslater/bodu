@@ -8,7 +8,7 @@
       <meta name="title" content="CrcStandard Class
  | BODU ">
       
-      <meta name="description" content="Immutable parameter bundle that fully describes a CRC variant — width, polynomial, initial value, input/output bit reflection, and final XOR — and serves as the lookup key into the RevEng catalogue used by .">
+      <meta name="description" content="Immutable parameter bundle that fully describes a CRC variant - width, polynomial, initial value, input/output bit reflection, and final XOR - and serves as the lookup key into the RevEng catalogue used by .">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Hashing_Checksums_CrcStandard" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 CrcStandard Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,11 +104,11 @@ CrcStandard Class
   <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs">CrcStandard.Catalog.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs">CrcStandard.Catalog.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Immutable parameter bundle that fully describes a CRC variant — width, polynomial, initial value, input/output bit
-reflection, and final XOR — and serves as the lookup key into the RevEng catalogue used by <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>.</p>
+  <div class="markdown summary"><p>Immutable parameter bundle that fully describes a CRC variant - width, polynomial, initial value, input/output bit
+reflection, and final XOR - and serves as the lookup key into the RevEng catalogue used by <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>.</p>
 </div>
 
   <div class="codewrapper">
@@ -181,14 +181,14 @@ reflection, and final XOR — and serves as the lookup key into the RevEng catal
   <h2 id="Bodu_IO_Hashing_Checksums_CrcStandard_examples">Examples</h2>
   <pre><code class="lang-csharp">using Bodu.IO.Hashing.Checksums;
 
-// 1. Direct named accessor — most callers want exactly this.
+// 1. Direct named accessor - most callers want exactly this.
 var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
 
-// 2. Data-driven look-up — pick the variant from a configuration value.
+// 2. Data-driven look-up - pick the variant from a configuration value.
 CrcStandards configured = Enum.Parse&lt;CrcStandards&gt;(config["CrcVariant"]);
 var configuredCrc = new Crc(CrcStandard.Get(configured));
 
-// 3. Look-up by alias — accept legacy or vendor names supplied by users.
+// 3. Look-up by alias - accept legacy or vendor names supplied by users.
 CrcStandard pkzip = CrcStandard.FromName("PKZIP");      // same instance as CRC32_ISOHDLC
 CrcStandard ccitt = CrcStandard.FromName("CRC-CCITT");  // resolves to CRC16_KERMIT
 
@@ -205,7 +205,7 @@ var custom = new CrcStandard(
 
   <h2 id="Bodu_IO_Hashing_Checksums_CrcStandard_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-Every CRC variant in the wild differs from every other along the same five dimensions — the polynomial, the initial
+Every CRC variant in the wild differs from every other along the same five dimensions - the polynomial, the initial
 register value, whether input bits are reflected as they enter the register, whether the final register is reflected
 on the way out, and what value the register is XOR-ed with at the end. <code>CRC-32/ISO-HDLC</code> and
 <code>CRC-32/BZIP2</code> share a polynomial but disagree on reflection; <code>CRC-16/MODBUS</code> and <code>CRC-16/USB</code> share
@@ -217,13 +217,13 @@ immutable, equatable, serializable value, decoupling the choice of variant from 
 </p>
 <ul><li><span class="term">Catalogue properties</span>
 <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISOHDLC">CRC32_ISOHDLC</a>, <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISCSI">CRC32_ISCSI</a>, <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_MODBUS">CRC16_MODBUS</a>, <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_KERMIT">CRC16_KERMIT</a>,
-<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC64_XZ">CRC64_XZ</a>, … — direct named accessors for the common entries that return the canonical, cached
+<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC64_XZ">CRC64_XZ</a>, … - direct named accessors for the common entries that return the canonical, cached
 <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> instance.
 </li><li><span class="term"><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_Get_Bodu_IO_Hashing_Checksums_CrcStandards_">Get(CrcStandards)</a></span>
-Materializes any catalogue entry from its <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html">CrcStandards</a> enum value — useful when the choice is
+Materializes any catalogue entry from its <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html">CrcStandards</a> enum value - useful when the choice is
 data-driven (e.g. read from configuration).
 </li><li><span class="term"><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_FromName_System_String_">FromName(string)</a></span>
-Resolves canonical names <em>and</em> published aliases — <code>"CRC-32"</code>, <code>"PKZIP"</code>, <code>"CRC-32/XZ"</code>,
+Resolves canonical names <em>and</em> published aliases - <code>"CRC-32"</code>, <code>"PKZIP"</code>, <code>"CRC-32/XZ"</code>,
 <code>"CRC-32/ADCCP"</code> all return the same <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISOHDLC">CRC32_ISOHDLC</a> instance.
 </li><li><span class="term">Direct construction</span>
 The <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard__ctor_System_String_System_Int32_System_UInt64_System_UInt64_System_Boolean_System_Boolean_System_UInt64_">CrcStandard(string, int, ulong, ulong, bool, bool, ulong)</a> constructor accepts custom parameters
@@ -262,7 +262,7 @@ threads.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard__ctor_System_String_System_Int32_System_UInt64_System_UInt64_System_Boolean_System_Boolean_System_UInt64_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.#ctor(System.String,System.Int32,System.UInt64,System.UInt64,System.Boolean,System.Boolean,System.UInt64)">
   CrcStandard(string, int, ulong, ulong, bool, bool, ulong)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -331,7 +331,7 @@ threads.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_MaxSize" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.MaxSize">
   MaxSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -366,7 +366,7 @@ threads.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_MinSize" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.MinSize">
   MinSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -406,7 +406,7 @@ threads.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_All" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.All">
   All
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -448,7 +448,7 @@ resolve an alias to its canonical instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_ARC" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_ARC">
   CRC16_ARC
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -491,7 +491,7 @@ de-facto generic 16-bit CRC.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_IBM3740" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_IBM3740">
   CRC16_IBM3740
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -534,7 +534,7 @@ widely-used &quot;CCITT-false&quot; variant.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_KERMIT" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_KERMIT">
   CRC16_KERMIT
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -577,7 +577,7 @@ widely-used &quot;CCITT-false&quot; variant.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_MODBUS" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_MODBUS">
   CRC16_MODBUS
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -619,7 +619,7 @@ widely-used &quot;CCITT-false&quot; variant.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_XMODEM" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_XMODEM">
   CRC16_XMODEM
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -662,7 +662,7 @@ XMODEM and ZMODEM.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_BZIP2" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_BZIP2">
   CRC32_BZIP2
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -705,7 +705,7 @@ Used by bzip2 and AAL5.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISCSI" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_ISCSI">
   CRC32_ISCSI
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -749,7 +749,7 @@ and many modern protocols.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISOHDLC" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_ISOHDLC">
   CRC32_ISOHDLC
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -799,7 +799,7 @@ Width 32, polynomial <code>0x04C11DB7</code>, initial value <code>0xFFFFFFFF</co
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC64_ECMA182" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC64_ECMA182">
   CRC64_ECMA182
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -841,7 +841,7 @@ Width 32, polynomial <code>0x04C11DB7</code>, initial value <code>0xFFFFFFFF</co
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC64_XZ" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC64_XZ">
   CRC64_XZ
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -884,7 +884,7 @@ the Go <code>crc64</code> ECMA table.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC8_MAXIMDOW" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC8_MAXIMDOW">
   CRC8_MAXIMDOW
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -927,7 +927,7 @@ Dallas 1-Wire devices.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC8_SMBUS" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC8_SMBUS">
   CRC8_SMBUS
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -973,7 +973,7 @@ Dallas 1-Wire devices.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_InitialValue" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.InitialValue">
   InitialValue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1010,7 +1010,7 @@ Dallas 1-Wire devices.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_Name" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1047,7 +1047,7 @@ Dallas 1-Wire devices.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_Polynomial" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Polynomial">
   Polynomial
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1084,7 +1084,7 @@ Dallas 1-Wire devices.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_ReflectIn" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.ReflectIn">
   ReflectIn
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1121,7 +1121,7 @@ Dallas 1-Wire devices.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_ReflectOut" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.ReflectOut">
   ReflectOut
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1158,7 +1158,7 @@ Dallas 1-Wire devices.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_Size" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Size">
   Size
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1195,7 +1195,7 @@ Dallas 1-Wire devices.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_XOrOut" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.XOrOut">
   XOrOut
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1236,7 +1236,7 @@ Dallas 1-Wire devices.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_Equals_Bodu_IO_Hashing_Checksums_CrcStandard_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Equals(Bodu.IO.Hashing.Checksums.CrcStandard)">
   Equals(CrcStandard?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1283,7 +1283,7 @@ is informational and is intentionally excluded from equality.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_Equals_System_Object_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Equals(System.Object)">
   Equals(object?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1326,7 +1326,7 @@ is informational and is intentionally excluded from equality.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_FromName_System_String_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.FromName(System.String)">
   FromName(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1378,11 +1378,11 @@ is informational and is intentionally excluded from equality.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_Get_Bodu_IO_Hashing_Checksums_CrcStandards_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Get(Bodu.IO.Hashing.Checksums.CrcStandards)">
   Get(CrcStandards)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Materialises — or retrieves from cache — the <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> identified by the given enum value.</p>
+  <div class="markdown level1 summary"><p>Materialises - or retrieves from cache - the <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> identified by the given enum value.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1412,7 +1412,7 @@ is informational and is intentionally excluded from equality.</p>
 
   <h4 class="section" id="Bodu_IO_Hashing_Checksums_CrcStandard_Get_Bodu_IO_Hashing_Checksums_CrcStandards__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>The first call for a given value constructs a new <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> from the packed catalogue data and races
-to publish it into the per-entry cache. Subsequent calls — including concurrent calls — return the same instance, so
+to publish it into the per-entry cache. Subsequent calls - including concurrent calls - return the same instance, so
 reference equality is stable.</p>
 </div>
 
@@ -1432,7 +1432,7 @@ reference equality is stable.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_GetHashCode" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1469,7 +1469,7 @@ reference equality is stable.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_TryFromName_System_String_Bodu_IO_Hashing_Checksums_CrcStandard__" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.TryFromName(System.String,Bodu.IO.Hashing.Checksums.CrcStandard@)">
   TryFromName(string?, out CrcStandard?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1519,7 +1519,7 @@ reference equality is stable.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_System_Runtime_Serialization_ISerializable_GetObjectData_System_Runtime_Serialization_SerializationInfo_System_Runtime_Serialization_StreamingContext_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
   ISerializable.GetObjectData(SerializationInfo, StreamingContext)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1593,7 +1593,7 @@ reference equality is stable.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

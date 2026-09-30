@@ -91,7 +91,7 @@
 <p>Part of the <strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> topic.</p>
 <p>If you are new to the library, start with the <a href="../../docs/calendar/index.html">introduction</a>, the <a href="../../docs/calendar/concepts.html">Core concepts</a> glossary, and the <a href="../../docs/calendar/getting-started.html">getting-started page</a>. For the auto-generated API reference, see the <a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar namespace page</a>.</p>
 <blockquote>
-<p><strong>Looking for the data?</strong> The <a href="catalogue/index.html">Notable-date catalogue</a> lists what notable dates the calendar resources include and how regions and territories differ — generated from the XML, organized by theme and by region, with a cross-region comparison matrix.</p>
+<p><strong>Looking for the data?</strong> The <a href="catalogue/index.html">Notable-date catalogue</a> lists what notable dates the calendar resources include and how regions and territories differ - generated from the XML, organized by theme and by region, with a cross-region comparison matrix.</p>
 </blockquote>
 <h2 id="how-the-library-works">How the library works</h2>
 <p><img src="../../images/diagrams/calendar-resolution-pipeline.svg" alt="NotableDateService resolution pipeline"></p>
@@ -108,7 +108,7 @@
 <tbody>
 <tr>
 <td><code>Bodu.Globalization.Calendar</code></td>
-<td>Service, resource/definition/rule model, loader, adjustment policies, validation — the resolution pipeline.</td>
+<td>Service, resource/definition/rule model, loader, adjustment policies, validation - the resolution pipeline.</td>
 <td><a href="notable-dates.html">Using NotableDateService</a> · <a href="rule-authoring.html">Authoring notable date rules</a> · <a href="territories.html">Territories and regional composition</a> · <a href="async-and-localization.html">Async resolution, localized names, and typed catalogues</a></td>
 </tr>
 <tr>
@@ -123,17 +123,17 @@
 </tr>
 <tr>
 <td><code>Bodu.Globalization.Calendar.Plugins</code></td>
-<td>Trust-gated loading of external algorithm assemblies — <code>NotableDatePluginLoader</code>, <code>IPluginTrustPolicy</code>, and the deny-by-default trust policies.</td>
-<td><a href="building-the-service.html#plugin-system">Building and extending the service — Plugin system</a></td>
+<td>Trust-gated loading of external algorithm assemblies - <code>NotableDatePluginLoader</code>, <code>IPluginTrustPolicy</code>, and the deny-by-default trust policies.</td>
+<td><a href="building-the-service.html#plugin-system">Building and extending the service - Plugin system</a></td>
 </tr>
 <tr>
 <td><code>Bodu.Extensions</code></td>
-<td>Working-day arithmetic over <code>DateOnly</code>, <code>DateTime</code>, and <code>DateTimeOffset</code> — <code>IsWorkingDay</code>, <code>NextWorkingDay</code>, <code>AddWorkingDays</code>, …</td>
+<td>Working-day arithmetic over <code>DateOnly</code>, <code>DateTime</code>, and <code>DateTimeOffset</code> - <code>IsWorkingDay</code>, <code>NextWorkingDay</code>, <code>AddWorkingDays</code>, …</td>
 <td><a href="working-days.html">Working-day arithmetic</a></td>
 </tr>
 <tr>
 <td><code>Bodu.Globalization.Calendar</code> (data packs)</td>
-<td>Region-specific public-holiday resources shipped in the <code>Bodu.Globalization.Calendar.Americas</code>, <code>.AsiaPacific</code>, <code>.Europe</code>, <code>.MiddleEast</code>, and <code>.Africa</code> companion packages — each a <code>&lt;Region&gt;CalendarData</code> factory in the runtime's namespace.</td>
+<td>Region-specific public-holiday resources shipped in the <code>Bodu.Globalization.Calendar.Americas</code>, <code>.AsiaPacific</code>, <code>.Europe</code>, <code>.MiddleEast</code>, and <code>.Africa</code> companion packages - each a <code>&lt;Region&gt;CalendarData</code> factory in the runtime's namespace.</td>
 <td><a href="data-packs.html">Calendar data packs</a></td>
 </tr>
 <tr>
@@ -148,48 +148,48 @@
 </tr>
 <tr>
 <td><code>Bodu.Globalization.Calendar.Builder</code></td>
-<td>Fluent C# authoring of notable-date documents — <code>NotableDateDocumentBuilder</code>, XML / JSON serialization, and load/save.</td>
+<td>Fluent C# authoring of notable-date documents - <code>NotableDateDocumentBuilder</code>, XML / JSON serialization, and load/save.</td>
 <td><a href="notable-date-builder.html">Authoring with the notable-date builder</a></td>
 </tr>
 </tbody>
 </table>
 <h2 id="guides">Guides</h2>
-<h3 id="boduglobalizationcalendar--service"><code>Bodu.Globalization.Calendar</code> — Service</h3>
+<h3 id="boduglobalizationcalendar---service"><code>Bodu.Globalization.Calendar</code> - Service</h3>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="notable-dates.html">Using NotableDateService</a></h3>
-  <p>The main entry point — loading a resource, resolving notable dates for a date, range, or year, filtering by territory and category, the reloadable runtime-swap workflow, and working-day arithmetic over <code>DateOnly</code> / <code>DateTime</code>.</p>
+  <p>The main entry point - loading a resource, resolving notable dates for a date, range, or year, filtering by territory and category, the reloadable runtime-swap workflow, and working-day arithmetic over <code>DateOnly</code> / <code>DateTime</code>.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="rule-authoring.html">Authoring notable date rules</a></h3>
-  <p>How to author your own rule documents in XML / JSON — definitions, rules, strategies, importing the bundled common catalogues with <code>&lt;Use&gt;</code> directives, and layering ID-targeted <code>&lt;Overrides&gt;</code>.</p>
+  <p>How to author your own rule documents in XML / JSON - definitions, rules, strategies, importing the bundled common catalogues with <code>&lt;Use&gt;</code> directives, and layering ID-targeted <code>&lt;Overrides&gt;</code>.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="notable-date-builder.html">Authoring with the notable-date builder</a></h3>
-  <p>The fluent C# peer of XML / JSON authoring — <code>NotableDateDocumentBuilder</code> assembles definitions, rules, adjustment policies, imports, and overrides, then serializes to XML / JSON, saves to a file, or builds a <code>NotableDateResource</code>.</p>
+  <p>The fluent C# peer of XML / JSON authoring - <code>NotableDateDocumentBuilder</code> assembles definitions, rules, adjustment policies, imports, and overrides, then serializes to XML / JSON, saves to a file, or builds a <code>NotableDateResource</code>.</p>
 </div>
 </div>
-<h3 id="boduglobalizationcalendar--reference"><code>Bodu.Globalization.Calendar</code> — Reference</h3>
+<h3 id="boduglobalizationcalendar---reference"><code>Bodu.Globalization.Calendar</code> - Reference</h3>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="strategy-reference.html">Notable-date rule strategies</a></h3>
-  <p>The full catalogue of occurrence sources — every single-date strategy (fixed, positional, weekday, reference-based, business-day, algorithm), the recurrence sources, and fixed vs. calculated durations — with a choosing guide and a common-scenarios cookbook.</p>
+  <p>The full catalogue of occurrence sources - every single-date strategy (fixed, positional, weekday, reference-based, business-day, algorithm), the recurrence sources, and fixed vs. calculated durations - with a choosing guide and a common-scenarios cookbook.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="rule-reference.html">NotableDateRule and adjustment-policy reference</a></h3>
-  <p>Authoritative element-by-element reference for the rule document — every strategy element, the applicability window, and the reusable <code>&lt;AdjustmentPolicy&gt;</code> shape — with worked examples.</p>
+  <p>Authoritative element-by-element reference for the rule document - every strategy element, the applicability window, and the reusable <code>&lt;AdjustmentPolicy&gt;</code> shape - with worked examples.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="territories.html">Territories and regional composition</a></h3>
-  <p>How <code>TerritoryCode</code> works — ISO 3166 country / subdivision codes, parsing, containment semantics (<code>AU</code> ⊇ <code>AU-NSW</code>), authoring rules with territory scope, and composing national and regional rules.</p>
+  <p>How <code>TerritoryCode</code> works - ISO 3166 country / subdivision codes, parsing, containment semantics (<code>AU</code> ⊇ <code>AU-NSW</code>), authoring rules with territory scope, and composing national and regional rules.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="adjustment-rules.html">Observance adjustment rules</a></h3>
-  <p>Nominal date vs. observed date; the full trigger and action catalogues — every <code>AdjustmentTrigger</code> and <code>AdjustmentAction</code> value, emission modes, real-world weekend-substitution patterns, and custom trigger / action handlers.</p>
+  <p>Nominal date vs. observed date; the full trigger and action catalogues - every <code>AdjustmentTrigger</code> and <code>AdjustmentAction</code> value, emission modes, real-world weekend-substitution patterns, and custom trigger / action handlers.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="resolution-pipeline.html">The resolution pipeline</a></h3>
-  <p>Walkthrough of the load and query stages — parse, import resolution, override application, validation; then strategy resolution, adjustment evaluation, collision settlement, and emission — with a concrete worked trace.</p>
+  <p>Walkthrough of the load and query stages - parse, import resolution, override application, validation; then strategy resolution, adjustment evaluation, collision settlement, and emission - with a concrete worked trace.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="identity-and-resolution.html">Rule identity, priority, and observed-date resolution</a></h3>
@@ -197,22 +197,22 @@
 </div>
 <div class="bodu-card">
   <h3><a href="validation-diagnostics.html">Calendar validation diagnostics</a></h3>
-  <p>The stable <code>BODU-CAL-*</code> code catalogue and severities, and the collect-mode lint surface — <code>TryLoad</code>, <code>Validate</code>, <code>TryBuild</code> — for build tasks and editor integrations.</p>
+  <p>The stable <code>BODU-CAL-*</code> code catalogue and severities, and the collect-mode lint surface - <code>TryLoad</code>, <code>Validate</code>, <code>TryBuild</code> - for build tasks and editor integrations.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="binary-rule-packs.html">Binary rule packs</a></h3>
-  <p>Compiling a validated document to a sealed <code>.bcal</code> pack — the trim- and AOT-friendly load path — with the <code>bodu-calendar</code> tool and the <code>Bodu.Globalization.Calendar.Build</code> MSBuild integration.</p>
+  <p>Compiling a validated document to a sealed <code>.bcal</code> pack - the trim- and AOT-friendly load path - with the <code>bodu-calendar</code> tool and the <code>Bodu.Globalization.Calendar.Build</code> MSBuild integration.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="tooling/bodu-calendar-cli.html">The bodu-calendar CLI</a></h3>
-  <p>Every verb and option of the <code>bodu-calendar</code> tool — <code>lint</code>, <code>compile</code>, <code>info</code>, <code>-o</code>, <code>--resolver-dir</code> — the exit codes, the diagnostic line format with real output, CI usage, and loading a compiled pack.</p>
+  <p>Every verb and option of the <code>bodu-calendar</code> tool - <code>lint</code>, <code>compile</code>, <code>info</code>, <code>-o</code>, <code>--resolver-dir</code> - the exit codes, the diagnostic line format with real output, CI usage, and loading a compiled pack.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="tooling/msbuild-integration.html">Compiling packs in MSBuild</a></h3>
-  <p>The <code>Bodu.Globalization.Calendar.Build</code> package — <code>NotableDatePack</code> items, the <code>CompileNotableDatePack</code> task parameters, the override properties, incremental build behaviour, and consuming the compiled pack at run time.</p>
+  <p>The <code>Bodu.Globalization.Calendar.Build</code> package - <code>NotableDatePack</code> items, the <code>CompileNotableDatePack</code> task parameters, the override properties, incremental build behaviour, and consuming the compiled pack at run time.</p>
 </div>
 </div>
-<h3 id="boduglobalizationcalendar--patterns"><code>Bodu.Globalization.Calendar</code> — Patterns</h3>
+<h3 id="boduglobalizationcalendar---patterns"><code>Bodu.Globalization.Calendar</code> - Patterns</h3>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="holiday-patterns.html">Holiday patterns and examples</a></h3>
@@ -220,15 +220,15 @@
 </div>
 <div class="bodu-card">
   <h3><a href="working-days.html">Working-day arithmetic</a></h3>
-  <p>The <code>Bodu.Extensions</code> surface over <code>DateOnly</code> / <code>DateTime</code> / <code>DateTimeOffset</code> — <code>IsWorkingDay</code>, <code>AddWorkingDays</code>, <code>WorkingDaysBetween</code>, <code>NextWorkingDay</code>, snap operations, fiscal-period helpers, and the <code>WeekPattern</code> working week.</p>
+  <p>The <code>Bodu.Extensions</code> surface over <code>DateOnly</code> / <code>DateTime</code> / <code>DateTimeOffset</code> - <code>IsWorkingDay</code>, <code>AddWorkingDays</code>, <code>WorkingDaysBetween</code>, <code>NextWorkingDay</code>, snap operations, fiscal-period helpers, and the <code>WeekPattern</code> working week.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="building-the-service.html">Building and extending the service</a></h3>
-  <p>Composing the service with collaborators — <code>NotableDateAlgorithmRegistry</code>, adjustment handler / trigger registries, <code>INotableDateCollisionResolver</code>, <code>INotableDateNameLocalizer</code>, <code>INotableDateProvider</code>, the reloadable provider, and the trust-gated plugin system.</p>
+  <p>Composing the service with collaborators - <code>NotableDateAlgorithmRegistry</code>, adjustment handler / trigger registries, <code>INotableDateCollisionResolver</code>, <code>INotableDateNameLocalizer</code>, <code>INotableDateProvider</code>, the reloadable provider, and the trust-gated plugin system.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="dependency-injection.html">Calendar dependency injection</a></h3>
-  <p>The <code>Bodu.Globalization.Calendar.DependencyInjection</code> companion package — the <code>services.AddNotableDateService(...)</code> overloads (resource, factory, options, keyed) and <code>AddReloadableNotableDateService(...)</code> for the runtime-swap workflow.</p>
+  <p>The <code>Bodu.Globalization.Calendar.DependencyInjection</code> companion package - the <code>services.AddNotableDateService(...)</code> overloads (resource, factory, options, keyed) and <code>AddReloadableNotableDateService(...)</code> for the runtime-swap workflow.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="plugin-trust.html">Calendar plugin trust</a></h3>
@@ -236,7 +236,7 @@
 </div>
 <div class="bodu-card">
   <h3><a href="caching/notable-date-caching.html">Caching notable dates</a></h3>
-  <p>The <code>Bodu.Globalization.Calendar.Caching</code> read-through decorator — per-territory, per-civil-year cache entries, the in-memory / TOML / JSON / SQLite / distributed backends, warm-up, observability, and the DI registration.</p>
+  <p>The <code>Bodu.Globalization.Calendar.Caching</code> read-through decorator - per-territory, per-civil-year cache entries, the in-memory / TOML / JSON / SQLite / distributed backends, warm-up, observability, and the DI registration.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="caching/backends-and-options.html">Cache backends and options</a></h3>
@@ -252,39 +252,39 @@
 </div>
 <div class="bodu-card">
   <h3><a href="round-trip-guarantees.html">Builder round-trip guarantees</a></h3>
-  <p>Exactly what <code>NotableDateDocumentBuilder</code> XML / JSON serialization, parsing, and resource materialization guarantee — and what they do not.</p>
+  <p>Exactly what <code>NotableDateDocumentBuilder</code> XML / JSON serialization, parsing, and resource materialization guarantee - and what they do not.</p>
 </div>
 </div>
 <h3 id="boduglobalizationcalendaralgorithms"><code>Bodu.Globalization.Calendar.Algorithms</code></h3>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="algorithms.html">Date calculation algorithms</a></h3>
-  <p>The resolution strategy kinds (the full catalogue lives in the <a href="strategy-reference.html">strategy reference</a>), the built-in <code>&lt;Algorithm key="…"&gt;</code> keys — Easter (Gregorian / Orthodox), equinoxes, Qingming, Vesak, Losar, Matariki, Hindu festivals — and a custom-algorithm walk-through.</p>
+  <p>The resolution strategy kinds (the full catalogue lives in the <a href="strategy-reference.html">strategy reference</a>), the built-in <code>&lt;Algorithm key="…"&gt;</code> keys - Easter (Gregorian / Orthodox), equinoxes, Qingming, Vesak, Losar, Matariki, Hindu festivals - and a custom-algorithm walk-through.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="non-gregorian-calendars.html">Working with non-Gregorian calendars</a></h3>
   <p><code>&lt;Fixed&gt;</code> dates authored in the Hijri, Umm al-Qura, Hebrew, Persian, or Chinese lunisolar calendar, how they project onto the Gregorian year, and the double-occurrence and leap-month cases.</p>
 </div>
 </div>
-<h3 id="boduglobalizationcalendarregion--data-packs"><code>Bodu.Globalization.Calendar.&lt;Region&gt;</code> — Data packs</h3>
+<h3 id="boduglobalizationcalendarregion---data-packs"><code>Bodu.Globalization.Calendar.&lt;Region&gt;</code> - Data packs</h3>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="data-packs.html">Calendar data packs</a></h3>
-  <p>The official <code>Bodu.Globalization.Calendar.&lt;Region&gt;</code> companion packages — Americas, Asia-Pacific, Europe, Middle East, and Africa — their <code>CreateService</code> / <code>LoadResource</code> factories, and territory coverage.</p>
+  <p>The official <code>Bodu.Globalization.Calendar.&lt;Region&gt;</code> companion packages - Americas, Asia-Pacific, Europe, Middle East, and Africa - their <code>CreateService</code> / <code>LoadResource</code> factories, and territory coverage.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="catalogue/index.html">Notable-date catalogue</a></h3>
-  <p>What notable dates the shipped resources include and how regions and territories differ — generated from the XML, organized by theme and by region, with a cross-region comparison matrix.</p>
+  <p>What notable dates the shipped resources include and how regions and territories differ - generated from the XML, organized by theme and by region, with a cross-region comparison matrix.</p>
 </div>
 </div>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="../../samples/calendar.html">Runnable samples</a></strong> — offline sample projects under <code>samples/Globalization.Calendar/</code> composing the data packs, working-day arithmetic, the builder, DI, custom algorithms, caching, and validation linting end to end.</li>
-<li><a href="../../docs/calendar/index.html">Bodu.Globalization.Calendar introduction</a> — mental model, headline types, scenarios.</li>
-<li><a href="../../docs/calendar/concepts.html">Core concepts</a> — vocabulary used throughout these guides.</li>
-<li><a href="../../docs/calendar/getting-started.html">Bodu.Globalization.Calendar getting started</a> — install and minimal samples.</li>
-<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a> — full namespace overview.</li>
-<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — the topic map: how these guides, the companion packages, the data packs, and the <a href="../recurrence/index.html">Recurrence guides</a> relate. The complete guide list for the calendar family is this page.</li>
+<li><strong><a href="../../samples/calendar.html">Runnable samples</a></strong> - offline sample projects under <code>samples/Globalization.Calendar/</code> composing the data packs, working-day arithmetic, the builder, DI, custom algorithms, caching, and validation linting end to end.</li>
+<li><a href="../../docs/calendar/index.html">Bodu.Globalization.Calendar introduction</a> - mental model, headline types, scenarios.</li>
+<li><a href="../../docs/calendar/concepts.html">Core concepts</a> - vocabulary used throughout these guides.</li>
+<li><a href="../../docs/calendar/getting-started.html">Bodu.Globalization.Calendar getting started</a> - install and minimal samples.</li>
+<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a> - full namespace overview.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> - the topic map: how these guides, the companion packages, the data packs, and the <a href="../recurrence/index.html">Recurrence guides</a> relate. The complete guide list for the calendar family is this page.</li>
 </ul>
 
 </article>
@@ -304,7 +304,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

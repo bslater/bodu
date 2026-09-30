@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Globalization.Calendar.DependencyInjection — Introduction | BODU </title>
+      <title>Bodu.Globalization.Calendar.DependencyInjection - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Globalization.Calendar.DependencyInjection — Introduction | BODU ">
+      <meta name="title" content="Bodu.Globalization.Calendar.DependencyInjection - Introduction | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -91,14 +91,14 @@
 <p><strong>Bodu.Globalization.Calendar.DependencyInjection</strong> is the <code>Microsoft.Extensions.DependencyInjection</code> integration for
 <a href="../calendar/index.html"><code>Bodu.Globalization.Calendar</code></a>. It registers
 <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> as a singleton over a loaded
-<a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a> — or a factory that produces one — so an ASP.NET Core
+<a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a> - or a factory that produces one - so an ASP.NET Core
 application, a generic host, or any <code>IServiceCollection</code>-based composition root can inject the calendar service
 rather than composing <code>new NotableDateService(...)</code> by hand. Part of the
 <strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> topic.</p>
 <p>The package is deliberately thin. A resource is an immutable, already-validated value, so registration takes the
 resource (or a factory for it) directly; there is no fluent builder. Resource-level behavior stays in the document's
-<code>&lt;ResolutionPolicy&gt;</code>, and the service's optional collaborators — a custom algorithm registry, collision resolver,
-adjustment handlers, code-first providers — travel in a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a>
+<code>&lt;ResolutionPolicy&gt;</code>, and the service's optional collaborators - a custom algorithm registry, collision resolver,
+adjustment handlers, code-first providers - travel in a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a>
 passed to the matching overload. Console applications, libraries, and tests that prefer direct construction keep
 using <code>new NotableDateService(...)</code> unchanged.</p>
 <div class="NOTE">
@@ -126,7 +126,7 @@ for the lifetime of the container.</p>
 <p>Ten overloads, all on <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.html">NotableDateServiceCollectionExtensions</a>, all returning the
 same <code>IServiceCollection</code> for chaining. Every one throws <code>ArgumentNullException</code> for a <code>null</code> <code>services</code>, resource,
 factory, or key.</p>
-<h3 id="addnotabledateservice--a-fixed-resource"><code>AddNotableDateService</code> — a fixed resource</h3>
+<h3 id="addnotabledateservice---a-fixed-resource"><code>AddNotableDateService</code> - a fixed resource</h3>
 <table>
 <thead>
 <tr>
@@ -145,7 +145,7 @@ factory, or key.</p>
 </tr>
 <tr>
 <td><code>AddNotableDateService(IServiceCollection, Func&lt;IServiceProvider, NotableDateResource&gt; resourceFactory)</code></td>
-<td>The resource is produced from the container when the service is first resolved — loaded from configuration, or from a data pack chosen at run time.</td>
+<td>The resource is produced from the container when the service is first resolved - loaded from configuration, or from a data pack chosen at run time.</td>
 </tr>
 <tr>
 <td><code>AddNotableDateService(IServiceCollection, Func&lt;IServiceProvider, NotableDateResource&gt; resourceFactory, Func&lt;IServiceProvider, NotableDateServiceOptions?&gt;? optionsFactory)</code></td>
@@ -161,7 +161,7 @@ factory, or key.</p>
 </tr>
 </tbody>
 </table>
-<h3 id="addreloadablenotabledateservice--a-swappable-resource"><code>AddReloadableNotableDateService</code> — a swappable resource</h3>
+<h3 id="addreloadablenotabledateservice---a-swappable-resource"><code>AddReloadableNotableDateService</code> - a swappable resource</h3>
 <table>
 <thead>
 <tr>
@@ -194,14 +194,14 @@ factory, or key.</p>
 resolver holds no shared mutable state, so one instance serves the whole application and is safe to resolve from
 any scope. The reloadable provider is a singleton too; a <code>Reload(...)</code> is observed by every consumer of the
 singleton service on its next query.</li>
-<li><strong>Idempotent (<code>TryAdd</code> semantics).</strong> A second <code>AddNotableDateService</code> — or, for the keyed overloads, a second
-registration under the same key — leaves the first in place rather than replacing it. Keyed and unkeyed
+<li><strong>Idempotent (<code>TryAdd</code> semantics).</strong> A second <code>AddNotableDateService</code> - or, for the keyed overloads, a second
+registration under the same key - leaves the first in place rather than replacing it. Keyed and unkeyed
 registrations are independent, so registering both is supported.</li>
 <li><strong>Lazy.</strong> Resource factories run when the service is first resolved, not at registration; a factory can depend on
 any other registered service, including <code>IConfiguration</code>. The options-monitor form materializes its change
 listener alongside the service so options changes are observed from the moment the service is first resolved.</li>
 <li><strong>Composable.</strong> The caching decorator from
-<a href="../calendar-caching/index.html"><code>Bodu.Globalization.Calendar.Caching</code></a> wraps whichever registration is present —
+<a href="../calendar-caching/index.html"><code>Bodu.Globalization.Calendar.Caching</code></a> wraps whichever registration is present -
 <code>AddCachedNotableDateService</code> decorates the registered <code>INotableDateService</code> in place and observes the reloadable
 provider automatically, so a reload also invalidates the cache.</li>
 </ul>
@@ -224,7 +224,7 @@ provider automatically, so a reload also invalidates the cache.</li>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></td>
-<td>The immutable, validated resource a registration captures — from a regional data pack's <code>LoadResource(territory)</code> or <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>.</td>
+<td>The immutable, validated resource a registration captures - from a regional data pack's <code>LoadResource(territory)</code> or <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a></td>
@@ -232,7 +232,7 @@ provider automatically, so a reload also invalidates the cache.</li>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Globalization.Calendar.MutableNotableDateResourceProvider.html">MutableNotableDateResourceProvider</a> / <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateResourceProvider.html">INotableDateResourceProvider</a></td>
-<td>The reloadable forms' resource holder — inject the concrete type to <code>Reload(...)</code>, the interface to read <code>Current</code>.</td>
+<td>The reloadable forms' resource holder - inject the concrete type to <code>Reload(...)</code>, the interface to read <code>Current</code>.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Globalization.Calendar.ReloadableNotableDateService.html">ReloadableNotableDateService</a></td>
@@ -259,7 +259,7 @@ provider automatically, so a reload also invalidates the cache.</li>
 </tr>
 <tr>
 <td>Serve several jurisdictions side by side</td>
-<td>Keyed overloads — <code>AddNotableDateService(&quot;US&quot;, …)</code>, <code>AddNotableDateService(&quot;AU&quot;, …)</code></td>
+<td>Keyed overloads - <code>AddNotableDateService(&quot;US&quot;, …)</code>, <code>AddNotableDateService(&quot;AU&quot;, …)</code></td>
 </tr>
 <tr>
 <td>Compose a custom algorithm registry or collision resolver</td>
@@ -281,12 +281,12 @@ provider automatically, so a reload also invalidates the cache.</li>
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install, dependencies, and the plain, keyed, and reloadable samples with their <code>appsettings.json</code>, plus how the caching decorator composes with each.</li>
-<li><strong><a href="../../guides/calendar/dependency-injection.html">Calendar dependency injection guide</a></strong> — the full walkthrough: factories, collaborators, the reloadable workflow, and lifetime semantics.</li>
-<li><strong><a href="../calendar-caching/index.html">Bodu.Globalization.Calendar.Caching</a></strong> — the read-through caching decorator and its own registrations.</li>
-<li><strong><a href="../calendar/index.html">Bodu.Globalization.Calendar</a></strong> — the runtime the registrations compose.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.html">API reference</a></strong> — the registration surface, member by member.</li>
-<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars topic</a></strong> — the runtime with its companion packages and data packs.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install, dependencies, and the plain, keyed, and reloadable samples with their <code>appsettings.json</code>, plus how the caching decorator composes with each.</li>
+<li><strong><a href="../../guides/calendar/dependency-injection.html">Calendar dependency injection guide</a></strong> - the full walkthrough: factories, collaborators, the reloadable workflow, and lifetime semantics.</li>
+<li><strong><a href="../calendar-caching/index.html">Bodu.Globalization.Calendar.Caching</a></strong> - the read-through caching decorator and its own registrations.</li>
+<li><strong><a href="../calendar/index.html">Bodu.Globalization.Calendar</a></strong> - the runtime the registrations compose.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.html">API reference</a></strong> - the registration surface, member by member.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars topic</a></strong> - the runtime with its companion packages and data packs.</li>
 </ul>
 
 </article>
@@ -306,7 +306,7 @@ provider automatically, so a reload also invalidates the cache.</li>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

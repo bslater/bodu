@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_AesBlockCipher" data-uid="Bodu.Security.Cryptography.AesBlockCipher" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 AesBlockCipher Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ AesBlockCipher Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs">AesBlockCipher.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs">AesBlockCipher.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Exposes the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.aes">Aes</a> algorithm as an <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, providing the single-block primitive
@@ -203,7 +203,7 @@ than rebuilding a cipher context each time, and an instance that only encrypts n
 </p>
 <p>
 <a class="xref" href="Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a> is not intended for direct encryption of user data. Wrap it in one of the
-authenticated mode transforms listed above — the mode transform is responsible for chaining, IV / nonce handling,
+authenticated mode transforms listed above - the mode transform is responsible for chaining, IV / nonce handling,
 associated-data authentication, and tag generation or verification.
 </p>
 <p>
@@ -222,7 +222,7 @@ Instances hold sensitive key material and must be disposed after use. Disposal r
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_AesBlockCipher__ctor_System_Byte___" data-uid="Bodu.Security.Cryptography.AesBlockCipher.#ctor(System.Byte[])">
   AesBlockCipher(byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -237,7 +237,7 @@ Instances hold sensitive key material and must be disposed after use. Disposal r
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
-    <dd><p>The AES key. Valid lengths are 16, 24, or 32 bytes (AES-128, AES-192, or AES-256). A defensive copy is taken —
+    <dd><p>The AES key. Valid lengths are 16, 24, or 32 bytes (AES-128, AES-192, or AES-256). A defensive copy is taken -
 the caller may zero the original array immediately after construction.</p>
 </dd>
   </dl>
@@ -273,7 +273,7 @@ the caller may zero the original array immediately after construction.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_AesBlockCipher_BlockSize" data-uid="Bodu.Security.Cryptography.AesBlockCipher.BlockSize">
   BlockSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -319,7 +319,7 @@ decrypt, slice) convert to bytes at the call site as <code>BlockSize / 8</code>.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_AesBlockCipher_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.AesBlockCipher.Decrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -376,7 +376,7 @@ is supported only when the implementation explicitly permits it; otherwise the s
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_AesBlockCipher_DecryptBlocks_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.AesBlockCipher.DecryptBlocks(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   DecryptBlocks(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -431,7 +431,7 @@ when to override.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_AesBlockCipher_Dispose" data-uid="Bodu.Security.Cryptography.AesBlockCipher.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -463,7 +463,7 @@ when to override.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_AesBlockCipher_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.AesBlockCipher.Encrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -520,7 +520,7 @@ is supported only when the implementation explicitly permits it; otherwise the s
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_AesBlockCipher_EncryptBlocks_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.AesBlockCipher.EncryptBlocks(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   EncryptBlocks(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/AesBlockCipher.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -553,7 +553,7 @@ is supported only when the implementation explicitly permits it; otherwise the s
   <h4 class="section" id="Bodu_Security_Cryptography_AesBlockCipher_EncryptBlocks_System_ReadOnlySpan_System_Byte__System_Span_System_Byte___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>The default implementation calls <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html#Bodu_Security_Cryptography_IBlockCipher_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> once per block. Implementations backed by a primitive
 with per-call setup cost (for example a wrapped BCL cipher context) should override this to amortize that cost
-across the whole run. Callers that process independent blocks — ECB and the keystream layer of CTR-based modes —
+across the whole run. Callers that process independent blocks - ECB and the keystream layer of CTR-based modes -
 should prefer this over a per-block loop.</p>
 </div>
 
@@ -603,7 +603,7 @@ should prefer this over a per-block loop.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.IO.Pst — Getting started | BODU </title>
+      <title>Bodu.IO.Pst - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.IO.Pst — Getting started | BODU ">
+      <meta name="title" content="Bodu.IO.Pst - Getting started | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,13 +85,13 @@
         </div>
 
         <article data-uid="">
-<h1 id="boduiopst--getting-started">Bodu.IO.Pst — Getting started</h1>
+<h1 id="boduiopst---getting-started">Bodu.IO.Pst - Getting started</h1>
 
 <p>Unfamiliar with terms like <em>node database</em>, <em>NID</em>, <em>data tree</em>, <em>heap-on-node</em>, or <em>table context</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
 <h2 id="install">Install</h2>
 <pre><code class="lang-bash">dotnet add package Bodu.IO.Pst
 </code></pre>
-<p>Targets <code>net8.0</code>. Depends on <code>Bodu.Core</code> (shared throw-helpers) and <code>Bodu.Collections</code>; no third-party NuGet references. For the message-level view — folders, subjects, senders, attachments — install <code>Bodu.Formats.Outlook.Pst</code> instead (it references this package) and see <a href="#read-the-mail-store-instead">the mail-store sample below</a>.</p>
+<p>Targets <code>net8.0</code>. Depends on <code>Bodu.Core</code> (shared throw-helpers) and <code>Bodu.Collections</code>; no third-party NuGet references. For the message-level view - folders, subjects, senders, attachments - install <code>Bodu.Formats.Outlook.Pst</code> instead (it references this package) and see <a href="#read-the-mail-store-instead">the mail-store sample below</a>.</p>
 <h2 id="open-a-file-and-read-the-store-node">Open a file and read the store node</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.IO.Pst;
@@ -102,7 +102,7 @@ PstNode store = file.GetNode(PstNodeId.MessageStore);
 foreach (PstPropertyValue value in store.ReadPropertyContext())
     Console.WriteLine($&quot;0x{value.PropertyId:X4} (wire 0x{value.WireType:X4}): {value.RawData.Length} bytes&quot;);
 </code></pre>
-<p>The returned session is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a> — the <code>using</code> declaration disposes it and closes the source unless <code>leaveOpen: true</code> was passed to <code>Open</code>. Reads are lazy: opening parses only the header, and each node's payload is read when asked for.</p>
+<p>The returned session is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a> - the <code>using</code> declaration disposes it and closes the source unless <code>leaveOpen: true</code> was passed to <code>Open</code>. Reads are lazy: opening parses only the header, and each node's payload is read when asked for.</p>
 <h2 id="probe-before-opening">Probe before opening</h2>
 <pre><code class="lang-csharp">using Bodu.IO.Pst;
 
@@ -114,7 +114,7 @@ if (PstFile.IsPstFile(source))
     // ...
 }
 </code></pre>
-<p><code>IsPstFile</code> checks only the <code>!BDN</code> magic and restores the stream position, so it is cheap to call ahead of a full open. It answers <code>true</code> for <em>any</em> PST variant — Unicode and ANSI files then open, and <a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html#Bodu_IO_Pst_PstFile_Format">Format</a> reports which; a subsequent open of an OST file throws <a class="xref" href="../../api/Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a>.</p>
+<p><code>IsPstFile</code> checks only the <code>!BDN</code> magic and restores the stream position, so it is cheap to call ahead of a full open. It answers <code>true</code> for <em>any</em> PST variant - Unicode and ANSI files then open, and <a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html#Bodu_IO_Pst_PstFile_Format">Format</a> reports which; a subsequent open of an OST file throws <a class="xref" href="../../api/Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a>.</p>
 <h2 id="enumerate-the-node-directory">Enumerate the node directory</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.IO.Pst;
@@ -184,10 +184,10 @@ catch (PstUnsupportedFormatException)
 }
 catch (PstFileFormatException ex)
 {
-    Console.WriteLine($&quot;Malformed: {ex.Error} — {ex.Message}&quot;);
+    Console.WriteLine($&quot;Malformed: {ex.Error} - {ex.Message}&quot;);
 }
 </code></pre>
-<p>Every failure surfaces through the <a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a> family with a <a class="xref" href="../../api/Bodu.IO.Pst.PstFileError.html">PstFileError</a> category — corruption never escapes as any other exception type.</p>
+<p>Every failure surfaces through the <a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a> family with a <a class="xref" href="../../api/Bodu.IO.Pst.PstFileError.html">PstFileError</a> category - corruption never escapes as any other exception type.</p>
 <h2 id="read-the-mail-store-instead">Read the mail store instead</h2>
 <p>When you want messages rather than nodes, layer <code>Bodu.Formats.Outlook.Pst</code> on top:</p>
 <pre><code class="lang-bash">dotnet add package Bodu.Formats.Outlook.Pst
@@ -203,7 +203,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 
     foreach (OutlookMailMessage message in folder.EnumerateMessages())
     {
-        Console.WriteLine($&quot;  {message.Subject} — {message.SenderName} at {message.SentTime}&quot;);
+        Console.WriteLine($&quot;  {message.Subject} - {message.SenderName} at {message.SentTime}&quot;);
 
         foreach (OutlookRecipient recipient in message.Recipients)
             Console.WriteLine($&quot;    to {recipient.DisplayName} &lt;{recipient.EmailAddress}&gt;&quot;);
@@ -215,9 +215,9 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — the vocabulary in depth.</li>
-<li><strong><a href="index.html">Introduction</a></strong> — scope, scenarios, and headline types.</li>
-<li><strong>API reference</strong> — <a class="xref" href="../../api/Bodu.IO.Pst.html">Bodu.IO.Pst</a> · <a class="xref" href="../../api/Bodu.Formats.Outlook.html">Bodu.Formats.Outlook</a>.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - the vocabulary in depth.</li>
+<li><strong><a href="index.html">Introduction</a></strong> - scope, scenarios, and headline types.</li>
+<li><strong>API reference</strong> - <a class="xref" href="../../api/Bodu.IO.Pst.html">Bodu.IO.Pst</a> · <a class="xref" href="../../api/Bodu.Formats.Outlook.html">Bodu.Formats.Outlook</a>.</li>
 </ul>
 
 </article>
@@ -237,7 +237,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

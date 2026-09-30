@@ -89,7 +89,7 @@
 
 <p>Recipe-style walk-throughs for <strong>Bodu.Security.Cryptography</strong>, organized by the type hierarchy of the library: foundations → standard ciphers → tweakable ciphers → stream ciphers → AEAD → cryptographic hashes → keyed hashes → ASCON.</p>
 <p>Part of the <strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography</a></strong> topic.</p>
-<p>If you have not yet installed the package or want the high-level shape of the library, start with the <a href="../../docs/cryptography/index.html">Bodu.Security.Cryptography introduction</a> and the <a href="../../docs/cryptography/getting-started.html">getting-started page</a>. Not sure which primitive to use? Start with <a href="choosing-a-primitive.html">Choosing a primitive</a> — decision tables for hashes, MACs, AEAD, KDFs, asymmetric algorithms, and block ciphers beside their BCL counterparts — or the introduction's <em>shape of the library</em> section, which maps the five families and explains how they differ.</p>
+<p>If you have not yet installed the package or want the high-level shape of the library, start with the <a href="../../docs/cryptography/index.html">Bodu.Security.Cryptography introduction</a> and the <a href="../../docs/cryptography/getting-started.html">getting-started page</a>. Not sure which primitive to use? Start with <a href="choosing-a-primitive.html">Choosing a primitive</a> - decision tables for hashes, MACs, AEAD, KDFs, asymmetric algorithms, and block ciphers beside their BCL counterparts - or the introduction's <em>shape of the library</em> section, which maps the five families and explains how they differ.</p>
 <p>For the auto-generated API reference, see the <a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography namespace page</a>. For non-cryptographic checksums and fingerprints, see the <a href="../io-hashing/index.html">Bodu.IO.Hashing guides</a>.</p>
 <h2 id="namespace-map">Namespace map</h2>
 <table>
@@ -103,7 +103,7 @@
 <tbody>
 <tr>
 <td><code>Bodu.Security.Cryptography</code></td>
-<td>All cryptographic primitives — block ciphers, mode transforms, padding strategies, hash algorithms, AEAD constructions, helpers.</td>
+<td>All cryptographic primitives - block ciphers, mode transforms, padding strategies, hash algorithms, AEAD constructions, helpers.</td>
 <td>All sections below</td>
 </tr>
 <tr>
@@ -117,7 +117,7 @@
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="choosing-a-primitive.html">Choosing a primitive</a></h3>
-  <p>Decision tables — hashes, MACs, AEAD, KDFs, asymmetric algorithms, block ciphers — with sizes and defaults verified in source, and when the BCL is the better answer.</p>
+  <p>Decision tables - hashes, MACs, AEAD, KDFs, asymmetric algorithms, block ciphers - with sizes and defaults verified in source, and when the BCL is the better answer.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="bcl-interop.html">Interoperating with System.Security.Cryptography</a></h3>
@@ -125,15 +125,15 @@
 </div>
 <div class="bodu-card">
   <h3><a href="cipher-composition-reference.html">Modes, transforms, and factories</a></h3>
-  <p>The <code>CipherModeKind</code> support matrix — what <code>BlockMode</code> can build, what exists only as a direct transform, what is AEAD — plus <code>BlockCipherTransform</code>, <code>IBlockCipher</code>, the padding factories (block size in bits), and the dual padding properties.</p>
+  <p>The <code>CipherModeKind</code> support matrix - what <code>BlockMode</code> can build, what exists only as a direct transform, what is AEAD - plus <code>BlockCipherTransform</code>, <code>IBlockCipher</code>, the padding factories (block size in bits), and the dual padding properties.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="streaming-and-async.html">Streams and async</a></h3>
-  <p><code>Encrypt(Stream, Stream)</code> / <code>EncryptAsync</code>, <code>AppendDataAsync</code> / <code>VerifyHashAsync</code>, <code>MerkleTree.ComputeRootOfBlocksAsync</code> — buffer sizes, cancellation, and pooled-memory behaviour.</p>
+  <p><code>Encrypt(Stream, Stream)</code> / <code>EncryptAsync</code>, <code>AppendDataAsync</code> / <code>VerifyHashAsync</code>, <code>MerkleTree.ComputeRootOfBlocksAsync</code> - buffer sizes, cancellation, and pooled-memory behaviour.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="value-types.html">Nonces, salts, tags, and secrets</a></h3>
-  <p><code>Nonce</code>, <code>Salt</code>, <code>SecretBytes</code>, <code>HashValue</code>, <code>AuthenticationTag</code>, <code>SignatureValue</code> — construction, constant-time equality, zeroization, and where each is accepted (detached AEAD, scrypt).</p>
+  <p><code>Nonce</code>, <code>Salt</code>, <code>SecretBytes</code>, <code>HashValue</code>, <code>AuthenticationTag</code>, <code>SignatureValue</code> - construction, constant-time equality, zeroization, and where each is accepted (detached AEAD, scrypt).</p>
 </div>
 <div class="bodu-card">
   <h3><a href="security-posture.html">Security guarantees and limitations</a></h3>
@@ -152,26 +152,26 @@
 </div>
 <div class="bodu-card">
   <h3><a href="cipher-modes.html">Cipher block modes</a></h3>
-  <p>ECB, CBC, CFB, OFB, CTR, CTS, and XTS — one worked round-trip per mode, with the IV rules, the encrypt-vs-decrypt-primitive table, and when each is appropriate.</p>
+  <p>ECB, CBC, CFB, OFB, CTR, CTS, and XTS - one worked round-trip per mode, with the IV rules, the encrypt-vs-decrypt-primitive table, and when each is appropriate.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="padding.html">Padding</a></h3>
-  <p>PKCS7, ANSI X.923, ISO 10126, ISO/IEC 7816-4, Zeros, None — how each one pads, when it round-trips cleanly, and the padding-oracle caveat.</p>
+  <p>PKCS7, ANSI X.923, ISO 10126, ISO/IEC 7816-4, Zeros, None - how each one pads, when it round-trips cleanly, and the padding-oracle caveat.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="composing-primitives.html">Composing primitives</a></h3>
-  <p>The two patterns side by side — manual <code>IBlockCipher</code> + <code>BlockCipherModeFactory</code> + <code>PaddingFactory</code>, and the equivalent through the <code>SymmetricAlgorithm</code> wrappers.</p>
+  <p>The two patterns side by side - manual <code>IBlockCipher</code> + <code>BlockCipherModeFactory</code> + <code>PaddingFactory</code>, and the equivalent through the <code>SymmetricAlgorithm</code> wrappers.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="aes-family.html">AES-family block ciphers</a></h3>
-  <p>AES, Twofish, Camellia, Serpent-128 — the four 128-bit-block ciphers compared, with selection guidance and BCL-vs-Bodu trade-offs.</p>
+  <p>AES, Twofish, Camellia, Serpent-128 - the four 128-bit-block ciphers compared, with selection guidance and BCL-vs-Bodu trade-offs.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="hardware-acceleration.html">Hardware acceleration &amp; SIMD opt-out</a></h3>
   <p>Which primitives ship an AVX-512 fast path (BLAKE2/3, Threefish, CubeHash), when it engages, and the <code>Bodu.Security.Cryptography.DisableSimd</code> switch to force the scalar path.</p>
 </div>
 </div>
-<h2 id="symmetric-ciphers--standard">Symmetric ciphers — Standard</h2>
+<h2 id="symmetric-ciphers---standard">Symmetric ciphers - Standard</h2>
 <table>
 <thead>
 <tr>
@@ -191,7 +191,7 @@
 <tr>
 <td><code>Blowfish</code></td>
 <td>64 bits (8 B)</td>
-<td>32–448 bits, 8-bit steps</td>
+<td>32-448 bits, 8-bit steps</td>
 <td><a href="blowfish.html">Using Blowfish</a></td>
 </tr>
 <tr>
@@ -220,7 +220,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="symmetric-ciphers--tweakable">Symmetric ciphers — Tweakable</h2>
+<h2 id="symmetric-ciphers---tweakable">Symmetric ciphers - Tweakable</h2>
 <table>
 <thead>
 <tr>
@@ -258,12 +258,12 @@
 <td>256 / 512 / 1024 bits</td>
 <td>matching key</td>
 <td>128 bits</td>
-<td><a href="serpent.html">Using Serpent</a> — non-standard, experimental wide-block constructions</td>
+<td><a href="serpent.html">Using Serpent</a> - non-standard, experimental wide-block constructions</td>
 </tr>
 </tbody>
 </table>
-<h2 id="symmetric-ciphers--stream">Symmetric ciphers — Stream</h2>
-<p>Raw, confidentiality-only XOR keystream ciphers — <strong>no authentication</strong>; pair with a MAC or prefer AEAD. See <a href="stream-ciphers.html">Using stream ciphers</a>.</p>
+<h2 id="symmetric-ciphers---stream">Symmetric ciphers - Stream</h2>
+<p>Raw, confidentiality-only XOR keystream ciphers - <strong>no authentication</strong>; pair with a MAC or prefer AEAD. See <a href="stream-ciphers.html">Using stream ciphers</a>.</p>
 <table>
 <thead>
 <tr>
@@ -284,7 +284,7 @@
 <td><code>XChaCha20</code></td>
 <td>256 bits (32 B)</td>
 <td>192 bits (24 B)</td>
-<td>Extended nonce — safe to choose at random.</td>
+<td>Extended nonce - safe to choose at random.</td>
 </tr>
 <tr>
 <td><code>Salsa20</code></td>
@@ -312,11 +312,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="symmetric-ciphers--aead">Symmetric ciphers — AEAD</h2>
+<h2 id="symmetric-ciphers---aead">Symmetric ciphers - AEAD</h2>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="aead-modes.html">AEAD modes</a></h3>
-  <p>GCM, CCM, OCB3, EAX, SIV, GCM-SIV — authenticated encryption with associated data using <code>AesBlockCipher</code> + the mode transforms, via the one-shot extension methods.</p>
+  <p>GCM, CCM, OCB3, EAX, SIV, GCM-SIV - authenticated encryption with associated data using <code>AesBlockCipher</code> + the mode transforms, via the one-shot extension methods.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="stream-aead.html">Authenticated stream ciphers</a></h3>
@@ -339,19 +339,19 @@
 </div>
 <div class="bodu-card">
   <h3><a href="snefru.html">Using Snefru</a></h3>
-  <p>Snefru-128 / Snefru-256 — legacy cryptographic digest; interoperability use only.</p>
+  <p>Snefru-128 / Snefru-256 - legacy cryptographic digest; interoperability use only.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="merkle-trees.html">Merkle trees and proofs</a></h3>
-  <p>The RFC 6962 tree over any inner <code>HashAlgorithm</code> — roots over entries, blocks, or a write-time accumulator; inclusion and consistency proofs; length-bound roots; parallel leaf hashing.</p>
+  <p>The RFC 6962 tree over any inner <code>HashAlgorithm</code> - roots over entries, blocks, or a write-time accumulator; inclusion and consistency proofs; length-bound roots; parallel leaf hashing.</p>
 </div>
 </div>
-<p>The remaining digests have their own walk-throughs too — <a href="blake.html">BLAKE2 / BLAKE3</a>, <a href="skein.html">Skein</a>, <a href="whirlpool.html">Whirlpool</a>, and <a href="shake.html">SHAKE</a> — or consult the <a class="xref" href="../../api/Bodu.Security.Cryptography.html">API reference</a> directly.</p>
+<p>The remaining digests have their own walk-throughs too - <a href="blake.html">BLAKE2 / BLAKE3</a>, <a href="skein.html">Skein</a>, <a href="whirlpool.html">Whirlpool</a>, and <a href="shake.html">SHAKE</a> - or consult the <a class="xref" href="../../api/Bodu.Security.Cryptography.html">API reference</a> directly.</p>
 <h2 id="keyed-hashes-mac">Keyed hashes (MAC)</h2>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="siphash.html">Using SipHash</a></h3>
-  <p>SipHash-64 and SipHash-128 — keyed PRF designed for hash-flooding-resistant hash tables.</p>
+  <p>SipHash-64 and SipHash-128 - keyed PRF designed for hash-flooding-resistant hash tables.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="poly1305.html">Using Poly1305</a></h3>
@@ -362,7 +362,7 @@
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="ascon.html">ASCON overview</a></h3>
-  <p>All five NIST SP 800-232 types — Hash256, HashA256, XOF128, CXOF128, AEAD128 — with selection guidance.</p>
+  <p>All five NIST SP 800-232 types - Hash256, HashA256, XOF128, CXOF128, AEAD128 - with selection guidance.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="ascon-hashing.html">ASCON hashing</a></h3>
@@ -370,69 +370,69 @@
 </div>
 <div class="bodu-card">
   <h3><a href="ascon-xof.html">ASCON extendable output (XOF)</a></h3>
-  <p><code>AsconXof128</code> and <code>AsconCxof128</code> — squeeze any number of bytes; CXOF accepts a domain customization string.</p>
+  <p><code>AsconXof128</code> and <code>AsconCxof128</code> - squeeze any number of bytes; CXOF accepts a domain customization string.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="ascon-aead.html">ASCON authenticated encryption (AEAD)</a></h3>
-  <p><code>AsconAead128</code> — sponge-based AEAD with no separate block cipher dependency.</p>
+  <p><code>AsconAead128</code> - sponge-based AEAD with no separate block cipher dependency.</p>
 </div>
 </div>
 <h2 id="key-derivation">Key derivation</h2>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="hkdf.html">Using HKDF</a></h3>
-  <p><code>Hkdf</code> (RFC 5869) — extract-and-expand key derivation for high-entropy inputs such as a shared secret or KEM output.</p>
+  <p><code>Hkdf</code> (RFC 5869) - extract-and-expand key derivation for high-entropy inputs such as a shared secret or KEM output.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="argon2.html">Using Argon2</a></h3>
-  <p><code>Argon2id</code> / <code>Argon2i</code> / <code>Argon2d</code> (RFC 9106) — memory-hard password hashing and key derivation, with PHC encoded-hash <code>Hash</code> / <code>Verify</code>.</p>
+  <p><code>Argon2id</code> / <code>Argon2i</code> / <code>Argon2d</code> (RFC 9106) - memory-hard password hashing and key derivation, with PHC encoded-hash <code>Hash</code> / <code>Verify</code>.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="scrypt.html">Using scrypt</a></h3>
-  <p><code>Scrypt</code> (RFC 7914) — the established memory-hard password KDF, with PHC encoded-hash <code>Hash</code> / <code>Verify</code>.</p>
+  <p><code>Scrypt</code> (RFC 7914) - the established memory-hard password KDF, with PHC encoded-hash <code>Hash</code> / <code>Verify</code>.</p>
 </div>
 </div>
 <h2 id="one-time-passwords">One-time passwords</h2>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="one-time-passwords.html">Using HOTP and TOTP</a></h3>
-  <p><code>Hotp</code> (RFC 4226) and <code>Totp</code> (RFC 6238) — the counter- and time-based one-time-password codes used for two-factor authentication, with constant-time verification and clock-drift windows.</p>
+  <p><code>Hotp</code> (RFC 4226) and <code>Totp</code> (RFC 6238) - the counter- and time-based one-time-password codes used for two-factor authentication, with constant-time verification and clock-drift windows.</p>
 </div>
 </div>
 <h2 id="asymmetric-algorithms">Asymmetric algorithms</h2>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="asymmetric-overview.html">Asymmetric algorithms overview</a></h3>
-  <p>The four families over <code>AsymmetricAlgorithm</code> — key agreement, signatures, and post-quantum KEM / signatures — with selection guidance and the shared key import / export shape.</p>
+  <p>The four families over <code>AsymmetricAlgorithm</code> - key agreement, signatures, and post-quantum KEM / signatures - with selection guidance and the shared key import / export shape.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="key-agreement-x25519.html">Key agreement with X25519</a></h3>
-  <p><code>X25519</code> (RFC 7748) — Diffie-Hellman over Curve25519 for deriving a shared secret between two parties.</p>
+  <p><code>X25519</code> (RFC 7748) - Diffie-Hellman over Curve25519 for deriving a shared secret between two parties.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="signatures-ed25519.html">Signatures with Ed25519</a></h3>
-  <p><code>Ed25519</code> (RFC 8032) — deterministic EdDSA signing and verification over Curve25519.</p>
+  <p><code>Ed25519</code> (RFC 8032) - deterministic EdDSA signing and verification over Curve25519.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="ml-kem.html">ML-KEM post-quantum key encapsulation</a></h3>
-  <p><code>MLKem512</code> / <code>MLKem768</code> / <code>MLKem1024</code> (FIPS 203) — lattice-based key encapsulation resistant to quantum attack.</p>
+  <p><code>MLKem512</code> / <code>MLKem768</code> / <code>MLKem1024</code> (FIPS 203) - lattice-based key encapsulation resistant to quantum attack.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="ml-dsa.html">ML-DSA post-quantum signatures</a></h3>
-  <p><code>MLDsa44</code> / <code>MLDsa65</code> / <code>MLDsa87</code> (FIPS 204) — lattice-based digital signatures resistant to quantum attack.</p>
+  <p><code>MLDsa44</code> / <code>MLDsa65</code> / <code>MLDsa87</code> (FIPS 204) - lattice-based digital signatures resistant to quantum attack.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="hpke.html">Hybrid public key encryption with HPKE</a></h3>
-  <p><code>Hpke</code> (RFC 9180) — encrypt to a public key by composing the X25519 KEM, HKDF, and an AEAD; single-shot and session APIs across all four modes.</p>
+  <p><code>Hpke</code> (RFC 9180) - encrypt to a public key by composing the X25519 KEM, HKDF, and an AEAD; single-shot and session APIs across all four modes.</p>
 </div>
 </div>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="../../docs/cryptography/index.html">Bodu.Security.Cryptography introduction</a> — namespaces, headline types, scenarios.</li>
-<li><a href="../../docs/cryptography/getting-started.html">Bodu.Security.Cryptography getting started</a> — install and minimal samples per subfamily.</li>
-<li><a href="../io-hashing/index.html">Bodu.IO.Hashing guides</a> — non-cryptographic checksums and fingerprints.</li>
-<li><a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography API reference</a> — full type-by-type docs.</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — the topic map across Bodu.IO.Hashing and Bodu.Security.Cryptography. The complete cryptography guide list is this page; the hashing one is <a href="../io-hashing/index.html">its index</a>.</li>
+<li><a href="../../docs/cryptography/index.html">Bodu.Security.Cryptography introduction</a> - namespaces, headline types, scenarios.</li>
+<li><a href="../../docs/cryptography/getting-started.html">Bodu.Security.Cryptography getting started</a> - install and minimal samples per subfamily.</li>
+<li><a href="../io-hashing/index.html">Bodu.IO.Hashing guides</a> - non-cryptographic checksums and fingerprints.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography API reference</a> - full type-by-type docs.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - the topic map across Bodu.IO.Hashing and Bodu.Security.Cryptography. The complete cryptography guide list is this page; the hashing one is <a href="../io-hashing/index.html">its index</a>.</li>
 </ul>
 
 </article>
@@ -452,7 +452,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

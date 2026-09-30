@@ -88,15 +88,15 @@
 <h1 id="circular-buffer">Circular buffer</h1>
 
 <p><code>CircularBuffer&lt;T&gt;</code> is a fixed-capacity, first-in first-out (FIFO) ring buffer. It is allocation-free after construction: elements overwrite the oldest slot when the buffer is full (if overwrite is enabled), or throw / return <code>false</code> when the buffer is full and overwrite is disabled.</p>
-<p>For concurrent access, use <code>ConcurrentCircularBuffer&lt;T&gt;</code> — a thread-safe variant that uses a lock-free multi-producer/multi-consumer (Vyukov) algorithm internally; it ships in the companion <code>Bodu.Collections.Concurrent</code> package.</p>
+<p>For concurrent access, use <code>ConcurrentCircularBuffer&lt;T&gt;</code> - a thread-safe variant that uses a lock-free multi-producer/multi-consumer (Vyukov) algorithm internally; it ships in the companion <code>Bodu.Collections.Concurrent</code> package.</p>
 <p><img src="../../images/diagrams/circular-buffer.svg" alt="CircularBuffer ring with Head, Tail, and overwrite/reject behavior"></p>
 <p>The backing array is allocated once. <code>Head</code> marks the oldest entry (the next <code>Dequeue</code> / <code>Peek</code> target) and <code>Tail</code> marks the next free slot (the next <code>Enqueue</code> target). Both indices advance with <code>(idx + 1) % Capacity</code>, which is what makes the storage a ring rather than a shifting array. Because no element is ever shifted, <code>Enqueue</code>, <code>Dequeue</code>, and <code>Peek</code> are all O(1), and <code>this[i]</code> is an O(1) head-relative random read (index <code>0</code> is the oldest element).</p>
-<p><code>CircularBuffer&lt;T&gt;</code> derives from the shared <a class="xref" href="../../api/Bodu.Collections.Generic.RingBackedCollection-1.html">RingBackedCollection&lt;T&gt;</a> base — the same base that backs <a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> — and inherits <code>Count</code>, <code>Capacity</code>, <code>IsEmpty</code>, <code>IsFull</code>, the indexer, <code>Clear</code>, <code>Contains</code>, <code>CopyTo</code>, <code>ToArray</code>, and <code>TrimExcess</code> from it. The type accepts <code>null</code> for reference <code>T</code> and permits duplicate values.</p>
+<p><code>CircularBuffer&lt;T&gt;</code> derives from the shared <a class="xref" href="../../api/Bodu.Collections.Generic.RingBackedCollection-1.html">RingBackedCollection&lt;T&gt;</a> base - the same base that backs <a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> - and inherits <code>Count</code>, <code>Capacity</code>, <code>IsEmpty</code>, <code>IsFull</code>, the indexer, <code>Clear</code>, <code>Contains</code>, <code>CopyTo</code>, <code>ToArray</code>, and <code>TrimExcess</code> from it. The type accepts <code>null</code> for reference <code>T</code> and permits duplicate values.</p>
 <div class="NOTE">
 <h5>Note</h5>
-<p>Enumeration is <strong>fail-fast</strong>. The buffer keeps an internal structural-version counter; an enumerator created with <code>foreach</code> captures that token and throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> on the next <code>MoveNext</code> if the buffer is structurally mutated (including <code>Clear</code> and <code>TrimExcess</code>) while the enumerator is live. The enumerator is a <code>struct</code>, so a <code>foreach</code> loop allocates nothing. This is the single-threaded contract — <code>ConcurrentCircularBuffer&lt;T&gt;</code> is snapshot-based instead (see Pattern 5).</p>
+<p>Enumeration is <strong>fail-fast</strong>. The buffer keeps an internal structural-version counter; an enumerator created with <code>foreach</code> captures that token and throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> on the next <code>MoveNext</code> if the buffer is structurally mutated (including <code>Clear</code> and <code>TrimExcess</code>) while the enumerator is live. The enumerator is a <code>struct</code>, so a <code>foreach</code> loop allocates nothing. This is the single-threaded contract - <code>ConcurrentCircularBuffer&lt;T&gt;</code> is snapshot-based instead (see Pattern 5).</p>
 </div>
-<h2 id="pattern-1--basic-enqueue-and-dequeue">Pattern 1 — basic enqueue and dequeue</h2>
+<h2 id="pattern-1---basic-enqueue-and-dequeue">Pattern 1 - basic enqueue and dequeue</h2>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 var buffer = new CircularBuffer&lt;int&gt;(capacity: 4);
@@ -108,8 +108,8 @@ buffer.Enqueue(3);
 int oldest = buffer.Dequeue();   // 1
 int next   = buffer.Peek();      // 2, non-destructive
 </code></pre>
-<h2 id="pattern-2--bounded-buffer-that-rejects-excess">Pattern 2 — bounded buffer that rejects excess</h2>
-<p>The capacity-only and default constructors set <code>AllowOverwrite = true</code> (sliding-window semantics — see Pattern 3). Pass <code>allowOverwrite: false</code> to flip the buffer into bounded mode, where <code>Enqueue</code> into a full buffer throws <code>InvalidOperationException</code>. Use <code>TryEnqueue</code> to avoid exceptions:</p>
+<h2 id="pattern-2---bounded-buffer-that-rejects-excess">Pattern 2 - bounded buffer that rejects excess</h2>
+<p>The capacity-only and default constructors set <code>AllowOverwrite = true</code> (sliding-window semantics - see Pattern 3). Pass <code>allowOverwrite: false</code> to flip the buffer into bounded mode, where <code>Enqueue</code> into a full buffer throws <code>InvalidOperationException</code>. Use <code>TryEnqueue</code> to avoid exceptions:</p>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 var buffer = new CircularBuffer&lt;string&gt;(capacity: 3, allowOverwrite: false);
@@ -118,10 +118,10 @@ buffer.Enqueue(&quot;a&quot;);
 buffer.Enqueue(&quot;b&quot;);
 buffer.Enqueue(&quot;c&quot;);
 
-bool added = buffer.TryEnqueue(&quot;d&quot;);   // false — buffer is full
+bool added = buffer.TryEnqueue(&quot;d&quot;);   // false - buffer is full
 </code></pre>
-<h2 id="pattern-3--ring-buffer-that-overwrites-the-oldest-entry">Pattern 3 — ring buffer that overwrites the oldest entry</h2>
-<p><code>AllowOverwrite = true</code> — the default on every constructor — implements a sliding window of the most-recent <em>N</em> values:</p>
+<h2 id="pattern-3---ring-buffer-that-overwrites-the-oldest-entry">Pattern 3 - ring buffer that overwrites the oldest entry</h2>
+<p><code>AllowOverwrite = true</code> - the default on every constructor - implements a sliding window of the most-recent <em>N</em> values:</p>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 // Keep only the 3 most recent readings.
@@ -134,11 +134,11 @@ window.Enqueue(4.4);   // overwrites 1.1
 
 double[] readings = window.ToArray();   // [2.2, 3.3, 4.4]
 </code></pre>
-<h2 id="pattern-4--observing-or-vetoing-evictions">Pattern 4 — observing (or vetoing) evictions</h2>
+<h2 id="pattern-4---observing-or-vetoing-evictions">Pattern 4 - observing (or vetoing) evictions</h2>
 <p>When <code>AllowOverwrite</code> is <code>true</code>, two events fire as the oldest element is displaced, both typed <code>Action&lt;T&gt;</code>:</p>
 <ul>
-<li><code>ItemEvicting</code> — raised <strong>before</strong> the eviction. A handler that throws <strong>vetoes</strong> the eviction: the oldest element is <em>not</em> removed, the new element is <em>not</em> stored, and the exception propagates to the <code>Enqueue</code> / <code>TryEnqueue</code> caller with the buffer's state unchanged. This is a deliberate back-pressure hatch.</li>
-<li><code>ItemEvicted</code> — raised <strong>after</strong> the eviction, with the displaced element. Handler exceptions propagate to the <code>Enqueue</code> caller.</li>
+<li><code>ItemEvicting</code> - raised <strong>before</strong> the eviction. A handler that throws <strong>vetoes</strong> the eviction: the oldest element is <em>not</em> removed, the new element is <em>not</em> stored, and the exception propagates to the <code>Enqueue</code> / <code>TryEnqueue</code> caller with the buffer's state unchanged. This is a deliberate back-pressure hatch.</li>
+<li><code>ItemEvicted</code> - raised <strong>after</strong> the eviction, with the displaced element. Handler exceptions propagate to the <code>Enqueue</code> caller.</li>
 </ul>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
@@ -154,13 +154,13 @@ window.ItemEvicting += line =&gt;
 </code></pre>
 <div class="IMPORTANT">
 <h5>Important</h5>
-<p>The eviction-event contract differs between the two buffer types. <code>CircularBuffer&lt;T&gt;</code> <strong>propagates</strong> handler exceptions and lets <code>ItemEvicting</code> veto. <code>ConcurrentCircularBuffer&lt;T&gt;</code> exposes only <code>ItemEvicted</code>, <strong>swallows</strong> handler exceptions, and has no pre-eviction veto — its lock-free path cannot safely unwind. Do not port veto logic across the two types.</p>
+<p>The eviction-event contract differs between the two buffer types. <code>CircularBuffer&lt;T&gt;</code> <strong>propagates</strong> handler exceptions and lets <code>ItemEvicting</code> veto. <code>ConcurrentCircularBuffer&lt;T&gt;</code> exposes only <code>ItemEvicted</code>, <strong>swallows</strong> handler exceptions, and has no pre-eviction veto - its lock-free path cannot safely unwind. Do not port veto logic across the two types.</p>
 </div>
 <div class="NOTE">
 <h5>Note</h5>
 <p>Event handlers must not mutate the buffer. Mutating members (<code>Enqueue</code>, <code>Dequeue</code>, <code>Clear</code>, <code>TrimExcess</code>, …) are guarded against re-entry from inside an eviction handler and throw <code>InvalidOperationException</code> if called there. Keep handlers side-effect-only with respect to the buffer itself.</p>
 </div>
-<h2 id="pattern-5--peek-without-removing">Pattern 5 — peek without removing</h2>
+<h2 id="pattern-5---peek-without-removing">Pattern 5 - peek without removing</h2>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 var buffer = new CircularBuffer&lt;int&gt;(capacity: 5);
@@ -168,9 +168,9 @@ buffer.Enqueue(10);
 buffer.Enqueue(20);
 
 if (buffer.TryPeek(out int first))
-    Console.WriteLine(first);   // 10 — not removed
+    Console.WriteLine(first);   // 10 - not removed
 </code></pre>
-<h2 id="pattern-6--concurrent-access-with-concurrentcircularbuffer">Pattern 6 — concurrent access with ConcurrentCircularBuffer</h2>
+<h2 id="pattern-6---concurrent-access-with-concurrentcircularbuffer">Pattern 6 - concurrent access with ConcurrentCircularBuffer</h2>
 <p><code>ConcurrentCircularBuffer&lt;T&gt;</code> provides the same <code>Enqueue</code> / <code>Dequeue</code> / <code>Peek</code> API but coordinates all operations with a <strong>lock-free</strong> multi-producer/multi-consumer (Vyukov) protocol built on per-slot sequence numbers. Use it when multiple threads read or write the buffer concurrently:</p>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic.Concurrent;
 
@@ -190,13 +190,13 @@ Task.Run(() =&gt;
         Process(value!);
 });
 </code></pre>
-<p>The concurrent type differs from the single-threaded one in several contractual ways — keep them in mind:</p>
+<p>The concurrent type differs from the single-threaded one in several contractual ways - keep them in mind:</p>
 <ul>
 <li><strong>Reference types only.</strong> Its type constraint is <code>where T : class?</code>; value-type elements are not supported. The single-threaded <code>CircularBuffer&lt;T&gt;</code> has no constraint.</li>
 <li><strong>Minimum capacity 2.</strong> The Vyukov sequence protocol needs two distinct per-slot marks, so a capacity of 1 is rejected; the constructor throws <code>ArgumentOutOfRangeException</code> below 2.</li>
 <li><strong><code>Count</code> is approximate.</strong> Under concurrency the head and tail are read independently, so <code>Count</code> is a point-in-time estimate. For a coherent view of the contents, call <code>ToArray</code>, which captures a true FIFO snapshot.</li>
-<li><strong>Snapshot enumeration.</strong> <code>foreach</code> (and <code>ToArray</code>) iterate a snapshot taken when the enumerator is created; the enumerator never throws on concurrent modification — there is no fail-fast token. It implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.concurrent.iproducerconsumercollection-1">IProducerConsumerCollection&lt;T&gt;</a>, so it can be wrapped by <code>BlockingCollection&lt;T&gt;</code>.</li>
-<li><strong><code>SyncRoot</code> throws.</strong> Matching the BCL <code>ConcurrentQueue&lt;T&gt;</code>, the explicit <code>ICollection.SyncRoot</code> throws <code>NotSupportedException</code> — there is nothing meaningful to lock on.</li>
+<li><strong>Snapshot enumeration.</strong> <code>foreach</code> (and <code>ToArray</code>) iterate a snapshot taken when the enumerator is created; the enumerator never throws on concurrent modification - there is no fail-fast token. It implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.concurrent.iproducerconsumercollection-1">IProducerConsumerCollection&lt;T&gt;</a>, so it can be wrapped by <code>BlockingCollection&lt;T&gt;</code>.</li>
+<li><strong><code>SyncRoot</code> throws.</strong> Matching the BCL <code>ConcurrentQueue&lt;T&gt;</code>, the explicit <code>ICollection.SyncRoot</code> throws <code>NotSupportedException</code> - there is nothing meaningful to lock on.</li>
 </ul>
 <div class="TIP">
 <h5>Tip</h5>
@@ -286,7 +286,7 @@ Task.Run(() =&gt;
 </tbody>
 </table>
 <h2 id="construction">Construction</h2>
-<p>Both buffers can be seeded from an existing sequence. When the source is longer than the capacity, the <strong>most recent</strong> <code>capacity</code> elements are retained (the older ones are dropped before the buffer is even built) — unless overwrite is disabled, in which case an over-long seed throws <code>InvalidOperationException</code>:</p>
+<p>Both buffers can be seeded from an existing sequence. When the source is longer than the capacity, the <strong>most recent</strong> <code>capacity</code> elements are retained (the older ones are dropped before the buffer is even built) - unless overwrite is disabled, in which case an over-long seed throws <code>InvalidOperationException</code>:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
@@ -299,12 +299,12 @@ var defaulted = new CircularBuffer&lt;int&gt;();   // capacity 16, overwrite on
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="deque.html">Deque</a> — double-ended queue with the same fixed-vs-growable choice on both ends.</li>
-<li><a href="evicting-dictionary.html">Evicting dictionary</a> — a fixed-capacity key-value cache with LRU / LFU / FIFO eviction.</li>
-<li><a href="week-pattern.html">WeekPattern</a> — immutable bitmask value type for sets of days of the week.</li>
-<li><a href="index.html">Bodu.Collections guide index</a> — all key types at a glance.</li>
-<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> — full namespace overview.</li>
-<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+<li><a href="deque.html">Deque</a> - double-ended queue with the same fixed-vs-growable choice on both ends.</li>
+<li><a href="evicting-dictionary.html">Evicting dictionary</a> - a fixed-capacity key-value cache with LRU / LFU / FIFO eviction.</li>
+<li><a href="week-pattern.html">WeekPattern</a> - immutable bitmask value type for sets of days of the week.</li>
+<li><a href="index.html">Bodu.Collections guide index</a> - all key types at a glance.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> - full namespace overview.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -324,7 +324,7 @@ var defaulted = new CircularBuffer&lt;int&gt;();   // capacity 16, overwrite on
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

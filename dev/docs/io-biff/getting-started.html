@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.IO.Biff — Getting started | BODU </title>
+      <title>Bodu.IO.Biff - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.IO.Biff — Getting started | BODU ">
+      <meta name="title" content="Bodu.IO.Biff - Getting started | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,15 +85,15 @@
         </div>
 
         <article data-uid="">
-<h1 id="boduiobiff--getting-started">Bodu.IO.Biff — Getting started</h1>
+<h1 id="boduiobiff---getting-started">Bodu.IO.Biff - Getting started</h1>
 
 <p>Unfamiliar with terms like <em>record</em>, <em>substream</em>, <em>CONTINUE</em>, <em>shared string table</em>, or <em>RK</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
 <h2 id="install">Install</h2>
 <pre><code class="lang-bash">dotnet add package Bodu.IO.Biff
 </code></pre>
-<p>Targets <code>net8.0</code>. Depends on <code>Bodu.Core</code> (shared throw-helpers) and <code>System.Text.Encoding.CodePages</code> (BIFF5 byte strings). For the spreadsheet view — sheets, cells by position, number formats, dates — install <code>Bodu.Formats.Excel.Binary</code> instead (it references this package) and see <a href="../excel/index.html">its introduction</a>.</p>
+<p>Targets <code>net8.0</code>. Depends on <code>Bodu.Core</code> (shared throw-helpers) and <code>System.Text.Encoding.CodePages</code> (BIFF5 byte strings). For the spreadsheet view - sheets, cells by position, number formats, dates - install <code>Bodu.Formats.Excel.Binary</code> instead (it references this package) and see <a href="../excel/index.html">its introduction</a>.</p>
 <h2 id="walk-a-record-stream">Walk a record stream</h2>
-<p>The reader takes the bytes of a BIFF stream. Where they come from is up to you — for an <code>.xls</code> file, the <code>Workbook</code> stream of the compound file, read with <code>Bodu.IO.Compound</code>:</p>
+<p>The reader takes the bytes of a BIFF stream. Where they come from is up to you - for an <code>.xls</code> file, the <code>Workbook</code> stream of the compound file, read with <code>Bodu.IO.Compound</code>:</p>
 <pre><code class="lang-csharp">using Bodu.IO.Biff;
 using Bodu.IO.Compound;
 
@@ -178,7 +178,7 @@ ReadOnlySpan&lt;char&gt; value = buffer.Slice(0, written);
 Console.WriteLine($&quot;{value.Length} chars, unicode={text.IsUnicode}, wide={text.IsHighByte}, code page={text.CodePage}&quot;);
 </code></pre>
 <h2 id="read-a-sheet-substream-with-a-known-version">Read a sheet substream with a known version</h2>
-<p>A sheet's substream carries its own <code>BOF</code>, so a reader started at the sheet's offset establishes the version itself. When you want the version-dependent accessors to work before that — or you are resuming from a saved state — seed the reader:</p>
+<p>A sheet's substream carries its own <code>BOF</code>, so a reader started at the sheet's offset establishes the version itself. When you want the version-dependent accessors to work before that - or you are resuming from a saved state - seed the reader:</p>
 <pre><code class="lang-csharp">using Bodu.IO.Biff;
 
 var options = new BiffReaderOptions { Version = BiffVersion.Biff8, CodePage = 1252 };
@@ -227,7 +227,7 @@ writer.WriteEof();
 
 byte[] stream = output.WrittenSpan.ToArray();
 </code></pre>
-<p>The writer serializes records; assembling a workbook — ordering, the <code>BOUNDSHEET</code> offsets, the compound-file container — is the caller's job, which is why <code>BytesCommitted</code> is exposed.</p>
+<p>The writer serializes records; assembling a workbook - ordering, the <code>BOUNDSHEET</code> offsets, the compound-file container - is the caller's job, which is why <code>BytesCommitted</code> is exposed.</p>
 <h2 id="copy-a-stream-preserving-everything">Copy a stream, preserving everything</h2>
 <p>Because unknown records are readable and writable raw, a stream can be transformed without understanding all of it:</p>
 <pre><code class="lang-csharp">using System.Buffers;
@@ -274,10 +274,10 @@ Console.WriteLine($&quot;{workbook.BiffVersion}: {workbook.Worksheets.Count} she
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — the full vocabulary.</li>
-<li><strong><a href="records.html">Record reference</a></strong> — every record the codec decodes and writes, by version.</li>
-<li><strong><a href="../../samples/io-biff.html">Runnable sample</a></strong> — the <code>BiffBasics</code> console project.</li>
-<li><strong>API reference</strong> — <a class="xref" href="../../api/Bodu.IO.Biff.html">Bodu.IO.Biff</a>.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - the full vocabulary.</li>
+<li><strong><a href="records.html">Record reference</a></strong> - every record the codec decodes and writes, by version.</li>
+<li><strong><a href="../../samples/io-biff.html">Runnable sample</a></strong> - the <code>BiffBasics</code> console project.</li>
+<li><strong>API reference</strong> - <a class="xref" href="../../api/Bodu.IO.Biff.html">Bodu.IO.Biff</a>.</li>
 </ul>
 
 </article>
@@ -297,7 +297,7 @@ Console.WriteLine($&quot;{workbook.BiffVersion}: {workbook.Worksheets.Count} she
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

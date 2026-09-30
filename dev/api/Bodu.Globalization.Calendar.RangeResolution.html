@@ -107,25 +107,25 @@
 <p>These policies are carried by the document's <code>&lt;ResolutionPolicy&gt;</code> element and surfaced as <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a> on the loaded <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a>. They are resource-level (authored once per document) rather than per-query.</p>
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
-<li><strong><a href="../guides/calendar/resolution-pipeline.html">The resolution pipeline</a></strong> — the stages a query runs through and where each policy applies.</li>
-<li><strong><a href="../guides/calendar/identity-and-resolution.html">Rule identity, priority, and observed-date resolution</a></strong> — duplicate / collision settlement and observed-date range inclusion in detail.</li>
+<li><strong><a href="../guides/calendar/resolution-pipeline.html">The resolution pipeline</a></strong> - the stages a query runs through and where each policy applies.</li>
+<li><strong><a href="../guides/calendar/identity-and-resolution.html">Rule identity, priority, and observed-date resolution</a></strong> - duplicate / collision settlement and observed-date range inclusion in detail.</li>
 </ul>
 <h2 id="key-types">Key types</h2>
 <ul>
-<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a> — the policy bundle: <code>DuplicatePolicy</code>, <code>SameDayCollisionPolicy</code>, <code>SpanCollisionPolicy</code>, <code>PriorityDirection</code>, <code>ObservedDateRangePolicy</code>, and the working week (a <code>Bodu.Core</code> <code>WeekPattern</code>, default Monday–Friday). <code>ResolutionPolicy.Default</code> is the all-defaults instance.</li>
-<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.html">DuplicatePolicy</a> — how identical occurrences are reconciled: <code>Error</code>, <code>KeepFirst</code>, <code>KeepLast</code>, <code>Merge</code>.</li>
-<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a> — how distinct rules landing on the same day (or with overlapping spans) are settled: <code>KeepAll</code>, <code>HighestPriorityOnly</code>, <code>CategoryPriority</code>, <code>Custom</code>.</li>
-<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.PriorityDirection.html">PriorityDirection</a> — whether a higher or lower <code>Priority</code> wins: <code>HigherWins</code>, <code>LowerWins</code>.</li>
-<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.EmissionMode.html">EmissionMode</a> — what an adjustment emits: <code>ActualOnly</code>, <code>ObservedOnly</code>, <code>ActualAndObserved</code>, <code>ObservedAsAdditional</code>, <code>Suppress</code>.</li>
-<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a> — which occurrence date controls inclusion in a range query: <code>ObservedOccurrenceControlsInclusion</code>, <code>ActualOccurrenceControlsInclusion</code>, <code>BothOccurrencesControlInclusion</code>.</li>
-<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver.html">INotableDateCollisionResolver</a> — <code>Resolve(DateOnly date, IReadOnlyList&lt;NotableDate&gt; colliding)</code>. Implement this to settle same-day collisions yourself; it is consulted only under <code>CollisionPolicy.Custom</code> and is supplied through <a class="xref" href="Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a><code>.CollisionResolver</code> when the <code>NotableDateService</code> is constructed.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a> - the policy bundle: <code>DuplicatePolicy</code>, <code>SameDayCollisionPolicy</code>, <code>SpanCollisionPolicy</code>, <code>PriorityDirection</code>, <code>ObservedDateRangePolicy</code>, and the working week (a <code>Bodu.Core</code> <code>WeekPattern</code>, default Monday-Friday). <code>ResolutionPolicy.Default</code> is the all-defaults instance.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.html">DuplicatePolicy</a> - how identical occurrences are reconciled: <code>Error</code>, <code>KeepFirst</code>, <code>KeepLast</code>, <code>Merge</code>.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a> - how distinct rules landing on the same day (or with overlapping spans) are settled: <code>KeepAll</code>, <code>HighestPriorityOnly</code>, <code>CategoryPriority</code>, <code>Custom</code>.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.PriorityDirection.html">PriorityDirection</a> - whether a higher or lower <code>Priority</code> wins: <code>HigherWins</code>, <code>LowerWins</code>.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.EmissionMode.html">EmissionMode</a> - what an adjustment emits: <code>ActualOnly</code>, <code>ObservedOnly</code>, <code>ActualAndObserved</code>, <code>ObservedAsAdditional</code>, <code>Suppress</code>.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a> - which occurrence date controls inclusion in a range query: <code>ObservedOccurrenceControlsInclusion</code>, <code>ActualOccurrenceControlsInclusion</code>, <code>BothOccurrencesControlInclusion</code>.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver.html">INotableDateCollisionResolver</a> - <code>Resolve(DateOnly date, IReadOnlyList&lt;NotableDate&gt; colliding)</code>. Implement this to settle same-day collisions yourself; it is consulted only under <code>CollisionPolicy.Custom</code> and is supplied through <a class="xref" href="Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a><code>.CollisionResolver</code> when the <code>NotableDateService</code> is constructed.</li>
 </ul>
 <h2 id="authored-example">Authored example</h2>
 <pre><code class="lang-xml">&lt;ResolutionPolicy duplicatePolicy=&quot;KeepFirst&quot;
                   sameDayCollisionPolicy=&quot;HighestPriorityOnly&quot;
                   priorityDirection=&quot;HigherWins&quot;
                   observedDateRangePolicy=&quot;ObservedOccurrenceControlsInclusion&quot;
-                  workingDays=&quot;0111110&quot; /&gt;   &lt;!-- Sunday-first; Mon–Fri working --&gt;
+                  workingDays=&quot;0111110&quot; /&gt;   &lt;!-- Sunday-first; Mon-Fri working --&gt;
 </code></pre>
 </div>
   <div class="markdown level0 remarks"></div>
@@ -195,7 +195,7 @@ occurrence, the adjusted (observed) occurrence, both, or neither.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -91,7 +91,7 @@
 the bit-stream technique that Base16, Base32, and Base64 share. Instead the implementation treats the input as a
 big-integer and repeatedly divides by 58 to extract digits.</p>
 <p>Base58's defining feature is that its alphabet excludes the four visually ambiguous characters <code>0</code>, <code>O</code>, <code>I</code>, and
-<code>l</code>. This makes it suitable for any context where a user might transcribe the encoded form by hand — Bitcoin
+<code>l</code>. This makes it suitable for any context where a user might transcribe the encoded form by hand - Bitcoin
 addresses, IPFS CIDs, Solana / Stellar identifiers, Flickr short URLs.</p>
 <pre><code>input bytes        : 00 EB 15 23 1D FC EB 60 92 58 86 B6 7D 06 52 99 92 59 15 AE B1 72 C0 66 47
                                                                                 (Bitcoin payload)
@@ -136,7 +136,7 @@ string rippled = Base58.Encode(payload, Base58Variant.Ripple);
 </tr>
 </tbody>
 </table>
-<p>Both variants use the same 58 characters — only the <em>order</em> differs, so a string encoded under one variant
+<p>Both variants use the same 58 characters - only the <em>order</em> differs, so a string encoded under one variant
 decodes to different bytes under the other.</p>
 <h2 id="leading-zeros">Leading zeros</h2>
 <p>Because Base58 uses big-integer arithmetic, leading zero bytes would normally be lost. The Bitcoin convention
@@ -177,12 +177,12 @@ byte[] back = Base58.Decode(encoded);       // back.SequenceEqual(withZeros)
 </code></pre>
 <h2 id="excluded-characters">Excluded characters</h2>
 <p>The decoder rejects the four visually ambiguous characters that the alphabet intentionally omits:</p>
-<pre><code class="lang-csharp">Base58.Decode(&quot;0Ajdvzr&quot;);  // FormatException — '0' (zero) excluded
-Base58.Decode(&quot;OAjdvzr&quot;);  // FormatException — 'O' (capital O) excluded
-Base58.Decode(&quot;IAjdvzr&quot;);  // FormatException — 'I' (capital I) excluded
-Base58.Decode(&quot;lAjdvzr&quot;);  // FormatException — 'l' (lower L) excluded
+<pre><code class="lang-csharp">Base58.Decode(&quot;0Ajdvzr&quot;);  // FormatException - '0' (zero) excluded
+Base58.Decode(&quot;OAjdvzr&quot;);  // FormatException - 'O' (capital O) excluded
+Base58.Decode(&quot;IAjdvzr&quot;);  // FormatException - 'I' (capital I) excluded
+Base58.Decode(&quot;lAjdvzr&quot;);  // FormatException - 'l' (lower L) excluded
 </code></pre>
-<p>This is intentional — a user transcribing <code>1NS17</code> might write <code>lNS17</code> or <code>INS17</code>, and the decoder rejecting those
+<p>This is intentional - a user transcribing <code>1NS17</code> might write <code>lNS17</code> or <code>INS17</code>, and the decoder rejecting those
 inputs catches the typo at the input boundary rather than silently producing different bytes.</p>
 <h2 id="lenient-parsing">Lenient parsing</h2>
 <table>
@@ -207,7 +207,7 @@ inputs catches the typo at the input boundary rather than silently producing dif
 </tr>
 </tbody>
 </table>
-<pre><code class="lang-csharp">// User-pasted address with stray spaces — strip and decode
+<pre><code class="lang-csharp">// User-pasted address with stray spaces - strip and decode
 byte[] payload = Base58.Decode(
     &quot;  1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L  &quot;,
     Base58Variant.BitcoinFlickr,
@@ -253,18 +253,18 @@ checksum for you.)</p>
 string shortId = Base58.Encode(randomBytes);  // ≈ 11 characters, no ambiguity
 </code></pre>
 <h3 id="encode-a-guid-as-an-ambiguity-free-token">Encode a GUID as an ambiguity-free token</h3>
-<p><code>Base58</code> encodes a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a> directly — a ~22-character token with none of the visually confusable
+<p><code>Base58</code> encodes a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a> directly - a ~22-character token with none of the visually confusable
 <code>0</code>/<code>O</code>/<code>I</code>/<code>l</code> characters, ideal for an identifier a human might read aloud or transcribe:</p>
 <pre><code class="lang-csharp">Guid id = Guid.NewGuid();
 
-string token = Base58.Encode(id);                       // no encode-side options — Base58 has no formatting flags
+string token = Base58.Encode(id);                       // no encode-side options - Base58 has no formatting flags
 Guid back    = Base58.DecodeGuid(token);                // FormatException unless it decodes to 16 bytes
 bool ok      = Base58.TryDecodeGuid(token, out Guid parsed);
 </code></pre>
 <p>The 16 bytes are the GUID's native mixed-endian layout (matching <code>Guid.TryWriteBytes</code>), so the round trip is exact.
 Because Base58 preserves leading-zero bytes as leading <code>1</code> characters, a GUID whose first bytes are zero still
 round-trips losslessly.</p>
-<h2 id="base58check--checksum-protected-payloads">Base58Check — checksum-protected payloads</h2>
+<h2 id="base58check---checksum-protected-payloads">Base58Check - checksum-protected payloads</h2>
 <p><a class="xref" href="../../api/Bodu.Text.Encoding.Base58Check.html">Base58Check</a> wraps Base58 with the Bitcoin-style 4-byte checksum: <code>Encode</code> appends a
 truncated double-hash of the payload, and <code>Decode</code> verifies it (throwing on a corrupted string) before returning the
 original bytes. This is the right entry point for address- and key-style payloads where a single mistyped character
@@ -284,10 +284,10 @@ if (Base58Check.TryDecode(encoded, destination, out int written))
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="base32.html">Base32 guide</a></strong> — when you want human-friendly encoding but power-of-two radix.</li>
-<li><strong><a href="base85.html">Base85 guide</a></strong> — when you need the densest possible ASCII-safe encoding.</li>
-<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> — runtime-selected encoding choice.</li>
-<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
+<li><strong><a href="base32.html">Base32 guide</a></strong> - when you want human-friendly encoding but power-of-two radix.</li>
+<li><strong><a href="base85.html">Base85 guide</a></strong> - when you need the densest possible ASCII-safe encoding.</li>
+<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> - runtime-selected encoding choice.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> - every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
 </ul>
 
 </article>
@@ -307,7 +307,7 @@ if (Base58Check.TryDecode(encoded, destination, out int written))
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

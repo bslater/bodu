@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_MerkleBlockComputation" data-uid="Bodu.Security.Cryptography.MerkleBlockComputation" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 MerkleBlockComputation Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ MerkleBlockComputation Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs">MerkleBlockComputation.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs">MerkleBlockComputation.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents the result of one block-mode Merkle computation: the tree's root, the shape of the input it was taken
@@ -185,7 +185,7 @@ the leaf hashes from the same pass. Generating an authentication path needs the 
 would have to stream the input a second time.
 </p>
 <p>
-The leaf hashes cost <code>leafCount × hashLength</code> bytes to retain — for a 512 MiB input at one-mebibyte blocks that
+The leaf hashes cost <code>leafCount × hashLength</code> bytes to retain - for a 512 MiB input at one-mebibyte blocks that
 is 512 hashes, or 16 KiB. A caller that needs only the root and not a path should use
 <a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html#Bodu_Security_Cryptography_MerkleTree_ComputeRootOfBlocks_System_IO_Stream_System_Int32_Bodu_Security_Cryptography_MerkleTreeDiagnostics_System_Threading_CancellationToken_">ComputeRootOfBlocks(Stream, int, MerkleTreeDiagnostics?, CancellationToken)</a>,
 which folds the tree as it reads and never holds more than a logarithmic number of hashes.
@@ -202,7 +202,7 @@ which folds the tree as it reads and never holds more than a logarithmic number 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleBlockComputation_BlockCount" data-uid="Bodu.Security.Cryptography.MerkleBlockComputation.BlockCount">
   BlockCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -240,7 +240,7 @@ zero for an empty input.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleBlockComputation_BlockSize" data-uid="Bodu.Security.Cryptography.MerkleBlockComputation.BlockSize">
   BlockSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -277,7 +277,7 @@ zero for an empty input.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleBlockComputation_InputLength" data-uid="Bodu.Security.Cryptography.MerkleBlockComputation.InputLength">
   InputLength
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -314,7 +314,7 @@ zero for an empty input.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleBlockComputation_LeafHashes" data-uid="Bodu.Security.Cryptography.MerkleBlockComputation.LeafHashes">
   LeafHashes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -356,11 +356,11 @@ authentication path without re-reading the input.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleBlockComputation_Root" data-uid="Bodu.Security.Cryptography.MerkleBlockComputation.Root">
   Root
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets the tree's root hash — the unbound Merkle Tree Hash, not a length-bound root.</p>
+  <div class="markdown level1 summary"><p>Gets the tree's root hash - the unbound Merkle Tree Hash, not a length-bound root.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -402,7 +402,7 @@ the input produced exactly one block.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleBlockComputation_BlockLength_System_Int64_" data-uid="Bodu.Security.Cryptography.MerkleBlockComputation.BlockLength(System.Int64)">
   BlockLength(long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -456,7 +456,7 @@ knows the input it belongs to and rejects such a block instead.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleBlockComputation_BlockOffset_System_Int64_" data-uid="Bodu.Security.Cryptography.MerkleBlockComputation.BlockOffset(System.Int64)">
   BlockOffset(long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockComputation.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -531,7 +531,7 @@ it belongs to and rejects a block that does not exist.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

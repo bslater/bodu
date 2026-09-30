@@ -87,10 +87,10 @@
         <article data-uid="">
 <h1 id="built-in-converter-catalog">Built-in converter catalog</h1>
 
-<p>Every type that <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializer.html">TomlSerializer</a> handles without a user converter is served by a <strong>built-in converter</strong> — internally an ordinary <a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlConverter-1.html">TomlConverter&lt;T&gt;</a>. This page catalogs that set — which .NET types are provisioned, how each is represented on the wire, and what the read path accepts. Resolution order and the rules for overriding a built-in with your own converter are covered in <a href="converters.html">Writing converters</a>. The sibling libraries (<a href="../bencode/index.html">Bodu.Text.Bencode</a>, <a href="../yaml/index.html">Bodu.Text.Yaml</a>) ship their own catalog over the same machinery.</p>
+<p>Every type that <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializer.html">TomlSerializer</a> handles without a user converter is served by a <strong>built-in converter</strong> - internally an ordinary <a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlConverter-1.html">TomlConverter&lt;T&gt;</a>. This page catalogs that set - which .NET types are provisioned, how each is represented on the wire, and what the read path accepts. Resolution order and the rules for overriding a built-in with your own converter are covered in <a href="converters.html">Writing converters</a>. The sibling libraries (<a href="../bencode/index.html">Bodu.Text.Bencode</a>, <a href="../yaml/index.html">Bodu.Text.Yaml</a>) ship their own catalog over the same machinery.</p>
 <p>The design is: exact-type scalar converters first, factories for open type families (nullables, enums, dictionaries, collections, plain objects) last, with the document object model bridges ahead of everything so a DOM value is never claimed by a structural factory. The full ordering, top to bottom, is:</p>
 <ol>
-<li>the <strong>DOM bridges</strong> — <code>TomlNode</code>, <code>TomlElement</code>, <code>TomlDocument</code> — so a DOM value always flows through its own bridge rather than the dictionary or object factory;</li>
+<li>the <strong>DOM bridges</strong> - <code>TomlNode</code>, <code>TomlElement</code>, <code>TomlDocument</code> - so a DOM value always flows through its own bridge rather than the dictionary or object factory;</li>
 <li>the <strong>exact-type scalar converters</strong> (<code>string</code>, <code>bool</code>, <code>char</code>, <code>Guid</code>, <code>Uri</code>, <code>Version</code>, <code>TimeSpan</code>, <code>double</code>, <code>float</code>, <code>Half</code>, <code>decimal</code>, and the four date-time types), so a scalar is never captured by the object factory;</li>
 <li>the <strong>byte-array and memory-of-byte converters</strong>, ahead of the collection factory so binary data maps by its dedicated converter rather than as a sequence of integers;</li>
 <li>the <strong>integer</strong>, <strong>enum</strong>, and <strong>nullable</strong> factories;</li>
@@ -98,7 +98,7 @@
 <li>the <strong><code>object</code> converter</strong>, so an <code>object</code>-typed member dispatches on its runtime type instead of mapping to an empty table;</li>
 <li>the <strong>object factory</strong> last, as the catch-all that writes a plain class or struct as a table.</li>
 </ol>
-<p>A user converter, or a converter named by a <code>[Converter]</code> attribute, is consulted ahead of this entire list — see <a href="converters.html">Writing converters</a> for the precedence ladder.</p>
+<p>A user converter, or a converter named by a <code>[Converter]</code> attribute, is consulted ahead of this entire list - see <a href="converters.html">Writing converters</a> for the precedence ladder.</p>
 <h2 id="scalars">Scalars</h2>
 <table>
 <thead>
@@ -168,7 +168,7 @@
 <td><code>Half</code></td>
 <td>float</td>
 <td>float</td>
-<td>Exact widening on write; <strong>saturating</strong> IEEE 754 narrow on read — an out-of-range finite float reads back as ±infinity.</td>
+<td>Exact widening on write; <strong>saturating</strong> IEEE 754 narrow on read - an out-of-range finite float reads back as ±infinity.</td>
 </tr>
 <tr>
 <td><code>decimal</code></td>
@@ -288,7 +288,7 @@
 <tr>
 <td><a class="xref" href="../../../api/Bodu.Text.Toml.Document.TomlElement.html">TomlElement</a></td>
 <td>the element's own kind</td>
-<td>Read produces an element backed by an internal, garbage-collected document — no disposal needed.</td>
+<td>Read produces an element backed by an internal, garbage-collected document - no disposal needed.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../../api/Bodu.Text.Toml.Document.TomlDocument.html">TomlDocument</a></td>
@@ -300,11 +300,11 @@
 <h2 id="public-enum-converters">Public enum converters</h2>
 <p>Registered on the options or referenced from a <code>[Converter(...)]</code> attribute:</p>
 <ul>
-<li><a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlStringEnumConverter.html">TomlStringEnumConverter</a> / <code>TomlStringEnumConverter&lt;TEnum&gt;</code> — member-name strings with an optional naming policy and integer-on-read flag.</li>
-<li><code>TomlNumberEnumConverter&lt;TEnum&gt;</code> — the underlying numeric value as a TOML integer.</li>
+<li><a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlStringEnumConverter.html">TomlStringEnumConverter</a> / <code>TomlStringEnumConverter&lt;TEnum&gt;</code> - member-name strings with an optional naming policy and integer-on-read flag.</li>
+<li><code>TomlNumberEnumConverter&lt;TEnum&gt;</code> - the underlying numeric value as a TOML integer.</li>
 </ul>
 <h2 id="representation-decisions-at-a-glance">Representation decisions at a glance</h2>
-<p>TOML's native scalar kinds — string, integer, float, boolean, and the four date-time forms — cover nearly every common BCL type without a choice to make. Two types carry a representation selector on the options:</p>
+<p>TOML's native scalar kinds - string, integer, float, boolean, and the four date-time forms - cover nearly every common BCL type without a choice to make. Two types carry a representation selector on the options:</p>
 <table>
 <thead>
 <tr>
@@ -329,12 +329,12 @@
 <p>The document root must map to a table, so a top-level scalar or array throws. The <code>object</code> / element / document bridges let a DOM value flow through the serializer untouched.</p>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="converters.html">Writing converters</a> — overriding a built-in, factories, and resolution order.</li>
-<li><a href="using.html">Using TOML</a> — the format walk-through the tables above back up.</li>
-<li><a href="attributes.html">Mapping attributes</a> — the declarative layer over the converters.</li>
-<li><a href="../../../docs/serialization/toml/concepts.html">Core concepts</a> — the value-mapping summary in the family vocabulary.</li>
+<li><a href="converters.html">Writing converters</a> - overriding a built-in, factories, and resolution order.</li>
+<li><a href="using.html">Using TOML</a> - the format walk-through the tables above back up.</li>
+<li><a href="attributes.html">Mapping attributes</a> - the declarative layer over the converters.</li>
+<li><a href="../../../docs/serialization/toml/concepts.html">Core concepts</a> - the value-mapping summary in the family vocabulary.</li>
 <li><a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a> and the <a href="../../../docs/topics/text-and-serialization.html">topic overview</a>.</li>
-<li>API reference — <a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlConverter-1.html">TomlConverter&lt;T&gt;</a>, <a class="xref" href="../../../api/Bodu.Text.Toml.TomlByteArrayHandling.html">TomlByteArrayHandling</a>, <a class="xref" href="../../../api/Bodu.Text.Toml.TomlDecimalHandling.html">TomlDecimalHandling</a>.</li>
+<li>API reference - <a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlConverter-1.html">TomlConverter&lt;T&gt;</a>, <a class="xref" href="../../../api/Bodu.Text.Toml.TomlByteArrayHandling.html">TomlByteArrayHandling</a>, <a class="xref" href="../../../api/Bodu.Text.Toml.TomlDecimalHandling.html">TomlDecimalHandling</a>.</li>
 </ul>
 
 </article>
@@ -354,7 +354,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

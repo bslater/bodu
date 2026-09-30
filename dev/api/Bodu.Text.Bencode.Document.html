@@ -105,11 +105,11 @@
 <p><strong>Bodu.Text.Bencode.Document</strong> is the read-only document object model of <a class="xref" href="Bodu.Text.Bencode.html">Bodu.Text.Bencode</a>, shaped after <code>System.Text.Json</code>'s <code>JsonDocument</code> / <code>JsonElement</code>. A parse produces a single disposable <a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> that indexes the input bytes once; every <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a> is a lightweight <code>struct</code> cursor into that index. Prefer it over the mutable <a class="xref" href="Bodu.Text.Bencode.Nodes.html">Bodu.Text.Bencode.Nodes</a> tier when you only need to inspect a payload, and note that an <code>object</code>-typed member deserialized by the <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a> reads back as a <code>BencodeElement</code>.</p>
 <h2 id="key-types">Key types</h2>
 <ul>
-<li><a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> — the disposable owner: <code>Parse</code> (from <code>byte[]</code> or <code>ReadOnlySpan&lt;byte&gt;</code>), <code>RootElement</code>, <code>WriteTo</code>.</li>
-<li><a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a> — the value cursor: <code>ValueKind</code>, <code>GetString</code> / <code>GetBytes</code> / <code>GetRawBytes</code> / <code>GetInt64</code> / <code>GetUInt64</code> (+ <code>TryGet*</code>), <code>GetProperty</code> / <code>TryGetProperty</code>, an integer indexer, <code>GetArrayLength</code>, <code>EnumerateArray</code> / <code>EnumerateObject</code>, <code>Clone</code>, and <code>WriteTo</code>.</li>
-<li><a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.ArrayEnumerator.html">BencodeElement.ArrayEnumerator</a> / <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.ObjectEnumerator.html">BencodeElement.ObjectEnumerator</a> — the struct enumerators returned by <code>EnumerateArray</code> / <code>EnumerateObject</code>.</li>
-<li><a class="xref" href="Bodu.Text.Bencode.Document.BencodeProperty.html">BencodeProperty</a> — a <code>Name</code> / <code>Value</code> pair yielded by <code>EnumerateObject</code>.</li>
-<li><a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocumentOptions.html">BencodeDocumentOptions</a> — <code>MaxDepth</code>, <code>AllowUnsortedKeys</code>, <code>AllowDuplicateKeys</code>.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> - the disposable owner: <code>Parse</code> (from <code>byte[]</code> or <code>ReadOnlySpan&lt;byte&gt;</code>), <code>RootElement</code>, <code>WriteTo</code>.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a> - the value cursor: <code>ValueKind</code>, <code>GetString</code> / <code>GetBytes</code> / <code>GetRawBytes</code> / <code>GetInt64</code> / <code>GetUInt64</code> (+ <code>TryGet*</code>), <code>GetProperty</code> / <code>TryGetProperty</code>, an integer indexer, <code>GetArrayLength</code>, <code>EnumerateArray</code> / <code>EnumerateObject</code>, <code>Clone</code>, and <code>WriteTo</code>.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.ArrayEnumerator.html">BencodeElement.ArrayEnumerator</a> / <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.ObjectEnumerator.html">BencodeElement.ObjectEnumerator</a> - the struct enumerators returned by <code>EnumerateArray</code> / <code>EnumerateObject</code>.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Document.BencodeProperty.html">BencodeProperty</a> - a <code>Name</code> / <code>Value</code> pair yielded by <code>EnumerateObject</code>.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocumentOptions.html">BencodeDocumentOptions</a> - <code>MaxDepth</code>, <code>AllowUnsortedKeys</code>, <code>AllowDuplicateKeys</code>.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using Bodu.Text.Bencode.Document;
@@ -125,7 +125,7 @@ foreach (BencodeProperty property in root.EnumerateObject())
 <ul>
 <li><strong>Lifetime.</strong> Elements are only valid while their document is undisposed; call <code>Clone</code> to detach one.</li>
 <li><strong>Integers beyond <code>long</code>.</strong> A value in the <code>ulong</code> range reads through <code>GetUInt64</code> / <code>TryGetUInt64</code>.</li>
-<li><strong>See also:</strong> the <a href="../docs/serialization/bencode/index.html">Bodu.Text.Bencode introduction</a> and the <a href="../guides/serialization/bencode/using.html">Using Bencode</a> guide (Pattern 7 — Use a document model instead of a type).</li>
+<li><strong>See also:</strong> the <a href="../docs/serialization/bencode/index.html">Bodu.Text.Bencode introduction</a> and the <a href="../guides/serialization/bencode/using.html">Using Bencode</a> guide (Pattern 7 - Use a document model instead of a type).</li>
 </ul>
 </div>
   <div class="markdown level0 remarks"></div>
@@ -150,8 +150,8 @@ Structs
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a></dt>
-      <dd><p>Represents a single read-only value within a <a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a>. The element is a lightweight view — a
-pair of the owning document and a row index — so copying it is cheap and never materializes a node.</p>
+      <dd><p>Represents a single read-only value within a <a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a>. The element is a lightweight view - a
+pair of the owning document and a row index - so copying it is cheap and never materializes a node.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -188,7 +188,7 @@ pair of the owning document and a row index — so copying it is cheap and never
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

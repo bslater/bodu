@@ -103,19 +103,19 @@
 <p><img src="../images/hero-text.svg" alt="Bodu.Text"></p>
 <h1 id="bodutext">Bodu.Text</h1>
 <h2 id="purpose">Purpose</h2>
-<p>The <strong>Bodu.Text</strong> namespace ships inside the <strong><code>Bodu.Core</code> package</strong> — it is not a separate library. It holds allocation-conscious helpers for the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a> itself: zero-ceremony <code>string</code>↔<code>byte[]</code> conversion, pooled / owned-memory surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding.</p>
+<p>The <strong>Bodu.Text</strong> namespace ships inside the <strong><code>Bodu.Core</code> package</strong> - it is not a separate library. It holds allocation-conscious helpers for the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a> itself: zero-ceremony <code>string</code>↔<code>byte[]</code> conversion, pooled / owned-memory surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding.</p>
 <p>It is also the namespace root that the separately packaged text libraries extend: the binary-to-text <em>radix</em> encodings in <a class="xref" href="Bodu.Text.Encoding.html">Bodu.Text.Encoding</a>, the include/exclude pattern filtering in <a class="xref" href="Bodu.Text.Filtering.html">Bodu.Text.Filtering</a>, and the line-format libraries <a class="xref" href="Bodu.Text.Delimited.html">Bodu.Text.Delimited</a>, <a class="xref" href="Bodu.Text.DotEnv.html">Bodu.Text.DotEnv</a>, and <a class="xref" href="Bodu.Text.Ini.html">Bodu.Text.Ini</a> (see the <a href="../docs/formats/index.html">line-formats introduction</a>). None of those types live in this namespace; only the three encoding helpers below do.</p>
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
-<li><strong><a href="../guides/text-encoding/encoding-helpers.html">Encoding helpers and BOM detection</a></strong> — the <code>System.Text.Encoding</code> convenience surface.</li>
-<li><strong><a href="../guides/formats/index.html">Bodu.Text.Formats overview</a></strong> — the document-format codecs and their shared pipeline.</li>
+<li><strong><a href="../guides/text-encoding/encoding-helpers.html">Encoding helpers and BOM detection</a></strong> - the <code>System.Text.Encoding</code> convenience surface.</li>
+<li><strong><a href="../guides/formats/index.html">Bodu.Text.Formats overview</a></strong> - the document-format codecs and their shared pipeline.</li>
 </ul>
 <h2 id="key-types">Key types</h2>
 <p><strong><code>System.Text.Encoding</code> helpers</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Text.StringEncodingExtensions.html">StringEncodingExtensions</a> — extension methods on <code>string</code> (UTF-8 fast paths, pooled / preamble-aware conversion).</li>
-<li><a class="xref" href="Bodu.Text.EncodingExtensions.html">EncodingExtensions</a> — extension methods on <code>System.Text.Encoding</code> (preamble handling, UTF / ASCII classification, fallback configuration, rented / owned / pooled buffer conversion), on <code>Encoder</code> / <code>Decoder</code> (chunked <code>EncodeChunk</code> / <code>DecodeChunk</code> transcoding), and on <code>ReadOnlySpan&lt;char&gt;</code> / <code>ReadOnlySpan&lt;byte&gt;</code> (<code>ToBytes</code>, <code>ToChars</code>, <code>DecodeToString</code>, <code>Transcode</code>, buffer-size guards).</li>
-<li><a class="xref" href="Bodu.Text.EncodingDetection.html">EncodingDetection</a> — static BOM-sniffing: <code>TryDetectByPreamble(ReadOnlySpan&lt;byte&gt;, out Encoding?)</code>.</li>
+<li><a class="xref" href="Bodu.Text.StringEncodingExtensions.html">StringEncodingExtensions</a> - extension methods on <code>string</code> (UTF-8 fast paths, pooled / preamble-aware conversion).</li>
+<li><a class="xref" href="Bodu.Text.EncodingExtensions.html">EncodingExtensions</a> - extension methods on <code>System.Text.Encoding</code> (preamble handling, UTF / ASCII classification, fallback configuration, rented / owned / pooled buffer conversion), on <code>Encoder</code> / <code>Decoder</code> (chunked <code>EncodeChunk</code> / <code>DecodeChunk</code> transcoding), and on <code>ReadOnlySpan&lt;char&gt;</code> / <code>ReadOnlySpan&lt;byte&gt;</code> (<code>ToBytes</code>, <code>ToChars</code>, <code>DecodeToString</code>, <code>Transcode</code>, buffer-size guards).</li>
+<li><a class="xref" href="Bodu.Text.EncodingDetection.html">EncodingDetection</a> - static BOM-sniffing: <code>TryDetectByPreamble(ReadOnlySpan&lt;byte&gt;, out Encoding?)</code>.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using System.Text;
@@ -225,7 +225,7 @@ produce a byte sequence.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_IBlockCipherModeTransform" data-uid="Bodu.Security.Cryptography.IBlockCipherModeTransform" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 IBlockCipherModeTransform Interface
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/IBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/IBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ IBlockCipherModeTransform Interface
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/IBlockCipherModeTransform.cs">IBlockCipherModeTransform.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/IBlockCipherModeTransform.cs">IBlockCipherModeTransform.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Defines a stateful block cipher mode transformation that applies a chaining strategy (such as ECB, CBC, CFB, OFB, or
@@ -173,7 +173,7 @@ Padding is not handled by this interface. Callers must align input to the cipher
 <a class="xref" href="Bodu.Security.Cryptography.EcbModeTransform.html">EcbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CbcModeTransform.html">CbcModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CfbModeTransform.html">CfbModeTransform</a>,
 <a class="xref" href="Bodu.Security.Cryptography.OfbModeTransform.html">OfbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a>.
 </li><li><span class="term">Disk-encryption mode</span><a class="xref" href="Bodu.Security.Cryptography.XtsModeTransform.html">XtsModeTransform</a>.</li><li><span class="term">Authenticated modes (AEAD)</span>
-Implement the richer <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> contract instead — <a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>
+Implement the richer <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> contract instead - <a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>
 , <a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a>,
 <a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a>.
 </li></ul>
@@ -185,7 +185,7 @@ mode infrastructure or building a higher-level construction on top.
 </p>
 <p>
 Implementations are stateful and not thread-safe; share behind explicit synchronization, or allocate one per
-consumer. Most modes reset cleanly when constructed afresh — there is no in-place reset method on this interface.
+consumer. Most modes reset cleanly when constructed afresh - there is no in-place reset method on this interface.
 </p>
 </div>
 
@@ -199,7 +199,7 @@ consumer. Most modes reset cleanly when constructed afresh — there is no in-pl
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_IBlockCipherModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_" data-uid="Bodu.Security.Cryptography.IBlockCipherModeTransform.Transform(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Boolean)">
   Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/IBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/IBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -278,7 +278,7 @@ consumer. Most modes reset cleanly when constructed afresh — there is no in-pl
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

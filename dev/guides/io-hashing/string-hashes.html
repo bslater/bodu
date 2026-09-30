@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="classic-string-hashes">Classic string hashes</h1>
 
-<p>A collection of the classic &quot;one-liner&quot; hash functions that appear in textbooks, compilers, and early web servers. They all produce a 32-bit or 64-bit output, none of them takes a key, and their public API is identical — configure any optional seed, call <code>Append</code> to feed data, and call <code>GetCurrentHash</code> to read the digest.</p>
+<p>A collection of the classic &quot;one-liner&quot; hash functions that appear in textbooks, compilers, and early web servers. They all produce a 32-bit or 64-bit output, none of them takes a key, and their public API is identical - configure any optional seed, call <code>Append</code> to feed data, and call <code>GetCurrentHash</code> to read the digest.</p>
 <p><strong>None of these are cryptographic.</strong> They are in the package for interoperability with legacy systems, for teaching purposes, and for use inside a trust boundary where collision-DoS is not a concern. For anything adversary-facing, use <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a>; see the <a href="../cryptography/hashing.html">cryptography hashing guide</a>.</p>
 <h2 id="the-family-at-a-glance">The family at a glance</h2>
 <table>
@@ -109,7 +109,7 @@
 <tr>
 <td><a class="xref" href="../../api/Bodu.IO.Hashing.BKDR.html">BKDR</a></td>
 <td>32 bits</td>
-<td><code>Seed</code> — one of a published set of odd multipliers</td>
+<td><code>Seed</code> - one of a published set of odd multipliers</td>
 <td>Kernighan &amp; Ritchie, <em>The C Programming Language</em>.</td>
 </tr>
 <tr>
@@ -151,34 +151,34 @@
 </tbody>
 </table>
 <p>All eight derive from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a>.</p>
-<h2 id="pattern-1--a-default-configured-hash">Pattern 1 — a default-configured hash</h2>
+<h2 id="pattern-1---a-default-configured-hash">Pattern 1 - a default-configured hash</h2>
 <p>Every type has a parameterless constructor that uses the historically canonical parameters for that function:</p>
 <pre><code class="lang-csharp">using System.Text;
 using Bodu.IO.Hashing;
 
 byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
 
-var hash = new Bernstein();             // djb2 — seed 5381, XOR form
+var hash = new Bernstein();             // djb2 - seed 5381, XOR form
 hash.Append(data);
 byte[] digest = hash.GetCurrentHash();
 uint h = BitConverter.ToUInt32(digest);
 </code></pre>
-<p>Swap <code>Bernstein</code> for any of the others — the API is the same.</p>
-<h2 id="pattern-2--bernstein-djb2-add-vs-xor">Pattern 2 — Bernstein (djb2), add vs XOR</h2>
+<p>Swap <code>Bernstein</code> for any of the others - the API is the same.</p>
+<h2 id="pattern-2---bernstein-djb2-add-vs-xor">Pattern 2 - Bernstein (djb2), add vs XOR</h2>
 <p>Bernstein's original posting used addition (<code>h = h * 33 + c</code>). The XOR form (<code>h = h * 33 ^ c</code>) distributes slightly better on ASCII input and is what most later ports use. <code>Bernstein</code> exposes both through <code>UseModifiedAlgorithm</code>.</p>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing;
 
 // Original: h = (h * 33) + c
 var original = new Bernstein(Bernstein.DefaultInitialValue, useModifiedAlgorithm: false);
 
-// &quot;djb2a&quot;:  h = (h * 33) ^ c — the common modern variant
+// &quot;djb2a&quot;:  h = (h * 33) ^ c - the common modern variant
 var modified = new Bernstein(Bernstein.DefaultInitialValue, useModifiedAlgorithm: true);
 
 // Or set the properties before the first Append
 var alt = new Bernstein { InitialValue = 0, UseModifiedAlgorithm = true };
 </code></pre>
-<p>Both properties are only settable <strong>before</strong> the first <code>Append</code> — changing them mid-stream would invalidate the running state, so the setters throw once input has been fed.</p>
-<h2 id="pattern-3--bkdrs-published-multiplier-set">Pattern 3 — BKDR's published multiplier set</h2>
+<p>Both properties are only settable <strong>before</strong> the first <code>Append</code> - changing them mid-stream would invalidate the running state, so the setters throw once input has been fed.</p>
+<h2 id="pattern-3---bkdrs-published-multiplier-set">Pattern 3 - BKDR's published multiplier set</h2>
 <p>BKDR is a family: the multiplier is a repeating-digit odd number from the published set (<code>31</code>, <code>131</code>, <code>1313</code>, <code>13131</code>, <code>131313</code>, <code>1313131</code>, <code>13131313</code>, <code>131313131</code>, <code>1313131313</code>). The default is <code>BKDR.DefaultSeed</code> (<code>131</code>):</p>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing;
 
@@ -186,8 +186,8 @@ var bkdr = new BKDR(seed: 1313);         // must be one of the published values
 bkdr.Append(Encoding.UTF8.GetBytes(&quot;example&quot;));
 byte[] digest = bkdr.GetCurrentHash();
 </code></pre>
-<p>Passing a value outside the published set throws — the seed is a property of the published &quot;standard BKDR family&quot;, not an arbitrary multiplier.</p>
-<h2 id="pattern-4--elf64-with-a-custom-seed">Pattern 4 — Elf64 with a custom seed</h2>
+<p>Passing a value outside the published set throws - the seed is a property of the published &quot;standard BKDR family&quot;, not an arbitrary multiplier.</p>
+<h2 id="pattern-4---elf64-with-a-custom-seed">Pattern 4 - Elf64 with a custom seed</h2>
 <p><code>Elf64</code> widens the classic ELF symbol-table hash to 64 bits and exposes a seed so you can salt it for separate hash-table lanes:</p>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing;
 
@@ -195,8 +195,8 @@ var elf = new Elf64(seed: 0xDEADBEEFUL);
 elf.Append(Encoding.UTF8.GetBytes(&quot;/usr/bin/ls&quot;));
 byte[] digest = elf.GetCurrentHash();
 </code></pre>
-<p>The seed is <strong>not a key</strong> — it does not provide adversarial resistance. It only re-origins the accumulator so two parallel tables get independent distributions.</p>
-<h2 id="pattern-5--append--getcurrenthash--reset">Pattern 5 — <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code></h2>
+<p>The seed is <strong>not a key</strong> - it does not provide adversarial resistance. It only re-origins the accumulator so two parallel tables get independent distributions.</p>
+<h2 id="pattern-5---append--getcurrenthash--reset">Pattern 5 - <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code></h2>
 <p>Every type in this family behaves identically under the <code>NonCryptographicHashAlgorithm</code> contract:</p>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing;
 
@@ -212,20 +212,20 @@ hash.Reset();                              // back to the configured seed / init
 </code></pre>
 <h2 id="picking-a-function">Picking a function</h2>
 <ul>
-<li><strong>Hashing identifiers inside a compiler or symbol table?</strong> <code>Pjw32</code> or <code>Elf64</code> — these are the functions you'll meet in the original source.</li>
+<li><strong>Hashing identifiers inside a compiler or symbol table?</strong> <code>Pjw32</code> or <code>Elf64</code> - these are the functions you'll meet in the original source.</li>
 <li><strong>Quick hash-table function in throwaway code?</strong> <code>Bernstein</code> with <code>UseModifiedAlgorithm = true</code> is simple, well-known, and distributes reasonably.</li>
-<li><strong>Hashing many short keys?</strong> <code>SuperFastHash</code> is tuned for short inputs — but it buffers its input, so avoid it for very large streams (use a block-based fingerprint instead).</li>
-<li><strong>Hashing user-controlled input?</strong> None of these — reach for <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a>.</li>
+<li><strong>Hashing many short keys?</strong> <code>SuperFastHash</code> is tuned for short inputs - but it buffers its input, so avoid it for very large streams (use a block-based fingerprint instead).</li>
+<li><strong>Hashing user-controlled input?</strong> None of these - reach for <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a>.</li>
 <li><strong>Reproducing a known published digest from another tool?</strong> Match on algorithm, width, seed, and (for Bernstein) the add-vs-XOR variant.</li>
 </ul>
-<p>For general-purpose fingerprinting where quality and speed both matter, <strong><code>CityHash64</code></strong> and <strong><code>Fnv1a64</code></strong> outperform everything in this family — see the <a href="cityhash.html">CityHash</a> and <a href="fnv.html">FNV</a> guides.</p>
+<p>For general-purpose fingerprinting where quality and speed both matter, <strong><code>CityHash64</code></strong> and <strong><code>Fnv1a64</code></strong> outperform everything in this family - see the <a href="cityhash.html">CityHash</a> and <a href="fnv.html">FNV</a> guides.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="fnv.html">Using FNV</a>, <a href="cityhash.html">Using CityHash</a> — modern non-cryptographic hashes with better distribution.</li>
-<li><a href="pearson.html">Using Pearson</a> — table-driven classic hash with configurable output width.</li>
-<li><a href="../cryptography/hashing.html">Cryptography hashing guide</a> — when a classic hash is not enough.</li>
-<li><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing namespace page</a> — key types and design notes.</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><a href="fnv.html">Using FNV</a>, <a href="cityhash.html">Using CityHash</a> - modern non-cryptographic hashes with better distribution.</li>
+<li><a href="pearson.html">Using Pearson</a> - table-driven classic hash with configurable output width.</li>
+<li><a href="../cryptography/hashing.html">Cryptography hashing guide</a> - when a classic hash is not enough.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing namespace page</a> - key types and design notes.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -245,7 +245,7 @@ hash.Reset();                              // back to the configured seed / init
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

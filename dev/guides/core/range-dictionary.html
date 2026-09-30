@@ -88,20 +88,20 @@
 <h1 id="range-keyed-lookups">Range-keyed lookups</h1>
 
 <p><code>Bodu.Collections.Generic</code> ships a small family of types for non-overlapping range storage: <code>Range&lt;T&gt;</code> and <code>ValueRange&lt;TKey, TValue&gt;</code> for the value-type building blocks, <code>RangeDictionary&lt;TKey, TValue&gt;</code> for half-open key ranges mapping to values, and <code>RangeSet&lt;T&gt;</code> for half-open key ranges as a set with union / intersect / except.</p>
-<p>Reach for these when point lookups need to <em>find the range that contains a key</em> rather than match the key exactly — version-band lookups, tariff brackets, time bucketing, address-range routing, tier classification.</p>
-<h2 id="ranget--the-half-open-interval-value-type"><code>Range&lt;T&gt;</code> — the half-open interval value type</h2>
+<p>Reach for these when point lookups need to <em>find the range that contains a key</em> rather than match the key exactly - version-band lookups, tariff brackets, time bucketing, address-range routing, tier classification.</p>
+<h2 id="ranget---the-half-open-interval-value-type"><code>Range&lt;T&gt;</code> - the half-open interval value type</h2>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 Range&lt;int&gt; band = new(startInclusive: 100, endExclusive: 200);
 band.Contains(99);    // False
-band.Contains(100);   // True  — lower bound included
+band.Contains(100);   // True  - lower bound included
 band.Contains(199);   // True
-band.Contains(200);   // False — upper bound excluded
+band.Contains(200);   // False - upper bound excluded
 band.ToString();      // &quot;[100, 200)&quot;
 </code></pre>
 <p><code>Range&lt;T&gt;</code> is a <code>readonly struct</code> over any <code>IComparable&lt;T&gt;</code>. The constructor validates <code>start &lt; end</code>; equal-bound ranges are rejected at construction, since the half-open form <code>[x, x)</code> is empty.</p>
-<p>For the closed-closed / open-open / open-closed / closed-open form factor, reach for <a href="../numerics/interval.html"><code>Interval&lt;T&gt;</code></a> in <code>Bodu.Numerics</code>. <code>Range&lt;T&gt;</code> is intentionally narrower — half-open only, no empty-set canonicalisation — to match the typical storage-key semantics where <code>RangeDictionary</code> and <code>RangeSet</code> need adjacent ranges to coexist without overlap.</p>
-<h2 id="valuerangetkey-tvalue--range-paired-with-a-value"><code>ValueRange&lt;TKey, TValue&gt;</code> — range paired with a value</h2>
+<p>For the closed-closed / open-open / open-closed / closed-open form factor, reach for <a href="../numerics/interval.html"><code>Interval&lt;T&gt;</code></a> in <code>Bodu.Numerics</code>. <code>Range&lt;T&gt;</code> is intentionally narrower - half-open only, no empty-set canonicalisation - to match the typical storage-key semantics where <code>RangeDictionary</code> and <code>RangeSet</code> need adjacent ranges to coexist without overlap.</p>
+<h2 id="valuerangetkey-tvalue---range-paired-with-a-value"><code>ValueRange&lt;TKey, TValue&gt;</code> - range paired with a value</h2>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 ValueRange&lt;int, string&gt; band = new(100, 200, &quot;tier-2&quot;);
@@ -110,7 +110,7 @@ band.Value;           // &quot;tier-2&quot;
 band.ToString();      // &quot;[100, 200) = tier-2&quot;
 </code></pre>
 <p><code>ValueRange&lt;TKey, TValue&gt;</code> is the projection returned by <code>RangeDictionary</code> enumeration. It is a <code>readonly struct</code> and supports the same <code>Contains</code> test as <code>Range&lt;T&gt;</code>.</p>
-<h2 id="rangedictionarytkey-tvalue--range-to-value-lookup"><code>RangeDictionary&lt;TKey, TValue&gt;</code> — range-to-value lookup</h2>
+<h2 id="rangedictionarytkey-tvalue---range-to-value-lookup"><code>RangeDictionary&lt;TKey, TValue&gt;</code> - range-to-value lookup</h2>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 var brackets = new RangeDictionary&lt;decimal, decimal&gt;
@@ -122,7 +122,7 @@ var brackets = new RangeDictionary&lt;decimal, decimal&gt;
     { 180_000m, decimal.MaxValue, 0.45m },
 };
 
-decimal rate = brackets[37_500m];   // 0.19m — point lookup; throws on miss
+decimal rate = brackets[37_500m];   // 0.19m - point lookup; throws on miss
 </code></pre>
 <p>The indexer is a <em>point lookup</em>: it walks the sorted range list (binary-searched on the endpoint comparer) to find the range that contains the queried key, and returns its value. <code>KeyNotFoundException</code> is thrown when the key falls outside every range.</p>
 <p>Use <code>TryGetValue</code> or <code>TryGetEntry</code> when a miss is expected:</p>
@@ -133,8 +133,8 @@ if (brackets.TryGetEntry(37_500m, out ValueRange&lt;decimal, decimal&gt; entry))
     Console.WriteLine($&quot;In range {entry.StartInclusive}-{entry.EndExclusive}, rate {entry.Value:P}&quot;);
 </code></pre>
 <h3 id="non-overlap-invariant">Non-overlap invariant</h3>
-<p>Overlapping ranges throw <code>ArgumentException</code> on <code>Add</code>. Adjacent ranges are allowed — <code>[0, 5)</code> and <code>[5, 10)</code> coexist because they share an endpoint but not a value.</p>
-<pre><code class="lang-csharp">brackets.Overlaps(40_000m, 50_000m);   // True — straddles the [18_200, 45_000) and [45_000, 120_000) seams
+<p>Overlapping ranges throw <code>ArgumentException</code> on <code>Add</code>. Adjacent ranges are allowed - <code>[0, 5)</code> and <code>[5, 10)</code> coexist because they share an endpoint but not a value.</p>
+<pre><code class="lang-csharp">brackets.Overlaps(40_000m, 50_000m);   // True - straddles the [18_200, 45_000) and [45_000, 120_000) seams
 brackets.Add(40_000m, 50_000m, &quot;oops&quot;); // throws ArgumentException
 </code></pre>
 <p><code>Overlaps</code> lets you test before adding so the failure path is <code>return false</code> rather than <code>catch</code>.</p>
@@ -149,14 +149,14 @@ foreach (ValueRange&lt;decimal, decimal&gt; band in brackets)
     Console.WriteLine($&quot;{band.StartInclusive}-{band.EndExclusive}: {band.Value:P}&quot;);
 </code></pre>
 <p>Enumeration is in ascending endpoint order, regardless of insertion order.</p>
-<h2 id="rangesett--non-overlapping-range-membership"><code>RangeSet&lt;T&gt;</code> — non-overlapping range membership</h2>
+<h2 id="rangesett---non-overlapping-range-membership"><code>RangeSet&lt;T&gt;</code> - non-overlapping range membership</h2>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 var weekdays = new RangeSet&lt;DateTime&gt;();
 weekdays.Add(new(2026, 1, 5),  new(2026, 1, 10));   // Mon-Fri week 1
 weekdays.Add(new(2026, 1, 10), new(2026, 1, 17));   // adjacent; coalesces
 
-weekdays.Count;                                      // 1 — adjacent merged
+weekdays.Count;                                      // 1 - adjacent merged
 weekdays.Contains(new DateTime(2026, 1, 12));        // True
 </code></pre>
 <p><code>RangeSet&lt;T&gt;</code> differs from <code>RangeDictionary</code> in two ways: there is no value associated with each range, and <em>adjacent ranges automatically merge</em> on <code>Add</code>. Insertion-order is preserved internally only as far as merging permits.</p>
@@ -171,7 +171,7 @@ RangeSet&lt;int&gt; union = a.Union(b);          // [0, 150)
 RangeSet&lt;int&gt; inter = a.Intersect(b);      // [30, 50), [100, 120)
 RangeSet&lt;int&gt; diff  = a.Except(b);         // [0, 30)
 </code></pre>
-<p>Each set operation returns a new <code>RangeSet&lt;T&gt;</code>; the operands are not mutated. The implementation is O(n + m) on the sizes of the operands — a single linear merge over the sorted range arrays.</p>
+<p>Each set operation returns a new <code>RangeSet&lt;T&gt;</code>; the operands are not mutated. The implementation is O(n + m) on the sizes of the operands - a single linear merge over the sorted range arrays.</p>
 <h3 id="other-operations">Other operations</h3>
 <pre><code class="lang-csharp">set.Add(new Range&lt;int&gt;(20, 40));     // convenience overload
 set.Remove(10, 25);                   // remove or split intersecting range
@@ -180,7 +180,7 @@ set.Contains(0, 10);                  // exact range membership
 set.Overlaps(0, 100);                 // overlap test
 set.ToArray();                        // snapshot in ascending order
 </code></pre>
-<p><code>Remove(start, end)</code> is destructive on overlapping ranges — it carves the requested interval out, splitting an existing range into two if the removed interval is fully contained.</p>
+<p><code>Remove(start, end)</code> is destructive on overlapping ranges - it carves the requested interval out, splitting an existing range into two if the removed interval is fully contained.</p>
 <h2 id="performance">Performance</h2>
 <table>
 <thead>
@@ -208,7 +208,7 @@ set.ToArray();                        // snapshot in ascending order
 </tr>
 <tr>
 <td><code>Union</code> / <code>Intersect</code> / <code>Except</code></td>
-<td>—</td>
+<td>-</td>
 <td>O(n + m)</td>
 </tr>
 <tr>
@@ -219,7 +219,7 @@ set.ToArray();                        // snapshot in ascending order
 </tbody>
 </table>
 <p>For workloads that are dominated by point lookups, the binary search is the headline cost; insertion is rare. For workloads dominated by set algebra over many ranges, the linear merge sets the bound.</p>
-<h2 id="worked-example--version-banding">Worked example — version banding</h2>
+<h2 id="worked-example---version-banding">Worked example - version banding</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
@@ -242,7 +242,7 @@ Symbolic(999);    // &quot;unknown&quot;
 </code></pre>
 <h2 id="when-not-to-use-this-family">When <em>not</em> to use this family</h2>
 <ul>
-<li><strong>Exact-key lookups.</strong> Use <code>Dictionary&lt;TKey, TValue&gt;</code> or <code>SortedDictionary&lt;TKey, TValue&gt;</code> — both are simpler and faster when the key matches a stored value verbatim.</li>
+<li><strong>Exact-key lookups.</strong> Use <code>Dictionary&lt;TKey, TValue&gt;</code> or <code>SortedDictionary&lt;TKey, TValue&gt;</code> - both are simpler and faster when the key matches a stored value verbatim.</li>
 <li><strong>Overlapping ranges.</strong> Both <code>RangeDictionary</code> and <code>RangeSet</code> enforce non-overlap. For intervals that may overlap (e.g. event-scheduling conflict resolution), reach for <a href="interval-tree.html"><code>IntervalTree&lt;T&gt;</code> / <code>IntervalTree&lt;TKey,TValue&gt;</code></a>, which ship in the same package.</li>
 <li><strong>Closed-closed or open-open intervals.</strong> Use <a href="../numerics/interval.html"><code>Interval&lt;T&gt;</code></a> for the full four-form bounded-interval surface; these types are half-open by design.</li>
 </ul>
@@ -252,9 +252,9 @@ Symbolic(999);    // &quot;unknown&quot;
 <li><a class="xref" href="../../api/Bodu.Collections.Generic.RangeDictionary-2.html"><code>RangeDictionary&lt;TKey, TValue&gt;</code> API reference</a></li>
 <li><a class="xref" href="../../api/Bodu.Collections.Generic.RangeSet-1.html"><code>RangeSet&lt;T&gt;</code> API reference</a></li>
 <li><a class="xref" href="../../api/Bodu.Collections.Generic.ValueRange-2.html"><code>ValueRange&lt;TKey, TValue&gt;</code> API reference</a></li>
-<li><a href="../numerics/interval.html"><code>Interval&lt;T&gt;</code> guide</a> — the closed-closed / open-open / half-open numeric interval type.</li>
+<li><a href="../numerics/interval.html"><code>Interval&lt;T&gt;</code> guide</a> - the closed-closed / open-open / half-open numeric interval type.</li>
 <li><a class="xref" href="../../api/Bodu.Collections.Generic.html"><code>Bodu.Collections.Generic</code> namespace landing</a></li>
-<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -274,7 +274,7 @@ Symbolic(999);    // &quot;unknown&quot;
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

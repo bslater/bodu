@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Globalization.Calendar.Caching — Getting started | BODU </title>
+      <title>Bodu.Globalization.Calendar.Caching - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Globalization.Calendar.Caching — Getting started | BODU ">
+      <meta name="title" content="Bodu.Globalization.Calendar.Caching - Getting started | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,7 +85,7 @@
         </div>
 
         <article data-uid="">
-<h1 id="boduglobalizationcalendarcaching--getting-started">Bodu.Globalization.Calendar.Caching — Getting started</h1>
+<h1 id="boduglobalizationcalendarcaching---getting-started">Bodu.Globalization.Calendar.Caching - Getting started</h1>
 
 <p>Unfamiliar with terms like <em>decorator</em>, <em>cache unit</em>, <em>resource version</em>, <em>refresh-ahead</em>, <em>warm-up</em>, or <em>storage
 failure policy</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
@@ -98,12 +98,12 @@ dotnet add package Bodu.Globalization.Calendar.Caching.Distributed
 </code></pre>
 <p>Targets <code>net8.0</code>. Depends on:</p>
 <ul>
-<li><strong><code>Bodu.Globalization.Calendar.Caching</code></strong> — <code>Bodu.Core</code>, <code>Bodu.Globalization.Calendar</code> (the service contract it
+<li><strong><code>Bodu.Globalization.Calendar.Caching</code></strong> - <code>Bodu.Core</code>, <code>Bodu.Globalization.Calendar</code> (the service contract it
 decorates), <code>Bodu.Text.Toml</code> (the TOML file cache), and <code>Microsoft.Extensions.Configuration.Abstractions</code> /
 <code>.Configuration.Binder</code> / <code>.DependencyInjection.Abstractions</code> / <code>.Hosting.Abstractions</code> /
 <code>.Logging.Abstractions</code> / <code>.Options</code> / <code>.Options.ConfigurationExtensions</code>, all at the .NET 8.0 LTS line.</li>
-<li><strong><code>Bodu.Globalization.Calendar.Caching.Sqlite</code></strong> — the core caching package plus <code>Microsoft.Data.Sqlite</code>.</li>
-<li><strong><code>Bodu.Globalization.Calendar.Caching.Distributed</code></strong> — the core caching package plus
+<li><strong><code>Bodu.Globalization.Calendar.Caching.Sqlite</code></strong> - the core caching package plus <code>Microsoft.Data.Sqlite</code>.</li>
+<li><strong><code>Bodu.Globalization.Calendar.Caching.Distributed</code></strong> - the core caching package plus
 <code>Microsoft.Extensions.Caching.Abstractions</code> and <code>Microsoft.Extensions.Caching.StackExchangeRedis</code>.</li>
 </ul>
 <p>The samples below resolve the wrapped service from a regional data pack (<code>Bodu.Globalization.Calendar.Americas</code> /
@@ -153,7 +153,7 @@ IReadOnlyList&lt;NotableDate&gt; year = calendar.Resolve(2026, &quot;US&quot;); 
 </code></pre>
 <p>Leave <code>CacheDirectory</code> as <code>null</code> to use a <code>bodu-notable-dates</code> folder under the system temporary path. Swap
 <code>TomlNotableDateCache</code> for <code>JsonNotableDateCache</code> to write JSON with the same options and layout. Without a resource
-provider the fixed <code>ResourceVersion</code> keys every entry — bump it after a data update so stale years recompute.</p>
+provider the fixed <code>ResourceVersion</code> keys every entry - bump it after a data update so stale years recompute.</p>
 <h3 id="invalidate-on-reload-with-a-resource-provider">Invalidate on reload with a resource provider</h3>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Caching;
@@ -173,7 +173,7 @@ resourceProvider.Reload(AsiaPacificCalendarData.LoadResource(&quot;AU&quot;));
 _ = calendar.Resolve(2026, &quot;AU-NSW&quot;);                              // version changed: recomputes
 </code></pre>
 <p>The decorator derives the version token from the provider's current resource and a reload generation, so a reload
-invalidates every cached year on the next query — even when the reloaded resource carries the same identifier.</p>
+invalidates every cached year on the next query - even when the reloaded resource carries the same identifier.</p>
 <h3 id="register-under-dependency-injection">Register under dependency injection</h3>
 <p><code>AddCachedNotableDateService</code> decorates the <code>INotableDateService</code> already in the container, so it must come <em>after</em>
 the service registration (it throws <code>InvalidOperationException</code> otherwise). Consumers keep injecting
@@ -249,10 +249,10 @@ builder.Services.AddCachedNotableDateService(
   }
 }
 </code></pre>
-<p>Either <code>DatabaseFilePath</code> or a full <code>ConnectionString</code> is required (the connection string wins when both are set —
+<p>Either <code>DatabaseFilePath</code> or a full <code>ConnectionString</code> is required (the connection string wins when both are set -
 use it for a shared in-memory database such as <code>Data Source=holidays;Mode=Memory;Cache=Shared</code>). With
 <code>ValidateStorageOnStart</code> the registration opens and initializes the database during <code>ValidateOnStart</code>, so an
-unwritable path fails the host start. The container disposes the cache — and its keep-alive connection — on
+unwritable path fails the host start. The container disposes the cache - and its keep-alive connection - on
 shutdown.</p>
 <h3 id="use-redis-or-any-idistributedcache">Use Redis (or any <code>IDistributedCache</code>)</h3>
 <p><code>AddRedisNotableDateCache</code> registers the Redis <code>IDistributedCache</code> and a
@@ -370,18 +370,18 @@ public sealed class DictionaryNotableDateCache : INotableDateCache
         territory.Trim().ToUpperInvariant();
 }
 </code></pre>
-<p>Plug it in exactly like a shipped backend — <code>new CachingNotableDateService(engine, new DictionaryNotableDateCache(), options)</code> or <code>AddCachedNotableDateService(cacheFactory: _ =&gt; new DictionaryNotableDateCache())</code>. The shipped
+<p>Plug it in exactly like a shipped backend - <code>new CachingNotableDateService(engine, new DictionaryNotableDateCache(), options)</code> or <code>AddCachedNotableDateService(cacheFactory: _ =&gt; new DictionaryNotableDateCache())</code>. The shipped
 backends additionally derive from <a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NotableDateCacheBase-1.html">NotableDateCacheBase&lt;TOptions&gt;</a>, which supplies
 the merge-and-prune, validity, and per-territory locking; that storage seam is opened to the companion SQLite and
 distributed packages, so a third-party backend implements the interface directly as above.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — vocabulary refresher.</li>
-<li><strong><a href="index.html">Introduction</a></strong> — package family, type map, and scenario index.</li>
-<li><strong><a href="../../guides/calendar/caching/notable-date-caching.html">Caching notable dates guide</a></strong> — freshness tuning, observability, troubleshooting.</li>
-<li><strong><a href="../../guides/calendar/dependency-injection.html">Calendar dependency injection</a></strong> — the registrations the decorator wraps, including the reloadable and keyed forms.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.html">Bodu.Globalization.Calendar.Caching API reference</a></strong> — full type-by-type docs.</li>
-<li><strong><a href="../../samples/calendar.html">Runnable samples</a></strong> — offline calendar sample projects you can <code>dotnet run</code>.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - vocabulary refresher.</li>
+<li><strong><a href="index.html">Introduction</a></strong> - package family, type map, and scenario index.</li>
+<li><strong><a href="../../guides/calendar/caching/notable-date-caching.html">Caching notable dates guide</a></strong> - freshness tuning, observability, troubleshooting.</li>
+<li><strong><a href="../../guides/calendar/dependency-injection.html">Calendar dependency injection</a></strong> - the registrations the decorator wraps, including the reloadable and keyed forms.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.html">Bodu.Globalization.Calendar.Caching API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="../../samples/calendar.html">Runnable samples</a></strong> - offline calendar sample projects you can <code>dotnet run</code>.</li>
 </ul>
 
 </article>
@@ -401,7 +401,7 @@ distributed packages, so a third-party backend implements the interface directly
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

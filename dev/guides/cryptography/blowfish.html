@@ -109,7 +109,7 @@
 </tr>
 <tr>
 <td>Key size</td>
-<td>32 – 448 bits (4 – 56 bytes), 8-bit steps</td>
+<td>32 - 448 bits (4 - 56 bytes), 8-bit steps</td>
 <td>Default is 128 bits. Set via <code>KeySize</code> before <code>GenerateKey()</code>.</td>
 </tr>
 <tr>
@@ -119,7 +119,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="encrypt-and-decrypt--cbc--pkcs7-default-128-bit-key">Encrypt and decrypt — CBC + PKCS7 (default 128-bit key)</h2>
+<h2 id="encrypt-and-decrypt---cbc--pkcs7-default-128-bit-key">Encrypt and decrypt - CBC + PKCS7 (default 128-bit key)</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.Diagnostics;
 using System.Linq;
@@ -165,7 +165,7 @@ alg.GenerateIV();
 byte[] ciphertext = alg.Encrypt(plaintext);
 </code></pre>
 <p>Any byte length from 4 to 56 is valid; longer keys only strengthen the cipher up to the point where the key schedule is the attack vector rather than the round function.</p>
-<h2 id="encrypt-and-decrypt--ctr-stream-mode">Encrypt and decrypt — CTR (stream mode)</h2>
+<h2 id="encrypt-and-decrypt---ctr-stream-mode">Encrypt and decrypt - CTR (stream mode)</h2>
 <pre><code class="lang-csharp">using var alg = new Blowfish
 {
     BlockMode = CipherModeKind.CTR,
@@ -179,28 +179,28 @@ byte[] recovered  = alg.Decrypt(ciphertext);
 </code></pre>
 <p>As with Skipjack, the 8-byte counter means you should not encrypt more than a few gigabytes under the same key in CTR mode.</p>
 <h2 id="a-note-on-the-key-schedule">A note on the key schedule</h2>
-<p>Blowfish's key schedule is intentionally expensive: it derives the P-array and four S-boxes from the key by running the cipher thousands of times over itself. This makes brute-force searches meaningfully harder at the cost of a slow setup — roughly a few milliseconds for a one-off key.</p>
+<p>Blowfish's key schedule is intentionally expensive: it derives the P-array and four S-boxes from the key by running the cipher thousands of times over itself. This makes brute-force searches meaningfully harder at the cost of a slow setup - roughly a few milliseconds for a one-off key.</p>
 <p>The practical implication is that you should <strong>not</strong> build a new <code>Blowfish</code> instance per message if you're re-using the same key. Cache the instance and call <code>CreateEncryptor()</code> / <code>CreateDecryptor()</code> per message instead.</p>
 <h2 id="dropping-to-the-raw-primitive">Dropping to the raw primitive</h2>
-<p><code>Blowfish</code> is the <code>SymmetricAlgorithm</code> wrapper; underneath it is <code>BlowfishBlockCipher</code>, a raw <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>. Reach for the primitive when you want to share one keyed engine across several mode transforms, or to compose a custom pipeline — the wrapper and the primitive produce byte-for-byte identical ciphertext for the same key, IV, mode, and padding. See <a href="composing-primitives.html">Composing primitives</a> for the full pattern.</p>
+<p><code>Blowfish</code> is the <code>SymmetricAlgorithm</code> wrapper; underneath it is <code>BlowfishBlockCipher</code>, a raw <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>. Reach for the primitive when you want to share one keyed engine across several mode transforms, or to compose a custom pipeline - the wrapper and the primitive produce byte-for-byte identical ciphertext for the same key, IV, mode, and padding. See <a href="composing-primitives.html">Composing primitives</a> for the full pattern.</p>
 <pre><code class="lang-csharp">using IBlockCipher cipher = new BlowfishBlockCipher(key);
 IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherModeKind.CBC, cipher, iv);
 IPaddingStrategy padding = PaddingFactory.Create(PaddingMode.PKCS7);
 </code></pre>
-<p>Because the key schedule is the expensive part, constructing one <code>BlowfishBlockCipher</code> and reusing it across messages amortises that cost — exactly the same caching argument as for the wrapper.</p>
+<p>Because the key schedule is the expensive part, constructing one <code>BlowfishBlockCipher</code> and reusing it across messages amortises that cost - exactly the same caching argument as for the wrapper.</p>
 <div class="IMPORTANT">
 <h5>Important</h5>
 <p>Blowfish is unbroken at the round-function level, but its <strong>64-bit block</strong> caps its safe data volume per key (SWEET32) and its design predates authenticated encryption. For new work, prefer a 128-bit-block cipher (<a href="aes-family.html">AES family</a>) under an <a href="aead-modes.html">AEAD mode</a>, or <a href="threefish-256.html">Threefish</a> when you need a tweak.</p>
 </div>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="encryption-basics.html">Encryption basics</a> — the Key/IV lifecycle.</li>
-<li><a href="cipher-modes.html">Cipher block modes</a> — CFB, OFB, ECB also work with Blowfish.</li>
-<li><a href="padding.html">Padding</a> — which padding scheme pairs with which mode.</li>
-<li><a href="composing-primitives.html">Composing primitives</a> — <code>BlowfishBlockCipher</code> + mode + padding by hand.</li>
-<li><a href="aes-family.html">AES-family block ciphers</a> — the 128-bit-block successors to prefer for new work.</li>
-<li><a href="skipjack.html">Using Skipjack</a> — the other 64-bit-block cipher in the library.</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><a href="encryption-basics.html">Encryption basics</a> - the Key/IV lifecycle.</li>
+<li><a href="cipher-modes.html">Cipher block modes</a> - CFB, OFB, ECB also work with Blowfish.</li>
+<li><a href="padding.html">Padding</a> - which padding scheme pairs with which mode.</li>
+<li><a href="composing-primitives.html">Composing primitives</a> - <code>BlowfishBlockCipher</code> + mode + padding by hand.</li>
+<li><a href="aes-family.html">AES-family block ciphers</a> - the 128-bit-block successors to prefer for new work.</li>
+<li><a href="skipjack.html">Using Skipjack</a> - the other 64-bit-block cipher in the library.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -220,7 +220,7 @@ IPaddingStrategy padding = PaddingFactory.Create(PaddingMode.PKCS7);
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Text.Serialization — Getting started | BODU </title>
+      <title>Bodu.Text.Serialization - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Text.Serialization — Getting started | BODU ">
+      <meta name="title" content="Bodu.Text.Serialization - Getting started | BODU ">
       
       
       <link rel="icon" href="../../../images/favicon.svg">
@@ -89,17 +89,17 @@
 
 <p>Unfamiliar with terms like <em>naming policy</em>, <em>ignore condition</em>, <em>required member</em>, <em>extension data</em>, or <em>callback</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
 <h2 id="install">Install</h2>
-<p>You rarely add this package by hand: every format package (<code>Bodu.Text.Toml</code>, <code>Bodu.Text.Yaml</code>, <code>Bodu.Text.Bencode</code>, <code>Bodu.Text.Delimited</code>, <code>Bodu.Text.DotEnv</code>, <code>Bodu.Text.Ini</code>) restores it transitively. Add it directly when a project only <em>declares</em> models and should not depend on any one format — a shared DTO or contracts assembly:</p>
+<p>You rarely add this package by hand: every format package (<code>Bodu.Text.Toml</code>, <code>Bodu.Text.Yaml</code>, <code>Bodu.Text.Bencode</code>, <code>Bodu.Text.Delimited</code>, <code>Bodu.Text.DotEnv</code>, <code>Bodu.Text.Ini</code>) restores it transitively. Add it directly when a project only <em>declares</em> models and should not depend on any one format - a shared DTO or contracts assembly:</p>
 <pre><code class="lang-shell">dotnet add package Bodu.Text.Serialization
 </code></pre>
 <p>Targets <code>net8.0</code>. Depends on <code>Bodu.Core</code> only.</p>
-<p>A typical split — the model library references the core package; the application references the formats it actually uses:</p>
-<pre><code class="lang-xml">&lt;!-- Contracts.csproj — DTOs annotated once --&gt;
+<p>A typical split - the model library references the core package; the application references the formats it actually uses:</p>
+<pre><code class="lang-xml">&lt;!-- Contracts.csproj - DTOs annotated once --&gt;
 &lt;ItemGroup&gt;
   &lt;PackageReference Include=&quot;Bodu.Text.Serialization&quot; Version=&quot;…&quot; /&gt;
 &lt;/ItemGroup&gt;
 
-&lt;!-- App.csproj — picks the wire formats --&gt;
+&lt;!-- App.csproj - picks the wire formats --&gt;
 &lt;ItemGroup&gt;
   &lt;ProjectReference Include=&quot;..\Contracts\Contracts.csproj&quot; /&gt;
   &lt;PackageReference Include=&quot;Bodu.Text.Toml&quot; Version=&quot;…&quot; /&gt;
@@ -158,7 +158,7 @@ ServiceProfile fromYaml = YamlSerializer.Deserialize&lt;ServiceProfile&gt;(yaml)
 <li><code>[NamingPolicy(KnownNamingPolicy.SnakeCaseLower)]</code> turned <code>DisplayName</code> and <code>MaxRetryCount</code> into <code>display_name</code> / <code>max_retry_count</code>.</li>
 <li><code>[PropertyName(&quot;listen-port&quot;)]</code> pinned one key and was <strong>not</strong> passed through the policy.</li>
 <li><code>[Ignore(Condition = IgnoreCondition.WhenWritingNull)]</code> dropped <code>description</code> because it was <code>null</code>; had it been set, both documents would carry it.</li>
-<li><code>[Ignore]</code> removed <code>ApiKey</code> entirely — it is neither written nor read back (<code>fromToml.ApiKey</code> is <code>null</code>).</li>
+<li><code>[Ignore]</code> removed <code>ApiKey</code> entirely - it is neither written nor read back (<code>fromToml.ApiKey</code> is <code>null</code>).</li>
 <li><code>[Required]</code> has no effect on the write, but a document missing <code>display_name</code> fails to bind with the format's serialization exception:</li>
 </ul>
 <pre><code class="lang-csharp">try
@@ -232,20 +232,20 @@ string toml = TomlSerializer.Serialize(new Manifest { Name = &quot;demo&quot;, V
 </code></pre>
 <p>Serializing the annotated profile type from the first sample with those same options still produces <code>display_name = …</code>: its type-level <code>[NamingPolicy]</code> wins over <code>PropertyNamingPolicy</code>.</p>
 <h2 id="reuse-the-options">Reuse the options</h2>
-<p>Once an options instance has been used it is frozen — <code>IsReadOnly</code> reports <code>true</code>, and setting a property throws <code>InvalidOperationException</code>. Configure one instance, then share it; it caches per-type metadata and is safe to use from many threads.</p>
+<p>Once an options instance has been used it is frozen - <code>IsReadOnly</code> reports <code>true</code>, and setting a property throws <code>InvalidOperationException</code>. Configure one instance, then share it; it caches per-type metadata and is safe to use from many threads.</p>
 <pre><code class="lang-csharp">var options = new TomlSerializerOptions { PropertyNamingPolicy = NamingPolicy.CamelCase };
-options.MakeReadOnly();                                   // optional — first use freezes anyway
+options.MakeReadOnly();                                   // optional - first use freezes anyway
 
 _ = TomlSerializer.Serialize(profile, options);
 options.PropertyNamingPolicy = NamingPolicy.SnakeCaseLower;   // throws InvalidOperationException
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="index.html">Bodu.Text.Serialization introduction</a></strong> — the full attribute family and which serializers honor which parts.</li>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — precedence, naming order, required members, extension data, callback order, options freezing, converter resolution.</li>
-<li><strong><a href="../../../guides/serialization/toml/attributes.html">TOML attribute patterns</a></strong> — the remaining attributes (<code>[Include]</code>, <code>[Constructor]</code>, <code>[ExtensionData]</code>, <code>[UnmappedMemberHandling]</code>, <code>[ObjectCreationHandling]</code>, <code>[Converter]</code>, <code>[StringEnumMemberName]</code>) as worked recipes.</li>
-<li><strong><a href="../../formats/getting-started.html">Line formats getting started</a></strong> — the same attributes over CSV, <code>.env</code>, and INI.</li>
-<li><strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization topic overview</a></strong> — where the serializers sit among the codecs and document formats.</li>
+<li><strong><a href="index.html">Bodu.Text.Serialization introduction</a></strong> - the full attribute family and which serializers honor which parts.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - precedence, naming order, required members, extension data, callback order, options freezing, converter resolution.</li>
+<li><strong><a href="../../../guides/serialization/toml/attributes.html">TOML attribute patterns</a></strong> - the remaining attributes (<code>[Include]</code>, <code>[Constructor]</code>, <code>[ExtensionData]</code>, <code>[UnmappedMemberHandling]</code>, <code>[ObjectCreationHandling]</code>, <code>[Converter]</code>, <code>[StringEnumMemberName]</code>) as worked recipes.</li>
+<li><strong><a href="../../formats/getting-started.html">Line formats getting started</a></strong> - the same attributes over CSV, <code>.env</code>, and INI.</li>
+<li><strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization topic overview</a></strong> - where the serializers sit among the codecs and document formats.</li>
 </ul>
 
 </article>
@@ -265,7 +265,7 @@ options.PropertyNamingPolicy = NamingPolicy.SnakeCaseLower;   // throws InvalidO
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Text.Toml — Introduction | BODU </title>
+      <title>Bodu.Text.Toml - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Text.Toml — Introduction | BODU ">
+      <meta name="title" content="Bodu.Text.Toml - Introduction | BODU ">
       
       
       <link rel="icon" href="../../../images/favicon.svg">
@@ -89,14 +89,14 @@
 
 <p><img src="../../../images/hero-toml.svg" alt="Bodu.Text.Toml"></p>
 <h1 id="bodutexttoml">Bodu.Text.Toml</h1>
-<p><strong>Bodu.Text.Toml</strong> is a library for <a href="https://toml.io/">TOML</a> v1.0.0 and v1.1.0, the human-readable configuration format built around typed key/value pairs and tables. It is one of the three <a href="../index.html">Bodu serializers</a> — it shares the architecture described in the <a href="../index.html">family introduction</a> (the serializer / DOM / reader-writer tiers, converters, attributes, naming policies) with its sibling libraries <a href="../bencode/index.html">Bodu.Text.Bencode</a> and <a href="../yaml/index.html">Bodu.Text.Yaml</a>, so the family vocabulary applies here unchanged. This page covers what is <em>specific</em> to TOML.</p>
+<p><strong>Bodu.Text.Toml</strong> is a library for <a href="https://toml.io/">TOML</a> v1.0.0 and v1.1.0, the human-readable configuration format built around typed key/value pairs and tables. It is one of the three <a href="../index.html">Bodu serializers</a> - it shares the architecture described in the <a href="../index.html">family introduction</a> (the serializer / DOM / reader-writer tiers, converters, attributes, naming policies) with its sibling libraries <a href="../bencode/index.html">Bodu.Text.Bencode</a> and <a href="../yaml/index.html">Bodu.Text.Yaml</a>, so the family vocabulary applies here unchanged. This page covers what is <em>specific</em> to TOML.</p>
 <h2 id="the-format-in-one-paragraph">The format in one paragraph</h2>
-<p>TOML is a text format aimed squarely at configuration files: obvious to read, typed without annotations, and table-structured. It has a rich native value model — strings, integers, floats (including <code>inf</code> / <code>nan</code>), Booleans, arrays, tables, arrays of tables, and the four RFC 3339 date-time forms (offset date-time, local date-time, local date, local time). The document root is always a table, so the type you serialize at the root must map to an object; a top-level scalar or array throws.</p>
+<p>TOML is a text format aimed squarely at configuration files: obvious to read, typed without annotations, and table-structured. It has a rich native value model - strings, integers, floats (including <code>inf</code> / <code>nan</code>), Booleans, arrays, tables, arrays of tables, and the four RFC 3339 date-time forms (offset date-time, local date-time, local date, local time). The document root is always a table, so the type you serialize at the root must map to an object; a top-level scalar or array throws.</p>
 <h2 id="a-rich-native-value-model">A rich native value model</h2>
 <p>Because TOML carries real scalar kinds, most everyday .NET types map without converters:</p>
 <ul>
 <li><code>bool</code> → boolean; <code>double</code> / <code>float</code> / <code>Half</code> → float; the integer family → integer (within the i64 range).</li>
-<li><code>DateTimeOffset</code>, <code>DateTime</code>, <code>DateOnly</code>, and <code>TimeOnly</code> map one-to-one onto the four RFC 3339 date-time forms — no string conventions to invent.</li>
+<li><code>DateTimeOffset</code>, <code>DateTime</code>, <code>DateOnly</code>, and <code>TimeOnly</code> map one-to-one onto the four RFC 3339 date-time forms - no string conventions to invent.</li>
 <li><code>string</code>, <code>char</code>, <code>Guid</code>, <code>Uri</code>, and <code>Version</code> → string; <code>TimeSpan</code> → the invariant <code>&quot;c&quot;</code>-format string.</li>
 <li><code>decimal</code> and <code>byte[]</code> have two representations each, selected on the options: <a class="xref" href="../../../api/Bodu.Text.Toml.TomlDecimalHandling.html">TomlDecimalHandling</a> chooses between a native (binary64-bounded) float and a lossless string, and <a class="xref" href="../../../api/Bodu.Text.Toml.TomlByteArrayHandling.html">TomlByteArrayHandling</a> chooses between an integer array and a Base64 string.</li>
 </ul>
@@ -108,7 +108,7 @@
 <li>time values written without seconds (<code>09:30</code> rather than <code>09:30:00</code>);</li>
 <li>inline tables that span multiple lines and carry a trailing comma.</li>
 </ul>
-<p>The version affects <em>parsing only</em>. The writer always emits output valid under <em>both</em> versions, so produced documents never lock consumers into the newer grammar — the <code>SpecVersion</code> property on the writer options is obsolete and ignored.</p>
+<p>The version affects <em>parsing only</em>. The writer always emits output valid under <em>both</em> versions, so produced documents never lock consumers into the newer grammar - the <code>SpecVersion</code> property on the writer options is obsolete and ignored.</p>
 <h2 id="diagnostics-with-positions">Diagnostics with positions</h2>
 <p>TOML files are edited by hand, so parse failures must point at the offending line. A malformed document raises <a class="xref" href="../../../api/Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a> carrying the <strong>line, column, and byte offset</strong> (<code>LineNumber</code>, <code>ColumnNumber</code>, <code>Offset</code>); a document that parses but cannot bind to your type raises <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a>, which carries the same positions where known plus a <code>Path</code> naming the member that failed to bind.</p>
 <h2 id="headline-types">Headline types</h2>
@@ -138,7 +138,7 @@
 </tr>
 <tr>
 <td><a class="xref" href="../../../api/Bodu.Text.Toml.Nodes.TomlNode.html">TomlNode</a></td>
-<td>Mutable DOM — <code>Parse</code>, index, mutate, write back.</td>
+<td>Mutable DOM - <code>Parse</code>, index, mutate, write back.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../../api/Bodu.Text.Toml.Document.TomlDocument.html">TomlDocument</a></td>
@@ -169,11 +169,11 @@
 </tr>
 <tr>
 <td>Emit configuration a human will edit</td>
-<td><code>TomlSerializer.Serialize</code> — canonical output in document order, <code>[PropertyOrder]</code> honored</td>
+<td><code>TomlSerializer.Serialize</code> - canonical output in document order, <code>[PropertyOrder]</code> honored</td>
 </tr>
 <tr>
 <td>Patch one value in an existing file without a model</td>
-<td><a class="xref" href="../../../api/Bodu.Text.Toml.Nodes.TomlNode.html">TomlNode</a> — index, mutate, write back</td>
+<td><a class="xref" href="../../../api/Bodu.Text.Toml.Nodes.TomlNode.html">TomlNode</a> - index, mutate, write back</td>
 </tr>
 <tr>
 <td>Inspect a document with minimal allocation</td>
@@ -191,11 +191,11 @@
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="../index.html">Bodu serializers introduction</a></strong> — the shared shape: tiers, converters, attributes, callbacks, naming policies.</li>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — the TOML vocabulary, including the full value-mapping table.</li>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install and the first round trip.</li>
-<li><strong><a href="../../../guides/serialization/toml/using.html">Using TOML</a></strong> — worked patterns: type mapping, spec-version selection, both DOMs, raw tokens.</li>
-<li><strong>API reference</strong> — <a class="xref" href="../../../api/Bodu.Text.Toml.html">Bodu.Text.Toml</a>.</li>
+<li><strong><a href="../index.html">Bodu serializers introduction</a></strong> - the shared shape: tiers, converters, attributes, callbacks, naming policies.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - the TOML vocabulary, including the full value-mapping table.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install and the first round trip.</li>
+<li><strong><a href="../../../guides/serialization/toml/using.html">Using TOML</a></strong> - worked patterns: type mapping, spec-version selection, both DOMs, raw tokens.</li>
+<li><strong>API reference</strong> - <a class="xref" href="../../../api/Bodu.Text.Toml.html">Bodu.Text.Toml</a>.</li>
 </ul>
 
 </article>
@@ -215,7 +215,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

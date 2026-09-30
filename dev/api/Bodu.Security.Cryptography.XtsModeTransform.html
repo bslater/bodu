@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_XtsModeTransform" data-uid="Bodu.Security.Cryptography.XtsModeTransform" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 XtsModeTransform Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ XtsModeTransform Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs">XtsModeTransform.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs">XtsModeTransform.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Applies XEX-based Tweaked CodeBook mode with ciphertext Stealing (XTS) to an underlying pair of
@@ -188,7 +188,7 @@ XtsModeTransform Class
   <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
-// XTS uses two independent keys — Key1 for data, Key2 for the tweak. Never share keys.
+// XTS uses two independent keys - Key1 for data, Key2 for the tweak. Never share keys.
 using IBlockCipher data = new AesBlockCipher(key1);
 using IBlockCipher tweak = new AesBlockCipher(key2);
 byte[] sectorNumber = BitConverter.GetBytes((long)42); // little-endian sector number, padded to block size
@@ -200,14 +200,14 @@ int written = xts.Transform(plaintext, ciphertext, encrypt: true);</code></pre>
 
   <h2 id="Bodu_Security_Cryptography_XtsModeTransform_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-<img src="../images/diagrams/xts-mode.svg" alt="XTS data flow — the tweak cipher encrypts the sector number, successive α multiplications in GF(2^128) derive per-block tweaks T_j, and each block is XORed with T_j before and after the data cipher.">
+<img src="../images/diagrams/xts-mode.svg" alt="XTS data flow - the tweak cipher encrypts the sector number, successive α multiplications in GF(2^128) derive per-block tweaks T_j, and each block is XORed with T_j before and after the data cipher.">
 </p>
 <p>
 XTS requires two independent ciphers keyed with different material:
 <ul><li>
-<code>dataCipher</code> (Key₁) — encrypts or decrypts the data. Shown as <b>E_K₁</b> in the central column of the diagram.
+<code>dataCipher</code> (Key₁) - encrypts or decrypts the data. Shown as <b>E_K₁</b> in the central column of the diagram.
 </li><li>
-<code>tweakCipher</code> (Key₂) — encrypts the sector number (tweak). Shown as <b>E_K₂</b> on the left.
+<code>tweakCipher</code> (Key₂) - encrypts the sector number (tweak). Shown as <b>E_K₂</b> on the left.
 </li></ul>
 <p>Using the same key for both reduces XTS to a single-key construction and weakens security. Because
 <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> exposes no key material, this type cannot detect Key₁ == Key₂; ensuring the two ciphers
@@ -217,7 +217,7 @@ are independently keyed is the caller's responsibility.</p>
 <strong>Implementation scope.</strong> This transform implements the XEX core for whole 128-bit blocks and does
 <strong>not</strong> perform ciphertext stealing: input whose length is not a multiple of the block size is rejected
 rather than stolen, so it is not interoperable with IEEE 1619 data units that end on a partial block. The GF(2<sup>128</sup>)
-tweak reduction is defined only for 128-bit blocks, so both ciphers must have a 128-bit block size — the constructor
+tweak reduction is defined only for 128-bit blocks, so both ciphers must have a 128-bit block size - the constructor
 rejects any other width.
 </p>
 <p>
@@ -227,18 +227,18 @@ C_j  = dataCipher.Encrypt(P_j ⊕ T_j) ⊕ T_j  // encrypt
 P_j  = dataCipher.Decrypt(C_j ⊕ T_j) ⊕ T_j  // decrypt</code></pre>
 <p>The horizontal tweak bus in the diagram corresponds to this successive <code>·α</code> multiplication: each <b>·α </b> box
 doubles the tweak in GF(2¹²⁸) so the Tⱼ arriving at cell <em>j</em> is αʲ times the base tweak. The two XOR nodes
-inside each cell — before and after the data cipher — realize the <code>⊕ T_j</code> pairs in the equation above.</p>
+inside each cell - before and after the data cipher - realize the <code>⊕ T_j</code> pairs in the equation above.</p>
 
 <p>
 GF(2^128) multiplication uses the primitive polynomial x^128 + x^7 + x^2 + x + 1 with little-endian bit
 representation (byte 0, bit 0 = coefficient of x^0), identical to IEEE 1619.
 </p>
 <p>
-<strong>When to use XTS.</strong> The standard mode for sector-level disk encryption — used by BitLocker, FileVault,
+<strong>When to use XTS.</strong> The standard mode for sector-level disk encryption - used by BitLocker, FileVault,
 dm-crypt/LUKS, VeraCrypt, and the IEEE 1619 disk-encryption specification. XTS is designed specifically for the
 random-access, fixed-size-block setting where ciphertext expansion is impossible (the on-disk sector size cannot
 grow), which means it provides confidentiality but <em>no authentication</em>. Do not use XTS for protecting
-messages over untrusted channels — pick an AEAD mode (<a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>,
+messages over untrusted channels - pick an AEAD mode (<a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>,
 <a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a>) for that. For new disk encryption designs that can afford a per-sector tag,
 AEAD-based alternatives (Adiantum, AES-XTS-HMAC, or storage-specific AEAD modes) provide stronger guarantees.
 </p>
@@ -254,7 +254,7 @@ AEAD-based alternatives (Adiantum, AES-XTS-HMAC, or storage-specific AEAD modes)
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_XtsModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_Bodu_Security_Cryptography_IBlockCipher_System_Byte___" data-uid="Bodu.Security.Cryptography.XtsModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,Bodu.Security.Cryptography.IBlockCipher,System.Byte[])">
   XtsModeTransform(IBlockCipher, IBlockCipher, byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -311,13 +311,13 @@ AEAD-based alternatives (Adiantum, AES-XTS-HMAC, or storage-specific AEAD modes)
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_XtsModeTransform_Dispose" data-uid="Bodu.Security.Cryptography.XtsModeTransform.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
   <div class="markdown level1 summary"><p>Releases the resources used by this instance and zeroes the retained tweak so that key-equivalent state does not
 linger in memory after disposal. The underlying data and tweak <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> instances are not
-disposed by this type — ownership remains with the caller.</p>
+disposed by this type - ownership remains with the caller.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -347,7 +347,7 @@ disposed by this type — ownership remains with the caller.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_XtsModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_" data-uid="Bodu.Security.Cryptography.XtsModeTransform.Transform(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Boolean)">
   Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -432,7 +432,7 @@ are cleared before the call returns.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

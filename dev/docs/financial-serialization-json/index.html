@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Financial.Serialization.Json — Introduction | BODU </title>
+      <title>Bodu.Financial.Serialization.Json - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Financial.Serialization.Json — Introduction | BODU ">
+      <meta name="title" content="Bodu.Financial.Serialization.Json - Introduction | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -88,8 +88,8 @@
 <h1 id="bodufinancialserializationjson">Bodu.Financial.Serialization.Json</h1>
 
 <p><img src="../../images/hero-financial-json.svg" alt="Bodu.Financial.Serialization.Json"></p>
-<p><strong>Bodu.Financial.Serialization.Json</strong> is the <code>System.Text.Json</code> companion to <a href="../financial/index.html"><code>Bodu.Financial</code></a>. It ships the six converters that round-trip the monetary and exchange-rate value types — <a class="xref" href="../../api/Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>, <a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a>, <a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a>, <a class="xref" href="../../api/Bodu.Financial.MoneyBag.html">MoneyBag</a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>, and <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a> — a single <a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a> that selects one coherent wire shape for all of them, the one-call <code>AddFinancialJsonConverters</code> registration, and the <code>AddFinancialJson</code> dependency-injection registration. Part of the <strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial</a></strong> topic.</p>
-<p><code>Bodu.Financial.Serialization.Json</code> is a <strong>Stable</strong> package. The core library is deliberately serialization-agnostic — its types carry no <code>[JsonConverter]</code> attribute and take no dependency on <code>System.Text.Json</code> — so JSON support is opt-in: without this package and a registration call, <code>JsonSerializer</code> falls back to reflection-shaped output for these types rather than throwing.</p>
+<p><strong>Bodu.Financial.Serialization.Json</strong> is the <code>System.Text.Json</code> companion to <a href="../financial/index.html"><code>Bodu.Financial</code></a>. It ships the six converters that round-trip the monetary and exchange-rate value types - <a class="xref" href="../../api/Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>, <a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a>, <a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a>, <a class="xref" href="../../api/Bodu.Financial.MoneyBag.html">MoneyBag</a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>, and <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a> - a single <a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a> that selects one coherent wire shape for all of them, the one-call <code>AddFinancialJsonConverters</code> registration, and the <code>AddFinancialJson</code> dependency-injection registration. Part of the <strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial</a></strong> topic.</p>
+<p><code>Bodu.Financial.Serialization.Json</code> is a <strong>Stable</strong> package. The core library is deliberately serialization-agnostic - its types carry no <code>[JsonConverter]</code> attribute and take no dependency on <code>System.Text.Json</code> - so JSON support is opt-in: without this package and a registration call, <code>JsonSerializer</code> falls back to reflection-shaped output for these types rather than throwing.</p>
 <h2 id="core-mental-model">Core mental model</h2>
 <p>One policy, six converters, one options instance:</p>
 <pre><code>JsonSerializerOptions
@@ -116,11 +116,11 @@
 <tbody>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonSerializerOptionsExtensions.html">FinancialJsonSerializerOptionsExtensions</a></td>
-<td><code>AddFinancialJsonConverters(this JsonSerializerOptions options, FinancialJsonPolicy policy = Strict)</code> — adds all six converters and returns the same options instance for chaining.</td>
+<td><code>AddFinancialJsonConverters(this JsonSerializerOptions options, FinancialJsonPolicy policy = Strict)</code> - adds all six converters and returns the same options instance for chaining.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonServiceCollectionExtensions.html">FinancialJsonServiceCollectionExtensions</a></td>
-<td><code>AddFinancialJson(this IServiceCollection services, FinancialJsonPolicy policy = Strict)</code> — registers a configured <code>JsonSerializerOptions</code> as a keyed singleton under <code>JsonOptionsKey</code> (<code>&quot;Financial&quot;</code>).</td>
+<td><code>AddFinancialJson(this IServiceCollection services, FinancialJsonPolicy policy = Strict)</code> - registers a configured <code>JsonSerializerOptions</code> as a keyed singleton under <code>JsonOptionsKey</code> (<code>&quot;Financial&quot;</code>).</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a></td>
@@ -143,19 +143,19 @@
 <tr>
 <td><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.MoneyOfTCurrencyJsonConverter-1.html">MoneyOfTCurrencyJsonConverter&lt;TCurrency&gt;</a> via <a class="xref" href="../../api/Bodu.Financial.Serialization.Json.MoneyOfTCurrencyJsonConverterFactory.html">MoneyOfTCurrencyJsonConverterFactory</a></td>
 <td><a class="xref" href="../../api/Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a></td>
-<td><code>{ &quot;amount&quot;: 19.99, &quot;currency&quot;: &quot;USD&quot; }</code> — <code>currency</code> must equal <code>TCurrency.IsoCode</code></td>
+<td><code>{ &quot;amount&quot;: 19.99, &quot;currency&quot;: &quot;USD&quot; }</code> - <code>currency</code> must equal <code>TCurrency.IsoCode</code></td>
 <td><code>&quot;19.99 USD&quot;</code></td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.MoneyJsonConverter.html">MoneyJsonConverter</a></td>
 <td><a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a></td>
 <td><code>{ &quot;amount&quot;: 19.99, &quot;currency&quot;: &quot;USD&quot; }</code>, plus <code>&quot;scale&quot;</code> when the value carries an explicit minor-unit scale</td>
-<td><code>&quot;19.99 USD&quot;</code> — fractional digits carry the scale</td>
+<td><code>&quot;19.99 USD&quot;</code> - fractional digits carry the scale</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.CalculatedMoneyJsonConverter.html">CalculatedMoneyJsonConverter</a></td>
 <td><a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a></td>
-<td><code>{ &quot;amount&quot;: 0.0325125, &quot;currency&quot;: &quot;USD&quot; }</code> — the unrounded decimal verbatim</td>
+<td><code>{ &quot;amount&quot;: 0.0325125, &quot;currency&quot;: &quot;USD&quot; }</code> - the unrounded decimal verbatim</td>
 <td><code>&quot;0.0325125 USD&quot;</code></td>
 </tr>
 <tr>
@@ -191,7 +191,7 @@
 <tr>
 <td><code>Strict</code> <em>(default)</em></td>
 <td>Property names compare case-insensitively; duplicate properties are rejected; unknown properties are ignored; a <code>currency</code> that does not match <code>TCurrency.IsoCode</code> is rejected.</td>
-<td>Ledgers, persistence, audit — the canonical shape.</td>
+<td>Ledgers, persistence, audit - the canonical shape.</td>
 </tr>
 <tr>
 <td><code>Lenient</code></td>
@@ -216,7 +216,7 @@
 <tbody>
 <tr>
 <td>Persist a typed amount and refuse a payload whose currency drifted</td>
-<td><code>Money&lt;TCurrency&gt;</code> under <code>Strict</code> — a mismatch is a <code>JsonException</code>, never a silently re-tagged amount</td>
+<td><code>Money&lt;TCurrency&gt;</code> under <code>Strict</code> - a mismatch is a <code>JsonException</code>, never a silently re-tagged amount</td>
 </tr>
 <tr>
 <td>Deserialize an amount whose currency is data, not type</td>
@@ -224,11 +224,11 @@
 </tr>
 <tr>
 <td>Keep a six-decimal unit price exact through storage</td>
-<td><code>Money</code> with an explicit scale — the object shape's <code>scale</code> property, or the printed digits under <code>Compact</code></td>
+<td><code>Money</code> with an explicit scale - the object shape's <code>scale</code> property, or the printed digits under <code>Compact</code></td>
 </tr>
 <tr>
 <td>Transport an unsettled, unrounded amount</td>
-<td><code>CalculatedMoney</code> — written verbatim, settled with <code>RoundToMoney()</code> after transport</td>
+<td><code>CalculatedMoney</code> - written verbatim, settled with <code>RoundToMoney()</code> after transport</td>
 </tr>
 <tr>
 <td>Ingest <code>&quot;usd&quot;</code> / <code>&quot; USD &quot;</code> from a spreadsheet export</td>
@@ -240,7 +240,7 @@
 </tr>
 <tr>
 <td>Store the audit trail of a dated rate lookup</td>
-<td><code>ExchangeRate</code> — provider, date, rate, inversion flag, observed rate, and fetch instant all round-trip</td>
+<td><code>ExchangeRate</code> - provider, date, rate, inversion flag, observed rate, and fetch instant all round-trip</td>
 </tr>
 <tr>
 <td>Share one configured options instance across an application</td>
@@ -258,14 +258,14 @@
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — policy, canonical object shape, compact form, scale, verbatim <code>CalculatedMoney</code>, the rate and pair shapes, keyed options, failure modes.</li>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install + minimal samples for each policy, each converter, and the DI registration.</li>
-<li><strong><a href="../../guides/financial/json-serialization.html">Financial JSON serialization guide</a></strong> — every converter's wire shape under every policy, scale handling, DI, and migration notes.</li>
-<li><strong><a href="../../guides/financial/monetary-precision.html">Monetary precision &amp; unit pricing</a></strong> — the three-tier precision model the <code>scale</code> property and <code>CalculatedMoney</code> serve.</li>
-<li><strong><a href="../financial/index.html">Bodu.Financial introduction</a></strong> — the types being serialized.</li>
-<li><strong><a href="../numerics-serialization-json/index.html">Bodu.Numerics.Serialization.Json</a></strong> — the sibling companion package for <code>Fraction&lt;T&gt;</code>, <code>Interval&lt;T&gt;</code>, and friends, with the same policy model.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.html">Bodu.Financial.Serialization.Json API reference</a></strong> — full type-by-type docs.</li>
-<li><strong><a href="../../samples/financial.html">Runnable samples</a></strong> — the <code>JsonSerialization</code> and <code>UnitPricing</code> sample projects.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - policy, canonical object shape, compact form, scale, verbatim <code>CalculatedMoney</code>, the rate and pair shapes, keyed options, failure modes.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install + minimal samples for each policy, each converter, and the DI registration.</li>
+<li><strong><a href="../../guides/financial/json-serialization.html">Financial JSON serialization guide</a></strong> - every converter's wire shape under every policy, scale handling, DI, and migration notes.</li>
+<li><strong><a href="../../guides/financial/monetary-precision.html">Monetary precision &amp; unit pricing</a></strong> - the three-tier precision model the <code>scale</code> property and <code>CalculatedMoney</code> serve.</li>
+<li><strong><a href="../financial/index.html">Bodu.Financial introduction</a></strong> - the types being serialized.</li>
+<li><strong><a href="../numerics-serialization-json/index.html">Bodu.Numerics.Serialization.Json</a></strong> - the sibling companion package for <code>Fraction&lt;T&gt;</code>, <code>Interval&lt;T&gt;</code>, and friends, with the same policy model.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.html">Bodu.Financial.Serialization.Json API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="../../samples/financial.html">Runnable samples</a></strong> - the <code>JsonSerialization</code> and <code>UnitPricing</code> sample projects.</li>
 </ul>
 
 </article>
@@ -285,7 +285,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

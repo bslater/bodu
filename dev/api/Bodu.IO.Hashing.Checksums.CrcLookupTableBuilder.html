@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Hashing_Checksums_CrcLookupTableBuilder" data-uid="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 CrcLookupTableBuilder Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcLookupTableBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcLookupTableBuilder.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ CrcLookupTableBuilder Class
   <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcLookupTableBuilder.cs">CrcLookupTableBuilder.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcLookupTableBuilder.cs">CrcLookupTableBuilder.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Generates the precomputed lookup tables that drive the byte-at-a-time inner loop of <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>, given the
@@ -176,14 +176,14 @@ Console.WriteLine(table[0xFF]); // 0x...  the precomputed contribution for byte 
   <h2 id="Bodu_IO_Hashing_Checksums_CrcLookupTableBuilder_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 The naive bit-by-bit CRC algorithm is straightforward but processes only one input bit per iteration. The standard
-production technique is to precompute a small table of partial CRCs — one entry per possible input byte under the
-chosen polynomial — so the per-byte cost collapses to a single XOR plus a table lookup.
+production technique is to precompute a small table of partial CRCs - one entry per possible input byte under the
+chosen polynomial - so the per-byte cost collapses to a single XOR plus a table lookup.
 <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.html">CrcLookupTableBuilder</a> is the routine that builds that table; <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> consumes it and
 <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableCache.html">CrcLookupTableCache</a> caches it across instances so the construction cost is paid at most once per
 <code>(width, polynomial, reflectIn)</code> tuple.
 </p>
 <p>
-<strong>When you would call this directly.</strong> Most callers should not — <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> resolves its lookup
+<strong>When you would call this directly.</strong> Most callers should not - <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> resolves its lookup
 table automatically through <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html#Bodu_IO_Hashing_Checksums_Crc_GlobalCache">GlobalCache</a>. Reach for
 <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.html#Bodu_IO_Hashing_Checksums_CrcLookupTableBuilder_BuildLookupTable_System_Int32_System_UInt64_System_Boolean_">BuildLookupTable(int, ulong, bool)</a> directly when implementing a custom CRC engine outside the
 <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> hierarchy, when running diagnostics against a known-good table, or when populating a hand-rolled
@@ -193,7 +193,7 @@ cache for an unusual polynomial that the global cache is not the right home for.
 <strong>Output shape.</strong> The returned table contains <code>1 &lt;&lt; min(size, 8)</code> entries (256 for any width
 of 8 bits or more, smaller for sub-byte widths). Each entry is masked to <code>size</code> bits and is suitable for direct
 XOR into a CRC register of the corresponding width. Output bit reflection (the <code>ReflectOut</code> step) is <em>not
-</em> applied here — that is a finalization step performed by the engine after the table-driven loop completes.
+</em> applied here - that is a finalization step performed by the engine after the table-driven loop completes.
 </p>
 <p>
 The method is pure, deterministic, and allocation-bounded by the table size; results are safe to cache and share.
@@ -212,7 +212,7 @@ verify vendor CRC variants); this type is the public facade over it.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_CrcLookupTableBuilder_BuildLookupTable_System_Int32_System_UInt64_System_Boolean_" data-uid="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.BuildLookupTable(System.Int32,System.UInt64,System.Boolean)">
   BuildLookupTable(int, ulong, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcLookupTableBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcLookupTableBuilder.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -302,7 +302,7 @@ common in some CRC variants.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

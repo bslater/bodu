@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_SipHash128" data-uid="Bodu.Security.Cryptography.SipHash128" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 SipHash128 Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.128.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.128.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ SipHash128 Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.128.cs">SipHash.128.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.128.cs">SipHash.128.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Computes a 128-bit keyed hash using the <a class="xref" href="Bodu.Security.Cryptography.SipHash.html">SipHash</a> algorithm by Aumasson and Bernstein. Produces a
@@ -403,10 +403,10 @@ See <a class="xref" href="Bodu.Security.Cryptography.SipHash.html">SipHash</a> f
 <p>
 <strong>Parameters at a glance.</strong>
 </p>
-<ul><li>Tag size: 128 bits (16 bytes).</li><li>Key size: 128 bits (16 bytes).</li><li>Default parameterization: SipHash-2-4 (2 compression rounds, 4 finalization rounds).</li><li>Multi-message key reuse is supported — unlike <a class="xref" href="Bodu.Security.Cryptography.Poly1305.html">Poly1305</a>.</li></ul>
+<ul><li>Tag size: 128 bits (16 bytes).</li><li>Key size: 128 bits (16 bytes).</li><li>Default parameterization: SipHash-2-4 (2 compression rounds, 4 finalization rounds).</li><li>Multi-message key reuse is supported - unlike <a class="xref" href="Bodu.Security.Cryptography.Poly1305.html">Poly1305</a>.</li></ul>
 <p>
 <strong>When to choose SipHash128.</strong> Pick <a class="xref" href="Bodu.Security.Cryptography.SipHash128.html">SipHash128</a> over <a class="xref" href="Bodu.Security.Cryptography.SipHash64.html">SipHash64</a> when the
-wider 128-bit tag is required — multi-tenant hash tables with very large key spaces, fingerprint-style cache keys,
+wider 128-bit tag is required - multi-tenant hash tables with very large key spaces, fingerprint-style cache keys,
 or short-message authentication where 64 bits would be marginal. For protocol-level MACs over long messages prefer
 HMAC-SHA-256 or <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a>-MAC.
 </p>
@@ -422,7 +422,7 @@ HMAC-SHA-256 or <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">B
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_SipHash128__ctor" data-uid="Bodu.Security.Cryptography.SipHash128.#ctor">
   SipHash128()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.128.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/SipHash.128.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -467,7 +467,7 @@ HMAC-SHA-256 or <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">B
   <div class="seealso">
       <div><a class="xref" href="Bodu.Security.Cryptography.SipHash.html">SipHash</a></div>
       <div><a class="xref" href="Bodu.Security.Cryptography.SipHash64.html">SipHash64</a></div>
-      <div><span><a href="../guides/cryptography/hashing.html#pattern-2--a-keyed-hash-siphash">Keyed-hash (SipHash) guide</a></span></div>
+      <div><span><a href="../guides/cryptography/hashing.html#pattern-2---a-keyed-hash-siphash">Keyed-hash (SipHash) guide</a></span></div>
   </div>
 
 </article>
@@ -486,7 +486,7 @@ HMAC-SHA-256 or <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">B
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

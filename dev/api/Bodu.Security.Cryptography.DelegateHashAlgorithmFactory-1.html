@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_DelegateHashAlgorithmFactory_1" data-uid="Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 DelegateHashAlgorithmFactory&lt;T&gt; Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/DelegateHashAlgorithmFactory%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/DelegateHashAlgorithmFactory%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ DelegateHashAlgorithmFactory&lt;T&gt; Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/DelegateHashAlgorithmFactory%7BT%7D.cs">DelegateHashAlgorithmFactory{T}.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/DelegateHashAlgorithmFactory%7BT%7D.cs">DelegateHashAlgorithmFactory{T}.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides a delegate-based implementation of <a class="xref" href="Bodu.Security.Cryptography.IHashAlgorithmFactory-1.html">IHashAlgorithmFactory&lt;T&gt;</a> for constructing hash algorithm
@@ -190,12 +190,12 @@ instances.</p>
 
 
   <h2 id="Bodu_Security_Cryptography_DelegateHashAlgorithmFactory_1_examples">Examples</h2>
-  <pre><code class="lang-csharp">// Wrap a delegate via the static helper — the call site reads more naturally than the
+  <pre><code class="lang-csharp">// Wrap a delegate via the static helper - the call site reads more naturally than the
 // constructor and avoids the trailing generic-type repetition.
 IHashAlgorithmFactory&lt;SipHash64&gt; factory = HashAlgorithmFactory.From(() =&gt;
     new SipHash64 { Key = sharedKey });
 
-// Resolve and use — the factory hands out a freshly-keyed instance each time.
+// Resolve and use - the factory hands out a freshly-keyed instance each time.
 using SipHash64 hash = factory.Create();
 byte[] digest = hash.ComputeHash("hello"u8.ToArray());
 
@@ -218,7 +218,7 @@ SipHash or CubeHash.
 </p>
 <p>
 <strong>Construction.</strong> Most callers use <a class="xref" href="Bodu.Security.Cryptography.HashAlgorithmFactory.html#Bodu_Security_Cryptography_HashAlgorithmFactory_From__1_System_Func___0__">From&lt;T&gt;(Func&lt;T&gt;)</a> to wrap
-a delegate rather than calling this constructor directly — the static helper makes the call site read more naturally
+a delegate rather than calling this constructor directly - the static helper makes the call site read more naturally
 and avoids the trailing generic-type repetition. Direct construction is appropriate when the type needs to be
 assigned to a field that has the concrete <a class="xref" href="Bodu.Security.Cryptography.DelegateHashAlgorithmFactory-1.html">DelegateHashAlgorithmFactory&lt;T&gt;</a> type rather than the
 <a class="xref" href="Bodu.Security.Cryptography.IHashAlgorithmFactory-1.html">IHashAlgorithmFactory&lt;T&gt;</a> interface.
@@ -235,7 +235,7 @@ assigned to a field that has the concrete <a class="xref" href="Bodu.Security.Cr
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_DelegateHashAlgorithmFactory_1__ctor_System_Func__0__" data-uid="Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1.#ctor(System.Func{`0})">
   DelegateHashAlgorithmFactory(Func&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/DelegateHashAlgorithmFactory%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/DelegateHashAlgorithmFactory%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -284,7 +284,7 @@ construction delegate.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_DelegateHashAlgorithmFactory_1_Create" data-uid="Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1.Create">
   Create()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/DelegateHashAlgorithmFactory%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/DelegateHashAlgorithmFactory%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -349,7 +349,7 @@ construction delegate.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

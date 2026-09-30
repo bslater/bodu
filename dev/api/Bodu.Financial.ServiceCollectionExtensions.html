@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Financial_ServiceCollectionExtensions" data-uid="Bodu.Financial.ServiceCollectionExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 ServiceCollectionExtensions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial.DependencyInjection/src/Financial/ServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial.DependencyInjection/src/Financial/ServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ ServiceCollectionExtensions Class
   <dl><dt>Assembly</dt><dd>Bodu.Financial.DependencyInjection.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.DependencyInjection">Bodu.Financial.DependencyInjection</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial.DependencyInjection/src/Financial/ServiceCollectionExtensions.cs">ServiceCollectionExtensions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial.DependencyInjection/src/Financial/ServiceCollectionExtensions.cs">ServiceCollectionExtensions.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides the <code>AddFinancialService</code> entry points that register the Bodu.Financial services into an
@@ -171,7 +171,7 @@ ServiceCollectionExtensions Class
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ServiceCollectionExtensions_DefaultConfigurationSection" data-uid="Bodu.Financial.ServiceCollectionExtensions.DefaultConfigurationSection">
   DefaultConfigurationSection
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial.DependencyInjection/src/Financial/ServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial.DependencyInjection/src/Financial/ServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -211,12 +211,12 @@ ServiceCollectionExtensions Class
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ServiceCollectionExtensions_AddFinancialService_Microsoft_Extensions_DependencyInjection_IServiceCollection_Microsoft_Extensions_Configuration_IConfiguration_System_String_" data-uid="Bodu.Financial.ServiceCollectionExtensions.AddFinancialService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,System.String)">
   AddFinancialService(IServiceCollection, IConfiguration?, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial.DependencyInjection/src/Financial/ServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial.DependencyInjection/src/Financial/ServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Registers the core financial services — an <a class="xref" href="Bodu.Financial.Currencies.ICurrencyLookup.html">ICurrencyLookup</a> singleton and the bound
-<a class="xref" href="Bodu.Financial.FinancialOptions.html">FinancialOptions</a> — and returns a builder for further composition.</p>
+  <div class="markdown level1 summary"><p>Registers the core financial services - an <a class="xref" href="Bodu.Financial.Currencies.ICurrencyLookup.html">ICurrencyLookup</a> singleton and the bound
+<a class="xref" href="Bodu.Financial.FinancialOptions.html">FinancialOptions</a> - and returns a builder for further composition.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -255,7 +255,7 @@ bound into <a class="xref" href="Bodu.Financial.FinancialOptions.html">Financial
   <div class="markdown level1 remarks"><p>
 No foreign-exchange provider is registered by default; supply one via
 <a class="xref" href="Bodu.Financial.FinancialServiceBuilderExtensions.html#Bodu_Financial_FinancialServiceBuilderExtensions_AddExchangeRateProvider__1_Bodu_Financial_IFinancialServiceBuilder_">AddExchangeRateProvider&lt;TProvider&gt;(IFinancialServiceBuilder)</a> or
-its dated counterpart. JSON serialization is not registered here either — the financial
+its dated counterpart. JSON serialization is not registered here either - the financial
 <code>JsonSerializerOptions</code> registration (<code>AddFinancialJson</code>) ships in the companion
 <code>Bodu.Financial.Serialization.Json</code> package.
 </p>
@@ -280,7 +280,7 @@ its dated counterpart. JSON serialization is not registered here either — the 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ServiceCollectionExtensions_AddFinancialService_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Action_Bodu_Financial_IFinancialServiceBuilder__" data-uid="Bodu.Financial.ServiceCollectionExtensions.AddFinancialService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Bodu.Financial.IFinancialServiceBuilder})">
   AddFinancialService(IServiceCollection, Action&lt;IFinancialServiceBuilder&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial.DependencyInjection/src/Financial/ServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial.DependencyInjection/src/Financial/ServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -367,7 +367,7 @@ services.BuildServiceProvider().UseCurrencyResolution();</code></pre>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

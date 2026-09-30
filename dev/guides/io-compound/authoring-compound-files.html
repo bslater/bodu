@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="authoring-compound-files">Authoring compound files</h1>
 
-<p><strong>Bodu.IO.Compound</strong> writes as well as reads. This guide covers building a Compound File Binary (CFB) container from scratch, embedding nested storages and named streams, and round-tripping OLE property sets. As with the read path, the library has no application-format knowledge — it lays out the storage tree and the raw bytes you give it, and leaves the format payload to you.</p>
+<p><strong>Bodu.IO.Compound</strong> writes as well as reads. This guide covers building a Compound File Binary (CFB) container from scratch, embedding nested storages and named streams, and round-tripping OLE property sets. As with the read path, the library has no application-format knowledge - it lays out the storage tree and the raw bytes you give it, and leaves the format payload to you.</p>
 <p>There are two authoring paths, and they suit different jobs:</p>
 <table>
 <thead>
@@ -111,7 +111,7 @@
 </tbody>
 </table>
 <p>The builder path is the default recommendation: it is a detached, in-memory object model with no open file handle until you serialize. Reach for the in-place path when you want to write a stream's bytes through a real <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> cursor.</p>
-<h2 id="pattern-1--assemble-a-container-with-the-builder">Pattern 1 — assemble a container with the builder</h2>
+<h2 id="pattern-1---assemble-a-container-with-the-builder">Pattern 1 - assemble a container with the builder</h2>
 <p><a class="xref" href="../../api/Bodu.IO.Compound.Builders.CompoundStorageBuilder.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_CreateRoot">CreateRoot()</a> returns a detached root. <code>AddStream</code> adds a named stream from an in-memory payload; <code>AddStorage</code> adds a nested storage and returns it so you can descend. Serialize with <code>Save</code>, <code>WriteTo</code>, or <code>ToArray</code>.</p>
 <pre><code class="lang-csharp">using Bodu.IO.Compound.Builders;
 
@@ -128,7 +128,7 @@ root.Save(&quot;out.xls&quot;);                 // write to a file
 byte[] bytes = root.ToArray();        // …or materialize the bytes
 </code></pre>
 <p><code>AddStream</code> accepts a <code>ReadOnlyMemory&lt;byte&gt;</code>, so a <code>byte[]</code> binds directly. Both <code>AddStream</code> and <code>AddStorage</code> throw <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a> if a child with the same name already exists in that storage.</p>
-<h2 id="pattern-2--defer-large-payloads">Pattern 2 — defer large payloads</h2>
+<h2 id="pattern-2---defer-large-payloads">Pattern 2 - defer large payloads</h2>
 <p>When a stream's bytes come from a file or another source you do not want to hold in memory, add it with a deferred opener or directly from a path. The bytes are read only when the container is serialized.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.IO.Compound.Builders;
@@ -143,8 +143,8 @@ root.AddStreamFromFile(&quot;Data&quot;, &quot;payload.dat&quot;);
 
 root.Save(&quot;out.cfb&quot;);
 </code></pre>
-<h2 id="pattern-3--create-and-mutate-a-file-in-place">Pattern 3 — create and mutate a file in place</h2>
-<p><a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Create_">Create</a> returns a writable <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>. Its <code>RootStorage.CreateStream</code> returns a writable <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> — a real read-write <code>Stream</code> (<code>CanWrite</code> is <code>true</code>) — and <code>CreateStorage</code> adds a nested storage. Edits are staged in memory and persisted by <code>Commit</code>.</p>
+<h2 id="pattern-3---create-and-mutate-a-file-in-place">Pattern 3 - create and mutate a file in place</h2>
+<p><a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Create_">Create</a> returns a writable <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>. Its <code>RootStorage.CreateStream</code> returns a writable <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> - a real read-write <code>Stream</code> (<code>CanWrite</code> is <code>true</code>) - and <code>CreateStorage</code> adds a nested storage. Edits are staged in memory and persisted by <code>Commit</code>.</p>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
 
 using FileStream output = File.Create(&quot;book.xls&quot;);
@@ -163,12 +163,12 @@ using (CompoundStream nested = storage.CreateStream(&quot;Nested&quot;))
 
 file.Commit();   // nothing is written to `output` until this call
 </code></pre>
-<p>A writable <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a> also exposes its directory-entry metadata as settable properties — <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html#Bodu_IO_Compound_CompoundStorage_ClassId">ClassId</a>, <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html#Bodu_IO_Compound_CompoundStorage_CreationTime">CreationTime</a>, <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html#Bodu_IO_Compound_CompoundStorage_ModifiedTime">ModifiedTime</a>, and <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html#Bodu_IO_Compound_CompoundStorage_StateBits">StateBits</a>. The root storage's <code>ClassId</code> is the conventional file-type discriminator for OLE2-based formats:</p>
+<p>A writable <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a> also exposes its directory-entry metadata as settable properties - <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html#Bodu_IO_Compound_CompoundStorage_ClassId">ClassId</a>, <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html#Bodu_IO_Compound_CompoundStorage_CreationTime">CreationTime</a>, <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html#Bodu_IO_Compound_CompoundStorage_ModifiedTime">ModifiedTime</a>, and <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html#Bodu_IO_Compound_CompoundStorage_StateBits">StateBits</a>. The root storage's <code>ClassId</code> is the conventional file-type discriminator for OLE2-based formats:</p>
 <pre><code class="lang-csharp">file.RootStorage.ClassId = new Guid(&quot;00020820-0000-0000-c000-000000000046&quot;);   // Excel workbook CLSID
 </code></pre>
-<p>Metadata is never stamped automatically — <code>Commit</code> leaves timestamps untouched, so a value only changes when you set it (and byte-identical re-saves stay possible). Per MS-CFB, only storage entries carry this metadata; stream entries are always written with zero CLSID, timestamps, and state bits.</p>
-<p>Disposing the file <strong>without</strong> calling <code>Commit</code> discards the staged edits — <code>Commit</code> is the only thing that writes to the destination. <code>Revert</code> drops staged edits explicitly; <code>IsDirty</code> reports whether any are pending.</p>
-<h2 id="pattern-4--edit-an-existing-container">Pattern 4 — edit an existing container</h2>
+<p>Metadata is never stamped automatically - <code>Commit</code> leaves timestamps untouched, so a value only changes when you set it (and byte-identical re-saves stay possible). Per MS-CFB, only storage entries carry this metadata; stream entries are always written with zero CLSID, timestamps, and state bits.</p>
+<p>Disposing the file <strong>without</strong> calling <code>Commit</code> discards the staged edits - <code>Commit</code> is the only thing that writes to the destination. <code>Revert</code> drops staged edits explicitly; <code>IsDirty</code> reports whether any are pending.</p>
+<h2 id="pattern-4---edit-an-existing-container">Pattern 4 - edit an existing container</h2>
 <p>To change a file you already have, load it into a builder, mutate the tree, and re-serialize. <a class="xref" href="../../api/Bodu.IO.Compound.Builders.CompoundStorageBuilder.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_FromFile_">FromFile</a> copies from an open <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> (pass <code>lazy: true</code> to defer reading stream payloads until serialization); <code>Load</code> reads from a stream.</p>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
 using Bodu.IO.Compound.Builders;
@@ -183,7 +183,7 @@ root.Rename(&quot;Storage 1&quot;, &quot;Archive&quot;);           // rename a c
 
 root.Save(&quot;out.xls&quot;);
 </code></pre>
-<h2 id="pattern-5--write-document-property-sets">Pattern 5 — write document property sets</h2>
+<h2 id="pattern-5---write-document-property-sets">Pattern 5 - write document property sets</h2>
 <p>The <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.html">Bodu.IO.Compound.PropertySets</a> namespace authors OLE property sets as well as reading them. Build a <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.SummaryInformationBuilder.html">SummaryInformationBuilder</a> from typed fields, serialize it with <code>ToArray</code>, and embed it at the conventional stream name. <code>CompoundFile.TryGetSummaryInformation</code> reads it back.</p>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
 using Bodu.IO.Compound.Builders;
@@ -218,9 +218,9 @@ if (file.TryGetSummaryInformation(out SummaryInformation? read))
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="reading-compound-files.html">Reading compound files</a></strong> — the open → navigate → read recipe the write path mirrors.</li>
-<li><strong><a href="property-sets.html">Reading property sets</a></strong> — the read side of the summary-information streams.</li>
-<li><strong><a href="streaming-and-buffering.html">Buffered vs streaming access</a></strong> — the read strategy and the <code>CompoundStream</code> cursor.</li>
+<li><strong><a href="reading-compound-files.html">Reading compound files</a></strong> - the open → navigate → read recipe the write path mirrors.</li>
+<li><strong><a href="property-sets.html">Reading property sets</a></strong> - the read side of the summary-information streams.</li>
+<li><strong><a href="streaming-and-buffering.html">Buffered vs streaming access</a></strong> - the read strategy and the <code>CompoundStream</code> cursor.</li>
 <li><a class="xref" href="../../api/Bodu.IO.Compound.html">Bodu.IO.Compound API reference</a> and the <a class="xref" href="../../api/Bodu.IO.Compound.Builders.html">Bodu.IO.Compound.Builders</a> authoring types.</li>
 </ul>
 
@@ -241,7 +241,7 @@ if (file.TryGetSummaryInformation(out SummaryInformation? read))
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -89,7 +89,7 @@
 
 <p>Every populated cell is surfaced as an immutable <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html">ExcelCell</a>. This guide covers reading its value by kind, handling a formula cell's cached result, detecting and converting date-formatted numbers, and converting between coordinates and A1 references.</p>
 <p>A cell carries its zero-based <code>RowIndex</code> and <code>ColumnIndex</code>, a <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCellKind.html">ExcelCellKind</a>, and the value projection that matches the kind. Blank cells are never returned, so a worksheet is a sparse sequence of populated cells.</p>
-<h2 id="pattern-1--read-a-cell-by-kind">Pattern 1 — read a cell by kind</h2>
+<h2 id="pattern-1---read-a-cell-by-kind">Pattern 1 - read a cell by kind</h2>
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
 
 static object? ValueOf(ExcelCell cell) =&gt; cell.Kind switch
@@ -102,7 +102,7 @@ static object? ValueOf(ExcelCell cell) =&gt; cell.Kind switch
 };
 </code></pre>
 <p>The projection matching the <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCellKind.html">ExcelCellKind</a> holds the value; the others are <code>null</code>. Read <code>StringValue</code> only on a <code>String</code> cell, <code>NumberValue</code> only on a <code>Number</code> cell, and so on. Numbers are raw <code>double</code> values with no date interpretation applied.</p>
-<h2 id="pattern-2--handle-error-cells">Pattern 2 — handle error cells</h2>
+<h2 id="pattern-2---handle-error-cells">Pattern 2 - handle error cells</h2>
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
 
 if (cell.Kind == ExcelCellKind.Error)
@@ -117,7 +117,7 @@ if (cell.Kind == ExcelCellKind.Error)
     };
 }
 </code></pre>
-<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelErrorCode.html">ExcelErrorCode</a> names the documented BIFF spreadsheet error codes (the same in BIFF5 and BIFF8) — there are seven, each a <code>byte</code> whose value matches the on-disk error code:</p>
+<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelErrorCode.html">ExcelErrorCode</a> names the documented BIFF spreadsheet error codes (the same in BIFF5 and BIFF8) - there are seven, each a <code>byte</code> whose value matches the on-disk error code:</p>
 <table>
 <thead>
 <tr>
@@ -164,9 +164,9 @@ if (cell.Kind == ExcelCellKind.Error)
 </tr>
 </tbody>
 </table>
-<p>An undocumented code is surfaced as the raw byte cast to the enumeration, so compare against the named members before relying on the symbol — the fall-through arm above formats any unrecognised value as a hex byte rather than assuming it maps to a known error.</p>
-<h2 id="pattern-3--a-formula-cells-cached-result">Pattern 3 — a formula cell's cached result</h2>
-<p>The reader does not evaluate formulas. A formula cell is surfaced as whichever kind its <strong>cached result</strong> holds — the value Excel last computed and stored:</p>
+<p>An undocumented code is surfaced as the raw byte cast to the enumeration, so compare against the named members before relying on the symbol - the fall-through arm above formats any unrecognised value as a hex byte rather than assuming it maps to a known error.</p>
+<h2 id="pattern-3---a-formula-cells-cached-result">Pattern 3 - a formula cell's cached result</h2>
+<p>The reader does not evaluate formulas. A formula cell is surfaced as whichever kind its <strong>cached result</strong> holds - the value Excel last computed and stored:</p>
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
 
 // A formula whose cached result is a number arrives as an ExcelCellKind.Number cell;
@@ -174,8 +174,8 @@ if (cell.Kind == ExcelCellKind.Error)
 while (reader.TryReadCell(out ExcelCell cell))
     Console.WriteLine($&quot;{cell.Kind}: {ValueOf(cell)}&quot;);
 </code></pre>
-<p>There is no separate &quot;formula&quot; cell kind — a formula cell is indistinguishable from a literal cell of the same kind, by design. The cached value is exactly what Excel stored.</p>
-<h2 id="pattern-4--detect-and-convert-date-formatted-numbers">Pattern 4 — detect and convert date-formatted numbers</h2>
+<p>There is no separate &quot;formula&quot; cell kind - a formula cell is indistinguishable from a literal cell of the same kind, by design. The cached value is exactly what Excel stored.</p>
+<h2 id="pattern-4---detect-and-convert-date-formatted-numbers">Pattern 4 - detect and convert date-formatted numbers</h2>
 <p>Excel stores dates as floating-point serial numbers, so a date cell is a <code>Number</code> cell whose <em>format</em> renders it as a date. The reader flags those cells but never reinterprets the number itself:</p>
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
 
@@ -203,15 +203,15 @@ while (reader.TryReadCell(out ExcelCell cell))
 <h5>Important</h5>
 <p>The 1900 epoch is <code>1899-12-30</code>, not <code>1900-01-01</code>. Excel deliberately keeps a historical bug that treats 1900 as a leap year, and <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelSerialDate.html">ExcelSerialDate</a> reproduces that arithmetic (it delegates to <code>DateTime.FromOADate</code>) so values round-trip with Excel for dates from <code>1900-03-01</code> onward. A serial number outside the representable OLE Automation date range raises <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>, so guard or catch when reading untrusted workbooks whose &quot;date&quot; column might hold an out-of-range number.</p>
 </div>
-<h2 id="pattern-5--convert-with-the-workbook-shortcut">Pattern 5 — convert with the workbook shortcut</h2>
+<h2 id="pattern-5---convert-with-the-workbook-shortcut">Pattern 5 - convert with the workbook shortcut</h2>
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
 
 DateTime? when = workbook.GetDateTime(cell);   // null for non-numeric cells
 string? formatCode = workbook.GetNumberFormatCode(cell.FormatIndex);
 </code></pre>
-<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_GetDateTime_Bodu_Formats_Excel_ExcelCell_">GetDateTime(ExcelCell)</a> converts a numeric cell using the workbook's date system and returns <code>null</code> for any non-numeric cell, so it is safe to call on any cell. It applies the conversion to <em>every</em> numeric cell, not only date-formatted ones — inspect <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html#Bodu_Formats_Excel_ExcelCell_IsDateFormatted">IsDateFormatted</a> first when only date-formatted cells should be treated as dates, otherwise a plain count or amount comes back as a meaningless calendar value.</p>
+<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_GetDateTime_Bodu_Formats_Excel_ExcelCell_">GetDateTime(ExcelCell)</a> converts a numeric cell using the workbook's date system and returns <code>null</code> for any non-numeric cell, so it is safe to call on any cell. It applies the conversion to <em>every</em> numeric cell, not only date-formatted ones - inspect <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html#Bodu_Formats_Excel_ExcelCell_IsDateFormatted">IsDateFormatted</a> first when only date-formatted cells should be treated as dates, otherwise a plain count or amount comes back as a meaningless calendar value.</p>
 <p><code>GetNumberFormatCode</code> resolves a cell's <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html#Bodu_Formats_Excel_ExcelCell_FormatIndex">FormatIndex</a> to its format-code string (built-in or custom), or <code>null</code> when the index is unknown. A cell whose record carries no explicit format reports <code>FormatIndex</code> <code>0</code>, the General format. The format code is the same raw string Excel stores (for example <code>&quot;0.00&quot;</code> or <code>&quot;yyyy-mm-dd&quot;</code>); this reader does not render values through it.</p>
-<h2 id="pattern-6--convert-coordinates-to-and-from-a1">Pattern 6 — convert coordinates to and from A1</h2>
+<h2 id="pattern-6---convert-coordinates-to-and-from-a1">Pattern 6 - convert coordinates to and from A1</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
 
@@ -226,8 +226,8 @@ if (ExcelCellReference.TryParseA1(&quot;AB10&quot;, out int row, out int column)
 <p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCellReference.html">ExcelCellReference</a> converts between zero-based coordinates and A1 references. <code>ToA1</code> and <code>ColumnName</code> produce the spreadsheet-style label; <code>TryParseA1</code> parses one back to coordinates (accepting lower-case column letters) and returns <code>false</code> for a malformed reference rather than throwing.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="worksheets-and-rows.html">Streaming vs materialized</a> — the two cell surfaces and when to use each.</li>
-<li><a href="reading-workbooks.html">Reading workbooks</a> — the open path and reader options.</li>
+<li><a href="worksheets-and-rows.html">Streaming vs materialized</a> - the two cell surfaces and when to use each.</li>
+<li><a href="reading-workbooks.html">Reading workbooks</a> - the open path and reader options.</li>
 <li><a class="xref" href="../../api/Bodu.Formats.Excel.html">Bodu.Formats.Excel API reference</a>.</li>
 </ul>
 
@@ -248,7 +248,7 @@ if (ExcelCellReference.TryParseA1(&quot;AB10&quot;, out int row, out int column)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 260" role="img" aria-labelledby="no-t no-d">
-  <title id="no-t">Nominal date vs. observed date — Christmas Day 2027</title>
-  <desc id="no-d">In 2027 the nominal date for Christmas Day is Saturday 25 December — a weekend. The IfWeekend adjustment trigger fires and the MoveToNextWeekday action shifts the holiday to the observed date Monday 27 December. NotableDate.Date holds the observed date; the original nominal date is preserved in NotableDate.ActualDate and NotableDate.IsObserved is true.</desc>
+  <title id="no-t">Nominal date vs. observed date - Christmas Day 2027</title>
+  <desc id="no-d">In 2027 the nominal date for Christmas Day is Saturday 25 December - a weekend. The IfWeekend adjustment trigger fires and the MoveToNextWeekday action shifts the holiday to the observed date Monday 27 December. NotableDate.Date holds the observed date; the original nominal date is preserved in NotableDate.ActualDate and NotableDate.IsObserved is true.</desc>
 
   <defs>
     <style>
@@ -30,10 +30,10 @@
     <rect class="pan" width="800" height="240" rx="8"/>
     <rect class="hdr" width="800" height="30" rx="8"/>
     <rect class="hdr" y="22" width="800" height="8"/>
-    <text class="ttl" x="16" y="20">Nominal date vs. observed date — Christmas Day 2027</text>
+    <text class="ttl" x="16" y="20">Nominal date vs. observed date - Christmas Day 2027</text>
 
     <!-- Calendar strip header (weekend label) -->
-    <text class="mut" x="305" y="62" text-anchor="middle">— weekend —</text>
+    <text class="mut" x="305" y="62" text-anchor="middle">- weekend -</text>
 
     <!-- Day cells: Fri 24, Sat 25 (nominal), Sun 26, Mon 27 (observed), Tue 28 -->
     <!-- Each day cell: 120w x 78h, x-spacing 130, starting at x=60, y=72 -->

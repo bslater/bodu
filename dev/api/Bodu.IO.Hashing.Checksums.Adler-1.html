@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Hashing_Checksums_Adler_1" data-uid="Bodu.IO.Hashing.Checksums.Adler`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Adler&lt;T&gt; Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ Adler&lt;T&gt; Class
   <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler%7BT%7D.cs">Adler{T}.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler%7BT%7D.cs">Adler{T}.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides a generic base class for Adler-style checksum algorithms parameterized by the accumulator type.</p>
@@ -334,12 +334,12 @@ Adler-64). The core hashing loop provides both a SIMD-accelerated path and a sca
 the canonical positionally weighted block recurrence so that both paths produce identical digests for any input.
 </p>
 <p>
-<strong>When to choose Adler.</strong> Adler-32 is the canonical checksum used by zlib (RFC 1950) — pick
+<strong>When to choose Adler.</strong> Adler-32 is the canonical checksum used by zlib (RFC 1950) - pick
 <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> any time interoperability with zlib, deflate, or PNG's chunk integrity is required. It is
 faster than CRC at the cost of weaker error-detection guarantees, and is therefore preferred where throughput
 matters more than rigorous coverage of burst errors. <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler64.html">Adler64</a> generalizes the construction to 64 bits
 for very large inputs where the Adler-32 collision floor becomes a concern; <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a> swaps the prime
-modulus 65521 for the power-of-two 65536 to enable cheaper modular reductions in vectorized paths — its outputs are
+modulus 65521 for the power-of-two 65536 to enable cheaper modular reductions in vectorized paths - its outputs are
 <em>not</em> interchangeable with standard Adler-32. For stronger error detection prefer <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>; for
 hash-table keying prefer <a class="xref" href="Bodu.IO.Hashing.MurmurHash3.html">MurmurHash3</a> or <a class="xref" href="Bodu.IO.Hashing.CityHash.html">CityHash</a> .
 </p>
@@ -372,7 +372,7 @@ byte[] checksum = adler.ComputeHash(deflateBlock);</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_Adler_1__ctor_System_Int32__0_" data-uid="Bodu.IO.Hashing.Checksums.Adler`1.#ctor(System.Int32,`0)">
   Adler(int, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -415,7 +415,7 @@ byte[] checksum = adler.ComputeHash(deflateBlock);</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_Adler_1_partA" data-uid="Bodu.IO.Hashing.Checksums.Adler`1.partA">
   partA
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -450,7 +450,7 @@ byte[] checksum = adler.ComputeHash(deflateBlock);</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_Adler_1_partB" data-uid="Bodu.IO.Hashing.Checksums.Adler`1.partB">
   partB
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -490,7 +490,7 @@ byte[] checksum = adler.ComputeHash(deflateBlock);</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_Adler_1_Append_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Hashing.Checksums.Adler`1.Append(System.ReadOnlySpan{System.Byte})">
   Append(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -527,7 +527,7 @@ byte[] checksum = adler.ComputeHash(deflateBlock);</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_Adler_1_Reset" data-uid="Bodu.IO.Hashing.Checksums.Adler`1.Reset">
   Reset()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -587,7 +587,7 @@ byte[] checksum = adler.ComputeHash(deflateBlock);</code></pre>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

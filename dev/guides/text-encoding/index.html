@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Text.Encoding — Guides | BODU </title>
+      <title>Bodu.Text.Encoding - Guides | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Text.Encoding — Guides | BODU ">
+      <meta name="title" content="Bodu.Text.Encoding - Guides | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,16 +85,16 @@
         </div>
 
         <article data-uid="">
-<h1 id="bodutextencoding--guides">Bodu.Text.Encoding — Guides</h1>
+<h1 id="bodutextencoding---guides">Bodu.Text.Encoding - Guides</h1>
 
 <p>These guides cover the day-to-day use of each binary-to-text encoding the library ships. If you are new to the
 package, start with the <strong><a href="../../docs/text-encoding/index.html">Introduction</a></strong> and the
-<strong><a href="../../docs/text-encoding/concepts.html">Core concepts</a></strong> pages first — the guides below assume you know the
+<strong><a href="../../docs/text-encoding/concepts.html">Core concepts</a></strong> pages first - the guides below assume you know the
 vocabulary (alphabet, variant, terminal quantum, padding, decoration, OperationStatus).</p>
 <p>Part of the <strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization</a></strong> topic.</p>
 <h2 id="how-the-library-works">How the library works</h2>
-<p><img src="../../images/diagrams/encoding-pipeline.svg" alt="Encode and decode pipeline — binary bytes to encoded text and back"></p>
-<p>Every encoding follows the same four-stage pipeline — radix conversion, variant transform, optional decoration,
+<p><img src="../../images/diagrams/encoding-pipeline.svg" alt="Encode and decode pipeline - binary bytes to encoded text and back"></p>
+<p>Every encoding follows the same four-stage pipeline - radix conversion, variant transform, optional decoration,
 encoded output. The per-encoding guides drill into the stages that vary by family: the bit-stream packing for
 Base16 / Base32 / Base64, the big-integer arithmetic for Base58, and the 4-byte block packing for Base85.</p>
 <h2 id="at-a-glance">At a glance</h2>
@@ -158,14 +158,14 @@ Base16 / Base32 / Base64, the big-integer arithmetic for Base58, and the 4-byte 
 </tr>
 <tr>
 <td><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong></td>
-<td>—</td>
+<td>-</td>
 <td>the flat-byte encodings above</td>
 <td>Runtime-selected encoding choice (config-driven serializers, plugins)</td>
 </tr>
 </tbody>
 </table>
 <h3 id="escape-based-encodings">Escape-based encodings</h3>
-<p><code>QuotedPrintable</code> and <code>PercentEncoding</code> are not flat-byte radix encodings — they escape a <em>subset</em> of octets as <code>=HH</code>
+<p><code>QuotedPrintable</code> and <code>PercentEncoding</code> are not flat-byte radix encodings - they escape a <em>subset</em> of octets as <code>=HH</code>
 or <code>%HH</code> while leaving most printable ASCII literal, so their output length depends on the content. They are static
 types and intentionally <strong>not</strong> <code>IBinaryEncoding</code> members (their modes / options carry information the parameterless
 interface cannot express).</p>
@@ -261,7 +261,7 @@ interface cannot express).</p>
 </tbody>
 </table>
 <h2 id="api-shape-recap">API shape recap</h2>
-<p>Every encoding family follows the same pattern. The bullet list below is the entire public surface — the per-family
+<p>Every encoding family follows the same pattern. The bullet list below is the entire public surface - the per-family
 guides drill into the variant-specific options:</p>
 <ul>
 <li><strong>Encode</strong>: <code>Encode(byte[]/span)</code> returning <code>string</code>, <code>Encode(byte[], int, int)</code>, <code>Encode(span, span)</code> returning
@@ -279,20 +279,20 @@ guides drill into the variant-specific options:</p>
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="base16.html">Base16 guide</a></strong> — formatting decorations, prefix handling, hex dumps.</li>
-<li><strong><a href="base32.html">Base32 guide</a></strong> — variants and when to pick each; TOTP / Crockford use cases.</li>
-<li><strong><a href="base64.html">Base64 guide</a></strong> — Standard / URL-safe / MIME; line wrapping; JWT.</li>
-<li><strong><a href="base58.html">Base58 guide</a></strong> — leading zeros, big-integer encoding; Bitcoin/IPFS.</li>
-<li><strong><a href="base85.html">Base85 guide</a></strong> — Ascii85 vs Z85 vs Git; the <code>z</code> shortcut; partial-group rules; Git compact and padded modes.</li>
-<li><strong><a href="base45.html">Base45 guide</a></strong> — RFC 9285; the QR-code payload encoding; group packing and strictness.</li>
-<li><strong><a href="base62.html">Base62 guide</a></strong> — GMP-style compact identifiers; leading-zero preservation.</li>
-<li><strong><a href="bech32.html">Bech32 guide</a></strong> — Bech32 / Bech32m; HRP, separator, checksum; 5-bit vs 8-bit data.</li>
-<li><strong><a href="quoted-printable.html">Quoted-Printable guide</a></strong> — MIME body <code>=HH</code> encoding; binary vs text mode; soft wrapping; strict-vs-relaxed decode.</li>
-<li><strong><a href="percent-encoding.html">Percent-encoding guide</a></strong> — RFC 3986 / WHATWG <code>%HH</code> encoding; component modes; form mode; string helpers.</li>
-<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> — runtime-selected encoding pattern.</li>
-<li><strong><a href="../../samples/text-encoding.html">Runnable samples</a></strong> — offline sample projects under <code>samples/Text.Encoding/</code>: the catalogue tour, checksummed schemes, the registry, and a custom Base36 codec with contract tests.</li>
-<li><strong><a href="encoding-helpers.html">Encoding helpers and BOM detection</a></strong> — <code>System.Text.Encoding</code> helpers: <code>string</code>↔<code>byte[]</code> conversion, preamble/BOM handling, UTF classification, fallbacks, and chunked transcoding.</li>
-<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — the topic map across Bodu.Text.Encoding, Bodu.Text.Filtering, Bodu.Text.Formats, and the Bencode / TOML / YAML serializers, each with its own complete guide index.</li>
+<li><strong><a href="base16.html">Base16 guide</a></strong> - formatting decorations, prefix handling, hex dumps.</li>
+<li><strong><a href="base32.html">Base32 guide</a></strong> - variants and when to pick each; TOTP / Crockford use cases.</li>
+<li><strong><a href="base64.html">Base64 guide</a></strong> - Standard / URL-safe / MIME; line wrapping; JWT.</li>
+<li><strong><a href="base58.html">Base58 guide</a></strong> - leading zeros, big-integer encoding; Bitcoin/IPFS.</li>
+<li><strong><a href="base85.html">Base85 guide</a></strong> - Ascii85 vs Z85 vs Git; the <code>z</code> shortcut; partial-group rules; Git compact and padded modes.</li>
+<li><strong><a href="base45.html">Base45 guide</a></strong> - RFC 9285; the QR-code payload encoding; group packing and strictness.</li>
+<li><strong><a href="base62.html">Base62 guide</a></strong> - GMP-style compact identifiers; leading-zero preservation.</li>
+<li><strong><a href="bech32.html">Bech32 guide</a></strong> - Bech32 / Bech32m; HRP, separator, checksum; 5-bit vs 8-bit data.</li>
+<li><strong><a href="quoted-printable.html">Quoted-Printable guide</a></strong> - MIME body <code>=HH</code> encoding; binary vs text mode; soft wrapping; strict-vs-relaxed decode.</li>
+<li><strong><a href="percent-encoding.html">Percent-encoding guide</a></strong> - RFC 3986 / WHATWG <code>%HH</code> encoding; component modes; form mode; string helpers.</li>
+<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> - runtime-selected encoding pattern.</li>
+<li><strong><a href="../../samples/text-encoding.html">Runnable samples</a></strong> - offline sample projects under <code>samples/Text.Encoding/</code>: the catalogue tour, checksummed schemes, the registry, and a custom Base36 codec with contract tests.</li>
+<li><strong><a href="encoding-helpers.html">Encoding helpers and BOM detection</a></strong> - <code>System.Text.Encoding</code> helpers: <code>string</code>↔<code>byte[]</code> conversion, preamble/BOM handling, UTF classification, fallbacks, and chunked transcoding.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> - the topic map across Bodu.Text.Encoding, Bodu.Text.Filtering, Bodu.Text.Formats, and the Bencode / TOML / YAML serializers, each with its own complete guide index.</li>
 </ul>
 
 </article>
@@ -312,7 +312,7 @@ guides drill into the variant-specific options:</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

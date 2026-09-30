@@ -102,7 +102,7 @@
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-text-filtering.svg" alt="Bodu.Text.Filtering"></p>
 <h2 id="purpose">Purpose</h2>
-<p><strong>Bodu.Text.Filtering</strong> filters lists of text values through include/exclude pattern sets — glob
+<p><strong>Bodu.Text.Filtering</strong> filters lists of text values through include/exclude pattern sets - glob
 (wildcard) and regular-expression patterns compiled once into an immutable
 <a class="xref" href="Bodu.Text.Filtering.TextFilter.html">TextFilter</a> that classifies every pattern by evaluation cost and runs the
 cheapest strategies first. The design deliberately adopts the models users already know: Ant /
@@ -113,21 +113,21 @@ what was vetoed, and by which pattern.</p>
 <a class="xref" href="Bodu.Text.Configuration.html">Bodu.Text.Configuration</a> for configuration documents.</p>
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
-<li><strong><a href="../docs/text-filtering/index.html">Bodu.Text.Filtering introduction</a></strong> — the mental model, evaluation modes, and type map.</li>
-<li><strong><a href="../docs/text-filtering/concepts.html">Bodu.Text.Filtering core concepts</a></strong> — vocabulary: actions, pattern kinds, modes, cost tiers, deciding patterns.</li>
-<li><strong><a href="../docs/text-filtering/getting-started.html">Bodu.Text.Filtering getting started</a></strong> — install and minimal samples.</li>
-<li><strong><a href="../guides/text-filtering/index.html">Bodu.Text.Filtering guides</a></strong> — pattern grammar, evaluation modes, and telemetry deep dives.</li>
+<li><strong><a href="../docs/text-filtering/index.html">Bodu.Text.Filtering introduction</a></strong> - the mental model, evaluation modes, and type map.</li>
+<li><strong><a href="../docs/text-filtering/concepts.html">Bodu.Text.Filtering core concepts</a></strong> - vocabulary: actions, pattern kinds, modes, cost tiers, deciding patterns.</li>
+<li><strong><a href="../docs/text-filtering/getting-started.html">Bodu.Text.Filtering getting started</a></strong> - install and minimal samples.</li>
+<li><strong><a href="../guides/text-filtering/index.html">Bodu.Text.Filtering guides</a></strong> - pattern grammar, evaluation modes, and telemetry deep dives.</li>
 </ul>
 <h2 id="key-types">Key types</h2>
 <ul>
-<li><a class="xref" href="Bodu.Text.Filtering.TextFilter.html">TextFilter</a> — the compiled engine: <code>Build</code> / <code>Parse</code> factories, <code>IsMatch</code>, <code>Evaluate</code>, <code>Filter</code>, statistics, and the observer hook.</li>
-<li><a class="xref" href="Bodu.Text.Filtering.TextFilterBuilder.html">TextFilterBuilder</a> — fluent assembly (<code>AddInclude</code> / <code>AddExclude</code> / <code>AddParsed</code>) in the <code>Microsoft.Extensions.FileSystemGlobbing</code> style.</li>
-<li><a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.html">TextFilterPattern</a> — one immutable rule: pattern text, include/exclude action, wildcard/regex kind, optional case override.</li>
-<li><a class="xref" href="Bodu.Text.Filtering.TextFilterOptions.html">TextFilterOptions</a> — evaluation mode, case default, regex match timeout, opt-in timing capture.</li>
-<li><a class="xref" href="Bodu.Text.Filtering.TextFilterEvaluationMode.html">TextFilterEvaluationMode</a> — <code>AnyMatch</code> sets (Ant / MSBuild) or <code>LastMatchWins</code> ordered rules (gitignore).</li>
-<li><a class="xref" href="Bodu.Text.Filtering.TextFilterResult.html">TextFilterResult</a> / <a class="xref" href="Bodu.Text.Filtering.TextFilterDecision.html">TextFilterDecision</a> — the outcome of one evaluation and the pattern that decided it.</li>
-<li><a class="xref" href="Bodu.Text.Filtering.TextFilterStatistics.html">TextFilterStatistics</a> / <a class="xref" href="Bodu.Text.Filtering.TextFilterPatternStatistics.html">TextFilterPatternStatistics</a> — the counters snapshot: decision buckets, per-pattern hit counts, regex timeouts, optional timing.</li>
-<li><a class="xref" href="Bodu.Text.Filtering.ITextFilterObserver.html">ITextFilterObserver</a> — the per-decision callback hook; a single null check when unattached.</li>
+<li><a class="xref" href="Bodu.Text.Filtering.TextFilter.html">TextFilter</a> - the compiled engine: <code>Build</code> / <code>Parse</code> factories, <code>IsMatch</code>, <code>Evaluate</code>, <code>Filter</code>, statistics, and the observer hook.</li>
+<li><a class="xref" href="Bodu.Text.Filtering.TextFilterBuilder.html">TextFilterBuilder</a> - fluent assembly (<code>AddInclude</code> / <code>AddExclude</code> / <code>AddParsed</code>) in the <code>Microsoft.Extensions.FileSystemGlobbing</code> style.</li>
+<li><a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.html">TextFilterPattern</a> - one immutable rule: pattern text, include/exclude action, wildcard/regex kind, optional case override.</li>
+<li><a class="xref" href="Bodu.Text.Filtering.TextFilterOptions.html">TextFilterOptions</a> - evaluation mode, case default, regex match timeout, opt-in timing capture.</li>
+<li><a class="xref" href="Bodu.Text.Filtering.TextFilterEvaluationMode.html">TextFilterEvaluationMode</a> - <code>AnyMatch</code> sets (Ant / MSBuild) or <code>LastMatchWins</code> ordered rules (gitignore).</li>
+<li><a class="xref" href="Bodu.Text.Filtering.TextFilterResult.html">TextFilterResult</a> / <a class="xref" href="Bodu.Text.Filtering.TextFilterDecision.html">TextFilterDecision</a> - the outcome of one evaluation and the pattern that decided it.</li>
+<li><a class="xref" href="Bodu.Text.Filtering.TextFilterStatistics.html">TextFilterStatistics</a> / <a class="xref" href="Bodu.Text.Filtering.TextFilterPatternStatistics.html">TextFilterPatternStatistics</a> - the counters snapshot: decision buckets, per-pattern hit counts, regex timeouts, optional timing.</li>
+<li><a class="xref" href="Bodu.Text.Filtering.ITextFilterObserver.html">ITextFilterObserver</a> - the per-decision callback hook; a single null check when unattached.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using Bodu.Text.Filtering;
@@ -147,8 +147,8 @@ var stats = filter.GetStatistics();   // evaluated / accepted / excluded, hits p
 <h2 id="notes">Notes</h2>
 <ul>
 <li><strong>Whole-string matching.</strong> Globs match the entire value; use <code>*abc*</code> for contains-style matching. Comparison is ordinal, case-insensitive by default, and overridable per filter and per pattern.</li>
-<li><strong>Cost-tiered evaluation.</strong> At build time each glob is classified — literal, prefix, suffix, contains, general wildcard — and regexes compile preferring the linear-time <code>NonBacktracking</code> engine; groups evaluate cheapest-first, which cannot change the outcome because set matching is an order-independent OR.</li>
-<li><strong>Fail-safe regex timeouts.</strong> A timed-out include does not admit the value; a timed-out exclude still vetoes it — and the event is visible in the statistics and to the observer.</li>
+<li><strong>Cost-tiered evaluation.</strong> At build time each glob is classified - literal, prefix, suffix, contains, general wildcard - and regexes compile preferring the linear-time <code>NonBacktracking</code> engine; groups evaluate cheapest-first, which cannot change the outcome because set matching is an order-independent OR.</li>
+<li><strong>Fail-safe regex timeouts.</strong> A timed-out include does not admit the value; a timed-out exclude still vetoes it - and the event is visible in the statistics and to the observer.</li>
 <li><strong>See also:</strong> the <a href="../docs/text-filtering/index.html">introduction</a> and the <a href="../guides/text-filtering/index.html">guides</a>.</li>
 </ul>
 </div>
@@ -250,7 +250,7 @@ Enums
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

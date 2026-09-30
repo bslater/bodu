@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Binary Formats &amp; I/O — Guides | BODU </title>
+      <title>Binary Formats &amp; I/O - Guides | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Binary Formats &amp; I/O — Guides | BODU ">
+      <meta name="title" content="Binary Formats &amp; I/O - Guides | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,16 +85,16 @@
         </div>
 
         <article data-uid="">
-<h1 id="binary-formats--io--guides">Binary Formats &amp; I/O — Guides</h1>
+<h1 id="binary-formats--io---guides">Binary Formats &amp; I/O - Guides</h1>
 
-<p>Recipe-style walk-throughs for the <strong>Binary Formats &amp; I/O</strong> topic — readers (and, for <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code>, writers) for legacy binary container and document formats. The packages form a strictly layered stack: general-purpose container readers at the bottom (<code>Bodu.IO.Compound</code> and <code>Bodu.IO.Pst</code>), a record codec in the middle (<code>Bodu.IO.Biff</code>), and narrower format readers built on top.</p>
-<p><code>Bodu.IO.Compound</code> reads the OLE2 / Compound File Binary (CFB) envelope — the structured-storage &quot;file system in a file&quot; used by legacy Microsoft Office documents — and exposes the embedded named streams with no application-format knowledge. <code>Bodu.IO.Biff</code> is a low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy <code>.xls</code> workbooks — the substrate beneath <code>Bodu.Formats.Excel.Binary</code>, in the same relation <code>Bodu.IO.Pst</code> has to <code>Bodu.Formats.Outlook.Pst</code>. <code>Bodu.Formats.Excel.Binary</code> builds on both to surface raw worksheet cell values from BIFF5 and BIFF8 <code>.xls</code> workbooks, and <code>Bodu.Formats.Outlook.Msg</code> builds on the container to open <code>.msg</code> messages. <code>Bodu.IO.Pst</code> reads the second container in the topic — the Outlook personal-folders (PST) node database — and <code>Bodu.Formats.Outlook.Pst</code> builds on it to open a <code>.pst</code> mail store in the same <code>Bodu.Formats.Outlook</code> MAPI value model.</p>
+<p>Recipe-style walk-throughs for the <strong>Binary Formats &amp; I/O</strong> topic - readers (and, for <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code>, writers) for legacy binary container and document formats. The packages form a strictly layered stack: general-purpose container readers at the bottom (<code>Bodu.IO.Compound</code> and <code>Bodu.IO.Pst</code>), a record codec in the middle (<code>Bodu.IO.Biff</code>), and narrower format readers built on top.</p>
+<p><code>Bodu.IO.Compound</code> reads the OLE2 / Compound File Binary (CFB) envelope - the structured-storage &quot;file system in a file&quot; used by legacy Microsoft Office documents - and exposes the embedded named streams with no application-format knowledge. <code>Bodu.IO.Biff</code> is a low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy <code>.xls</code> workbooks - the substrate beneath <code>Bodu.Formats.Excel.Binary</code>, in the same relation <code>Bodu.IO.Pst</code> has to <code>Bodu.Formats.Outlook.Pst</code>. <code>Bodu.Formats.Excel.Binary</code> builds on both to surface raw worksheet cell values from BIFF5 and BIFF8 <code>.xls</code> workbooks, and <code>Bodu.Formats.Outlook.Msg</code> builds on the container to open <code>.msg</code> messages. <code>Bodu.IO.Pst</code> reads the second container in the topic - the Outlook personal-folders (PST) node database - and <code>Bodu.Formats.Outlook.Pst</code> builds on it to open a <code>.pst</code> mail store in the same <code>Bodu.Formats.Outlook</code> MAPI value model.</p>
 <h2 id="boduiocompound-guides">Bodu.IO.Compound guides</h2>
-<p>The CFB container reader and writer — the storage hierarchy, the stream cursor, editing and authoring, and the OLE property sets.</p>
+<p>The CFB container reader and writer - the storage hierarchy, the stream cursor, editing and authoring, and the OLE property sets.</p>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="../io-compound/index.html">Overview</a></h3>
-  <p>The full guide index for <code>Bodu.IO.Compound</code> — namespace map, the storage-hierarchy mental model, and which guide covers each concern.</p>
+  <p>The full guide index for <code>Bodu.IO.Compound</code> - namespace map, the storage-hierarchy mental model, and which guide covers each concern.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="../io-compound/reading-compound-files.html">Reading compound files</a></h3>
@@ -114,11 +114,11 @@
 </div>
 </div>
 <h2 id="boduformatsexcelbinary-guides">Bodu.Formats.Excel.Binary guides</h2>
-<p>The BIFF5 and BIFF8 <code>.xls</code> reader built on <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code> surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation.</p>
+<p>The BIFF5 and BIFF8 <code>.xls</code> reader built on <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code> surfaces raw worksheet cell values - strings, numbers, booleans, and errors - without formula evaluation, styling, or higher-level interpretation.</p>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="../excel/index.html">Overview</a></h3>
-  <p>The full guide index for <code>Bodu.Formats.Excel.Binary</code> — the layered BIFF-on-compound-file model, the namespace map, and which guide covers each concern.</p>
+  <p>The full guide index for <code>Bodu.Formats.Excel.Binary</code> - the layered BIFF-on-compound-file model, the namespace map, and which guide covers each concern.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="../excel/reading-workbooks.html">Reading workbooks</a></h3>
@@ -130,15 +130,15 @@
 </div>
 <div class="bodu-card">
   <h3><a href="../excel/worksheets-and-rows.html">Streaming vs materialized</a></h3>
-  <p>The forward-only <code>ExcelWorksheetReader</code> versus the randomly addressable <code>ExcelWorksheet</code> — when to reach for each, and how to bound allocation.</p>
+  <p>The forward-only <code>ExcelWorksheetReader</code> versus the randomly addressable <code>ExcelWorksheet</code> - when to reach for each, and how to bound allocation.</p>
 </div>
 </div>
 <h2 id="boduformatsoutlook-guides">Bodu.Formats.Outlook guides</h2>
-<p>The Outlook format readers — the shared MAPI value model in <code>Bodu.Formats.Outlook</code>, and the read-only <code>.msg</code> reader <code>Bodu.Formats.Outlook.Msg</code> built on <code>Bodu.IO.Compound</code>. (The <code>.pst</code> mail-store reader, <code>Bodu.Formats.Outlook.Pst</code>, is introduced with its container in the <a href="../../docs/io-pst/index.html">Bodu.IO.Pst introduction</a>.)</p>
+<p>The Outlook format readers - the shared MAPI value model in <code>Bodu.Formats.Outlook</code>, and the read-only <code>.msg</code> reader <code>Bodu.Formats.Outlook.Msg</code> built on <code>Bodu.IO.Compound</code>. (The <code>.pst</code> mail-store reader, <code>Bodu.Formats.Outlook.Pst</code>, is introduced with its container in the <a href="../../docs/io-pst/index.html">Bodu.IO.Pst introduction</a>.)</p>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="../outlook/index.html">Overview</a></h3>
-  <p>The full guide index for the Outlook readers — how a <code>.msg</code> file sits inside the CFB container, the namespace map, and which guide covers each concern.</p>
+  <p>The full guide index for the Outlook readers - how a <code>.msg</code> file sits inside the CFB container, the namespace map, and which guide covers each concern.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="../outlook/reading-msg-files.html">Reading .msg files</a></h3>
@@ -151,16 +151,16 @@
 </div>
 <h2 id="start-here">Start here</h2>
 <ol>
-<li><strong><a href="../../docs/topics/binary-formats.html">Topic overview</a></strong> — the layered container-vs-format split and package selection on the docs side.</li>
-<li><strong><a href="../../docs/topics/binary-formats-concepts.html">Topic concepts</a></strong> — container, storage, stream, sector chain, BIFF record.</li>
-<li><strong><a href="../io-compound/reading-compound-files.html">Reading compound files</a></strong> — the core open → navigate → read recipe that every other use builds on.</li>
-<li><strong><a href="../io-compound/streaming-and-buffering.html">Buffered vs streaming access</a></strong> — once the file is too large to hold whole, or you need to control the source's lifetime.</li>
-<li><strong><a href="../io-compound/property-sets.html">Reading property sets</a></strong> — when you want the authored document metadata rather than the format payload.</li>
+<li><strong><a href="../../docs/topics/binary-formats.html">Topic overview</a></strong> - the layered container-vs-format split and package selection on the docs side.</li>
+<li><strong><a href="../../docs/topics/binary-formats-concepts.html">Topic concepts</a></strong> - container, storage, stream, sector chain, BIFF record.</li>
+<li><strong><a href="../io-compound/reading-compound-files.html">Reading compound files</a></strong> - the core open → navigate → read recipe that every other use builds on.</li>
+<li><strong><a href="../io-compound/streaming-and-buffering.html">Buffered vs streaming access</a></strong> - once the file is too large to hold whole, or you need to control the source's lifetime.</li>
+<li><strong><a href="../io-compound/property-sets.html">Reading property sets</a></strong> - when you want the authored document metadata rather than the format payload.</li>
 </ol>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="../../docs/topics/binary-formats.html">Binary Formats &amp; I/O overview</a></strong> — the topic landing page on the docs side.</li>
-<li><strong><a href="../../docs/topics/binary-formats-concepts.html">Binary Formats &amp; I/O concepts</a></strong> — the cross-package vocabulary.</li>
+<li><strong><a href="../../docs/topics/binary-formats.html">Binary Formats &amp; I/O overview</a></strong> - the topic landing page on the docs side.</li>
+<li><strong><a href="../../docs/topics/binary-formats-concepts.html">Binary Formats &amp; I/O concepts</a></strong> - the cross-package vocabulary.</li>
 <li><strong>Member introductions:</strong> <a href="../../docs/io-compound/index.html">Bodu.IO.Compound</a> · <a href="../../docs/io-biff/index.html">Bodu.IO.Biff</a> · <a href="../../docs/excel/index.html">Bodu.Formats.Excel.Binary</a> · <a href="../../docs/io-pst/index.html">Bodu.IO.Pst</a>.</li>
 <li><strong>Complete guide indexes</strong> (this page shows the highlights; each index lists every guide for its package): <a href="../io-compound/index.html">Bodu.IO.Compound</a> · <a href="../excel/index.html">Bodu.Formats.Excel.Binary</a> · <a href="../io-pst/index.html">Bodu.IO.Pst</a> · <a href="../outlook/index.html">Bodu.Formats.Outlook</a>.</li>
 <li><strong>API reference:</strong> <a class="xref" href="../../api/Bodu.IO.Compound.html">Bodu.IO.Compound</a> · <a class="xref" href="../../api/Bodu.IO.Biff.html">Bodu.IO.Biff</a> · <a class="xref" href="../../api/Bodu.Formats.Excel.html">Bodu.Formats.Excel</a> · <a class="xref" href="../../api/Bodu.IO.Pst.html">Bodu.IO.Pst</a> · <a class="xref" href="../../api/Bodu.Formats.Outlook.html">Bodu.Formats.Outlook</a>.</li>
@@ -183,7 +183,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

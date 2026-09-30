@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Core Foundations — Guides | BODU </title>
+      <title>Core Foundations - Guides | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Core Foundations — Guides | BODU ">
+      <meta name="title" content="Core Foundations - Guides | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,52 +85,52 @@
         </div>
 
         <article data-uid="">
-<h1 id="core-foundations--guides">Core Foundations — Guides</h1>
+<h1 id="core-foundations---guides">Core Foundations - Guides</h1>
 
-<p>Recipe-style walk-throughs for the <strong>Core Foundations</strong> topic — the <code>Bodu.Core</code>, <code>Bodu.Collections</code>, and <code>Bodu.Collections.Concurrent</code> packages, plus the <code>Bodu.Text</code> namespace that ships inside <code>Bodu.Core</code>. These are the building blocks the rest of the suite stands on: bounded collections, eviction-aware caches, pooled buffers, day-of-week patterns, argument guards, and character-encoding helpers.</p>
+<p>Recipe-style walk-throughs for the <strong>Core Foundations</strong> topic - the <code>Bodu.Core</code>, <code>Bodu.Collections</code>, and <code>Bodu.Collections.Concurrent</code> packages, plus the <code>Bodu.Text</code> namespace that ships inside <code>Bodu.Core</code>. These are the building blocks the rest of the suite stands on: bounded collections, eviction-aware caches, pooled buffers, day-of-week patterns, argument guards, and character-encoding helpers.</p>
 <p>If you have not yet installed the packages, start with the <a href="../../docs/topics/core-foundations.html">topic overview</a> for the package map and install commands, and the <a href="../../docs/topics/core-foundations-concepts.html">topic concepts page</a> for the shared vocabulary.</p>
 <h2 id="guides-for-the-package-family">Guides for the package family</h2>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="../core/index.html">Overview</a></h3>
-  <p>The full guide index for the Core Foundations packages, organized by namespace — every collection, buffer, and root-namespace primitive, which guide covers each, and which package ships it.</p>
+  <p>The full guide index for the Core Foundations packages, organized by namespace - every collection, buffer, and root-namespace primitive, which guide covers each, and which package ships it.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="../core/choosing-a-collection.html">Choosing a collection</a></h3>
-  <p>The decision guide — a quick decision tree plus per-axis tables (access pattern, capacity and lifecycle, concurrency) that map requirements to the correct type.</p>
+  <p>The decision guide - a quick decision tree plus per-axis tables (access pattern, capacity and lifecycle, concurrency) that map requirements to the correct type.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="../core/circular-buffer.html">Circular buffer</a></h3>
-  <p>Fixed-capacity FIFO ring buffer — single-threaded <code>CircularBuffer&lt;T&gt;</code> (in <code>Bodu.Collections</code>) and thread-safe <code>ConcurrentCircularBuffer&lt;T&gt;</code> (in <code>Bodu.Collections.Concurrent</code>), overwrite mode, peek / dequeue / try-enqueue patterns.</p>
+  <p>Fixed-capacity FIFO ring buffer - single-threaded <code>CircularBuffer&lt;T&gt;</code> (in <code>Bodu.Collections</code>) and thread-safe <code>ConcurrentCircularBuffer&lt;T&gt;</code> (in <code>Bodu.Collections.Concurrent</code>), overwrite mode, peek / dequeue / try-enqueue patterns.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="../core/evicting-dictionary.html">Evicting dictionary</a></h3>
-  <p>Capacity-bounded key-value store with FIFO, LRU, LFU, MRU, Random, and Second-Chance eviction policies — the drop-in cache primitive. Thread-safe <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> (in <code>Bodu.Collections.Concurrent</code>) adds lock-striped segments, TTL, and single-flight <code>GetOrAdd</code>.</p>
+  <p>Capacity-bounded key-value store with FIFO, LRU, LFU, MRU, Random, and Second-Chance eviction policies - the drop-in cache primitive. Thread-safe <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> (in <code>Bodu.Collections.Concurrent</code>) adds lock-striped segments, TTL, and single-flight <code>GetOrAdd</code>.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="../core/pooled-buffer-builder.html">Pooled buffer builder</a></h3>
-  <p><code>PooledBufferBuilder&lt;T&gt;</code> — <code>ArrayPool</code>-backed building of byte and character spans without allocation, with the ownership and lifetime rules.</p>
+  <p><code>PooledBufferBuilder&lt;T&gt;</code> - <code>ArrayPool</code>-backed building of byte and character spans without allocation, with the ownership and lifetime rules.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="../core/week-pattern.html">WeekPattern</a></h3>
-  <p>Immutable bitmask value type for day-of-week sets — composition (<code>MTuW</code>), bitwise operators, parsing, and enumeration.</p>
+  <p>Immutable bitmask value type for day-of-week sets - composition (<code>MTuW</code>), bitwise operators, parsing, and enumeration.</p>
 </div>
 </div>
 <h2 id="bodutext">Bodu.Text</h2>
-<p>The <code>Bodu.Text</code> character-encoding helpers (BOM detection, span- and UTF-8-friendly transcoding, preamble handling, validation) have their own guide — <strong><a href="../text-encoding/encoding-helpers.html">Encoding helpers and BOM detection</a></strong> — which walks every surface pattern by pattern. Pair it with the <a href="../../docs/text/index.html">Bodu.Text introduction</a> for the scenario map and the <a class="xref" href="../../api/Bodu.Text.html">Bodu.Text API reference</a> for the type-by-type docs.</p>
+<p>The <code>Bodu.Text</code> character-encoding helpers (BOM detection, span- and UTF-8-friendly transcoding, preamble handling, validation) have their own guide - <strong><a href="../text-encoding/encoding-helpers.html">Encoding helpers and BOM detection</a></strong> - which walks every surface pattern by pattern. Pair it with the <a href="../../docs/text/index.html">Bodu.Text introduction</a> for the scenario map and the <a class="xref" href="../../api/Bodu.Text.html">Bodu.Text API reference</a> for the type-by-type docs.</p>
 <h2 id="start-here">Start here</h2>
 <ol>
-<li><strong><a href="../../docs/topics/core-foundations.html">Topic overview</a></strong> — what ships in each package, the dependency map, and the &quot;which do I need?&quot; table.</li>
-<li><strong><a href="../../docs/topics/core-foundations-concepts.html">Topic concepts</a></strong> — the guard convention, bounded vs. growable capacity, eviction policies, pooled buffers, and the encoding vocabulary.</li>
-<li><strong><a href="../core/choosing-a-collection.html">Choosing a collection</a></strong> — pick the right type before writing code against the wrong one.</li>
-<li><strong>The walk-through for your type</strong> — <a href="../core/circular-buffer.html">circular buffer</a>, <a href="../core/evicting-dictionary.html">evicting dictionary</a>, <a href="../core/pooled-buffer-builder.html">pooled buffer builder</a>, or <a href="../core/week-pattern.html">WeekPattern</a>; the <a href="../core/index.html">guide overview</a> lists the rest (deque, indexed priority queue, ordered sets, multiset, multi-value dictionary, range-keyed lookups, segmented buffer, concurrent collections).</li>
+<li><strong><a href="../../docs/topics/core-foundations.html">Topic overview</a></strong> - what ships in each package, the dependency map, and the &quot;which do I need?&quot; table.</li>
+<li><strong><a href="../../docs/topics/core-foundations-concepts.html">Topic concepts</a></strong> - the guard convention, bounded vs. growable capacity, eviction policies, pooled buffers, and the encoding vocabulary.</li>
+<li><strong><a href="../core/choosing-a-collection.html">Choosing a collection</a></strong> - pick the right type before writing code against the wrong one.</li>
+<li><strong>The walk-through for your type</strong> - <a href="../core/circular-buffer.html">circular buffer</a>, <a href="../core/evicting-dictionary.html">evicting dictionary</a>, <a href="../core/pooled-buffer-builder.html">pooled buffer builder</a>, or <a href="../core/week-pattern.html">WeekPattern</a>; the <a href="../core/index.html">guide overview</a> lists the rest (deque, indexed priority queue, ordered sets, multiset, multi-value dictionary, range-keyed lookups, segmented buffer, concurrent collections).</li>
 </ol>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="../../docs/topics/core-foundations.html">Core Foundations overview</a></strong> — the topic landing page on the docs side.</li>
-<li><strong><a href="../../docs/topics/core-foundations-concepts.html">Core Foundations concepts</a></strong> — cross-member vocabulary.</li>
-<li><strong><a href="../../docs/core/index.html">Bodu.Core introduction</a></strong> and <strong><a href="../../docs/core/getting-started.html">getting started</a></strong> — namespace map and minimal samples.</li>
-<li><strong><a href="../../docs/collections/index.html">Bodu.Collections introduction</a></strong> and <strong><a href="../../docs/collections-concurrent/index.html">Bodu.Collections.Concurrent introduction</a></strong> — the collection packages' namespace maps.</li>
+<li><strong><a href="../../docs/topics/core-foundations.html">Core Foundations overview</a></strong> - the topic landing page on the docs side.</li>
+<li><strong><a href="../../docs/topics/core-foundations-concepts.html">Core Foundations concepts</a></strong> - cross-member vocabulary.</li>
+<li><strong><a href="../../docs/core/index.html">Bodu.Core introduction</a></strong> and <strong><a href="../../docs/core/getting-started.html">getting started</a></strong> - namespace map and minimal samples.</li>
+<li><strong><a href="../../docs/collections/index.html">Bodu.Collections introduction</a></strong> and <strong><a href="../../docs/collections-concurrent/index.html">Bodu.Collections.Concurrent introduction</a></strong> - the collection packages' namespace maps.</li>
 <li><strong>API reference:</strong> <a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic</a> · <a class="xref" href="../../api/Bodu.Text.html">Bodu.Text</a>.</li>
 <li><strong>Complete guide indexes</strong> (this page shows the highlights; each index lists every guide for its package): <a href="../core/index.html">Core Foundations guides</a>.</li>
 </ul>
@@ -152,7 +152,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_IAeadBlockCipherModeTransform" data-uid="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 IAeadBlockCipherModeTransform Interface
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/IAeadBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/IAeadBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ IAeadBlockCipherModeTransform Interface
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/IAeadBlockCipherModeTransform.cs">IAeadBlockCipherModeTransform.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/IAeadBlockCipherModeTransform.cs">IAeadBlockCipherModeTransform.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents an authenticated encryption with associated data (AEAD) block cipher mode transform that encrypts or
@@ -206,7 +206,7 @@ int written = transform.Decrypt(ciphertextWithTag, output); // throws if tag inv
 
 <p>
 All implementations are stateful, not thread-safe, and <strong>single-use per message</strong>. A second call to
-<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> or <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> on the same instance — including after a tag-mismatch failure —
+<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> or <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> on the same instance - including after a tag-mismatch failure -
 throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>. Construct a fresh transform for every message and dispose it
 when finished.
 </p>
@@ -214,34 +214,34 @@ when finished.
 <strong>API surface.</strong> The library ships several implementations clustered by trade-off:
 </p>
 <ul><li><span class="term">Default high-throughput AEAD</span>
-<a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> — single-pass, hardware-accelerated, fragile under nonce reuse.
+<a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> - single-pass, hardware-accelerated, fragile under nonce reuse.
 </li><li><span class="term">Constrained-environment AEAD</span>
-<a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a> — two-pass, no Galois-field arithmetic, used by Zigbee / Bluetooth Mesh.
-</li><li><span class="term">Two-pass alternatives</span><a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a> — flexible nonce length, OMAC-based authentication.</li><li><span class="term">Misuse-resistant</span>
-<a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> (RFC 8452) and <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a> (RFC 5297) — nonce reuse only
+<a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a> - two-pass, no Galois-field arithmetic, used by Zigbee / Bluetooth Mesh.
+</li><li><span class="term">Two-pass alternatives</span><a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a> - flexible nonce length, OMAC-based authentication.</li><li><span class="term">Misuse-resistant</span>
+<a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> (RFC 8452) and <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a> (RFC 5297) - nonce reuse only
 leaks message-equality.
-</li><li><span class="term">Single-pass without GCM's failure profile</span><a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a> — RFC 7253, single-pass, graceful nonce-reuse failure.</li></ul>
+</li><li><span class="term">Single-pass without GCM's failure profile</span><a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a> - RFC 7253, single-pass, graceful nonce-reuse failure.</li></ul>
 <p>
 Most callers should reach for the helper methods on
 <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a> instead of calling
-<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_ProcessAssociatedData_System_ReadOnlySpan_System_Byte__">ProcessAssociatedData(ReadOnlySpan&lt;byte&gt;)</a> + <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>/<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> directly — those wrappers size
+<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_ProcessAssociatedData_System_ReadOnlySpan_System_Byte__">ProcessAssociatedData(ReadOnlySpan&lt;byte&gt;)</a> + <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>/<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> directly - those wrappers size
 the output buffer correctly and return a single freshly allocated array.
 </p>
 <p>
 <strong>API surface.</strong> The library ships several implementations clustered by trade-off:
 </p>
 <ul><li><span class="term">Default high-throughput AEAD</span>
-<a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> — single-pass, hardware-accelerated, fragile under nonce reuse.
+<a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> - single-pass, hardware-accelerated, fragile under nonce reuse.
 </li><li><span class="term">Constrained-environment AEAD</span>
-<a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a> — two-pass, no Galois-field arithmetic, used by Zigbee / Bluetooth Mesh.
-</li><li><span class="term">Two-pass alternatives</span><a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a> — flexible nonce length, OMAC-based authentication.</li><li><span class="term">Misuse-resistant</span>
-<a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> (RFC 8452) and <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a> (RFC 5297) — nonce reuse only
+<a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a> - two-pass, no Galois-field arithmetic, used by Zigbee / Bluetooth Mesh.
+</li><li><span class="term">Two-pass alternatives</span><a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a> - flexible nonce length, OMAC-based authentication.</li><li><span class="term">Misuse-resistant</span>
+<a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> (RFC 8452) and <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a> (RFC 5297) - nonce reuse only
 leaks message-equality.
-</li><li><span class="term">Single-pass without GCM's failure profile</span><a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a> — RFC 7253, single-pass, graceful nonce-reuse failure.</li></ul>
+</li><li><span class="term">Single-pass without GCM's failure profile</span><a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a> - RFC 7253, single-pass, graceful nonce-reuse failure.</li></ul>
 <p>
 Most callers should reach for the helper methods on
 <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a> instead of calling
-<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_ProcessAssociatedData_System_ReadOnlySpan_System_Byte__">ProcessAssociatedData(ReadOnlySpan&lt;byte&gt;)</a> + <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>/<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> directly — those wrappers size
+<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_ProcessAssociatedData_System_ReadOnlySpan_System_Byte__">ProcessAssociatedData(ReadOnlySpan&lt;byte&gt;)</a> + <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>/<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> directly - those wrappers size
 the output buffer correctly and return a single freshly allocated array.
 </p>
 </div>
@@ -256,7 +256,7 @@ the output buffer correctly and return a single freshly allocated array.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Decrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/IAeadBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/IAeadBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -325,7 +325,7 @@ throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invali
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
     <dd><p>The instance has already encrypted or decrypted a message, including after a previous tag-mismatch failure. AEAD
-transforms are single-use per message — construct a fresh instance.</p>
+transforms are single-use per message - construct a fresh instance.</p>
 </dd>
   </dl>
 
@@ -338,7 +338,7 @@ transforms are single-use per message — construct a fresh instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Encrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/IAeadBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/IAeadBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -381,7 +381,7 @@ at least <code>plaintext.Length + (TagSize / 8)</code> bytes long.</p>
     <dd><p><code class="paramref">output</code> is too small.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
-    <dd><p>The instance has already encrypted or decrypted a message. AEAD transforms are single-use per message —
+    <dd><p>The instance has already encrypted or decrypted a message. AEAD transforms are single-use per message -
 construct a fresh instance.</p>
 </dd>
   </dl>
@@ -395,7 +395,7 @@ construct a fresh instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_ProcessAssociatedData_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.ProcessAssociatedData(System.ReadOnlySpan{System.Byte})">
   ProcessAssociatedData(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/IAeadBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/IAeadBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -444,7 +444,7 @@ construct a fresh instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Bodu_Security_Cryptography_IAeadTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Bodu#Security#Cryptography#IAeadTransform#Decrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.ReadOnlySpan{System.Byte})">
   IAeadTransform.Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/IAeadBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/IAeadBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -494,7 +494,7 @@ processing <code class="paramref">associatedData</code> and then decrypting in a
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Bodu_Security_Cryptography_IAeadTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Bodu#Security#Cryptography#IAeadTransform#Encrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.ReadOnlySpan{System.Byte})">
   IAeadTransform.Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/IAeadBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/IAeadBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -573,7 +573,7 @@ processing <code class="paramref">associatedData</code> and then encrypting in a
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

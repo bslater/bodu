@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Hashing_CityHash64" data-uid="Bodu.IO.Hashing.CityHash64" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 CityHash64 Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing/CityHash.64.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing/CityHash.64.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ CityHash64 Class
   <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing/CityHash.64.cs">CityHash.64.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing/CityHash.64.cs">CityHash.64.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Computes a 64-bit (8-byte) non-cryptographic hash using the <code>CityHash64</code> variant by Google. This class cannot
@@ -324,7 +324,7 @@ be inherited.</p>
   <h2 id="Bodu_IO_Hashing_CityHash64_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 <a class="xref" href="Bodu.IO.Hashing.CityHash64.html">CityHash64</a> selects one of four internal mixing paths depending on the input length: a compact path
-for 0–16 bytes, a four-word path for 17–32 bytes, an eight-word path with byte-swap finalization for 33–64 bytes,
+for 0-16 bytes, a four-word path for 17-32 bytes, an eight-word path with byte-swap finalization for 33-64 bytes,
 and a full iterative path that consumes 64-byte blocks using two pairs of seeded weak hash accumulators for inputs
 of 65 bytes or more. All paths converge through the shared <code>HashLen16</code> finalizer, which applies two rounds of
 multiply-shift-XOR to distribute entropy across all output bits.
@@ -332,9 +332,9 @@ multiply-shift-XOR to distribute entropy across all output bits.
 <p>
 <strong>Parameters at a glance.</strong>
 </p>
-<ul><li>Output size: 64 bits (8 bytes), little-endian.</li><li>Variant: <code>CityHash64</code>.</li><li>Length-dispatched mixing: 0–16, 17–32, 33–64, and 65+ byte paths.</li><li>Block size on the long path: 64 bytes.</li></ul>
+<ul><li>Output size: 64 bits (8 bytes), little-endian.</li><li>Variant: <code>CityHash64</code>.</li><li>Length-dispatched mixing: 0-16, 17-32, 33-64, and 65+ byte paths.</li><li>Block size on the long path: 64 bytes.</li></ul>
 <p>
-<strong>When to choose CityHash64.</strong> The general-purpose default for 64-bit non-cryptographic hashing —
+<strong>When to choose CityHash64.</strong> The general-purpose default for 64-bit non-cryptographic hashing -
 fingerprints, content-based sharding, deduplication keys. <a class="xref" href="Bodu.IO.Hashing.MurmurHash3_128.html">MurmurHash3_128</a> gives twice the bits at
 slightly lower throughput on long inputs; <a class="xref" href="Bodu.IO.Hashing.Fnv1a64.html">Fnv1a64</a> is preferable only for very small fixed-length keys
 where simplicity matters more than distribution.
@@ -360,7 +360,7 @@ byte[] fingerprint = city.ComputeHash(blob);</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CityHash64__ctor" data-uid="Bodu.IO.Hashing.CityHash64.#ctor">
   CityHash64()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing/CityHash.64.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing/CityHash.64.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -395,7 +395,7 @@ byte[] fingerprint = city.ComputeHash(blob);</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CityHash64_ComputeHashCore_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Hashing.CityHash64.ComputeHashCore(System.ReadOnlySpan{System.Byte})">
   ComputeHashCore(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing/CityHash.64.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing/CityHash.64.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -467,7 +467,7 @@ length.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

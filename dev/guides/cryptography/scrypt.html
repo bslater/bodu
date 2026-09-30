@@ -87,11 +87,11 @@
         <article data-uid="">
 <h1 id="using-scrypt">Using scrypt</h1>
 
-<p>scrypt is a password-based key-derivation function designed by Colin Percival and standardized as RFC 7914. Like Argon2 it is <strong>memory-hard</strong> — it forces an attacker to commit a large amount of fast RAM per guess — but it predates Argon2 and is the established choice in many existing systems (disk encryption, cryptocurrency wallets, and a wide range of password stores). Reach for it when you need RFC 7914 interoperability or are matching an existing deployment; for greenfield password hashing, <a href="argon2.html">Argon2id</a> is the current recommendation.</p>
+<p>scrypt is a password-based key-derivation function designed by Colin Percival and standardized as RFC 7914. Like Argon2 it is <strong>memory-hard</strong> - it forces an attacker to commit a large amount of fast RAM per guess - but it predates Argon2 and is the established choice in many existing systems (disk encryption, cryptocurrency wallets, and a wide range of password stores). Reach for it when you need RFC 7914 interoperability or are matching an existing deployment; for greenfield password hashing, <a href="argon2.html">Argon2id</a> is the current recommendation.</p>
 <p><strong>Bodu.Security.Cryptography</strong> ships scrypt as a single type, <a class="xref" href="../../api/Bodu.Security.Cryptography.Scrypt.html">Scrypt</a>, configured by three cost parameters.</p>
 <div class="IMPORTANT">
 <h5>Important</h5>
-<p>scrypt, like Argon2, is for <strong>low-entropy</strong> inputs — passwords. For a <strong>high-entropy</strong> secret (a key-agreement or KEM output, a master key), reach for <a href="hkdf.html">HKDF</a> instead: it is fast and purpose-built for that, whereas scrypt's deliberate slowness buys nothing on an already-random input.</p>
+<p>scrypt, like Argon2, is for <strong>low-entropy</strong> inputs - passwords. For a <strong>high-entropy</strong> secret (a key-agreement or KEM output, a master key), reach for <a href="hkdf.html">HKDF</a> instead: it is fast and purpose-built for that, whereas scrypt's deliberate slowness buys nothing on an already-random input.</p>
 </div>
 <div class="NOTE">
 <h5>Note</h5>
@@ -121,12 +121,12 @@
 <tr>
 <td><code>Parallelization</code> (<code>p</code>)</td>
 <td>Independent iterations</td>
-<td><strong>Required.</strong> Usually 1. More than 1 can run on threads — see <a href="#running-the-units-on-threads">Running the units on threads</a>.</td>
+<td><strong>Required.</strong> Usually 1. More than 1 can run on threads - see <a href="#running-the-units-on-threads">Running the units on threads</a>.</td>
 </tr>
 </tbody>
 </table>
 <p>Peak memory is approximately <code>128 * N * r</code> bytes. RFC 7914, Section 2 suggests <strong><code>N = 16384</code>, <code>r = 8</code>, <code>p = 1</code></strong> (about 16 MiB) for interactive logins, scaling <code>N</code> up for more sensitive secrets. The key-derivation envelope uses PBKDF2-HMAC-SHA256, supplied by the platform. Construction validates the parameters and throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> when <code>CostN</code> is not a power of two greater than one, or <code>BlockSizeR</code> / <code>Parallelization</code> is below 1.</p>
-<h2 id="pattern-1--derive-a-key-static-one-shot">Pattern 1 — derive a key (static one-shot)</h2>
+<h2 id="pattern-1---derive-a-key-static-one-shot">Pattern 1 - derive a key (static one-shot)</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using System.Text;
@@ -139,7 +139,7 @@ RandomNumberGenerator.Fill(salt);
 
 byte[] key = Scrypt.DeriveKey(password, salt, costN: 16384, blockSizeR: 8, parallelization: 1, length: 32);
 </code></pre>
-<h2 id="pattern-2--the-instance-surface">Pattern 2 — the instance surface</h2>
+<h2 id="pattern-2---the-instance-surface">Pattern 2 - the instance surface</h2>
 <p>Bind the cost once and derive repeatedly; the instance offers an allocation-free span overload:</p>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
 
@@ -151,14 +151,14 @@ Span&lt;byte&gt; destination = stackalloc byte[32];
 scrypt.DeriveKey(password, salt, destination);
 </code></pre>
 <p><code>new Scrypt(N, r, p)</code> is shorthand for <code>new Scrypt(new ScryptParameters { CostN = N, BlockSizeR = r, Parallelization = p })</code>.</p>
-<h2 id="pattern-3--hash-and-verify-a-password-phc-string">Pattern 3 — hash and verify a password (PHC string)</h2>
+<h2 id="pattern-3---hash-and-verify-a-password-phc-string">Pattern 3 - hash and verify a password (PHC string)</h2>
 <p>For password storage, <code>Hash</code> returns a self-describing PHC string and <code>Verify</code> checks a candidate in constant time:</p>
 <pre><code class="lang-csharp">using System.Text;
 using Bodu.Security.Cryptography;
 
 var scrypt = new Scrypt(16384, 8, 1);
 
-// Registration — a random 16-byte salt is generated for you.
+// Registration - a random 16-byte salt is generated for you.
 string stored = scrypt.Hash(Encoding.UTF8.GetBytes(userPassword), length: 32);
 // stored == &quot;$scrypt$ln=14,r=8,p=1$&lt;base64 salt&gt;$&lt;base64 hash&gt;&quot;
 
@@ -167,7 +167,7 @@ bool ok = Scrypt.Verify(stored, Encoding.UTF8.GetBytes(candidatePassword));
 </code></pre>
 <p>The <code>ln</code> field is <code>log2(N)</code> (so <code>N = 16384</code> encodes as <code>ln=14</code>). <code>Verify</code> re-derives with the parameters parsed from the string and compares with <code>CryptographicOperations.FixedTimeEquals</code>; the working memory and computed hash are zeroed before it returns.</p>
 <h2 id="choosing-parameters">Choosing parameters</h2>
-<p>Hold <code>r = 8</code> and <code>p = 1</code>, then raise <code>N</code> (always a power of two) until verification fits your latency budget on the hardware that will run it. Each doubling of <code>N</code> doubles both time and memory. If you need more memory without more time, increase <code>r</code> instead. Remember that <code>128 * N * r</code> bytes must be available per concurrent derivation — size <code>N</code> against your server's memory and expected login concurrency, not just latency.</p>
+<p>Hold <code>r = 8</code> and <code>p = 1</code>, then raise <code>N</code> (always a power of two) until verification fits your latency budget on the hardware that will run it. Each doubling of <code>N</code> doubles both time and memory. If you need more memory without more time, increase <code>r</code> instead. Remember that <code>128 * N * r</code> bytes must be available per concurrent derivation - size <code>N</code> against your server's memory and expected login concurrency, not just latency.</p>
 <h2 id="running-the-units-on-threads">Running the units on threads</h2>
 <p>A cost with <code>p</code> greater than 1 has <code>p</code> independent units. By default a derivation runs them one after another on the calling thread; a bound lets them run at once:</p>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -179,21 +179,21 @@ byte[] key = scrypt.GetBytes(password, salt, length: 32);
 bool ok = Scrypt.Verify(stored, candidate, maxDegreeOfParallelism: 4);
 </code></pre>
 <p><code>1</code>, the default, keeps a derivation on the calling thread; a larger value caps the threads, and <code>-1</code> allows up to one per processor. <code>0</code> or anything below <code>-1</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a>. The key never depends on the bound.</p>
-<p>Unlike Argon2's lanes, which share one memory matrix, each scrypt unit that runs at once needs its own <code>V</code>: a derivation on <code>t</code> threads uses <code>t * 128 * N * r</code> bytes. That is why the default is <code>1</code> — a login service that already verifies many passwords at once keeps its cores busy anyway, and would only multiply its memory. Two safeguards hold whatever the bound. A derivation keeps its working memory within the 2 GiB ceiling on a single <code>V</code>, running on fewer threads when its units are large, so an encoded hash from an untrusted source cannot multiply the memory a verification takes. And units under 1 MiB of <code>V</code> each stay on the calling thread, where handing them to other threads would cost more than it saves.</p>
+<p>Unlike Argon2's lanes, which share one memory matrix, each scrypt unit that runs at once needs its own <code>V</code>: a derivation on <code>t</code> threads uses <code>t * 128 * N * r</code> bytes. That is why the default is <code>1</code> - a login service that already verifies many passwords at once keeps its cores busy anyway, and would only multiply its memory. Two safeguards hold whatever the bound. A derivation keeps its working memory within the 2 GiB ceiling on a single <code>V</code>, running on fewer threads when its units are large, so an encoded hash from an untrusted source cannot multiply the memory a verification takes. And units under 1 MiB of <code>V</code> each stay on the calling thread, where handing them to other threads would cost more than it saves.</p>
 <h2 id="memory">Memory</h2>
-<p>scrypt's working memory — <code>V</code>, <code>128 * N * r</code> bytes — lives in native memory, not on the managed heap, so a derivation allocates no large array and provokes no gen2 collection. It shares <a href="argon2.html">Argon2</a>'s reserve: so that a burst of logins does not map fresh pages every time, up to one buffer per processor (of up to 256 MiB each) stays reserved for 30 seconds after the last derivation — cleared, so what stays resident is zeros. Setting the <code>AppContext</code> switch <code>Bodu.Security.Cryptography.Argon2.DisableMatrixReuse</code> (named for Argon2, which introduced it) releases each buffer as soon as its derivation ends instead. <code>V</code>, the PBKDF2 output <code>B</code>, and every other buffer that held a password-derived value are cleared before they are released; values the JIT keeps in registers or its own stack slots are beyond the library's reach.</p>
+<p>scrypt's working memory - <code>V</code>, <code>128 * N * r</code> bytes - lives in native memory, not on the managed heap, so a derivation allocates no large array and provokes no gen2 collection. It shares <a href="argon2.html">Argon2</a>'s reserve: so that a burst of logins does not map fresh pages every time, up to one buffer per processor (of up to 256 MiB each) stays reserved for 30 seconds after the last derivation - cleared, so what stays resident is zeros. Setting the <code>AppContext</code> switch <code>Bodu.Security.Cryptography.Argon2.DisableMatrixReuse</code> (named for Argon2, which introduced it) releases each buffer as soon as its derivation ends instead. <code>V</code>, the PBKDF2 output <code>B</code>, and every other buffer that held a password-derived value are cleared before they are released; values the JIT keeps in registers or its own stack slots are beyond the library's reach.</p>
 <h2 id="what-scrypt-is-not">What scrypt is not</h2>
 <ul>
 <li><strong>Not the current default for new systems.</strong> Argon2id (RFC 9106) is the more recent design and the general recommendation; choose scrypt for interoperability or to match an existing store. See <a href="argon2.html">Using Argon2</a>.</li>
-<li><strong>Not a KDF for high-entropy inputs.</strong> For stretching an already-random key, use <code>HKDF</code> — it is far cheaper and purpose-built for that.</li>
+<li><strong>Not a KDF for high-entropy inputs.</strong> For stretching an already-random key, use <code>HKDF</code> - it is far cheaper and purpose-built for that.</li>
 <li><strong>Not safe with a reused or missing salt.</strong> Always pass a unique, random salt per password; <code>Hash(password, length)</code> generates one for you.</li>
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="argon2.html">Using Argon2</a> — the memory-hard KDF recommended for new password-hashing deployments.</li>
-<li><a href="hashing.html">Hashing overview</a> — how password KDFs relate to digests and keyed MACs.</li>
-<li><a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography namespace</a> — the generated API reference.</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><a href="argon2.html">Using Argon2</a> - the memory-hard KDF recommended for new password-hashing deployments.</li>
+<li><a href="hashing.html">Hashing overview</a> - how password KDFs relate to digests and keyed MACs.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography namespace</a> - the generated API reference.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -213,7 +213,7 @@ bool ok = Scrypt.Verify(stored, candidate, maxDegreeOfParallelism: 4);
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

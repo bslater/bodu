@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_CbcModeTransform" data-uid="Bodu.Security.Cryptography.CbcModeTransform" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 CbcModeTransform Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/CbcModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/CbcModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ CbcModeTransform Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/CbcModeTransform.cs">CbcModeTransform.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/CbcModeTransform.cs">CbcModeTransform.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Applies the Cipher Block Chaining (CBC) mode transformation to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>.</p>
@@ -197,7 +197,7 @@ int written = cbc.Transform(paddedPlaintext, ciphertext, encrypt: true);</code><
 
   <h2 id="Bodu_Security_Cryptography_CbcModeTransform_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-<img src="../images/diagrams/classic-modes.svg" alt="CBC panel — each plaintext block is XORed with the previous ciphertext before encryption; the first block uses the IV.">
+<img src="../images/diagrams/classic-modes.svg" alt="CBC panel - each plaintext block is XORed with the previous ciphertext before encryption; the first block uses the IV.">
 </p>
 <p>
 Encryption computes <code>Cᵢ = E(Pᵢ ⊕ Cᵢ₋₁)</code> with <code>C₋₁ = IV</code>, and decryption inverts this as
@@ -211,20 +211,20 @@ repeating an IV under the same key weakens confidentiality. The instance retains
 the chaining value, so successive calls to <a class="xref" href="Bodu.Security.Cryptography.CbcModeTransform.html#Bodu_Security_Cryptography_CbcModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_">Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)</a> continue the stream.
 </p>
 <p>
-<strong>When to use CBC.</strong> The traditional confidentiality-only mode — the right pick when interoperating
+<strong>When to use CBC.</strong> The traditional confidentiality-only mode - the right pick when interoperating
 with legacy protocols (TLS up to 1.2, JCE defaults, many file formats) or when an authenticated mode is impractical.
 CBC requires plaintext to be a multiple of the block size, so it is almost always paired with
 <a class="xref" href="Bodu.Security.Cryptography.Pkcs7Padding.html">Pkcs7Padding</a>. For new designs prefer <a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> or
 <a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a>, both of which authenticate as well as encrypt; CBC plus a separate MAC is fragile
 and easy to misuse. Decryption with strippable padding is vulnerable to padding-oracle attacks. The pad-byte
-validation is constant-time (each padding strategy's <code>Unpad</code> — see <a class="xref" href="Bodu.Security.Cryptography.Pkcs7Padding.html">Pkcs7Padding</a> — walks the full
-final block with branchless masks), but that alone is not a complete defence — the depadded length still varies with
+validation is constant-time (each padding strategy's <code>Unpad</code> - see <a class="xref" href="Bodu.Security.Cryptography.Pkcs7Padding.html">Pkcs7Padding</a> - walks the full
+final block with branchless masks), but that alone is not a complete defence - the depadded length still varies with
 the pad count and an invalid block throws. Callers must authenticate the ciphertext (a MAC verified with
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicoperations.fixedtimeequals">FixedTimeEquals(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>,
 or an AEAD mode) <b>before</b> depadding, so a padding failure is never observable to an attacker.
 </p>
 <p>
-CBC is sequential — neither encryption nor decryption parallelizes across blocks within a single message. Random
+CBC is sequential - neither encryption nor decryption parallelizes across blocks within a single message. Random
 access into the ciphertext is not supported.
 </p>
 </div>
@@ -239,7 +239,7 @@ access into the ciphertext is not supported.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_CbcModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Byte___" data-uid="Bodu.Security.Cryptography.CbcModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,System.Byte[])">
   CbcModeTransform(IBlockCipher, byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/CbcModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/CbcModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -290,13 +290,13 @@ initialization vector.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_CbcModeTransform_Dispose" data-uid="Bodu.Security.Cryptography.CbcModeTransform.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/CbcModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/CbcModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
   <div class="markdown level1 summary"><p>Releases the resources used by this instance and zeroes the running chaining vector so that key-equivalent IV
 state does not linger in memory after disposal. The underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> is not disposed by
-this type — ownership remains with the caller.</p>
+this type - ownership remains with the caller.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -326,7 +326,7 @@ this type — ownership remains with the caller.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_CbcModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_" data-uid="Bodu.Security.Cryptography.CbcModeTransform.Transform(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Boolean)">
   Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/CbcModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/CbcModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -390,7 +390,8 @@ this type — ownership remains with the caller.</p>
 
   <h2 id="seealso">See Also</h2>
   <div class="seealso">
-      <div><span><a href="../guides/cryptography/cipher-modes.html#cbc--the-default">CBC walk-through in the cipher-modes guide</a></span></div>
+      <div><span><a href="../guides/cryptography/cipher-modes.html#cbc---the-default">CBC walk-through in the cipher-modes
+             guide</a></span></div>
   </div>
 
 </article>
@@ -409,7 +410,7 @@ this type — ownership remains with the caller.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

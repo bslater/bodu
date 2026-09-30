@@ -108,56 +108,56 @@
 <p>Reach for this library when you need a fixed-capacity FIFO queue, a deque with O(1) ends, a size-limited key/value cache with a real eviction policy (not just an ad-hoc <code>Dictionary</code> plus a bolted-on timer), a range-keyed lookup, or helpers that keep ceremony out of hot paths.</p>
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
-<li><strong><a href="../docs/collections/index.html">Bodu.Collections introduction</a></strong> — namespaces, headline types, scenarios.</li>
-<li><strong><a href="../docs/collections/getting-started.html">Bodu.Collections getting started</a></strong> — install and minimal samples for the headline types.</li>
-<li><strong><a href="../guides/core/index.html">Core Foundations guides</a></strong> — recipe-style walk-throughs: <a href="../guides/core/choosing-a-collection.html">choosing a collection</a>, <a href="../guides/core/circular-buffer.html">circular buffer</a>, <a href="../guides/core/deque.html">deque</a>, <a href="../guides/core/evicting-dictionary.html">evicting dictionary</a>, <a href="../guides/core/sequenced-dictionary.html">sequenced dictionary</a>, <a href="../guides/core/indexed-priority-queue.html">indexed priority queue</a>, <a href="../guides/core/ordered-sets.html">indexed and ordered sets</a>, <a href="../guides/core/multiset.html">multiset</a>, <a href="../guides/core/multi-value-dictionary.html">multi-value dictionary</a>, <a href="../guides/core/bi-dictionary.html">bidirectional dictionary</a>, <a href="../guides/core/layered-and-defaulting-dictionaries.html">layered and defaulting dictionaries</a>, <a href="../guides/core/table.html">table</a>, <a href="../guides/core/navigable-set.html">navigable set</a>, <a href="../guides/core/navigable-dictionary.html">navigable dictionary</a>, <a href="../guides/core/bit-set.html">bit set</a>, <a href="../guides/core/range-dictionary.html">range-keyed lookups</a>, <a href="../guides/core/interval-tree.html">interval tree</a>, <a href="../guides/core/segmented-buffer.html">segmented buffer</a>, <a href="../guides/core/concurrent-collections.html">concurrent collections</a>, <a href="../guides/core/week-pattern.html"><code>WeekPattern</code></a>.</li>
+<li><strong><a href="../docs/collections/index.html">Bodu.Collections introduction</a></strong> - namespaces, headline types, scenarios.</li>
+<li><strong><a href="../docs/collections/getting-started.html">Bodu.Collections getting started</a></strong> - install and minimal samples for the headline types.</li>
+<li><strong><a href="../guides/core/index.html">Core Foundations guides</a></strong> - recipe-style walk-throughs: <a href="../guides/core/choosing-a-collection.html">choosing a collection</a>, <a href="../guides/core/circular-buffer.html">circular buffer</a>, <a href="../guides/core/deque.html">deque</a>, <a href="../guides/core/evicting-dictionary.html">evicting dictionary</a>, <a href="../guides/core/sequenced-dictionary.html">sequenced dictionary</a>, <a href="../guides/core/indexed-priority-queue.html">indexed priority queue</a>, <a href="../guides/core/ordered-sets.html">indexed and ordered sets</a>, <a href="../guides/core/multiset.html">multiset</a>, <a href="../guides/core/multi-value-dictionary.html">multi-value dictionary</a>, <a href="../guides/core/bi-dictionary.html">bidirectional dictionary</a>, <a href="../guides/core/layered-and-defaulting-dictionaries.html">layered and defaulting dictionaries</a>, <a href="../guides/core/table.html">table</a>, <a href="../guides/core/navigable-set.html">navigable set</a>, <a href="../guides/core/navigable-dictionary.html">navigable dictionary</a>, <a href="../guides/core/bit-set.html">bit set</a>, <a href="../guides/core/range-dictionary.html">range-keyed lookups</a>, <a href="../guides/core/interval-tree.html">interval tree</a>, <a href="../guides/core/segmented-buffer.html">segmented buffer</a>, <a href="../guides/core/concurrent-collections.html">concurrent collections</a>, <a href="../guides/core/week-pattern.html"><code>WeekPattern</code></a>.</li>
 </ul>
 <h2 id="key-types">Key types</h2>
 <p><strong>Ring-backed collections</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a> — a fixed-capacity FIFO collection. With <code>allowOverwrite: true</code> it silently drops the oldest element when full; with <code>allowOverwrite: false</code> it throws on overflow.</li>
-<li><a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a> — a lock-free multi-producer / multi-consumer circular buffer using the Vyukov MPMC algorithm, with the same overwrite semantics (ships in the companion <code>Bodu.Collections.Concurrent</code> package).</li>
-<li><a class="xref" href="Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> — double-ended queue with O(1) <code>AddFirst</code> / <code>AddLast</code> / <code>RemoveFirst</code> / <code>RemoveLast</code>; growable or fixed-capacity, with <a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html">DequeOverflowPolicy</a> (<code>Reject</code> / <code>EvictOpposite</code>) selecting what a full fixed-capacity deque does on overflow.</li>
-<li><a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html">RingBackedCollection&lt;T&gt;</a> — abstract base shared by <code>CircularBuffer&lt;T&gt;</code> and <code>Deque&lt;T&gt;</code> (extension point for new ring-backed collections).</li>
-<li><a class="xref" href="Bodu.Collections.Generic.SegmentedBuffer-1.html">SegmentedBuffer&lt;T&gt;</a> — segmented backing buffer for streaming scenarios where the total length is not known up front.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a> - a fixed-capacity FIFO collection. With <code>allowOverwrite: true</code> it silently drops the oldest element when full; with <code>allowOverwrite: false</code> it throws on overflow.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a> - a lock-free multi-producer / multi-consumer circular buffer using the Vyukov MPMC algorithm, with the same overwrite semantics (ships in the companion <code>Bodu.Collections.Concurrent</code> package).</li>
+<li><a class="xref" href="Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> - double-ended queue with O(1) <code>AddFirst</code> / <code>AddLast</code> / <code>RemoveFirst</code> / <code>RemoveLast</code>; growable or fixed-capacity, with <a class="xref" href="Bodu.Collections.Generic.DequeOverflowPolicy.html">DequeOverflowPolicy</a> (<code>Reject</code> / <code>EvictOpposite</code>) selecting what a full fixed-capacity deque does on overflow.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html">RingBackedCollection&lt;T&gt;</a> - abstract base shared by <code>CircularBuffer&lt;T&gt;</code> and <code>Deque&lt;T&gt;</code> (extension point for new ring-backed collections).</li>
+<li><a class="xref" href="Bodu.Collections.Generic.SegmentedBuffer-1.html">SegmentedBuffer&lt;T&gt;</a> - segmented backing buffer for streaming scenarios where the total length is not known up front.</li>
 </ul>
 <p><strong>Capacity-bounded dictionaries</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> — a fixed-capacity dictionary that evicts entries automatically when it fills up, under a policy of your choice.</li>
-<li><a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html">EvictingDictionaryPolicy</a> — the policy enum: <code>FirstInFirstOut</code>, <code>LeastRecentlyUsed</code>, <code>LeastFrequentlyUsed</code>, <code>MostRecentlyUsed</code>, <code>RandomReplacement</code>, <code>SecondChance</code>.</li>
-<li><a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryExpiration.html">EvictingDictionaryExpiration</a>, <a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryExpirationKind.html">EvictingDictionaryExpirationKind</a> — optional time-to-live expiry layered on the capacity bound: <code>Absolute</code> (from insertion) or <code>Sliding</code> (reset on access).</li>
+<li><a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> - a fixed-capacity dictionary that evicts entries automatically when it fills up, under a policy of your choice.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html">EvictingDictionaryPolicy</a> - the policy enum: <code>FirstInFirstOut</code>, <code>LeastRecentlyUsed</code>, <code>LeastFrequentlyUsed</code>, <code>MostRecentlyUsed</code>, <code>RandomReplacement</code>, <code>SecondChance</code>.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryExpiration.html">EvictingDictionaryExpiration</a>, <a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryExpirationKind.html">EvictingDictionaryExpirationKind</a> - optional time-to-live expiry layered on the capacity bound: <code>Absolute</code> (from insertion) or <code>Sliding</code> (reset on access).</li>
 </ul>
 <p><strong>Ordered dictionaries</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> — an unbounded dictionary that preserves a stable encounter order (Java <code>LinkedHashMap</code> shape), with O(1) access to and removal of the first and last entries (<code>First</code> / <code>Last</code> / <code>TryRemoveFirst</code> / <code>TryRemoveLast</code>). Defaults to insertion order; an opt-in access-order mode moves an entry to the tail on read, the building block for a hand-rolled LRU.</li>
-<li><a class="xref" href="Bodu.Collections.Generic.NavigableDictionary-2.html">NavigableDictionary&lt;TKey, TValue&gt;</a> — key-sorted dictionary over an order-statistic red-black tree: O(log n) floor / ceiling / higher / lower entry queries, rank / select, <code>CountInRange</code>, and live <code>Ascending</code> / <code>Descending</code> / <code>Range</code> views. See the <a href="../guides/core/navigable-dictionary.html">navigable dictionary guide</a>.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> - an unbounded dictionary that preserves a stable encounter order (Java <code>LinkedHashMap</code> shape), with O(1) access to and removal of the first and last entries (<code>First</code> / <code>Last</code> / <code>TryRemoveFirst</code> / <code>TryRemoveLast</code>). Defaults to insertion order; an opt-in access-order mode moves an entry to the tail on read, the building block for a hand-rolled LRU.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.NavigableDictionary-2.html">NavigableDictionary&lt;TKey, TValue&gt;</a> - key-sorted dictionary over an order-statistic red-black tree: O(log n) floor / ceiling / higher / lower entry queries, rank / select, <code>CountInRange</code>, and live <code>Ascending</code> / <code>Descending</code> / <code>Range</code> views. See the <a href="../guides/core/navigable-dictionary.html">navigable dictionary guide</a>.</li>
 </ul>
 <p><strong>Shaped dictionaries</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Collections.Generic.BiDictionary-2.html">BiDictionary&lt;TKey, TValue&gt;</a> — bidirectional one-to-one map with O(1) lookup in both directions and a live <code>Inverse</code> view; <a class="xref" href="Bodu.Collections.Generic.BiDictionaryDuplicateValuePolicy.html">BiDictionaryDuplicateValuePolicy</a> (<code>Throw</code> / <code>Replace</code>) decides what a duplicate value does. See the <a href="../guides/core/bi-dictionary.html">bidirectional dictionary guide</a>.</li>
-<li><a class="xref" href="Bodu.Collections.Generic.LayeredDictionary-2.html">LayeredDictionary&lt;TKey, TValue&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.DefaultingDictionary-2.html">DefaultingDictionary&lt;TKey, TValue&gt;</a> — a read-through view over an ordered list of dictionaries (Python <code>ChainMap</code> shape) and a dictionary whose indexer materializes a factory-supplied default for a missing key (Python <code>defaultdict</code> shape). See the <a href="../guides/core/layered-and-defaulting-dictionaries.html">layered and defaulting dictionaries guide</a>.</li>
-<li><a class="xref" href="Bodu.Collections.Generic.Table-3.html">Table&lt;TRow, TColumn, TValue&gt;</a> — two-key row / column map (Guava <code>Table</code> shape) with live <code>Row</code> / <code>Column</code> projections over a row-major store. See the <a href="../guides/core/table.html">table guide</a>.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.BiDictionary-2.html">BiDictionary&lt;TKey, TValue&gt;</a> - bidirectional one-to-one map with O(1) lookup in both directions and a live <code>Inverse</code> view; <a class="xref" href="Bodu.Collections.Generic.BiDictionaryDuplicateValuePolicy.html">BiDictionaryDuplicateValuePolicy</a> (<code>Throw</code> / <code>Replace</code>) decides what a duplicate value does. See the <a href="../guides/core/bi-dictionary.html">bidirectional dictionary guide</a>.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.LayeredDictionary-2.html">LayeredDictionary&lt;TKey, TValue&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.DefaultingDictionary-2.html">DefaultingDictionary&lt;TKey, TValue&gt;</a> - a read-through view over an ordered list of dictionaries (Python <code>ChainMap</code> shape) and a dictionary whose indexer materializes a factory-supplied default for a missing key (Python <code>defaultdict</code> shape). See the <a href="../guides/core/layered-and-defaulting-dictionaries.html">layered and defaulting dictionaries guide</a>.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.Table-3.html">Table&lt;TRow, TColumn, TValue&gt;</a> - two-key row / column map (Guava <code>Table</code> shape) with live <code>Row</code> / <code>Column</code> projections over a row-major store. See the <a href="../guides/core/table.html">table guide</a>.</li>
 </ul>
 <p><strong>Sets, multisets, range-keyed collections</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.OrderedSet-1.html">OrderedSet&lt;T&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a> — index-aware set and priority-queue variants for lookup-by-position and key-based priority updates.</li>
-<li><a class="xref" href="Bodu.Collections.Generic.NavigableSet-1.html">NavigableSet&lt;T&gt;</a> — comparer-ordered set over the same order-statistic red-black tree: O(log n) <code>TryGetFloor</code> / <code>TryGetCeiling</code> / <code>TryGetHigher</code> / <code>TryGetLower</code>, rank / select, <code>CountInRange</code>, and live <code>Ascending</code> / <code>Descending</code> / <code>Range</code> views. See the <a href="../guides/core/navigable-set.html">navigable set guide</a>.</li>
-<li><a class="xref" href="Bodu.Collections.Generic.MultiValueDictionary-2.html">MultiValueDictionary&lt;TKey, TValue&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html">Multiset&lt;T&gt;</a> — multi-map and multi-set semantics over <code>IEqualityComparer&lt;TKey&gt;</code>; <a class="xref" href="Bodu.Collections.Generic.MultiValueBacking.html">MultiValueBacking</a> (<code>List</code> / <code>Set</code>) chooses whether each key's values are an ordered list or a de-duplicated set.</li>
-<li><a class="xref" href="Bodu.Collections.Generic.Range-1.html">Range&lt;T&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.RangeDictionary-2.html">RangeDictionary&lt;TKey, TValue&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.RangeSet-1.html">RangeSet&lt;T&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.ValueRange-2.html">ValueRange&lt;TKey, TValue&gt;</a> — range-keyed lookups for ordered or interval-valued keys (non-overlapping ranges).</li>
-<li><a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html">IntervalTree&lt;T&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.IntervalTree-2.html">IntervalTree&lt;TKey, TValue&gt;</a> — overlap-storing interval trees over a max-endpoint augmented red-black tree: O(log n + k) stabbing (<code>QueryPoint</code>) and window (<code>QueryOverlaps</code>) queries over closed intervals that may freely overlap. See the <a href="../guides/core/interval-tree.html">interval tree guide</a>.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.OrderedSet-1.html">OrderedSet&lt;T&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a> - index-aware set and priority-queue variants for lookup-by-position and key-based priority updates.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.NavigableSet-1.html">NavigableSet&lt;T&gt;</a> - comparer-ordered set over the same order-statistic red-black tree: O(log n) <code>TryGetFloor</code> / <code>TryGetCeiling</code> / <code>TryGetHigher</code> / <code>TryGetLower</code>, rank / select, <code>CountInRange</code>, and live <code>Ascending</code> / <code>Descending</code> / <code>Range</code> views. See the <a href="../guides/core/navigable-set.html">navigable set guide</a>.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.MultiValueDictionary-2.html">MultiValueDictionary&lt;TKey, TValue&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html">Multiset&lt;T&gt;</a> - multi-map and multi-set semantics over <code>IEqualityComparer&lt;TKey&gt;</code>; <a class="xref" href="Bodu.Collections.Generic.MultiValueBacking.html">MultiValueBacking</a> (<code>List</code> / <code>Set</code>) chooses whether each key's values are an ordered list or a de-duplicated set.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.Range-1.html">Range&lt;T&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.RangeDictionary-2.html">RangeDictionary&lt;TKey, TValue&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.RangeSet-1.html">RangeSet&lt;T&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.ValueRange-2.html">ValueRange&lt;TKey, TValue&gt;</a> - range-keyed lookups for ordered or interval-valued keys (non-overlapping ranges).</li>
+<li><a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html">IntervalTree&lt;T&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.IntervalTree-2.html">IntervalTree&lt;TKey, TValue&gt;</a> - overlap-storing interval trees over a max-endpoint augmented red-black tree: O(log n + k) stabbing (<code>QueryPoint</code>) and window (<code>QueryOverlaps</code>) queries over closed intervals that may freely overlap. See the <a href="../guides/core/interval-tree.html">interval tree guide</a>.</li>
 </ul>
 <p><strong>Sibling namespace in the same package</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Collections.Specialized.html">Bodu.Collections.Specialized</a> — the specialized structures that are not part of the general container catalogue: <code>BitSet</code> (packed bit set). It ships in <code>Bodu.Collections</code> alongside this namespace and needs only a second <code>using</code>.</li>
+<li><a class="xref" href="Bodu.Collections.Specialized.html">Bodu.Collections.Specialized</a> - the specialized structures that are not part of the general container catalogue: <code>BitSet</code> (packed bit set). It ships in <code>Bodu.Collections</code> alongside this namespace and needs only a second <code>using</code>.</li>
 </ul>
 <p><strong>Related namespaces</strong> (these ship in the <code>Bodu.Core</code> package, which <code>Bodu.Collections</code> depends on)</p>
 <ul>
-<li><a class="xref" href="Bodu.html">Bodu</a> — <code>WeekPattern</code> (day-of-week bitmask), <code>IRandomGenerator</code> / <code>XorShiftRandom</code>, and <code>ThrowHelper</code> centralized argument validation.</li>
-<li><a class="xref" href="Bodu.Buffers.html">Bodu.Buffers</a> — <code>PooledBufferBuilder&lt;T&gt;</code> for <code>ArrayPool&lt;T&gt;</code>-backed zero-allocation building.</li>
-<li><a class="xref" href="Bodu.Extensions.html">Bodu.Extensions</a> — date / numeric / span / array extensions and the calendar-shape enums.</li>
-<li><a class="xref" href="Bodu.Collections.Extensions.html">Bodu.Collections.Extensions</a>, <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a> — sequence-shaping helpers (recursive selection, sliding windows, batched enumeration, pluggable random shuffles).</li>
-<li><a class="xref" href="Bodu.Sequences.html">Bodu.Sequences</a> — <code>SequenceGenerator</code> lazy sequence factories (<code>Range</code>, <code>NextWhile</code>, <code>Factory</code>) and named mathematical series (Fibonacci, Farey, Leibniz, look-and-say, Thue–Morse).</li>
-<li><a class="xref" href="Bodu.Text.html">Bodu.Text</a> — <code>EncodingDetection</code>, <code>EncodingExtensions</code>, and <code>StringEncodingExtensions</code>: BOM detection and span / UTF-8 / pooled-buffer helpers over <code>System.Text.Encoding</code>.</li>
+<li><a class="xref" href="Bodu.html">Bodu</a> - <code>WeekPattern</code> (day-of-week bitmask), <code>IRandomGenerator</code> / <code>XorShiftRandom</code>, and <code>ThrowHelper</code> centralized argument validation.</li>
+<li><a class="xref" href="Bodu.Buffers.html">Bodu.Buffers</a> - <code>PooledBufferBuilder&lt;T&gt;</code> for <code>ArrayPool&lt;T&gt;</code>-backed zero-allocation building.</li>
+<li><a class="xref" href="Bodu.Extensions.html">Bodu.Extensions</a> - date / numeric / span / array extensions and the calendar-shape enums.</li>
+<li><a class="xref" href="Bodu.Collections.Extensions.html">Bodu.Collections.Extensions</a>, <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a> - sequence-shaping helpers (recursive selection, sliding windows, batched enumeration, pluggable random shuffles).</li>
+<li><a class="xref" href="Bodu.Sequences.html">Bodu.Sequences</a> - <code>SequenceGenerator</code> lazy sequence factories (<code>Range</code>, <code>NextWhile</code>, <code>Factory</code>) and named mathematical series (Fibonacci, Farey, Leibniz, look-and-say, Thue-Morse).</li>
+<li><a class="xref" href="Bodu.Text.html">Bodu.Text</a> - <code>EncodingDetection</code>, <code>EncodingExtensions</code>, and <code>StringEncodingExtensions</code>: BOM detection and span / UTF-8 / pooled-buffer helpers over <code>System.Text.Encoding</code>.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
@@ -180,9 +180,9 @@ if (!cache.TryGetValue(id, out User user))
 <h2 id="notes">Notes</h2>
 <ul>
 <li><strong>Thread safety.</strong> <code>CircularBuffer&lt;T&gt;</code>, <code>Deque&lt;T&gt;</code>, and <code>EvictingDictionary&lt;TKey, TValue&gt;</code> are <strong>not</strong> thread-safe; external synchronization is required if accessed concurrently. For a concurrent FIFO, use <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a> from the companion <code>Bodu.Collections.Concurrent</code> package, which is designed for multi-producer / multi-consumer scenarios under the Vyukov algorithm.</li>
-<li><strong>Capacity is fixed.</strong> Both <code>CircularBuffer&lt;T&gt;</code> and <code>EvictingDictionary&lt;TKey, TValue&gt;</code> reject a non-positive capacity at construction time. Allocation happens once, up front, not incrementally — this is a deliberate choice for predictable memory behavior in long-running services.</li>
+<li><strong>Capacity is fixed.</strong> Both <code>CircularBuffer&lt;T&gt;</code> and <code>EvictingDictionary&lt;TKey, TValue&gt;</code> reject a non-positive capacity at construction time. Allocation happens once, up front, not incrementally - this is a deliberate choice for predictable memory behavior in long-running services.</li>
 <li><strong>Eviction policies differ in cost.</strong> <code>FirstInFirstOut</code> and <code>RandomReplacement</code> are O(1); <code>LeastRecentlyUsed</code> and <code>MostRecentlyUsed</code> maintain a linked recency list and are O(1) per access; <code>LeastFrequentlyUsed</code> and <code>SecondChance</code> carry a small bookkeeping overhead on access. Pick the policy that matches your workload rather than defaulting to LRU.</li>
-<li><strong>Enumeration is snapshot-stable</strong> for non-concurrent types — iterating while mutating throws, per the usual .NET contract.</li>
+<li><strong>Enumeration is snapshot-stable</strong> for non-concurrent types - iterating while mutating throws, per the usual .NET contract.</li>
 <li><strong>See also:</strong> the <a href="../guides/core/circular-buffer.html">circular buffer guide</a>, the <a href="../guides/core/evicting-dictionary.html">evicting dictionary guide</a>, and the <a href="../docs/collections/index.html">Bodu.Collections introduction</a> for the full scenario table.</li>
 </ul>
 </div>
@@ -269,15 +269,15 @@ First-In-First-Out (FirstInFirstOut), Least Recently Used (LeastRecentlyUsed), o
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a></dt>
-      <dd><p>Represents an index-addressable unique list — an insertion-ordered collection of unique elements that exposes the
+      <dd><p>Represents an index-addressable unique list - an insertion-ordered collection of unique elements that exposes the
 full <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ilist-1">IList&lt;T&gt;</a> contract.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html">IntervalTree&lt;T&gt;</a></dt>
-      <dd><p>Represents a collection of closed intervals [low, high] that may freely overlap, answering stabbing queries (<a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_QueryPoint__0_">QueryPoint(T)</a>
-— all intervals containing a point) and overlap-window queries (<a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_QueryOverlaps__0__0_">QueryOverlaps(T, T)</a> — all intervals
-intersecting a window) in O(log n + k).</p>
+      <dd><p>Represents a collection of closed intervals [low, high] that may freely overlap, answering stabbing queries
+(<a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_QueryPoint__0_">QueryPoint(T)</a> - all intervals containing a point) and overlap-window queries
+(<a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_QueryOverlaps__0__0_">QueryOverlaps(T, T)</a> - all intervals intersecting a window) in O(log n + k).</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -307,7 +307,7 @@ tracked as integers rather than stored as repeated entries.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Collections.Generic.NavigableDictionary-2.html">NavigableDictionary&lt;TKey, TValue&gt;</a></dt>
-      <dd><p>Represents a key-sorted dictionary augmented with order statistics — an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>
+      <dd><p>Represents a key-sorted dictionary augmented with order statistics - an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>
 that keeps its entries in key comparer order and answers nearest-neighbour ( <a class="xref" href="Bodu.Collections.Generic.NavigableDictionary-2.html#Bodu_Collections_Generic_NavigableDictionary_2_TryGetFloorEntry__0_System_Collections_Generic_KeyValuePair__0__1___">TryGetFloorEntry(TKey, out KeyValuePair&lt;TKey, TValue&gt;)</a> /
 <a class="xref" href="Bodu.Collections.Generic.NavigableDictionary-2.html#Bodu_Collections_Generic_NavigableDictionary_2_TryGetCeilingEntry__0_System_Collections_Generic_KeyValuePair__0__1___">TryGetCeilingEntry(TKey, out KeyValuePair&lt;TKey, TValue&gt;)</a> / <a class="xref" href="Bodu.Collections.Generic.NavigableDictionary-2.html#Bodu_Collections_Generic_NavigableDictionary_2_TryGetHigherEntry__0_System_Collections_Generic_KeyValuePair__0__1___">TryGetHigherEntry(TKey, out KeyValuePair&lt;TKey, TValue&gt;)</a> / <a class="xref" href="Bodu.Collections.Generic.NavigableDictionary-2.html#Bodu_Collections_Generic_NavigableDictionary_2_TryGetLowerEntry__0_System_Collections_Generic_KeyValuePair__0__1___">TryGetLowerEntry(TKey, out KeyValuePair&lt;TKey, TValue&gt;)</a>), rank/select
 ( <a class="xref" href="Bodu.Collections.Generic.NavigableDictionary-2.html#Bodu_Collections_Generic_NavigableDictionary_2_IndexOfKey__0_">IndexOfKey(TKey)</a> / <a class="xref" href="Bodu.Collections.Generic.NavigableDictionary-2.html#Bodu_Collections_Generic_NavigableDictionary_2_GetAt_System_Int32_">GetAt(int)</a>), and range-counting queries in O(log n).</p>
@@ -327,7 +327,7 @@ ascending key.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Collections.Generic.NavigableSet-1.html">NavigableSet&lt;T&gt;</a></dt>
-      <dd><p>Represents a sorted set augmented with order statistics — an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iset-1">ISet&lt;T&gt;</a> that keeps its elements in
+      <dd><p>Represents a sorted set augmented with order statistics - an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iset-1">ISet&lt;T&gt;</a> that keeps its elements in
 comparer order and answers nearest-neighbour (<a class="xref" href="Bodu.Collections.Generic.NavigableSet-1.html#Bodu_Collections_Generic_NavigableSet_1_TryGetFloor__0__0__">TryGetFloor(T, out T)</a> / <a class="xref" href="Bodu.Collections.Generic.NavigableSet-1.html#Bodu_Collections_Generic_NavigableSet_1_TryGetCeiling__0__0__">TryGetCeiling(T, out T)</a> /
 <a class="xref" href="Bodu.Collections.Generic.NavigableSet-1.html#Bodu_Collections_Generic_NavigableSet_1_TryGetHigher__0__0__">TryGetHigher(T, out T)</a> / <a class="xref" href="Bodu.Collections.Generic.NavigableSet-1.html#Bodu_Collections_Generic_NavigableSet_1_TryGetLower__0__0__">TryGetLower(T, out T)</a>), rank/select (<a class="xref" href="Bodu.Collections.Generic.NavigableSet-1.html#Bodu_Collections_Generic_NavigableSet_1_IndexOf__0_">IndexOf(T)</a> /
 <a class="xref" href="Bodu.Collections.Generic.NavigableSet-1.html#Bodu_Collections_Generic_NavigableSet_1_GetAt_System_Int32_">GetAt(int)</a>), and range-counting queries in O(log n).</p>
@@ -335,7 +335,7 @@ comparer order and answers nearest-neighbour (<a class="xref" href="Bodu.Collect
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Collections.Generic.OrderedSet-1.html">OrderedSet&lt;T&gt;</a></dt>
-      <dd><p>Represents an insertion-ordered set — a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iset-1">ISet&lt;T&gt;</a> that preserves the order in which elements were first
+      <dd><p>Represents an insertion-ordered set - a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iset-1">ISet&lt;T&gt;</a> that preserves the order in which elements were first
 added and exposes that order through <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList&lt;T&gt;</a>.</p>
 </dd>
     </dl>
@@ -351,8 +351,8 @@ added and exposes that order through <a class="xref" href="https://learn.microso
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Collections.Generic.RingBackedCollection-1.html">RingBackedCollection&lt;T&gt;</a></dt>
-      <dd><p>Provides the shared low-level mechanics for ring-buffer-backed collections — a contiguous backing array, head/tail
-indices with modulo wrap, a live element count, and a structural-version counter — as a reusable base type for
+      <dd><p>Provides the shared low-level mechanics for ring-buffer-backed collections - a contiguous backing array, head/tail
+indices with modulo wrap, a live element count, and a structural-version counter - as a reusable base type for
 <a class="xref" href="Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a> and <a class="xref" href="Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a>.</p>
 </dd>
     </dl>
@@ -382,7 +382,7 @@ of the first and last entries, optionally re-ordering entries on access.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Collections.Generic.ShuffleHelpers.html">ShuffleHelpers</a></dt>
-      <dd><p>Provides in-place and yield-based Fisher–Yates randomization over arrays, spans, memory regions, and arbitrary
+      <dd><p>Provides in-place and yield-based Fisher-Yates randomization over arrays, spans, memory regions, and arbitrary
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a> sources.</p>
 </dd>
     </dl>
@@ -492,7 +492,7 @@ allocating.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Collections.Generic.ValueRange-2.html">ValueRange&lt;TKey, TValue&gt;</a></dt>
-      <dd><p>Represents a half-open range mapped to a value — the entry projection produced when enumerating a
+      <dd><p>Represents a half-open range mapped to a value - the entry projection produced when enumerating a
 <a class="xref" href="Bodu.Collections.Generic.RangeDictionary-2.html">RangeDictionary&lt;TKey, TValue&gt;</a>.</p>
 </dd>
     </dl>
@@ -546,7 +546,7 @@ exceeded.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

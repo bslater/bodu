@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.IO.Pst — Introduction | BODU </title>
+      <title>Bodu.IO.Pst - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.IO.Pst — Introduction | BODU ">
+      <meta name="title" content="Bodu.IO.Pst - Introduction | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -88,8 +88,8 @@
 <h1 id="boduiopst">Bodu.IO.Pst</h1>
 
 <p><img src="../../images/hero-io-pst.svg" alt="Bodu.IO.Pst"></p>
-<p><strong>Bodu.IO.Pst</strong> is a low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST, Unicode and ANSI formats). Part of the <strong><a href="../topics/binary-formats.html">Binary Formats &amp; I/O</a></strong> topic, it reads the node database (NDB) — the header, the node and block B-trees, block data with the format's permute and cyclic content encodings decoded and checksums verified, multi-block data trees, and per-node subnode trees — and the LTP layer over it: heap-on-node, BTree-on-heap, and per-node property-context and table-context views with wire-typed values. It carries <strong>no MAPI semantics and no writing</strong> — it is the substrate the <a href="#the-mail-store-reader-built-on-this-package"><code>Bodu.Formats.Outlook.Pst</code></a> mail-store reader builds on, the same container/format split as <code>Bodu.IO.Compound</code> beneath <code>Bodu.Formats.Excel.Binary</code>.</p>
-<p>A PST file is a node-oriented database in a single file. <a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html">PstFile</a> opens it as a disposable session; every object the file holds — folders, messages, tables, internal maps — is a <a class="xref" href="../../api/Bodu.IO.Pst.PstNode.html">PstNode</a> addressed by a 32-bit <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeId.html">PstNodeId</a> whose five low bits carry the node's <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeType.html">PstNodeType</a>.</p>
+<p><strong>Bodu.IO.Pst</strong> is a low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST, Unicode and ANSI formats). Part of the <strong><a href="../topics/binary-formats.html">Binary Formats &amp; I/O</a></strong> topic, it reads the node database (NDB) - the header, the node and block B-trees, block data with the format's permute and cyclic content encodings decoded and checksums verified, multi-block data trees, and per-node subnode trees - and the LTP layer over it: heap-on-node, BTree-on-heap, and per-node property-context and table-context views with wire-typed values. It carries <strong>no MAPI semantics and no writing</strong> - it is the substrate the <a href="#the-mail-store-reader-built-on-this-package"><code>Bodu.Formats.Outlook.Pst</code></a> mail-store reader builds on, the same container/format split as <code>Bodu.IO.Compound</code> beneath <code>Bodu.Formats.Excel.Binary</code>.</p>
+<p>A PST file is a node-oriented database in a single file. <a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html">PstFile</a> opens it as a disposable session; every object the file holds - folders, messages, tables, internal maps - is a <a class="xref" href="../../api/Bodu.IO.Pst.PstNode.html">PstNode</a> addressed by a 32-bit <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeId.html">PstNodeId</a> whose five low bits carry the node's <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeType.html">PstNodeType</a>.</p>
 <table>
 <thead>
 <tr>
@@ -136,7 +136,7 @@
 </tr>
 <tr>
 <td><strong>Node identifier (NID)</strong></td>
-<td>A 32-bit identifier — five type bits plus a 27-bit index. Well-known anchors: the message store (<code>0x21</code>), the name-to-id map (<code>0x61</code>), and the root folder (<code>0x122</code>).</td>
+<td>A 32-bit identifier - five type bits plus a 27-bit index. Well-known anchors: the message store (<code>0x21</code>), the name-to-id map (<code>0x61</code>), and the root folder (<code>0x122</code>).</td>
 </tr>
 <tr>
 <td><strong>Data tree</strong></td>
@@ -144,7 +144,7 @@
 </tr>
 <tr>
 <td><strong>Subnode tree</strong></td>
-<td>A node's private namespace of child nodes — a message keeps its recipient and attachment tables there.</td>
+<td>A node's private namespace of child nodes - a message keeps its recipient and attachment tables there.</td>
 </tr>
 <tr>
 <td><strong>LTP</strong></td>
@@ -156,7 +156,7 @@
 </tr>
 <tr>
 <td><strong>Validation level</strong></td>
-<td><a class="xref" href="../../api/Bodu.IO.Pst.PstValidationLevel.html">PstValidationLevel</a> — <code>Compatible</code> (default), <code>Strict</code> (every checksum and signature enforced), <code>Minimal</code>.</td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstValidationLevel.html">PstValidationLevel</a> - <code>Compatible</code> (default), <code>Strict</code> (every checksum and signature enforced), <code>Minimal</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -167,7 +167,7 @@
 <li><strong>No MAPI semantics.</strong> Property values surface with their raw wire types; property <em>meaning</em> (subjects, senders, recipients) belongs to the mail-store reader layered on top.</li>
 <li><strong>Bounded memory.</strong> Payloads stream through a decoded-block LRU cache sized by <a class="xref" href="../../api/Bodu.IO.Pst.PstFileOptions.html#Bodu_IO_Pst_PstFileOptions_BlockCacheSize">BlockCacheSize</a>; <code>OpenDataStream</code> keeps one leaf block resident regardless of the logical payload size.</li>
 </ul>
-<h2 id="worked-example--open-enumerate-read">Worked example — open, enumerate, read</h2>
+<h2 id="worked-example---open-enumerate-read">Worked example - open, enumerate, read</h2>
 <ol>
 <li>Probe the input cheaply with <code>PstFile.IsPstFile(stream)</code>.</li>
 <li>Open the container: <code>using PstFile file = PstFile.OpenRead(path)</code>.</li>
@@ -248,7 +248,7 @@ foreach (PstPropertyValue value in store.ReadPropertyContext())
 </tr>
 </tbody>
 </table>
-<h2 id="headline-types--">Headline types — <a class="xref" href="../../api/Bodu.IO.Pst.html">Bodu.IO.Pst</a></h2>
+<h2 id="headline-types---">Headline types - <a class="xref" href="../../api/Bodu.IO.Pst.html">Bodu.IO.Pst</a></h2>
 <table>
 <thead>
 <tr>
@@ -267,19 +267,19 @@ foreach (PstPropertyValue value in store.ReadPropertyContext())
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.IO.Pst.PstNodeId.html">PstNodeId</a></td>
-<td>The 32-bit identifier — <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeType.html">PstNodeType</a> in the five low bits, index above; well-knowns <code>MessageStore</code> / <code>NameToIdMap</code> / <code>RootFolder</code>.</td>
+<td>The 32-bit identifier - <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeType.html">PstNodeType</a> in the five low bits, index above; well-knowns <code>MessageStore</code> / <code>NameToIdMap</code> / <code>RootFolder</code>.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyContext.html">PstPropertyContext</a></td>
-<td>The property bag — tag-ordered <a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyValue.html">PstPropertyValue</a> entries with typed accessors, values resolved on access.</td>
+<td>The property bag - tag-ordered <a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyValue.html">PstPropertyValue</a> entries with typed accessors, values resolved on access.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.IO.Pst.PstTableContext.html">PstTableContext</a></td>
-<td>The table — <a class="xref" href="../../api/Bodu.IO.Pst.PstTableColumn.html">PstTableColumn</a> metadata, <code>RowCount</code>, streaming <code>EnumerateRows</code>, keyed <code>TryGetRow</code>.</td>
+<td>The table - <a class="xref" href="../../api/Bodu.IO.Pst.PstTableColumn.html">PstTableColumn</a> metadata, <code>RowCount</code>, streaming <code>EnumerateRows</code>, keyed <code>TryGetRow</code>.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileOptions.html">PstFileOptions</a></td>
-<td>Read options — <a class="xref" href="../../api/Bodu.IO.Pst.PstValidationLevel.html">PstValidationLevel</a> and the decoded-block <code>BlockCacheSize</code>.</td>
+<td>Read options - <a class="xref" href="../../api/Bodu.IO.Pst.PstValidationLevel.html">PstValidationLevel</a> and the decoded-block <code>BlockCacheSize</code>.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a></td>
@@ -288,7 +288,7 @@ foreach (PstPropertyValue value in store.ReadPropertyContext())
 </tbody>
 </table>
 <h2 id="the-mail-store-reader-built-on-this-package">The mail-store reader built on this package</h2>
-<p><strong><code>Bodu.Formats.Outlook.Pst</code></strong> layers the messaging vocabulary on top: <code>OutlookMailStore</code> opens a <code>.pst</code> as a mail store and exposes the folder hierarchy, messages with decoded MAPI properties, recipients, attachments (including nested embedded messages), store-wide named-property resolution, and the text/HTML/compressed-RTF bodies — sharing the <code>Bodu.Formats.Outlook</code> MAPI value model with the <code>.msg</code> reader.</p>
+<p><strong><code>Bodu.Formats.Outlook.Pst</code></strong> layers the messaging vocabulary on top: <code>OutlookMailStore</code> opens a <code>.pst</code> as a mail store and exposes the folder hierarchy, messages with decoded MAPI properties, recipients, attachments (including nested embedded messages), store-wide named-property resolution, and the text/HTML/compressed-RTF bodies - sharing the <code>Bodu.Formats.Outlook</code> MAPI value model with the <code>.msg</code> reader.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Formats.Outlook;
 
@@ -298,15 +298,15 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 {
     Console.WriteLine(folder.DisplayName);
     foreach (OutlookMailMessage message in folder.EnumerateMessages())
-        Console.WriteLine($&quot;  {message.Subject} — {message.SenderName}&quot;);
+        Console.WriteLine($&quot;  {message.Subject} - {message.SenderName}&quot;);
 }
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — full vocabulary: NDB, NID/BID, data and subnode trees, heap-on-node, property and table contexts.</li>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install + minimal samples for opening, enumerating, and reading.</li>
-<li><strong>API reference</strong> — <a class="xref" href="../../api/Bodu.IO.Pst.html">Bodu.IO.Pst</a> · <a class="xref" href="../../api/Bodu.Formats.Outlook.html">Bodu.Formats.Outlook</a>.</li>
-<li><strong><a href="../topics/binary-formats.html">Binary Formats &amp; I/O topic overview</a></strong> — where the container reader sits beneath the format readers.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - full vocabulary: NDB, NID/BID, data and subnode trees, heap-on-node, property and table contexts.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install + minimal samples for opening, enumerating, and reading.</li>
+<li><strong>API reference</strong> - <a class="xref" href="../../api/Bodu.IO.Pst.html">Bodu.IO.Pst</a> · <a class="xref" href="../../api/Bodu.Formats.Outlook.html">Bodu.Formats.Outlook</a>.</li>
+<li><strong><a href="../topics/binary-formats.html">Binary Formats &amp; I/O topic overview</a></strong> - where the container reader sits beneath the format readers.</li>
 </ul>
 
 </article>
@@ -326,7 +326,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

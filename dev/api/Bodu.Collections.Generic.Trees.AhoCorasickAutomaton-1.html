@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Collections_Generic_Trees_AhoCorasickAutomaton_1" data-uid="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 AhoCorasickAutomaton&lt;TValue&gt; Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic.Trees/AhoCorasickAutomaton%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic.Trees/AhoCorasickAutomaton%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ AhoCorasickAutomaton&lt;TValue&gt; Class
   <dl><dt>Assembly</dt><dd>Bodu.Collections.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Collections">Bodu.Collections</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic.Trees/AhoCorasickAutomaton%7BT%7D.cs">AhoCorasickAutomaton{T}.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic.Trees/AhoCorasickAutomaton%7BT%7D.cs">AhoCorasickAutomaton{T}.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents an immutable Aho-Corasick automaton that locates every occurrence of every pattern in a keyed pattern set
@@ -189,11 +189,11 @@ in a single pass over the searched text, reporting the value associated with eac
 The automaton is built once from a complete pattern set via
 <a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton-1.html#Bodu_Collections_Generic_Trees_AhoCorasickAutomaton_1_Build_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String__0___">Build(IEnumerable&lt;KeyValuePair&lt;string, TValue&gt;&gt;)</a> and is immutable thereafter: its failure and output
 links are global invariants defined relative to the whole pattern set, so a pattern added later would invalidate the
-links wholesale — rebuild with the new set instead. Matching costs O(n + m) for text length n and m reported
+links wholesale - rebuild with the new set instead. Matching costs O(n + m) for text length n and m reported
 matches, independent of the number of patterns.
 </p>
 <p>
-Character comparison is ordinal. Matches — including overlapping and nested occurrences — are reported in a
+Character comparison is ordinal. Matches - including overlapping and nested occurrences - are reported in a
 deterministic order: ascending end index, then ascending pattern length. Because a lazily evaluated sequence cannot
 capture a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a>, the lazy <a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton-1.html#Bodu_Collections_Generic_Trees_AhoCorasickAutomaton_1_EnumerateMatches_System_String_">EnumerateMatches(string)</a> takes a
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, while the eager <a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton-1.html#Bodu_Collections_Generic_Trees_AhoCorasickAutomaton_1_CountMatches_System_ReadOnlySpan_System_Char__">CountMatches(ReadOnlySpan&lt;char&gt;)</a> and
@@ -212,7 +212,7 @@ capture a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.re
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Trees_AhoCorasickAutomaton_1_Patterns" data-uid="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1.Patterns">
   Patterns
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic.Trees/AhoCorasickAutomaton%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic.Trees/AhoCorasickAutomaton%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -253,7 +253,7 @@ capture a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.re
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Trees_AhoCorasickAutomaton_1_Build_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String__0___" data-uid="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1.Build(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,`0}})">
   Build(IEnumerable&lt;KeyValuePair&lt;string, TValue&gt;&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic.Trees/AhoCorasickAutomaton%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic.Trees/AhoCorasickAutomaton%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -287,7 +287,7 @@ capture a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.re
 
   <h4 class="section" id="Bodu_Collections_Generic_Trees_AhoCorasickAutomaton_1_Build_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String__0____remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Unlike the unkeyed <a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton.html#Bodu_Collections_Generic_Trees_AhoCorasickAutomaton_Build_System_Collections_Generic_IEnumerable_System_String__">Build(IEnumerable&lt;string&gt;)</a>, a duplicate pattern key
-throws rather than deduplicating, because two entries would compete for the key's value — mirroring the
+throws rather than deduplicating, because two entries would compete for the key's value - mirroring the
 <a class="xref" href="Bodu.Collections.Generic.Trees.Trie-1.html">Trie&lt;TValue&gt;</a> versus <a class="xref" href="Bodu.Collections.Generic.Trees.Trie.html">Trie</a> add contracts.</p>
 </div>
 
@@ -311,7 +311,7 @@ key, or contains a duplicate pattern key.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Trees_AhoCorasickAutomaton_1_ContainsPattern_System_String_" data-uid="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1.ContainsPattern(System.String)">
   ContainsPattern(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic.Trees/AhoCorasickAutomaton%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic.Trees/AhoCorasickAutomaton%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -360,7 +360,7 @@ key, or contains a duplicate pattern key.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Trees_AhoCorasickAutomaton_1_CountMatches_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1.CountMatches(System.ReadOnlySpan{System.Char})">
   CountMatches(ReadOnlySpan&lt;char&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic.Trees/AhoCorasickAutomaton%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic.Trees/AhoCorasickAutomaton%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -407,7 +407,7 @@ of matches without materializing them.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Trees_AhoCorasickAutomaton_1_EnumerateMatches_System_String_" data-uid="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1.EnumerateMatches(System.String)">
   EnumerateMatches(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic.Trees/AhoCorasickAutomaton%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic.Trees/AhoCorasickAutomaton%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -429,7 +429,7 @@ of matches without materializing them.</p>
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickMatch-1.html">AhoCorasickMatch</a>&lt;TValue&gt;&gt;</dt>
-    <dd><p>A lazily evaluated sequence of matches — overlapping and nested occurrences included — ordered ascending by end
+    <dd><p>A lazily evaluated sequence of matches - overlapping and nested occurrences included - ordered ascending by end
 index, then ascending by pattern length.</p>
 </dd>
   </dl>
@@ -457,7 +457,7 @@ index, then ascending by pattern length.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Trees_AhoCorasickAutomaton_1_HasMatch_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1.HasMatch(System.ReadOnlySpan{System.Char})">
   HasMatch(ReadOnlySpan&lt;char&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Generic.Trees/AhoCorasickAutomaton%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Generic.Trees/AhoCorasickAutomaton%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -525,7 +525,7 @@ index, then ascending by pattern length.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

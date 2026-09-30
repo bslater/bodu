@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_Whirlpool" data-uid="Bodu.Security.Cryptography.Whirlpool" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Whirlpool Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.Constants.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.Constants.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ Whirlpool Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.Constants.cs">Whirlpool.Constants.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.Constants.cs">Whirlpool.Constants.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Computes a 512-bit cryptographic hash using the <code>Whirlpool</code> algorithm designed by Paulo S. L. M. Barreto and
@@ -360,7 +360,7 @@ byte[] digest = whirlpool.ComputeHash(message);</code></pre>
 
   <h2 id="Bodu_Security_Cryptography_Whirlpool_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-Whirlpool is a Merkle–Damgård construction wrapped around an internal 512-bit block cipher (<code>W</code>) that borrows
+Whirlpool is a Merkle-Damgård construction wrapped around an internal 512-bit block cipher (<code>W</code>) that borrows
 the wide-trail design principles of the Rijndael family. Input is consumed in 64-byte blocks; the final message
 length (in bits) is appended in a 256-bit big-endian trailer after a single <code>0x80</code> padding byte, in the
 standard manner.
@@ -378,11 +378,11 @@ the instance to the reconfigurable state.
 <ul><li>Output size: 512 bits (64 bytes), fixed.</li><li>Block size: 64 bytes (512 bits); 256-bit big-endian length field.</li><li>Internal cipher <code>W</code> on the wide-trail (Rijndael-family) design principle.</li><li>
 Selectable revision: <a class="xref" href="Bodu.Security.Cryptography.WhirlpoolVersion.html#Bodu_Security_Cryptography_WhirlpoolVersion_WhirlpoolInfo1">WhirlpoolInfo1</a> (2000),
 <a class="xref" href="Bodu.Security.Cryptography.WhirlpoolVersion.html#Bodu_Security_Cryptography_WhirlpoolVersion_WhirlpoolInfo1">WhirlpoolInfo1</a> (Whirlpool-T, 2001), or
-<a class="xref" href="Bodu.Security.Cryptography.WhirlpoolVersion.html#Bodu_Security_Cryptography_WhirlpoolVersion_WhirlpoolInfo3">WhirlpoolInfo3</a> (ISO/IEC 10118-3, 2003 — default).
+<a class="xref" href="Bodu.Security.Cryptography.WhirlpoolVersion.html#Bodu_Security_Cryptography_WhirlpoolVersion_WhirlpoolInfo3">WhirlpoolInfo3</a> (ISO/IEC 10118-3, 2003 - default).
 </li></ul>
 <p>
 <strong>When to choose Whirlpool.</strong> Pick Whirlpool when interoperability with software that produces or
-expects ISO/IEC 10118-3 Whirlpool digests is required — TrueCrypt-era disk encryption metadata, certain European
+expects ISO/IEC 10118-3 Whirlpool digests is required - TrueCrypt-era disk encryption metadata, certain European
 e-government standards, and some content-addressed stores. For a modern 512-bit cryptographic hash without an
 interop constraint use SHA-512 or <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a>; both are faster on contemporary hardware.
 </p>
@@ -403,7 +403,7 @@ cache-based side-channel attacks.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Whirlpool__ctor" data-uid="Bodu.Security.Cryptography.Whirlpool.#ctor">
   Whirlpool()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -439,7 +439,7 @@ cache-based side-channel attacks.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Whirlpool_AlgorithmName" data-uid="Bodu.Security.Cryptography.Whirlpool.AlgorithmName">
   AlgorithmName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -470,7 +470,7 @@ cache-based side-channel attacks.
   <h4 class="section" id="Bodu_Security_Cryptography_Whirlpool_AlgorithmName_remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Derived classes implement this property to expose a stable, consumer-facing identifier suitable for logging,
 telemetry, registry keys, or interop with hash-name catalogues. Implementations should be pure and
-side-effect-free — the value may be queried before any input has been consumed and after disposal as part of
+side-effect-free - the value may be queried before any input has been consumed and after disposal as part of
 error reporting.</p>
 </div>
 
@@ -484,7 +484,7 @@ error reporting.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Whirlpool_CanReuseTransform" data-uid="Bodu.Security.Cryptography.Whirlpool.CanReuseTransform">
   CanReuseTransform
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -521,7 +521,7 @@ error reporting.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Whirlpool_CanTransformMultipleBlocks" data-uid="Bodu.Security.Cryptography.Whirlpool.CanTransformMultipleBlocks">
   CanTransformMultipleBlocks
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -558,7 +558,7 @@ error reporting.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Whirlpool_Version" data-uid="Bodu.Security.Cryptography.Whirlpool.Version">
   Version
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -618,7 +618,7 @@ value becomes immutable until <a class="xref" href="Bodu.Security.Cryptography.W
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Whirlpool_Dispose_System_Boolean_" data-uid="Bodu.Security.Cryptography.Whirlpool.Dispose(System.Boolean)">
   Dispose(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -656,7 +656,7 @@ only unmanaged resources.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Whirlpool_HashCore_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.Whirlpool.HashCore(System.Byte[],System.Int32,System.Int32)">
   HashCore(byte[], int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -728,7 +728,7 @@ data.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Whirlpool_HashCore_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Whirlpool.HashCore(System.ReadOnlySpan{System.Byte})">
   HashCore(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -784,7 +784,7 @@ immediately processed; any remaining bytes are stored until more data arrives or
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Whirlpool_Initialize" data-uid="Bodu.Security.Cryptography.Whirlpool.Initialize">
   Initialize()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -836,7 +836,7 @@ Once the base call returns, the residual buffer is empty, <span class="xref">Bod
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Whirlpool_PadBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.Whirlpool.PadBlock(System.ReadOnlySpan{System.Byte},System.UInt64,System.Span{System.Byte})">
   PadBlock(ReadOnlySpan&lt;byte&gt;, ulong, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -852,11 +852,11 @@ message length, without allocating a padded copy on the heap.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>block</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
-    <dd><p>The final block of unprocessed input, typically containing 0 to BlockSize–1 bytes.</p>
+    <dd><p>The final block of unprocessed input, typically containing 0 to BlockSize-1 bytes.</p>
 </dd>
     <dt><code>messageLength</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a></dt>
     <dd><p>The total number of message bytes consumed by the algorithm, <strong>including</strong> the bytes in
-<code class="paramref">block</code>. This is the value most Merkle–Damgård length encodings append.</p>
+<code class="paramref">block</code>. This is the value most Merkle-Damgård length encodings append.</p>
 </dd>
     <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
     <dd><p>The span receiving the padded block or blocks; at least two blocks (<code>2 × BlockSize / 8</code> bytes) long. The
@@ -867,7 +867,7 @@ caller clears the span after processing.</p>
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd><p>The number of bytes written — one or two whole blocks, ready for <a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html#Bodu_Security_Cryptography_BlockHashAlgorithm_ProcessBlock_System_ReadOnlySpan_System_Byte__">ProcessBlock(ReadOnlySpan&lt;byte&gt;)</a>.</p>
+    <dd><p>The number of bytes written - one or two whole blocks, ready for <a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html#Bodu_Security_Cryptography_BlockHashAlgorithm_ProcessBlock_System_ReadOnlySpan_System_Byte__">ProcessBlock(ReadOnlySpan&lt;byte&gt;)</a>.</p>
 </dd>
   </dl>
 
@@ -892,7 +892,7 @@ overload and clears the intermediate array; see that overload's remarks for the 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Whirlpool_ProcessBlock_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Whirlpool.ProcessBlock(System.ReadOnlySpan{System.Byte})">
   ProcessBlock(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -939,7 +939,7 @@ input blocks and is not responsible for padding or finalization steps.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Whirlpool_ProcessFinalBlock" data-uid="Bodu.Security.Cryptography.Whirlpool.ProcessFinalBlock">
   ProcessFinalBlock()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1003,7 +1003,7 @@ little-endian).</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

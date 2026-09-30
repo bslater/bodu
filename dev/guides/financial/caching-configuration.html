@@ -91,7 +91,7 @@
 <code>Financial:RateCache</code>. This page lays out that tree: which registration binds which section into
 which type, every key with its default, a complete JSON example per backend, and the lifetimes
 and thread-safety guarantees of the singletons those registrations create. For what the cache
-<em>does</em> — expiry, coverage, stacking, aggregation strategies — see
+<em>does</em> - expiry, coverage, stacking, aggregation strategies - see
 <a href="exchange-rate-caching.html">Caching and aggregating exchange rates</a>; for the providers underneath,
 see <a href="provider-configuration.html">Configuring providers from appsettings</a>.</p>
 <h2 id="the-section-tree-at-a-glance">The section tree at a glance</h2>
@@ -131,9 +131,9 @@ see <a href="provider-configuration.html">Configuring providers from appsettings
 </tr>
 </tbody>
 </table>
-<p>Every registration takes the same trailing parameters — <code>IConfiguration? configuration</code>,
+<p>Every registration takes the same trailing parameters - <code>IConfiguration? configuration</code>,
 <code>string sectionName</code> (the default above), and an <code>Action&lt;TOptions&gt;? configure</code> that runs after
-binding — and validates the bound options on start through the type's <code>TryValidate</code>. Pass the
+binding - and validates the bound options on start through the type's <code>TryValidate</code>. Pass the
 same <code>builder.Configuration</code> to each call and the whole tree is read from one place:</p>
 <pre><code class="lang-csharp">using Bodu.Financial;
 using Bodu.Financial.ExchangeRates;
@@ -150,9 +150,9 @@ builder.Services
 </code></pre>
 <p>The nested sections are deliberate: <code>Financial:RateCache</code> describes the <em>policy</em> (expiry,
 logging, stampede protection) that every backend shares, while <code>Financial:RateCache:Sqlite</code> and
-<code>Financial:RateCache:Distributed</code> describe the <em>storage</em> — so a configuration file that names a
+<code>Financial:RateCache:Distributed</code> describe the <em>storage</em> - so a configuration file that names a
 SQLite path does not have to repeat the policy, and switching backends changes one subsection.</p>
-<h2 id="pattern-1--financialratecache-and-cachingrateoptions">Pattern 1 — <code>Financial:RateCache</code> and <code>CachingRateOptions</code></h2>
+<h2 id="pattern-1---financialratecache-and-cachingrateoptions">Pattern 1 - <code>Financial:RateCache</code> and <code>CachingRateOptions</code></h2>
 <p>Every key below binds, shown at its default. Durations are <code>TimeSpan</code> strings
 (<code>d.hh:mm:ss</code>), log levels are <code>Microsoft.Extensions.Logging.LogLevel</code> names:</p>
 <pre><code class="lang-json">{
@@ -226,8 +226,8 @@ SQLite path does not have to repeat the policy, and switching backends changes o
 </tr>
 </tbody>
 </table>
-<p><code>DefaultLookupOptions</code> — the <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupOptions.html">RateLookupOptions</a> the
-<em>timeless</em> surface applies — is not configuration-bindable (its members are read-only) and
+<p><code>DefaultLookupOptions</code> - the <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupOptions.html">RateLookupOptions</a> the
+<em>timeless</em> surface applies - is not configuration-bindable (its members are read-only) and
 stays at <code>RateLookupOptions.Exact</code> whatever the section says. Set it, like anything the binder
 cannot express, in the <code>configure</code> callback:</p>
 <pre><code class="lang-csharp">builder.Services
@@ -249,10 +249,10 @@ cannot express, in the <code>configure</code> callback:</p>
 one policy object. Use <code>ProviderExpiry</code> for per-provider expiry; there is no per-provider
 section.</p>
 </div>
-<h2 id="pattern-2--financialratecachesqlite-and-sqliteratecacheoptions">Pattern 2 — <code>Financial:RateCache:Sqlite</code> and <code>SqliteRateCacheOptions</code></h2>
+<h2 id="pattern-2---financialratecachesqlite-and-sqliteratecacheoptions">Pattern 2 - <code>Financial:RateCache:Sqlite</code> and <code>SqliteRateCacheOptions</code></h2>
 <p><code>AddSqliteRateCache(&quot;RBA&quot;, configuration)</code> binds the section into a <strong>named</strong> options instance
 (<code>&quot;RBA&quot;</code>), sets <code>Provider</code> to that name after binding, validates, and registers a
-<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.SqliteRateCache.html">SqliteRateCache</a> keyed by the name — exposed as the
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.SqliteRateCache.html">SqliteRateCache</a> keyed by the name - exposed as the
 keyed <code>IRateCache</code> for <code>&quot;RBA&quot;</code> and, for the first cache registered, as the default <code>IRateCache</code>.
 The cached provider then picks it up through <code>cacheFactory</code>:</p>
 <pre><code class="lang-csharp">builder.Services
@@ -327,10 +327,10 @@ The cached provider then picks it up through <code>cacheFactory</code>:</p>
 </tbody>
 </table>
 <p>Because every name binds the <em>same</em> section, several providers naturally share one database
-file — the intended layout: rows are keyed by provider, so <code>AddSqliteRateCache(&quot;RBA&quot;, …)</code> and
+file - the intended layout: rows are keyed by provider, so <code>AddSqliteRateCache(&quot;RBA&quot;, …)</code> and
 <code>AddSqliteRateCache(&quot;ECB&quot;, …)</code> partition cleanly inside <code>fx.db</code>. Give one provider a different
 file through its <code>configure</code> callback, which runs after binding for that name only.</p>
-<h2 id="pattern-3--financialratecachedistributed-and-distributedratecacheoptions">Pattern 3 — <code>Financial:RateCache:Distributed</code> and <code>DistributedRateCacheOptions</code></h2>
+<h2 id="pattern-3---financialratecachedistributed-and-distributedratecacheoptions">Pattern 3 - <code>Financial:RateCache:Distributed</code> and <code>DistributedRateCacheOptions</code></h2>
 <p>The distributed backend stores each pair as one blob in whatever <code>IDistributedCache</code> the host
 has registered. <code>AddRedisRateCache</code> registers the Redis <code>IDistributedCache</code> first and then
 delegates to <code>AddDistributedRateCache</code>; note the Redis configurator is the <em>first</em> parameter and
@@ -388,7 +388,7 @@ builder.Services
 <tr>
 <td><code>KeyPrefix</code></td>
 <td><code>null</code> (omit the key)</td>
-<td>Prepended verbatim to every key so unrelated tenants of one store cannot collide; unset, keys begin with the provider name. A non-null, all-white-space value fails validation — and a JSON <code>null</code> binds as an <strong>empty string</strong>, which is exactly that, so leave the key out of the section rather than writing <code>&quot;KeyPrefix&quot;: null</code>.</td>
+<td>Prepended verbatim to every key so unrelated tenants of one store cannot collide; unset, keys begin with the provider name. A non-null, all-white-space value fails validation - and a JSON <code>null</code> binds as an <strong>empty string</strong>, which is exactly that, so leave the key out of the section rather than writing <code>&quot;KeyPrefix&quot;: null</code>.</td>
 </tr>
 <tr>
 <td><code>EntryExpirationMargin</code></td>
@@ -415,7 +415,7 @@ names only add keyed aliases to the same instance. Register it for one cached pr
 it as the shared L1 tier of a <a href="exchange-rate-caching.html#stacking-providers-tiered-read-through">stack</a>;
 give each source its own SQLite or file cache when you need one cache per provider.</p>
 </div>
-<h2 id="pattern-4--warming-the-cache-at-startup">Pattern 4 — warming the cache at startup</h2>
+<h2 id="pattern-4---warming-the-cache-at-startup">Pattern 4 - warming the cache at startup</h2>
 <p><code>AddRateCacheWarmup</code> binds <code>Financial:RateCacheWarmup</code> and registers a hosted service that runs
 once when the host starts. It warms every provider registered through <code>AddCachedRateProvider</code>
 automatically and any aggregation child you name in <code>Providers</code>; the run never blocks or fails
@@ -469,7 +469,7 @@ the host, and a pair that fails is logged and skipped.</p>
 </tr>
 </tbody>
 </table>
-<h2 id="pattern-5--aggregation">Pattern 5 — aggregation</h2>
+<h2 id="pattern-5---aggregation">Pattern 5 - aggregation</h2>
 <p>Aggregation is configured in code, not from a section: <code>AddAggregatedRateProvider</code> builds the
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.html">RateAggregationOptions</a> from the builder calls, and
 the <code>configuration</code> it accepts is for the children's shared <code>Financial:RateCache</code> policy.</p>
@@ -488,9 +488,9 @@ the <code>configuration</code> it accepts is for the children's shared <code>Fin
             .MapPair(new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD), new AverageStrategy(), &quot;ECB&quot;, &quot;RBA&quot;),
         builder.Configuration);                                              // Financial:RateCache for the children
 </code></pre>
-<p>The DI builder sets only <code>DefaultStrategy</code> and <code>Routes</code>. The remaining members — the default
+<p>The DI builder sets only <code>DefaultStrategy</code> and <code>Routes</code>. The remaining members - the default
 provider order, <code>RespectHistoryAvailability</code>, the timeless surface's <code>DefaultLookupOptions</code>, and
-the three log levels — keep their defaults under DI. To tune them, construct the aggregator
+the three log levels - keep their defaults under DI. To tune them, construct the aggregator
 yourself and register the instance with <code>AddDatedExchangeRateProvider</code>:</p>
 <pre><code class="lang-csharp">var options = new RateAggregationOptions
 {
@@ -640,8 +640,8 @@ provider it wraps, because the container owns that too.</p>
 the decorator; every backend serializes writes to a pair under a per-pair lock (SQLite adds a
 transaction per write, so the guarantee holds across processes sharing the file), so two threads
 missing the same pair never interleave a half-written row with its coverage. Request coalescing
-is deliberately left to the inner provider — every shipped web provider already single-flights
-its downloads — so concurrent misses collapse onto one fetch at the origin rather than at the
+is deliberately left to the inner provider - every shipped web provider already single-flights
+its downloads - so concurrent misses collapse onto one fetch at the origin rather than at the
 cache. Refresh-ahead bookkeeping is shared: concurrent aged hits join one pending background
 refresh instead of each scheduling their own. The only caveat is the distributed backend, whose
 read-merge-write cycle is atomic per process but last-write-wins <em>across</em> processes, as the
@@ -691,11 +691,11 @@ read-merge-write cycle is atomic per process but last-write-wins <em>across</em>
 <p>All six live in the <code>Bodu.Financial.ExchangeRates</code> namespace, on <code>IFinancialServiceBuilder</code>.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="exchange-rate-caching.html">Caching and aggregating exchange rates</a> — expiry, coverage, stacking, strategies, observability.</li>
-<li><a href="provider-configuration.html">Configuring providers from appsettings</a> — the <code>Financial:&lt;Source&gt;</code> sections underneath the cache.</li>
-<li><a href="dependency-injection.html">Financial dependency injection</a> — the builder these registrations compose on.</li>
-<li><a href="testing-providers.html">Testing your own provider</a> — <code>NullRateCache</code> and fixed providers for tests that must not cache.</li>
-<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — every guide in this topic.</li>
+<li><a href="exchange-rate-caching.html">Caching and aggregating exchange rates</a> - expiry, coverage, stacking, strategies, observability.</li>
+<li><a href="provider-configuration.html">Configuring providers from appsettings</a> - the <code>Financial:&lt;Source&gt;</code> sections underneath the cache.</li>
+<li><a href="dependency-injection.html">Financial dependency injection</a> - the builder these registrations compose on.</li>
+<li><a href="testing-providers.html">Testing your own provider</a> - <code>NullRateCache</code> and fixed providers for tests that must not cache.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -715,7 +715,7 @@ read-merge-write cycle is atomic per process but last-write-wins <em>across</em>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

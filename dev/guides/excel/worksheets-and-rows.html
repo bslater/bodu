@@ -88,7 +88,7 @@
 <h1 id="streaming-vs-materialized">Streaming vs materialized</h1>
 
 <p>A worksheet can be read two ways, and the choice is the main performance decision in the library. This guide contrasts the forward-only <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a> with the materialized <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a>, and shows when to reach for each.</p>
-<p>Both surfaces yield the same sparse <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html">ExcelCell</a> values — only the access pattern and memory profile differ.</p>
+<p>Both surfaces yield the same sparse <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html">ExcelCell</a> values - only the access pattern and memory profile differ.</p>
 <h2 id="the-two-surfaces-at-a-glance">The two surfaces at a glance</h2>
 <table>
 <thead>
@@ -126,7 +126,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="pattern-1--stream-cells-lowest-allocation">Pattern 1 — stream cells (lowest allocation)</h2>
+<h2 id="pattern-1---stream-cells-lowest-allocation">Pattern 1 - stream cells (lowest allocation)</h2>
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
 
 using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;rates.xls&quot;);
@@ -135,12 +135,12 @@ using ExcelWorksheetReader reader = workbook.OpenWorksheet(&quot;Data&quot;);
 while (reader.TryReadCell(out ExcelCell cell))
     Accumulate(cell);
 </code></pre>
-<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.html#Bodu_Formats_Excel_ExcelWorksheetReader_TryReadCell_Bodu_Formats_Excel_ExcelCell__">TryReadCell(out ExcelCell)</a> decodes one cell at a time in record order, without building an intermediate map. The reader is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a> — dispose it (the <code>using</code> declaration does) before opening the next sheet. <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.html#Bodu_Formats_Excel_ExcelWorksheetReader_ReadCells">ReadCells()</a> wraps the same loop as a lazy <code>IEnumerable&lt;ExcelCell&gt;</code> for LINQ.</p>
+<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.html#Bodu_Formats_Excel_ExcelWorksheetReader_TryReadCell_Bodu_Formats_Excel_ExcelCell__">TryReadCell(out ExcelCell)</a> decodes one cell at a time in record order, without building an intermediate map. The reader is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a> - dispose it (the <code>using</code> declaration does) before opening the next sheet. <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.html#Bodu_Formats_Excel_ExcelWorksheetReader_ReadCells">ReadCells()</a> wraps the same loop as a lazy <code>IEnumerable&lt;ExcelCell&gt;</code> for LINQ.</p>
 <div class="NOTE">
 <h5>Note</h5>
-<p>The reader is forward-only and single-pass: <code>TryReadCell</code>, <code>ReadCells</code>, and <code>ReadRows</code> all draw from one shared cursor that advances and never rewinds. Drive a given reader through exactly one of them — once the cursor reaches the worksheet's end it yields nothing further, and there is no reset. To scan a sheet a second time, open a fresh reader with <code>OpenWorksheet</code>, or materialise it once with <code>ReadWorksheet</code> and revisit the buffered cells.</p>
+<p>The reader is forward-only and single-pass: <code>TryReadCell</code>, <code>ReadCells</code>, and <code>ReadRows</code> all draw from one shared cursor that advances and never rewinds. Drive a given reader through exactly one of them - once the cursor reaches the worksheet's end it yields nothing further, and there is no reset. To scan a sheet a second time, open a fresh reader with <code>OpenWorksheet</code>, or materialise it once with <code>ReadWorksheet</code> and revisit the buffered cells.</p>
 </div>
-<h2 id="pattern-2--group-cells-into-rows">Pattern 2 — group cells into rows</h2>
+<h2 id="pattern-2---group-cells-into-rows">Pattern 2 - group cells into rows</h2>
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
 
 using ExcelWorksheetReader reader = workbook.OpenWorksheet(&quot;Data&quot;);
@@ -154,7 +154,7 @@ foreach (ExcelRow row in reader.ReadRows())
 }
 </code></pre>
 <p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.html#Bodu_Formats_Excel_ExcelWorksheetReader_ReadRows">ReadRows()</a> groups consecutive cells into an <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelRow.html">ExcelRow</a> as their row index advances. Because Excel writes cells in row-major order, this groups a producer's rows without buffering the whole sheet. Rows with no populated cell are not materialized, so the sequence is sparse.</p>
-<h2 id="pattern-3--random-access-by-position">Pattern 3 — random access by position</h2>
+<h2 id="pattern-3---random-access-by-position">Pattern 3 - random access by position</h2>
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
 
 using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;rates.xls&quot;);
@@ -166,8 +166,8 @@ if (sheet.TryGetCell(10, 1, out ExcelCell seriesId))
 
 Console.WriteLine($&quot;{sheet.Cells.Count} populated cells across {sheet.Rows.Count} rows&quot;);
 </code></pre>
-<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_ReadWorksheet_System_String_">ReadWorksheet(string)</a> reads the whole sheet once and returns an <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a> that exposes cells by position through <code>TryGetCell</code>, all populated cells in row-major order through <code>Cells</code>, and grouped <code>Rows</code>. <code>TryGetCell</code> returns <code>false</code> for an absent (blank) cell. Reach for this surface when you need to look cells up, cross-reference columns, or revisit the sheet — at the cost of holding it in memory.</p>
-<h2 id="pattern-4--read-several-sheets-independently">Pattern 4 — read several sheets independently</h2>
+<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_ReadWorksheet_System_String_">ReadWorksheet(string)</a> reads the whole sheet once and returns an <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a> that exposes cells by position through <code>TryGetCell</code>, all populated cells in row-major order through <code>Cells</code>, and grouped <code>Rows</code>. <code>TryGetCell</code> returns <code>false</code> for an absent (blank) cell. Reach for this surface when you need to look cells up, cross-reference columns, or revisit the sheet - at the cost of holding it in memory.</p>
+<h2 id="pattern-4---read-several-sheets-independently">Pattern 4 - read several sheets independently</h2>
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
 
 using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;rates.xls&quot;);
@@ -179,11 +179,11 @@ using ExcelWorksheetReader notes = workbook.OpenWorksheet(&quot;Notes&quot;);
 data.TryReadCell(out _);
 notes.TryReadCell(out _);
 </code></pre>
-<p>Opening a sheet seeks to its recorded byte offset, so readers from the same workbook are independent. Address a sheet by name or by zero-based index — both <code>OpenWorksheet</code> and <code>ReadWorksheet</code> accept either; an unknown name throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a> and an out-of-range index throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a>.</p>
+<p>Opening a sheet seeks to its recorded byte offset, so readers from the same workbook are independent. Address a sheet by name or by zero-based index - both <code>OpenWorksheet</code> and <code>ReadWorksheet</code> accept either; an unknown name throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a> and an out-of-range index throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a>.</p>
 <h2 id="choosing-a-surface">Choosing a surface</h2>
 <ul>
-<li><strong>Reach for the streaming reader</strong> when you scan a sheet once — aggregations, exports, row-by-row transforms over a large worksheet — and want to bound allocation to a single cell.</li>
-<li><strong>Reach for the materialized worksheet</strong> when you need random access — looking up a cell by position, cross-referencing columns, or reading the same sheet more than once.</li>
+<li><strong>Reach for the streaming reader</strong> when you scan a sheet once - aggregations, exports, row-by-row transforms over a large worksheet - and want to bound allocation to a single cell.</li>
+<li><strong>Reach for the materialized worksheet</strong> when you need random access - looking up a cell by position, cross-referencing columns, or reading the same sheet more than once.</li>
 </ul>
 <h2 id="tuning-large-workbook-reads">Tuning large-workbook reads</h2>
 <p>On a small <code>.xls</code> the choice of surface barely matters; on a workbook with
@@ -194,7 +194,7 @@ without changing the values you read.</p>
 decodes one <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html">ExcelCell</a> at a time in record order, so its
 allocation is a single cell regardless of sheet size. The materialized
 <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a> buffers every populated cell, so it
-scales with the sheet — use it only when you genuinely need random access, and
+scales with the sheet - use it only when you genuinely need random access, and
 let it fall out of scope as soon as the lookups are done.</p>
 <p><strong>Read one sheet at a time, and dispose between sheets.</strong> Each reader seeks to its
 own substream and holds decode state until disposed. Open, drain, and dispose one
@@ -212,7 +212,7 @@ foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
 </code></pre>
 <p><strong>Skip the metadata you do not use.</strong> Pass an
 <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryReaderOptions.html">ExcelBinaryReaderOptions</a> that clears the work you do
-not need — <code>ReadDocumentProperties = false</code> skips the summary-information
+not need - <code>ReadDocumentProperties = false</code> skips the summary-information
 property sets at open time, and <code>DetectDateFormats = false</code> skips the
 number-format classification on every numeric cell (leaving
 <code>ExcelCell.IsDateFormatted</code> always <code>false</code>):</p>
@@ -267,8 +267,8 @@ whole sheet, because Excel writes cells in row-major order. Reach for
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="cell-values-and-dates.html">Cell values and dates</a> — interpret the <code>ExcelCell</code> values both surfaces yield.</li>
-<li><a href="reading-workbooks.html">Reading workbooks</a> — the open path and reader options.</li>
+<li><a href="cell-values-and-dates.html">Cell values and dates</a> - interpret the <code>ExcelCell</code> values both surfaces yield.</li>
+<li><a href="reading-workbooks.html">Reading workbooks</a> - the open path and reader options.</li>
 <li><a class="xref" href="../../api/Bodu.Formats.Excel.html">Bodu.Formats.Excel API reference</a>.</li>
 </ul>
 
@@ -289,7 +289,7 @@ whole sheet, because Excel writes cells in row-major order. Reach for
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

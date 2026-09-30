@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_Snefru" data-uid="Bodu.Security.Cryptography.Snefru" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Snefru Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.SBoxConstants.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.SBoxConstants.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ Snefru Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.SBoxConstants.cs">Snefru.SBoxConstants.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.SBoxConstants.cs">Snefru.SBoxConstants.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Base class for the <code>Snefru</code> family of unkeyed hash functions designed by Ralph Merkle, implementing the core
@@ -422,7 +422,7 @@ rotation. After all input has been absorbed, the internal state is serialized in
 the final digest.
 </p>
 <p>
-<strong>When to choose Snefru.</strong> Academic study and legacy interop only — Snefru has practical collision
+<strong>When to choose Snefru.</strong> Academic study and legacy interop only - Snefru has practical collision
 attacks against both the 2-pass and 4-pass variants and is one of the earliest cryptographic hashes ever published.
 Pick <a class="xref" href="Bodu.Security.Cryptography.Snefru128.html">Snefru128</a> for 128-bit output and <a class="xref" href="Bodu.Security.Cryptography.Snefru256.html">Snefru256</a> for 256-bit output. For any new
 security-sensitive cryptographic hashing use SHA-2, SHA-3, or <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a>; for non-cryptographic
@@ -448,7 +448,7 @@ cache-based side-channel attacks.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Snefru__ctor_System_Int32_" data-uid="Bodu.Security.Cryptography.Snefru.#ctor(System.Int32)">
   Snefru(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -495,7 +495,7 @@ cache-based side-channel attacks.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Snefru_AlgorithmName" data-uid="Bodu.Security.Cryptography.Snefru.AlgorithmName">
   AlgorithmName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -526,7 +526,7 @@ cache-based side-channel attacks.
   <h4 class="section" id="Bodu_Security_Cryptography_Snefru_AlgorithmName_remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Derived classes implement this property to expose a stable, consumer-facing identifier suitable for logging,
 telemetry, registry keys, or interop with hash-name catalogues. Implementations should be pure and
-side-effect-free — the value may be queried before any input has been consumed and after disposal as part of
+side-effect-free - the value may be queried before any input has been consumed and after disposal as part of
 error reporting.</p>
 </div>
 
@@ -540,7 +540,7 @@ error reporting.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Snefru_CanReuseTransform" data-uid="Bodu.Security.Cryptography.Snefru.CanReuseTransform">
   CanReuseTransform
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -577,7 +577,7 @@ error reporting.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Snefru_CanTransformMultipleBlocks" data-uid="Bodu.Security.Cryptography.Snefru.CanTransformMultipleBlocks">
   CanTransformMultipleBlocks
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -618,7 +618,7 @@ error reporting.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Snefru_Dispose_System_Boolean_" data-uid="Bodu.Security.Cryptography.Snefru.Dispose(System.Boolean)">
   Dispose(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -656,7 +656,7 @@ only unmanaged resources.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Snefru_Initialize" data-uid="Bodu.Security.Cryptography.Snefru.Initialize">
   Initialize()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -708,7 +708,7 @@ Once the base call returns, the residual buffer is empty, <span class="xref">Bod
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Snefru_PadBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.Snefru.PadBlock(System.ReadOnlySpan{System.Byte},System.UInt64,System.Span{System.Byte})">
   PadBlock(ReadOnlySpan&lt;byte&gt;, ulong, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -765,7 +765,7 @@ message length (in bits).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Snefru_ProcessBlock_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Snefru.ProcessBlock(System.ReadOnlySpan{System.Byte})">
   ProcessBlock(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -807,7 +807,7 @@ state.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Snefru_ProcessFinalBlock" data-uid="Bodu.Security.Cryptography.Snefru.ProcessFinalBlock">
   ProcessFinalBlock()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Snefru.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -872,7 +872,7 @@ state.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

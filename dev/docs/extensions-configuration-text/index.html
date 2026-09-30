@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Extensions.Configuration.Text — Introduction | BODU </title>
+      <title>Bodu.Extensions.Configuration.Text - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Extensions.Configuration.Text — Introduction | BODU ">
+      <meta name="title" content="Bodu.Extensions.Configuration.Text - Introduction | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -91,7 +91,7 @@
 <p><strong>Bodu.Extensions.Configuration.Text</strong> is the bridge between
 <a href="../text-configuration/index.html"><code>Bodu.Text.Configuration</code></a> and <code>Microsoft.Extensions.Configuration</code>, and one half of
 the <strong><a href="../topics/configuration.html">Configuration</a></strong> topic. It exposes a
-single conventional entry point — <code>IConfigurationBuilder.AddTextConfigurationFile(...)</code> — that adds a Bodu Text
+single conventional entry point - <code>IConfigurationBuilder.AddTextConfigurationFile(...)</code> - that adds a Bodu Text
 Configuration file (or stream, or pre-parsed document) as a configuration source alongside JSON, INI, XML, and
 environment variables.</p>
 <p>The overload set deliberately mirrors <code>Microsoft.Extensions.Configuration.Json</code>'s <code>AddJsonFile</code> / <code>AddJsonStream</code>
@@ -104,7 +104,7 @@ colon-delimited form that <code>IConfiguration</code> consumes:</p>
 configuration.GetSection(&quot;service&quot;)      // a child section that binds to your POCO
 </code></pre>
 <h2 id="core-mental-model">Core mental model</h2>
-<p><img src="../../images/diagrams/extensions-configuration-text-flow.svg" alt="Configuration flow — builder to provider to IConfiguration to IOptions"></p>
+<p><img src="../../images/diagrams/extensions-configuration-text-flow.svg" alt="Configuration flow - builder to provider to IConfiguration to IOptions"></p>
 <p>The provider is a thin host around <code>Bodu.Text.Configuration</code>. The builder creates a
 <a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TextConfigurationSource.html">TextConfigurationSource</a> (or its stream-only sibling
 <a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource.html">TextStreamConfigurationSource</a>); the source's <code>Build</code> method instantiates
@@ -150,7 +150,7 @@ section to an <code>IOptions&lt;T&gt;</code> instance.</p>
 </tbody>
 </table>
 <h3 id="sources-and-providers">Sources and providers</h3>
-<p><em>The plumbing — typically not constructed directly. Use the builder extensions instead.</em></p>
+<p><em>The plumbing - typically not constructed directly. Use the builder extensions instead.</em></p>
 <table>
 <thead>
 <tr>
@@ -181,7 +181,7 @@ section to an <code>IOptions&lt;T&gt;</code> instance.</p>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TomlConfigurationSource.html">TomlConfigurationSource</a></td>
-<td>Implements <code>IConfigurationSource</code> directly (not a <code>FileConfigurationSource</code>). Carries <code>Path</code>, <code>Optional</code>, <code>Stream</code>. Read-once — no <code>ReloadOnChange</code>.</td>
+<td>Implements <code>IConfigurationSource</code> directly (not a <code>FileConfigurationSource</code>). Carries <code>Path</code>, <code>Optional</code>, <code>Stream</code>. Read-once - no <code>ReloadOnChange</code>.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.html">TomlConfigurationProvider</a></td>
@@ -189,7 +189,7 @@ section to an <code>IOptions&lt;T&gt;</code> instance.</p>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.BencodeConfigurationSource.html">BencodeConfigurationSource</a></td>
-<td>The Bencode counterpart — implements <code>IConfigurationSource</code> directly with the same <code>Path</code>, <code>Optional</code>, <code>Stream</code> shape. Read-once.</td>
+<td>The Bencode counterpart - implements <code>IConfigurationSource</code> directly with the same <code>Path</code>, <code>Optional</code>, <code>Stream</code> shape. Read-once.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.BencodeConfigurationProvider.html">BencodeConfigurationProvider</a></td>
@@ -198,7 +198,7 @@ section to an <code>IOptions&lt;T&gt;</code> instance.</p>
 </tbody>
 </table>
 <h3 id="options-binding">Options binding</h3>
-<p><em>Thin shims over <code>services.Configure&lt;TOptions&gt;(...)</code> — there for discoverability.</em></p>
+<p><em>Thin shims over <code>services.Configure&lt;TOptions&gt;(...)</code> - there for discoverability.</em></p>
 <table>
 <thead>
 <tr>
@@ -227,7 +227,7 @@ section to an <code>IOptions&lt;T&gt;</code> instance.</p>
 <td><code>builder.AddTextConfigurationFile(&quot;.boduconfig&quot;)</code></td>
 </tr>
 <tr>
-<td>Conventional probe — try <code>.boduconfig</code> then <code>bodu.config</code></td>
+<td>Conventional probe - try <code>.boduconfig</code> then <code>bodu.config</code></td>
 <td><code>builder.AddTextConfiguration()</code> (no-arg)</td>
 </tr>
 <tr>
@@ -235,7 +235,7 @@ section to an <code>IOptions&lt;T&gt;</code> instance.</p>
 <td><code>builder.AddTextConfigurationFile(&quot;appsettings.bodu&quot;, targetPath: &quot;src/Foo.cs&quot;)</code></td>
 </tr>
 <tr>
-<td>Optional file — do not throw if missing</td>
+<td>Optional file - do not throw if missing</td>
 <td><code>builder.AddTextConfigurationFile(&quot;appsettings.bodu&quot;, optional: true)</code></td>
 </tr>
 <tr>
@@ -307,32 +307,32 @@ contract.</p>
 <p><code>TextConfigurationSource</code> inherits the <code>ReloadOnChange</code> property from <code>FileConfigurationSource</code>. When <code>true</code>, the
 provider attaches a file watcher through the configured <code>IFileProvider</code>; any change to the underlying file triggers
 a reparse + reload, and any reload tokens issued through <code>IConfiguration</code> fire.</p>
-<p><code>TextStreamConfigurationSource</code> does <strong>not</strong> support reload-on-change — it parses the stream once when <code>Build</code> is
+<p><code>TextStreamConfigurationSource</code> does <strong>not</strong> support reload-on-change - it parses the stream once when <code>Build</code> is
 called, and the stream lifetime ends with that parse. For dynamic stream-backed inputs, rebuild the configuration.</p>
 <p>The TOML and Bencode bridges (<code>AddTomlFile</code> / <code>AddTomlStream</code>, <code>AddBencodeFile</code> / <code>AddBencodeStream</code>) are read-once
-and read-only by design — they attach no file watcher even for the file overloads, so there is no <code>reloadOnChange</code>
+and read-only by design - they attach no file watcher even for the file overloads, so there is no <code>reloadOnChange</code>
 parameter on any of the four methods.</p>
 <h2 id="how-keys-are-projected">How keys are projected</h2>
 <p>The provider hands its parsed document to the resolver and copies the resulting
 <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> into the inherited <code>Data</code> dictionary. Under the default
 <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKeyOptions.html#Bodu_Text_Configuration_ConfigurationKeyOptions_Default">Default</a> key options, the
 <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKeyMapping.html#Bodu_Text_Configuration_ConfigurationKeyMapping_DotToColon">DotToColon</a> mapping rewrites dotted file keys to the colon
-delimiter <code>IConfiguration</code> expects — <code>logging.level.default</code> becomes <code>logging:level:default</code>. Keys are stored under
+delimiter <code>IConfiguration</code> expects - <code>logging.level.default</code> becomes <code>logging:level:default</code>. Keys are stored under
 <code>StringComparer.OrdinalIgnoreCase</code>, matching the JSON and INI providers, so <code>configuration[&quot;Logging:Level&quot;]</code> and
 <code>configuration[&quot;logging:level&quot;]</code> resolve to the same value.</p>
 <p>The projection is intentionally lossy relative to the richer document model. Comments, source locations
 (line/column/path), and duplicate-section provenance are preserved on the parsed
 <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> but discarded during the flatten. A literal colon inside a key
-segment cannot survive — once flattened, the colon is the hierarchy delimiter. Consumers who need any of that metadata
+segment cannot survive - once flattened, the colon is the hierarchy delimiter. Consumers who need any of that metadata
 should depend on <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> directly rather than going through the bridge.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — vocabulary: source vs provider, target path, parse / resolve option propagation, reload-on-change, options binding.</li>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install + minimal samples for the file overload, the stream overload, conventional probe, options binding.</li>
-<li><strong><a href="../../guides/extensions-configuration-text/index.html">Bodu.Extensions.Configuration.Text guides</a></strong> — worked patterns, including <a href="../../guides/extensions-configuration-text/configuration-sources.html">configuration sources</a>.</li>
-<li><strong><a href="../text-configuration/index.html">Bodu.Text.Configuration</a></strong> — the underlying parser, resolver, and view model.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.html">Bodu.Extensions.Configuration.Text API reference</a></strong> — full type-by-type docs.</li>
-<li><strong><a href="../topics/configuration.html">Configuration topic</a></strong> — this package and its sibling Bodu.Text.Configuration side by side.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - vocabulary: source vs provider, target path, parse / resolve option propagation, reload-on-change, options binding.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install + minimal samples for the file overload, the stream overload, conventional probe, options binding.</li>
+<li><strong><a href="../../guides/extensions-configuration-text/index.html">Bodu.Extensions.Configuration.Text guides</a></strong> - worked patterns, including <a href="../../guides/extensions-configuration-text/configuration-sources.html">configuration sources</a>.</li>
+<li><strong><a href="../text-configuration/index.html">Bodu.Text.Configuration</a></strong> - the underlying parser, resolver, and view model.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.html">Bodu.Extensions.Configuration.Text API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="../topics/configuration.html">Configuration topic</a></strong> - this package and its sibling Bodu.Text.Configuration side by side.</li>
 </ul>
 
 </article>
@@ -352,7 +352,7 @@ should depend on <a class="xref" href="../../api/Bodu.Text.Configuration.Configu
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

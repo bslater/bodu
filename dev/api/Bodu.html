@@ -102,19 +102,19 @@
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-core.svg" alt="Bodu.Core"></p>
 <h2 id="purpose">Purpose</h2>
-<p>The root <strong>Bodu</strong> namespace holds the cross-cutting primitives that the rest of <code>Bodu.Core</code> — and the wider solution — build on: a day-of-week bitmask value type, the centralized argument-validation helper, and a small pluggable random-number abstraction. These types are namespace-root on purpose: they are used everywhere and carry no sub-domain of their own.</p>
+<p>The root <strong>Bodu</strong> namespace holds the cross-cutting primitives that the rest of <code>Bodu.Core</code> - and the wider solution - build on: a day-of-week bitmask value type, the centralized argument-validation helper, and a small pluggable random-number abstraction. These types are namespace-root on purpose: they are used everywhere and carry no sub-domain of their own.</p>
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
-<li><strong><a href="../docs/core/index.html">Bodu.Core introduction</a></strong> — namespaces, headline types, scenarios.</li>
-<li><strong><a href="../guides/core/week-pattern.html"><code>WeekPattern</code> guide</a></strong> — composing, parsing, and enumerating day-of-week sets.</li>
+<li><strong><a href="../docs/core/index.html">Bodu.Core introduction</a></strong> - namespaces, headline types, scenarios.</li>
+<li><strong><a href="../guides/core/week-pattern.html"><code>WeekPattern</code> guide</a></strong> - composing, parsing, and enumerating day-of-week sets.</li>
 </ul>
 <h2 id="key-types">Key types</h2>
 <ul>
-<li><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> — an immutable bitmask value type for sets of days of the week. Built from <code>DayOfWeek</code> values (<code>new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday)</code>, <code>With</code> / <code>Without</code>) or taken from the named presets (<code>Weekdays</code>, <code>Weekend</code>, <code>AllDays</code>, <code>Empty</code>, and the regional working weeks such as <code>SundayToThursday</code>); supports bitwise composition (<code>WeekPattern.Weekdays | WeekPattern.Weekend</code>), parsing, formatting, and enumeration. See the <a href="../guides/core/week-pattern.html"><code>WeekPattern</code> guide</a>.</li>
-<li><a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> — a <code>[Flags]</code> enum naming the conventional working-day sets used by the date and calendar extensions.</li>
-<li><a class="xref" href="Bodu.IRandomGenerator.html">IRandomGenerator</a> — a minimal abstraction over a random source, so algorithms (shuffles, sampling) can be tested deterministically or swapped between PRNG implementations.</li>
-<li><a class="xref" href="Bodu.XorShiftRandom.html">XorShiftRandom</a> — a fast xorshift PRNG that derives from <code>System.Random</code>; seedable for reproducible sequences. Drop-in where <code>Random</code> is expected, faster where throughput matters and cryptographic strength is <em>not</em> required.</li>
-<li><a class="xref" href="Bodu.ThrowHelper.html">ThrowHelper</a> — the centralized argument-validation surface (<code>ThrowIfNull</code>, <code>ThrowIfLessThan</code>, <code>ThrowIfGreaterThan</code>, span/array offset checks, enum-defined checks, …). Public APIs across the solution validate their parameters through these <code>ThrowIf…</code> members rather than hand-rolled checks.</li>
+<li><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> - an immutable bitmask value type for sets of days of the week. Built from <code>DayOfWeek</code> values (<code>new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday)</code>, <code>With</code> / <code>Without</code>) or taken from the named presets (<code>Weekdays</code>, <code>Weekend</code>, <code>AllDays</code>, <code>Empty</code>, and the regional working weeks such as <code>SundayToThursday</code>); supports bitwise composition (<code>WeekPattern.Weekdays | WeekPattern.Weekend</code>), parsing, formatting, and enumeration. See the <a href="../guides/core/week-pattern.html"><code>WeekPattern</code> guide</a>.</li>
+<li><a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> - a <code>[Flags]</code> enum naming the conventional working-day sets used by the date and calendar extensions.</li>
+<li><a class="xref" href="Bodu.IRandomGenerator.html">IRandomGenerator</a> - a minimal abstraction over a random source, so algorithms (shuffles, sampling) can be tested deterministically or swapped between PRNG implementations.</li>
+<li><a class="xref" href="Bodu.XorShiftRandom.html">XorShiftRandom</a> - a fast xorshift PRNG that derives from <code>System.Random</code>; seedable for reproducible sequences. Drop-in where <code>Random</code> is expected, faster where throughput matters and cryptographic strength is <em>not</em> required.</li>
+<li><a class="xref" href="Bodu.ThrowHelper.html">ThrowHelper</a> - the centralized argument-validation surface (<code>ThrowIfNull</code>, <code>ThrowIfLessThan</code>, <code>ThrowIfGreaterThan</code>, span/array offset checks, enum-defined checks, …). Public APIs across the solution validate their parameters through these <code>ThrowIf…</code> members rather than hand-rolled checks.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using Bodu;
@@ -127,7 +127,7 @@ bool worksSaturday   = weekdays.Contains(DayOfWeek.Saturday);   // false
 
 // Deterministic randomness for reproducible tests.
 IRandomGenerator rng = new XorShiftRandom(seed: 12345);
-int roll = rng.Next(6) + 1;   // Next(maxValue) yields [0, maxValue) — here a die roll of 1–6
+int roll = rng.Next(6) + 1;   // Next(maxValue) yields [0, maxValue) - here a die roll of 1-6
 </code></pre>
 <h2 id="notes">Notes</h2>
 <ul>
@@ -260,7 +260,7 @@ Enums
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

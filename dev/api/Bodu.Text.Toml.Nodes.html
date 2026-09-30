@@ -105,11 +105,11 @@
 <p><strong>Bodu.Text.Toml.Nodes</strong> is the mutable document object model of <a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a>, shaped after <code>System.Text.Json.Nodes</code>. Parse UTF-8 TOML into an editable tree, build one from scratch, change it, and write it back through the <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a>. For read-only inspection with fewer allocations, use the sibling <a class="xref" href="Bodu.Text.Toml.Document.html">Bodu.Text.Toml.Document</a> tier; for typed binding, use the <a class="xref" href="Bodu.Text.Toml.TomlSerializer.html">TomlSerializer</a>.</p>
 <h2 id="key-types">Key types</h2>
 <ul>
-<li><a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.html">TomlNode</a> — abstract base: <code>Parse</code>, <code>AsObject</code> / <code>AsArray</code> / <code>AsValue</code>, <code>GetValue&lt;T&gt;</code>, <code>GetValueKind</code>, <code>WriteTo</code>, <code>ToUtf8Bytes</code>, <code>DeepEquals</code>, string and integer indexers, and implicit conversions from every TOML scalar CLR type.</li>
-<li><a class="xref" href="Bodu.Text.Toml.Nodes.TomlObject.html">TomlObject</a> — a table node keyed by string, with <code>Add</code> / <code>Remove</code> / <code>TryGetValue</code> and an indexer.</li>
-<li><a class="xref" href="Bodu.Text.Toml.Nodes.TomlArray.html">TomlArray</a> — an array node implementing <code>IList&lt;TomlNode?&gt;</code>.</li>
-<li><a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a> — a scalar leaf (string, integer, float, boolean, or one of the four date-time kinds), created via <code>Create</code> and read via <code>GetValue&lt;T&gt;</code> / <code>TryGetValue&lt;T&gt;</code>.</li>
-<li><a class="xref" href="Bodu.Text.Toml.Nodes.TomlNodeOptions.html">TomlNodeOptions</a> — parsing options for <code>Parse</code>.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.html">TomlNode</a> - abstract base: <code>Parse</code>, <code>AsObject</code> / <code>AsArray</code> / <code>AsValue</code>, <code>GetValue&lt;T&gt;</code>, <code>GetValueKind</code>, <code>WriteTo</code>, <code>ToUtf8Bytes</code>, <code>DeepEquals</code>, string and integer indexers, and implicit conversions from every TOML scalar CLR type.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Nodes.TomlObject.html">TomlObject</a> - a table node keyed by string, with <code>Add</code> / <code>Remove</code> / <code>TryGetValue</code> and an indexer.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Nodes.TomlArray.html">TomlArray</a> - an array node implementing <code>IList&lt;TomlNode?&gt;</code>.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a> - a scalar leaf (string, integer, float, boolean, or one of the four date-time kinds), created via <code>Create</code> and read via <code>GetValue&lt;T&gt;</code> / <code>TryGetValue&lt;T&gt;</code>.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Nodes.TomlNodeOptions.html">TomlNodeOptions</a> - parsing options for <code>Parse</code>.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using Bodu.Text.Toml.Nodes;
@@ -124,7 +124,7 @@ byte[] back = root.ToUtf8Bytes();
 <ul>
 <li><strong>Table root.</strong> The root of a parsed or written tree is always a <a class="xref" href="Bodu.Text.Toml.Nodes.TomlObject.html">TomlObject</a>; writing a scalar or array as the root throws.</li>
 <li><strong>Layout is normalized.</strong> Comments and the original header/inline layout are not preserved; the writer re-emits the tree in canonical block form.</li>
-<li><strong>See also:</strong> the <a href="../docs/serialization/toml/index.html">Bodu.Text.Toml introduction</a> and the <a href="../guides/serialization/toml/using.html">Using TOML</a> guide (Pattern 6 — Edit a document with the mutable DOM).</li>
+<li><strong>See also:</strong> the <a href="../docs/serialization/toml/index.html">Bodu.Text.Toml introduction</a> and the <a href="../guides/serialization/toml/using.html">Using TOML</a> guide (Pattern 6 - Edit a document with the mutable DOM).</li>
 </ul>
 </div>
   <div class="markdown level0 remarks"></div>
@@ -140,7 +140,7 @@ Classes
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.html">TomlNode</a></dt>
       <dd><p>Represents a single node in a mutable TOML document object model, serving as the base for the three concrete node
-kinds — <a class="xref" href="Bodu.Text.Toml.Nodes.TomlObject.html">TomlObject</a>, <a class="xref" href="Bodu.Text.Toml.Nodes.TomlArray.html">TomlArray</a>, and <a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a>.</p>
+kinds - <a class="xref" href="Bodu.Text.Toml.Nodes.TomlObject.html">TomlObject</a>, <a class="xref" href="Bodu.Text.Toml.Nodes.TomlArray.html">TomlArray</a>, and <a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a>.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -150,7 +150,7 @@ kinds — <a class="xref" href="Bodu.Text.Toml.Nodes.TomlObject.html">TomlObject
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a></dt>
-      <dd><p>Represents a scalar TOML value within a node tree — one of the eight TOML scalar kinds: a string, a 64-bit integer,
+      <dd><p>Represents a scalar TOML value within a node tree - one of the eight TOML scalar kinds: a string, a 64-bit integer,
 a floating-point number, a Boolean, or one of the four date-time kinds.</p>
 </dd>
     </dl>
@@ -180,7 +180,7 @@ Structs
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

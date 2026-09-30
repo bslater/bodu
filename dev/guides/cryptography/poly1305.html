@@ -87,13 +87,13 @@
         <article data-uid="">
 <h1 id="using-poly1305">Using Poly1305</h1>
 
-<p>Poly1305 is a one-time authenticator designed by Daniel J. Bernstein. Given a <strong>fresh 32-byte key</strong> and a message, it produces a 128-bit tag whose forgery probability — over the choice of key — is bounded by <code>(message_length / 16) · 2⁻¹⁰²</code>. That bound only holds while the key is used <strong>exactly once</strong>; reusing a Poly1305 key across two messages is a complete break.</p>
-<p>In practice Poly1305 is almost always used as the MAC half of an AEAD construction — most famously <strong>ChaCha20-Poly1305</strong> (RFC 8439), where the per-message Poly1305 key is derived by encrypting a block of zeros with ChaCha20 under a nonce.</p>
-<p>The type is <a class="xref" href="../../api/Bodu.Security.Cryptography.Poly1305.html">Poly1305</a>. It sits on Bodu's <a class="xref" href="../../api/Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html">KeyedBlockHashAlgorithm</a> — a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> that adds a <code>Key</code> property — rather than the BCL <code>KeyedHashAlgorithm</code>.</p>
-<p><img src="../../images/diagrams/poly1305-accumulation.svg" alt="Poly1305 polynomial accumulation — per-block add-multiply-reduce recurrence and final tag"></p>
+<p>Poly1305 is a one-time authenticator designed by Daniel J. Bernstein. Given a <strong>fresh 32-byte key</strong> and a message, it produces a 128-bit tag whose forgery probability - over the choice of key - is bounded by <code>(message_length / 16) · 2⁻¹⁰²</code>. That bound only holds while the key is used <strong>exactly once</strong>; reusing a Poly1305 key across two messages is a complete break.</p>
+<p>In practice Poly1305 is almost always used as the MAC half of an AEAD construction - most famously <strong>ChaCha20-Poly1305</strong> (RFC 8439), where the per-message Poly1305 key is derived by encrypting a block of zeros with ChaCha20 under a nonce.</p>
+<p>The type is <a class="xref" href="../../api/Bodu.Security.Cryptography.Poly1305.html">Poly1305</a>. It sits on Bodu's <a class="xref" href="../../api/Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html">KeyedBlockHashAlgorithm</a> - a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> that adds a <code>Key</code> property - rather than the BCL <code>KeyedHashAlgorithm</code>.</p>
+<p><img src="../../images/diagrams/poly1305-accumulation.svg" alt="Poly1305 polynomial accumulation - per-block add-multiply-reduce recurrence and final tag"></p>
 <div class="IMPORTANT">
 <h5>Important</h5>
-<p>Poly1305 is a <strong>one-shot authenticator</strong>. <code>CanReuseTransform</code> is <code>false</code>, which is how the type signals at the API level that a key must not be used twice. Do not store a long-lived Poly1305 key — derive a fresh one per message.</p>
+<p>Poly1305 is a <strong>one-shot authenticator</strong>. <code>CanReuseTransform</code> is <code>false</code>, which is how the type signals at the API level that a key must not be used twice. Do not store a long-lived Poly1305 key - derive a fresh one per message.</p>
 </div>
 <h2 id="fixed-sizes-at-a-glance">Fixed sizes at a glance</h2>
 <table>
@@ -107,7 +107,7 @@
 <tbody>
 <tr>
 <td>Key</td>
-<td>256 bits (32 bytes — <code>Poly1305.KeySize</code>)</td>
+<td>256 bits (32 bytes - <code>Poly1305.KeySize</code>)</td>
 <td>Must be fresh per message. Low 16 bytes are clamped per RFC 8439.</td>
 </tr>
 <tr>
@@ -122,8 +122,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="pattern-1--one-shot-mac">Pattern 1 — one-shot MAC</h2>
-<p>The <code>Key</code> is <strong>mandatory</strong> and must be set before hashing — the constructor deliberately does <em>not</em> generate one. Computing a hash with no key assigned throws <code>CryptographicException</code> from <code>Initialize</code>, precisely so the type cannot tempt you into reusing an unsolicited random key across messages. Supply a key derived fresh per message (typically from the stream cipher you are pairing with):</p>
+<h2 id="pattern-1---one-shot-mac">Pattern 1 - one-shot MAC</h2>
+<p>The <code>Key</code> is <strong>mandatory</strong> and must be set before hashing - the constructor deliberately does <em>not</em> generate one. Computing a hash with no key assigned throws <code>CryptographicException</code> from <code>Initialize</code>, precisely so the type cannot tempt you into reusing an unsolicited random key across messages. Supply a key derived fresh per message (typically from the stream cipher you are pairing with):</p>
 <pre><code class="lang-csharp">using System.Text;
 using Bodu.Security.Cryptography;
 
@@ -133,7 +133,7 @@ using var poly = new Poly1305 { Key = perMessageKey };   // 32 bytes, fresh per 
 byte[] tag = poly.ComputeHash(message);                  // 16 bytes
 </code></pre>
 <p><code>ComputeHash</code> produces one tag per key. <code>CanReuseTransform</code> is <code>false</code>, so the type signals at the API level that the key must not be reused; assigning a <em>new</em> <code>Key</code> clears the one-time guard for a new message under the new key. If you need to authenticate several messages, derive a fresh key for each (or use Poly1305 only as the MAC inside an AEAD layer).</p>
-<h2 id="pattern-2--the-chacha20-poly1305-construction">Pattern 2 — the ChaCha20-Poly1305 construction</h2>
+<h2 id="pattern-2---the-chacha20-poly1305-construction">Pattern 2 - the ChaCha20-Poly1305 construction</h2>
 <p>RFC 8439 defines the now-ubiquitous AEAD pairing: derive the per-message Poly1305 key by encrypting a 32-byte block of zeros with ChaCha20 under the same nonce, then authenticate the AEAD layout (AAD ‖ ciphertext ‖ lengths) with Poly1305.</p>
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -155,9 +155,9 @@ byte[] input = BuildRfc8439Input(aad, ciphertext);
 using var poly = new Poly1305 { Key = polyKey };
 byte[] tag = poly.ComputeHash(input);                    // 16-byte authentication tag
 </code></pre>
-<p>The key point: <code>polyKey</code> is fresh per message — it's a function of <code>(chachaKey, nonce)</code>. If the nonce is unique under a given long-lived key, the Poly1305 key is unique too, and the one-time property holds.</p>
-<p>(<code>ChaCha20Keystream</code>, <code>ChaCha20Encrypt</code>, and <code>BuildRfc8439Input</code> are placeholders here — use whichever ChaCha20 implementation you already depend on; the BCL's <code>System.Security.Cryptography.ChaCha20Poly1305</code> gives you the whole AEAD in one step if you don't need to decompose the construction.)</p>
-<h2 id="pattern-3--verifying-in-constant-time">Pattern 3 — verifying in constant time</h2>
+<p>The key point: <code>polyKey</code> is fresh per message - it's a function of <code>(chachaKey, nonce)</code>. If the nonce is unique under a given long-lived key, the Poly1305 key is unique too, and the one-time property holds.</p>
+<p>(<code>ChaCha20Keystream</code>, <code>ChaCha20Encrypt</code>, and <code>BuildRfc8439Input</code> are placeholders here - use whichever ChaCha20 implementation you already depend on; the BCL's <code>System.Security.Cryptography.ChaCha20Poly1305</code> gives you the whole AEAD in one step if you don't need to decompose the construction.)</p>
+<h2 id="pattern-3---verifying-in-constant-time">Pattern 3 - verifying in constant time</h2>
 <p>Compare a Poly1305 tag with <code>CryptographicOperations.FixedTimeEquals</code> or the <code>VerifyHash</code> helper from <code>Bodu.Security.Cryptography.Extensions</code>:</p>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
@@ -165,7 +165,7 @@ using Bodu.Security.Cryptography.Extensions;
 using var poly = new Poly1305 { Key = perMessageKey };
 bool authentic = poly.VerifyHash(aeadInput, receivedTag);
 </code></pre>
-<p>A <code>SequenceEqual</code> comparison leaks timing information and is unsafe for MAC verification — an attacker who can measure verification time can recover the tag byte-by-byte.</p>
+<p>A <code>SequenceEqual</code> comparison leaks timing information and is unsafe for MAC verification - an attacker who can measure verification time can recover the tag byte-by-byte.</p>
 <h2 id="what-poly1305-is-not">What Poly1305 is not</h2>
 <ul>
 <li><strong>Not a general-purpose MAC.</strong> A single key authenticates a single message. For a long-lived MAC key, use HMAC (<code>System.Security.Cryptography.HMACSHA256</code>) or KMAC.</li>
@@ -174,11 +174,11 @@ bool authentic = poly.VerifyHash(aeadInput, receivedTag);
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="hashing.html">Hashing overview</a> — where Poly1305 sits alongside SipHash, Tiger, and the non-cryptographic families.</li>
-<li><a href="siphash.html">Using SipHash</a> — the keyed short-input hash; reusable key, not a one-shot.</li>
-<li><a href="aead-modes.html">AEAD modes guide</a> — AES-based authenticated encryption in this package.</li>
+<li><a href="hashing.html">Hashing overview</a> - where Poly1305 sits alongside SipHash, Tiger, and the non-cryptographic families.</li>
+<li><a href="siphash.html">Using SipHash</a> - the keyed short-input hash; reusable key, not a one-shot.</li>
+<li><a href="aead-modes.html">AEAD modes guide</a> - AES-based authenticated encryption in this package.</li>
 <li><a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography namespace page</a>.</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -198,7 +198,7 @@ bool authentic = poly.VerifyHash(aeadInput, receivedTag);
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

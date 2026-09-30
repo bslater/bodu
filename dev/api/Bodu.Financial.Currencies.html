@@ -102,23 +102,23 @@
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-financial.svg" alt="Bodu.Financial"></p>
 <h2 id="purpose">Purpose</h2>
-<p><strong>Bodu.Financial.Currencies</strong> is the currency-metadata namespace of the <a href="../apidoc/Bodu.Financial.md"><code>Bodu.Financial</code></a> package. It hosts the runtime metadata and lookup surface — the <code>ICurrency</code> contract, the <code>CurrencyInfo</code> record, the <code>CurrencyRegistry</code> catalogue, and the <code>ICurrencyLookup</code> resolution seam — alongside the shipped catalogue of 184 ISO 4217 currency tag types used as the <code>TCurrency</code> parameter on <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>. Each currency is a sealed class with only static members — there is no instance to create, and the tag exists solely to carry the static metadata (<code>IsoCode</code>, <code>MinorUnits</code>, <code>CashRoundingIncrement</code>, and historic flags where applicable) that <code>Money&lt;TCurrency&gt;</code> needs.</p>
+<p><strong>Bodu.Financial.Currencies</strong> is the currency-metadata namespace of the <a class="xref" href="Bodu.Financial.html"><code>Bodu.Financial</code></a> package. It hosts the runtime metadata and lookup surface - the <code>ICurrency</code> contract, the <code>CurrencyInfo</code> record, the <code>CurrencyRegistry</code> catalogue, and the <code>ICurrencyLookup</code> resolution seam - alongside the shipped catalogue of 184 ISO 4217 currency tag types used as the <code>TCurrency</code> parameter on <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>. Each currency is a sealed class with only static members - there is no instance to create, and the tag exists solely to carry the static metadata (<code>IsoCode</code>, <code>MinorUnits</code>, <code>CashRoundingIncrement</code>, and historic flags where applicable) that <code>Money&lt;TCurrency&gt;</code> needs.</p>
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
-<li><strong><a href="../docs/financial/index.html">Bodu.Financial introduction</a></strong> — how the tag types fit into the broader monetary surface.</li>
-<li><strong><a href="../guides/financial/money.html">Working with <code>Money&lt;TCurrency&gt;</code></a></strong> — the <code>ICurrency</code> tag pattern in context, including units outside the shipped catalogue.</li>
+<li><strong><a href="../docs/financial/index.html">Bodu.Financial introduction</a></strong> - how the tag types fit into the broader monetary surface.</li>
+<li><strong><a href="../guides/financial/money.html">Working with <code>Money&lt;TCurrency&gt;</code></a></strong> - the <code>ICurrency</code> tag pattern in context, including units outside the shipped catalogue.</li>
 </ul>
 <h2 id="key-types">Key types</h2>
 <p><strong>Runtime metadata and lookup</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Financial.Currencies.ICurrency.html">ICurrency</a> — static-abstract interface with required <code>IsoCode</code> and <code>MinorUnits</code> plus optional <code>CashRoundingIncrement</code>, <code>IsHistoric</code>, <code>DemonetizedOn</code>, <code>SuccessorIsoCode</code>.</li>
-<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a> — runtime metadata record carrying the same fields.</li>
-<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.html">CurrencyRegistry</a> — static, read-only catalogue over the shipped ISO 4217 currencies (active and historic).</li>
-<li><a class="xref" href="Bodu.Financial.Currencies.ICurrencyLookup.html">ICurrencyLookup</a>, <a class="xref" href="Bodu.Financial.Currencies.CurrencyLookupService.html">CurrencyLookupService</a> — the lookup contract and the implementation that resolves ISO codes to metadata (the service registered by <code>AddFinancialService</code>).</li>
-<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyResolution.html">CurrencyResolution</a> — the seam for substituting or restricting the metadata used for the shipped currencies (a test double, an alternate data source).</li>
-<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> — the closed enum that identifies a currency on <a class="xref" href="Bodu.Financial.Money.html">Money</a> and the exchange types; one member per shipped ISO 4217 code, valued by its ISO numeric code.</li>
-<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyCodeExtensions.html">CurrencyCodeExtensions</a> — catalogue helpers over <code>CurrencyCode</code>: <code>GetStatus</code>, <code>IsActive</code>, <code>IsHistoric</code>, resolving each member's lifecycle status from its declarative attribute (cached at type initialization).</li>
-<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyStatusAttribute.html">CurrencyStatusAttribute</a> — the <code>[CurrencyStatus(...)]</code> annotation on each <code>CurrencyCode</code> member that is the declarative source of truth for a currency's lifecycle status.</li>
+<li><a class="xref" href="Bodu.Financial.Currencies.ICurrency.html">ICurrency</a> - static-abstract interface with required <code>IsoCode</code> and <code>MinorUnits</code> plus optional <code>CashRoundingIncrement</code>, <code>IsHistoric</code>, <code>DemonetizedOn</code>, <code>SuccessorIsoCode</code>.</li>
+<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a> - runtime metadata record carrying the same fields.</li>
+<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.html">CurrencyRegistry</a> - static, read-only catalogue over the shipped ISO 4217 currencies (active and historic).</li>
+<li><a class="xref" href="Bodu.Financial.Currencies.ICurrencyLookup.html">ICurrencyLookup</a>, <a class="xref" href="Bodu.Financial.Currencies.CurrencyLookupService.html">CurrencyLookupService</a> - the lookup contract and the implementation that resolves ISO codes to metadata (the service registered by <code>AddFinancialService</code>).</li>
+<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyResolution.html">CurrencyResolution</a> - the seam for substituting or restricting the metadata used for the shipped currencies (a test double, an alternate data source).</li>
+<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> - the closed enum that identifies a currency on <a class="xref" href="Bodu.Financial.Money.html">Money</a> and the exchange types; one member per shipped ISO 4217 code, valued by its ISO numeric code.</li>
+<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyCodeExtensions.html">CurrencyCodeExtensions</a> - catalogue helpers over <code>CurrencyCode</code>: <code>GetStatus</code>, <code>IsActive</code>, <code>IsHistoric</code>, resolving each member's lifecycle status from its declarative attribute (cached at type initialization).</li>
+<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyStatusAttribute.html">CurrencyStatusAttribute</a> - the <code>[CurrencyStatus(...)]</code> annotation on each <code>CurrencyCode</code> member that is the declarative source of truth for a currency's lifecycle status.</li>
 </ul>
 <h2 id="catalogue-shape">Catalogue shape</h2>
 <p>Every shipped currency type follows the same shape:</p>
@@ -151,17 +151,17 @@
 </code></pre>
 <h2 id="catalogue-contents">Catalogue contents</h2>
 <p>The shipped catalogue covers every active ISO 4217 currency plus a curated set of historic / demonetised currencies for legacy ledger processing.</p>
-<p><strong>Active currencies (155)</strong> — including all G20 currencies and every minor-unit category:</p>
+<p><strong>Active currencies (155)</strong> - including all G20 currencies and every minor-unit category:</p>
 <ul>
-<li><code>MinorUnits = 0</code> — <code>JPY</code>, <code>KRW</code>, <code>CLP</code>, <code>ISK</code>, <code>VND</code>, <code>XAF</code>, <code>XOF</code>, <code>XPF</code>, <code>BIF</code>, <code>DJF</code>, <code>GNF</code>, <code>KMF</code>, <code>MGA</code>, <code>PYG</code>, <code>RWF</code>, <code>UGX</code>, <code>UYI</code>, <code>VUV</code>.</li>
-<li><code>MinorUnits = 2</code> — <code>USD</code>, <code>EUR</code>, <code>GBP</code>, <code>AUD</code>, <code>CAD</code>, <code>CHF</code>, <code>CNY</code>, <code>HKD</code>, <code>INR</code>, <code>MXN</code>, <code>NZD</code>, <code>SEK</code>, <code>SGD</code>, …</li>
-<li><code>MinorUnits = 3</code> — <code>BHD</code>, <code>IQD</code>, <code>JOD</code>, <code>KWD</code>, <code>LYD</code>, <code>OMR</code>, <code>TND</code>.</li>
-<li><code>MinorUnits = 4</code> — <code>CLF</code>, <code>UYW</code>.</li>
+<li><code>MinorUnits = 0</code> - <code>JPY</code>, <code>KRW</code>, <code>CLP</code>, <code>ISK</code>, <code>VND</code>, <code>XAF</code>, <code>XOF</code>, <code>XPF</code>, <code>BIF</code>, <code>DJF</code>, <code>GNF</code>, <code>KMF</code>, <code>MGA</code>, <code>PYG</code>, <code>RWF</code>, <code>UGX</code>, <code>UYI</code>, <code>VUV</code>.</li>
+<li><code>MinorUnits = 2</code> - <code>USD</code>, <code>EUR</code>, <code>GBP</code>, <code>AUD</code>, <code>CAD</code>, <code>CHF</code>, <code>CNY</code>, <code>HKD</code>, <code>INR</code>, <code>MXN</code>, <code>NZD</code>, <code>SEK</code>, <code>SGD</code>, …</li>
+<li><code>MinorUnits = 3</code> - <code>BHD</code>, <code>IQD</code>, <code>JOD</code>, <code>KWD</code>, <code>LYD</code>, <code>OMR</code>, <code>TND</code>.</li>
+<li><code>MinorUnits = 4</code> - <code>CLF</code>, <code>UYW</code>.</li>
 </ul>
-<p><strong>Historic currencies (~30)</strong> — the twenty Euro-zone predecessors (<code>ATS</code>, <code>BEF</code>, <code>CYP</code>, <code>DEM</code>, <code>EEK</code>, <code>ESP</code>, <code>FIM</code>, <code>FRF</code>, <code>GRD</code>, <code>HRK</code>, <code>IEP</code>, <code>ITL</code>, <code>LTL</code>, <code>LUF</code>, <code>LVL</code>, <code>MTL</code>, <code>NLG</code>, <code>PTE</code>, <code>SIT</code>, <code>SKK</code>) plus other notable replacements (<code>AZM</code>, <code>GHC</code>, <code>MZM</code>, <code>ROL</code>, <code>SRG</code>, <code>TMM</code>, <code>VEB</code>, <code>VEF</code>, <code>ZWL</code>).</p>
-<p><strong>Cash rounding</strong> — <code>CHF</code>, <code>AUD</code>, <code>CAD</code>, <code>NZD</code>, <code>SEK</code>, <code>NOK</code>, <code>ISK</code> and a handful of others declare a non-zero <code>CashRoundingIncrement</code> for physical cash totals (5-rappen / 5-cent / 10-cent / whole-krone). See <a href="../guides/financial/money.html#cash-rounding">Cash rounding</a>.</p>
+<p><strong>Historic currencies (~30)</strong> - the twenty Euro-zone predecessors (<code>ATS</code>, <code>BEF</code>, <code>CYP</code>, <code>DEM</code>, <code>EEK</code>, <code>ESP</code>, <code>FIM</code>, <code>FRF</code>, <code>GRD</code>, <code>HRK</code>, <code>IEP</code>, <code>ITL</code>, <code>LTL</code>, <code>LUF</code>, <code>LVL</code>, <code>MTL</code>, <code>NLG</code>, <code>PTE</code>, <code>SIT</code>, <code>SKK</code>) plus other notable replacements (<code>AZM</code>, <code>GHC</code>, <code>MZM</code>, <code>ROL</code>, <code>SRG</code>, <code>TMM</code>, <code>VEB</code>, <code>VEF</code>, <code>ZWL</code>).</p>
+<p><strong>Cash rounding</strong> - <code>CHF</code>, <code>AUD</code>, <code>CAD</code>, <code>NZD</code>, <code>SEK</code>, <code>NOK</code>, <code>ISK</code> and a handful of others declare a non-zero <code>CashRoundingIncrement</code> for physical cash totals (5-rappen / 5-cent / 10-cent / whole-krone). See <a href="../guides/financial/money.html#cash-rounding">Cash rounding</a>.</p>
 <h2 id="a-unit-outside-the-shipped-catalogue">A unit outside the shipped catalogue</h2>
-<p>The shipped <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> catalogue is closed, so the runtime <a class="xref" href="Bodu.Financial.Money.html">Money</a> cannot hold a code it does not define. For a <em>generic</em> amount in a unit outside ISO 4217 — a commodity, a loyalty-point unit — implement <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html">ICurrency</a> directly and use <code>Money&lt;TCurrency&gt;</code>; the tag carries its own precision and never consults the runtime catalogue (its <code>IsoCode</code> must still be three uppercase ASCII letters):</p>
+<p>The shipped <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> catalogue is closed, so the runtime <a class="xref" href="Bodu.Financial.Money.html">Money</a> cannot hold a code it does not define. For a <em>generic</em> amount in a unit outside ISO 4217 - a commodity, a loyalty-point unit - implement <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html">ICurrency</a> directly and use <code>Money&lt;TCurrency&gt;</code>; the tag carries its own precision and never consults the runtime catalogue (its <code>IsoCode</code> must still be three uppercase ASCII letters):</p>
 <pre><code class="lang-csharp">public sealed class XPT : ICurrency      // troy ounces of platinum, say
 {
     public static string IsoCode    =&gt; &quot;XPT&quot;;
@@ -171,13 +171,13 @@
 
 Money&lt;XPT&gt; holding = new Money&lt;XPT&gt;(12.3456m);   // generic arithmetic only
 </code></pre>
-<p>Because <code>XPT</code> is not a <code>CurrencyCode</code> member, the value cannot bridge to the runtime-tagged <code>Money</code>. To substitute or restrict the metadata used for the <em>shipped</em> currencies — for a test, or an alternate data source — install a custom <code>ICurrencyLookup</code> through <a class="xref" href="Bodu.Financial.Currencies.CurrencyResolution.html">CurrencyResolution</a>.</p>
+<p>Because <code>XPT</code> is not a <code>CurrencyCode</code> member, the value cannot bridge to the runtime-tagged <code>Money</code>. To substitute or restrict the metadata used for the <em>shipped</em> currencies - for a test, or an alternate data source - install a custom <code>ICurrencyLookup</code> through <a class="xref" href="Bodu.Financial.Currencies.CurrencyResolution.html">CurrencyResolution</a>.</p>
 <h2 id="notes">Notes</h2>
 <ul>
 <li><strong>Sealed + private constructor.</strong> Every tag type seals itself and hides its constructor, so the tag can only ever exist statically. <code>Money&lt;USD&gt;</code> is the only way to materialise a value tagged as USD.</li>
 <li><strong>Static-abstract metadata.</strong> All members are static via the <code>ICurrency</code> static-abstract pattern; consumers read them as <code>TCurrency.IsoCode</code> in generic code.</li>
 <li><strong>Optional members default sensibly.</strong> <code>CashRoundingIncrement</code>, <code>IsHistoric</code>, <code>DemonetizedOn</code>, <code>SuccessorIsoCode</code> have sensible defaults via <code>static virtual</code> so most currencies declare only <code>IsoCode</code> and <code>MinorUnits</code>.</li>
-<li><strong>ISO numeric codes.</strong> <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> is an enum whose members are the three-letter ISO 4217 alphabetic codes and whose values are the corresponding ISO 4217 numeric codes; both active and historic codes are members — each annotated with a <code>[CurrencyStatus]</code> attribute — alongside a <code>None</code> sentinel valued <code>0</code>.</li>
+<li><strong>ISO numeric codes.</strong> <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> is an enum whose members are the three-letter ISO 4217 alphabetic codes and whose values are the corresponding ISO 4217 numeric codes; both active and historic codes are members - each annotated with a <code>[CurrencyStatus]</code> attribute - alongside a <code>None</code> sentinel valued <code>0</code>.</li>
 <li><strong>See also:</strong> the <a class="xref" href="Bodu.Financial.html"><code>Bodu.Financial</code> reference</a>, the <a href="../guides/financial/money.html"><code>Money&lt;TCurrency&gt;</code> guide</a>, <a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.html"><code>CurrencyRegistry</code></a>.</li>
 </ul>
 </div>
@@ -1188,7 +1188,7 @@ Enums
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -88,7 +88,7 @@
 <h1 id="using-threefish-512">Using Threefish-512</h1>
 
 <p><a class="xref" href="../../api/Bodu.Security.Cryptography.Threefish512.html">Threefish512</a> is the 512-bit variant of the Threefish tweakable block cipher family. It operates on <strong>512-bit (64-byte) blocks</strong> with a <strong>512-bit (64-byte) key</strong> and a <strong>128-bit (16-byte) tweak</strong>. Of the three Threefish variants, this is the one used as the core of the standard Skein hash function.</p>
-<p><img src="../../images/diagrams/threefish-round.svg" alt="Threefish round function — MIX, word permutation, and subkey injection"></p>
+<p><img src="../../images/diagrams/threefish-round.svg" alt="Threefish round function - MIX, word permutation, and subkey injection"></p>
 <div class="NOTE">
 <h5>Note</h5>
 <p>Encrypt/decrypt ships an AVX-512 fast path that engages automatically on supporting hardware. See <a href="hardware-acceleration.html">Hardware acceleration &amp; SIMD opt-out</a> for when it runs and how to force the scalar path.</p>
@@ -125,7 +125,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="encrypt-and-decrypt--cbc--pkcs7">Encrypt and decrypt — CBC + PKCS7</h2>
+<h2 id="encrypt-and-decrypt---cbc--pkcs7">Encrypt and decrypt - CBC + PKCS7</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.Diagnostics;
 using System.Linq;
@@ -159,7 +159,7 @@ using (var alg = new Threefish512 { BlockMode = CipherModeKind.CBC, Padding = Pa
 
 Debug.Assert(plaintext.SequenceEqual(recovered));
 </code></pre>
-<h2 id="encrypt-and-decrypt--ctr-stream-mode-parallelisable">Encrypt and decrypt — CTR (stream mode, parallelisable)</h2>
+<h2 id="encrypt-and-decrypt---ctr-stream-mode-parallelisable">Encrypt and decrypt - CTR (stream mode, parallelisable)</h2>
 <pre><code class="lang-csharp">using var alg = new Threefish512
 {
     BlockMode = CipherModeKind.CTR,
@@ -208,23 +208,23 @@ byte[] EncryptRecord(byte[] key, byte[] iv, long recordId, byte[] plaintext)
     return alg.Encrypt(plaintext);
 }
 </code></pre>
-<p>The 8-byte little-endian record ID fills the low half of the 16-byte tweak; the high half stays zero, leaving room to encode a second discriminator (a table ID, a tenant ID) if you need it. Because the tweak is mixed into every round's subkey, two records with different IDs are cryptographically unrelated even under the same key and IV — see <a href="threefish-256.html#what-the-tweak-is--and-why-it-is-not-an-iv">Threefish-256</a> for the mechanism.</p>
+<p>The 8-byte little-endian record ID fills the low half of the 16-byte tweak; the high half stays zero, leaving room to encode a second discriminator (a table ID, a tenant ID) if you need it. Because the tweak is mixed into every round's subkey, two records with different IDs are cryptographically unrelated even under the same key and IV - see <a href="threefish-256.html#what-the-tweak-is---and-why-it-is-not-an-iv">Threefish-256</a> for the mechanism.</p>
 <h2 id="why-512-is-the-general-purpose-pick">Why 512 is the general-purpose pick</h2>
 <p>Of the three Threefish variants, Threefish-512 is the one used as the core of the standard Skein-512 hash (<a class="xref" href="../../api/Bodu.Security.Cryptography.Skein512.html">Skein512</a>) and is the recommended general-purpose choice:</p>
 <ul>
 <li>Its 64-byte block is wide enough to keep CBC's birthday bound irrelevant and large enough to amortise per-block overhead, yet its key schedule is far cheaper than Threefish-1024's.</li>
 <li>Throughput is roughly double Threefish-1024 on the same CPU for the same data.</li>
-<li>Padding waste rounds up to 64 bytes rather than 128 — material when records are a few hundred bytes.</li>
+<li>Padding waste rounds up to 64 bytes rather than 128 - material when records are a few hundred bytes.</li>
 </ul>
 <p>Choose <a href="threefish-256.html">Threefish-256</a> when ciphertext size on short messages matters most, and <a href="threefish-1024.html">Threefish-1024</a> only when you specifically want the widest block.</p>
-<p>The raw primitive is <code>Threefish512Cipher</code>, an <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> taking a 64-byte key and 16-byte tweak — use it for hand-composed pipelines (<a href="composing-primitives.html">Composing primitives</a>).</p>
+<p>The raw primitive is <code>Threefish512Cipher</code>, an <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> taking a 64-byte key and 16-byte tweak - use it for hand-composed pipelines (<a href="composing-primitives.html">Composing primitives</a>).</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="encryption-basics.html">Encryption basics</a> — the Key/IV/Tweak lifecycle.</li>
-<li><a href="cipher-modes.html">Cipher block modes</a> — CFB / OFB / ECB also work with <code>Threefish512</code>.</li>
-<li><a href="padding.html">Padding</a> — which padding scheme pairs with which mode.</li>
+<li><a href="encryption-basics.html">Encryption basics</a> - the Key/IV/Tweak lifecycle.</li>
+<li><a href="cipher-modes.html">Cipher block modes</a> - CFB / OFB / ECB also work with <code>Threefish512</code>.</li>
+<li><a href="padding.html">Padding</a> - which padding scheme pairs with which mode.</li>
 <li>Other variants: <a href="threefish-256.html">Threefish-256</a>, <a href="threefish-1024.html">Threefish-1024</a>.</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -244,7 +244,7 @@ byte[] EncryptRecord(byte[] key, byte[] iv, long recordId, byte[] plaintext)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

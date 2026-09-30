@@ -8,7 +8,7 @@
       <meta name="title" content="Bech32 Class
  | BODU ">
       
-      <meta name="description" content="Provides Bech32 (BIP-173) and Bech32m (BIP-350) encoding and decoding — a checksummed base-32 format consisting of a human-readable part (HRP), the 1 separator, a data part of 5-bit groups, and a six-symbol error-detecting checksum.">
+      <meta name="description" content="Provides Bech32 (BIP-173) and Bech32m (BIP-350) encoding and decoding - a checksummed base-32 format consisting of a human-readable part (HRP), the 1 separator, a data part of 5-bit groups, and a six-symbol error-detecting checksum.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Encoding_Bech32" data-uid="Bodu.Text.Encoding.Bech32" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Bech32 Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,10 +104,10 @@ Bech32 Class
   <dl><dt>Assembly</dt><dd>Bodu.Text.Encoding.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Encoding">Bodu.Text.Encoding</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs">Bech32.Decode.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs">Bech32.Decode.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Provides Bech32 (BIP-173) and Bech32m (BIP-350) encoding and decoding — a checksummed base-32 format consisting of a
+  <div class="markdown summary"><p>Provides Bech32 (BIP-173) and Bech32m (BIP-350) encoding and decoding - a checksummed base-32 format consisting of a
 human-readable part (HRP), the <code>1</code> separator, a data part of 5-bit groups, and a six-symbol error-detecting
 checksum.</p>
 </div>
@@ -177,8 +177,8 @@ Bech32.Decode(encoded, out string hrp, out byte[] groups, out Bech32Encoding sch
 <p>
 Bech32 is not a plain binary-to-text encoding: every encoded string carries an HRP prefix and a checksum, so the
 type is modelled on <a class="xref" href="Bodu.Text.Encoding.Base58Check.html">Base58Check</a> rather than the <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a> family. The core
-surface operates on 5-bit data groups (each value <code>0</code>–<code>31</code>); use <a class="xref" href="Bodu.Text.Encoding.Bech32.html#Bodu_Text_Encoding_Bech32_ConvertBits_System_ReadOnlySpan_System_Byte__System_Int32_System_Int32_System_Boolean_">ConvertBits(ReadOnlySpan&lt;byte&gt;, int, int, bool)</a> — or the
-<code>FromBytes</code> / <code>ToBytes</code> convenience members — to translate between 8-bit bytes and 5-bit groups.
+surface operates on 5-bit data groups (each value <code>0</code>-<code>31</code>); use <a class="xref" href="Bodu.Text.Encoding.Bech32.html#Bodu_Text_Encoding_Bech32_ConvertBits_System_ReadOnlySpan_System_Byte__System_Int32_System_Int32_System_Boolean_">ConvertBits(ReadOnlySpan&lt;byte&gt;, int, int, bool)</a> - or the
+<code>FromBytes</code> / <code>ToBytes</code> convenience members - to translate between 8-bit bytes and 5-bit groups.
 </p>
 <p>
 Encoded output is always lower case (the canonical form). Decoding accepts an all-lower-case or all-upper-case
@@ -197,12 +197,12 @@ scheme validated the checksum through the <a class="xref" href="Bodu.Text.Encodi
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Bech32_ConvertBits_System_ReadOnlySpan_System_Byte__System_Int32_System_Int32_System_Boolean_" data-uid="Bodu.Text.Encoding.Bech32.ConvertBits(System.ReadOnlySpan{System.Byte},System.Int32,System.Int32,System.Boolean)">
   ConvertBits(ReadOnlySpan&lt;byte&gt;, int, int, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Bech32.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Bech32.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
   <div class="markdown level1 summary"><p>Converts a sequence of integers between bit widths, as defined by the BIP-173 reference <code>convertbits</code>
-routine — the operation that packs 8-bit bytes into 5-bit Bech32 groups and back.</p>
+routine - the operation that packs 8-bit bytes into 5-bit Bech32 groups and back.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -258,7 +258,7 @@ or when <code class="paramref">pad</code> is <a href="https://learn.microsoft.co
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Bech32_Decode_System_ReadOnlySpan_System_Char__System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__" data-uid="Bodu.Text.Encoding.Bech32.Decode(System.ReadOnlySpan{System.Char},System.String@,System.Byte[]@,Bodu.Text.Encoding.Bech32Encoding@)">
   Decode(ReadOnlySpan&lt;char&gt;, out string, out byte[], out Bech32Encoding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -311,7 +311,7 @@ checksum.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Bech32_Decode_System_String_System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__" data-uid="Bodu.Text.Encoding.Bech32.Decode(System.String,System.String@,System.Byte[]@,Bodu.Text.Encoding.Bech32Encoding@)">
   Decode(string, out string, out byte[], out Bech32Encoding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -368,11 +368,11 @@ verification.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Bech32_DecodeToBytes_System_String_System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__" data-uid="Bodu.Text.Encoding.Bech32.DecodeToBytes(System.String,System.String@,System.Byte[]@,Bodu.Text.Encoding.Bech32Encoding@)">
   DecodeToBytes(string, out string, out byte[], out Bech32Encoding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Decodes a Bech32 or Bech32m string and repacks its 5-bit data groups into 8-bit bytes — the inverse of
+  <div class="markdown level1 summary"><p>Decodes a Bech32 or Bech32m string and repacks its 5-bit data groups into 8-bit bytes - the inverse of
 <a class="xref" href="Bodu.Text.Encoding.Bech32.html#Bodu_Text_Encoding_Bech32_EncodeFromBytes_System_String_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Bech32Encoding_">EncodeFromBytes(string, ReadOnlySpan&lt;byte&gt;, Bech32Encoding)</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -425,7 +425,7 @@ into bytes.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Bech32_Encode_System_String_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Bech32Encoding_" data-uid="Bodu.Text.Encoding.Bech32.Encode(System.String,System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Bech32Encoding)">
   Encode(string, ReadOnlySpan&lt;byte&gt;, Bech32Encoding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Encode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -492,7 +492,7 @@ when any element of <code class="paramref">data</code> exceeds 31.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Bech32_EncodeFromBytes_System_String_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Bech32Encoding_" data-uid="Bodu.Text.Encoding.Bech32.EncodeFromBytes(System.String,System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Bech32Encoding)">
   EncodeFromBytes(string, ReadOnlySpan&lt;byte&gt;, Bech32Encoding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Encode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -554,7 +554,7 @@ groups (with zero padding) and then encoding.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Bech32_GetEncodedLength_System_Int32_System_Int32_" data-uid="Bodu.Text.Encoding.Bech32.GetEncodedLength(System.Int32,System.Int32)">
   GetEncodedLength(int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Bech32.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Bech32.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -607,7 +607,7 @@ checksum symbols.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Bech32_IsValid_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Encoding.Bech32.IsValid(System.ReadOnlySpan{System.Char})">
   IsValid(ReadOnlySpan&lt;char&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Bech32.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Bech32.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -652,7 +652,7 @@ checksum.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Bech32_TryDecode_System_ReadOnlySpan_System_Char__System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__" data-uid="Bodu.Text.Encoding.Bech32.TryDecode(System.ReadOnlySpan{System.Char},System.String@,System.Byte[]@,Bodu.Text.Encoding.Bech32Encoding@)">
   TryDecode(ReadOnlySpan&lt;char&gt;, out string?, out byte[]?, out Bech32Encoding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -704,7 +704,7 @@ checksum.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Bech32_TryDecodeToBytes_System_ReadOnlySpan_System_Char__System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__" data-uid="Bodu.Text.Encoding.Bech32.TryDecodeToBytes(System.ReadOnlySpan{System.Char},System.String@,System.Byte[]@,Bodu.Text.Encoding.Bech32Encoding@)">
   TryDecodeToBytes(ReadOnlySpan&lt;char&gt;, out string?, out byte[]?, out Bech32Encoding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -758,7 +758,7 @@ throwing.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Bech32_TryEncode_System_String_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Bech32Encoding_System_String__" data-uid="Bodu.Text.Encoding.Bech32.TryEncode(System.String,System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Bech32Encoding,System.String@)">
   TryEncode(string, ReadOnlySpan&lt;byte&gt;, Bech32Encoding, out string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Encode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -838,7 +838,7 @@ throwing.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -89,7 +89,7 @@
 
 <p>Testing exchange-rate code splits into two problems. Code that <em>consumes</em> rates needs a
 deterministic <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> it can inject; code that
-<em>produces</em> rates — a provider you wrote, or a shipped provider whose wiring you want to prove —
+<em>produces</em> rates - a provider you wrote, or a shipped provider whose wiring you want to prove -
 needs to run hermetically against a canned payload and pass the same contract the built-in
 providers pass. Everything on this page is offline: no sample touches the network.</p>
 <p>Two pieces of infrastructure cover both sides. <code>Bodu.Financial</code> ships the fixed providers
@@ -103,9 +103,9 @@ the built-in providers themselves derive from.</p>
 a NuGet package: its project file is marked <code>&lt;IsPackable&gt;false&lt;/IsPackable&gt;</code> and <code>&lt;IsTestProject&gt;true&lt;/IsTestProject&gt;</code>.
 It is available by project reference inside the repository (the shipped provider test projects
 and the <a href="../../samples/financial.html#bodufinancialsamplescustomprovider--test">CustomProvider sample</a>
-reference it that way); a consumer outside the repository copies the three source files —
+reference it that way); a consumer outside the repository copies the three source files -
 <code>StubHttpMessageHandler</code>, <code>DatedRateProviderContractTests&lt;TProvider&gt;</code>, and
-<code>PairWebRateProviderContractTests&lt;TProvider, TSeries&gt;</code> — into their own test project. The
+<code>PairWebRateProviderContractTests&lt;TProvider, TSeries&gt;</code> - into their own test project. The
 <code>IsTestProject</code> flag pulls in MSTest through the repository's build targets, so a referencing
 test project needs nothing beyond its own MSTest reference.</p>
 </div>
@@ -115,7 +115,7 @@ test project needs nothing beyond its own MSTest reference.</p>
   &lt;ProjectReference Include=&quot;..\..\Bodu.Financial.ExchangeRates.Testing\src\Bodu.Financial.ExchangeRates.Testing.csproj&quot; /&gt;
 &lt;/ItemGroup&gt;
 </code></pre>
-<h2 id="pattern-1--fixeddatedrateprovider-is-the-recommended-test-double">Pattern 1 — <code>FixedDatedRateProvider</code> is the recommended test double</h2>
+<h2 id="pattern-1---fixeddatedrateprovider-is-the-recommended-test-double">Pattern 1 - <code>FixedDatedRateProvider</code> is the recommended test double</h2>
 <p>Code that consumes <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> should be tested
 against <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html">FixedDatedRateProvider</a>, not a mock: it is the real
 lookup engine over an in-memory <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateBook.html">RateBook</a>, so date
@@ -135,7 +135,7 @@ var rates = new FixedDatedRateProvider(new[]
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateTableBuilder.html">RateTableBuilder</a> /
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesBuilder.html">RateSeriesBuilder</a>, or load a committed CSV the way the
 <a href="../../samples/financial.html#bodufinancialsamplesofflinerates">OfflineRates sample</a> does.</p>
-<h2 id="pattern-2--fixed-providers-in-di-for-application-tests">Pattern 2 — fixed providers in DI for application tests</h2>
+<h2 id="pattern-2---fixed-providers-in-di-for-application-tests">Pattern 2 - fixed providers in DI for application tests</h2>
 <p>Under dependency injection, register the fixed providers on the financial builder so a service
 that depends on the contracts sees deterministic data.
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedRateTable.html">FixedRateTable</a> is the timeless counterpart: a
@@ -160,8 +160,8 @@ services.AddFinancialService(financial =&gt; financial
 
 using ServiceProvider provider = services.BuildServiceProvider();
 </code></pre>
-<p>The provider registrations use <code>TryAdd</code> semantics — the first registration for each contract
-wins — so register the fakes before the production wiring runs. To override a registration that
+<p>The provider registrations use <code>TryAdd</code> semantics - the first registration for each contract
+wins - so register the fakes before the production wiring runs. To override a registration that
 is already present, replace its descriptor. <code>FixedDatedRateProvider</code> implements only the dated
 contract; pin it to a date with <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.DatedRateProviderAdapter.html">DatedRateProviderAdapter</a>
 to stand in for the timeless one as well:</p>
@@ -173,11 +173,11 @@ services.Replace(ServiceDescriptor.Singleton&lt;IDatedRateProvider&gt;(fake));
 services.Replace(ServiceDescriptor.Singleton&lt;IRateProvider&gt;(
     new DatedRateProviderAdapter(fake, new DateOnly(2024, 1, 15))));   // the timeless surface, pinned to one date
 </code></pre>
-<p>Avoid calling <code>UseCurrencyResolution</code> in unit tests — it mutates process-wide ambient state.
+<p>Avoid calling <code>UseCurrencyResolution</code> in unit tests - it mutates process-wide ambient state.
 When a test must exercise a custom ambient lookup, prefer the flow-scoped
 <code>CurrencyResolution.PushScoped(...)</code>, which restores the previous lookup on dispose (see the
 <a href="dependency-injection.html#swapping-in-a-test-double">DI guide</a>).</p>
-<h2 id="pattern-3--stubhttpmessagehandler-drives-a-real-provider-offline">Pattern 3 — <code>StubHttpMessageHandler</code> drives a real provider offline</h2>
+<h2 id="pattern-3---stubhttpmessagehandler-drives-a-real-provider-offline">Pattern 3 - <code>StubHttpMessageHandler</code> drives a real provider offline</h2>
 <p><code>StubHttpMessageHandler</code> is an <code>HttpMessageHandler</code>
 that answers <strong>every</strong> request with one canned body and status code, and records what it saw.
 Hand it to an <code>HttpClient</code>, hand that client to a provider's <code>(HttpClient, options)</code>
@@ -196,19 +196,19 @@ constructor, and the whole download-parse-accumulate path runs with no network. 
 </tr>
 <tr>
 <td><code>RequestCount</code></td>
-<td>How many requests reached the handler — the assertion that proves coalescing and coverage tracking.</td>
+<td>How many requests reached the handler - the assertion that proves coalescing and coverage tracking.</td>
 </tr>
 <tr>
 <td><code>LastRequestUri</code></td>
-<td>The URI of the most recent request — proves the options built the URL you expect.</td>
+<td>The URI of the most recent request - proves the options built the URL you expect.</td>
 </tr>
 <tr>
 <td><code>LastAuthorization</code></td>
-<td>The <code>Authorization</code> header of the most recent request, or <code>null</code> — proves a bearer token went on the wire.</td>
+<td>The <code>Authorization</code> header of the most recent request, or <code>null</code> - proves a bearer token went on the wire.</td>
 </tr>
 </tbody>
 </table>
-<p>A bulk provider — the ECB, fed a two-day <code>eurofxref</code> document. <code>EnableDiskCache</code> is turned off so
+<p>A bulk provider - the ECB, fed a two-day <code>eurofxref</code> document. <code>EnableDiskCache</code> is turned off so
 the test writes nothing under the temporary path:</p>
 <pre><code class="lang-csharp">using System.Text;
 using Bodu.Financial.ExchangeRates;
@@ -240,7 +240,7 @@ await ecb.LoadRangeAsync(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4));
 
 RateLookupResult usd = ecb.GetRate(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 3));
 Console.WriteLine(usd.Rate.Rate);                       // 1.0545
-Console.WriteLine(handler.RequestCount);                // 1 — one feed download covered the whole window
+Console.WriteLine(handler.RequestCount);                // 1 - one feed download covered the whole window
 Console.WriteLine(handler.LastRequestUri);              // https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.xml
 </code></pre>
 <p>The same recipe drives a pair provider. Fixer builds a time-series request for the window and
@@ -263,8 +263,8 @@ using var fixer = new FixerRateProvider(new HttpClient(handler), new FixerRatePr
 await fixer.LoadPairAsync(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 2), new DateOnly(2023, 1, 4));
 
 Console.WriteLine(fixer.GetRate(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 3)).Rate.Rate);   // 1.0546
-Console.WriteLine(handler.LastRequestUri!.Query.Contains(&quot;access_key=test-key&quot;));     // True — the key went on the wire
-Console.WriteLine(handler.LastAuthorization is null);                                  // True — Fixer keys the query, not the header
+Console.WriteLine(handler.LastRequestUri!.Query.Contains(&quot;access_key=test-key&quot;));     // True - the key went on the wire
+Console.WriteLine(handler.LastAuthorization is null);                                  // True - Fixer keys the query, not the header
 </code></pre>
 <p>A non-success status code exercises the transport-failure path. A hand-built client has no
 resilience pipeline, so the <code>HttpRequestException</code> is immediate:</p>
@@ -279,7 +279,7 @@ try
 }
 catch (HttpRequestException ex)
 {
-    Console.WriteLine(ex.StatusCode);   // ServiceUnavailable — no resilience pipeline on a hand-built client
+    Console.WriteLine(ex.StatusCode);   // ServiceUnavailable - no resilience pipeline on a hand-built client
 }
 </code></pre>
 <div class="NOTE">
@@ -287,13 +287,13 @@ catch (HttpRequestException ex)
 <p>The stub returns the same body whatever the URL, so one handler serves a provider that issues
 several requests per warm-up (a multi-era RBA load, an ECB provider whose window spans the
 90-day and full-history feeds). When a test needs different bodies per URL, write a small
-<code>HttpMessageHandler</code> of your own — the stub is deliberately minimal.</p>
+<code>HttpMessageHandler</code> of your own - the stub is deliberately minimal.</p>
 </div>
-<h2 id="pattern-4--a-file-backed-ipairratesourcetseries">Pattern 4 — a file-backed <code>IPairRateSource&lt;TSeries&gt;</code></h2>
+<h2 id="pattern-4---a-file-backed-ipairratesourcetseries">Pattern 4 - a file-backed <code>IPairRateSource&lt;TSeries&gt;</code></h2>
 <p>A pair provider built on <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a> delegates its
 fetch-and-parse to an <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IPairRateSource-1.html">IPairRateSource&lt;TSeries&gt;</a>. A provider that
-exposes a constructor taking that seam — as the <code>AcmeRateProvider</code> from
-<a href="custom-web-provider.html">Writing your own web provider</a> does — can be driven from a committed
+exposes a constructor taking that seam - as the <code>AcmeRateProvider</code> from
+<a href="custom-web-provider.html">Writing your own web provider</a> does - can be driven from a committed
 data file with no HTTP at all, which keeps the coverage tracking, single-flight coalescing, and
 lookup surface under test while the network is out of the picture. The shipped providers keep
 their source constructors internal, so this recipe applies to providers you write.</p>
@@ -345,10 +345,10 @@ await acme.LoadPairAsync(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2024, 1,
 Console.WriteLine(acme.GetRate(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2024, 1, 15)).Rate.Rate);   // 0.6660
 Console.WriteLine(source.RequestCount);                                                // 1
 </code></pre>
-<h2 id="pattern-5--nullratecache-keeps-the-composition-drops-the-caching">Pattern 5 — <code>NullRateCache</code> keeps the composition, drops the caching</h2>
+<h2 id="pattern-5---nullratecache-keeps-the-composition-drops-the-caching">Pattern 5 - <code>NullRateCache</code> keeps the composition, drops the caching</h2>
 <p>When a test composes the production wiring but must observe every miss reaching the source,
-substitute <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.NullRateCache.html">NullRateCache</a> — it stores nothing, so
-every lookup is a miss — through the <code>cacheFactory</code> parameter rather than by removing the
+substitute <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.NullRateCache.html">NullRateCache</a> - it stores nothing, so
+every lookup is a miss - through the <code>cacheFactory</code> parameter rather than by removing the
 caching registration:</p>
 <pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates.Caching;
 
@@ -363,7 +363,7 @@ services
 <p>For a test that <em>does</em> want caching but no disk, <code>InMemoryRateCache</code> is the same swap. The
 <a href="exchange-rate-caching.html#persistent-and-shared-backends">caching guide's backend table</a>
 lists all of them.</p>
-<h2 id="pattern-6--deriving-the-dated-provider-contract">Pattern 6 — deriving the dated-provider contract</h2>
+<h2 id="pattern-6---deriving-the-dated-provider-contract">Pattern 6 - deriving the dated-provider contract</h2>
 <p>Any custom <code>IDatedRateProvider</code> should pass the shared contract. Derive
 <code>DatedRateProviderContractTests&lt;TProvider&gt;</code> from the Testing project, supply a seeded provider
 and the dates that characterise it, and the base exercises the whole surface: sync/async
@@ -447,7 +447,7 @@ public sealed class CsvFileRateProviderTests
 <a href="../../samples/financial.html#bodufinancialsamplescustomprovider--test">CustomProvider sample</a> is a
 consumer-shaped <code>CsvFileRateProvider</code> whose companion test project derives the base and passes
 it in CI.</p>
-<h2 id="pattern-7--deriving-the-pair-web-provider-contract">Pattern 7 — deriving the pair-web-provider contract</h2>
+<h2 id="pattern-7---deriving-the-pair-web-provider-contract">Pattern 7 - deriving the pair-web-provider contract</h2>
 <p>Providers built on <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a> additionally derive
 <code>PairWebRateProviderContractTests&lt;TProvider, TSeries&gt;</code>, which layers the pair warm-up lifecycle
 on top of everything above: <code>LoadPairAsync</code> resolving a known date, idempotent re-warm of an
@@ -466,7 +466,7 @@ test states. It adds one abstract member:</p>
 <tr>
 <td><code>ExpectedHistoryAvailability</code></td>
 <td>abstract</td>
-<td>The depth the provider must advertise — an intentional <code>Unbounded</code> included — so a new provider cannot forget to declare it.</td>
+<td>The depth the provider must advertise - an intentional <code>Unbounded</code> included - so a new provider cannot forget to declare it.</td>
 </tr>
 </tbody>
 </table>
@@ -512,11 +512,11 @@ public sealed class AcmeRateProviderContractTests
 (Yahoo, OFX, Fixer, …) follow exactly this shape against their own fixtures.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="custom-web-provider.html">Writing your own web provider</a> — the provider these contract tests validate.</li>
-<li><a href="dependency-injection.html">Financial dependency injection</a> — registering fakes and the <code>TryAdd</code> rules.</li>
-<li><a href="exchange-rate-caching.html">Caching and aggregating exchange rates</a> — the cache backends, including the in-memory and null ones tests reach for.</li>
-<li><a href="../../samples/financial.html">Runnable samples</a> — <code>CustomProvider</code> and its <code>.Test</code> companion run this page's patterns in CI.</li>
-<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — every guide in this topic.</li>
+<li><a href="custom-web-provider.html">Writing your own web provider</a> - the provider these contract tests validate.</li>
+<li><a href="dependency-injection.html">Financial dependency injection</a> - registering fakes and the <code>TryAdd</code> rules.</li>
+<li><a href="exchange-rate-caching.html">Caching and aggregating exchange rates</a> - the cache backends, including the in-memory and null ones tests reach for.</li>
+<li><a href="../../samples/financial.html">Runnable samples</a> - <code>CustomProvider</code> and its <code>.Test</code> companion run this page's patterns in CI.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -536,7 +536,7 @@ public sealed class AcmeRateProviderContractTests
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

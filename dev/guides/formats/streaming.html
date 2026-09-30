@@ -90,7 +90,7 @@
 <p>For inputs too large (or too hot) to materialize, each format exposes its forward-only <code>Utf8*Reader</code> / <code>Utf8*Writer</code> pair, and Delimited adds a typed record-streaming surface on its serializer.</p>
 <h2 id="the-token-surface">The token surface</h2>
 <p>The readers are <code>ref struct</code> cursors over <code>ReadOnlySpan&lt;byte&gt;</code>: <code>Read()</code> advances, <code>TokenType</code> reports the token, <code>GetString()</code> decodes it, and <code>LineNumber</code> / <code>BytesConsumed</code> locate it. The writers emit UTF-8 to an <code>IBufferWriter&lt;byte&gt;</code> or a <code>Stream</code> (call <code>Flush()</code> to commit in stream mode).</p>
-<h2 id="pattern-1--walk-delimited-records-one-at-a-time">Pattern 1 — walk delimited records one at a time</h2>
+<h2 id="pattern-1---walk-delimited-records-one-at-a-time">Pattern 1 - walk delimited records one at a time</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.Delimited;
 using Bodu.Text.Delimited.Reader;
@@ -115,7 +115,7 @@ while (reader.Read())
 }
 </code></pre>
 <p><code>reader.Headers</code> exposes the header row once it has been read.</p>
-<h2 id="pattern-2--stream-typed-records">Pattern 2 — stream typed records</h2>
+<h2 id="pattern-2---stream-typed-records">Pattern 2 - stream typed records</h2>
 <p>For typed rows, skip the token loop:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">await foreach (Trade trade in DelimitedSerializer.DeserializeAsyncEnumerableAsync&lt;Trade&gt;(stream))
@@ -125,7 +125,7 @@ while (reader.Read())
 
 await DelimitedSerializer.SerializeAsync(output, ProduceTradesAsync());  // IAsyncEnumerable&lt;Trade&gt; in
 </code></pre>
-<h2 id="pattern-3--scan-a-dotenv-source">Pattern 3 — scan a DotEnv source</h2>
+<h2 id="pattern-3---scan-a-dotenv-source">Pattern 3 - scan a DotEnv source</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.DotEnv;
 using Bodu.Text.DotEnv.Reader;
@@ -141,7 +141,7 @@ while (reader.Read())
         Inspect(key!, reader.GetString(), reader.LineNumber);
 }
 </code></pre>
-<h2 id="pattern-4--stream-ini-tokens-as-authored">Pattern 4 — stream INI tokens as authored</h2>
+<h2 id="pattern-4---stream-ini-tokens-as-authored">Pattern 4 - stream INI tokens as authored</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.Ini;
 using Bodu.Text.Ini.Reader;
@@ -159,8 +159,8 @@ while (reader.Read())
     }
 }
 </code></pre>
-<p>Use the normalized <code>IniDocumentReader</code> when you want the logical object shape (globals hoisted, duplicate sections merged) instead of the physical file order — note it parses the whole document in its constructor, because merge is out-of-order.</p>
-<h2 id="pattern-5--write-tokens-progressively">Pattern 5 — write tokens progressively</h2>
+<p>Use the normalized <code>IniDocumentReader</code> when you want the logical object shape (globals hoisted, duplicate sections merged) instead of the physical file order - note it parses the whole document in its constructor, because merge is out-of-order.</p>
+<h2 id="pattern-5---write-tokens-progressively">Pattern 5 - write tokens progressively</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.Buffers;
 using Bodu.Text.Delimited.Writer;
@@ -179,9 +179,9 @@ writer.Flush();
 </code></pre>
 <p>The DotEnv and INI writers are line-oriented (<code>WritePropertyName</code> + <code>WriteString</code> per entry; <code>WriteSectionHeader</code> / <code>WriteComment</code> for INI), so output is emitted as you go.</p>
 <h2 id="async-facades">Async facades</h2>
-<p>The <code>*Serializer</code> stream overloads (<code>SerializeAsync</code> / <code>DeserializeAsync</code>) buffer the document in full — only the stream copy is asynchronous. The exception is Delimited's record streaming (Pattern 2), which is genuinely incremental in both directions: <code>DeserializeAsyncEnumerableAsync</code> reads the stream in segments and yields each record as soon as its terminating line ending is observed (memory is bounded by the longest record, not the document — a record split across segments, even inside a quoted field, is retried as more data arrives), and the <code>IAsyncEnumerable</code> <code>SerializeAsync</code> overload encodes each record as it is produced and flushes to the destination in bounded batches.</p>
+<p>The <code>*Serializer</code> stream overloads (<code>SerializeAsync</code> / <code>DeserializeAsync</code>) buffer the document in full - only the stream copy is asynchronous. The exception is Delimited's record streaming (Pattern 2), which is genuinely incremental in both directions: <code>DeserializeAsyncEnumerableAsync</code> reads the stream in segments and yields each record as soon as its terminating line ending is observed (memory is bounded by the longest record, not the document - a record split across segments, even inside a quoted field, is retried as more data arrives), and the <code>IAsyncEnumerable</code> <code>SerializeAsync</code> overload encodes each record as it is produced and flushes to the destination in bounded batches.</p>
 <h2 id="mid-stream-errors">Mid-stream errors</h2>
-<p>Readers throw their <code>*FormatException</code> at the offending token with <code>LineNumber</code> / byte offset attached; everything already consumed remains valid. The ref-struct readers hold no unmanaged resources — abandoning one is safe.</p>
+<p>Readers throw their <code>*FormatException</code> at the offending token with <code>LineNumber</code> / byte offset attached; everything already consumed remains valid. The ref-struct readers hold no unmanaged resources - abandoning one is safe.</p>
 <h2 id="see-also">See also</h2>
 <ul>
 <li><a href="../../docs/formats/parser-policies.html">Parser policies</a></li>
@@ -205,7 +205,7 @@ writer.Flush();
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -108,8 +108,8 @@ always forces a recompute regardless of the time-to-live.</li>
 computes; concurrent callers join that single flight instead of stampeding the engine.</li>
 <li><strong>Storage is pluggable and best-effort.</strong> The decorator works over any
 <a class="xref" href="../../../api/Bodu.Globalization.Calendar.Caching.INotableDateCache.html"><code>INotableDateCache</code></a>;
-the shipped backends degrade gracefully on storage failure — a failed read is a miss,
-a failed write is skipped — so a broken disk never breaks date resolution.</li>
+the shipped backends degrade gracefully on storage failure - a failed read is a miss,
+a failed write is skipped - so a broken disk never breaks date resolution.</li>
 </ul>
 <h2 id="quickstart">Quickstart</h2>
 <p>Wrap the service in the decorator over any backend. The in-memory cache needs no
@@ -184,8 +184,8 @@ builder.Services.AddCachedNotableDateService(configure: o =&gt; o.Ttl = TimeSpan
 <tr>
 <td><a class="xref" href="../../../api/Bodu.Globalization.Calendar.Caching.NullNotableDateCache.html"><code>NullNotableDateCache</code></a></td>
 <td>none (always misses)</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
 <td>core</td>
 </tr>
 </tbody>
@@ -216,7 +216,7 @@ builder.Services.AddCachedNotableDateService(
 </code></pre>
 <p>Every backend enforces the same ordering contract (occurrences round-trip in the
 service's date-then-identity order) and the same merge policy, so switching backends
-never changes served results — only where they live.</p>
+never changes served results - only where they live.</p>
 <h2 id="freshness-time-to-live-version-invalidation-jitter-and-refresh-ahead">Freshness: time-to-live, version invalidation, jitter, and refresh-ahead</h2>
 <p><a class="xref" href="../../../api/Bodu.Globalization.Calendar.Caching.NotableDateCachingOptions.html"><code>NotableDateCachingOptions</code></a>
 carries the freshness policy:</p>
@@ -226,7 +226,7 @@ Notable-date resolution is deterministic for a given resource version, so this i
 coarse safety net; the version trigger below handles data changes.</li>
 <li><strong><code>ResourceVersion</code></strong> keys every cache entry. When the decorator observes an
 <a class="xref" href="../../../api/Bodu.Globalization.Calendar.INotableDateResourceProvider.html"><code>INotableDateResourceProvider</code></a>,
-the token is derived from the resource identity and a reload generation instead — so
+the token is derived from the resource identity and a reload generation instead - so
 a reload invalidates every cached year on the next query:</li>
 </ul>
 <!-- compile -->
@@ -247,7 +247,7 @@ _ = service.Resolve(new DateOnly(2026, 1, 1), &quot;US&quot;);     // version ch
 <ul>
 <li><strong><code>TtlJitter</code></strong> (opt-in, default <code>0</code>) deterministically shaves up to that fraction off
 each territory's effective time-to-live, keyed by a stable hash of the normalized
-territory, so territories warmed together do not all expire — and recompute — at the
+territory, so territories warmed together do not all expire - and recompute - at the
 same instant. Jitter only ever shortens the time-to-live.</li>
 <li><strong><code>RefreshAheadFraction</code></strong> (opt-in, default <code>0</code>) turns an aged hit into a
 stale-while-revalidate serve: when a hit's entry is older than this fraction of the
@@ -352,7 +352,7 @@ caching-layer message carries a stable <code>EventId</code>:</p>
 <td><code>Warning</code></td>
 </tr>
 <tr>
-<td>4622–4625</td>
+<td>4622-4625</td>
 <td>Startup warm-up started / completed / failed / service not caching</td>
 <td><code>Information</code> / <code>Warning</code></td>
 </tr>
@@ -421,18 +421,18 @@ listener.Start();
 restart; use a file, SQLite, or distributed backend to survive restarts, and register
 the startup warm-up so the first requests never pay the computation.</p>
 <p><strong>A data update is not being picked up.</strong> With a fixed <code>ResourceVersion</code>, bump the
-token after a data change — or register a reloadable resource provider so a
+token after a data change - or register a reloadable resource provider so a
 <code>Reload</code> invalidates the cache automatically.</p>
 <p><strong>The warm-up logs &quot;service is not the caching decorator&quot;.</strong> Register
 <code>AddCachedNotableDateService</code> <strong>before</strong> <code>AddNotableDateCacheWarmup</code>; the warm-up
 resolves <code>INotableDateService</code> and can only warm the caching decorator.</p>
 <p><strong>I can't tell whether the cache is degrading.</strong> Watch <code>EventId 4603</code> / <code>4611</code> /
-<code>4621</code> at <code>Warning</code>, or the <code>storage_failures</code> counter — it increments on every
+<code>4621</code> at <code>Warning</code>, or the <code>storage_failures</code> counter - it increments on every
 swallow, outside the log rate limiting.</p>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="../notable-dates.html">Working with notable dates</a> — the service contract the cache wraps.</li>
-<li><a href="../dependency-injection.html">Dependency injection</a> — the wider calendar registration surface.</li>
+<li><a href="../notable-dates.html">Working with notable dates</a> - the service contract the cache wraps.</li>
+<li><a href="../dependency-injection.html">Dependency injection</a> - the wider calendar registration surface.</li>
 <li><a class="xref" href="../../../api/Bodu.Globalization.Calendar.Caching.CachingNotableDateService.html"><code>CachingNotableDateService</code> API reference</a></li>
 <li><a class="xref" href="../../../api/Bodu.Globalization.Calendar.Caching.NotableDateCachingOptions.html"><code>NotableDateCachingOptions</code> API reference</a></li>
 <li><a class="xref" href="../../../api/Bodu.Globalization.Calendar.Caching.INotableDateCache.html"><code>INotableDateCache</code> API reference</a></li>
@@ -455,7 +455,7 @@ swallow, outside the log rate limiting.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

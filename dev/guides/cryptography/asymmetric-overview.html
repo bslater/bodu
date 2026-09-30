@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="asymmetric-algorithms-overview">Asymmetric algorithms overview</h1>
 
-<p>This guide is the map of the <strong>asymmetric</strong> primitives in <strong>Bodu.Security.Cryptography</strong> — the public-key family, where each party holds a key pair and the public half can be shared freely. It is aimed at developers choosing between elliptic-curve and post-quantum building blocks, and explains how all four types share the same shape so the detail pages read consistently.</p>
+<p>This guide is the map of the <strong>asymmetric</strong> primitives in <strong>Bodu.Security.Cryptography</strong> - the public-key family, where each party holds a key pair and the public half can be shared freely. It is aimed at developers choosing between elliptic-curve and post-quantum building blocks, and explains how all four types share the same shape so the detail pages read consistently.</p>
 <p>The library ships four asymmetric types, split across two generations and two roles:</p>
 <table>
 <thead>
@@ -105,12 +105,12 @@
 </tr>
 <tr>
 <td>Post-quantum</td>
-<td>ML-KEM — <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem512.html">MLKem512</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem768.html">MLKem768</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem1024.html">MLKem1024</a> (FIPS 203)</td>
-<td>ML-DSA — <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa87.html">MLDsa87</a> (FIPS 204)</td>
+<td>ML-KEM - <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem512.html">MLKem512</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem768.html">MLKem768</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem1024.html">MLKem1024</a> (FIPS 203)</td>
+<td>ML-DSA - <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa87.html">MLDsa87</a> (FIPS 204)</td>
 </tr>
 </tbody>
 </table>
-<p>The classic curve algorithms are battle-tested, compact, and fast; they are <em>not</em> believed secure against a future large-scale quantum computer. The post-quantum (PQC) algorithms are the NIST-standardized lattice schemes designed to survive that threat, at the cost of much larger keys and ciphertexts. For data that must stay confidential for years — the &quot;harvest now, decrypt later&quot; risk — pair the two (see the <a href="ml-kem.html#hybrid-with-x25519">hybrid note in the ML-KEM guide</a>).</p>
+<p>The classic curve algorithms are battle-tested, compact, and fast; they are <em>not</em> believed secure against a future large-scale quantum computer. The post-quantum (PQC) algorithms are the NIST-standardized lattice schemes designed to survive that threat, at the cost of much larger keys and ciphertexts. For data that must stay confidential for years - the &quot;harvest now, decrypt later&quot; risk - pair the two (see the <a href="ml-kem.html#hybrid-with-x25519">hybrid note in the ML-KEM guide</a>).</p>
 <div class="NOTE">
 <h5>Note</h5>
 <p><strong>Harvest now, decrypt later.</strong> An adversary cannot break X25519 or ML-KEM today, but it can <em>record</em> an exchange today and decrypt it the moment a cryptographically relevant quantum computer exists. A signature only needs to be quantum-resistant when it is <em>verified</em> in that future; a <em>confidentiality</em> exchange must be quantum-resistant the moment it is <em>captured</em>. That asymmetry is why long-lived secrets motivate ML-KEM (or an X25519 + ML-KEM hybrid) now, while signatures can migrate to ML-DSA more gradually.</p>
@@ -129,7 +129,7 @@
 <tbody>
 <tr>
 <td><strong>Signature</strong></td>
-<td>Integrity and authenticity — the private-key holder signs, anyone with the public key verifies. No shared secret.</td>
+<td>Integrity and authenticity - the private-key holder signs, anyone with the public key verifies. No shared secret.</td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.Ed25519.html">Ed25519</a></td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa.html">MLDsa</a></td>
 </tr>
@@ -137,17 +137,17 @@
 <td><strong>Key agreement</strong></td>
 <td>A shared secret both parties derive, each contributing a public key (ECDH).</td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.X25519.html">X25519</a></td>
-<td>— (use a KEM instead)</td>
+<td>- (use a KEM instead)</td>
 </tr>
 <tr>
 <td><strong>Key encapsulation (KEM)</strong></td>
 <td>A shared secret one party encapsulates <em>to</em> the other's public key, transmitting a ciphertext.</td>
-<td>—</td>
+<td>-</td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem.html">MLKem</a></td>
 </tr>
 </tbody>
 </table>
-<p>A signature establishes <em>who</em>; key agreement and a KEM establish a <em>secret</em>. Neither secret-establishing role authenticates the peer on its own — combine it with a signature, a pre-shared key, or an authenticated channel (HPKE's auth modes do exactly this).</p>
+<p>A signature establishes <em>who</em>; key agreement and a KEM establish a <em>secret</em>. Neither secret-establishing role authenticates the peer on its own - combine it with a signature, a pre-shared key, or an authenticated channel (HPKE's auth modes do exactly this).</p>
 <h2 id="the-shared-asymmetricalgorithm-base">The shared <code>AsymmetricAlgorithm</code> base</h2>
 <p>Every type derives from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> and follows the same conventions, so once you know one, you know the surface of all four:</p>
 <ul>
@@ -155,9 +155,9 @@
 <li><code>GenerateKey()</code> draws a new key pair from a cryptographically secure source.</li>
 <li><code>Import*</code> / <code>Export*</code> members move <strong>raw</strong> key bytes in and out (see below).</li>
 <li><code>Has*</code> properties report which key halves are currently present.</li>
-<li>The type is <code>IDisposable</code> — private key material is zeroed on dispose, so always wrap instances in <code>using</code>.</li>
+<li>The type is <code>IDisposable</code> - private key material is zeroed on dispose, so always wrap instances in <code>using</code>.</li>
 </ul>
-<p>The lifecycle is uniform: <strong><code>Create()</code> → <code>GenerateKey()</code> (or <code>Import*</code>) → use → dispose.</strong> &quot;Use&quot; is the one step that differs by role — sign/verify, agree, or encapsulate/decapsulate.</p>
+<p>The lifecycle is uniform: <strong><code>Create()</code> → <code>GenerateKey()</code> (or <code>Import*</code>) → use → dispose.</strong> &quot;Use&quot; is the one step that differs by role - sign/verify, agree, or encapsulate/decapsulate.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
 
@@ -166,9 +166,9 @@ alg.GenerateKey();                 // now holds a private + public key
 // ... use alg ...
 // dispose (via 'using') zeroes the private key
 </code></pre>
-<p>For ML-KEM and ML-DSA the reported <code>KeySize</code> is <strong>not</strong> a bit length — it is the FIPS parameter-set designator (512 / 768 / 1024 for ML-KEM; 44 / 65 / 87 for ML-DSA), because module-lattice keys have no single meaningful bit-length.</p>
+<p>For ML-KEM and ML-DSA the reported <code>KeySize</code> is <strong>not</strong> a bit length - it is the FIPS parameter-set designator (512 / 768 / 1024 for ML-KEM; 44 / 65 / 87 for ML-DSA), because module-lattice keys have no single meaningful bit-length.</p>
 <h2 id="key-encodings">Key encodings</h2>
-<p>Every type exposes the raw byte encodings defined by its specification — the fixed-width RFC 7748 / RFC 8032 keys for the curve algorithms, and the FIPS 203 / FIPS 204 byte strings (and seeds) for the lattice algorithms. Beyond that, support for the standard ASN.1 containers inherited from <code>AsymmetricAlgorithm</code> differs by family:</p>
+<p>Every type exposes the raw byte encodings defined by its specification - the fixed-width RFC 7748 / RFC 8032 keys for the curve algorithms, and the FIPS 203 / FIPS 204 byte strings (and seeds) for the lattice algorithms. Beyond that, support for the standard ASN.1 containers inherited from <code>AsymmetricAlgorithm</code> differs by family:</p>
 <table>
 <thead>
 <tr>
@@ -196,7 +196,7 @@ alg.GenerateKey();                 // now holds a private + public key
 </tr>
 </tbody>
 </table>
-<p>For the curve algorithms, <code>ImportPkcs8PrivateKey</code> / <code>ExportPkcs8PrivateKey</code> and <code>ImportSubjectPublicKeyInfo</code> / <code>ExportSubjectPublicKeyInfo</code> carry the RFC 8410 DER containers (OIDs <code>1.3.101.112</code> for Ed25519, <code>1.3.101.110</code> for X25519), and the <strong>PEM</strong> helpers inherited from the base (<code>ImportFromPem</code>, <code>ExportPkcs8PrivateKeyPem</code>, <code>ExportSubjectPublicKeyInfoPem</code>) work on top of them — so an Ed25519 or X25519 key round-trips through the <code>-----BEGIN PRIVATE KEY-----</code> / <code>-----BEGIN PUBLIC KEY-----</code> text that OpenSSL and <code>System.Security.Cryptography</code> interchange. Encrypted PKCS#8 is intentionally out of scope and throws.</p>
+<p>For the curve algorithms, <code>ImportPkcs8PrivateKey</code> / <code>ExportPkcs8PrivateKey</code> and <code>ImportSubjectPublicKeyInfo</code> / <code>ExportSubjectPublicKeyInfo</code> carry the RFC 8410 DER containers (OIDs <code>1.3.101.112</code> for Ed25519, <code>1.3.101.110</code> for X25519), and the <strong>PEM</strong> helpers inherited from the base (<code>ImportFromPem</code>, <code>ExportPkcs8PrivateKeyPem</code>, <code>ExportSubjectPublicKeyInfoPem</code>) work on top of them - so an Ed25519 or X25519 key round-trips through the <code>-----BEGIN PRIVATE KEY-----</code> / <code>-----BEGIN PUBLIC KEY-----</code> text that OpenSSL and <code>System.Security.Cryptography</code> interchange. Encrypted PKCS#8 is intentionally out of scope and throws.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using var ed25519 = new Ed25519();
 ed25519.GenerateKey();
@@ -207,7 +207,7 @@ string publicPem  = ed25519.ExportSubjectPublicKeyInfoPem();     // -----BEGIN P
 using var imported = new Ed25519();
 imported.ImportFromPem(privatePem);                              // dispatches on the PEM label
 </code></pre>
-<p>The lattice types expose <strong>only</strong> their raw FIPS encodings; the ASN.1 container members retain their base throwing behaviour, so persist the raw bytes from the <code>Export*</code> method directly. The seed-bearing lattice types (<code>ImportPrivateSeed</code>) let you store the compact seed — 32 bytes for ML-DSA, 64 for ML-KEM — instead of the full multi-kilobyte private key, and regenerate the whole key pair on import. The curve algorithms re-derive the public key from the 32-byte private seed the same way.</p>
+<p>The lattice types expose <strong>only</strong> their raw FIPS encodings; the ASN.1 container members retain their base throwing behaviour, so persist the raw bytes from the <code>Export*</code> method directly. The seed-bearing lattice types (<code>ImportPrivateSeed</code>) let you store the compact seed - 32 bytes for ML-DSA, 64 for ML-KEM - instead of the full multi-kilobyte private key, and regenerate the whole key pair on import. The curve algorithms re-derive the public key from the 32-byte private seed the same way.</p>
 <h2 id="which-key-half-is-present">Which key half is present</h2>
 <p>Each type reports the halves it holds through its own <code>Has*</code> pair. A freshly created instance has neither; <code>GenerateKey()</code> sets both; importing only a public key sets the public half and discards the private. The naming follows each role's vocabulary:</p>
 <table>
@@ -237,11 +237,11 @@ imported.ImportFromPem(privatePem);                              // dispatches o
 </tbody>
 </table>
 <h2 id="verify-or-fail-discipline">Verify-or-fail discipline</h2>
-<p>For the two signature schemes, <code>VerifyData</code> returns a <code>bool</code> and <strong>never</strong> throws on a bad signature — a wrong length, a tampered message, a non-canonical encoding, or a mismatched ML-DSA context all return <code>false</code>. Treat the boolean as the <em>only</em> signal and reject on <code>false</code> without inspecting why:</p>
+<p>For the two signature schemes, <code>VerifyData</code> returns a <code>bool</code> and <strong>never</strong> throws on a bad signature - a wrong length, a tampered message, a non-canonical encoding, or a mismatched ML-DSA context all return <code>false</code>. Treat the boolean as the <em>only</em> signal and reject on <code>false</code> without inspecting why:</p>
 <pre><code class="lang-csharp">if (!verifier.VerifyData(message, signature))
     throw new InvalidOperationException(&quot;Signature verification failed.&quot;);
 </code></pre>
-<p><code>VerifyData</code> throws only on a <em>configuration</em> error — the instance holds no public key (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a>), or an ML-DSA context exceeds 255 bytes (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>). The secret-establishing roles fail differently and deliberately: X25519 throws on a low-order peer point, while ML-KEM's <code>Decapsulate</code> <em>succeeds</em> on a tampered ciphertext but yields an unrelated secret (implicit rejection) — so a successful decapsulation is never proof the ciphertext was genuine. Confirm the secret downstream through an AEAD or MAC. Each detail page covers its own failure contract.</p>
+<p><code>VerifyData</code> throws only on a <em>configuration</em> error - the instance holds no public key (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a>), or an ML-DSA context exceeds 255 bytes (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>). The secret-establishing roles fail differently and deliberately: X25519 throws on a low-order peer point, while ML-KEM's <code>Decapsulate</code> <em>succeeds</em> on a tampered ciphertext but yields an unrelated secret (implicit rejection) - so a successful decapsulation is never proof the ciphertext was genuine. Confirm the secret downstream through an AEAD or MAC. Each detail page covers its own failure contract.</p>
 <h2 id="recording-a-signatures-wire-format">Recording a signature's wire format</h2>
 <p>A raw signature is just bytes; the same mathematical signature can circulate in incompatible encodings (the classic ECDSA DER-vs-P1363 split). When a signature crosses a boundary where the encoding is ambiguous, <a class="xref" href="../../api/Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> pairs the bytes with a <a class="xref" href="../../api/Bodu.Security.Cryptography.SignatureFormat.html">SignatureFormat</a> tag so a downstream verifier branches on the recorded format instead of guessing. Ed25519 and ML-DSA both emit <code>SignatureFormat.Raw</code>, so this matters only at interop seams with DER/P1363 ECDSA.</p>
 <pre><code class="lang-csharp">SignatureValue value = SignatureValue.FromBytes(signature, SignatureFormat.Raw);
@@ -290,12 +290,12 @@ imported.ImportFromPem(privatePem);                              // dispatches o
 </tbody>
 </table>
 <p>A KEM (ML-KEM) is the post-quantum stand-in for Diffie-Hellman key agreement: instead of both parties contributing a public key to derive a shared secret, one party encapsulates a fresh secret <em>to</em> the other's public key. Use it where you would otherwise have used X25519 to bootstrap a symmetric session.</p>
-<p>These types are the building blocks, not a complete encryption scheme. To encrypt a payload directly to a recipient's public key, <a class="xref" href="../../api/Bodu.Security.Cryptography.Hpke.html">Hpke</a> (RFC 9180) composes the X25519 KEM, <a href="hkdf.html">HKDF</a>, and an AEAD into the standardized Hybrid Public Key Encryption construction — prefer it over assembling key agreement, key derivation, and a cipher by hand. See <a href="hpke.html">Hybrid public key encryption with HPKE</a>.</p>
+<p>These types are the building blocks, not a complete encryption scheme. To encrypt a payload directly to a recipient's public key, <a class="xref" href="../../api/Bodu.Security.Cryptography.Hpke.html">Hpke</a> (RFC 9180) composes the X25519 KEM, <a href="hkdf.html">HKDF</a>, and an AEAD into the standardized Hybrid Public Key Encryption construction - prefer it over assembling key agreement, key derivation, and a cipher by hand. See <a href="hpke.html">Hybrid public key encryption with HPKE</a>.</p>
 <h2 id="disposal-and-lifecycle">Disposal and lifecycle</h2>
 <p>All four types are disposable and hold sensitive key material. The rules are uniform:</p>
 <ul>
 <li>Always construct with <code>using</code> (or call <code>Dispose()</code> explicitly) so the private key is zeroed.</li>
-<li>A fresh instance holds no keys — call <code>GenerateKey()</code> or an <code>Import*</code> method before using it. Operating without the required key half throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a>.</li>
+<li>A fresh instance holds no keys - call <code>GenerateKey()</code> or an <code>Import*</code> method before using it. Operating without the required key half throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a>.</li>
 <li>Importing a <em>public</em> key onto an instance discards any private key it held, leaving a verify-only / encapsulate-only instance.</li>
 <li>After disposal every member throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>.</li>
 </ul>
@@ -305,11 +305,11 @@ imported.ImportFromPem(privatePem);                              // dispatches o
 </div>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="index.html">Bodu.Security.Cryptography guides</a> — the full guide index for the library.</li>
-<li><a href="encryption-basics.html">Encryption basics</a> — key material, randomness, and disposal for the symmetric side.</li>
-<li><a href="key-agreement-x25519.html">Key agreement with X25519</a>, <a href="signatures-ed25519.html">Signatures with Ed25519</a>, <a href="ml-kem.html">ML-KEM</a>, <a href="ml-dsa.html">ML-DSA</a> — the four detail pages.</li>
-<li><a href="hpke.html">Hybrid public key encryption with HPKE</a> — the standardized scheme that composes the X25519 KEM, <a href="hkdf.html">HKDF</a>, and an AEAD.</li>
-<li><a class="xref" href="../../api/Bodu.Security.Cryptography.X25519.html">X25519</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Ed25519.html">Ed25519</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem.html">MLKem</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa.html">MLDsa</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> — API reference.</li>
+<li><a href="index.html">Bodu.Security.Cryptography guides</a> - the full guide index for the library.</li>
+<li><a href="encryption-basics.html">Encryption basics</a> - key material, randomness, and disposal for the symmetric side.</li>
+<li><a href="key-agreement-x25519.html">Key agreement with X25519</a>, <a href="signatures-ed25519.html">Signatures with Ed25519</a>, <a href="ml-kem.html">ML-KEM</a>, <a href="ml-dsa.html">ML-DSA</a> - the four detail pages.</li>
+<li><a href="hpke.html">Hybrid public key encryption with HPKE</a> - the standardized scheme that composes the X25519 KEM, <a href="hkdf.html">HKDF</a>, and an AEAD.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.X25519.html">X25519</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Ed25519.html">Ed25519</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem.html">MLKem</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa.html">MLDsa</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> - API reference.</li>
 </ul>
 
 </article>
@@ -329,7 +329,7 @@ imported.ImportFromPem(privatePem);                              // dispatches o
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

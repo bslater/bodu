@@ -104,42 +104,42 @@
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-financial.svg" alt="Bodu.Financial"></p>
 <h2 id="purpose">Purpose</h2>
-<p><strong>Bodu.Financial</strong> is the monetary-primitives package: type-safe money (<code>Money&lt;TCurrency&gt;</code>), runtime-tagged money (<code>Money</code>), multi-currency portfolios (<code>MoneyBag</code>), a shipped catalogue of 184 ISO 4217 currencies (in <a class="xref" href="Bodu.Financial.Currencies.html">Bodu.Financial.Currencies</a>), an exchange-rate core with both timeless and dated lookup (in <a class="xref" href="Bodu.Financial.ExchangeRates.html">Bodu.Financial.ExchangeRates</a>), and — in the companion <code>Bodu.Financial.Serialization.Json</code> package — JSON converters with strict / lenient / compact policy shapes.</p>
-<p>Reach for this library when you need monetary arithmetic that the compiler validates — adding USD to JPY should fail the build, not run with the wrong unit — and when you need audit-grade FX conversion that records which date, which provider, and which fallback policy produced a given rate.</p>
+<p><strong>Bodu.Financial</strong> is the monetary-primitives package: type-safe money (<code>Money&lt;TCurrency&gt;</code>), runtime-tagged money (<code>Money</code>), multi-currency portfolios (<code>MoneyBag</code>), a shipped catalogue of 184 ISO 4217 currencies (in <a class="xref" href="Bodu.Financial.Currencies.html">Bodu.Financial.Currencies</a>), an exchange-rate core with both timeless and dated lookup (in <a class="xref" href="Bodu.Financial.ExchangeRates.html">Bodu.Financial.ExchangeRates</a>), and - in the companion <code>Bodu.Financial.Serialization.Json</code> package - JSON converters with strict / lenient / compact policy shapes.</p>
+<p>Reach for this library when you need monetary arithmetic that the compiler validates - adding USD to JPY should fail the build, not run with the wrong unit - and when you need audit-grade FX conversion that records which date, which provider, and which fallback policy produced a given rate.</p>
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
-<li><strong><a href="../docs/financial/index.html">Bodu.Financial introduction</a></strong> — namespaces, headline types, scenarios.</li>
-<li><strong><a href="../docs/financial/getting-started.html">Bodu.Financial getting started</a></strong> — install and minimal samples for typed money, runtime-tagged money, portfolios, FX lookup, and the JSON policies.</li>
-<li><strong><a href="../guides/financial/index.html">Bodu.Financial guides</a></strong> — <a href="../guides/financial/money.html">Working with <code>Money&lt;TCurrency&gt;</code></a>.</li>
+<li><strong><a href="../docs/financial/index.html">Bodu.Financial introduction</a></strong> - namespaces, headline types, scenarios.</li>
+<li><strong><a href="../docs/financial/getting-started.html">Bodu.Financial getting started</a></strong> - install and minimal samples for typed money, runtime-tagged money, portfolios, FX lookup, and the JSON policies.</li>
+<li><strong><a href="../guides/financial/index.html">Bodu.Financial guides</a></strong> - <a href="../guides/financial/money.html">Working with <code>Money&lt;TCurrency&gt;</code></a>.</li>
 </ul>
 <h2 id="key-types">Key types</h2>
 <p><strong>Monetary value types</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> — immutable, value-equatable monetary amount whose currency is encoded as the type parameter. Cross-currency arithmetic is a compile error. Provides arithmetic, allocation, conversion, formatting/parsing, cash rounding, minor-unit interop, and <code>Fraction&lt;BigInteger&gt;</code> interop.</li>
-<li><a class="xref" href="Bodu.Financial.Money.html">Money</a> — runtime-tagged sister type with the same surface, where the currency is a <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum value (its <code>Code</code> property). Cross-currency arithmetic throws <code>InvalidOperationException</code> at runtime. Use for deserialisation and generic invoicing.</li>
-<li><a class="xref" href="Bodu.Financial.MoneyBag.html">MoneyBag</a> — immutable mixed-currency portfolio. Aggregates per-ISO balances, prunes zero balances, enumerates in lexicographic ISO order.</li>
+<li><a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> - immutable, value-equatable monetary amount whose currency is encoded as the type parameter. Cross-currency arithmetic is a compile error. Provides arithmetic, allocation, conversion, formatting/parsing, cash rounding, minor-unit interop, and <code>Fraction&lt;BigInteger&gt;</code> interop.</li>
+<li><a class="xref" href="Bodu.Financial.Money.html">Money</a> - runtime-tagged sister type with the same surface, where the currency is a <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum value (its <code>Code</code> property). Cross-currency arithmetic throws <code>InvalidOperationException</code> at runtime. Use for deserialisation and generic invoicing.</li>
+<li><a class="xref" href="Bodu.Financial.MoneyBag.html">MoneyBag</a> - immutable mixed-currency portfolio. Aggregates per-ISO balances, prunes zero balances, enumerates in lexicographic ISO order.</li>
 </ul>
 <p><strong>Currency display</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Financial.CurrencyDisplay.html">CurrencyDisplay</a> — currency symbol / display-name formatting for presenting an amount's currency.</li>
-<li>The currency metadata surface — <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html">ICurrency</a>, <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a>, <a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.html">CurrencyRegistry</a>, <a class="xref" href="Bodu.Financial.Currencies.CurrencyLookupService.html">CurrencyLookupService</a>, <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a>, and the 184 sealed tag types — lives in the <a href="../apidoc/Bodu.Financial.Currencies.md"><code>Bodu.Financial.Currencies</code></a> namespace.</li>
+<li><a class="xref" href="Bodu.Financial.CurrencyDisplay.html">CurrencyDisplay</a> - currency symbol / display-name formatting for presenting an amount's currency.</li>
+<li>The currency metadata surface - <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html">ICurrency</a>, <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a>, <a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.html">CurrencyRegistry</a>, <a class="xref" href="Bodu.Financial.Currencies.CurrencyLookupService.html">CurrencyLookupService</a>, <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a>, and the 184 sealed tag types - lives in the <a class="xref" href="Bodu.Financial.Currencies.html"><code>Bodu.Financial.Currencies</code></a> namespace.</li>
 </ul>
 <p><strong>Rounding, allocation, formatting, and parsing</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Financial.IRoundingStrategy.html">IRoundingStrategy</a>, <a class="xref" href="Bodu.Financial.MidpointRoundingStrategy.html">MidpointRoundingStrategy</a>, <a class="xref" href="Bodu.Financial.StochasticRoundingStrategy.html">StochasticRoundingStrategy</a> — the rounding-strategy contract, the midpoint (banker's / away-from-zero) implementation applied when an amount is reduced to a currency's minor units, and the statistically unbiased stochastic alternative (rounds up with probability equal to the discarded fraction; <code>Shared</code> instance, or an injectable sampler for deterministic tests).</li>
-<li><a class="xref" href="Bodu.Financial.ScalePolicy.html">ScalePolicy</a>, <a class="xref" href="Bodu.Financial.CashRoundingPolicy.html">CashRoundingPolicy</a>, <a class="xref" href="Bodu.Financial.ConversionRoundingPolicy.html">ConversionRoundingPolicy</a>, <a class="xref" href="Bodu.Financial.AllocationPolicy.html">AllocationPolicy</a> — policy enums that select scale, cash-rounding increment, conversion-rounding, and allocation-remainder behaviour.</li>
-<li><a class="xref" href="Bodu.Financial.MoneyFormatter.html">MoneyFormatter</a>, <a class="xref" href="Bodu.Financial.MoneyFormatterBuilder.html">MoneyFormatterBuilder</a>, <a class="xref" href="Bodu.Financial.MoneyFormatOptions.html">MoneyFormatOptions</a>, <a class="xref" href="Bodu.Financial.Extensions.MoneyCompactFormattingExtensions.html">MoneyCompactFormattingExtensions</a> — configurable formatting: a formatter, its fluent builder, the options record, and compact (<code>1.2K</code>-style) formatting extensions.</li>
-<li><a class="xref" href="Bodu.Financial.MoneyParseOptions.html">MoneyParseOptions</a>, <a class="xref" href="Bodu.Financial.MoneyParseMode.html">MoneyParseMode</a> — parse configuration and the strictness selector for reading money back from text.</li>
-<li><a class="xref" href="Bodu.Financial.MoneyConversionResult.html">MoneyConversionResult</a>, <a class="xref" href="Bodu.Financial.MoneyBagConversionAudit-1.html">MoneyBagConversionAudit&lt;TTarget&gt;</a>, <a class="xref" href="Bodu.Financial.MoneyBagConversionRoundingPolicy.html">MoneyBagConversionRoundingPolicy</a> — the runtime-tagged conversion result and the portfolio-conversion audit record plus its rounding policy.</li>
-<li><a class="xref" href="Bodu.Financial.MoneyConversionResult-2.html">MoneyConversionResult&lt;TSource, TTarget&gt;</a> — audit record bundling source and target money with the full FX lookup result.</li>
-<li><a class="xref" href="Bodu.Financial.Extensions.MoneyOfTCurrencyExchangeRateExtensions.html">MoneyOfTCurrencyExchangeRateExtensions</a> — <code>Convert</code>/lookup extension methods on <code>Money&lt;TCurrency&gt;</code> over the exchange-rate providers.</li>
+<li><a class="xref" href="Bodu.Financial.IRoundingStrategy.html">IRoundingStrategy</a>, <a class="xref" href="Bodu.Financial.MidpointRoundingStrategy.html">MidpointRoundingStrategy</a>, <a class="xref" href="Bodu.Financial.StochasticRoundingStrategy.html">StochasticRoundingStrategy</a> - the rounding-strategy contract, the midpoint (banker's / away-from-zero) implementation applied when an amount is reduced to a currency's minor units, and the statistically unbiased stochastic alternative (rounds up with probability equal to the discarded fraction; <code>Shared</code> instance, or an injectable sampler for deterministic tests).</li>
+<li><a class="xref" href="Bodu.Financial.ScalePolicy.html">ScalePolicy</a>, <a class="xref" href="Bodu.Financial.CashRoundingPolicy.html">CashRoundingPolicy</a>, <a class="xref" href="Bodu.Financial.ConversionRoundingPolicy.html">ConversionRoundingPolicy</a>, <a class="xref" href="Bodu.Financial.AllocationPolicy.html">AllocationPolicy</a> - policy enums that select scale, cash-rounding increment, conversion-rounding, and allocation-remainder behaviour.</li>
+<li><a class="xref" href="Bodu.Financial.MoneyFormatter.html">MoneyFormatter</a>, <a class="xref" href="Bodu.Financial.MoneyFormatterBuilder.html">MoneyFormatterBuilder</a>, <a class="xref" href="Bodu.Financial.MoneyFormatOptions.html">MoneyFormatOptions</a>, <a class="xref" href="Bodu.Financial.Extensions.MoneyCompactFormattingExtensions.html">MoneyCompactFormattingExtensions</a> - configurable formatting: a formatter, its fluent builder, the options record, and compact (<code>1.2K</code>-style) formatting extensions.</li>
+<li><a class="xref" href="Bodu.Financial.MoneyParseOptions.html">MoneyParseOptions</a>, <a class="xref" href="Bodu.Financial.MoneyParseMode.html">MoneyParseMode</a> - parse configuration and the strictness selector for reading money back from text.</li>
+<li><a class="xref" href="Bodu.Financial.MoneyConversionResult.html">MoneyConversionResult</a>, <a class="xref" href="Bodu.Financial.MoneyBagConversionAudit-1.html">MoneyBagConversionAudit&lt;TTarget&gt;</a>, <a class="xref" href="Bodu.Financial.MoneyBagConversionRoundingPolicy.html">MoneyBagConversionRoundingPolicy</a> - the runtime-tagged conversion result and the portfolio-conversion audit record plus its rounding policy.</li>
+<li><a class="xref" href="Bodu.Financial.MoneyConversionResult-2.html">MoneyConversionResult&lt;TSource, TTarget&gt;</a> - audit record bundling source and target money with the full FX lookup result.</li>
+<li><a class="xref" href="Bodu.Financial.Extensions.MoneyOfTCurrencyExchangeRateExtensions.html">MoneyOfTCurrencyExchangeRateExtensions</a> - <code>Convert</code>/lookup extension methods on <code>Money&lt;TCurrency&gt;</code> over the exchange-rate providers.</li>
 </ul>
 <p><strong>Related namespaces</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Financial.Currencies.html">Bodu.Financial.Currencies</a> — the runtime currency metadata surface (<code>ICurrency</code>, <code>CurrencyInfo</code>, <code>CurrencyRegistry</code>, <code>CurrencyLookupService</code>, <code>CurrencyCode</code>) plus 184 sealed ISO 4217 tag types (155 active plus 29 historic / demonetised).</li>
-<li><a class="xref" href="Bodu.Financial.ExchangeRates.html">Bodu.Financial.ExchangeRates</a> — the exchange-rate stack: values, series, in-memory tables, the timeless / dated provider contracts, and (via the separate <code>Bodu.Financial.ExchangeRates</code> package) the web-provider machinery the per-source feed packages build on.</li>
-<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.html">Bodu.Financial.ExchangeRates.Caching</a> — provider-agnostic read-through caching and aggregation over any provider.</li>
-<li><a class="xref" href="Bodu.Financial.Serialization.Json.html">Bodu.Financial.Serialization.Json</a> — JSON converters and the <code>FinancialJsonPolicy</code> enum (<code>Strict</code>, <code>Lenient</code>, <code>Compact</code>), shipped in the companion <code>Bodu.Financial.Serialization.Json</code> package (the core library is serialization-agnostic).</li>
+<li><a class="xref" href="Bodu.Financial.Currencies.html">Bodu.Financial.Currencies</a> - the runtime currency metadata surface (<code>ICurrency</code>, <code>CurrencyInfo</code>, <code>CurrencyRegistry</code>, <code>CurrencyLookupService</code>, <code>CurrencyCode</code>) plus 184 sealed ISO 4217 tag types (155 active plus 29 historic / demonetised).</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.html">Bodu.Financial.ExchangeRates</a> - the exchange-rate stack: values, series, in-memory tables, the timeless / dated provider contracts, and (via the separate <code>Bodu.Financial.ExchangeRates</code> package) the web-provider machinery the per-source feed packages build on.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.html">Bodu.Financial.ExchangeRates.Caching</a> - provider-agnostic read-through caching and aggregation over any provider.</li>
+<li><a class="xref" href="Bodu.Financial.Serialization.Json.html">Bodu.Financial.Serialization.Json</a> - JSON converters and the <code>FinancialJsonPolicy</code> enum (<code>Strict</code>, <code>Lenient</code>, <code>Compact</code>), shipped in the companion <code>Bodu.Financial.Serialization.Json</code> package (the core library is serialization-agnostic).</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using Bodu.Financial;
@@ -147,10 +147,10 @@ using Bodu.Financial.Currencies;
 
 Money&lt;USD&gt; dinner = new Money&lt;USD&gt;(54.30m);
 Money&lt;USD&gt; tip    = dinner * 0.18m;
-Money&lt;USD&gt; total  = dinner + tip;        // OK — same currency
+Money&lt;USD&gt; total  = dinner + tip;        // OK - same currency
 
 Money&lt;JPY&gt; sushi = new Money&lt;JPY&gt;(2500m);
-// var oops = dinner + sushi;            // Compile error — cannot mix currencies
+// var oops = dinner + sushi;            // Compile error - cannot mix currencies
 
 // Fair allocation that preserves the original total exactly.
 Money&lt;USD&gt;[] shares = new Money&lt;USD&gt;(0.10m).Allocate(3);
@@ -209,7 +209,7 @@ monetary contexts, and exchange-rate providers.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Financial.MonetaryContext.html">MonetaryContext</a></dt>
-      <dd><p>Carries the rounding and scaling policy applied at a monetary operation boundary — multiplication, division,
+      <dd><p>Carries the rounding and scaling policy applied at a monetary operation boundary - multiplication, division,
 conversion, allocation, and the conversion of a high-precision calculation back to a settlement value.</p>
 </dd>
     </dl>
@@ -320,7 +320,7 @@ Interfaces
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Financial.IRoundingStrategy.html">IRoundingStrategy</a></dt>
       <dd><p>Rounds a raw monetary amount to a given number of fractional digits. Implementations encapsulate the rounding
-convention applied at operation boundaries — banker's rounding, away-from-zero, and so on.</p>
+convention applied at operation boundaries - banker's rounding, away-from-zero, and so on.</p>
 </dd>
     </dl>
     <h3 id="enums">
@@ -382,7 +382,7 @@ per-currency balances into a single target-currency total.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

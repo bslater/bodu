@@ -91,17 +91,17 @@
 <p>If you are new to Bodu, start with the <a href="../docs/introduction.html">introduction</a> for the project overview, or the <a href="../docs/getting-started.html">getting-started page</a> for install commands. To choose between hashing or cryptography types that sound similar, see the <a href="../docs/io-hashing/index.html">Bodu.IO.Hashing</a> and <a href="../docs/cryptography/index.html">Bodu.Security.Cryptography</a> introductions.</p>
 <p><strong>Topic guide landings:</strong> <a href="topics/core-foundations.html">Core Foundations</a> · <a href="topics/hashing-and-cryptography.html">Hashing &amp; Cryptography</a> · <a href="topics/globalization-and-calendars.html">Globalization &amp; Calendars</a> · <a href="topics/text-and-serialization.html">Text &amp; Serialization</a> · <a href="topics/configuration.html">Configuration</a> · <a href="topics/numerics-and-financial.html">Numerics &amp; Financial</a> · <a href="topics/binary-formats.html">Binary Formats &amp; I/O</a></p>
 <h2 id="core-foundations">Core Foundations</h2>
-<p>General-purpose building blocks every other package depends on — see the <strong><a href="topics/core-foundations.html">Core Foundations guides landing</a></strong>.</p>
+<p>General-purpose building blocks every other package depends on - see the <strong><a href="topics/core-foundations.html">Core Foundations guides landing</a></strong>.</p>
 <h3 id="boducore">Bodu.Core</h3>
-<p>Day-of-week patterns, pooled buffers, async coordination and railway primitives, memoization, natural string ordering, and date / numeric / span extensions — the <code>Bodu</code>, <code>Bodu.Buffers</code>, <code>Bodu.Extensions</code>, <code>Bodu.Functional</code>, and <code>Bodu.Threading</code> namespaces.</p>
+<p>Day-of-week patterns, pooled buffers, async coordination and railway primitives, memoization, natural string ordering, and date / numeric / span extensions - the <code>Bodu</code>, <code>Bodu.Buffers</code>, <code>Bodu.Extensions</code>, <code>Bodu.Functional</code>, and <code>Bodu.Threading</code> namespaces.</p>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="core/index.html">Overview</a></h3>
-  <p>Namespace map for <code>Bodu.Core</code> and <code>Bodu.Collections</code> — key types and which guide covers each.</p>
+  <p>Namespace map for <code>Bodu.Core</code> and <code>Bodu.Collections</code> - key types and which guide covers each.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="core/week-pattern.html">WeekPattern</a></h3>
-  <p>Immutable bitmask value type for day-of-week sets — composition, parsing, bitwise operators.</p>
+  <p>Immutable bitmask value type for day-of-week sets - composition, parsing, bitwise operators.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="core/natural-string-comparer.html">Natural string comparer</a></h3>
@@ -109,32 +109,32 @@
 </div>
 <div class="bodu-card">
   <h3><a href="core/pooled-buffer-builder.html">Pooled buffer builder</a></h3>
-  <p><code>PooledBufferBuilder&lt;T&gt;</code> — assemble a span from <code>ArrayPool&lt;T&gt;</code>-rented arrays; implements <code>IBufferWriter&lt;T&gt;</code> and <code>IMemoryOwner&lt;T&gt;</code>.</p>
+  <p><code>PooledBufferBuilder&lt;T&gt;</code> - assemble a span from <code>ArrayPool&lt;T&gt;</code>-rented arrays; implements <code>IBufferWriter&lt;T&gt;</code> and <code>IMemoryOwner&lt;T&gt;</code>.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="core/async-primitives.html">Async coordination primitives</a></h3>
-  <p>The <code>Bodu.Threading</code> counterparts of the synchronous <code>System.Threading</code> gates — await a lock or a signal without blocking a thread.</p>
+  <p>The <code>Bodu.Threading</code> counterparts of the synchronous <code>System.Threading</code> gates - await a lock or a signal without blocking a thread.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="core/functional-results.html">Options, results, and eithers</a></h3>
-  <p>The <code>Bodu.Functional</code> railway primitives — <code>Option&lt;T&gt;</code>, <code>Result</code> / <code>Result&lt;T&gt;</code>, and <code>Either&lt;TLeft,TRight&gt;</code>.</p>
+  <p>The <code>Bodu.Functional</code> railway primitives - <code>Option&lt;T&gt;</code>, <code>Result</code> / <code>Result&lt;T&gt;</code>, and <code>Either&lt;TLeft,TRight&gt;</code>.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="core/memoization.html">Memoization</a></h3>
-  <p><code>Memoizer</code> — wrap a pure, expensive <code>Func&lt;…&gt;</code> in a thread-safe result cache.</p>
+  <p><code>Memoizer</code> - wrap a pure, expensive <code>Func&lt;…&gt;</code> in a thread-safe result cache.</p>
 </div>
 </div>
 <p><a class="xref" href="../api/Bodu.html">Bodu API reference</a></p>
 <h3 id="boducollections">Bodu.Collections</h3>
-<p>The specialized collection catalogue (depends on <code>Bodu.Core</code>) — bounded rings, eviction-aware caches, navigable and range-keyed lookups, interval trees, graphs, tries, and probabilistic sketches in the <code>Bodu.Collections.Generic</code>, <code>.Generic.Graphs</code>, <code>.Generic.Trees</code>, and <code>Bodu.Collections.Probabilistic</code> namespaces.</p>
+<p>The specialized collection catalogue (depends on <code>Bodu.Core</code>) - bounded rings, eviction-aware caches, navigable and range-keyed lookups, interval trees, graphs, tries, and probabilistic sketches in the <code>Bodu.Collections.Generic</code>, <code>.Generic.Graphs</code>, <code>.Generic.Trees</code>, and <code>Bodu.Collections.Probabilistic</code> namespaces.</p>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="core/choosing-a-collection.html">Choosing a collection</a></h3>
-  <p>The decision guide — which collection to reach for, without walking every namespace.</p>
+  <p>The decision guide - which collection to reach for, without walking every namespace.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="core/circular-buffer.html">Circular buffer</a></h3>
-  <p>Fixed-capacity FIFO ring buffer — single-threaded and thread-safe variants, overwrite mode, peek / dequeue / try-enqueue patterns.</p>
+  <p>Fixed-capacity FIFO ring buffer - single-threaded and thread-safe variants, overwrite mode, peek / dequeue / try-enqueue patterns.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="core/deque.html">Deque</a></h3>
@@ -145,7 +145,7 @@
   <p>Capacity-bounded key-value store with FIFO, LRU, LFU, MRU, Random, and Second-Chance eviction policies.</p>
 </div>
 </div>
-<p>The remaining collection guides — sequenced and bidirectional dictionaries, indexed priority queue, ordered sets, multiset, multi-value dictionary, segmented buffer, range-keyed lookups, interval tree, bit set, navigable set and dictionary, layered and defaulting dictionaries, the two-key table, probabilistic sketches, graphs, and tries — are listed on the <strong><a href="topics/core-foundations.html">Core Foundations guides landing</a></strong>.</p>
+<p>The remaining collection guides - sequenced and bidirectional dictionaries, indexed priority queue, ordered sets, multiset, multi-value dictionary, segmented buffer, range-keyed lookups, interval tree, bit set, navigable set and dictionary, layered and defaulting dictionaries, the two-key table, probabilistic sketches, graphs, and tries - are listed on the <strong><a href="topics/core-foundations.html">Core Foundations guides landing</a></strong>.</p>
 <p><a class="xref" href="../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a></p>
 <h3 id="boducollectionsconcurrent">Bodu.Collections.Concurrent</h3>
 <p>The thread-safe members of the catalogue (depends on <code>Bodu.Collections</code>), in the <code>Bodu.Collections.Generic.Concurrent</code> namespace.</p>
@@ -158,28 +158,28 @@
 <p><a class="xref" href="../api/Bodu.Collections.Generic.Concurrent.html">Bodu.Collections.Generic.Concurrent API reference</a></p>
 <hr>
 <h2 id="hashing--cryptography">Hashing &amp; Cryptography</h2>
-<p>Non-cryptographic hashing on one side, a formal adversary model on the other — see the <strong><a href="topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides landing</a></strong> for the combined map.</p>
+<p>Non-cryptographic hashing on one side, a formal adversary model on the other - see the <strong><a href="topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides landing</a></strong> for the combined map.</p>
 <h3 id="boduiohashing">Bodu.IO.Hashing</h3>
-<p>Non-cryptographic hashing — fingerprints, checksums, and check digits — built on the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> contract. Nothing here is safe against an adversary; everything is fast and portable.</p>
+<p>Non-cryptographic hashing - fingerprints, checksums, and check digits - built on the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> contract. Nothing here is safe against an adversary; everything is fast and portable.</p>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="io-hashing/index.html">Overview</a></h3>
-  <p>Namespace map (<code>Bodu.IO.Hashing</code>, <code>.Checksums</code>, <code>.CheckDigits</code>) — key types and which guide covers each.</p>
+  <p>Namespace map (<code>Bodu.IO.Hashing</code>, <code>.Checksums</code>, <code>.CheckDigits</code>) - key types and which guide covers each.</p>
 </div>
 </div>
-<h4 id="boduiohashing--fingerprints"><code>Bodu.IO.Hashing</code> — Fingerprints</h4>
+<h4 id="boduiohashing---fingerprints"><code>Bodu.IO.Hashing</code> - Fingerprints</h4>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="io-hashing/fnv.html">Using FNV</a></h3>
-  <p>FNV-1 and FNV-1a at 32- and 64-bit widths — the textbook constant-memory fingerprint.</p>
+  <p>FNV-1 and FNV-1a at 32- and 64-bit widths - the textbook constant-memory fingerprint.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="io-hashing/cityhash.html">Using CityHash</a></h3>
-  <p>32-, 64-, and 128-bit Google CityHash — SIMD-friendly fingerprint for long inputs.</p>
+  <p>32-, 64-, and 128-bit Google CityHash - SIMD-friendly fingerprint for long inputs.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="io-hashing/murmurhash3.html">Using MurmurHash3</a></h3>
-  <p>32- and 128-bit MurmurHash3 — seeded, excellent avalanche.</p>
+  <p>32- and 128-bit MurmurHash3 - seeded, excellent avalanche.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="io-hashing/pearson.html">Using Pearson</a></h3>
@@ -191,9 +191,9 @@
 </div>
 </div>
 <blockquote>
-<p>For xxHash specifically, use <code>System.IO.Hashing.XxHash32</code> / <code>XxHash64</code> / <code>XxHash3</code> / <code>XxHash128</code> from the BCL — Bodu does not duplicate them.</p>
+<p>For xxHash specifically, use <code>System.IO.Hashing.XxHash32</code> / <code>XxHash64</code> / <code>XxHash3</code> / <code>XxHash128</code> from the BCL - Bodu does not duplicate them.</p>
 </blockquote>
-<h4 id="boduiohashingchecksums--checksums"><code>Bodu.IO.Hashing.Checksums</code> — Checksums</h4>
+<h4 id="boduiohashingchecksums---checksums"><code>Bodu.IO.Hashing.Checksums</code> - Checksums</h4>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="io-hashing/crc.html">Using CRC</a></h3>
@@ -201,7 +201,7 @@
 </div>
 <div class="bodu-card">
   <h3><a href="io-hashing/crc-catalogue.html">CRC catalogue</a></h3>
-  <p>Reference table of every named CRC standard — name, width, polynomial, init, reflect, XOR-out.</p>
+  <p>Reference table of every named CRC standard - name, width, polynomial, init, reflect, XOR-out.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="io-hashing/fletcher.html">Using Fletcher</a></h3>
@@ -216,12 +216,12 @@
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="io-hashing/check-digits.html">Check digits overview</a></h3>
-  <p>Luhn, Damm, Verhoeff, EAN, GTIN, ISIN, IBAN, ISBN, SEDOL, CUSIP, ABA routing, LEI — single- and multi-character validators for human-typed identifiers.</p>
+  <p>Luhn, Damm, Verhoeff, EAN, GTIN, ISIN, IBAN, ISBN, SEDOL, CUSIP, ABA routing, LEI - single- and multi-character validators for human-typed identifiers.</p>
 </div>
 </div>
 <p><a class="xref" href="../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing API reference</a></p>
 <h3 id="bodusecuritycryptography">Bodu.Security.Cryptography</h3>
-<p>Cryptographic primitives with a formal adversary model — block ciphers, stream ciphers, AEAD constructions, keyed and unkeyed hashes — derived from the standard BCL base classes (<code>SymmetricAlgorithm</code>, <code>HashAlgorithm</code>).</p>
+<p>Cryptographic primitives with a formal adversary model - block ciphers, stream ciphers, AEAD constructions, keyed and unkeyed hashes - derived from the standard BCL base classes (<code>SymmetricAlgorithm</code>, <code>HashAlgorithm</code>).</p>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="cryptography/index.html">Overview</a></h3>
@@ -232,22 +232,22 @@
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="cryptography/encryption-basics.html">Encryption basics</a></h3>
-  <p>Key, IV, Tweak, BlockMode, Padding — the mental model every cipher in the library follows.</p>
+  <p>Key, IV, Tweak, BlockMode, Padding - the mental model every cipher in the library follows.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="cryptography/cipher-modes.html">Cipher block modes</a></h3>
-  <p>ECB, CBC, CFB, OFB, CTR — one worked round-trip per mode.</p>
+  <p>ECB, CBC, CFB, OFB, CTR - one worked round-trip per mode.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="cryptography/padding.html">Padding</a></h3>
-  <p>PKCS7, Zeros, None, ISO 10126, ISO 7816-4, ANSI X9.23 — how each one pads and when it round-trips cleanly.</p>
+  <p>PKCS7, Zeros, None, ISO 10126, ISO 7816-4, ANSI X9.23 - how each one pads and when it round-trips cleanly.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="cryptography/composing-primitives.html">Composing primitives</a></h3>
   <p><code>IBlockCipher</code> + <code>BlockCipherModeFactory</code> + <code>PaddingFactory</code> vs the <code>SymmetricAlgorithm</code> wrappers.</p>
 </div>
 </div>
-<h4 id="symmetric-ciphers--standard">Symmetric ciphers — Standard</h4>
+<h4 id="symmetric-ciphers---standard">Symmetric ciphers - Standard</h4>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="cryptography/skipjack.html">Using Skipjack</a></h3>
@@ -258,8 +258,8 @@
   <p>Schneier 1993; 64-bit block; expensive key schedule.</p>
 </div>
 </div>
-<p><code>Camellia</code>, <code>Twofish</code>, and <code>Serpent128</code> follow the same <code>SymmetricAlgorithm</code> lifecycle — see the <a class="xref" href="../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography API reference</a> for their parameters.</p>
-<h4 id="symmetric-ciphers--tweakable">Symmetric ciphers — Tweakable</h4>
+<p><code>Camellia</code>, <code>Twofish</code>, and <code>Serpent128</code> follow the same <code>SymmetricAlgorithm</code> lifecycle - see the <a class="xref" href="../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography API reference</a> for their parameters.</p>
+<h4 id="symmetric-ciphers---tweakable">Symmetric ciphers - Tweakable</h4>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="cryptography/threefish-256.html">Using Threefish-256</a></h3>
@@ -274,19 +274,19 @@
   <p>Highest Threefish security margin; 1024-bit block, 1024-bit key, 128-bit tweak.</p>
 </div>
 </div>
-<p><code>Serpent256</code> / <code>Serpent512</code> / <code>Serpent1024</code> are wide-block tweakable Serpent constructions — non-standard, see the <a class="xref" href="../api/Bodu.Security.Cryptography.html">API reference</a> for their parameters.</p>
-<h4 id="symmetric-ciphers--stream">Symmetric ciphers — Stream</h4>
+<p><code>Serpent256</code> / <code>Serpent512</code> / <code>Serpent1024</code> are wide-block tweakable Serpent constructions - non-standard, see the <a class="xref" href="../api/Bodu.Security.Cryptography.html">API reference</a> for their parameters.</p>
+<h4 id="symmetric-ciphers---stream">Symmetric ciphers - Stream</h4>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="cryptography/stream-ciphers.html">Using stream ciphers</a></h3>
-  <p>ChaCha20, XChaCha20, Salsa20, XSalsa20, Rabbit, HC-128 — raw XOR keystream ciphers (no block, no padding). Confidentiality only; pair with a MAC or prefer AEAD.</p>
+  <p>ChaCha20, XChaCha20, Salsa20, XSalsa20, Rabbit, HC-128 - raw XOR keystream ciphers (no block, no padding). Confidentiality only; pair with a MAC or prefer AEAD.</p>
 </div>
 </div>
-<h4 id="symmetric-ciphers--aead">Symmetric ciphers — AEAD</h4>
+<h4 id="symmetric-ciphers---aead">Symmetric ciphers - AEAD</h4>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="cryptography/aead-modes.html">AEAD modes</a></h3>
-  <p>GCM, CCM, OCB, EAX, SIV, GCM-SIV — authenticated encryption using <code>AesBlockCipher</code> + a mode transform.</p>
+  <p>GCM, CCM, OCB, EAX, SIV, GCM-SIV - authenticated encryption using <code>AesBlockCipher</code> + a mode transform.</p>
 </div>
 </div>
 <h4 id="cryptographic-hashes">Cryptographic hashes</h4>
@@ -309,15 +309,15 @@
 </div>
 <div class="bodu-card">
   <h3><a href="cryptography/merkle-trees.html">Merkle trees and proofs</a></h3>
-  <p>The RFC 6962 tree over any inner <code>HashAlgorithm</code> — roots over entries, blocks, or a write-time accumulator; inclusion and consistency proofs; length-bound roots.</p>
+  <p>The RFC 6962 tree over any inner <code>HashAlgorithm</code> - roots over entries, blocks, or a write-time accumulator; inclusion and consistency proofs; length-bound roots.</p>
 </div>
 </div>
-<p><code>Whirlpool</code>, <code>Blake2b</code>, <code>Blake2s</code>, <code>Blake3</code>, <code>Skein256</code> / <code>Skein512</code> / <code>Skein1024</code>, and <code>Shake</code> ship without dedicated walk-throughs — consult the <a class="xref" href="../api/Bodu.Security.Cryptography.html">API reference</a> directly.</p>
+<p><code>Whirlpool</code>, <code>Blake2b</code>, <code>Blake2s</code>, <code>Blake3</code>, <code>Skein256</code> / <code>Skein512</code> / <code>Skein1024</code>, and <code>Shake</code> ship without dedicated walk-throughs - consult the <a class="xref" href="../api/Bodu.Security.Cryptography.html">API reference</a> directly.</p>
 <h4 id="keyed-hashes-mac">Keyed hashes (MAC)</h4>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="cryptography/siphash.html">Using SipHash</a></h3>
-  <p>SipHash-64 / SipHash-128 — keyed PRF for hash-flooding-resistant tables.</p>
+  <p>SipHash-64 / SipHash-128 - keyed PRF for hash-flooding-resistant tables.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="cryptography/poly1305.html">Using Poly1305</a></h3>
@@ -340,13 +340,13 @@
 </div>
 <div class="bodu-card">
   <h3><a href="cryptography/ascon-aead.html">ASCON AEAD</a></h3>
-  <p><code>AsconAead128</code> — sponge-based authenticated encryption.</p>
+  <p><code>AsconAead128</code> - sponge-based authenticated encryption.</p>
 </div>
 </div>
 <p><a class="xref" href="../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography API reference</a></p>
 <hr>
 <h2 id="globalization--calendars">Globalization &amp; Calendars</h2>
-<p>The notable-date runtime, its companions, and the regional data packs — see the <strong><a href="topics/globalization-and-calendars.html">Globalization &amp; Calendars guides landing</a></strong> for the full map including the notable-date catalogue.</p>
+<p>The notable-date runtime, its companions, and the regional data packs - see the <strong><a href="topics/globalization-and-calendars.html">Globalization &amp; Calendars guides landing</a></strong> for the full map including the notable-date catalogue.</p>
 <h3 id="boduglobalizationcalendar">Bodu.Globalization.Calendar</h3>
 <p>Rule-driven notable-date (public holiday, observance, festival) resolution for any year, territory, or calendar system.</p>
 <div class="bodu-cards">
@@ -374,10 +374,10 @@
 <p><a class="xref" href="../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a></p>
 <hr>
 <h2 id="text--serialization">Text &amp; Serialization</h2>
-<p>Binary-to-text codecs, document formats, and object serializers — see the <strong><a href="topics/text-and-serialization.html">Text &amp; Serialization guides landing</a></strong> for the disambiguation between the three jobs.</p>
+<p>Binary-to-text codecs, document formats, and object serializers - see the <strong><a href="topics/text-and-serialization.html">Text &amp; Serialization guides landing</a></strong> for the disambiguation between the three jobs.</p>
 <h3 id="bodutextencoding">Bodu.Text.Encoding</h3>
 <p>Binary-to-text encoders for <strong>Base16</strong>, <strong>Base32</strong>, <strong>Base64</strong>, <strong>Base58</strong>, and <strong>Base85</strong> with every common
-variant — span- and UTF-8-friendly, <code>OperationStatus</code>-aware, with a unified <code>IBinaryEncoding</code> interface for
+variant - span- and UTF-8-friendly, <code>OperationStatus</code>-aware, with a unified <code>IBinaryEncoding</code> interface for
 runtime-pluggable encoding choice.</p>
 <div class="bodu-cards">
 <div class="bodu-card">
@@ -410,17 +410,17 @@ runtime-pluggable encoding choice.</p>
 </div>
 </div>
 <h3 id="bodutextfiltering">Bodu.Text.Filtering</h3>
-<p>Include/exclude filtering for lists of text values — glob and regex patterns compiled once into a
+<p>Include/exclude filtering for lists of text values - glob and regex patterns compiled once into a
 cost-tiered <code>TextFilter</code>, with Ant / MSBuild set semantics or gitignore-style ordered rules and
 built-in match telemetry.</p>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="text-filtering/index.html">Overview</a></h3>
-  <p>How the engine works — compile-once filters, cost-tier classification, and the guide map.</p>
+  <p>How the engine works - compile-once filters, cost-tier classification, and the guide map.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="text-filtering/patterns-and-globs.html">Patterns and globs</a></h3>
-  <p>The full glob grammar — classes, <code>{a,b}</code> alternation, escapes — and when to reach for regex.</p>
+  <p>The full glob grammar - classes, <code>{a,b}</code> alternation, escapes - and when to reach for regex.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="text-filtering/evaluation-modes.html">Evaluation modes</a></h3>
@@ -432,7 +432,7 @@ built-in match telemetry.</p>
 </div>
 </div>
 <h3 id="bodutextformats-delimited--dotenv--ini">Bodu.Text.Formats (Delimited · DotEnv · INI)</h3>
-<p>The line-oriented text formats — <code>Bodu.Text.Delimited</code>, <code>Bodu.Text.DotEnv</code>, and <code>Bodu.Text.Ini</code>, each a
+<p>The line-oriented text formats - <code>Bodu.Text.Delimited</code>, <code>Bodu.Text.DotEnv</code>, and <code>Bodu.Text.Ini</code>, each a
 standalone <code>System.Text.Json</code>-shaped library (token reader/writer, serializer, mutable and read-only DOMs)
 reachable through the <code>Bodu.Text.Formats</code> umbrella package.</p>
 <div class="bodu-cards">
@@ -459,8 +459,8 @@ reachable through the <code>Bodu.Text.Formats</code> umbrella package.</p>
 </div>
 <h3 id="bodutextbencode-bodutexttoml-and-bodutextyaml-serializers">Bodu.Text.Bencode, Bodu.Text.Toml, and Bodu.Text.Yaml (serializers)</h3>
 <p>Three self-contained serializers that map your own types to and from a format.
-They share an architecture and a <code>System.Text.Json</code>-aligned shape — what you learn
-for one transfers to the next — and each has its own guide set.</p>
+They share an architecture and a <code>System.Text.Json</code>-aligned shape - what you learn
+for one transfers to the next - and each has its own guide set.</p>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="serialization/index.html">Overview</a></h3>
@@ -481,7 +481,7 @@ for one transfers to the next — and each has its own guide set.</p>
 </div>
 <hr>
 <h2 id="configuration">Configuration</h2>
-<p>Layered, EditorConfig-style configuration and its <code>Microsoft.Extensions.Configuration</code> bridge — see the <strong><a href="topics/configuration.html">Configuration guides landing</a></strong>.</p>
+<p>Layered, EditorConfig-style configuration and its <code>Microsoft.Extensions.Configuration</code> bridge - see the <strong><a href="topics/configuration.html">Configuration guides landing</a></strong>.</p>
 <h3 id="bodutextconfiguration">Bodu.Text.Configuration</h3>
 <p>Parse a configuration document under one of the four profiles, resolve it for a target path, and read typed values back out.</p>
 <div class="bodu-cards">
@@ -491,7 +491,7 @@ for one transfers to the next — and each has its own guide set.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="text-configuration/parsing-and-profiles.html">Parsing and profiles</a></h3>
-  <p><code>ConfigurationDocument.Parse</code>, <code>ConfigurationParseOptions</code>, and the four profile presets — inline comments, duplicate handling, length limits.</p>
+  <p><code>ConfigurationDocument.Parse</code>, <code>ConfigurationParseOptions</code>, and the four profile presets - inline comments, duplicate handling, length limits.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="text-configuration/views-and-resolution.html">Views and resolution</a></h3>
@@ -499,7 +499,7 @@ for one transfers to the next — and each has its own guide set.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="text-configuration/diagnostics.html">Diagnostics</a></h3>
-  <p>The structured diagnostic surface — modes, severities, and the full <code>ConfigurationDiagnosticCode</code> catalogue.</p>
+  <p>The structured diagnostic surface - modes, severities, and the full <code>ConfigurationDiagnosticCode</code> catalogue.</p>
 </div>
 </div>
 <p><a class="xref" href="../api/Bodu.Text.Configuration.html">Bodu.Text.Configuration API reference</a></p>
@@ -508,7 +508,7 @@ for one transfers to the next — and each has its own guide set.</p>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="extensions-configuration-text/index.html">Overview</a></h3>
-  <p>Namespace map — builder extensions, file and stream sources and providers, DI options helpers.</p>
+  <p>Namespace map - builder extensions, file and stream sources and providers, DI options helpers.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="extensions-configuration-text/configuration-sources.html">Configuration sources</a></h3>
@@ -518,9 +518,9 @@ for one transfers to the next — and each has its own guide set.</p>
 <p><a class="xref" href="../api/Bodu.Extensions.Configuration.Text.html">Bodu.Extensions.Configuration.Text API reference</a></p>
 <hr>
 <h2 id="numerics--financial">Numerics &amp; Financial</h2>
-<p>Exact arithmetic and the monetary primitives built on it — see the <strong><a href="topics/numerics-and-financial.html">Numerics &amp; Financial guides landing</a></strong>.</p>
+<p>Exact arithmetic and the monetary primitives built on it - see the <strong><a href="topics/numerics-and-financial.html">Numerics &amp; Financial guides landing</a></strong>.</p>
 <h3 id="bodunumerics">Bodu.Numerics</h3>
-<p>Generic-math value primitives — exact rational arithmetic and bounded intervals.</p>
+<p>Generic-math value primitives - exact rational arithmetic and bounded intervals.</p>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="numerics/index.html">Overview</a></h3>
@@ -557,7 +557,7 @@ for one transfers to the next — and each has its own guide set.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="financial/exchange-rates.html">Working with exchange rates</a></h3>
-  <p><code>ExchangeRate</code> and <code>ExchangeRate&lt;TBase, TQuote&gt;</code> — conversion, inversion, composition.</p>
+  <p><code>ExchangeRate</code> and <code>ExchangeRate&lt;TBase, TQuote&gt;</code> - conversion, inversion, composition.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="financial/exchange-rate-lookups.html">Exchange-rate lookups</a></h3>
@@ -565,15 +565,15 @@ for one transfers to the next — and each has its own guide set.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="financial/dependency-injection.html">Dependency injection</a></h3>
-  <p><code>AddFinancialService</code> — registering currency lookup, monetary contexts, and rate providers.</p>
+  <p><code>AddFinancialService</code> - registering currency lookup, monetary contexts, and rate providers.</p>
 </div>
 </div>
 <p><a class="xref" href="../api/Bodu.Financial.html">Bodu.Financial API reference</a></p>
 <hr>
 <h2 id="binary-formats--io">Binary Formats &amp; I/O</h2>
-<p>Legacy binary container and document formats — a read/edit/author compound-file container with narrower read-only format readers on top; see the <strong><a href="topics/binary-formats.html">Binary Formats &amp; I/O guides landing</a></strong>.</p>
+<p>Legacy binary container and document formats - a read/edit/author compound-file container with narrower read-only format readers on top; see the <strong><a href="topics/binary-formats.html">Binary Formats &amp; I/O guides landing</a></strong>.</p>
 <h3 id="boduiocompound">Bodu.IO.Compound</h3>
-<p>A reader, editor, and writer for the OLE2 / Compound File Binary (CFB) container — the structured-storage &quot;file system in a file&quot; used by legacy Office documents (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>). It navigates the storage hierarchy, reads the raw byte payload of each named stream, edits and authors containers with a transactional <code>Commit</code> / <code>CommitAsync</code>, and reads and writes the OLE property sets, all with no application-format knowledge.</p>
+<p>A reader, editor, and writer for the OLE2 / Compound File Binary (CFB) container - the structured-storage &quot;file system in a file&quot; used by legacy Office documents (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>). It navigates the storage hierarchy, reads the raw byte payload of each named stream, edits and authors containers with a transactional <code>Commit</code> / <code>CommitAsync</code>, and reads and writes the OLE property sets, all with no application-format knowledge.</p>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="io-compound/index.html">Overview</a></h3>
@@ -594,7 +594,7 @@ for one transfers to the next — and each has its own guide set.</p>
 </div>
 <p><a class="xref" href="../api/Bodu.IO.Compound.html">Bodu.IO.Compound API reference</a></p>
 <h3 id="boduformatsexcelbinary">Bodu.Formats.Excel.Binary</h3>
-<p>A narrow, read-only BIFF8 (<code>.xls</code>) reader built on <code>Bodu.IO.Compound</code>. It surfaces the raw cell values of each worksheet — strings, numbers, booleans, and errors, including a formula cell's cached result — without formula evaluation, styling, or higher-level interpretation.</p>
+<p>A narrow, read-only BIFF8 (<code>.xls</code>) reader built on <code>Bodu.IO.Compound</code>. It surfaces the raw cell values of each worksheet - strings, numbers, booleans, and errors, including a formula cell's cached result - without formula evaluation, styling, or higher-level interpretation.</p>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="excel/index.html">Overview</a></h3>
@@ -610,7 +610,7 @@ for one transfers to the next — and each has its own guide set.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="excel/worksheets-and-rows.html">Streaming vs materialized</a></h3>
-  <p>The forward-only <code>ExcelWorksheetReader</code> versus the randomly addressable <code>ExcelWorksheet</code> — when to reach for each, and how to bound allocation.</p>
+  <p>The forward-only <code>ExcelWorksheetReader</code> versus the randomly addressable <code>ExcelWorksheet</code> - when to reach for each, and how to bound allocation.</p>
 </div>
 </div>
 <p><a class="xref" href="../api/Bodu.Formats.Excel.html">Bodu.Formats.Excel API reference</a></p>
@@ -632,7 +632,7 @@ for one transfers to the next — and each has its own guide set.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

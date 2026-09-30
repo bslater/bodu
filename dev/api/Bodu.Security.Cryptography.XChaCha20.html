@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_XChaCha20" data-uid="Bodu.Security.Cryptography.XChaCha20" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 XChaCha20 Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/XChaCha20.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/XChaCha20.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ XChaCha20 Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/XChaCha20.cs">XChaCha20.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/XChaCha20.cs">XChaCha20.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides a managed implementation of the extended-nonce XChaCha20 stream cipher. This class cannot be inherited.</p>
@@ -273,7 +273,7 @@ using Bodu.Security.Cryptography.Extensions;
 
 using var xchacha = new XChaCha20();
 xchacha.GenerateKey(); // 256-bit
-xchacha.GenerateNonce(); // 192-bit nonce — safe to choose at random
+xchacha.GenerateNonce(); // 192-bit nonce - safe to choose at random
 byte[] ciphertext = xchacha.Encrypt(plaintext);
 byte[] roundTrip  = xchacha.Decrypt(ciphertext);</code></pre>
 
@@ -282,7 +282,7 @@ byte[] roundTrip  = xchacha.Decrypt(ciphertext);</code></pre>
   <div class="markdown level0 remarks"><p>
 XChaCha20 extends RFC 8439 ChaCha20 to a 192-bit nonce, following <code>draft-irtf-cfrg-xchacha</code>. The longer nonce
 is large enough to choose at random per message without meaningful collision risk, which makes XChaCha20 the safer
-default for protocols that cannot guarantee a unique 96-bit counter — the use case behind libsodium's
+default for protocols that cannot guarantee a unique 96-bit counter - the use case behind libsodium's
 <code>crypto_stream_xchacha20</code>.
 </p>
 <p>
@@ -298,7 +298,7 @@ cipher logic.
 </p>
 <ul><li>Key size: 256 bits (32 bytes).</li><li>Nonce (IV) size: 192 bits (24 bytes).</li><li>Block counter: 32-bit, starting at <a class="xref" href="Bodu.Security.Cryptography.XChaCha20.html#Bodu_Security_Cryptography_XChaCha20_InitialCounter">InitialCounter</a> (default 0).</li></ul>
 <p>
-Like ChaCha20 this is the <em>raw</em>, confidentiality-only cipher and is self-inverse — encryptor and decryptor
+Like ChaCha20 this is the <em>raw</em>, confidentiality-only cipher and is self-inverse - encryptor and decryptor
 are interchangeable. For authenticated encryption, pair it with a MAC such as <a class="xref" href="Bodu.Security.Cryptography.Poly1305.html">Poly1305</a>.
 </p>
 </div>
@@ -313,7 +313,7 @@ are interchangeable. For authenticated encryption, pair it with a MAC such as <a
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_XChaCha20__ctor" data-uid="Bodu.Security.Cryptography.XChaCha20.#ctor">
   XChaCha20()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/XChaCha20.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/XChaCha20.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -351,7 +351,7 @@ are interchangeable. For authenticated encryption, pair it with a MAC such as <a
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_XChaCha20_InitialCounter" data-uid="Bodu.Security.Cryptography.XChaCha20.InitialCounter">
   InitialCounter
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/XChaCha20.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/XChaCha20.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -396,7 +396,7 @@ decryptor when matching an external counter convention.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_XChaCha20_Create" data-uid="Bodu.Security.Cryptography.XChaCha20.Create">
   Create()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/XChaCha20.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/XChaCha20.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -433,7 +433,7 @@ decryptor when matching an external counter convention.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_XChaCha20_CreateStreamCipher_System_Byte___System_Byte___" data-uid="Bodu.Security.Cryptography.XChaCha20.CreateStreamCipher(System.Byte[],System.Byte[])">
   CreateStreamCipher(byte[], byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/XChaCha20.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/XChaCha20.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -490,7 +490,7 @@ only construct their engine. Ownership of the returned engine transfers to the c
 
   <h2 id="seealso">See Also</h2>
   <div class="seealso">
-      <div><span><a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha">draft-irtf-cfrg-xchacha — XChaCha:
+      <div><span><a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha">draft-irtf-cfrg-xchacha - XChaCha:
              eXtended-nonce ChaCha and AEAD_XChaCha20_Poly1305</a></span></div>
       <div><a class="xref" href="Bodu.Security.Cryptography.ChaCha20.html">ChaCha20</a></div>
   </div>
@@ -511,7 +511,7 @@ only construct their engine. Ownership of the returned engine transfers to the c
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

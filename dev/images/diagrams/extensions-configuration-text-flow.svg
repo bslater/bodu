@@ -40,7 +40,7 @@
     <rect class="hdr" y="22" width="800" height="8"/>
     <text class="ttl" x="16" y="20">IConfigurationBuilder → IConfiguration → IOptions</text>
 
-    <!-- ===== Top row — LOAD (left-to-right, teal) ===== -->
+    <!-- ===== Top row - LOAD (left-to-right, teal) ===== -->
     <text class="row" x="20" y="58">LOAD  ▸ register source → parse + resolve → populate Data</text>
 
     <g transform="translate(20 70)">
@@ -79,7 +79,7 @@
     <!-- ===== Middle separator ===== -->
     <line x1="20" y1="140" x2="780" y2="140" stroke="#334155" stroke-width="1"/>
 
-    <!-- ===== Bottom row — BIND (left-to-right, amber) ===== -->
+    <!-- ===== Bottom row - BIND (left-to-right, amber) ===== -->
     <text class="row" x="20" y="162" fill="#FBBF24">BIND  ▸ section → POCO via DI</text>
 
     <g transform="translate(20 175)">

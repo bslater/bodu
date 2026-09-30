@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Formats.Outlook — Getting started | BODU </title>
+      <title>Bodu.Formats.Outlook - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Formats.Outlook — Getting started | BODU ">
+      <meta name="title" content="Bodu.Formats.Outlook - Getting started | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,7 +85,7 @@
         </div>
 
         <article data-uid="">
-<h1 id="boduformatsoutlook--getting-started">Bodu.Formats.Outlook — Getting started</h1>
+<h1 id="boduformatsoutlook---getting-started">Bodu.Formats.Outlook - Getting started</h1>
 
 <p>Unfamiliar with terms like <em>property tag</em>, <em>named property</em>, <em>attachment method</em>, <em>code page</em>, or <em>validation level</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
 <h2 id="install">Install</h2>
@@ -96,12 +96,12 @@
 </code></pre>
 <p>Both target <code>net8.0</code> and share the single <code>Bodu.Formats.Outlook</code> namespace. Dependencies, from the project files:</p>
 <ul>
-<li><code>Bodu.Formats.Outlook.Msg</code> — <code>Bodu.Formats.Outlook</code>, <code>Bodu.IO.Compound</code> (the OLE2 container), <code>Bodu.Core</code>, and <code>System.Text.Encoding.CodePages</code> (Windows code pages for <code>String8</code> properties).</li>
-<li><code>Bodu.Formats.Outlook.Pst</code> — <code>Bodu.Formats.Outlook</code>, <code>Bodu.IO.Pst</code> (the node-database container, which itself references <code>Bodu.Collections</code>), <code>Bodu.Core</code>, and <code>System.Text.Encoding.CodePages</code>.</li>
-<li><code>Bodu.Formats.Outlook</code> alone — <code>Bodu.Core</code> only. Reference it directly from a library that models MAPI properties without opening files.</li>
+<li><code>Bodu.Formats.Outlook.Msg</code> - <code>Bodu.Formats.Outlook</code>, <code>Bodu.IO.Compound</code> (the OLE2 container), <code>Bodu.Core</code>, and <code>System.Text.Encoding.CodePages</code> (Windows code pages for <code>String8</code> properties).</li>
+<li><code>Bodu.Formats.Outlook.Pst</code> - <code>Bodu.Formats.Outlook</code>, <code>Bodu.IO.Pst</code> (the node-database container, which itself references <code>Bodu.Collections</code>), <code>Bodu.Core</code>, and <code>System.Text.Encoding.CodePages</code>.</li>
+<li><code>Bodu.Formats.Outlook</code> alone - <code>Bodu.Core</code> only. Reference it directly from a library that models MAPI properties without opening files.</li>
 </ul>
 <h2 id="sniff-before-opening">Sniff before opening</h2>
-<p>Both sessions expose a cheap probe that restores the stream position afterwards. <code>IsMsgFile</code> checks for an OLE2 compound file whose root holds the <code>__properties_version1.0</code> stream (the root class identifier is not required — real-world writers omit it); <code>IsPstFile</code> checks the PST magics and answers <code>true</code> for any variant.</p>
+<p>Both sessions expose a cheap probe that restores the stream position afterwards. <code>IsMsgFile</code> checks for an OLE2 compound file whose root holds the <code>__properties_version1.0</code> stream (the root class identifier is not required - real-world writers omit it); <code>IsPstFile</code> checks the PST magics and answers <code>true</code> for any variant.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Formats.Outlook;
 
@@ -136,7 +136,7 @@ foreach (OutlookAttachment attachment in message.Attachments)
 </code></pre>
 <p>Every convenience is nullable and returns <code>null</code> when the message does not carry the underlying property. The session is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a>: the <code>using</code> declaration closes the container and the source stream unless <code>leaveOpen: true</code> was passed to a stream overload.</p>
 <h2 id="open-a-pst-file-and-walk-the-folders">Open a <code>.pst</code> file and walk the folders</h2>
-<p><code>RootFolder</code> is structural — user folders (the IPM subtree) hang beneath it — so walk <code>EnumerateSubfolders</code> recursively. Enumerations stream the folder's tables one row block at a time; nothing is materialized ahead of iteration.</p>
+<p><code>RootFolder</code> is structural - user folders (the IPM subtree) hang beneath it - so walk <code>EnumerateSubfolders</code> recursively. Enumerations stream the folder's tables one row block at a time; nothing is materialized ahead of iteration.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Formats.Outlook;
 
@@ -152,7 +152,7 @@ static void Walk(OutlookMailFolder folder, int indent)
         $&quot;{folder.MessageCount?.ToString() ?? &quot;?&quot;} messages, {folder.UnreadCount?.ToString() ?? &quot;?&quot;} unread&quot;);
 
     foreach (OutlookMailMessage message in folder.EnumerateMessages())
-        Console.WriteLine($&quot;{pad}  {message.SentTime:u}  {message.Subject} — {message.SenderName}&quot;);
+        Console.WriteLine($&quot;{pad}  {message.SentTime:u}  {message.Subject} - {message.SenderName}&quot;);
 
     foreach (OutlookMailFolder child in folder.EnumerateSubfolders())
         Walk(child, indent + 1);
@@ -174,7 +174,7 @@ string body = message.BodyText
 Console.WriteLine(body);
 </code></pre>
 <h2 id="save-an-attachment-and-open-an-attached-message">Save an attachment and open an attached message</h2>
-<p>Check <code>Method</code> before choosing the accessor — <code>OpenContentStream()</code> serves a by-value payload, <code>OpenMessage()</code> an embedded message, and each throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> for the other kinds.</p>
+<p>Check <code>Method</code> before choosing the accessor - <code>OpenContentStream()</code> serves a by-value payload, <code>OpenMessage()</code> an embedded message, and each throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> for the other kinds.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Formats.Outlook;
 
@@ -219,11 +219,11 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 }
 </code></pre>
 <h2 id="look-up-a-named-property">Look up a named property</h2>
-<p>Named identifiers (at or above <code>0x8000</code>) are assigned per file. Resolve the durable identity — a property-set GUID plus a number or a name — to this file's identifier, then address the property collection with the expected wire type. The two members have the same names on both sessions; the <code>.pst</code> mapping is store-wide.</p>
+<p>Named identifiers (at or above <code>0x8000</code>) are assigned per file. Resolve the durable identity - a property-set GUID plus a number or a name - to this file's identifier, then address the property collection with the expected wire type. The two members have the same names on both sessions; the <code>.pst</code> mapping is store-wide.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Formats.Outlook;
 
-// PS_PUBLIC_STRINGS &quot;Keywords&quot; — the category list.
+// PS_PUBLIC_STRINGS &quot;Keywords&quot; - the category list.
 var keywords = new MapiNamedProperty(
     new Guid(&quot;00020329-0000-0000-C000-000000000046&quot;), &quot;Keywords&quot;);
 
@@ -290,9 +290,9 @@ var options = new OutlookMailStoreReaderOptions
 
 using var store = OutlookMailStore.Open(File.OpenRead(&quot;archive.pst&quot;), options);
 </code></pre>
-<p>The defaults — <code>Compatible</code> validation, 16 levels of nesting, 64 MiB of decompressed RTF, 1 MiB of inline attachment, and (for <code>.pst</code>) 256 MiB of node data — suit real-world files; see <a href="concepts.html#resource-limits">resource limits</a> for what each one guards.</p>
+<p>The defaults - <code>Compatible</code> validation, 16 levels of nesting, 64 MiB of decompressed RTF, 1 MiB of inline attachment, and (for <code>.pst</code>) 256 MiB of node data - suit real-world files; see <a href="concepts.html#resource-limits">resource limits</a> for what each one guards.</p>
 <h2 id="handle-malformed-input">Handle malformed input</h2>
-<p>The two readers report failures differently beneath the shared <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookFormatException.html">OutlookFormatException</a> base. The <code>.msg</code> reader wraps container corruption — the <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a> is the <code>InnerException</code> — while the <code>.pst</code> reader lets the <a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a> family propagate unwrapped and reserves <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a> for messaging-level violations.</p>
+<p>The two readers report failures differently beneath the shared <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookFormatException.html">OutlookFormatException</a> base. The <code>.msg</code> reader wraps container corruption - the <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a> is the <code>InnerException</code> - while the <code>.pst</code> reader lets the <a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a> family propagate unwrapped and reserves <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a> for messaging-level violations.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Formats.Outlook;
 
@@ -324,7 +324,7 @@ catch (PstUnsupportedFormatException)
 }
 catch (PstFileException ex)
 {
-    Console.WriteLine($&quot;Container corruption: {ex.Error} — {ex.Message}&quot;);
+    Console.WriteLine($&quot;Container corruption: {ex.Error} - {ex.Message}&quot;);
 }
 catch (OutlookPstFormatException ex)
 {
@@ -333,11 +333,11 @@ catch (OutlookPstFormatException ex)
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — the vocabulary in depth, including the code-page and resource-limit rules.</li>
-<li><strong><a href="index.html">Introduction</a></strong> — the package table, scenarios, and headline types.</li>
-<li><strong><a href="../../guides/outlook/reading-msg-files.html">Reading <code>.msg</code> files</a></strong> and <strong><a href="../../guides/outlook/properties-and-named-properties.html">Properties and named properties</a></strong> — the recipe-style guides.</li>
-<li><strong><a href="../io-pst/getting-started.html">Bodu.IO.Pst getting started</a></strong> and the <strong><a href="../../samples/io-pst.html">PST runnable sample</a></strong> — the container beneath the mail-store reader.</li>
-<li><strong>API reference</strong> — <a class="xref" href="../../api/Bodu.Formats.Outlook.html">Bodu.Formats.Outlook</a> · <a class="xref" href="../../api/Bodu.IO.Compound.html">Bodu.IO.Compound</a> · <a class="xref" href="../../api/Bodu.IO.Pst.html">Bodu.IO.Pst</a>.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - the vocabulary in depth, including the code-page and resource-limit rules.</li>
+<li><strong><a href="index.html">Introduction</a></strong> - the package table, scenarios, and headline types.</li>
+<li><strong><a href="../../guides/outlook/reading-msg-files.html">Reading <code>.msg</code> files</a></strong> and <strong><a href="../../guides/outlook/properties-and-named-properties.html">Properties and named properties</a></strong> - the recipe-style guides.</li>
+<li><strong><a href="../io-pst/getting-started.html">Bodu.IO.Pst getting started</a></strong> and the <strong><a href="../../samples/io-pst.html">PST runnable sample</a></strong> - the container beneath the mail-store reader.</li>
+<li><strong>API reference</strong> - <a class="xref" href="../../api/Bodu.Formats.Outlook.html">Bodu.Formats.Outlook</a> · <a class="xref" href="../../api/Bodu.IO.Compound.html">Bodu.IO.Compound</a> · <a class="xref" href="../../api/Bodu.IO.Pst.html">Bodu.IO.Pst</a>.</li>
 </ul>
 
 </article>
@@ -357,7 +357,7 @@ catch (OutlookPstFormatException ex)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

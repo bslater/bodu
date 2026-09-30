@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Financial.Serialization.Json — Getting started | BODU </title>
+      <title>Bodu.Financial.Serialization.Json - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Financial.Serialization.Json — Getting started | BODU ">
+      <meta name="title" content="Bodu.Financial.Serialization.Json - Getting started | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,7 +85,7 @@
         </div>
 
         <article data-uid="">
-<h1 id="bodufinancialserializationjson--getting-started">Bodu.Financial.Serialization.Json — Getting started</h1>
+<h1 id="bodufinancialserializationjson---getting-started">Bodu.Financial.Serialization.Json - Getting started</h1>
 
 <p>Unfamiliar with terms like <em>policy</em>, <em>canonical object shape</em>, <em>compact form</em>, <em>scale</em>, or <em>keyed options</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
 <h2 id="install">Install</h2>
@@ -99,7 +99,7 @@ using Bodu.Financial;
 using Bodu.Financial.Currencies;
 using Bodu.Financial.Serialization.Json;
 
-// Registration is required — the core types carry no [JsonConverter] attribute.
+// Registration is required - the core types carry no [JsonConverter] attribute.
 var options = new JsonSerializerOptions().AddFinancialJsonConverters();   // Strict
 
 string json = JsonSerializer.Serialize(new Money&lt;USD&gt;(19.99m), options);
@@ -120,7 +120,7 @@ catch (JsonException ex)
 </code></pre>
 <h3 id="runtime-tagged-amounts-and-bags">Runtime-tagged amounts and bags</h3>
 <pre><code class="lang-csharp">Money invoice = JsonSerializer.Deserialize&lt;Money&gt;(&quot;&quot;&quot;{ &quot;amount&quot;: 2500, &quot;currency&quot;: &quot;JPY&quot; }&quot;&quot;&quot;, options);
-// JPY 2500 — rounded to the registry's zero minor units
+// JPY 2500 - rounded to the registry's zero minor units
 
 MoneyBag wallet = MoneyBag.Empty
     .Add(new Money&lt;USD&gt;(100m))
@@ -150,13 +150,13 @@ JsonSerializer.Serialize(unitPrice, options);   // {&quot;amount&quot;:145.67891
 JsonSerializer.Serialize(unitPrice, compact);   // &quot;145.678912 USD&quot;
 
 Money restored = JsonSerializer.Deserialize&lt;Money&gt;(&quot;\&quot;145.678912 USD\&quot;&quot;, compact);
-Console.WriteLine(restored.MinorUnits);         // 6 — inferred from the printed digits
+Console.WriteLine(restored.MinorUnits);         // 6 - inferred from the printed digits
 </code></pre>
 <h3 id="transport-an-unsettled-amount">Transport an unsettled amount</h3>
 <pre><code class="lang-csharp">CalculatedMoney running = new CalculatedMoney(0.0325125m, CurrencyCode.USD);   // e.g. a per-unit rate not yet settled
 
 string wire = JsonSerializer.Serialize(running, options);
-// {&quot;amount&quot;:0.0325125,&quot;currency&quot;:&quot;USD&quot;} — the unrounded decimal verbatim
+// {&quot;amount&quot;:0.0325125,&quot;currency&quot;:&quot;USD&quot;} - the unrounded decimal verbatim
 
 CalculatedMoney received = JsonSerializer.Deserialize&lt;CalculatedMoney&gt;(wire, options);
 Money settled = received.RoundToMoney();        // one rounding event, after transport
@@ -177,7 +177,7 @@ JsonSerializer.Serialize(new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD), c
 </code></pre>
 <p>The rate reader accepts both shapes under any policy, so a <code>Compact</code> writer and a <code>Strict</code> reader interoperate.</p>
 <h3 id="register-one-converter-by-hand">Register one converter by hand</h3>
-<p>When only one type needs a converter — or a single <code>TCurrency</code> — add it directly instead of the whole set:</p>
+<p>When only one type needs a converter - or a single <code>TCurrency</code> - add it directly instead of the whole set:</p>
 <pre><code class="lang-csharp">var narrow = new JsonSerializerOptions();
 narrow.Converters.Add(new MoneyOfTCurrencyJsonConverter&lt;USD&gt;(FinancialJsonPolicy.Compact));   // Money&lt;USD&gt; only
 narrow.Converters.Add(new CurrencyPairJsonConverter());                                       // Strict by default
@@ -201,12 +201,12 @@ string payload = JsonSerializer.Serialize(new Money&lt;USD&gt;(19.99m), financia
 <p>In a class, inject it with <code>[FromKeyedServices(FinancialJsonServiceCollectionExtensions.JsonOptionsKey)] JsonSerializerOptions options</code>.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — vocabulary refresher.</li>
-<li><strong><a href="index.html">Introduction</a></strong> — the converter table and scenario index.</li>
-<li><strong><a href="../../guides/financial/json-serialization.html">Financial JSON serialization guide</a></strong> — every wire shape under every policy, the failure-mode table, and migration notes.</li>
-<li><strong><a href="../financial/getting-started.html">Bodu.Financial getting started</a></strong> — the money types being serialized.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.html">Bodu.Financial.Serialization.Json API reference</a></strong> — full type-by-type docs.</li>
-<li><strong><a href="../../samples/financial.html">Runnable samples</a></strong> — <code>Bodu.Financial.Samples.JsonSerialization</code> runs the three policies side by side; <code>Bodu.Financial.Samples.UnitPricing</code> runs every scale shape.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - vocabulary refresher.</li>
+<li><strong><a href="index.html">Introduction</a></strong> - the converter table and scenario index.</li>
+<li><strong><a href="../../guides/financial/json-serialization.html">Financial JSON serialization guide</a></strong> - every wire shape under every policy, the failure-mode table, and migration notes.</li>
+<li><strong><a href="../financial/getting-started.html">Bodu.Financial getting started</a></strong> - the money types being serialized.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.html">Bodu.Financial.Serialization.Json API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="../../samples/financial.html">Runnable samples</a></strong> - <code>Bodu.Financial.Samples.JsonSerialization</code> runs the three policies side by side; <code>Bodu.Financial.Samples.UnitPricing</code> runs every scale shape.</li>
 </ul>
 
 </article>
@@ -226,7 +226,7 @@ string payload = JsonSerializer.Serialize(new Money&lt;USD&gt;(19.99m), financia
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

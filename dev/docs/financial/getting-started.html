@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Financial — Getting started | BODU </title>
+      <title>Bodu.Financial - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Financial — Getting started | BODU ">
+      <meta name="title" content="Bodu.Financial - Getting started | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,7 +85,7 @@
         </div>
 
         <article data-uid="">
-<h1 id="bodufinancial--getting-started">Bodu.Financial — Getting started</h1>
+<h1 id="bodufinancial---getting-started">Bodu.Financial - Getting started</h1>
 
 <h2 id="install">Install</h2>
 <pre><code class="lang-bash">dotnet add package Bodu.Financial
@@ -98,26 +98,26 @@ using Bodu.Financial.Currencies;
 
 Money&lt;USD&gt; dinner = new Money&lt;USD&gt;(54.30m);
 Money&lt;USD&gt; tip    = dinner * 0.18m;
-Money&lt;USD&gt; total  = dinner + tip;       // OK — same currency
+Money&lt;USD&gt; total  = dinner + tip;       // OK - same currency
 
 Money&lt;JPY&gt; sushi = new Money&lt;JPY&gt;(2500m);
-var oops = dinner + sushi;              // Compile error — cannot add USD to JPY
+var oops = dinner + sushi;              // Compile error - cannot add USD to JPY
 </code></pre>
 <p>Construction rounds to the currency's minor-unit precision using banker's rounding:</p>
 <ul>
-<li><code>MinorUnits = 0</code> — <code>JPY</code>, <code>KRW</code>, <code>CLP</code>, <code>ISK</code>, <code>VND</code>, <code>XAF</code>, <code>XOF</code>, …</li>
-<li><code>MinorUnits = 2</code> — <code>USD</code>, <code>EUR</code>, <code>GBP</code>, <code>AUD</code>, <code>CAD</code>, <code>CHF</code>, and most others.</li>
-<li><code>MinorUnits = 3</code> — <code>BHD</code>, <code>IQD</code>, <code>JOD</code>, <code>KWD</code>, <code>LYD</code>, <code>OMR</code>, <code>TND</code>.</li>
+<li><code>MinorUnits = 0</code> - <code>JPY</code>, <code>KRW</code>, <code>CLP</code>, <code>ISK</code>, <code>VND</code>, <code>XAF</code>, <code>XOF</code>, …</li>
+<li><code>MinorUnits = 2</code> - <code>USD</code>, <code>EUR</code>, <code>GBP</code>, <code>AUD</code>, <code>CAD</code>, <code>CHF</code>, and most others.</li>
+<li><code>MinorUnits = 3</code> - <code>BHD</code>, <code>IQD</code>, <code>JOD</code>, <code>KWD</code>, <code>LYD</code>, <code>OMR</code>, <code>TND</code>.</li>
 </ul>
 <h3 id="cross-currency-conversion">Cross-currency conversion</h3>
 <pre><code class="lang-csharp">Money&lt;USD&gt; usd = new Money&lt;USD&gt;(100m);
 Money&lt;JPY&gt; jpy = usd.Convert&lt;JPY&gt;(155.5m);   // 15,550 JPY (0 dp)
 Money&lt;EUR&gt; eur = usd.Convert&lt;EUR&gt;(0.93m);    // 93.00 EUR (2 dp)
 </code></pre>
-<p>No implicit conversion — the rate must be supplied. Rounding is applied to the destination currency's minor-unit precision.</p>
+<p>No implicit conversion - the rate must be supplied. Rounding is applied to the destination currency's minor-unit precision.</p>
 <h3 id="fair-allocation">Fair allocation</h3>
 <pre><code class="lang-csharp">Money&lt;USD&gt;[] shares = new Money&lt;USD&gt;(0.10m).Allocate(3);
-// [0.04, 0.03, 0.03]  — sums to exactly 0.10
+// [0.04, 0.03, 0.03]  - sums to exactly 0.10
 
 decimal[] ratios = { 1m, 1m, 2m };
 Money&lt;USD&gt;[] split = new Money&lt;USD&gt;(100m).Allocate(ratios);
@@ -141,8 +141,8 @@ Money&lt;USD&gt; balance = Money&lt;USD&gt;.FromFraction(exact);   // one roundi
 </code></pre>
 <p>Single-step variant: <code>principal.MultiplyExact(growth)</code>.</p>
 <h3 id="deferred-rounding-with-calculatedmoney">Deferred rounding with <code>CalculatedMoney</code></h3>
-<p>When you only need to defer rounding across a chain of <code>decimal</code> steps
-— not full rational exactness — <code>Money&lt;T&gt;.ToCalculated()</code> returns a
+<p>When you only need to defer rounding across a chain of <code>decimal</code> steps -
+not full rational exactness - <code>Money&lt;T&gt;.ToCalculated()</code> returns a
 runtime-tagged <a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a> that carries the
 full <code>decimal</code> precision through arithmetic and rounds once, at the
 settlement boundary:</p>
@@ -157,9 +157,9 @@ integer-cent representation ledgers and wire formats use:</p>
 Money&lt;USD&gt; back = Money&lt;USD&gt;.FromMinorUnits(1999);     // USD 19.99
 </code></pre>
 <h3 id="runtime-tagged-amounts-money">Runtime-tagged amounts (<code>Money</code>)</h3>
-<pre><code class="lang-csharp">// `options` is a JsonSerializerOptions with the financial converters registered — see the JSON section below.
+<pre><code class="lang-csharp">// `options` is a JsonSerializerOptions with the financial converters registered - see the JSON section below.
 Money invoice = JsonSerializer.Deserialize&lt;Money&gt;(payload, options)!;
-// invoice could be &quot;USD 19.99&quot;, &quot;EUR 19.99&quot;, or &quot;JPY 200&quot; — same code path.
+// invoice could be &quot;USD 19.99&quot;, &quot;EUR 19.99&quot;, or &quot;JPY 200&quot; - same code path.
 
 Money total = invoice + new Money(5m, invoice.Code);   // Code is the CurrencyCode enum
 
@@ -173,7 +173,7 @@ bool ok = invoice.TryAs(out Money&lt;USD&gt; r);   // safe variant
     .Add(new Money&lt;JPY&gt;(10_000m));
 
 wallet.GetBalance&lt;USD&gt;();              // Money&lt;USD&gt;? 100.00
-wallet.GetBalance(CurrencyCode.EUR);   // Money? — EUR 50.00
+wallet.GetBalance(CurrencyCode.EUR);   // Money? - EUR 50.00
 wallet.Count;                          // 3
 </code></pre>
 <p>Convert the bag to a single target currency via an <code>IRateProvider</code>:</p>
@@ -209,7 +209,7 @@ Console.WriteLine($&quot;Offset: {lookup.OffsetDays} day(s), exact: {lookup.IsEx
 <h3 id="cash-rounding">Cash rounding</h3>
 <pre><code class="lang-csharp">new Money&lt;CHF&gt;(12.34m).RoundToCash();    // CHF 12.35
 new Money&lt;NZD&gt;(5.07m).RoundToCash();     // NZD 5.10
-new Money&lt;USD&gt;(19.99m).RoundToCash();    // USD 19.99 — no-op, no cash increment
+new Money&lt;USD&gt;(19.99m).RoundToCash();    // USD 19.99 - no-op, no cash increment
 </code></pre>
 <p>The currency's <code>CashRoundingIncrement</code> (e.g. <code>0.05m</code> for CHF) drives the snap. Electronic transactions retain full minor-unit precision; use <code>RoundToCash()</code> only at the point a total becomes a cash payment.</p>
 <h3 id="json">JSON</h3>
@@ -220,13 +220,13 @@ new Money&lt;USD&gt;(19.99m).RoundToCash();    // USD 19.99 — no-op, no cash i
 
 var options = new JsonSerializerOptions().AddFinancialJsonConverters();
 </code></pre>
-<p>For lenient parsing or the compact string form (<code>&quot;19.99 USD&quot;</code>), pass an explicit policy — for example <code>options.AddFinancialJsonConverters(FinancialJsonPolicy.Compact)</code>.</p>
+<p>For lenient parsing or the compact string form (<code>&quot;19.99 USD&quot;</code>), pass an explicit policy - for example <code>options.AddFinancialJsonConverters(FinancialJsonPolicy.Compact)</code>.</p>
 <h3 id="a-unit-outside-the-shipped-catalogue">A unit outside the shipped catalogue</h3>
 <p>The runtime <code>Money</code> is closed to the shipped <code>CurrencyCode</code> set. For a
 generic amount in a unit outside ISO 4217, declare your own <code>ICurrency</code>
 tag (its <code>IsoCode</code> must be three uppercase ASCII letters) and use
 <code>Money&lt;TCurrency&gt;</code>; it carries its own precision and stays in the
-generic world — it cannot bridge to the runtime <code>Money</code>.</p>
+generic world - it cannot bridge to the runtime <code>Money</code>.</p>
 <pre><code class="lang-csharp">public sealed class XPT : ICurrency      // troy ounces of platinum, say
 {
     public static string IsoCode   =&gt; &quot;XPT&quot;;
@@ -238,11 +238,11 @@ Money&lt;XPT&gt; holding = new Money&lt;XPT&gt;(12.3456m);
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="index.html">Bodu.Financial introduction</a></strong> — namespaces, headline types, scenarios.</li>
-<li><strong><a href="../../guides/financial/money.html">Working with <code>Money&lt;TCurrency&gt;</code></a></strong> — the full reference for typed money, including formatting/parsing, locale-aware output, cash rounding, historic-currency metadata, <code>Money</code> interop, and <code>MoneyBag</code> portfolios.</li>
-<li><strong><a href="../numerics/getting-started.html">Bodu.Numerics getting started</a></strong> — for the <code>Fraction&lt;BigInteger&gt;</code> precision escape hatch used by <code>Money&lt;T&gt;.ToFraction()</code>.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Financial.html">Bodu.Financial API reference</a></strong> — full type-by-type docs.</li>
-<li><strong><a href="../../samples/financial.html">Runnable samples</a></strong> — offline sample projects under <code>samples/Financial/</code> you can <code>dotnet run</code> and copy from.</li>
+<li><strong><a href="index.html">Bodu.Financial introduction</a></strong> - namespaces, headline types, scenarios.</li>
+<li><strong><a href="../../guides/financial/money.html">Working with <code>Money&lt;TCurrency&gt;</code></a></strong> - the full reference for typed money, including formatting/parsing, locale-aware output, cash rounding, historic-currency metadata, <code>Money</code> interop, and <code>MoneyBag</code> portfolios.</li>
+<li><strong><a href="../numerics/getting-started.html">Bodu.Numerics getting started</a></strong> - for the <code>Fraction&lt;BigInteger&gt;</code> precision escape hatch used by <code>Money&lt;T&gt;.ToFraction()</code>.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Financial.html">Bodu.Financial API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="../../samples/financial.html">Runnable samples</a></strong> - offline sample projects under <code>samples/Financial/</code> you can <code>dotnet run</code> and copy from.</li>
 </ul>
 
 </article>
@@ -262,7 +262,7 @@ Money&lt;XPT&gt; holding = new Money&lt;XPT&gt;(12.3456m);
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

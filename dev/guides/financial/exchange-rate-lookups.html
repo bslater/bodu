@@ -91,7 +91,7 @@
 for. Markets close on weekends and holidays, feeds skip days, and
 accounting periods end on dates no rate was ever published for.
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupOptions.html"><code>RateLookupOptions</code></a>
-is the single knob that decides <em>what happens on a miss</em> — which
+is the single knob that decides <em>what happens on a miss</em> - which
 neighbouring observation (if any) answers the request, and how far
 the lookup is allowed to reach.</p>
 <p>This page pins one small dataset and walks the <strong>same requests</strong>
@@ -102,7 +102,7 @@ changes the result. For the narrative tour of the provider stack, see
 <a href="exchange-types.html">Exchange-rate types</a>.</p>
 <h2 id="the-dataset">The dataset</h2>
 <p>Four <code>USD → EUR</code> observations from one provider (<code>&quot;ECB&quot;</code>), with two
-deliberate gaps — a four-day gap that brackets a weekend, and a
+deliberate gaps - a four-day gap that brackets a weekend, and a
 three-day gap at the end:</p>
 <table>
 <thead>
@@ -165,7 +165,7 @@ a miss either returns <code>false</code> (<code>TryGetRate</code>) or throws
 <code>KeyNotFoundException</code> (<code>GetRate</code>).</p>
 <h2 id="how-resolution-works-in-one-paragraph">How resolution works in one paragraph</h2>
 <p>A lookup first does a binary search for the <strong>exact</strong> requested date.
-On a hit it returns immediately — the policy and tolerance are never
+On a hit it returns immediately - the policy and tolerance are never
 consulted. On a miss it identifies the two bracketing observations
 (<code>previous</code> = the nearest earlier date, <code>next</code> = the nearest later
 date), the
@@ -173,7 +173,7 @@ date), the
 policy picks one of them (or neither), and <em>finally</em> the chosen
 candidate's distance from the requested date is compared against
 <code>ToleranceDays</code>. If the candidate is farther than the tolerance, the
-lookup fails. The tolerance is checked <strong>after</strong> selection — a policy
+lookup fails. The tolerance is checked <strong>after</strong> selection - a policy
 never switches to the other side because its first choice was out of
 range.</p>
 <h2 id="the-six-date-resolution-policies">The six date-resolution policies</h2>
@@ -194,7 +194,7 @@ options directly.</p>
 <tr>
 <td><code>Exact</code></td>
 <td><code>RateLookupOptions.Exact</code></td>
-<td>nothing — exact date or fail.</td>
+<td>nothing - exact date or fail.</td>
 </tr>
 <tr>
 <td><code>PreviousOnOrBefore</code></td>
@@ -235,7 +235,7 @@ new RateLookupOptions(RateDateResolution.NearestPreferNext, toleranceDays: 7);
 </code></pre>
 <div class="NOTE">
 <h5>Note</h5>
-<p><code>Exact</code> requires <code>ToleranceDays == 0</code> — a non-zero tolerance with
+<p><code>Exact</code> requires <code>ToleranceDays == 0</code> - a non-zero tolerance with
 <code>Exact</code> throws <code>ArgumentException</code> from
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupOptions.html"><code>RateLookupOptions.Validate()</code></a>.
 The factories enforce this for you.</p>
@@ -243,7 +243,7 @@ The factories enforce this for you.</p>
 <h2 id="the-results-matrix">The results matrix</h2>
 <p>Five requested dates against the dataset, each run through all six
 policies with a tolerance wide enough not to interfere (<code>7</code> days). A
-cell shows the <strong>resolved observation → rate</strong>; <code>—</code> means the lookup
+cell shows the <strong>resolved observation → rate</strong>; <code>-</code> means the lookup
 fails (returns <code>false</code> / throws).</p>
 <table>
 <thead>
@@ -259,7 +259,7 @@ fails (returns <code>false</code> / throws).</p>
 </thead>
 <tbody>
 <tr>
-<td><strong><code>06-14</code></strong> Fri — exact hit</td>
+<td><strong><code>06-14</code></strong> Fri - exact hit</td>
 <td><code>06-14</code> → <code>0.9280</code></td>
 <td><code>06-14</code> → <code>0.9280</code></td>
 <td><code>06-14</code> → <code>0.9280</code></td>
@@ -268,8 +268,8 @@ fails (returns <code>false</code> / throws).</p>
 <td><code>06-14</code> → <code>0.9280</code></td>
 </tr>
 <tr>
-<td><strong><code>06-15</code></strong> Sat — prev 1d / next 3d</td>
-<td>—</td>
+<td><strong><code>06-15</code></strong> Sat - prev 1d / next 3d</td>
+<td>-</td>
 <td><code>06-14</code> → <code>0.9280</code></td>
 <td><code>06-18</code> → <code>0.9300</code></td>
 <td><code>06-14</code> → <code>0.9280</code></td>
@@ -277,28 +277,28 @@ fails (returns <code>false</code> / throws).</p>
 <td><code>06-14</code> → <code>0.9280</code></td>
 </tr>
 <tr>
-<td><strong><code>06-16</code></strong> Sun — tie 2d / 2d</td>
-<td>—</td>
+<td><strong><code>06-16</code></strong> Sun - tie 2d / 2d</td>
+<td>-</td>
 <td><code>06-14</code> → <code>0.9280</code></td>
 <td><code>06-18</code> → <code>0.9300</code></td>
-<td><strong>—</strong> <em>(tie)</em></td>
+<td><strong>-</strong> <em>(tie)</em></td>
 <td><code>06-14</code> → <code>0.9280</code></td>
 <td><code>06-18</code> → <code>0.9300</code></td>
 </tr>
 <tr>
-<td><strong><code>06-08</code></strong> Sat — before first</td>
-<td>—</td>
-<td><strong>—</strong> <em>(no earlier)</em></td>
+<td><strong><code>06-08</code></strong> Sat - before first</td>
+<td>-</td>
+<td><strong>-</strong> <em>(no earlier)</em></td>
 <td><code>06-10</code> → <code>0.9250</code></td>
 <td><code>06-10</code> → <code>0.9250</code></td>
 <td><code>06-10</code> → <code>0.9250</code></td>
 <td><code>06-10</code> → <code>0.9250</code></td>
 </tr>
 <tr>
-<td><strong><code>06-25</code></strong> Tue — after last</td>
-<td>—</td>
+<td><strong><code>06-25</code></strong> Tue - after last</td>
+<td>-</td>
 <td><code>06-21</code> → <code>0.9330</code></td>
-<td><strong>—</strong> <em>(no later)</em></td>
+<td><strong>-</strong> <em>(no later)</em></td>
 <td><code>06-21</code> → <code>0.9330</code></td>
 <td><code>06-21</code> → <code>0.9330</code></td>
 <td><code>06-21</code> → <code>0.9330</code></td>
@@ -308,7 +308,7 @@ fails (returns <code>false</code> / throws).</p>
 <p>Three rows carry the whole lesson:</p>
 <ul>
 <li><strong><code>06-15</code></strong> sits closer to the earlier observation (1 day vs 3). All
-three <code>Nearest*</code> policies therefore land on <code>06-14</code> — when the two
+three <code>Nearest*</code> policies therefore land on <code>06-14</code> - when the two
 sides are <em>unequal</em>, the preference is irrelevant and the genuinely
 closer date always wins.</li>
 <li><strong><code>06-16</code></strong> is the exact midpoint of the four-day gap. This is the
@@ -327,7 +327,7 @@ carries the rest of the story so an audit trail never has to recompute
 it:</p>
 <pre><code class="lang-csharp">RateLookupResult r = provider.GetRate(
     &quot;USD&quot;, &quot;EUR&quot;,
-    new DateOnly(2024, 6, 15),                  // Saturday — no observation
+    new DateOnly(2024, 6, 15),                  // Saturday - no observation
     RateLookupOptions.PreviousWithin(7));
 
 r.Rate.Rate;          // 0.9280m
@@ -344,12 +344,12 @@ r.Rate.IsInverted;    // false
 </code></pre>
 <p><code>SignedOffsetDays</code> (and the <code>IsPreviousDate</code> / <code>IsFutureDate</code> flags)
 let accounting and tax workflows distinguish a <em>historical</em> fallback
-from a <em>forward-looking</em> one — often a policy requirement, and the
+from a <em>forward-looking</em> one - often a policy requirement, and the
 reason <code>PreviousWithin</code> is the usual choice for ledger postings.</p>
 <h2 id="tolerance-how-far-the-reach-extends">Tolerance: how far the reach extends</h2>
 <p><code>ToleranceDays</code> is the maximum distance, in days, the <em>selected</em>
 candidate may sit from the requested date. It is applied after the
-policy chooses, so it only ever <strong>shrinks</strong> the matrix above — it never
+policy chooses, so it only ever <strong>shrinks</strong> the matrix above - it never
 changes <em>which</em> side is picked, only whether that pick is accepted.</p>
 <p>Request <code>06-16</code> (the tie midpoint, 2 days from either neighbour):</p>
 <table>
@@ -366,7 +366,7 @@ changes <em>which</em> side is picked, only whether that pick is accepted.</p>
 <td><code>PreviousWithin(1)</code></td>
 <td><code>06-14</code></td>
 <td>2</td>
-<td><strong>—</strong> (2 &gt; 1)</td>
+<td><strong>-</strong> (2 &gt; 1)</td>
 </tr>
 <tr>
 <td><code>PreviousWithin(2)</code></td>
@@ -378,7 +378,7 @@ changes <em>which</em> side is picked, only whether that pick is accepted.</p>
 <td><code>NearestWithin(1)</code></td>
 <td><code>06-14</code> (tie → earlier)</td>
 <td>2</td>
-<td><strong>—</strong> (2 &gt; 1)</td>
+<td><strong>-</strong> (2 &gt; 1)</td>
 </tr>
 <tr>
 <td><code>NearestWithin(2)</code></td>
@@ -390,7 +390,7 @@ changes <em>which</em> side is picked, only whether that pick is accepted.</p>
 </table>
 <pre><code class="lang-csharp">var tight = provider.TryGetRate(
     &quot;USD&quot;, &quot;EUR&quot;, new DateOnly(2024, 6, 16),
-    RateLookupOptions.PreviousWithin(1), out _);   // false — 2 days &gt; 1
+    RateLookupOptions.PreviousWithin(1), out _);   // false - 2 days &gt; 1
 
 var ok = provider.TryGetRate(
     &quot;USD&quot;, &quot;EUR&quot;, new DateOnly(2024, 6, 16),
@@ -404,7 +404,7 @@ before <code>06-14</code>.</p>
 <pre><code class="lang-csharp">// PreviousOnOrBefore selects 06-10 (distance 3) and never looks forward.
 provider.TryGetRate(
     &quot;USD&quot;, &quot;EUR&quot;, new DateOnly(2024, 6, 13),
-    RateLookupOptions.PreviousWithin(2), out _);   // false — 3 &gt; 2
+    RateLookupOptions.PreviousWithin(2), out _);   // false - 3 &gt; 2
 
 // Nearest picks the genuinely closer 06-14 (distance 1) and fits easily.
 provider.TryGetRate(
@@ -412,7 +412,7 @@ provider.TryGetRate(
     RateLookupOptions.NearestWithin(2), out var near); // true
 // near.ResolvedDate == 2024-06-14, near.OffsetDays == 1
 </code></pre>
-<p><code>PreviousWithin(2)</code> fails even though a rate sits one day away —
+<p><code>PreviousWithin(2)</code> fails even though a rate sits one day away -
 because <code>PreviousOnOrBefore</code> is a <em>directional</em> policy that committed
 to the earlier side before the tolerance was checked. If &quot;closest
 within N days, either direction&quot; is what you mean, use
@@ -429,9 +429,9 @@ request succeeds only through the inverse:</p>
 r.Rate.Rate;        // 1m / 0.9280m  ≈ 1.07758621
 r.Rate.From;        // EUR
 r.Rate.To;          // USD
-r.Rate.IsInverted;  // true   — derived from the reverse pair
+r.Rate.IsInverted;  // true   - derived from the reverse pair
 r.Rate.Provider;    // &quot;ECB&quot;
-r.OffsetDays;       // 0      — date resolution still ran on the USD/EUR series
+r.OffsetDays;       // 0      - date resolution still ran on the USD/EUR series
 
 // Turn it off and the same request fails:
 var found = provider.TryGetRate(
@@ -452,10 +452,10 @@ flagging only <code>IsInverted == true</code>.</li>
 <h2 id="identity-short-circuit-same-currency-requests">Identity short-circuit: same-currency requests</h2>
 <p><code>AllowSameCurrencyIdentityRate</code> (default <code>true</code>) makes a lookup whose
 source and destination codes are equal return a synthetic rate of <code>1</code>
-<strong>before</strong> any table is consulted — so it succeeds even for a pair the
+<strong>before</strong> any table is consulted - so it succeeds even for a pair the
 provider has never seen:</p>
 <pre><code class="lang-csharp">var r = provider.GetRate(
-    &quot;USD&quot;, &quot;USD&quot;, new DateOnly(2024, 6, 16),                 // a gap date — irrelevant
+    &quot;USD&quot;, &quot;USD&quot;, new DateOnly(2024, 6, 16),                 // a gap date - irrelevant
     RateLookupOptions.Exact);
 
 r.Rate.Rate;      // 1m
@@ -466,7 +466,7 @@ r.IsExactDate;    // true
 <p>The well-known provider label <code>&quot;Identity&quot;</code> lets an audit consumer
 filter out pass-throughs without a magic string. Turn the flag off
 (<code>allowSameCurrencyIdentityRate: false</code>) and a <code>USD → USD</code> request
-falls through to the table like any other — failing unless a literal
+falls through to the table like any other - failing unless a literal
 same-currency series was loaded.</p>
 <h2 id="stacking-providers-the-aggregator">Stacking providers: the aggregator</h2>
 <p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html"><code>AggregatingRateProvider</code></a>
@@ -490,15 +490,15 @@ r.Rate.Provider;   // identifies which underlying provider answered
 </code></pre>
 <p>Priority fallback is <strong>first-available</strong>, not best-available: if the primary
 returns a four-day-old <code>PreviousOnOrBefore</code> hit, that wins even when a
-lower-priority provider has the exact date. To combine providers differently —
+lower-priority provider has the exact date. To combine providers differently -
 averaging, per-FX-pair routing, or a custom
-<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy.html"><code>IRateAggregationStrategy</code></a>
-— see the <a href="exchange-rate-caching.html">caching and aggregating guide</a>.</p>
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy.html"><code>IRateAggregationStrategy</code></a> -
+see the <a href="exchange-rate-caching.html">caching and aggregating guide</a>.</p>
 <h2 id="pinning-one-date-everywhere-the-adapter">Pinning one date everywhere: the adapter</h2>
 <p>When a consumer only accepts the timeless
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IRateProvider.html"><code>IRateProvider</code></a>
-surface — for example
-<a class="xref" href="../../api/Bodu.Financial.MoneyBag.html"><code>MoneyBag.ConvertTo&lt;TTarget&gt;(IRateProvider)</code></a> —
+surface - for example
+<a class="xref" href="../../api/Bodu.Financial.MoneyBag.html"><code>MoneyBag.ConvertTo&lt;TTarget&gt;(IRateProvider)</code></a> -
 but the rate should still come from a dated source resolved with a
 fixed policy,
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.DatedRateProviderAdapter.html"><code>DatedRateProviderAdapter</code></a>
@@ -508,13 +508,13 @@ pins the date and options once:</p>
     date:    new DateOnly(2024, 6, 30),                       // reporting period end
     options: RateLookupOptions.PreviousWithin(14));
 
-decimal rate = periodEnd.GetRate(&quot;USD&quot;, &quot;EUR&quot;);              // 0.9330 — 06-21, 9 days before 06-30
+decimal rate = periodEnd.GetRate(&quot;USD&quot;, &quot;EUR&quot;);              // 0.9330 - 06-21, 9 days before 06-30
 </code></pre>
 <p>Every <code>GetRate(from, to)</code> call now resolves against <code>2024-06-30</code> under
-<code>PreviousWithin(14)</code> — the window has to span the nine-day gap back to
+<code>PreviousWithin(14)</code> - the window has to span the nine-day gap back to
 the last observation (<code>06-21</code>), a reminder that the pinned tolerance
 must be sized for the worst expected gap. The adapter returns only the
-raw <code>decimal</code> — when
+raw <code>decimal</code> - when
 you need the provenance (which date, how far off, which provider), call
 the dated provider directly and read the
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupResult.html"><code>RateLookupResult</code></a>.</p>
@@ -572,12 +572,12 @@ the dated provider directly and read the
 </table>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="exchange-rates.html">Working with exchange rates</a> — the full provider-stack walkthrough.</li>
-<li><a href="exchange-types.html">Exchange-rate types</a> — which exchange type to reach for, by scenario.</li>
-<li><a href="../../docs/financial/concepts.html">Bodu.Financial — Core concepts</a> — the vocabulary these pages assume.</li>
-<li>Lookup metadata — <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupOptions.html"><code>RateLookupOptions</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateDateResolution.html"><code>RateDateResolution</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupResult.html"><code>RateLookupResult</code></a>.</li>
-<li>Providers — <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html"><code>FixedDatedRateProvider</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.DatedRateProviderAdapter.html"><code>DatedRateProviderAdapter</code></a>; grouping via <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html"><code>AggregatingRateProvider</code></a>.</li>
-<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — every guide in this topic, across Bodu.Numerics and Bodu.Financial.</li>
+<li><a href="exchange-rates.html">Working with exchange rates</a> - the full provider-stack walkthrough.</li>
+<li><a href="exchange-types.html">Exchange-rate types</a> - which exchange type to reach for, by scenario.</li>
+<li><a href="../../docs/financial/concepts.html">Bodu.Financial - Core concepts</a> - the vocabulary these pages assume.</li>
+<li>Lookup metadata - <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupOptions.html"><code>RateLookupOptions</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateDateResolution.html"><code>RateDateResolution</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupResult.html"><code>RateLookupResult</code></a>.</li>
+<li>Providers - <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html"><code>FixedDatedRateProvider</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.DatedRateProviderAdapter.html"><code>DatedRateProviderAdapter</code></a>; grouping via <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html"><code>AggregatingRateProvider</code></a>.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> - every guide in this topic, across Bodu.Numerics and Bodu.Financial.</li>
 </ul>
 
 </article>
@@ -597,7 +597,7 @@ the dated provider directly and read the
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

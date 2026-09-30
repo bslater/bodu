@@ -97,7 +97,7 @@ for the cache that sits in front of them, see
 <a href="caching-configuration.html">Configuring rate caching from appsettings</a>.</p>
 <p>All eleven registrations follow one shape, so the page shows one bulk provider (ECB) and one pair
 provider (Fixer) in full and then tabulates only what differs for the other nine.</p>
-<h2 id="pattern-1--the-two-registration-forms">Pattern 1 — the two registration forms</h2>
+<h2 id="pattern-1---the-two-registration-forms">Pattern 1 - the two registration forms</h2>
 <p>Each provider package ships two extension methods with the same name. The
 <a class="xref" href="../../api/Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a> form composes on the builder that
 <code>AddFinancialService</code> returns; the <code>IServiceCollection</code> form is a one-call convenience that
@@ -119,8 +119,8 @@ builder.Services
 <pre><code class="lang-csharp">// IServiceCollection form: one call registers the core financial services and the provider.
 builder.Services.AddEcbExchangeRates(builder.Configuration);
 </code></pre>
-<p>The builder form takes five parameters — <code>configuration</code>, <code>sectionName</code>, <code>configure</code>, and
-<code>configureResilience</code> after the builder itself — and is the only one that exposes the
+<p>The builder form takes five parameters - <code>configuration</code>, <code>sectionName</code>, <code>configure</code>, and
+<code>configureResilience</code> after the builder itself - and is the only one that exposes the
 <code>configureResilience</code> hook. The <code>IServiceCollection</code> form stops at <code>configure</code>. Pass a
 <code>sectionName</code> to bind from somewhere other than the default:</p>
 <pre><code class="lang-csharp">builder.Services
@@ -131,7 +131,7 @@ builder.Services.AddEcbExchangeRates(builder.Configuration);
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> and
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> through idempotent <code>TryAdd</code> registrations, so
 the first provider registered wins each contract. Register several providers and the later ones
-are still resolvable by their concrete type (<code>EcbRateProvider</code>, <code>FixerRateProvider</code>, …) — and the
+are still resolvable by their concrete type (<code>EcbRateProvider</code>, <code>FixerRateProvider</code>, …) - and the
 <a href="exchange-rate-caching.html#grouping-providers-with-the-aggregator">aggregator</a> is the way to put
 them behind one contract.</p>
 <div class="NOTE">
@@ -141,7 +141,7 @@ them behind one contract.</p>
 non-positive timeout fails the host before the first request rather than on the first lookup.
 The message names the provider (&quot;Fixer exchange-rate options are invalid.&quot;).</p>
 </div>
-<h2 id="pattern-2--a-bulk-provider-in-full-ecb">Pattern 2 — a bulk provider in full: ECB</h2>
+<h2 id="pattern-2---a-bulk-provider-in-full-ecb">Pattern 2 - a bulk provider in full: ECB</h2>
 <p>The bulk providers (ECB, BoE, RBA, IMF) download one file that covers many pairs, so their options
 describe the feed: an endpoint, a payload-cache location, and a refresh interval. Every key below
 binds to <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html">EcbRateProviderOptions</a> (and its nested
@@ -226,8 +226,8 @@ binds to <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.EcbRatePro
 </table>
 <p>One member does <strong>not</strong> bind: <code>Feeds</code>, an <code>IReadOnlyList&lt;EcbRateFeed&gt;</code> whose elements carry a
 constructor. The configuration binder leaves it at <code>EcbRateFeed.Default</code> (the 90-day feed, then
-the full history) even when the section supplies a <code>Feeds</code> array. Set it — and anything else
-that is not a plain value — through the <code>configure</code> callback, which runs after binding:</p>
+the full history) even when the section supplies a <code>Feeds</code> array. Set it - and anything else
+that is not a plain value - through the <code>configure</code> callback, which runs after binding:</p>
 <pre><code class="lang-csharp">builder.Services
     .AddFinancialService(builder.Configuration)
     .AddEcbExchangeRates(
@@ -238,7 +238,7 @@ that is not a plain value — through the <code>configure</code> callback, which
             options.AllowSynchronousNetworkAccess = true;                       // opt in to blocking sync misses
         });
 </code></pre>
-<h2 id="pattern-3--a-pair-provider-in-full-fixer">Pattern 3 — a pair provider in full: Fixer</h2>
+<h2 id="pattern-3---a-pair-provider-in-full-fixer">Pattern 3 - a pair provider in full: Fixer</h2>
 <p>The pair providers (Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED) fetch one currency
 pair per request, and their options all derive from
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a>, so the first twelve keys below are
@@ -318,7 +318,7 @@ three are Fixer's own, from <a class="xref" href="../../api/Bodu.Financial.Excha
 <tr>
 <td><code>ApiKey</code></td>
 <td><code>&quot;&quot;</code></td>
-<td><strong>Required</strong> — a blank key fails validation. Sent as <code>access_key</code>.</td>
+<td><strong>Required</strong> - a blank key fails validation. Sent as <code>access_key</code>.</td>
 </tr>
 <tr>
 <td><code>TimeSeriesPath</code> / <code>HistoricalPath</code></td>
@@ -328,8 +328,8 @@ three are Fixer's own, from <a class="xref" href="../../api/Bodu.Financial.Excha
 </tbody>
 </table>
 <p><code>HistoryAvailability</code> is the one <code>WebRateProviderOptions</code> member that does not bind (a record
-struct with factory members). Each provider's constructor presets it — Fixer to
-<code>RateHistoryAvailability.Since(1999-01-01)</code> — and the <code>configure</code> callback can override it.</p>
+struct with factory members). Each provider's constructor presets it - Fixer to
+<code>RateHistoryAvailability.Since(1999-01-01)</code> - and the <code>configure</code> callback can override it.</p>
 <h2 id="per-provider-differences">Per-provider differences</h2>
 <p>Every provider binds <code>Financial:&lt;Source&gt;</code> by default, names its <code>HttpClient</code>
 <code>Bodu.Financial.ExchangeRates.&lt;Source&gt;</code> (the <code>HttpClientName</code> constant on each
@@ -361,7 +361,7 @@ reaches the wire.</p>
 <td><code>Financial:Boe</code></td>
 <td><code>BoeRateProviderOptions</code></td>
 <td>bulk, nested <code>Endpoint</code></td>
-<td><code>Endpoint</code> (<code>BaseUrl</code> <code>https://www.bankofengland.co.uk/boeapps/database/</code>, <code>QueryPath</code> <code>_iadb-fromshowcolumns.asp</code>, <code>HttpTimeout</code> 30 s, <code>UserAgent</code> <code>Bodu.Financial.ExchangeRates.Boe</code>), <code>OnDemandWindowDays</code> (10 — replaces <code>DefaultLookback</code>), <code>EnableDiskCache</code> (<code>true</code>), <code>CacheDirectory</code> (<code>null</code> → <code>bodu-boe</code>), <code>RefreshInterval</code> (12 h); <code>Series</code> and <code>HistoryAvailability</code> code-only; no <code>CurrencyAliases</code>, no <code>SynchronousNetworkFetchLogLevel</code></td>
+<td><code>Endpoint</code> (<code>BaseUrl</code> <code>https://www.bankofengland.co.uk/boeapps/database/</code>, <code>QueryPath</code> <code>_iadb-fromshowcolumns.asp</code>, <code>HttpTimeout</code> 30 s, <code>UserAgent</code> <code>Bodu.Financial.ExchangeRates.Boe</code>), <code>OnDemandWindowDays</code> (10 - replaces <code>DefaultLookback</code>), <code>EnableDiskCache</code> (<code>true</code>), <code>CacheDirectory</code> (<code>null</code> → <code>bodu-boe</code>), <code>RefreshInterval</code> (12 h); <code>Series</code> and <code>HistoryAvailability</code> code-only; no <code>CurrencyAliases</code>, no <code>SynchronousNetworkFetchLogLevel</code></td>
 <td>none</td>
 </tr>
 <tr>
@@ -483,7 +483,7 @@ reaches the wire.</p>
 </code></pre>
 <p>For the remaining pair providers, take the Fixer block, drop the three Fixer keys, and add the
 provider-specific keys from the table. FRED's <code>SeriesMap</code> and IMF's <code>CurrencyNames</code> are
-dictionaries, so — like <code>CurrencyAliases</code> — a section entry is <strong>added to</strong> the built-in map,
+dictionaries, so - like <code>CurrencyAliases</code> - a section entry is <strong>added to</strong> the built-in map,
 never replacing it:</p>
 <pre><code class="lang-json">{
   &quot;Financial&quot;: {
@@ -501,11 +501,11 @@ never replacing it:</p>
 <code>HistoryAvailability</code> entry in a section is neither applied nor reported; the option keeps its
 default. Set those through <code>configure</code>.</p>
 </div>
-<h2 id="pattern-4--sourcing-an-api-key">Pattern 4 — sourcing an API key</h2>
+<h2 id="pattern-4---sourcing-an-api-key">Pattern 4 - sourcing an API key</h2>
 <p>Fixer, exchangerate.host, and FRED refuse to start without a key, and the key must not live in
 <code>appsettings.json</code>. <code>Host.CreateApplicationBuilder</code> already layers the standard configuration
-sources — <code>appsettings.json</code>, <code>appsettings.{Environment}.json</code>, user secrets (in the
-<code>Development</code> environment), environment variables, then command-line arguments — so the
+sources - <code>appsettings.json</code>, <code>appsettings.{Environment}.json</code>, user secrets (in the
+<code>Development</code> environment), environment variables, then command-line arguments - so the
 registration needs no extra code: whichever layer defines <code>Financial:Fixer:ApiKey</code> wins.</p>
 <pre><code class="lang-csharp">builder.Services
     .AddFinancialService(builder.Configuration)
@@ -522,7 +522,7 @@ a double underscore to a section separator, so the following three are equivalen
 Financial__ExchangeRateHost__ApiKey=your-access-key
 Financial__Fred__ApiKey=your-api-key
 </code></pre>
-<p>When the key is only known at runtime — a vault client, a rotated secret — set it in the
+<p>When the key is only known at runtime - a vault client, a rotated secret - set it in the
 <code>configure</code> callback, which runs after binding and before validation, so the startup check still
 sees the final value:</p>
 <pre><code class="lang-csharp">builder.Services
@@ -536,12 +536,12 @@ sees the final value:</p>
         });
 </code></pre>
 <p>The key goes on the wire as a query parameter (<code>access_key</code> for Fixer and exchangerate.host,
-<code>api_key</code> for FRED), which is the endpoints' own convention — so avoid logging request URIs at
+<code>api_key</code> for FRED), which is the endpoints' own convention - so avoid logging request URIs at
 <code>Information</code> in production. XE needs no key: its provider recovers the endpoint's bearer token
 from the public site at runtime.</p>
-<h2 id="pattern-5--resilience-and-the-httpclient">Pattern 5 — resilience and the <code>HttpClient</code></h2>
-<p><code>AddWebRateProvider</code> — the shared machinery every <code>Add&lt;Source&gt;ExchangeRates</code> delegates to in
-<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProviderExtensions.html">WebRateProviderExtensions</a> — registers a named <code>HttpClient</code>
+<h2 id="pattern-5---resilience-and-the-httpclient">Pattern 5 - resilience and the <code>HttpClient</code></h2>
+<p><code>AddWebRateProvider</code> - the shared machinery every <code>Add&lt;Source&gt;ExchangeRates</code> delegates to in
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProviderExtensions.html">WebRateProviderExtensions</a> - registers a named <code>HttpClient</code>
 through <code>IHttpClientFactory</code> and fits it with the standard resilience handler
 (<code>AddStandardResilienceHandler</code>). The pipeline is configured from the provider's options:</p>
 <table>
@@ -606,22 +606,22 @@ surfaces at once as <a class="xref" href="../../api/Bodu.Financial.ExchangeRates
 <p>None of this applies to a provider you construct by hand from its options: that provider builds
 and owns its own client through
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateProviderHttpClientFactory.html">RateProviderHttpClientFactory</a>, with <code>HttpTimeout</code> applied as
-<code>HttpClient.Timeout</code>, the <code>UserAgent</code> header, the response-size cap — and <strong>no retry</strong>.</p>
+<code>HttpClient.Timeout</code>, the <code>UserAgent</code> header, the response-size cap - and <strong>no retry</strong>.</p>
 <h2 id="two-settings-worth-a-second-look">Two settings worth a second look</h2>
 <p><strong><code>AllowSynchronousNetworkAccess</code>.</strong> Off by default on every provider. Off, a synchronous
 <code>GetRate</code> / <code>TryGetRate</code> / <code>GetRates</code> that finds nothing loaded reports a miss (<code>false</code>, or
 <code>KeyNotFoundException</code> from the throwing form) without touching the network; the asynchronous
 surface and the warm-up methods (<code>LoadRangeAsync</code>, <code>LoadPairAsync</code>) are the paths that fetch.
-On, a synchronous miss blocks to download the missing window — <code>DefaultLookback</code> (or BoE's
-<code>OnDemandWindowDays</code>) ending on the requested date — which is convenient in a worker but can
+On, a synchronous miss blocks to download the missing window - <code>DefaultLookback</code> (or BoE's
+<code>OnDemandWindowDays</code>) ending on the requested date - which is convenient in a worker but can
 deadlock on a thread with a captured <code>SynchronizationContext</code>; the provider converts that case
 into an <code>InvalidOperationException</code> rather than a hang. Prefer warming at startup: the
-<a href="caching-configuration.html#pattern-4--warming-the-cache-at-startup">warm-up hosted service</a>
+<a href="caching-configuration.html#pattern-4---warming-the-cache-at-startup">warm-up hosted service</a>
 does exactly that.</p>
 <p><strong><code>EnableDiskCache</code> / <code>CacheDirectory</code>.</strong> The bulk providers keep the raw bytes they downloaded
 on disk (a <em>payload</em> cache, distinct from the <a href="exchange-rate-caching.html">rate cache</a>) so that a
 restart does not re-download a multi-decade file. With <code>CacheDirectory</code> unset it lands in a
-provider-named folder — <code>bodu-ecb</code>, <code>bodu-boe</code>, <code>bodu-rba</code>, <code>bodu-imf</code> — under the system
+provider-named folder - <code>bodu-ecb</code>, <code>bodu-boe</code>, <code>bodu-rba</code>, <code>bodu-imf</code> - under the system
 temporary path, which is fine for a workstation and wrong for a fleet: point it at a persistent,
 writable directory in production, or set <code>EnableDiskCache</code> to <code>false</code> (the in-memory snapshot
 still prevents duplicate downloads within the process). RBA defaults it off because its era
@@ -670,12 +670,12 @@ workbooks are large and change only for the current era.</p>
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="caching-configuration.html">Configuring rate caching from appsettings</a> — the <code>Financial:RateCache</code> tree that sits in front of these providers.</li>
-<li><a href="exchange-rate-providers.html">Built-in exchange-rate providers</a> — what each provider serves, its history depth, and its failure modes.</li>
-<li><a href="dependency-injection.html">Financial dependency injection</a> — the <code>AddFinancialService</code> builder these registrations compose on.</li>
-<li><a href="custom-web-provider.html">Writing your own web provider</a> — give a custom feed the same <code>Financial:&lt;Source&gt;</code> registration.</li>
-<li><a href="../../docs/exchange-rates/getting-started.html">Bodu.Financial.ExchangeRates getting started</a> — the shortest path to a first live lookup.</li>
-<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — every guide in this topic.</li>
+<li><a href="caching-configuration.html">Configuring rate caching from appsettings</a> - the <code>Financial:RateCache</code> tree that sits in front of these providers.</li>
+<li><a href="exchange-rate-providers.html">Built-in exchange-rate providers</a> - what each provider serves, its history depth, and its failure modes.</li>
+<li><a href="dependency-injection.html">Financial dependency injection</a> - the <code>AddFinancialService</code> builder these registrations compose on.</li>
+<li><a href="custom-web-provider.html">Writing your own web provider</a> - give a custom feed the same <code>Financial:&lt;Source&gt;</code> registration.</li>
+<li><a href="../../docs/exchange-rates/getting-started.html">Bodu.Financial.ExchangeRates getting started</a> - the shortest path to a first live lookup.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -695,7 +695,7 @@ workbooks are large and change only for the current era.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

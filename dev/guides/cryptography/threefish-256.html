@@ -87,8 +87,8 @@
         <article data-uid="">
 <h1 id="using-threefish-256">Using Threefish-256</h1>
 
-<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Threefish256.html">Threefish256</a> is the 256-bit variant of the Threefish tweakable block cipher family — the core primitive underneath the Skein hash function. It operates on <strong>256-bit (32-byte) blocks</strong> with a <strong>256-bit (32-byte) key</strong> and a <strong>128-bit (16-byte) tweak</strong>.</p>
-<p><img src="../../images/diagrams/threefish-round.svg" alt="Threefish round function — MIX, word permutation, and subkey injection"></p>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Threefish256.html">Threefish256</a> is the 256-bit variant of the Threefish tweakable block cipher family - the core primitive underneath the Skein hash function. It operates on <strong>256-bit (32-byte) blocks</strong> with a <strong>256-bit (32-byte) key</strong> and a <strong>128-bit (16-byte) tweak</strong>.</p>
+<p><img src="../../images/diagrams/threefish-round.svg" alt="Threefish round function - MIX, word permutation, and subkey injection"></p>
 <div class="NOTE">
 <h5>Note</h5>
 <p>Encrypt/decrypt ships an AVX-512 fast path that engages automatically on supporting hardware. See <a href="hardware-acceleration.html">Hardware acceleration &amp; SIMD opt-out</a> for when it runs and how to force the scalar path.</p>
@@ -111,7 +111,7 @@
 <tr>
 <td>Key size</td>
 <td>256 bits (32 bytes)</td>
-<td>Fixed — there is no shorter or longer key variant.</td>
+<td>Fixed - there is no shorter or longer key variant.</td>
 </tr>
 <tr>
 <td>Tweak size</td>
@@ -125,7 +125,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="encrypt-and-decrypt--cbc--pkcs7">Encrypt and decrypt — CBC + PKCS7</h2>
+<h2 id="encrypt-and-decrypt---cbc--pkcs7">Encrypt and decrypt - CBC + PKCS7</h2>
 <p>The default configuration. Use this unless you have a specific reason to pick a different mode.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.Diagnostics;
@@ -152,7 +152,7 @@ using (var alg = new Threefish256 { BlockMode = CipherModeKind.CBC, Padding = Pa
     ciphertext = alg.Encrypt(plaintext);
 }
 
-// Decrypt — supplying the same Key, IV and Tweak
+// Decrypt - supplying the same Key, IV and Tweak
 byte[] recovered;
 using (var alg = new Threefish256 { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7,
                                      Key = key, IV = iv, Tweak = tweak })
@@ -162,8 +162,8 @@ using (var alg = new Threefish256 { BlockMode = CipherModeKind.CBC, Padding = Pa
 
 Debug.Assert(plaintext.SequenceEqual(recovered));
 </code></pre>
-<p>The IV and tweak are <em>not</em> secret — they travel with the ciphertext. The key is the secret; store it separately.</p>
-<h2 id="encrypt-and-decrypt--ctr-stream-mode-parallelisable">Encrypt and decrypt — CTR (stream mode, parallelisable)</h2>
+<p>The IV and tweak are <em>not</em> secret - they travel with the ciphertext. The key is the secret; store it separately.</p>
+<h2 id="encrypt-and-decrypt---ctr-stream-mode-parallelisable">Encrypt and decrypt - CTR (stream mode, parallelisable)</h2>
 <p>CTR gives you random-access seeking and no padding expansion. Through the <code>Threefish256</code>
 wrapper, <code>PaddingMode.None</code> still requires block-aligned input (a multiple of 32 bytes); for
 arbitrary lengths drive <a class="xref" href="../../api/Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a> directly, which
@@ -171,7 +171,7 @@ accepts a trailing partial block (see <a href="cipher-composition-reference.html
 <pre><code class="lang-csharp">using var alg = new Threefish256
 {
     BlockMode = CipherModeKind.CTR,
-    Padding   = PaddingMode.None,    // CTR doesn't pad — input must be block-aligned here
+    Padding   = PaddingMode.None,    // CTR doesn't pad - input must be block-aligned here
 };
 alg.GenerateKey();
 alg.GenerateIV();     // initial counter block
@@ -186,8 +186,8 @@ byte[] recovered  = alg.Decrypt(ciphertext);
 Debug.Assert(aligned.SequenceEqual(recovered));
 </code></pre>
 <p><strong>Do not reuse an <code>(IV, Key)</code> pair</strong> across messages in CTR. <a class="xref" href="../../api/Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a> detects counter wrap-around and throws, but it cannot prevent you from using the same initial counter twice.</p>
-<h2 id="what-the-tweak-is--and-why-it-is-not-an-iv">What the tweak is — and why it is not an IV</h2>
-<p>Threefish is a <em>tweakable</em> block cipher: it derives from <a class="xref" href="../../api/Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a>, which adds a <code>Tweak</code> property and <code>GenerateTweak()</code> on top of the standard <code>SymmetricAlgorithm</code> surface. The 128-bit tweak is mixed into <strong>every round's subkey schedule</strong>, so changing it produces an effectively different permutation under the same key — without the cost of re-running a key schedule. That is what makes it &quot;tweakable&quot; rather than merely &quot;another input&quot;.</p>
+<h2 id="what-the-tweak-is---and-why-it-is-not-an-iv">What the tweak is - and why it is not an IV</h2>
+<p>Threefish is a <em>tweakable</em> block cipher: it derives from <a class="xref" href="../../api/Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a>, which adds a <code>Tweak</code> property and <code>GenerateTweak()</code> on top of the standard <code>SymmetricAlgorithm</code> surface. The 128-bit tweak is mixed into <strong>every round's subkey schedule</strong>, so changing it produces an effectively different permutation under the same key - without the cost of re-running a key schedule. That is what makes it &quot;tweakable&quot; rather than merely &quot;another input&quot;.</p>
 <p>Contrast it with the three other inputs:</p>
 <table>
 <thead>
@@ -214,12 +214,12 @@ Debug.Assert(aligned.SequenceEqual(recovered));
 <tr>
 <td><strong>Tweak</strong></td>
 <td>Every round's subkey</td>
-<td>No — vary it <em>per domain</em>, not per message</td>
+<td>No - vary it <em>per domain</em>, not per message</td>
 <td>No</td>
 </tr>
 </tbody>
 </table>
-<p>The practical consequence: the IV gives you <em>per-message</em> freshness, while the tweak gives you <em>per-context</em> (per-record, per-sector, per-field) separation that is stable across messages. You typically set the tweak once per logical lane and let the IV change per message within that lane. The tweak is fixed at 128 bits across all three Threefish variants — <code>LegalTweakSizes</code> advertises this, and <code>GenerateTweak()</code> fills 16 random bytes.</p>
+<p>The practical consequence: the IV gives you <em>per-message</em> freshness, while the tweak gives you <em>per-context</em> (per-record, per-sector, per-field) separation that is stable across messages. You typically set the tweak once per logical lane and let the IV change per message within that lane. The tweak is fixed at 128 bits across all three Threefish variants - <code>LegalTweakSizes</code> advertises this, and <code>GenerateTweak()</code> fills 16 random bytes.</p>
 <h2 id="using-the-tweak-as-a-domain-separator">Using the tweak as a domain separator</h2>
 <p>The tweak lets you derive many independent encryption &quot;lanes&quot; from the same key. Two messages encrypted with the same key but different tweaks produce completely unrelated ciphertext:</p>
 <pre><code class="lang-csharp">byte[] key = new byte[32];
@@ -234,7 +234,7 @@ byte[] Encrypt(byte[] plaintext, byte[] iv, byte[] tweak)
 byte[] iv = new byte[32];
 RandomNumberGenerator.Fill(iv);
 
-// Same key, same IV, same plaintext — different tweaks → unrelated ciphertext.
+// Same key, same IV, same plaintext - different tweaks → unrelated ciphertext.
 byte[] userTweak    = Encoding.UTF8.GetBytes(&quot;user-records\0\0\0\0&quot;);   // 16 bytes
 byte[] sessionTweak = Encoding.UTF8.GetBytes(&quot;session-keys\0\0\0\0&quot;);
 
@@ -279,7 +279,7 @@ using var dst = File.Create(&quot;report.recovered.bin&quot;);
 alg.Decrypt(src, dst, bufferSize: 8192);
 </code></pre>
 <h2 id="relationship-to-skein-and-the-raw-primitive">Relationship to Skein, and the raw primitive</h2>
-<p>Threefish is not only a stand-alone cipher — it is the permutation at the heart of the Skein hash function (<a class="xref" href="../../api/Bodu.Security.Cryptography.Skein256.html">Skein256</a>), which runs Threefish in UBI mode. The tweak that this guide uses for domain separation is the same mechanism Skein uses to bind each block's position and type into the hash. That shared lineage is why the three Threefish block sizes (256 / 512 / 1024) line up exactly with the three Skein digest families.</p>
+<p>Threefish is not only a stand-alone cipher - it is the permutation at the heart of the Skein hash function (<a class="xref" href="../../api/Bodu.Security.Cryptography.Skein256.html">Skein256</a>), which runs Threefish in UBI mode. The tweak that this guide uses for domain separation is the same mechanism Skein uses to bind each block's position and type into the hash. That shared lineage is why the three Threefish block sizes (256 / 512 / 1024) line up exactly with the three Skein digest families.</p>
 <p>The <code>SymmetricAlgorithm</code> wrapper shown above is built on the raw <code>Threefish256Cipher</code>, an <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> whose constructor takes the key <strong>and</strong> the tweak directly:</p>
 <pre><code class="lang-csharp">using IBlockCipher cipher = new Threefish256Cipher(key, tweak);   // 32-byte key, 16-byte tweak
 IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherModeKind.CTR, cipher, iv);
@@ -291,12 +291,12 @@ IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherModeKind.CT
 </div>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="encryption-basics.html">Encryption basics</a> — the Key/IV/Tweak lifecycle.</li>
-<li><a href="cipher-modes.html">Cipher block modes</a> — CFB / OFB / ECB also work with <code>Threefish256</code>.</li>
-<li><a href="padding.html">Padding</a> — when to set <code>PaddingMode.None</code> vs <code>PKCS7</code>.</li>
-<li><a href="composing-primitives.html">Composing primitives</a> — <code>Threefish256Cipher</code> + mode + padding by hand.</li>
+<li><a href="encryption-basics.html">Encryption basics</a> - the Key/IV/Tweak lifecycle.</li>
+<li><a href="cipher-modes.html">Cipher block modes</a> - CFB / OFB / ECB also work with <code>Threefish256</code>.</li>
+<li><a href="padding.html">Padding</a> - when to set <code>PaddingMode.None</code> vs <code>PKCS7</code>.</li>
+<li><a href="composing-primitives.html">Composing primitives</a> - <code>Threefish256Cipher</code> + mode + padding by hand.</li>
 <li>Other variants: <a href="threefish-512.html">Threefish-512</a>, <a href="threefish-1024.html">Threefish-1024</a>.</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -316,7 +316,7 @@ IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherModeKind.CT
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

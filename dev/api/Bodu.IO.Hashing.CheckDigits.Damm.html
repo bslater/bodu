@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Hashing_CheckDigits_Damm" data-uid="Bodu.IO.Hashing.CheckDigits.Damm" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Damm Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.Table.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.Table.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ Damm Class
   <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.Table.cs">Damm.Table.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.Table.cs">Damm.Table.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Computes the check digit of a decimal string using the <code>Damm</code> algorithm. This class cannot be inherited.</p>
@@ -191,7 +191,7 @@ Damm Class
   <pre><code class="lang-csharp">// Single-call computation against an in-memory body.
 char check = Damm.Compute("572");   // '4'
 
-// Full-sequence validation — equivalent to checking that the final interim is zero.
+// Full-sequence validation - equivalent to checking that the final interim is zero.
 bool ok = Damm.IsValid("5724");     // true
 
 // Streaming use when the body is built up incrementally.
@@ -203,11 +203,11 @@ char d = algo.GetCurrentCheckDigit(); // '4'</code></pre>
   <h2 id="Bodu_IO_Hashing_CheckDigits_Damm_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 The Damm algorithm was presented by H. Michael Damm in 2004. It evaluates a running <i>interim</i> digit by
-repeatedly indexing into a carefully chosen 10×10 <i>totally antisymmetric</i> quasigroup — a table with no fixed
+repeatedly indexing into a carefully chosen 10×10 <i>totally antisymmetric</i> quasigroup - a table with no fixed
 points on its diagonal and no partial idempotent entries. The final interim is the check digit.
 </p>
 <p>
-Damm detects <b>all</b> single-digit substitution errors and <b>all</b> adjacent-digit transpositions — the latter
+Damm detects <b>all</b> single-digit substitution errors and <b>all</b> adjacent-digit transpositions - the latter
 without the <code>09 ↔ 90</code> exception that Luhn suffers from. Validation is especially clean: a sequence (body
 followed by its check digit) is valid if and only if its final interim is zero.
 </p>
@@ -229,7 +229,7 @@ password hashing, digital signatures, or integrity validation in security-sensit
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Damm__ctor" data-uid="Bodu.IO.Hashing.CheckDigits.Damm.#ctor">
   Damm()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -264,7 +264,7 @@ password hashing, digital signatures, or integrity validation in security-sensit
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Damm_AlgorithmName" data-uid="Bodu.IO.Hashing.CheckDigits.Damm.AlgorithmName">
   AlgorithmName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -305,7 +305,7 @@ password hashing, digital signatures, or integrity validation in security-sensit
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Damm_Append_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Hashing.CheckDigits.Damm.Append(System.ReadOnlySpan{System.Char})">
   Append(ReadOnlySpan&lt;char&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -349,7 +349,7 @@ a permitted no-op.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Damm_Compute_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Hashing.CheckDigits.Damm.Compute(System.ReadOnlySpan{System.Char})">
   Compute(ReadOnlySpan&lt;char&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -398,7 +398,7 @@ a permitted no-op.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Damm_GetCurrentCheckDigit" data-uid="Bodu.IO.Hashing.CheckDigits.Damm.GetCurrentCheckDigit">
   GetCurrentCheckDigit()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -441,11 +441,11 @@ with identical results between appends.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Damm_IsValid_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Hashing.CheckDigits.Damm.IsValid(System.ReadOnlySpan{System.Char})">
   IsValid(ReadOnlySpan&lt;char&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Determines whether the supplied sequence, comprising a body followed by a trailing Damm check digit, is valid —
+  <div class="markdown level1 summary"><p>Determines whether the supplied sequence, comprising a body followed by a trailing Damm check digit, is valid -
 that is, whether the final interim evaluates to zero.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -464,7 +464,7 @@ that is, whether the final interim evaluates to zero.</p>
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the sequence evaluates as valid under Damm; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> —
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the sequence evaluates as valid under Damm; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> -
 including the case where <code class="paramref">digitsIncludingCheck</code> is empty or contains a character outside the
 range <code>'0'</code> to <code>'9'</code>.</p>
 </dd>
@@ -487,7 +487,7 @@ range <code>'0'</code> to <code>'9'</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_Damm_Reset" data-uid="Bodu.IO.Hashing.CheckDigits.Damm.Reset">
   Reset()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Damm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -543,7 +543,7 @@ range <code>'0'</code> to <code>'9'</code>.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

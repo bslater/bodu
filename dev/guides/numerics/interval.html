@@ -91,10 +91,10 @@
 any <code>INumber&lt;T&gt;</code> endpoint type. Endpoint inclusivity is independent on
 each side, so a single type expresses all four conventional shapes:</p>
 <ul>
-<li>Closed-closed <code>[a, b]</code> — both endpoints included.</li>
-<li>Open-open <code>(a, b)</code> — both endpoints excluded.</li>
-<li>Closed-open <code>[a, b)</code> — lower included, upper excluded.</li>
-<li>Open-closed <code>(a, b]</code> — lower excluded, upper included.</li>
+<li>Closed-closed <code>[a, b]</code> - both endpoints included.</li>
+<li>Open-open <code>(a, b)</code> - both endpoints excluded.</li>
+<li>Closed-open <code>[a, b)</code> - lower included, upper excluded.</li>
+<li>Open-closed <code>(a, b]</code> - lower excluded, upper included.</li>
 </ul>
 <p>The type works with any numeric backing type that implements
 <code>INumber&lt;T&gt;</code>: <code>int</code>, <code>long</code>, <code>double</code>, <code>decimal</code>, <code>BigInteger</code>, and
@@ -102,8 +102,8 @@ consumer-defined numeric types built on the generic-math interfaces.</p>
 <p>Internally an <code>Interval&lt;T&gt;</code> is a <code>readonly struct</code> holding the two <code>T</code>
 endpoints plus a single inclusivity byte (the two flags packed as bits
 0 and 1), so for a fixed-width endpoint type it is allocation-free and
-copies by value. The set operations — <code>Contains</code>, <code>Overlaps</code>,
-<code>Intersect</code>, <code>TryUnion</code> — are a few <code>T</code> comparisons each and allocate
+copies by value. The set operations - <code>Contains</code>, <code>Overlaps</code>,
+<code>Intersect</code>, <code>TryUnion</code> - are a few <code>T</code> comparisons each and allocate
 nothing. Endpoints are stored at full <code>T</code> precision with no widening or
 narrowing.</p>
 <h2 id="creating-intervals">Creating intervals</h2>
@@ -125,7 +125,7 @@ Interval&lt;int&gt; none = Interval&lt;int&gt;.Empty;              // ∅
 var f = Interval.Closed(1.5, 2.5);          // Interval&lt;double&gt;
 var g = Interval.ClosedOpen(0m, 100m);      // Interval&lt;decimal&gt;
 </code></pre>
-<p>The primary constructor — <code>new Interval&lt;T&gt;(lower, upper, lowerInclusive, upperInclusive)</code> — is also public for cases where the
+<p>The primary constructor - <code>new Interval&lt;T&gt;(lower, upper, lowerInclusive, upperInclusive)</code> - is also public for cases where the
 inclusivity comes from a runtime computation:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">bool isPercentage = true;
@@ -143,7 +143,7 @@ Two cases produce an empty interval:</p>
 and is called a <strong>degenerate</strong> interval (<code>IsDegenerate</code> returns
 <code>true</code>).</p>
 <p>All empty intervals are equal to <code>Interval&lt;T&gt;.Empty</code> regardless of the
-bounds they were constructed with — the type honors the mathematical
+bounds they were constructed with - the type honors the mathematical
 fact that there is one empty set, not many:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">var a = Interval&lt;int&gt;.Empty;
@@ -162,20 +162,20 @@ endpoint:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">var range = Interval&lt;int&gt;.ClosedOpen(1, 5);   // [1, 5)
 
-range.Contains(1);  // True  — lower endpoint included
-range.Contains(4);  // True  — interior
-range.Contains(5);  // False — upper endpoint excluded
-range.Contains(0);  // False — outside the interval
+range.Contains(1);  // True  - lower endpoint included
+range.Contains(4);  // True  - interior
+range.Contains(5);  // False - upper endpoint excluded
+range.Contains(0);  // False - outside the interval
 </code></pre>
 <p><code>Contains(Interval&lt;T&gt;)</code> tests whether the supplied interval is a
-subset of this one — every value of the inner interval is also a
+subset of this one - every value of the inner interval is also a
 value of the outer:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">var outer = Interval&lt;int&gt;.Closed(0, 10);
 
 outer.Contains(Interval&lt;int&gt;.Closed(2, 8));   // True
 outer.Contains(Interval&lt;int&gt;.Closed(2, 11));  // False
-outer.Contains(Interval&lt;int&gt;.Empty);          // True — every set contains ∅
+outer.Contains(Interval&lt;int&gt;.Empty);          // True - every set contains ∅
 </code></pre>
 <p>The empty interval is a subset of every interval, so any interval
 contains the empty interval.</p>
@@ -216,7 +216,7 @@ the contract concrete:</p>
 </table>
 <p>Because <code>Interval&lt;T&gt;</code> is a <em>set</em> rather than a scalar, it deliberately
 implements neither <code>IComparable&lt;Interval&lt;T&gt;&gt;</code> nor the ordering
-operators — there is no total order on sets. Use the subset
+operators - there is no total order on sets. Use the subset
 (<code>Contains</code>) and overlap (<code>Overlaps</code>) relations instead, or order a
 collection of intervals by an endpoint explicitly (<code>OrderBy(i =&gt; i.Lower)</code>).</p>
 <h2 id="overlap-and-intersection">Overlap and intersection</h2>
@@ -224,57 +224,57 @@ collection of intervals by an endpoint explicitly (<code>OrderBy(i =&gt; i.Lower
 one value:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">Interval&lt;int&gt;.Closed(1, 5).Overlaps(Interval&lt;int&gt;.Closed(3, 7));      // True
-Interval&lt;int&gt;.ClosedOpen(1, 5).Overlaps(Interval&lt;int&gt;.Closed(5, 10)); // False — touch only
-Interval&lt;int&gt;.OpenClosed(1, 5).Overlaps(Interval&lt;int&gt;.Closed(5, 10)); // True — both include 5
+Interval&lt;int&gt;.ClosedOpen(1, 5).Overlaps(Interval&lt;int&gt;.Closed(5, 10)); // False - touch only
+Interval&lt;int&gt;.OpenClosed(1, 5).Overlaps(Interval&lt;int&gt;.Closed(5, 10)); // True - both include 5
 </code></pre>
 <p>Note that intervals that <em>touch</em> at a value but do not both contain
-it — for example <code>[1, 5)</code> and <code>[5, 10]</code> — do not overlap, because no
+it - for example <code>[1, 5)</code> and <code>[5, 10]</code> - do not overlap, because no
 value belongs to both.</p>
-<p><code>Intersect(other)</code> returns the intersection interval — the set of
+<p><code>Intersect(other)</code> returns the intersection interval - the set of
 values shared by both operands. When the intersection is empty, the
 result is <code>Interval&lt;T&gt;.Empty</code>:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">Interval&lt;int&gt;.Closed(1, 5).Intersect(Interval&lt;int&gt;.Closed(3, 7));  // [3, 5]
 Interval&lt;int&gt;.Closed(1, 3).Intersect(Interval&lt;int&gt;.Closed(5, 7));  // ∅
 </code></pre>
-<p>When endpoint values tie, the <em>stricter</em> (open) inclusivity wins —
+<p>When endpoint values tie, the <em>stricter</em> (open) inclusivity wins -
 this guarantees <code>Intersect</code> returns a true subset of both operands:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">var a = Interval&lt;int&gt;.Closed(1, 5);    // [1, 5]
 var b = Interval&lt;int&gt;.Open(1, 5);      // (1, 5)
-var ab = a.Intersect(b);               // (1, 5) — open wins on both ends
+var ab = a.Intersect(b);               // (1, 5) - open wins on both ends
 </code></pre>
 <h2 id="union-and-adjacency">Union and adjacency</h2>
 <p><code>TryUnion(other, out result)</code> succeeds when the union of the two
-intervals is itself a single contiguous interval — that is, when the
+intervals is itself a single contiguous interval - that is, when the
 operands either overlap or are <em>adjacent</em>. Two intervals are adjacent
 when the upper endpoint of one equals the lower endpoint of the other
 and at least one of those endpoints is inclusive:</p>
 <!-- compile -->
-<pre><code class="lang-csharp">// Adjacent — [1, 5) ∪ [5, 10] -&gt; [1, 10]
+<pre><code class="lang-csharp">// Adjacent - [1, 5) ∪ [5, 10] -&gt; [1, 10]
 if (Interval&lt;int&gt;.ClosedOpen(1, 5).TryUnion(Interval&lt;int&gt;.Closed(5, 10), out var u))
 {
     Console.WriteLine(u);  // [1, 10]
 }
 
-// Disjoint — [1, 5) ∪ (5, 10] returns false because 5 is in neither
+// Disjoint - [1, 5) ∪ (5, 10] returns false because 5 is in neither
 //            interval and the result would not be contiguous.
 bool ok = Interval&lt;int&gt;.ClosedOpen(1, 5)
     .TryUnion(Interval&lt;int&gt;.OpenClosed(5, 10), out var _);
 Console.WriteLine(ok);  // False
 </code></pre>
-<p>When endpoint values tie, the <em>looser</em> (inclusive) inclusivity wins —
+<p>When endpoint values tie, the <em>looser</em> (inclusive) inclusivity wins -
 <code>TryUnion</code> returns the union, which is always a superset of either
 operand:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">var a = Interval&lt;int&gt;.Closed(1, 5);    // [1, 5]
 var b = Interval&lt;int&gt;.Open(1, 5);      // (1, 5)
-a.TryUnion(b, out var u);              // [1, 5] — inclusive wins on both ends
+a.TryUnion(b, out var u);              // [1, 5] - inclusive wins on both ends
 </code></pre>
 <p>Union with <code>Interval&lt;T&gt;.Empty</code> is always defined and leaves the other
 operand unchanged.</p>
 <h2 id="length-and-degenerate-intervals">Length and degenerate intervals</h2>
-<p><code>Length</code> is the <strong>algebraic</strong> length of the interval — the difference
+<p><code>Length</code> is the <strong>algebraic</strong> length of the interval - the difference
 between the upper and lower endpoints, regardless of endpoint
 inclusion:</p>
 <pre><code class="lang-csharp">Interval&lt;int&gt;.Closed(1, 5).Length;     // 4
@@ -297,9 +297,9 @@ should compute it directly:</p>
     return upper - lower + 1;
 }
 
-IntegerCount(Interval&lt;int&gt;.Closed(1, 5));     // 5 — {1, 2, 3, 4, 5}
-IntegerCount(Interval&lt;int&gt;.ClosedOpen(1, 5)); // 4 — {1, 2, 3, 4}
-IntegerCount(Interval&lt;int&gt;.Open(1, 5));       // 3 — {2, 3, 4}
+IntegerCount(Interval&lt;int&gt;.Closed(1, 5));     // 5 - {1, 2, 3, 4, 5}
+IntegerCount(Interval&lt;int&gt;.ClosedOpen(1, 5)); // 4 - {1, 2, 3, 4}
+IntegerCount(Interval&lt;int&gt;.Open(1, 5));       // 3 - {2, 3, 4}
 </code></pre>
 <h2 id="formatting">Formatting</h2>
 <p><code>Interval&lt;T&gt;</code> formats using ISO 31-11 bracket notation. Square
@@ -323,8 +323,8 @@ for allocation-free formatting into character or UTF-8 byte buffers.</p>
 <p><code>Interval&lt;T&gt;</code> implements <code>IParsable&lt;Interval&lt;T&gt;&gt;</code>,
 <code>ISpanParsable&lt;Interval&lt;T&gt;&gt;</code>, and <code>IUtf8SpanParsable&lt;Interval&lt;T&gt;&gt;</code>, so
 the static <code>Parse</code> and <code>TryParse</code> methods accept any ISO 31-11
-bracket-notation text — as a <code>string</code>, a character span, or UTF-8
-bytes — and the empty-set glyph:</p>
+bracket-notation text - as a <code>string</code>, a character span, or UTF-8
+bytes - and the empty-set glyph:</p>
 <pre><code class="lang-csharp">Interval&lt;int&gt;.Parse(&quot;[1, 5)&quot;, CultureInfo.InvariantCulture);
                                                 // [1, 5)
 Interval&lt;int&gt;.Parse(&quot;∅&quot;, CultureInfo.InvariantCulture);
@@ -352,7 +352,7 @@ A <code>null</code> provider falls back to <a class="xref" href="https://learn.m
 </ul>
 <p>Unlike <code>Fraction&lt;T&gt;</code>, interval parsing forwards the <em>full</em>
 <code>NumberStyles.Any</code> to each endpoint, so culture-specific group
-separators and decimal points in the endpoints are accepted — pass
+separators and decimal points in the endpoints are accepted - pass
 <code>CultureInfo.InvariantCulture</code> explicitly when you need a stable,
 machine-independent round-trip.</p>
 <h2 id="equality-and-hashing">Equality and hashing</h2>
@@ -370,7 +370,7 @@ var b = Interval&lt;int&gt;.Closed(1, 5);
 var c = Interval&lt;int&gt;.ClosedOpen(1, 5);
 
 Console.WriteLine(a == b);  // True
-Console.WriteLine(a == c);  // False — inclusivity differs
+Console.WriteLine(a == c);  // False - inclusivity differs
 
 Console.WriteLine(a.GetHashCode() == b.GetHashCode());  // True
 </code></pre>
@@ -384,9 +384,9 @@ The genuine mismatches that remain:</p>
 <ul>
 <li><strong>Discrete integer semantics.</strong> <code>Interval&lt;T&gt;</code> is a <em>continuous</em> range over
 ordered coordinates: <code>Interval&lt;int&gt;.Open(1, 2)</code> is non-empty even though no
-integer lies strictly between 1 and 2. When you need integer-set semantics —
+integer lies strictly between 1 and 2. When you need integer-set semantics -
 an open interval over consecutive integers is empty, and <code>[1, 2]</code> and
-<code>[3, 4]</code> are adjacent and merge — use
+<code>[3, 4]</code> are adjacent and merge - use
 <a href="discrete-intervals.html"><code>DiscreteInterval&lt;T&gt;</code></a>.</li>
 <li><strong>A single value holding many disjoint pieces.</strong> A binary <code>Difference</code> /
 <code>SymmetricDifference</code> returns an <code>IntervalPair&lt;T&gt;</code> (at most two pieces), and
@@ -402,12 +402,12 @@ the contract and should be modeled separately.</li>
 </ul>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="interval-algebra.html">Interval algebra</a> — unbounded endpoints, difference, the <code>&amp;</code> / <code>|</code> operators, and <code>IntervalSet&lt;T&gt;</code>.</li>
-<li><a href="discrete-intervals.html">Discrete integer intervals</a> — the integer-domain <code>DiscreteInterval&lt;T&gt;</code>.</li>
+<li><a href="interval-algebra.html">Interval algebra</a> - unbounded endpoints, difference, the <code>&amp;</code> / <code>|</code> operators, and <code>IntervalSet&lt;T&gt;</code>.</li>
+<li><a href="discrete-intervals.html">Discrete integer intervals</a> - the integer-domain <code>DiscreteInterval&lt;T&gt;</code>.</li>
 <li><a class="xref" href="../../api/Bodu.Numerics.Interval-1.html"><code>Interval&lt;T&gt;</code> API reference</a></li>
 <li><a class="xref" href="../../api/Bodu.Numerics.Interval.html"><code>Interval</code> static factory helpers</a></li>
 <li><a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html"><code>Fraction&lt;T&gt;</code> API reference</a></li>
-<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — every guide in this topic, across Bodu.Numerics and Bodu.Financial.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> - every guide in this topic, across Bodu.Numerics and Bodu.Financial.</li>
 </ul>
 
 </article>
@@ -427,7 +427,7 @@ the contract and should be modeled separately.</li>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

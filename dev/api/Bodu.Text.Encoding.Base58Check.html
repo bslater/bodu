@@ -8,7 +8,7 @@
       <meta name="title" content="Base58Check Class
  | BODU ">
       
-      <meta name="description" content="Provides Base58Check encoding and decoding — a Base58 superset used by Bitcoin addresses, WIF private keys, and related protocols. The encoder appends a four-byte checksum derived from the leading bytes of SHA-256(SHA-256(payload)) so that mistyped or truncated input can be detected at decode time.">
+      <meta name="description" content="Provides Base58Check encoding and decoding - a Base58 superset used by Bitcoin addresses, WIF private keys, and related protocols. The encoder appends a four-byte checksum derived from the leading bytes of SHA-256(SHA-256(payload)) so that mistyped or truncated input can be detected at decode time.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Encoding_Base58Check" data-uid="Bodu.Text.Encoding.Base58Check" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Base58Check Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Base58Check.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Base58Check.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,10 +104,10 @@ Base58Check Class
   <dl><dt>Assembly</dt><dd>Bodu.Text.Encoding.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Encoding">Bodu.Text.Encoding</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Base58Check.cs">Base58Check.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Base58Check.cs">Base58Check.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Provides Base58Check encoding and decoding — a Base58 superset used by Bitcoin addresses, WIF private keys, and
+  <div class="markdown summary"><p>Provides Base58Check encoding and decoding - a Base58 superset used by Bitcoin addresses, WIF private keys, and
 related protocols. The encoder appends a four-byte checksum derived from the leading bytes of
 <code>SHA-256(SHA-256(payload))</code> so that mistyped or truncated input can be detected at decode time.</p>
 </div>
@@ -170,7 +170,7 @@ hash160.CopyTo(payload.AsSpan(1));                          // 20-byte RIPEMD-16
 string address = Base58Check.Encode(payload);               // "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2" (example)
 
 // Decoder verifies the trailing checksum and strips it; throws on mismatch.
-byte[] decoded = Base58Check.Decode(address);               // 21 bytes — original version + hash160</code></pre>
+byte[] decoded = Base58Check.Decode(address);               // 21 bytes - original version + hash160</code></pre>
 
 
   <h2 id="Bodu_Text_Encoding_Base58Check_remarks">Remarks</h2>
@@ -194,7 +194,7 @@ Leading zero bytes in the payload are preserved by the underlying Base58 encoder
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58Check_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58Check.Decode(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
   Decode(ReadOnlySpan&lt;char&gt;, Base58Variant, BaseFormatStyles)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Base58Check.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Base58Check.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -254,11 +254,11 @@ four bytes, or whose trailing four-byte checksum disagrees with the computed val
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58Check_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58Check.Encode(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Base58Variant)">
   Encode(ReadOnlySpan&lt;byte&gt;, Base58Variant)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Base58Check.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Base58Check.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Encodes <code class="paramref">payload</code> using Base58Check — appends a four-byte SHA-256 squared checksum and Base58
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">payload</code> using Base58Check - appends a four-byte SHA-256 squared checksum and Base58
 encodes the concatenation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -307,7 +307,7 @@ encodes the concatenation.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58Check_GetMaxDecodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base58Check.GetMaxDecodedLength(System.Int32)">
   GetMaxDecodedLength(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Base58Check.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Base58Check.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -358,7 +358,7 @@ a checksum.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58Check_GetMaxEncodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base58Check.GetMaxEncodedLength(System.Int32)">
   GetMaxEncodedLength(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Base58Check.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Base58Check.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -408,11 +408,11 @@ a checksum.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58Check_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58Check.IsValid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
   IsValid(ReadOnlySpan&lt;char&gt;, Base58Variant, BaseFormatStyles)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Base58Check.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Base58Check.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is a valid Base58Check input under the supplied variant — that is,
+  <div class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is a valid Base58Check input under the supplied variant - that is,
 every character is in the variant alphabet and the trailing four-byte checksum matches the decoded payload.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -465,7 +465,7 @@ otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58Check_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58Check.TryDecode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
   TryDecode(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, Base58Variant, BaseFormatStyles)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Text.Encoding/src/Text.Encoding/Base58Check.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Text.Encoding/src/Text.Encoding/Base58Check.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -549,7 +549,7 @@ otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="using-base32">Using Base32</h1>
 
-<p><code>Base32</code> packs five bits per output character (radix 32), so the payload expansion is <strong>60 %</strong> — between Base16's
+<p><code>Base32</code> packs five bits per output character (radix 32), so the payload expansion is <strong>60 %</strong> - between Base16's
 100 % and Base64's 33 %. The library ships four variants: the two RFC 4648 alphabets plus two human-oriented
 alternatives.</p>
 <pre><code>input bytes  : 66 6F 6F 62 61 72             (ASCII &quot;foobar&quot;)
@@ -96,8 +96,8 @@ alternatives.</p>
               :                              └──   ─ 5-byte group ─  ┘
 encoded text : MZXW6YTBOI======              (Standard, 16 chars including padding)
               CPNMUOJ1E8======               (HexExtended)
-              CPNMUOJ1E8                     (Crockford — no padding by default)
-              csrtbarvni                     (Z-Base-32 — lowercase alphabet, no padding)
+              CPNMUOJ1E8                     (Crockford - no padding by default)
+              csrtbarvni                     (Z-Base-32 - lowercase alphabet, no padding)
 </code></pre>
 <h2 id="quick-reference">Quick reference</h2>
 <pre><code class="lang-csharp">using Bodu.Text.Encoding;
@@ -112,11 +112,11 @@ string s = Base32.Encode(data);
 string h = Base32.Encode(data, Base32Variant.HexExtended);
 // &quot;CPNMUOJ1E8======&quot;
 
-// Crockford — no padding by default
+// Crockford - no padding by default
 string c = Base32.Encode(data, Base32Variant.Crockford);
 // &quot;CSQPYRK1E8&quot;
 
-// z-base-32 — lowercase human-oriented
+// z-base-32 - lowercase human-oriented
 string z = Base32.Encode(data, Base32Variant.ZBase32);
 // (lowercase z-base-32 form)
 </code></pre>
@@ -136,21 +136,21 @@ string z = Base32.Encode(data, Base32Variant.ZBase32);
 <td><code>Standard</code> (RFC 4648 §6)</td>
 <td><code>A-Z 2-7</code></td>
 <td>Yes (<code>=</code>)</td>
-<td>—</td>
+<td>-</td>
 <td>Case-insensitive</td>
 </tr>
 <tr>
 <td><code>HexExtended</code> (RFC 4648 §7)</td>
 <td><code>0-9 A-V</code></td>
 <td>Yes (<code>=</code>)</td>
-<td>—</td>
+<td>-</td>
 <td>Case-insensitive</td>
 </tr>
 <tr>
 <td><code>Crockford</code></td>
 <td><code>0-9 A-Z</code> minus <code>I L O U</code></td>
 <td>No</td>
-<td>Yes — <code>I</code> <code>L</code> <code>O</code> <code>U</code></td>
+<td>Yes - <code>I</code> <code>L</code> <code>O</code> <code>U</code></td>
 <td><code>I</code>/<code>L</code> → <code>1</code>, <code>O</code> → <code>0</code>, case-insensitive</td>
 </tr>
 <tr>
@@ -254,16 +254,16 @@ byte[]  back       = Base32.Decode(withoutPad, Base32Variant.Standard, BaseForma
 </tr>
 <tr>
 <td><code>BaseFormatStyles.RequireCanonicalEncoding</code></td>
-<td><strong>Tightens</strong> the decoder — rejects a terminal symbol with non-zero unused bits</td>
+<td><strong>Tightens</strong> the decoder - rejects a terminal symbol with non-zero unused bits</td>
 </tr>
 </tbody>
 </table>
-<p><code>BaseFormattingOptions.InsertLineBreaks</code> is supported on encode and wraps at 64 characters — the same convention
+<p><code>BaseFormattingOptions.InsertLineBreaks</code> is supported on encode and wraps at 64 characters - the same convention
 as Base16.</p>
 <h3 id="canonical-form-and-the-5-byte-quantum">Canonical form and the 5-byte quantum</h3>
 <p>Base32 repeats a <strong>5-byte → 8-character</strong> quantum (40 bits = lcm of the 8-bit byte and the 5-bit symbol). A
-partial tail does not fill every bit of its final symbol — a 1-byte tail leaves 2 unused bits, a 2-byte tail
-leaves 4, and so on — and RFC 4648 §3.5 lets a decoder accept the result whatever those leftover bits are. Two
+partial tail does not fill every bit of its final symbol - a 1-byte tail leaves 2 unused bits, a 2-byte tail
+leaves 4, and so on - and RFC 4648 §3.5 lets a decoder accept the result whatever those leftover bits are. Two
 encoded strings that differ only in those unused trailing bits therefore decode to the <em>same</em> bytes. By default
 the decoder tolerates the non-canonical form; <code>RequireCanonicalEncoding</code> rejects it, so every byte sequence has a
 single accepted spelling:</p>
@@ -276,7 +276,7 @@ Base32.Decode(canonical, Base32Variant.Standard);                  // ok
 Base32.Decode(canonical, Base32Variant.Standard,
     BaseFormatStyles.RequireCanonicalEncoding);                    // … but is rejected under canonical enforcement
 </code></pre>
-<p>Pass <code>RequireCanonicalEncoding</code> when each byte sequence must have exactly one accepted spelling — content-addressed
+<p>Pass <code>RequireCanonicalEncoding</code> when each byte sequence must have exactly one accepted spelling - content-addressed
 keys, deduplication, or a value that feeds a signature. The flag is a no-op for the leftover-bit-free families
 (Base16) and the non-bit-stream families (Base58, Base85).</p>
 <h2 id="span-and-utf-8-paths">Span and UTF-8 paths</h2>
@@ -296,7 +296,7 @@ var status = Base32.DecodeFromUtf8(
 </code></pre>
 <h2 id="validation-and-sizing">Validation and sizing</h2>
 <pre><code class="lang-csharp">Base32.IsValid(&quot;MZXW6YTBOI======&quot;);          // true (Standard, padded)
-Base32.IsValid(&quot;MZXW6YTBOI&quot;);                // false (strict — missing padding)
+Base32.IsValid(&quot;MZXW6YTBOI&quot;);                // false (strict - missing padding)
 Base32.IsValid(&quot;MZXW6YTBOI&quot;,
     Base32Variant.Standard,
     BaseFormatStyles.AllowMissingPadding);   // true
@@ -310,7 +310,7 @@ Base32.GetEncodedLength(20, Base32Variant.Crockford); // 32 (still 32 chars with
 Base32.GetMaxDecodedLength(32);               // 20
 </code></pre>
 <h2 id="encoding-a-guid">Encoding a GUID</h2>
-<p><code>Base32</code> encodes a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a> into a 26-character (padless) or 32-character (padded) token — denser than
+<p><code>Base32</code> encodes a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a> into a 26-character (padless) or 32-character (padded) token - denser than
 hex and case-insensitive, so it survives shouting down a phone line in Crockford form:</p>
 <pre><code class="lang-csharp">Guid id = Guid.NewGuid();
 
@@ -332,14 +332,14 @@ string display = Base32.Encode(
 <h3 id="crockford-friendly-short-id">Crockford-friendly short ID</h3>
 <pre><code class="lang-csharp">byte[] randomBytes = RandomNumberGenerator.GetBytes(5);
 string code = Base32.Encode(randomBytes, Base32Variant.Crockford);
-// e.g. &quot;F08NHM37&quot; — 8 characters, no ambiguity with O/0/I/L
+// e.g. &quot;F08NHM37&quot; - 8 characters, no ambiguity with O/0/I/L
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="base64.html">Base64 guide</a></strong> — when you need denser packing.</li>
-<li><strong><a href="base16.html">Base16 guide</a></strong> — when you need explicit byte boundaries.</li>
-<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> — runtime-selected encoding choice.</li>
-<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
+<li><strong><a href="base64.html">Base64 guide</a></strong> - when you need denser packing.</li>
+<li><strong><a href="base16.html">Base16 guide</a></strong> - when you need explicit byte boundaries.</li>
+<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> - runtime-selected encoding choice.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> - every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
 </ul>
 
 </article>
@@ -359,7 +359,7 @@ string code = Base32.Encode(randomBytes, Base32Variant.Crockford);
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

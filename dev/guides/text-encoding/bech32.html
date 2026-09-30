@@ -100,10 +100,10 @@ four parts:</p>
    │  └─ separator '1'
    └─ human-readable part (HRP)
 </code></pre>
-<p>Because the HRP and checksum are integral to the string, <code>Bech32</code> is modelled on <a href="base58.html#base58check--checksum-protected-payloads"><code>Base58Check</code></a>
-rather than the <a href="binary-encodings-interface.html"><code>IBinaryEncoding</code></a> family — it sits outside the runtime registry.</p>
+<p>Because the HRP and checksum are integral to the string, <code>Bech32</code> is modelled on <a href="base58.html#base58check---checksum-protected-payloads"><code>Base58Check</code></a>
+rather than the <a href="binary-encodings-interface.html"><code>IBinaryEncoding</code></a> family - it sits outside the runtime registry.</p>
 <h2 id="5-bit-groups-vs-8-bit-bytes">5-bit groups vs. 8-bit bytes</h2>
-<p>The core methods operate on <strong>5-bit data groups</strong> (each value <code>0</code>–<code>31</code>). Two convenience pairs bridge to ordinary
+<p>The core methods operate on <strong>5-bit data groups</strong> (each value <code>0</code>-<code>31</code>). Two convenience pairs bridge to ordinary
 bytes, and <code>ConvertBits</code> does it by hand:</p>
 <table>
 <thead>
@@ -115,7 +115,7 @@ bytes, and <code>ConvertBits</code> does it by hand:</p>
 <tbody>
 <tr>
 <td><code>Encode(hrp, data, scheme)</code> / <code>Decode(...)</code></td>
-<td>5-bit groups (values 0–31)</td>
+<td>5-bit groups (values 0-31)</td>
 </tr>
 <tr>
 <td><code>EncodeFromBytes(hrp, data, scheme)</code> / <code>DecodeToBytes(...)</code></td>
@@ -165,7 +165,7 @@ validated</strong> the checksum through an out parameter:</p>
     out string hrp, out byte[] data, out Bech32Encoding scheme);
 // scheme == Bech32Encoding.Bech32
 </code></pre>
-<h2 id="worked-example--a-segwit-v0-address">Worked example — a SegWit v0 address</h2>
+<h2 id="worked-example---a-segwit-v0-address">Worked example - a SegWit v0 address</h2>
 <p>A SegWit address is not a plain byte payload: the data part is a one-symbol <strong>witness version</strong> followed by the
 witness program repacked from 8 bits to 5. Witness v0 uses Bech32; v1+ uses Bech32m.</p>
 <pre><code class="lang-csharp">using Bodu.Text.Encoding;
@@ -188,9 +188,9 @@ Bech32.IsValid(&quot;bc1qw508d6qejxtdg4Y5r3zarvary0c5xw7kv8f3t4&quot;);   // fal
 </code></pre>
 <h2 id="the-90-character-limit">The 90-character limit</h2>
 <p>BIP 173 caps an address at <strong>90 characters</strong>. The decoder enforces this limit; the encoder does <strong>not</strong>, so it can
-produce the longer strings non-address schemes need — Lightning BOLT11 invoices routinely exceed 90 characters.</p>
+produce the longer strings non-address schemes need - Lightning BOLT11 invoices routinely exceed 90 characters.</p>
 <h2 id="hrp-rules">HRP rules</h2>
-<p>The human-readable part must be <strong>non-empty</strong> and contain only US-ASCII characters in the range 33–126. An empty or
+<p>The human-readable part must be <strong>non-empty</strong> and contain only US-ASCII characters in the range 33-126. An empty or
 out-of-range HRP throws <code>ArgumentException</code> from the encoder; <code>TryEncode</code> returns <code>false</code>.</p>
 <h2 id="non-throwing-forms">Non-throwing forms</h2>
 <pre><code class="lang-csharp">if (Bech32.TryEncode(&quot;bc&quot;, data, Bech32Encoding.Bech32, out string? encoded))
@@ -212,10 +212,10 @@ int length = Bech32.GetEncodedLength(hrpLength: 2, dataLength: 33);
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="base58.html">Base58 guide</a></strong> — the legacy Bitcoin address encoding and <code>Base58Check</code>.</li>
-<li><strong><a href="base32.html">Base32 guide</a></strong> — the plain 5-bit encoding Bech32's data part is built on.</li>
-<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> — the runtime registry for the flat-byte encodings (Bech32 stays outside it).</li>
-<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
+<li><strong><a href="base58.html">Base58 guide</a></strong> - the legacy Bitcoin address encoding and <code>Base58Check</code>.</li>
+<li><strong><a href="base32.html">Base32 guide</a></strong> - the plain 5-bit encoding Bech32's data part is built on.</li>
+<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> - the runtime registry for the flat-byte encodings (Bech32 stays outside it).</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> - every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
 </ul>
 
 </article>
@@ -235,7 +235,7 @@ int length = Bech32.GetEncodedLength(hrpLength: 2, dataLength: 33);
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

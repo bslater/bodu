@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 348" role="img" aria-labelledby="num-t num-d">
-  <title id="num-t">Bodu.Numerics — type map</title>
+  <title id="num-t">Bodu.Numerics - type map</title>
   <desc id="num-d">Bodu.Numerics ships two immutable value types built on the .NET generic-math interfaces. Fraction&lt;T&gt; provides exact rational arithmetic over any IBinaryInteger&lt;T&gt; backing type with GCD-normalised canonical form and BigInteger-promoted intermediates. Interval&lt;T&gt; provides bounded numeric intervals over any INumber&lt;T&gt; endpoint type with independent inclusivity on each side. The non-generic Interval helper offers factory shorthands that infer the endpoint type from the arguments. The Fraction JSON converters round-trip through the string form "numerator/denominator".</desc>
 
   <defs>
@@ -32,12 +32,12 @@
     <rect class="num-pan" width="800" height="328" rx="8"/>
     <rect class="num-hdr" width="800" height="46" rx="8"/>
     <rect class="num-hdr" y="38" width="800" height="8"/>
-    <text class="num-ttl" x="16" y="29">Bodu.Numerics — two value types, one generic-math surface</text>
+    <text class="num-ttl" x="16" y="29">Bodu.Numerics - two value types, one generic-math surface</text>
     <text class="num-form" x="784" y="29" text-anchor="end">immutable · value-equatable</text>
 
     <!-- base contract -->
     <rect class="num-base" x="226" y="58" width="348" height="40" rx="7"/>
-    <text class="num-bttl" x="400" y="76">System.Numerics — IBinaryInteger&lt;T&gt; · INumber&lt;T&gt;</text>
+    <text class="num-bttl" x="400" y="76">System.Numerics - IBinaryInteger&lt;T&gt; · INumber&lt;T&gt;</text>
     <text class="num-bsub" x="400" y="91">generic-math abstractions over any conforming type</text>
 
     <!-- connectors -->

@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm" data-uid="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 KeyedDeferredFinalBlockHashAlgorithm Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ KeyedDeferredFinalBlockHashAlgorithm Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs">KeyedDeferredFinalBlockHashAlgorithm.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs">KeyedDeferredFinalBlockHashAlgorithm.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents the abstract base class for hash algorithms that support an optional secret key and defer compression of
@@ -412,7 +412,7 @@ deferred-finalization pattern.</p>
 
 
   <h2 id="Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_examples">Examples</h2>
-  <pre><code class="lang-csharp">// BLAKE2b in keyed MAC mode — the key is optional and may be up to MaximumKeySize bits.
+  <pre><code class="lang-csharp">// BLAKE2b in keyed MAC mode - the key is optional and may be up to MaximumKeySize bits.
 byte[] key = new byte[32];
 RandomNumberGenerator.Fill(key);
 
@@ -434,7 +434,7 @@ orchestrates hash-state reset followed by key-block injection when a key is set.
 <p>
 The key is optional: assigning an empty array (or never assigning a key) places the instance in the standard unkeyed
 digest mode. Assigning a non-empty array of at most <a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html#Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_MaximumKeySize">MaximumKeySize</a> / 8 bytes switches the instance to
-the keyed MAC mode defined in RFC 7693 Section 2.8 — the key is zero-padded to the block size and prepended as the
+the keyed MAC mode defined in RFC 7693 Section 2.8 - the key is zero-padded to the block size and prepended as the
 first message block.
 </p>
 <p>
@@ -445,9 +445,9 @@ variables and encode the key length into the parameter block, and
 </p>
 <p>
 <strong>When to derive from this class.</strong> Pick <a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a> for
-BLAKE-family hashes that accept an optional, variable-length key per RFC 7693 §2.8 — the canonical users are
+BLAKE-family hashes that accept an optional, variable-length key per RFC 7693 §2.8 - the canonical users are
 <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a> and <a class="xref" href="Bodu.Security.Cryptography.Blake2s.html">Blake2s</a>. For BLAKE-family hashes without a key (e.g. <a class="xref" href="Bodu.Security.Cryptography.Blake3.html">Blake3</a>
-) derive from <a class="xref" href="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html">DeferredFinalBlockHashAlgorithm</a>. For Merkle–Damgård keyed hashes with a fixed-length
+) derive from <a class="xref" href="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html">DeferredFinalBlockHashAlgorithm</a>. For Merkle-Damgård keyed hashes with a fixed-length
 key (Poly1305, SipHash) derive from <a class="xref" href="Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html">KeyedBlockHashAlgorithm</a>.
 </p>
 </div>
@@ -462,7 +462,7 @@ key (Poly1305, SipHash) derive from <a class="xref" href="Bodu.Security.Cryptogr
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm__ctor_System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.#ctor(System.Int32,System.Int32)">
   KeyedDeferredFinalBlockHashAlgorithm(int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -512,7 +512,7 @@ input block size and maximum key size.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_KeyValue" data-uid="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.KeyValue">
   KeyValue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -552,7 +552,7 @@ input block size and maximum key size.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_Key" data-uid="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.Key">
   Key
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -622,7 +622,7 @@ The property may only be changed before hashing has begun; once <a class="xref" 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_MaximumKeySize" data-uid="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.MaximumKeySize">
   MaximumKeySize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -670,7 +670,7 @@ byte length used when allocating or validating <a class="xref" href="Bodu.Securi
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_Dispose_System_Boolean_" data-uid="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.Dispose(System.Boolean)">
   Dispose(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -718,7 +718,7 @@ Derived classes that hold algorithm-specific state, buffers, keys, or other secr
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_Initialize" data-uid="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.Initialize">
   Initialize()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -758,7 +758,7 @@ block. Sealed so that the key-injection protocol cannot be accidentally bypassed
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_InitializeHashState" data-uid="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.InitializeHashState">
   InitializeHashState()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/KeyedDeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -822,7 +822,7 @@ encoding, as <a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinal
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

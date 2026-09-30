@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Hashing_MurmurHash3_32" data-uid="Bodu.IO.Hashing.MurmurHash3_32" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 MurmurHash3_32 Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing/MurmurHash3.32.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing/MurmurHash3.32.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ MurmurHash3_32 Class
   <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing/MurmurHash3.32.cs">MurmurHash3.32.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing/MurmurHash3.32.cs">MurmurHash3.32.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Computes a 32-bit (4-byte) non-cryptographic hash using the <code>MurmurHash3_x86_32</code> variant by Austin Appleby.
@@ -327,7 +327,7 @@ This class cannot be inherited.</p>
   <h2 id="Bodu_IO_Hashing_MurmurHash3_32_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 <a class="xref" href="Bodu.IO.Hashing.MurmurHash3_32.html">MurmurHash3_32</a> processes input in 4-byte blocks, applying a pair of multiply-rotate-XOR mixing steps
-per block, followed by a tail pass for any remaining 1–3 bytes. The output is finalized using
+per block, followed by a tail pass for any remaining 1-3 bytes. The output is finalized using
 <a class="xref" href="Bodu.IO.Hashing.MurmurHash3.html#Bodu_IO_Hashing_MurmurHash3_FMix32_System_UInt32_">FMix32(uint)</a> to ensure strong avalanche properties.
 </p>
 <p>
@@ -337,7 +337,7 @@ is useful for building distributed hash tables and bloom filters.
 <p>
 <strong>Parameters at a glance.</strong>
 </p>
-<ul><li>Output size: 32 bits (4 bytes), little-endian.</li><li>Variant: <code>MurmurHash3_x86_32</code>.</li><li>Block size: 4 bytes; tail pass for remaining 1–3 bytes.</li><li>Seed: 32 bits, defaults to <code>0</code>.</li></ul>
+<ul><li>Output size: 32 bits (4 bytes), little-endian.</li><li>Variant: <code>MurmurHash3_x86_32</code>.</li><li>Block size: 4 bytes; tail pass for remaining 1-3 bytes.</li><li>Seed: 32 bits, defaults to <code>0</code>.</li></ul>
 <p>
 <strong>When to choose MurmurHash3_32.</strong> The default 32-bit hash for in-memory hash tables and bloom filters.
 Choose it over <a class="xref" href="Bodu.IO.Hashing.Fnv1a32.html">Fnv1a32</a> when input length exceeds ~16 bytes or when SMHasher quality matters. Reach
@@ -370,7 +370,7 @@ byte[] digest2 = m2.ComputeHash(System.Text.Encoding.UTF8.GetBytes("hash-table-k
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_MurmurHash3_32__ctor" data-uid="Bodu.IO.Hashing.MurmurHash3_32.#ctor">
   MurmurHash3_32()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing/MurmurHash3.32.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing/MurmurHash3.32.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -401,7 +401,7 @@ byte[] digest2 = m2.ComputeHash(System.Text.Encoding.UTF8.GetBytes("hash-table-k
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_MurmurHash3_32__ctor_System_UInt32_" data-uid="Bodu.IO.Hashing.MurmurHash3_32.#ctor(System.UInt32)">
   MurmurHash3_32(uint)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing/MurmurHash3.32.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing/MurmurHash3.32.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -442,7 +442,7 @@ byte[] digest2 = m2.ComputeHash(System.Text.Encoding.UTF8.GetBytes("hash-table-k
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_MurmurHash3_32_Dispose_System_Boolean_" data-uid="Bodu.IO.Hashing.MurmurHash3_32.Dispose(System.Boolean)">
   Dispose(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.IO.Hashing/src/IO.Hashing/MurmurHash3.32.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.IO.Hashing/src/IO.Hashing/MurmurHash3.32.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -511,7 +511,7 @@ finalizer. Managed resources are released only when <code class="paramref">dispo
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

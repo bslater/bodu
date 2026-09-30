@@ -8,7 +8,7 @@
       <meta name="title" content="SequenceGenerator Class
  | BODU ">
       
-      <meta name="description" content="Provides static factory methods that produce lazily evaluated  sequences without materializing the underlying collection — both general-purpose shapes (Range, NextWhile, Factory) and a catalogue of well-known mathematical sequences (Fibonacci, Farey, Leibniz, look-and-say, and Thue–Morse).">
+      <meta name="description" content="Provides static factory methods that produce lazily evaluated  sequences without materializing the underlying collection - both general-purpose shapes (Range, NextWhile, Factory) and a catalogue of well-known mathematical sequences (Fibonacci, Farey, Leibniz, look-and-say, and Thue-Morse).">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Sequences_SequenceGenerator" data-uid="Bodu.Sequences.SequenceGenerator" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 SequenceGenerator Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,13 +104,13 @@ SequenceGenerator Class
   <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs">SequenceGenerator.AnonymousEnumerable.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs">SequenceGenerator.AnonymousEnumerable.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides static factory methods that produce lazily evaluated <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a> sequences without
-materializing the underlying collection — both general-purpose shapes (<code>Range</code>, <code>NextWhile</code>,
+materializing the underlying collection - both general-purpose shapes (<code>Range</code>, <code>NextWhile</code>,
 <code>Factory</code>) and a catalogue of well-known mathematical sequences (Fibonacci, Farey, Leibniz, look-and-say, and
-Thue–Morse).</p>
+Thue-Morse).</p>
 </div>
 
   <div class="codewrapper">
@@ -173,7 +173,7 @@ IEnumerable&lt;int&gt; powers = SequenceGenerator.NextWhile(
     conditionHandler: value =&gt; value &gt; 0,
     resultSelector: prev =&gt; prev * 2);
 
-// Fibonacci numbers up to 100 — the value bound, not a fixed count.
+// Fibonacci numbers up to 100 - the value bound, not a fixed count.
 foreach (long fib in SequenceGenerator.Fibonacci(min: 0, max: 100))
     Console.WriteLine(fib); // 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89</code></pre>
 
@@ -194,7 +194,7 @@ predicate is no longer satisfied. <code>Factory</code> wraps a delegate-returned
 can adapt non-collection iteration sources to the LINQ pipeline.
 </p>
 <p>
-The mathematical catalogue is intentionally narrow — it covers reference sequences that appear repeatedly in
+The mathematical catalogue is intentionally narrow - it covers reference sequences that appear repeatedly in
 numerical recipes, algorithm exercises, and educational material, but it is not a general-purpose recurrence
 framework. Most of these generators take inclusive bounds over the value space (<code>min</code>, <code>max</code>) rather than
 element counts, while the Farey and look-and-say overloads accept an order or count parameter where bounds are not
@@ -217,7 +217,7 @@ a stable, replayable view should materialize the sequence via <code>ToArray</cod
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Sequences_SequenceGenerator_Factory__1_System_Func_System_Collections_Generic_IEnumerator___0___" data-uid="Bodu.Sequences.SequenceGenerator.Factory``1(System.Func{System.Collections.Generic.IEnumerator{``0}})">
   Factory&lt;TResult&gt;(Func&lt;IEnumerator&lt;TResult&gt;&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Sequences/SequenceGenerator.Factory.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Sequences/SequenceGenerator.Factory.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -304,7 +304,7 @@ iteration.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Sequences_SequenceGenerator_Farey_System_Int32_" data-uid="Bodu.Sequences.SequenceGenerator.Farey(System.Int32)">
   Farey(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -375,7 +375,7 @@ in the usual sense: each enumerator carries its own state.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Sequences_SequenceGenerator_Fibonacci_System_Int64_System_Int64_" data-uid="Bodu.Sequences.SequenceGenerator.Fibonacci(System.Int64,System.Int64)">
   Fibonacci(long, long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -420,7 +420,7 @@ var none = SequenceGenerator.Fibonacci(50, 54).ToArray(); // =&gt; empty (no Fib
 
   <h4 class="section" id="Bodu_Sequences_SequenceGenerator_Fibonacci_System_Int64_System_Int64__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
-Use this generator when only the Fibonacci numbers within a known numeric window are required — building the
+Use this generator when only the Fibonacci numbers within a known numeric window are required - building the
 full sequence up to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64.maxvalue">MaxValue</a> and filtering after the fact wastes iterations. The half-open
 interval matches the convention used elsewhere in <a class="xref" href="Bodu.Sequences.SequenceGenerator.html">SequenceGenerator</a>, so two consecutive ranges
 can be stitched together without overlap or gaps.
@@ -455,7 +455,7 @@ Iteration is deferred and deterministic; allocation is limited to the iterator s
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Sequences_SequenceGenerator_Leibniz_System_Double_System_Double_" data-uid="Bodu.Sequences.SequenceGenerator.Leibniz(System.Double,System.Double)">
   Leibniz(double, double)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -472,7 +472,7 @@ within the requested half-open interval.</p>
   <dl class="parameters">
     <dt><code>min</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
     <dd><p>The inclusive lower bound on the absolute value of emitted terms. Because term magnitudes strictly decrease,
-iteration ends as soon as <code>|F(n)| &lt; <code class="paramref">min</code></code> — no later term can re-enter the window.
+iteration ends as soon as <code>|F(n)| &lt; <code class="paramref">min</code></code> - no later term can re-enter the window.
 Must be non-negative; a value of <code>0</code> produces an unbounded sequence (bound consumption with <code>Take</code>).</p>
 </dd>
     <dt><code>max</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
@@ -517,8 +517,8 @@ bounds are terminating: as soon as a term's magnitude reaches <code class="param
 </p>
 <p>
 Because the magnitude sequence <code>1, 1/3, 1/5, …</code> starts at one and is monotonically decreasing, the upper
-bound only ever gates the first term — a <code class="paramref">max</code> of <code>1</code> or less terminates immediately with
-an empty sequence — and once a term drops below <code class="paramref">min</code> no later term can return to the window,
+bound only ever gates the first term - a <code class="paramref">max</code> of <code>1</code> or less terminates immediately with
+an empty sequence - and once a term drops below <code class="paramref">min</code> no later term can return to the window,
 so ending iteration there is what keeps the sequence finite. The iterator is deferred, deterministic, and
 allocates only its own state.
 </p>
@@ -543,7 +543,7 @@ allocates only its own state.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Sequences_SequenceGenerator_LookAndSay_System_Int32_" data-uid="Bodu.Sequences.SequenceGenerator.LookAndSay(System.Int32)">
   LookAndSay(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -596,7 +596,7 @@ transform manually.
 <p>
 Each term grows in length roughly by Conway's constant (<code>≈ 1.303577…</code>) per iteration, so the strings
 produced for large <code class="paramref">count</code> values grow quickly and may dominate allocation cost. Iteration is
-deferred — argument validation runs on first <code>MoveNext</code> — and a single <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a>
+deferred - argument validation runs on first <code>MoveNext</code> - and a single <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a>
 instance is reused per term.
 </p>
 <p>
@@ -620,7 +620,7 @@ The result is deterministic (the seed is fixed) and the iterator carries no shar
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Sequences_SequenceGenerator_NextWhile__1___0_System_Func___0_System_Boolean__System_Func___0_System_Int32___0__" data-uid="Bodu.Sequences.SequenceGenerator.NextWhile``1(``0,System.Func{``0,System.Boolean},System.Func{``0,System.Int32,``0})">
   NextWhile&lt;TResult&gt;(TResult, Func&lt;TResult, bool&gt;, Func&lt;TResult, int, TResult&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Sequences/SequenceGenerator.NextWhile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Sequences/SequenceGenerator.NextWhile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -675,7 +675,7 @@ var triangular = SequenceGenerator.NextWhile(0, v =&gt; v &lt;= 100, (v, i) =&gt
   <div class="markdown level1 remarks"><p>
 Choose this overload over
 <a class="xref" href="Bodu.Sequences.SequenceGenerator.html#Bodu_Sequences_SequenceGenerator_NextWhile__1___0_System_Func___0_System_Boolean__System_Func___0___0__">NextWhile&lt;TResult&gt;(TResult, Func&lt;TResult, bool&gt;, Func&lt;TResult, TResult&gt;)</a> when the transformation
-depends on its position — for example, accumulating sums of <code>i</code>, generating polynomial terms, or scaling by
+depends on its position - for example, accumulating sums of <code>i</code>, generating polynomial terms, or scaling by
 a power of the current index.
 </p>
 <p>
@@ -703,7 +703,7 @@ after <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Sequences_SequenceGenerator_NextWhile__1___0_System_Func___0_System_Boolean__System_Func___0___0__" data-uid="Bodu.Sequences.SequenceGenerator.NextWhile``1(``0,System.Func{``0,System.Boolean},System.Func{``0,``0})">
   NextWhile&lt;TResult&gt;(TResult, Func&lt;TResult, bool&gt;, Func&lt;TResult, TResult&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Sequences/SequenceGenerator.NextWhile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Sequences/SequenceGenerator.NextWhile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -749,7 +749,7 @@ returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/bu
 
 
   <h4 class="section" id="Bodu_Sequences_SequenceGenerator_NextWhile__1___0_System_Func___0_System_Boolean__System_Func___0___0___examples">Examples</h4>
-  <pre><code class="lang-csharp">// Halving sequence — terminates when the value drops to zero.
+  <pre><code class="lang-csharp">// Halving sequence - terminates when the value drops to zero.
 var halves = SequenceGenerator.NextWhile(64, v =&gt; v &gt; 0, v =&gt; v / 2); // =&gt; 64, 32, 16, 8, 4, 2, 1
 
 // Empty result when the seed already fails the predicate.
@@ -758,12 +758,12 @@ var none = SequenceGenerator.NextWhile(0, v =&gt; v &gt; 0, v =&gt; v - 1); // =
 
   <h4 class="section" id="Bodu_Sequences_SequenceGenerator_NextWhile__1___0_System_Func___0_System_Boolean__System_Func___0___0___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
-Use this overload when the next value depends only on the current one — classic recurrence relations such as
+Use this overload when the next value depends only on the current one - classic recurrence relations such as
 <code>x ↦ 2·x</code> or <code>x ↦ x / 2</code>. Reach for the indexed overload when the position matters, and the
 state-based overload when more than one variable must be tracked across iterations.
 </p>
 <p>
-The condition is checked before each yield, so the sequence terminates as soon as the predicate fails —
+The condition is checked before each yield, so the sequence terminates as soon as the predicate fails -
 including on the very first element, which produces an empty sequence. Behavior is fully deterministic provided
 <code class="paramref">conditionHandler</code> and <code class="paramref">resultSelector</code> are themselves pure.
 </p>
@@ -791,7 +791,7 @@ slot.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Sequences_SequenceGenerator_NextWhile__2___0_System_Func___0_System_Boolean__System_Func___0___0__System_Func___0___1__" data-uid="Bodu.Sequences.SequenceGenerator.NextWhile``2(``0,System.Func{``0,System.Boolean},System.Func{``0,``0},System.Func{``0,``1})">
   NextWhile&lt;TState, TResult&gt;(TState, Func&lt;TState, bool&gt;, Func&lt;TState, TState&gt;, Func&lt;TState, TResult&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Sequences/SequenceGenerator.NextWhile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Sequences/SequenceGenerator.NextWhile.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -851,8 +851,8 @@ var fib = SequenceGenerator.NextWhile(
 
   <h4 class="section" id="Bodu_Sequences_SequenceGenerator_NextWhile__2___0_System_Func___0_System_Boolean__System_Func___0___0__System_Func___0___1___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
-This is the most general <code>NextWhile</code> form. Use it when each iteration needs to track several variables —
-for example, a pair of counters, a running accumulator, or a parser state — that cannot be folded into a single
+This is the most general <code>NextWhile</code> form. Use it when each iteration needs to track several variables -
+for example, a pair of counters, a running accumulator, or a parser state - that cannot be folded into a single
 value.
 </p>
 <p>
@@ -884,7 +884,7 @@ never fails, and behavior is deterministic provided the supplied delegates are p
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Sequences_SequenceGenerator_Range_System_Int32_System_Int32_" data-uid="Bodu.Sequences.SequenceGenerator.Range(System.Int32,System.Int32)">
   Range(int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Sequences/SequenceGenerator.Range.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Sequences/SequenceGenerator.Range.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -931,7 +931,7 @@ foreach (int n in SequenceGenerator.Range(3, -2))
   <div class="markdown level1 remarks"><p>
 Prefer this overload over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.linq.enumerable.range">Range(int, int)</a> when the natural way to express
 the range is "from <code>a</code> to <code>b</code>" rather than "<code>n</code> values starting at <code>a</code>", or when a
-descending sequence is required — <code>Enumerable.Range</code> only walks forwards and rejects negative counts.
+descending sequence is required - <code>Enumerable.Range</code> only walks forwards and rejects negative counts.
 </p>
 <p>
 The step direction is chosen automatically: ascending when <code class="paramref">start</code> is less than
@@ -939,7 +939,7 @@ The step direction is chosen automatically: ascending when <code class="paramref
 single-element sequence is returned.
 </p>
 <p>
-Both endpoints are inclusive. The result is deferred — no values are produced until the sequence is enumerated —
+Both endpoints are inclusive. The result is deferred - no values are produced until the sequence is enumerated -
 and the underlying iterator allocates only the per-enumeration state object.
 </p>
 </div>
@@ -954,7 +954,7 @@ and the underlying iterator allocates only the per-enumeration state object.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Sequences_SequenceGenerator_Range_System_Int32_System_Int32_System_Int32_" data-uid="Bodu.Sequences.SequenceGenerator.Range(System.Int32,System.Int32,System.Int32)">
   Range(int, int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1002,7 +1002,7 @@ otherwise infinite.</p>
 foreach (int n in SequenceGenerator.Range(10, 1, -3))
     Console.Write($"{n} "); // =&gt; 10 7 4 1
 
-// Step of zero yields an unbounded sequence — bound it with Take.
+// Step of zero yields an unbounded sequence - bound it with Take.
 var heartbeat = SequenceGenerator.Range(42, 0, 0).Take(3); // =&gt; 42, 42, 42</code></pre>
 
 
@@ -1018,7 +1018,7 @@ Iteration is bounded by <code class="paramref">stop</code>: the inclusive endpoi
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.minvalue">MinValue</a> the sequence terminates cleanly rather than throwing.
 </p>
 <p>
-When <code class="paramref">step</code> is <code>0</code> the method returns an infinite sequence — callers must compose it with
+When <code class="paramref">step</code> is <code>0</code> the method returns an infinite sequence - callers must compose it with
 an operator such as <code>Take</code> or <code>TakeWhile</code> to bound enumeration.
 </p>
 <p>
@@ -1036,7 +1036,7 @@ The result is deferred and allocation-light; no array or list is materialized.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Sequences_SequenceGenerator_Range_System_Int64_System_Int32_" data-uid="Bodu.Sequences.SequenceGenerator.Range(System.Int64,System.Int32)">
   Range(long, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1112,11 +1112,11 @@ Iteration is deferred, deterministic, and allocation-free apart from the iterato
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Sequences_SequenceGenerator_ThueMorse_System_Int32_" data-uid="Bodu.Sequences.SequenceGenerator.ThueMorse(System.Int32)">
   ThueMorse(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/Sequences/SequenceGenerator.AnonymousEnumerable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Yields the first <code class="paramref">count</code> terms of the Thue–Morse sequence as a stream of <code>0</code>s and
+  <div class="markdown level1 summary"><p>Yields the first <code class="paramref">count</code> terms of the Thue-Morse sequence as a stream of <code>0</code>s and
 <code>1</code>s.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -1160,7 +1160,7 @@ complement and concatenation, this implementation uses a per-index <code>popcoun
 single index without first materializing the preceding <code>n</code> bits.
 </p>
 <p>
-A <code class="paramref">count</code> of <code>0</code> returns an empty sequence. The sequence is finite and deterministic —
+A <code class="paramref">count</code> of <code>0</code> returns an empty sequence. The sequence is finite and deterministic -
 the same input always produces the same output. Iteration is deferred and carries no allocations beyond the
 iterator state.
 </p>
@@ -1204,7 +1204,7 @@ iterator state.
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

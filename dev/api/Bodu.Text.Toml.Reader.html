@@ -102,13 +102,13 @@
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-toml.svg" alt="Bodu.Text.Toml.Reader"></p>
 <h2 id="purpose">Purpose</h2>
-<p><strong>Bodu.Text.Toml.Reader</strong> is the lowest tier of <a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a>: the forward-only token readers over UTF-8 TOML (v1.0.0, or v1.1.0 by opt-in). It exposes two cursors — the source-order lexer <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a>, which reports table headers, dotted-key segments, comments, and values as they appear, and the normalized <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a>, which walks the resolved table tree and is the reader a custom <a class="xref" href="Bodu.Text.Toml.Serialization.TomlConverter-1.html">TomlConverter&lt;T&gt;</a> binds through. The <a class="xref" href="Bodu.Text.Toml.TomlSerializer.html">TomlSerializer</a> and both DOMs are built over this tier.</p>
+<p><strong>Bodu.Text.Toml.Reader</strong> is the lowest tier of <a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a>: the forward-only token readers over UTF-8 TOML (v1.0.0, or v1.1.0 by opt-in). It exposes two cursors - the source-order lexer <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a>, which reports table headers, dotted-key segments, comments, and values as they appear, and the normalized <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a>, which walks the resolved table tree and is the reader a custom <a class="xref" href="Bodu.Text.Toml.Serialization.TomlConverter-1.html">TomlConverter&lt;T&gt;</a> binds through. The <a class="xref" href="Bodu.Text.Toml.TomlSerializer.html">TomlSerializer</a> and both DOMs are built over this tier.</p>
 <h2 id="key-types">Key types</h2>
 <ul>
-<li><a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> — the source-order <code>ref struct</code> lexer: <code>Read</code> / <code>Skip</code> / <code>TrySkip</code>, <code>TokenType</code> (a <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html">TomlTokenType</a>), <code>ValueSpan</code>, <code>LineNumber</code> / <code>ColumnNumber</code>, typed <code>Get*</code> / <code>TryGet*</code> accessors for every TOML scalar kind, <code>GetComment</code>, and <code>ValueTextEquals</code>; the <code>isFinalBlock</code> + state constructors support resumable multi-block reads.</li>
-<li><a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a> — the normalized tree-order cursor: <code>Read</code> / <code>Skip</code>, <code>TokenType</code>, <code>CurrentDepth</code>, and the <code>Get*</code> scalar accessors.</li>
-<li><a class="xref" href="Bodu.Text.Toml.Reader.TomlReaderOptions.html">TomlReaderOptions</a> — <code>SpecVersion</code> (a <a class="xref" href="Bodu.Text.Toml.TomlSpecVersion.html">TomlSpecVersion</a>) and <code>MaxDepth</code>.</li>
-<li><a class="xref" href="Bodu.Text.Toml.Reader.TomlReaderState.html">TomlReaderState</a> — the opaque snapshot carried between input blocks of a <code>Utf8TomlReader</code>.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> - the source-order <code>ref struct</code> lexer: <code>Read</code> / <code>Skip</code> / <code>TrySkip</code>, <code>TokenType</code> (a <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html">TomlTokenType</a>), <code>ValueSpan</code>, <code>LineNumber</code> / <code>ColumnNumber</code>, typed <code>Get*</code> / <code>TryGet*</code> accessors for every TOML scalar kind, <code>GetComment</code>, and <code>ValueTextEquals</code>; the <code>isFinalBlock</code> + state constructors support resumable multi-block reads.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a> - the normalized tree-order cursor: <code>Read</code> / <code>Skip</code>, <code>TokenType</code>, <code>CurrentDepth</code>, and the <code>Get*</code> scalar accessors.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Reader.TomlReaderOptions.html">TomlReaderOptions</a> - <code>SpecVersion</code> (a <a class="xref" href="Bodu.Text.Toml.TomlSpecVersion.html">TomlSpecVersion</a>) and <code>MaxDepth</code>.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Reader.TomlReaderState.html">TomlReaderState</a> - the opaque snapshot carried between input blocks of a <code>Utf8TomlReader</code>.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using Bodu.Text.Toml;
@@ -128,7 +128,7 @@ while (reader.Read())
 <ul>
 <li><strong>Two token streams.</strong> <code>Utf8TomlReader</code> yields <code>TableHeader</code> / <code>ArrayTableHeader</code> / <code>Key</code> / <code>Comment</code> tokens in file order; <code>TomlDocumentReader</code> yields the normalized <code>StartTable</code> / <code>PropertyName</code> / value shape with headers and dotted keys already resolved.</li>
 <li><strong>Strict by default.</strong> Parsing enforces v1.0.0; set <code>SpecVersion</code> to <code>V1_1</code> for the v1.1.0 additions. Malformed input throws <a class="xref" href="Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a> with line, column, and offset.</li>
-<li><strong>See also:</strong> the <a href="../docs/serialization/toml/index.html">Bodu.Text.Toml introduction</a> and the <a href="../guides/serialization/toml/using.html">Using TOML</a> guide (Pattern 9 — Process tokens by hand).</li>
+<li><strong>See also:</strong> the <a href="../docs/serialization/toml/index.html">Bodu.Text.Toml introduction</a> and the <a href="../guides/serialization/toml/using.html">Using TOML</a> guide (Pattern 9 - Process tokens by hand).</li>
 </ul>
 </div>
   <div class="markdown level0 remarks"></div>
@@ -157,8 +157,8 @@ together with the unconsumed bytes, lets a new reader continue exactly where the
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a></dt>
       <dd><p>Provides a forward-only, source-order reader for UTF-8 TOML bytes: a <code>ref struct</code> that holds the
-input span and scans it incrementally. Each <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html#Bodu_Text_Toml_Reader_Utf8TomlReader_Read">Read()</a> advances to the next lexical token in document order
-— for example <code>[server.tls]</code> surfaces as <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_TableHeader">TableHeader</a> followed by a
+input span and scans it incrementally. Each <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html#Bodu_Text_Toml_Reader_Utf8TomlReader_Read">Read()</a> advances to the next lexical token in document
+order - for example <code>[server.tls]</code> surfaces as <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_TableHeader">TableHeader</a> followed by a
 <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_Key">Key</a> per dotted segment, and <code>ports = [1, 2]</code> as a key, then
 <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_StartArray">StartArray</a>, two integers, and <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_EndArray">EndArray</a>.</p>
 </dd>
@@ -181,7 +181,7 @@ input span and scans it incrementally. Each <a class="xref" href="Bodu.Text.Toml
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

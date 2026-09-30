@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Numerics_RunningStatistics_1" data-uid="Bodu.Numerics.RunningStatistics`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 RunningStatistics&lt;T&gt; Struct
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ RunningStatistics&lt;T&gt; Struct
   <dl><dt>Assembly</dt><dd>Bodu.Numerics.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Numerics">Bodu.Numerics</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs">RunningStatistics{T}.Properties.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs">RunningStatistics{T}.Properties.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Accumulates the count, minimum, maximum, mean, and variance of a sample stream in a single forward pass, using
@@ -208,7 +208,7 @@ stats.Maximum;                      // 9</code></pre>
 
   <h2 id="Bodu_Numerics_RunningStatistics_1_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-Samples are absorbed one at a time through <a class="xref" href="Bodu.Numerics.RunningStatistics-1.html#Bodu_Numerics_RunningStatistics_1_Add__0_">Add(T)</a> in O(1) time and O(1) space — the accumulator never
+Samples are absorbed one at a time through <a class="xref" href="Bodu.Numerics.RunningStatistics-1.html#Bodu_Numerics_RunningStatistics_1_Add__0_">Add(T)</a> in O(1) time and O(1) space - the accumulator never
 stores the samples themselves. The minimum and maximum are tracked exactly in <code class="typeparamref">T</code>; the mean
 and the variance moments are accumulated in <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> (each sample is widened with
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double.createchecked">CreateChecked&lt;TOther&gt;(TOther)</a>), so those results are floating-point estimates regardless of
@@ -217,7 +217,7 @@ keeping the variance accurate even when the samples are large and closely cluste
 </p>
 <p>
 This is a <b>mutable value type</b>. Store it in a mutable field or local and pass it by <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/ref">ref</a>; do
-not capture it in a lambda or iterator that expects reference semantics — each copy accumulates independently from
+not capture it in a lambda or iterator that expects reference semantics - each copy accumulates independently from
 the point of the copy. That copy behaviour is also the supported way to checkpoint: assigning the accumulator to
 another variable snapshots its state. The <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/default">default</a> value is the valid empty accumulator.
 </p>
@@ -239,7 +239,7 @@ estimate, pair this type with <a class="xref" href="Bodu.Numerics.RunningQuantil
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningStatistics_1_Count" data-uid="Bodu.Numerics.RunningStatistics`1.Count">
   Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -276,7 +276,7 @@ estimate, pair this type with <a class="xref" href="Bodu.Numerics.RunningQuantil
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningStatistics_1_IsEmpty" data-uid="Bodu.Numerics.RunningStatistics`1.IsEmpty">
   IsEmpty
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -313,7 +313,7 @@ estimate, pair this type with <a class="xref" href="Bodu.Numerics.RunningQuantil
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningStatistics_1_Maximum" data-uid="Bodu.Numerics.RunningStatistics`1.Maximum">
   Maximum
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -356,7 +356,7 @@ estimate, pair this type with <a class="xref" href="Bodu.Numerics.RunningQuantil
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningStatistics_1_Mean" data-uid="Bodu.Numerics.RunningStatistics`1.Mean">
   Mean
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -399,7 +399,7 @@ estimate, pair this type with <a class="xref" href="Bodu.Numerics.RunningQuantil
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningStatistics_1_Minimum" data-uid="Bodu.Numerics.RunningStatistics`1.Minimum">
   Minimum
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -442,11 +442,11 @@ estimate, pair this type with <a class="xref" href="Bodu.Numerics.RunningQuantil
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningStatistics_1_PopulationStandardDeviation" data-uid="Bodu.Numerics.RunningStatistics`1.PopulationStandardDeviation">
   PopulationStandardDeviation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets the population standard deviation — the square root of <a class="xref" href="Bodu.Numerics.RunningStatistics-1.html#Bodu_Numerics_RunningStatistics_1_PopulationVariance">PopulationVariance</a>.</p>
+  <div class="markdown level1 summary"><p>Gets the population standard deviation - the square root of <a class="xref" href="Bodu.Numerics.RunningStatistics-1.html#Bodu_Numerics_RunningStatistics_1_PopulationVariance">PopulationVariance</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -485,11 +485,11 @@ estimate, pair this type with <a class="xref" href="Bodu.Numerics.RunningQuantil
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningStatistics_1_PopulationVariance" data-uid="Bodu.Numerics.RunningStatistics`1.PopulationVariance">
   PopulationVariance
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets the population variance of the accumulated samples — the squared deviations divided by <a class="xref" href="Bodu.Numerics.RunningStatistics-1.html#Bodu_Numerics_RunningStatistics_1_Count">Count</a>.</p>
+  <div class="markdown level1 summary"><p>Gets the population variance of the accumulated samples - the squared deviations divided by <a class="xref" href="Bodu.Numerics.RunningStatistics-1.html#Bodu_Numerics_RunningStatistics_1_Count">Count</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -528,11 +528,11 @@ estimate, pair this type with <a class="xref" href="Bodu.Numerics.RunningQuantil
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningStatistics_1_SampleStandardDeviation" data-uid="Bodu.Numerics.RunningStatistics`1.SampleStandardDeviation">
   SampleStandardDeviation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets the sample standard deviation — the square root of <a class="xref" href="Bodu.Numerics.RunningStatistics-1.html#Bodu_Numerics_RunningStatistics_1_SampleVariance">SampleVariance</a>.</p>
+  <div class="markdown level1 summary"><p>Gets the sample standard deviation - the square root of <a class="xref" href="Bodu.Numerics.RunningStatistics-1.html#Bodu_Numerics_RunningStatistics_1_SampleVariance">SampleVariance</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -571,11 +571,11 @@ estimate, pair this type with <a class="xref" href="Bodu.Numerics.RunningQuantil
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningStatistics_1_SampleVariance" data-uid="Bodu.Numerics.RunningStatistics`1.SampleVariance">
   SampleVariance
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets the sample (Bessel-corrected) variance of the accumulated samples — the squared deviations divided by
+  <div class="markdown level1 summary"><p>Gets the sample (Bessel-corrected) variance of the accumulated samples - the squared deviations divided by
 <a class="xref" href="Bodu.Numerics.RunningStatistics-1.html#Bodu_Numerics_RunningStatistics_1_Count">Count</a> − 1.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -619,7 +619,7 @@ estimate, pair this type with <a class="xref" href="Bodu.Numerics.RunningQuantil
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningStatistics_1_Add__0_" data-uid="Bodu.Numerics.RunningStatistics`1.Add(`0)">
   Add(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -666,7 +666,7 @@ for unbounded integer sample types such as <a class="xref" href="https://learn.m
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningStatistics_1_Combine_Bodu_Numerics_RunningStatistics__0__Bodu_Numerics_RunningStatistics__0__" data-uid="Bodu.Numerics.RunningStatistics`1.Combine(Bodu.Numerics.RunningStatistics{`0},Bodu.Numerics.RunningStatistics{`0})">
   Combine(RunningStatistics&lt;T&gt;, RunningStatistics&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -720,7 +720,7 @@ bits; use a deterministic partitioning strategy and merge order when bitwise-rep
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningStatistics_1_Reset" data-uid="Bodu.Numerics.RunningStatistics`1.Reset">
   Reset()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -751,7 +751,7 @@ bits; use a deterministic partitioning strategy and merge order when bitwise-rep
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningStatistics_1_ToString" data-uid="Bodu.Numerics.RunningStatistics`1.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/RunningStatistics%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -810,7 +810,7 @@ bits; use a deterministic partitioning strategy and merge order when bitwise-rep
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

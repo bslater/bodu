@@ -87,13 +87,13 @@
         <article data-uid="">
 <h1 id="yaml-guides">YAML guides</h1>
 
-<p>Recipe-style walk-throughs for <strong>Bodu.Text.Yaml</strong> (<a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a>) — the indentation-structured format member of the <a href="../index.html">Bodu serializer family</a>. YAML keeps the family architecture and the shared attribute family: member shaping is naming policies, the <code>[PropertyName]</code> / <code>[Ignore]</code> attributes (and the wider <code>Bodu.Text.Serialization</code> set), options flags, and custom <code>YamlConverter&lt;T&gt;</code> converters. Each guide below is written against the real surface.</p>
+<p>Recipe-style walk-throughs for <strong>Bodu.Text.Yaml</strong> (<a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a>) - the indentation-structured format member of the <a href="../index.html">Bodu serializer family</a>. YAML keeps the family architecture and the shared attribute family: member shaping is naming policies, the <code>[PropertyName]</code> / <code>[Ignore]</code> attributes (and the wider <code>Bodu.Text.Serialization</code> set), options flags, and custom <code>YamlConverter&lt;T&gt;</code> converters. Each guide below is written against the real surface.</p>
 <p>If you are new to the family, start with the <a href="../../../docs/serialization/yaml/index.html">introduction</a> for the format specifics and the <a href="../../../docs/serialization/yaml/concepts.html">core concepts</a> for the three-tier mental model, then work through the guides in order.</p>
 <h2 id="guides">Guides</h2>
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="using.html">Using YAML</a></h3>
-  <p><code>YamlSerializer</code> — round-trip an object, configure <code>YamlSerializerOptions</code>, both DOMs, multi-document streams via <code>ParseAllDocuments</code>, spec-version selection, anchors and merge keys on read, and error handling.</p>
+  <p><code>YamlSerializer</code> - round-trip an object, configure <code>YamlSerializerOptions</code>, both DOMs, multi-document streams via <code>ParseAllDocuments</code>, spec-version selection, anchors and merge keys on read, and error handling.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="attributes.html">Mapping attributes</a></h3>
@@ -105,32 +105,32 @@
 </div>
 <div class="bodu-card">
   <h3><a href="polymorphic-converters.html">Polymorphic converters</a></h3>
-  <p><code>YamlConverterFactory</code> for open-generic families and tagged (discriminated) hierarchies — what the built-ins do for an abstract member without one, reading and writing a discriminator, and the two registration placements.</p>
+  <p><code>YamlConverterFactory</code> for open-generic families and tagged (discriminated) hierarchies - what the built-ins do for an abstract member without one, reading and writing a discriminator, and the two registration placements.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="callbacks.html">Serialization callbacks</a></h3>
-  <p>The four shared <code>IOnSerializing</code> / <code>IOnSerialized</code> / <code>IOnDeserializing</code> / <code>IOnDeserialized</code> lifecycle hooks — defaults that survive omitted keys, post-deserialization validation, derived state on write, and the YAML-specific invocation-order notes.</p>
+  <p>The four shared <code>IOnSerializing</code> / <code>IOnSerialized</code> / <code>IOnDeserializing</code> / <code>IOnDeserialized</code> lifecycle hooks - defaults that survive omitted keys, post-deserialization validation, derived state on write, and the YAML-specific invocation-order notes.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="builtin-converters.html">Built-in converter catalog</a></h3>
-  <p>Which .NET types map without a user converter, and exactly how each appears in YAML — scalars, enums, collections, dictionaries, objects, and fields.</p>
+  <p>Which .NET types map without a user converter, and exactly how each appears in YAML - scalars, enums, collections, dictionaries, objects, and fields.</p>
 </div>
 </div>
 <h2 id="suggested-reading-path">Suggested reading path</h2>
 <ol>
-<li><strong><a href="using.html">Using YAML</a></strong> — the end-to-end walk-through of the serializer and both DOMs.</li>
-<li><strong><a href="attributes.html">Mapping attributes</a></strong> — declarative shaping covers most customization needs.</li>
-<li><strong><a href="converters.html">Writing converters</a></strong> — when a type needs a wire form the defaults do not provide; check the <strong><a href="builtin-converters.html">built-in catalog</a></strong> first so you do not rewrite a provisioned one.</li>
-<li><strong><a href="polymorphic-converters.html">Polymorphic converters</a></strong> — when a member is declared as a base type or an open generic.</li>
-<li><strong><a href="callbacks.html">Serialization callbacks</a></strong> — lifecycle hooks for defaults, validation, and derived state.</li>
+<li><strong><a href="using.html">Using YAML</a></strong> - the end-to-end walk-through of the serializer and both DOMs.</li>
+<li><strong><a href="attributes.html">Mapping attributes</a></strong> - declarative shaping covers most customization needs.</li>
+<li><strong><a href="converters.html">Writing converters</a></strong> - when a type needs a wire form the defaults do not provide; check the <strong><a href="builtin-converters.html">built-in catalog</a></strong> first so you do not rewrite a provisioned one.</li>
+<li><strong><a href="polymorphic-converters.html">Polymorphic converters</a></strong> - when a member is declared as a base type or an open generic.</li>
+<li><strong><a href="callbacks.html">Serialization callbacks</a></strong> - lifecycle hooks for defaults, validation, and derived state.</li>
 </ol>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="../options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a> and <a href="../migrating-from-system-text-json.html">Migrating from System.Text.Json</a> — the cross-format guides.</li>
-<li><a href="../index.html">Bodu serializers guides</a> — the family parent guide hub. The sibling <a href="../toml/index.html">TOML</a> and <a href="../bencode/index.html">Bencode</a> hubs cover the twin libraries.</li>
-<li><a href="../../../docs/serialization/yaml/index.html">Bodu.Text.Yaml introduction</a> and <a href="../../../docs/serialization/yaml/concepts.html">core concepts</a> — the format specifics and family vocabulary.</li>
-<li><a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a> — how these guides sit alongside the encoding and format guides.</li>
-<li>API reference — <a class="xref" href="../../../api/Bodu.Text.Yaml.html">Bodu.Text.Yaml</a>.</li>
+<li><a href="../options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a> and <a href="../migrating-from-system-text-json.html">Migrating from System.Text.Json</a> - the cross-format guides.</li>
+<li><a href="../index.html">Bodu serializers guides</a> - the family parent guide hub. The sibling <a href="../toml/index.html">TOML</a> and <a href="../bencode/index.html">Bencode</a> hubs cover the twin libraries.</li>
+<li><a href="../../../docs/serialization/yaml/index.html">Bodu.Text.Yaml introduction</a> and <a href="../../../docs/serialization/yaml/concepts.html">core concepts</a> - the format specifics and family vocabulary.</li>
+<li><a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a> - how these guides sit alongside the encoding and format guides.</li>
+<li>API reference - <a class="xref" href="../../../api/Bodu.Text.Yaml.html">Bodu.Text.Yaml</a>.</li>
 </ul>
 
 </article>
@@ -150,7 +150,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

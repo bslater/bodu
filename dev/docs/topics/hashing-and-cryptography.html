@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Hashing &amp; Cryptography — Overview | BODU </title>
+      <title>Hashing &amp; Cryptography - Overview | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Hashing &amp; Cryptography — Overview | BODU ">
+      <meta name="title" content="Hashing &amp; Cryptography - Overview | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -88,9 +88,9 @@
 <h1 id="hashing--cryptography">Hashing &amp; Cryptography</h1>
 
 <p>Two Bodu packages turn bytes into fixed-size summaries or protected ciphertext, and the line between them is a single question: <strong>is there an adversary?</strong></p>
-<p><strong>Bodu.IO.Hashing</strong> is the non-cryptographic library — fast fingerprints for hash-table keys and caches, error-detecting checksums (CRC, Fletcher, Adler) for transmission and storage channels, and check digits (Luhn, Damm, IBAN, ISBN, …) for human-typed identifiers. Nothing in it carries a security guarantee: every algorithm is trivially forgeable by anyone who controls the bytes, and that is by design — it buys speed, portability, and characterized error coverage on <em>trusted</em> input.</p>
-<p><strong>Bodu.Security.Cryptography</strong> is the adversarial-setting library — block, tweakable, and stream ciphers, AEAD constructions (block-cipher modes, ASCON, and the Poly1305 stream-cipher pairings), keyed hashes (MACs), cryptographic digests and XOFs, Merkle trees, public-key schemes (Ed25519, X25519, ML-DSA, ML-KEM, HPKE), key-derivation functions (memory-hard Argon2 and scrypt, plus HKDF), and one-time passwords (HOTP / TOTP). Every algorithm is designed against a formal <strong>adversary model</strong>: it must be computationally infeasible for an attacker — even one who knows the algorithm, observes many inputs and outputs, and chooses inputs adaptively — to forge, invert, or find collisions.</p>
-<p>The commitment types sit on the same adversarial side, in the same package: <code>MerkleTree</code> is the RFC 6962 Merkle tree — inclusion and consistency proofs, length-bound roots, and a write-time accumulator — over whatever <code>HashAlgorithm</code> the caller supplies. Its whole purpose is proving something to a party who does not trust you. See the <a href="../../guides/cryptography/merkle-trees.html">Merkle trees and proofs guide</a>.</p>
+<p><strong>Bodu.IO.Hashing</strong> is the non-cryptographic library - fast fingerprints for hash-table keys and caches, error-detecting checksums (CRC, Fletcher, Adler) for transmission and storage channels, and check digits (Luhn, Damm, IBAN, ISBN, …) for human-typed identifiers. Nothing in it carries a security guarantee: every algorithm is trivially forgeable by anyone who controls the bytes, and that is by design - it buys speed, portability, and characterized error coverage on <em>trusted</em> input.</p>
+<p><strong>Bodu.Security.Cryptography</strong> is the adversarial-setting library - block, tweakable, and stream ciphers, AEAD constructions (block-cipher modes, ASCON, and the Poly1305 stream-cipher pairings), keyed hashes (MACs), cryptographic digests and XOFs, Merkle trees, public-key schemes (Ed25519, X25519, ML-DSA, ML-KEM, HPKE), key-derivation functions (memory-hard Argon2 and scrypt, plus HKDF), and one-time passwords (HOTP / TOTP). Every algorithm is designed against a formal <strong>adversary model</strong>: it must be computationally infeasible for an attacker - even one who knows the algorithm, observes many inputs and outputs, and chooses inputs adaptively - to forge, invert, or find collisions.</p>
+<p>The commitment types sit on the same adversarial side, in the same package: <code>MerkleTree</code> is the RFC 6962 Merkle tree - inclusion and consistency proofs, length-bound roots, and a write-time accumulator - over whatever <code>HashAlgorithm</code> the caller supplies. Its whole purpose is proving something to a party who does not trust you. See the <a href="../../guides/cryptography/merkle-trees.html">Merkle trees and proofs guide</a>.</p>
 <p><img src="../../images/diagrams/algorithm-taxonomy.svg" alt="Algorithm taxonomy across both libraries"></p>
 <h2 id="members-of-this-topic">Members of this topic</h2>
 <table>
@@ -106,19 +106,19 @@
 <tr>
 <td><strong>Bodu.IO.Hashing</strong></td>
 <td>Stable</td>
-<td>Fingerprints (FNV, CityHash, MurmurHash3, Pearson, the classic string hashes), checksums (<code>Crc</code> with 112 named standards, Fletcher, Adler), and check digits (Luhn, Damm, Verhoeff, EAN, GTIN, ISIN, IBAN, ISBN, SEDOL, CUSIP, ABA, LEI, ISO 7064) — all on the BCL <code>NonCryptographicHashAlgorithm</code> contract.</td>
+<td>Fingerprints (FNV, CityHash, MurmurHash3, Pearson, the classic string hashes), checksums (<code>Crc</code> with 112 named standards, Fletcher, Adler), and check digits (Luhn, Damm, Verhoeff, EAN, GTIN, ISIN, IBAN, ISBN, SEDOL, CUSIP, ABA, LEI, ISO 7064) - all on the BCL <code>NonCryptographicHashAlgorithm</code> contract.</td>
 <td><a href="../io-hashing/index.html">Introduction</a> · <a href="../io-hashing/concepts.html">Concepts</a> · <a href="../io-hashing/getting-started.html">Getting started</a></td>
 </tr>
 <tr>
 <td><strong>Bodu.Security.Cryptography</strong></td>
 <td>Stable</td>
-<td>Block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), stream ciphers (ChaCha20, Salsa20 families, Rabbit, HC-128), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), the Poly1305 stream-cipher AEADs (XChaCha20-Poly1305, XSalsa20-Poly1305), MACs (SipHash, Poly1305), cryptographic digests and XOFs (Tiger, Whirlpool, BLAKE2/3, Skein, Shake, ASCON), Merkle trees, public-key schemes (Ed25519, X25519, ML-DSA, ML-KEM, HPKE), KDFs (Argon2, scrypt, HKDF), and one-time passwords (HOTP, TOTP) — the ciphers, digests, MACs, and public-key types on the BCL <code>SymmetricAlgorithm</code> / <code>HashAlgorithm</code> / <code>AsymmetricAlgorithm</code> contracts.</td>
+<td>Block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), stream ciphers (ChaCha20, Salsa20 families, Rabbit, HC-128), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), the Poly1305 stream-cipher AEADs (XChaCha20-Poly1305, XSalsa20-Poly1305), MACs (SipHash, Poly1305), cryptographic digests and XOFs (Tiger, Whirlpool, BLAKE2/3, Skein, Shake, ASCON), Merkle trees, public-key schemes (Ed25519, X25519, ML-DSA, ML-KEM, HPKE), KDFs (Argon2, scrypt, HKDF), and one-time passwords (HOTP, TOTP) - the ciphers, digests, MACs, and public-key types on the BCL <code>SymmetricAlgorithm</code> / <code>HashAlgorithm</code> / <code>AsymmetricAlgorithm</code> contracts.</td>
 <td><a href="../cryptography/index.html">Introduction</a> · <a href="../cryptography/concepts.html">Concepts</a> · <a href="../cryptography/getting-started.html">Getting started</a></td>
 </tr>
 </tbody>
 </table>
 <h2 id="two-libraries-one-decision">Two libraries, one decision</h2>
-<p>The split is structural, not cosmetic — the packages differ in lineage, posture, and contract:</p>
+<p>The split is structural, not cosmetic - the packages differ in lineage, posture, and contract:</p>
 <table>
 <thead>
 <tr>
@@ -130,13 +130,13 @@
 <tbody>
 <tr>
 <td><strong>Base-class lineage</strong></td>
-<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> — <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code>, with non-destructive snapshots.</td>
-<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.keyedhashalgorithm">KeyedHashAlgorithm</a>, and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a> — plus Bodu's <code>IBlockCipher</code> and <code>TweakableSymmetricAlgorithm</code>.</td>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> - <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code>, with non-destructive snapshots.</td>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.keyedhashalgorithm">KeyedHashAlgorithm</a>, and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a> - plus Bodu's <code>IBlockCipher</code> and <code>TweakableSymmetricAlgorithm</code>.</td>
 </tr>
 <tr>
 <td><strong>Performance posture</strong></td>
 <td>Tuned for throughput, even distribution, and constant-memory streaming; lookup tables shared across instances.</td>
-<td>Pays for security margin — rounds, key schedules, sponge permutations; KDFs are <em>deliberately</em> expensive (memory-hard).</td>
+<td>Pays for security margin - rounds, key schedules, sponge permutations; KDFs are <em>deliberately</em> expensive (memory-hard).</td>
 </tr>
 <tr>
 <td><strong>Guarantee</strong></td>
@@ -152,44 +152,44 @@
 </table>
 <h3 id="the-decision-rule">The decision rule</h3>
 <blockquote>
-<p><strong>Can an attacker choose or tamper with the input, or does anything secret ride on the result?</strong> If yes — keys, authentication, tamper evidence, passwords, attacker-reachable hash tables — use <code>Bodu.Security.Cryptography</code>. Otherwise — error detection, distribution, fingerprinting, identifier validation on trusted input — use <code>Bodu.IO.Hashing</code>.</p>
+<p><strong>Can an attacker choose or tamper with the input, or does anything secret ride on the result?</strong> If yes - keys, authentication, tamper evidence, passwords, attacker-reachable hash tables - use <code>Bodu.Security.Cryptography</code>. Otherwise - error detection, distribution, fingerprinting, identifier validation on trusted input - use <code>Bodu.IO.Hashing</code>.</p>
 </blockquote>
 <p>Cross the line the moment the trust assumption changes. A CRC that guards a download against line noise is correct; the same CRC &quot;guarding&quot; a file against tampering is a vulnerability, because anyone who can modify the file can recompute the CRC.</p>
 <div class="IMPORTANT">
 <h5>Important</h5>
 <p>When you do reach for the cryptographic side, the safety rules from the <a href="../cryptography/index.html">Bodu.Security.Cryptography introduction</a> apply in full:</p>
 <ul>
-<li><strong>Never reuse a nonce or IV under the same key</strong> — stream ciphers and most AEAD modes lose all confidentiality on nonce reuse.</li>
+<li><strong>Never reuse a nonce or IV under the same key</strong> - stream ciphers and most AEAD modes lose all confidentiality on nonce reuse.</li>
 <li><strong>Always verify the AEAD authentication tag</strong> before trusting decrypted plaintext; the transforms reject mismatches with <code>CryptographicException</code>.</li>
-<li><strong>Compare tags and digests in constant time</strong> — <code>CryptographicOperations.FixedTimeEquals</code>, never <code>==</code> or <code>SequenceEqual</code>.</li>
+<li><strong>Compare tags and digests in constant time</strong> - <code>CryptographicOperations.FixedTimeEquals</code>, never <code>==</code> or <code>SequenceEqual</code>.</li>
 <li><strong>Prefer AEAD over encrypt-then-MAC-by-hand</strong>, and <strong>prefer the BCL</strong> (<code>Aes</code>, <code>AesGcm</code>, SHA-2/3) where it already covers your case.</li>
 </ul>
 </div>
 <h2 id="subfamilies-at-a-glance">Subfamilies at a glance</h2>
 <p><strong>Bodu.IO.Hashing</strong> partitions into three subfamilies, each in its own namespace:</p>
 <ul>
-<li><strong>Fingerprints</strong> (<code>Bodu.IO.Hashing</code>) — even distribution and speed for hash-table keys, cache bucketing, and deduplication. Judged on avalanche and streaming behavior, not error coverage.</li>
-<li><strong>Checksums</strong> (<code>Bodu.IO.Hashing.Checksums</code>) — short tags engineered to catch the error patterns of a channel: single-bit flips, burst errors, adjacent transpositions. Polynomial-remainder (<code>Crc</code>) and twin-accumulator (Fletcher, Adler) shapes.</li>
-<li><strong>Check digits</strong> (<code>Bodu.IO.Hashing.CheckDigits</code> — decimal, alphanumeric, and multi-character schemes alike) — one or two characters appended to a <em>printed identifier</em> so a later reader can confirm it was not mis-typed.</li>
+<li><strong>Fingerprints</strong> (<code>Bodu.IO.Hashing</code>) - even distribution and speed for hash-table keys, cache bucketing, and deduplication. Judged on avalanche and streaming behavior, not error coverage.</li>
+<li><strong>Checksums</strong> (<code>Bodu.IO.Hashing.Checksums</code>) - short tags engineered to catch the error patterns of a channel: single-bit flips, burst errors, adjacent transpositions. Polynomial-remainder (<code>Crc</code>) and twin-accumulator (Fletcher, Adler) shapes.</li>
+<li><strong>Check digits</strong> (<code>Bodu.IO.Hashing.CheckDigits</code> - decimal, alphanumeric, and multi-character schemes alike) - one or two characters appended to a <em>printed identifier</em> so a later reader can confirm it was not mis-typed.</li>
 </ul>
 <p><strong>Bodu.Security.Cryptography</strong> spans the cryptographic roles:</p>
 <ul>
-<li><strong>Symmetric ciphers</strong> — standard block ciphers, tweakable block ciphers (Threefish, with a public tweak for domain separation), and raw-keystream stream ciphers (confidentiality only — pair with a MAC or prefer AEAD).</li>
-<li><strong>AEAD</strong> — authenticated encryption with associated data: ciphertext plus an authentication tag in a single pass, via <code>AsconAead128</code>, AES paired with the GCM / CCM / OCB / EAX / SIV / GCM-SIV mode transforms, or the Poly1305 stream-cipher constructions (<code>XChaCha20Poly1305</code>, <code>XSalsa20Poly1305Aead</code>, and the libsodium-compatible <code>XSalsa20Poly1305</code>).</li>
-<li><strong>Cryptographic hashes</strong> — plain digests, extendable-output functions (XOFs), and tree hashes (BLAKE3, and the RFC 6962 <code>MerkleTree</code> with its inclusion and consistency proofs).</li>
-<li><strong>Keyed hashes / MACs</strong> — the reusable PRF (SipHash) and the one-time authenticator (Poly1305).</li>
-<li><strong>Public-key</strong> — signatures (<code>Ed25519</code>, the post-quantum <code>MLDsa44/65/87</code>), key agreement (<code>X25519</code>), key encapsulation (the post-quantum <code>MLKem512/768/1024</code>), and <code>Hpke</code> (RFC 9180), which seals a message to a recipient's public key.</li>
-<li><strong>KDFs</strong> — memory-hard password hashing (Argon2id / Argon2i / Argon2d, scrypt) and the extract-and-expand <code>Hkdf</code> for high-entropy secrets.</li>
-<li><strong>One-time passwords</strong> — <code>Hotp</code> (RFC 4226) and <code>Totp</code> (RFC 6238) code generation and verification.</li>
+<li><strong>Symmetric ciphers</strong> - standard block ciphers, tweakable block ciphers (Threefish, with a public tweak for domain separation), and raw-keystream stream ciphers (confidentiality only - pair with a MAC or prefer AEAD).</li>
+<li><strong>AEAD</strong> - authenticated encryption with associated data: ciphertext plus an authentication tag in a single pass, via <code>AsconAead128</code>, AES paired with the GCM / CCM / OCB / EAX / SIV / GCM-SIV mode transforms, or the Poly1305 stream-cipher constructions (<code>XChaCha20Poly1305</code>, <code>XSalsa20Poly1305Aead</code>, and the libsodium-compatible <code>XSalsa20Poly1305</code>).</li>
+<li><strong>Cryptographic hashes</strong> - plain digests, extendable-output functions (XOFs), and tree hashes (BLAKE3, and the RFC 6962 <code>MerkleTree</code> with its inclusion and consistency proofs).</li>
+<li><strong>Keyed hashes / MACs</strong> - the reusable PRF (SipHash) and the one-time authenticator (Poly1305).</li>
+<li><strong>Public-key</strong> - signatures (<code>Ed25519</code>, the post-quantum <code>MLDsa44/65/87</code>), key agreement (<code>X25519</code>), key encapsulation (the post-quantum <code>MLKem512/768/1024</code>), and <code>Hpke</code> (RFC 9180), which seals a message to a recipient's public key.</li>
+<li><strong>KDFs</strong> - memory-hard password hashing (Argon2id / Argon2i / Argon2d, scrypt) and the extract-and-expand <code>Hkdf</code> for high-entropy secrets.</li>
+<li><strong>One-time passwords</strong> - <code>Hotp</code> (RFC 4226) and <code>Totp</code> (RFC 6238) code generation and verification.</li>
 </ul>
 <p>The lifecycle shape differs accordingly. Non-cryptographic hashes snapshot non-destructively; cryptographic algorithms finalize and dispose:</p>
-<pre><code class="lang-csharp">// Bodu.IO.Hashing — streaming with non-destructive snapshots.
+<pre><code class="lang-csharp">// Bodu.IO.Hashing - streaming with non-destructive snapshots.
 using var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
 crc.Append(chunk1);
 crc.Append(chunk2);
 byte[] checksum = crc.GetCurrentHash();   // snapshot; appending may continue
 
-// Bodu.Security.Cryptography — keyed hash over the BCL HashAlgorithm contract.
+// Bodu.Security.Cryptography - keyed hash over the BCL HashAlgorithm contract.
 using var mac = new SipHash64 { Key = key };
 byte[] tag = mac.ComputeHash(message);    // compare with FixedTimeEquals, never ==
 </code></pre>
@@ -211,7 +211,7 @@ byte[] tag = mac.ComputeHash(message);    // compare with FixedTimeEquals, never
 <tr>
 <td>Hash-table keys exposed to attacker-chosen input</td>
 <td><code>SipHash64</code> / <code>SipHash128</code> (Cryptography)</td>
-<td>Hash-flooding defense — a keyed PRF, not a fingerprint.</td>
+<td>Hash-flooding defense - a keyed PRF, not a fingerprint.</td>
 </tr>
 <tr>
 <td>File integrity against <em>accidental</em> corruption</td>
@@ -220,13 +220,13 @@ byte[] tag = mac.ComputeHash(message);    // compare with FixedTimeEquals, never
 </tr>
 <tr>
 <td>File integrity against <em>tampering</em></td>
-<td><code>Blake2b</code>, <code>Blake3</code>, <code>AsconHash256</code> digest — or a MAC / AEAD (Cryptography)</td>
+<td><code>Blake2b</code>, <code>Blake3</code>, <code>AsconHash256</code> digest - or a MAC / AEAD (Cryptography)</td>
 <td>A digest detects tampering only if the digest itself travels over an authenticated channel.</td>
 </tr>
 <tr>
 <td>Validate an ISBN, IBAN, credit-card number, or barcode</td>
 <td><code>Isbn10</code> / <code>Isbn13</code>, <code>Iban</code>, <code>Luhn</code>, <code>Ean13</code> (IO.Hashing)</td>
-<td>Transcription guards for human-typed identifiers — not unforgeability.</td>
+<td>Transcription guards for human-typed identifiers - not unforgeability.</td>
 </tr>
 <tr>
 <td>Password storage / password-based key derivation</td>
@@ -251,7 +251,7 @@ byte[] tag = mac.ComputeHash(message);    // compare with FixedTimeEquals, never
 <tr>
 <td>Stream encryption of arbitrary-length data (no padding)</td>
 <td><code>ChaCha20</code>, <code>XChaCha20</code> (Cryptography)</td>
-<td>Confidentiality only — pair with <code>Poly1305</code> or prefer AEAD.</td>
+<td>Confidentiality only - pair with <code>Poly1305</code> or prefer AEAD.</td>
 </tr>
 <tr>
 <td>Deduplication / cache bucketing inside a trust boundary</td>
@@ -261,7 +261,7 @@ byte[] tag = mac.ComputeHash(message);    // compare with FixedTimeEquals, never
 <tr>
 <td>Verifiable inclusion proofs over many leaves</td>
 <td><code>MerkleTree</code> (Cryptography)</td>
-<td>Root plus logarithmic sibling paths, with a one-call prover and verifier — and the only shape that interoperates with a transparency log.</td>
+<td>Root plus logarithmic sibling paths, with a one-call prover and verifier - and the only shape that interoperates with a transparency log.</td>
 </tr>
 <tr>
 <td>A Merkle root from the same writes that feed a flat digest</td>
@@ -270,22 +270,22 @@ byte[] tag = mac.ComputeHash(message);    // compare with FixedTimeEquals, never
 </tr>
 </tbody>
 </table>
-<p>Two BCL notes that both introductions make: for xxHash, use <code>System.IO.Hashing.XxHash32/64/3/128</code> directly — Bodu does not duplicate them; and prefer the BCL's hardware-accelerated <code>Aes</code>, <code>AesGcm</code>, and SHA-2/3 where they cover your case — reach for Bodu when you need an algorithm the BCL does not ship.</p>
+<p>Two BCL notes that both introductions make: for xxHash, use <code>System.IO.Hashing.XxHash32/64/3/128</code> directly - Bodu does not duplicate them; and prefer the BCL's hardware-accelerated <code>Aes</code>, <code>AesGcm</code>, and SHA-2/3 where they cover your case - reach for Bodu when you need an algorithm the BCL does not ship.</p>
 <h3 id="using-both-together">Using both together</h3>
-<p>Real systems routinely use both packages, each on its own side of the trust boundary. A storage pipeline might CRC each block on the way to disk (accidental-corruption detection, <code>Bodu.IO.Hashing</code>), encrypt and authenticate the payload with an AEAD before it leaves the process (<code>Bodu.Security.Cryptography</code>), and key its in-memory block cache with FNV-1a (trusted input, <code>Bodu.IO.Hashing</code> again). The packages do not overlap, so installing both adds no ambiguity — every algorithm's namespace tells you which guarantee you are getting.</p>
+<p>Real systems routinely use both packages, each on its own side of the trust boundary. A storage pipeline might CRC each block on the way to disk (accidental-corruption detection, <code>Bodu.IO.Hashing</code>), encrypt and authenticate the payload with an AEAD before it leaves the process (<code>Bodu.Security.Cryptography</code>), and key its in-memory block cache with FNV-1a (trusted input, <code>Bodu.IO.Hashing</code> again). The packages do not overlap, so installing both adds no ambiguity - every algorithm's namespace tells you which guarantee you are getting.</p>
 <h2 id="install">Install</h2>
 <pre><code class="lang-bash">dotnet add package Bodu.IO.Hashing
 dotnet add package Bodu.Security.Cryptography
 </code></pre>
-<p>Both target <code>net8.0</code> and depend only on <code>Bodu.Core</code> (and, for <code>Bodu.IO.Hashing</code>, the BCL's <code>System.IO.Hashing</code> contract). Install only the one you need — they are independent packages.</p>
+<p>Both target <code>net8.0</code> and depend only on <code>Bodu.Core</code> (and, for <code>Bodu.IO.Hashing</code>, the BCL's <code>System.IO.Hashing</code> contract). Install only the one you need - they are independent packages.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="hashing-and-cryptography-concepts.html">Hashing &amp; Cryptography — Concepts</a></strong> — the full taxonomy: fingerprint vs. checksum vs. check digit vs. digest vs. MAC vs. AEAD vs. XOF vs. KDF, and the guarantee each does and does not make.</li>
-<li><strong><a href="../io-hashing/index.html">Bodu.IO.Hashing introduction</a></strong> — subfamily map and the algorithm-selection tables.</li>
-<li><strong><a href="../../guides/cryptography/merkle-trees.html">Merkle trees and proofs</a></strong> — the RFC 6962 tree, inclusion and consistency proofs, bound roots, and the write-time accumulator.</li>
-<li><strong><a href="../cryptography/index.html">Bodu.Security.Cryptography introduction</a></strong> — the six subfamilies, the choosing-a-primitive table, and the safety rules.</li>
+<li><strong><a href="hashing-and-cryptography-concepts.html">Hashing &amp; Cryptography - Concepts</a></strong> - the full taxonomy: fingerprint vs. checksum vs. check digit vs. digest vs. MAC vs. AEAD vs. XOF vs. KDF, and the guarantee each does and does not make.</li>
+<li><strong><a href="../io-hashing/index.html">Bodu.IO.Hashing introduction</a></strong> - subfamily map and the algorithm-selection tables.</li>
+<li><strong><a href="../../guides/cryptography/merkle-trees.html">Merkle trees and proofs</a></strong> - the RFC 6962 tree, inclusion and consistency proofs, bound roots, and the write-time accumulator.</li>
+<li><strong><a href="../cryptography/index.html">Bodu.Security.Cryptography introduction</a></strong> - the six subfamilies, the choosing-a-primitive table, and the safety rules.</li>
 <li><strong>Getting started:</strong> <a href="../io-hashing/getting-started.html">Bodu.IO.Hashing</a> · <a href="../cryptography/getting-started.html">Bodu.Security.Cryptography</a>.</li>
-<li><strong><a href="../../guides/topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — the recipe-style walk-throughs for this topic.</li>
+<li><strong><a href="../../guides/topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - the recipe-style walk-throughs for this topic.</li>
 <li><strong>API reference:</strong> <a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing</a> · <a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography</a>.</li>
 </ul>
 
@@ -306,7 +306,7 @@ dotnet add package Bodu.Security.Cryptography
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

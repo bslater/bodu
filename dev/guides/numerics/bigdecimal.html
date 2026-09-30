@@ -88,9 +88,9 @@
 <h1 id="working-with-bigdecimal">Working with <code>BigDecimal</code></h1>
 
 <p><code>BigDecimal</code> is an immutable, value-equatable arbitrary-precision
-decimal number. Unlike <code>System.Decimal</code> — which is a fixed 128-bit
-type capped at 28–29 significant digits and an exponent range of
-10<sup>0</sup> to 10<sup>-28</sup> — <code>BigDecimal</code> grows to whatever
+decimal number. Unlike <code>System.Decimal</code> - which is a fixed 128-bit
+type capped at 28-29 significant digits and an exponent range of
+10<sup>0</sup> to 10<sup>-28</sup> - <code>BigDecimal</code> grows to whatever
 precision a value requires. It stores an arbitrary-magnitude
 <code>BigInteger</code> <em>unscaled value</em> together with a non-negative <code>int</code>
 <em>scale</em>, so the represented number is:</p>
@@ -162,11 +162,11 @@ BigDecimal shortest    = BigDecimal.FromDouble(0.1);   // same value; explicit i
 
 BigInteger unscaled = v.UnscaledValue;   // 12340
 int scale           = v.Scale;           // 3
-int precision       = v.Precision;       // 5  — total significant digits
+int precision       = v.Precision;       // 5  - total significant digits
 int sign            = v.Sign;            // 1  (-1, 0, or 1)
 
 bool isZero     = v.IsZero;
-bool isInteger  = v.IsInteger;           // false — has a fractional part
+bool isInteger  = v.IsInteger;           // false - has a fractional part
 bool isNegative = v.IsNegative;
 bool isPositive = v.IsPositive;
 
@@ -174,7 +174,7 @@ bool isPositive = v.IsPositive;
 var (mantissa, s) = v;
 </code></pre>
 <h2 id="arithmetic">Arithmetic</h2>
-<p>Addition, subtraction, and multiplication are <strong>exact</strong> — the result
+<p>Addition, subtraction, and multiplication are <strong>exact</strong> - the result
 carries whatever scale is needed to represent it with no loss:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">BigDecimal sum  = BigDecimal.Add(0.1m, 0.2m);         // 0.3 exactly
@@ -223,7 +223,7 @@ not matter:</p>
 BigDecimal b = BigDecimal.Parse(&quot;1.00&quot;, CultureInfo.InvariantCulture);
 
 bool equal = a == b;                       // true
-bool sameMin = BigDecimal.Min(a, b) == a;  // true — the values are equal, so Min returns either
+bool sameMin = BigDecimal.Min(a, b) == a;  // true - the values are equal, so Min returns either
 
 // GetHashCode() is consistent with value equality: a and b hash equal.
 </code></pre>
@@ -247,7 +247,7 @@ v.TryFormat(buffer, out int written, &quot;G&quot;, CultureInfo.InvariantCulture
 <p>Because <code>BigDecimal</code> satisfies <code>INumber&lt;BigDecimal&gt;</code>, it flows through
 generic-math algorithms and the <code>CreateChecked</code> / <code>CreateTruncating</code>
 conversion factories. Those factories are static virtual members of
-<code>INumberBase&lt;TSelf&gt;</code>, so — as with <code>Fraction&lt;T&gt;</code> — they are reached
+<code>INumberBase&lt;TSelf&gt;</code>, so - as with <code>Fraction&lt;T&gt;</code> - they are reached
 through a constrained type parameter rather than called as
 <code>BigDecimal.CreateChecked(...)</code> on the concrete type:</p>
 <!-- compile -->
@@ -264,7 +264,7 @@ static T FromInt32&lt;T&gt;(int value) where T : INumber&lt;T&gt; =&gt;
 
 BigDecimal exact = Sum&lt;BigDecimal&gt;(0.1m, 0.2m, 0.3m);  // 0.6 exactly
 BigDecimal five  = FromInt32&lt;BigDecimal&gt;(5);           // T.CreateChecked via the constraint
-int back         = int.CreateTruncating(five);         // 5 — the BCL primitives expose the factories publicly
+int back         = int.CreateTruncating(five);         // 5 - the BCL primitives expose the factories publicly
 </code></pre>
 <p>The classification predicates (<code>IsInteger</code>, <code>IsEvenInteger</code>,
 <code>IsNegative</code>, …) are exposed as static members of <code>INumberBase&lt;T&gt;</code> and
@@ -293,7 +293,7 @@ types. <code>Radix</code> is <code>10</code>.</p>
 <tr>
 <td><code>double</code></td>
 <td><code>(double)value</code> / <code>value.ToDouble()</code></td>
-<td>Nearest <code>double</code>; may lose precision, and saturates to <code>±Infinity</code> outside the finite range — <code>value.TryToDouble(out var d)</code> reports <code>false</code> in that case.</td>
+<td>Nearest <code>double</code>; may lose precision, and saturates to <code>±Infinity</code> outside the finite range - <code>value.TryToDouble(out var d)</code> reports <code>false</code> in that case.</td>
 </tr>
 <tr>
 <td>from <code>double</code></td>
@@ -309,7 +309,7 @@ types. <code>Radix</code> is <code>10</code>.</p>
 </table>
 <h2 id="json-serialization">JSON serialization</h2>
 <p>Like the rest of <code>Bodu.Numerics</code>, the core type carries <strong>no</strong>
-<code>[JsonConverter]</code> attribute — JSON support ships in the companion
+<code>[JsonConverter]</code> attribute - JSON support ships in the companion
 <a href="json-serialization.html"><code>Bodu.Numerics.Serialization.Json</code></a> package.
 Register the converters with a single call and pick a wire shape:</p>
 <pre><code class="lang-csharp">using Bodu.Numerics.Serialization.Json;
@@ -317,9 +317,9 @@ Register the converters with a single call and pick a wire shape:</p>
 var options = new JsonSerializerOptions()
     .AddNumericsJsonConverters(NumericsJsonPolicy.Strict);
 
-// Strict — canonical object form:
+// Strict - canonical object form:
 //   { &quot;unscaledValue&quot;: 12340, &quot;scale&quot;: 3 }
-// Compact — the plain decimal string:
+// Compact - the plain decimal string:
 //   &quot;12.340&quot;
 string json = JsonSerializer.Serialize(
     BigDecimal.Parse(&quot;12.340&quot;, CultureInfo.InvariantCulture), options);
@@ -331,9 +331,9 @@ because many JSON consumers silently narrow long numbers to IEEE-754
 <code>double</code>.</p>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="json-serialization.html">JSON serialization</a> — the <code>Strict</code>,
+<li><a href="json-serialization.html">JSON serialization</a> - the <code>Strict</code>,
 <code>Lenient</code>, and <code>Compact</code> wire shapes and how to register them.</li>
-<li><a href="fraction.html">Working with <code>Fraction&lt;T&gt;</code></a> — the exact-rational type;
+<li><a href="fraction.html">Working with <code>Fraction&lt;T&gt;</code></a> - the exact-rational type;
 reach for it when you need <code>1/3</code> exactly rather than to a fixed
 number of decimal places.</li>
 <li><a class="xref" href="../../api/Bodu.Numerics.BigDecimal.html"><code>BigDecimal</code> API reference</a></li>
@@ -356,7 +356,7 @@ number of decimal places.</li>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

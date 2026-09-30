@@ -102,33 +102,33 @@
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-recurrence.svg" alt="Bodu.Globalization.Recurrence"></p>
 <h2 id="purpose">Purpose</h2>
-<p><strong>Bodu.Globalization.Recurrence</strong> models recurring schedules in industry-standard textual grammars: RFC 5545 (iCalendar) recurrence rules, Vixie-style cron expressions, and instant-anchored intervals in the RFC 5545 duration grammar. Every surface parses, formats, and enumerates occurrences without any calendar-data dependency — the package depends only on <code>Bodu.Core</code> — and every answer is a pure function of the arguments: no API reads the wall clock or consults the machine time zone.</p>
+<p><strong>Bodu.Globalization.Recurrence</strong> models recurring schedules in industry-standard textual grammars: RFC 5545 (iCalendar) recurrence rules, Vixie-style cron expressions, and instant-anchored intervals in the RFC 5545 duration grammar. Every surface parses, formats, and enumerates occurrences without any calendar-data dependency - the package depends only on <code>Bodu.Core</code> - and every answer is a pure function of the arguments: no API reads the wall clock or consults the machine time zone.</p>
 <p>Reach for this library when you need to answer &quot;when does this schedule fire next?&quot;, &quot;when was the previous occurrence?&quot; (the due-ness comparison), or &quot;which instants does this rule produce inside this window?&quot; for schedules expressed as <code>RRULE</code> text, composed rule sets with extra and exception dates, cron expressions, or fixed intervals anchored to an instant such as a last completed run.</p>
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
-<li><strong><a href="../docs/recurrence/index.html">Introduction</a></strong> — the four schedule forms side by side, the common next / previous contract, purity, and the &quot;which form&quot; table.</li>
-<li><strong><a href="../docs/recurrence/concepts.html">Core concepts</a></strong> — occurrence vs. due-ness, anchor / <code>DTSTART</code>, inclusive boundaries, <code>WKST</code>, the <code>BY*</code> parts and <code>BYSETPOS</code>, cron field semantics and the search horizon, the duration grammar, offsets and daylight saving, value equality.</li>
-<li><strong><a href="../docs/recurrence/getting-started.html">Getting started</a></strong> — install and a parse → next / previous → enumerate sample for each form, the builder, a set round trip, and defect-naming <code>TryParse</code>.</li>
-<li><strong><a href="../guides/recurrence/index.html">Recurrence and scheduling guide</a></strong> — the due-ness recipe, calendar-aware filtering by composition, bounded searches, and conformance.</li>
+<li><strong><a href="../docs/recurrence/index.html">Introduction</a></strong> - the four schedule forms side by side, the common next / previous contract, purity, and the &quot;which form&quot; table.</li>
+<li><strong><a href="../docs/recurrence/concepts.html">Core concepts</a></strong> - occurrence vs. due-ness, anchor / <code>DTSTART</code>, inclusive boundaries, <code>WKST</code>, the <code>BY*</code> parts and <code>BYSETPOS</code>, cron field semantics and the search horizon, the duration grammar, offsets and daylight saving, value equality.</li>
+<li><strong><a href="../docs/recurrence/getting-started.html">Getting started</a></strong> - install and a parse → next / previous → enumerate sample for each form, the builder, a set round trip, and defect-naming <code>TryParse</code>.</li>
+<li><strong><a href="../guides/recurrence/index.html">Recurrence and scheduling guide</a></strong> - the due-ness recipe, calendar-aware filtering by composition, bounded searches, and conformance.</li>
 </ul>
 <h2 id="key-types">Key types</h2>
 <ul>
-<li><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a> — an immutable RFC 5545 recurrence rule (<code>RRULE</code>): a base frequency refined by an interval, an optional bound (<code>COUNT</code> or <code>UNTIL</code>), and the <code>BY</code> rule parts, with parse/format round-tripping and occurrence enumeration relative to a start date.</li>
-<li><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html">RecurrenceRuleBuilder</a> — fluent construction of a <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a> as an alternative to parsing its textual form.</li>
-<li><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.html">RecurrenceSet</a> — a composed set of recurring instants: one or more rule streams anchored at a common start, merged with explicit recurrence dates (<code>RDATE</code>) and with exception dates (<code>EXDATE</code>) removed.</li>
-<li><a class="xref" href="Bodu.Globalization.Recurrence.CronExpression.html">CronExpression</a> — a parsed Vixie-style cron expression with next/previous occurrence computation, under a <a class="xref" href="Bodu.Globalization.Recurrence.CronFormat.html">CronFormat</a> selecting the five- or six-field grammar.</li>
-<li><a class="xref" href="Bodu.Globalization.Recurrence.AnchoredInterval.html">AnchoredInterval</a> — a recurrence whose occurrences repeat at a fixed interval from a caller-supplied anchor instant (&quot;every 4 hours after the last completed run&quot;), with the RFC 5545 §3.3.6 duration grammar (<code>PT4H</code>, <code>P1DT2H30M</code>) as its canonical text.</li>
-<li><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceFrequency.html">RecurrenceFrequency</a> and <a class="xref" href="Bodu.Globalization.Recurrence.WeekDayNum.html">WeekDayNum</a> — the frequency scale (secondly through yearly) and the ordinal-qualified weekday (<code>BYDAY</code>) building block.</li>
+<li><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a> - an immutable RFC 5545 recurrence rule (<code>RRULE</code>): a base frequency refined by an interval, an optional bound (<code>COUNT</code> or <code>UNTIL</code>), and the <code>BY</code> rule parts, with parse/format round-tripping and occurrence enumeration relative to a start date.</li>
+<li><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html">RecurrenceRuleBuilder</a> - fluent construction of a <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a> as an alternative to parsing its textual form.</li>
+<li><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.html">RecurrenceSet</a> - a composed set of recurring instants: one or more rule streams anchored at a common start, merged with explicit recurrence dates (<code>RDATE</code>) and with exception dates (<code>EXDATE</code>) removed.</li>
+<li><a class="xref" href="Bodu.Globalization.Recurrence.CronExpression.html">CronExpression</a> - a parsed Vixie-style cron expression with next/previous occurrence computation, under a <a class="xref" href="Bodu.Globalization.Recurrence.CronFormat.html">CronFormat</a> selecting the five- or six-field grammar.</li>
+<li><a class="xref" href="Bodu.Globalization.Recurrence.AnchoredInterval.html">AnchoredInterval</a> - a recurrence whose occurrences repeat at a fixed interval from a caller-supplied anchor instant (&quot;every 4 hours after the last completed run&quot;), with the RFC 5545 §3.3.6 duration grammar (<code>PT4H</code>, <code>P1DT2H30M</code>) as its canonical text.</li>
+<li><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceFrequency.html">RecurrenceFrequency</a> and <a class="xref" href="Bodu.Globalization.Recurrence.WeekDayNum.html">WeekDayNum</a> - the frequency scale (secondly through yearly) and the ordinal-qualified weekday (<code>BYDAY</code>) building block.</li>
 </ul>
 <h2 id="samples">Samples</h2>
-<p>Five runnable sample projects live under <code>samples/Globalization.Recurrence/</code> — one per schedule form
+<p>Five runnable sample projects live under <code>samples/Globalization.Recurrence/</code> - one per schedule form
 (<code>RecurrenceRules</code>, <code>CronExpressions</code>, <code>AnchoredIntervals</code>, <code>RecurrenceSets</code>) plus <code>SchedulingHost</code>,
 which puts all four behind a single adapter and shows configuration validation and missed-run
 catch-up. See the <a href="../samples/recurrence.html">samples catalogue</a>.</p>
 <h2 id="notes">Notes</h2>
 <ul>
 <li><strong>Preview.</strong> The package is published for early evaluation; the public API surface is still taking shape and may change between releases without a major-version bump.</li>
-<li><strong>An independent sibling of the calendar engine.</strong> <code>Bodu.Globalization.Calendar</code> and this package share no dependency in either direction: the calendar's <code>&lt;Recurrence&gt;</code> sources (<code>&lt;DailyInterval&gt;</code>, <code>&lt;Weekly&gt;</code>, <code>&lt;MonthlyDay&gt;</code>, <code>&lt;MonthlyWeekday&gt;</code>) are its own <code>IDateRecurrenceStrategy</code> types, while this package is the standalone, data-free scheduling grammar for RFC 5545 rules, cron, and anchored intervals. Calendar-aware filtering of a recurrence stream is composition from outside — see the <a href="../guides/recurrence/index.html">recurrence guide</a> — and the <a href="../docs/package-matrix.html">package matrix</a> shows how the globalization family fits together.</li>
+<li><strong>An independent sibling of the calendar engine.</strong> <code>Bodu.Globalization.Calendar</code> and this package share no dependency in either direction: the calendar's <code>&lt;Recurrence&gt;</code> sources (<code>&lt;DailyInterval&gt;</code>, <code>&lt;Weekly&gt;</code>, <code>&lt;MonthlyDay&gt;</code>, <code>&lt;MonthlyWeekday&gt;</code>) are its own <code>IDateRecurrenceStrategy</code> types, while this package is the standalone, data-free scheduling grammar for RFC 5545 rules, cron, and anchored intervals. Calendar-aware filtering of a recurrence stream is composition from outside - see the <a href="../guides/recurrence/index.html">recurrence guide</a> - and the <a href="../docs/package-matrix.html">package matrix</a> shows how the globalization family fits together.</li>
 </ul>
 </div>
   <div class="markdown level0 remarks"></div>
@@ -206,7 +206,7 @@ Enums
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

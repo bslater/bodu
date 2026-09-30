@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_PaddingFactory" data-uid="Bodu.Security.Cryptography.PaddingFactory" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 PaddingFactory Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/PaddingFactory.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/PaddingFactory.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ PaddingFactory Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/PaddingFactory.cs">PaddingFactory.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/PaddingFactory.cs">PaddingFactory.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Creates <a class="xref" href="Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a> instances for the framework <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode">PaddingMode</a> values and for the
@@ -161,16 +161,16 @@ extended <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">
 
 
   <h2 id="Bodu_Security_Cryptography_PaddingFactory_examples">Examples</h2>
-  <pre><code class="lang-csharp">// BCL-standard padding mode — covers PKCS7, Zeros, None, ANSI X.923, ISO 10126.
+  <pre><code class="lang-csharp">// BCL-standard padding mode - covers PKCS7, Zeros, None, ANSI X.923, ISO 10126.
 IPaddingStrategy pkcs7 = PaddingFactory.Create(PaddingMode.PKCS7);
 
-// Extended padding mode — adds ISO/IEC 7816-4 ("one-and-zeros") used by smart cards and SHA-3.
+// Extended padding mode - adds ISO/IEC 7816-4 ("one-and-zeros") used by smart cards and SHA-3.
 IPaddingStrategy iso7816 = PaddingFactory.Create(PaddingModeKind.ISO7816_4);
 
 // Apply on encryption.
 byte[] padded = pkcs7.Pad(plaintext, blockSizeBits: 128);
 
-// Remove on decryption — Unpad validates the trailer and throws CryptographicException
+// Remove on decryption - Unpad validates the trailer and throws CryptographicException
 // if the padding is malformed.
 byte[] stripped = pkcs7.Unpad(decrypted, blockSizeBits: 128);</code></pre>
 
@@ -185,7 +185,7 @@ library when its padding is configured.
 Two overloads are provided. <a class="xref" href="Bodu.Security.Cryptography.PaddingFactory.html#Bodu_Security_Cryptography_PaddingFactory_Create_System_Security_Cryptography_PaddingMode_">Create(PaddingMode)</a> dispatches the BCL-standard
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode">PaddingMode</a> values (PKCS7, Zeros, None, ANSI X.923, ISO 10126).
 <a class="xref" href="Bodu.Security.Cryptography.PaddingFactory.html#Bodu_Security_Cryptography_PaddingFactory_Create_Bodu_Security_Cryptography_PaddingModeKind_">Create(PaddingModeKind)</a> additionally supports <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html#Bodu_Security_Cryptography_PaddingModeKind_ISO7816_4">ISO7816_4</a>, the
-"one-and-zeros" scheme used by smart cards and SHA-3 / Keccak — pick this overload when integrating with the
+"one-and-zeros" scheme used by smart cards and SHA-3 / Keccak - pick this overload when integrating with the
 extended <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a> superset.
 </p>
 </div>
@@ -200,7 +200,7 @@ extended <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_PaddingFactory_Create_Bodu_Security_Cryptography_PaddingModeKind_" data-uid="Bodu.Security.Cryptography.PaddingFactory.Create(Bodu.Security.Cryptography.PaddingModeKind)">
   Create(PaddingModeKind)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/PaddingFactory.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/PaddingFactory.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -250,7 +250,7 @@ extended <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_PaddingFactory_Create_System_Security_Cryptography_PaddingMode_" data-uid="Bodu.Security.Cryptography.PaddingFactory.Create(System.Security.Cryptography.PaddingMode)">
   Create(PaddingMode)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/PaddingFactory.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/PaddingFactory.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -308,7 +308,7 @@ extended <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">
 
   <h2 id="seealso">See Also</h2>
   <div class="seealso">
-      <div><span><a href="../guides/cryptography/padding.html">Padding guide — PKCS7, Zeros, None, ANSI X.923, ISO 10126 and
+      <div><span><a href="../guides/cryptography/padding.html">Padding guide - PKCS7, Zeros, None, ANSI X.923, ISO 10126 and
              ISO/IEC 7816-4 with worked examples</a></span></div>
   </div>
 
@@ -328,7 +328,7 @@ extended <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

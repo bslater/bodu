@@ -87,17 +87,17 @@
         <article data-uid="">
 <h1 id="bidirectional-dictionary">Bidirectional dictionary</h1>
 
-<p><code>BiDictionary&lt;TKey, TValue&gt;</code> is a bidirectional one-to-one map: every key maps to exactly one value <strong>and</strong> every value maps back to exactly one key. It is the .NET analogue of Guava's <code>BiMap</code>, Python's <code>bidict</code>, and Apache Commons' <code>BidiMap</code> — a hash-based dictionary that maintains a second, inverse index so that looking up a key <em>by its value</em> (<code>TryGetKey</code>, <code>ContainsValue</code>, <code>RemoveValue</code>) is O(1) rather than a linear scan.</p>
-<p>It fits mappings that are genuinely one-to-one — ISO codes to numbers, identifiers to display names, enum-like wire values to domain values — where you need to translate in both directions. When one key maps to <em>many</em> values, reach for <a href="multi-value-dictionary.html"><code>MultiValueDictionary&lt;TKey, TValue&gt;</code></a> instead.</p>
+<p><code>BiDictionary&lt;TKey, TValue&gt;</code> is a bidirectional one-to-one map: every key maps to exactly one value <strong>and</strong> every value maps back to exactly one key. It is the .NET analogue of Guava's <code>BiMap</code>, Python's <code>bidict</code>, and Apache Commons' <code>BidiMap</code> - a hash-based dictionary that maintains a second, inverse index so that looking up a key <em>by its value</em> (<code>TryGetKey</code>, <code>ContainsValue</code>, <code>RemoveValue</code>) is O(1) rather than a linear scan.</p>
+<p>It fits mappings that are genuinely one-to-one - ISO codes to numbers, identifiers to display names, enum-like wire values to domain values - where you need to translate in both directions. When one key maps to <em>many</em> values, reach for <a href="multi-value-dictionary.html"><code>MultiValueDictionary&lt;TKey, TValue&gt;</code></a> instead.</p>
 <p>A few contract points worth keeping in mind:</p>
 <ul>
-<li>Both type parameters are constrained to <code>notnull</code> — values act as lookup keys in the inverse index, so <code>null</code> values cannot be indexed and are rejected at run time just as <code>null</code> keys are.</li>
+<li>Both type parameters are constrained to <code>notnull</code> - values act as lookup keys in the inverse index, so <code>null</code> values cannot be indexed and are rejected at run time just as <code>null</code> keys are.</li>
 <li>Duplicate <strong>keys</strong> follow the standard <code>Dictionary&lt;TKey, TValue&gt;</code> contract: <code>Add</code> throws, the indexer re-binds.</li>
-<li>Duplicate <strong>values</strong> are a conflict resolved by the <code>BiDictionaryDuplicateValuePolicy</code> chosen at construction: <code>Throw</code> (the default, Guava <code>BiMap.put</code> semantics) rejects the operation; <code>Replace</code> (Guava <code>forcePut</code>) evicts the previous binding — the key that held the value is removed.</li>
+<li>Duplicate <strong>values</strong> are a conflict resolved by the <code>BiDictionaryDuplicateValuePolicy</code> chosen at construction: <code>Throw</code> (the default, Guava <code>BiMap.put</code> semantics) rejects the operation; <code>Replace</code> (Guava <code>forcePut</code>) evicts the previous binding - the key that held the value is removed.</li>
 <li>Both comparers are injectable: <code>KeyComparer</code> governs the forward index, <code>ValueComparer</code> the inverse index.</li>
 <li>Enumeration order is unspecified (the same non-contractual, insertion-biased order as <code>Dictionary&lt;TKey, TValue&gt;</code>); do not rely on it.</li>
 </ul>
-<h2 id="pattern-1--translate-in-both-directions">Pattern 1 — translate in both directions</h2>
+<h2 id="pattern-1---translate-in-both-directions">Pattern 1 - translate in both directions</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
@@ -106,14 +106,14 @@ codes.Add(&quot;AU&quot;, 36);
 codes.Add(&quot;NZ&quot;, 554);
 codes.Add(&quot;BR&quot;, 76);
 
-int numeric = codes[&quot;AU&quot;];                    // 36 — forward lookup
+int numeric = codes[&quot;AU&quot;];                    // 36 - forward lookup
 
-codes.TryGetKey(554, out string? alpha);      // &quot;NZ&quot; — O(1) inverse lookup
-bool bound = codes.ContainsValue(76);         // true — O(1), no scan
+codes.TryGetKey(554, out string? alpha);      // &quot;NZ&quot; - O(1) inverse lookup
+bool bound = codes.ContainsValue(76);         // true - O(1), no scan
 codes.RemoveValue(36);                        // removes the pair (&quot;AU&quot;, 36)
 </code></pre>
-<h2 id="pattern-2--the-live-inverse-view">Pattern 2 — the live <code>Inverse</code> view</h2>
-<p><code>Inverse</code> exposes the reversed mapping as a <code>BiDictionary&lt;TValue, TKey&gt;</code> <strong>view sharing the same storage</strong> — not a copy. Mutations through either view are immediately visible through the other, and <code>Inverse.Inverse</code> returns the original instance (reference-equal):</p>
+<h2 id="pattern-2---the-live-inverse-view">Pattern 2 - the live <code>Inverse</code> view</h2>
+<p><code>Inverse</code> exposes the reversed mapping as a <code>BiDictionary&lt;TValue, TKey&gt;</code> <strong>view sharing the same storage</strong> - not a copy. Mutations through either view are immediately visible through the other, and <code>Inverse.Inverse</code> returns the original instance (reference-equal):</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
@@ -126,15 +126,15 @@ byNumber.Add(554, &quot;NZ&quot;);                      // mutate through the vi
 bool present = codes.ContainsKey(&quot;NZ&quot;);       // …visible through the original
 object same = codes.Inverse.Inverse;          // reference-equal to codes
 </code></pre>
-<p>Through the inverse view, keys and values swap roles — the view's <code>KeyComparer</code> is the original's <code>ValueComparer</code> and vice versa — and the shared duplicate-value policy governs conflicts on the value side of whichever view is being mutated. The invariant is the same in both directions: the mapping stays one-to-one.</p>
-<h2 id="pattern-3--choosing-the-duplicate-value-policy">Pattern 3 — choosing the duplicate-value policy</h2>
+<p>Through the inverse view, keys and values swap roles - the view's <code>KeyComparer</code> is the original's <code>ValueComparer</code> and vice versa - and the shared duplicate-value policy governs conflicts on the value side of whichever view is being mutated. The invariant is the same in both directions: the mapping stays one-to-one.</p>
+<h2 id="pattern-3---choosing-the-duplicate-value-policy">Pattern 3 - choosing the duplicate-value policy</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 // Throw (default): a value bound to a different key is rejected.
 var strict = new BiDictionary&lt;string, int&gt;();
 strict.Add(&quot;a&quot;, 1);
-// strict.Add(&quot;b&quot;, 1);      // throws ArgumentException — 1 is bound to &quot;a&quot;
+// strict.Add(&quot;b&quot;, 1);      // throws ArgumentException - 1 is bound to &quot;a&quot;
 strict.TryAdd(&quot;b&quot;, 1);      // returns false; nothing changes
 
 // Replace: the previous binding holding the value is evicted.
@@ -146,15 +146,15 @@ bool hasA = forced.ContainsKey(&quot;a&quot;);   // false
 <p>The indexer setter follows the same policy for value conflicts. Re-binding an existing key through the indexer always cleans up the old value's inverse entry, and re-assigning a key its own current value is never a conflict.</p>
 <div class="NOTE">
 <h5>Note</h5>
-<p><code>BiDictionary&lt;TKey, TValue&gt;</code> is not thread-safe. Concurrent reads and writes — including through the <code>Inverse</code> view — require external synchronization. Enumerator invalidation matches the BCL dictionary: adding an entry through either view invalidates active enumerators.</p>
+<p><code>BiDictionary&lt;TKey, TValue&gt;</code> is not thread-safe. Concurrent reads and writes - including through the <code>Inverse</code> view - require external synchronization. Enumerator invalidation matches the BCL dictionary: adding an entry through either view invalidates active enumerators.</p>
 </div>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a class="xref" href="../../api/Bodu.Collections.Generic.BiDictionary-2.html">BiDictionary&lt;TKey, TValue&gt;</a> — the full API surface.</li>
-<li><a href="multi-value-dictionary.html">Multi-value dictionary</a> — one key to many values when the mapping is not one-to-one.</li>
-<li><a href="sequenced-dictionary.html">Sequenced dictionary</a> — a dictionary with a stable, contractual iteration order.</li>
-<li><a href="choosing-a-collection.html">Choosing a collection</a> — the full decision guide across the namespace.</li>
-<li><a href="../../docs/collections/index.html">Bodu.Collections introduction</a> — namespaces, headline types, scenarios.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.BiDictionary-2.html">BiDictionary&lt;TKey, TValue&gt;</a> - the full API surface.</li>
+<li><a href="multi-value-dictionary.html">Multi-value dictionary</a> - one key to many values when the mapping is not one-to-one.</li>
+<li><a href="sequenced-dictionary.html">Sequenced dictionary</a> - a dictionary with a stable, contractual iteration order.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> - the full decision guide across the namespace.</li>
+<li><a href="../../docs/collections/index.html">Bodu.Collections introduction</a> - namespaces, headline types, scenarios.</li>
 </ul>
 
 </article>
@@ -174,7 +174,7 @@ bool hasA = forced.ContainsKey(&quot;a&quot;);   // false
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

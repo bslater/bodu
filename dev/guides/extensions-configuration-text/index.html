@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="boduextensionsconfigurationtext-guides">Bodu.Extensions.Configuration.Text guides</h1>
 
-<p>Recipe-style walk-throughs for <strong>Bodu.Extensions.Configuration.Text</strong> — the bridge between
+<p>Recipe-style walk-throughs for <strong>Bodu.Extensions.Configuration.Text</strong> - the bridge between
 <a href="../text-configuration/index.html"><code>Bodu.Text.Configuration</code></a> and <code>Microsoft.Extensions.Configuration</code>, built on
 <a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TextConfigurationSource.html">TextConfigurationSource</a>,
 <a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource.html">TextStreamConfigurationSource</a>, and the
@@ -108,29 +108,29 @@ sections to typed POCO classes through the standard <code>Microsoft.Extensions.D
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="configuration-sources.html">Configuration sources</a></h3>
-  <p>Every <code>AddTextConfiguration*</code> overload — file, stream, pre-parsed document, convention-based discovery, fluent source configuration — plus the read-only <code>AddTomlFile</code> / <code>AddTomlStream</code> and <code>AddBencodeFile</code> / <code>AddBencodeStream</code> bridges, reload-on-change, <code>IOptions&lt;T&gt;</code> binding, and layering alongside JSON and environment-variable sources.</p>
+  <p>Every <code>AddTextConfiguration*</code> overload - file, stream, pre-parsed document, convention-based discovery, fluent source configuration - plus the read-only <code>AddTomlFile</code> / <code>AddTomlStream</code> and <code>AddBencodeFile</code> / <code>AddBencodeStream</code> bridges, reload-on-change, <code>IOptions&lt;T&gt;</code> binding, and layering alongside JSON and environment-variable sources.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="../../docs/extensions-configuration-text/index.html">Introduction</a></h3>
-  <p>Package overview — what the bridge adds on top of <code>Bodu.Text.Configuration</code>, headline types, and the scenarios it was built for.</p>
+  <p>Package overview - what the bridge adds on top of <code>Bodu.Text.Configuration</code>, headline types, and the scenarios it was built for.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="../../docs/extensions-configuration-text/concepts.html">Core concepts</a></h3>
-  <p>The shared vocabulary — source, provider, target path, option propagation, reload token, options binding.</p>
+  <p>The shared vocabulary - source, provider, target path, option propagation, reload token, options binding.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="../../docs/extensions-configuration-text/getting-started.html">Getting started</a></h3>
-  <p>Install the package and run the minimal samples — a file source, a typed options class, and a Generic Host wiring.</p>
+  <p>Install the package and run the minimal samples - a file source, a typed options class, and a Generic Host wiring.</p>
 </div>
 </div>
 <h2 id="reading-path">Reading path</h2>
 <ol>
-<li><strong><a href="../../docs/extensions-configuration-text/getting-started.html">Getting started</a></strong> — install and confirm the minimal file-source sample runs.</li>
-<li><strong><a href="configuration-sources.html">Configuration sources</a></strong> — pick the right <code>AddTextConfiguration*</code> overload for your scenario and wire up options binding and reload.</li>
-<li><strong><a href="../text-configuration/views-and-resolution.html">Views and resolution</a></strong> — when you need to understand <em>which</em> value the bridge surfaced, drop down to the underlying resolve layer.</li>
+<li><strong><a href="../../docs/extensions-configuration-text/getting-started.html">Getting started</a></strong> - install and confirm the minimal file-source sample runs.</li>
+<li><strong><a href="configuration-sources.html">Configuration sources</a></strong> - pick the right <code>AddTextConfiguration*</code> overload for your scenario and wire up options binding and reload.</li>
+<li><strong><a href="../text-configuration/views-and-resolution.html">Views and resolution</a></strong> - when you need to understand <em>which</em> value the bridge surfaced, drop down to the underlying resolve layer.</li>
 </ol>
 <p>The bridge propagates <code>ParseOptions</code> and <code>ResolveOptions</code> verbatim to the underlying library, so everything in the
-<a href="../text-configuration/index.html">Bodu.Text.Configuration guides</a> — profiles, glob anchoring, key mapping, diagnostics —
+<a href="../text-configuration/index.html">Bodu.Text.Configuration guides</a> - profiles, glob anchoring, key mapping, diagnostics -
 applies unchanged to values consumed through <code>IConfiguration</code>.</p>
 <h2 id="namespace-map">Namespace map</h2>
 <table>
@@ -151,14 +151,14 @@ applies unchanged to values consumed through <code>IConfiguration</code>.</p>
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="../../samples/text-configuration.html">Runnable samples</a></strong> — the offline BridgeHosting sample under <code>samples/Text.Configuration/</code>: <code>AddTextConfigurationFile</code> with <code>targetPath</code>, <code>AddTomlFile</code>, and <code>IOptions&lt;T&gt;</code> binding.</li>
-<li><strong><a href="../../docs/extensions-configuration-text/index.html">Introduction</a></strong> — namespaces, headline types, scenarios.</li>
-<li><strong><a href="../../docs/extensions-configuration-text/concepts.html">Core concepts</a></strong> — full vocabulary.</li>
-<li><strong><a href="../../docs/extensions-configuration-text/getting-started.html">Getting started</a></strong> — install + runnable minimal samples.</li>
-<li><strong><a href="../topics/configuration.html">Configuration topic guides</a></strong> — the topic map for both configuration packages.</li>
-<li><strong><a href="../../docs/topics/configuration.html">Configuration topic overview</a></strong> — the pipeline and package boundaries across both packages.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.html">Bodu.Extensions.Configuration.Text API reference</a></strong> — full type-by-type docs.</li>
-<li><strong><a href="../text-configuration/index.html">Bodu.Text.Configuration</a></strong> — the underlying parser, resolver, and view.</li>
+<li><strong><a href="../../samples/text-configuration.html">Runnable samples</a></strong> - the offline BridgeHosting sample under <code>samples/Text.Configuration/</code>: <code>AddTextConfigurationFile</code> with <code>targetPath</code>, <code>AddTomlFile</code>, and <code>IOptions&lt;T&gt;</code> binding.</li>
+<li><strong><a href="../../docs/extensions-configuration-text/index.html">Introduction</a></strong> - namespaces, headline types, scenarios.</li>
+<li><strong><a href="../../docs/extensions-configuration-text/concepts.html">Core concepts</a></strong> - full vocabulary.</li>
+<li><strong><a href="../../docs/extensions-configuration-text/getting-started.html">Getting started</a></strong> - install + runnable minimal samples.</li>
+<li><strong><a href="../topics/configuration.html">Configuration topic guides</a></strong> - the topic map for both configuration packages.</li>
+<li><strong><a href="../../docs/topics/configuration.html">Configuration topic overview</a></strong> - the pipeline and package boundaries across both packages.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.html">Bodu.Extensions.Configuration.Text API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="../text-configuration/index.html">Bodu.Text.Configuration</a></strong> - the underlying parser, resolver, and view.</li>
 </ul>
 
 </article>
@@ -178,7 +178,7 @@ applies unchanged to values consumed through <code>IConfiguration</code>.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

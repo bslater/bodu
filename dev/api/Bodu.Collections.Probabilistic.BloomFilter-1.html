@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Collections_Probabilistic_BloomFilter_1" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 BloomFilter&lt;T&gt; Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ BloomFilter&lt;T&gt; Class
   <dl><dt>Assembly</dt><dd>Bodu.Collections.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Collections">Bodu.Collections</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs">BloomFilter{T}.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs">BloomFilter{T}.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents a space-efficient probabilistic set that tests whether an element <em>might</em> be a member. Membership
@@ -190,8 +190,8 @@ var seen = new BloomFilter&lt;int&gt;(expectedItems: 10_000, falsePositiveRate: 
 
 seen.Add(42);
 
-Console.WriteLine(seen.MightContain(42));   // True  — added items are always found
-Console.WriteLine(seen.MightContain(4711)); // False (usually) — may rarely be a false positive</code></pre>
+Console.WriteLine(seen.MightContain(42));   // True  - added items are always found
+Console.WriteLine(seen.MightContain(4711)); // False (usually) - may rarely be a false positive</code></pre>
 
 
   <h2 id="Bodu_Collections_Probabilistic_BloomFilter_1_remarks">Remarks</h2>
@@ -206,8 +206,8 @@ elements have been added the observed false-positive rate rises above <code>p</c
 Elements are hashed via the supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer&lt;T&gt;</a> (or
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.equalitycomparer-1.default">Default</a>): the comparer's 32-bit
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1.gethashcode">GetHashCode(T)</a> is expanded through a deterministic SplitMix64-style avalanche
-into two 64-bit values combined by Kirsch–Mitzenmacher double hashing. All entropy therefore derives from the 32-bit
-comparer hash — standard practice for comparer-based sketches — which bounds the achievable false-positive floor by
+into two 64-bit values combined by Kirsch-Mitzenmacher double hashing. All entropy therefore derives from the 32-bit
+comparer hash - standard practice for comparer-based sketches - which bounds the achievable false-positive floor by
 the collision rate of that hash.
 </p>
 <p>
@@ -216,8 +216,8 @@ process, so exported state for <a class="xref" href="https://learn.microsoft.com
 meaningful when re-imported within the same process, or when a custom comparer with a stable hash is used.
 </p>
 <p>
-<a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.html#Bodu_Collections_Probabilistic_BloomFilter_1_UnionWith_Bodu_Collections_Probabilistic_BloomFilter__0__">UnionWith(BloomFilter&lt;T&gt;)</a> merges another filter into this one by bitwise OR. The two filters must be compatible — the
-same <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.html#Bodu_Collections_Probabilistic_BloomFilter_1_BitCount">BitCount</a>, the same <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.html#Bodu_Collections_Probabilistic_BloomFilter_1_HashCount">HashCount</a>, and the same (or equal) comparer — which in
+<a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.html#Bodu_Collections_Probabilistic_BloomFilter_1_UnionWith_Bodu_Collections_Probabilistic_BloomFilter__0__">UnionWith(BloomFilter&lt;T&gt;)</a> merges another filter into this one by bitwise OR. The two filters must be compatible - the
+same <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.html#Bodu_Collections_Probabilistic_BloomFilter_1_BitCount">BitCount</a>, the same <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.html#Bodu_Collections_Probabilistic_BloomFilter_1_HashCount">HashCount</a>, and the same (or equal) comparer - which in
 practice means they were constructed with the same parameters. After the merge this filter reports an element as
 possibly present when either source filter would have.
 </p>
@@ -241,7 +241,7 @@ corresponding version-byte bump.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_BloomFilter_1__ctor_System_Int32_System_Double_" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.#ctor(System.Int32,System.Double)">
   BloomFilter(int, double)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -289,7 +289,7 @@ target false-positive rate, using the default equality comparer.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_BloomFilter_1__ctor_System_Int32_System_Double_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.#ctor(System.Int32,System.Double,System.Collections.Generic.IEqualityComparer{`0})">
   BloomFilter(int, double, IEqualityComparer&lt;T&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -345,7 +345,7 @@ comparer for <code class="typeparamref">T</code> is used.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_BloomFilter_1_BitCount" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.BitCount">
   BitCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -382,7 +382,7 @@ comparer for <code class="typeparamref">T</code> is used.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_BloomFilter_1_Comparer" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.Comparer">
   Comparer
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -419,7 +419,7 @@ comparer for <code class="typeparamref">T</code> is used.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_BloomFilter_1_DesignFalsePositiveRate" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.DesignFalsePositiveRate">
   DesignFalsePositiveRate
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -457,7 +457,7 @@ approaches <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.ht
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_BloomFilter_1_EstimatedFalsePositiveRate" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.EstimatedFalsePositiveRate">
   EstimatedFalsePositiveRate
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -498,7 +498,7 @@ approaches <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.ht
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_BloomFilter_1_ExpectedItems" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.ExpectedItems">
   ExpectedItems
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -535,7 +535,7 @@ approaches <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.ht
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_BloomFilter_1_HashCount" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.HashCount">
   HashCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -576,7 +576,7 @@ approaches <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.ht
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_BloomFilter_1_Add__0_" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.Add(`0)">
   Add(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -624,7 +624,7 @@ to reset the entire filter.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_BloomFilter_1_Clear" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.Clear">
   Clear()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -655,7 +655,7 @@ to reset the entire filter.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_BloomFilter_1_Export_System_Span_System_Byte__" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.Export(System.Span{System.Byte})">
   Export(Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -699,7 +699,7 @@ to reset the entire filter.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_BloomFilter_1_GetExportByteCount" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.GetExportByteCount">
   GetExportByteCount()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -737,7 +737,7 @@ to reset the entire filter.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_BloomFilter_1_Import_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.Import(System.ReadOnlySpan{System.Byte},System.Collections.Generic.IEqualityComparer{`0})">
   Import(ReadOnlySpan&lt;byte&gt;, IEqualityComparer&lt;T&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -808,7 +808,7 @@ by the smallest representable false-positive rate).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_BloomFilter_1_MightContain__0_" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.MightContain(`0)">
   MightContain(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -858,7 +858,7 @@ was added or is a false positive (with probability approximated by <a class="xre
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_BloomFilter_1_TryExport_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.TryExport(System.Span{System.Byte},System.Int32@)">
   TryExport(Span&lt;byte&gt;, out int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -906,7 +906,7 @@ otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_BloomFilter_1_UnionWith_Bodu_Collections_Probabilistic_BloomFilter__0__" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.UnionWith(Bodu.Collections.Probabilistic.BloomFilter{`0})">
   UnionWith(BloomFilter&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Collections/src/Collections.Probabilistic/BloomFilter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -936,7 +936,7 @@ present when either source filter would have.</p>
   <h4 class="section" id="Bodu_Collections_Probabilistic_BloomFilter_1_UnionWith_Bodu_Collections_Probabilistic_BloomFilter__0___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 Compatibility requires identical <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.html#Bodu_Collections_Probabilistic_BloomFilter_1_BitCount">BitCount</a> and <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.html#Bodu_Collections_Probabilistic_BloomFilter_1_HashCount">HashCount</a> and the same or an equal
-comparer instance — in practice, filters constructed with the same parameters. The other filter is not modified.
+comparer instance - in practice, filters constructed with the same parameters. The other filter is not modified.
 Merging raises this filter's bit density and therefore its <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.html#Bodu_Collections_Probabilistic_BloomFilter_1_EstimatedFalsePositiveRate">EstimatedFalsePositiveRate</a>.
 </p>
 <p>
@@ -989,7 +989,7 @@ differs from this filter's.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

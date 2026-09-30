@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Security.Cryptography — Getting started | BODU </title>
+      <title>Bodu.Security.Cryptography - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Security.Cryptography — Getting started | BODU ">
+      <meta name="title" content="Bodu.Security.Cryptography - Getting started | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,14 +85,14 @@
         </div>
 
         <article data-uid="">
-<h1 id="bodusecuritycryptography--getting-started">Bodu.Security.Cryptography — Getting started</h1>
+<h1 id="bodusecuritycryptography---getting-started">Bodu.Security.Cryptography - Getting started</h1>
 
 <h2 id="install">Install</h2>
 <pre><code class="lang-bash">dotnet add package Bodu.Security.Cryptography
 </code></pre>
 <p>Targets <code>net8.0</code>. Depends on <code>Bodu.Core</code> and the BCL <code>System.Security.Cryptography</code>.</p>
-<h2 id="minimal-samples--one-per-subfamily">Minimal samples — one per subfamily</h2>
-<h3 id="standard-block-cipher--camellia-in-cbc-mode">Standard block cipher — Camellia in CBC mode</h3>
+<h2 id="minimal-samples---one-per-subfamily">Minimal samples - one per subfamily</h2>
+<h3 id="standard-block-cipher---camellia-in-cbc-mode">Standard block cipher - Camellia in CBC mode</h3>
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using System.Text;
 using Bodu.Security.Cryptography;
@@ -109,8 +109,8 @@ cipher.BlockPadding = PaddingModeKind.PKCS7;
 byte[] ciphertext = cipher.Encrypt(plaintext);
 byte[] roundtrip  = cipher.Decrypt(ciphertext);
 </code></pre>
-<p>Swap <code>Camellia</code> for <code>Twofish</code>, <code>Serpent128</code>, <code>Blowfish</code>, or <code>Skipjack</code> — the lifecycle is identical.</p>
-<h3 id="tweakable-block-cipher--threefish-512-with-a-per-record-tweak">Tweakable block cipher — Threefish-512 with a per-record tweak</h3>
+<p>Swap <code>Camellia</code> for <code>Twofish</code>, <code>Serpent128</code>, <code>Blowfish</code>, or <code>Skipjack</code> - the lifecycle is identical.</p>
+<h3 id="tweakable-block-cipher---threefish-512-with-a-per-record-tweak">Tweakable block cipher - Threefish-512 with a per-record tweak</h3>
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
@@ -125,20 +125,20 @@ cipher.Padding   = PaddingMode.PKCS7;
 byte[] ciphertext = cipher.Encrypt(plaintext);
 byte[] roundtrip  = cipher.Decrypt(ciphertext);
 </code></pre>
-<p>Encrypting the same plaintext under the same key with a <em>different</em> tweak yields an entirely independent ciphertext — useful for disk encryption (sector number as tweak) or per-record encryption.</p>
-<h3 id="stream-cipher--chacha20">Stream cipher — ChaCha20</h3>
+<p>Encrypting the same plaintext under the same key with a <em>different</em> tweak yields an entirely independent ciphertext - useful for disk encryption (sector number as tweak) or per-record encryption.</p>
+<h3 id="stream-cipher---chacha20">Stream cipher - ChaCha20</h3>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
 
 using var cipher = new ChaCha20();
 cipher.GenerateKey();               // 32-byte key
-cipher.GenerateNonce();                // 12-byte nonce — unique per message
+cipher.GenerateNonce();                // 12-byte nonce - unique per message
 
 byte[] ciphertext = cipher.Encrypt(plaintext);
 byte[] roundtrip  = cipher.Decrypt(ciphertext);   // self-inverse
 </code></pre>
-<p>Swap <code>ChaCha20</code> for <code>XChaCha20</code>, <code>Salsa20</code>, <code>XSalsa20</code>, <code>Rabbit</code>, or <code>Hc128</code> — the lifecycle is identical (no block mode or padding). These are <strong>raw, confidentiality-only</strong> ciphers: never reuse a <code>(key, nonce)</code> pair, and pair with a MAC such as <code>Poly1305</code> or prefer an AEAD construction when you need integrity.</p>
-<h3 id="aead--aes-gcm-via-aesblockcipher--gcmmodetransform">AEAD — AES-GCM via <code>AesBlockCipher</code> + <code>GcmModeTransform</code></h3>
+<p>Swap <code>ChaCha20</code> for <code>XChaCha20</code>, <code>Salsa20</code>, <code>XSalsa20</code>, <code>Rabbit</code>, or <code>Hc128</code> - the lifecycle is identical (no block mode or padding). These are <strong>raw, confidentiality-only</strong> ciphers: never reuse a <code>(key, nonce)</code> pair, and pair with a MAC such as <code>Poly1305</code> or prefer an AEAD construction when you need integrity.</p>
+<h3 id="aead---aes-gcm-via-aesblockcipher--gcmmodetransform">AEAD - AES-GCM via <code>AesBlockCipher</code> + <code>GcmModeTransform</code></h3>
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
@@ -156,8 +156,8 @@ byte[] ciphertextWithTag = gcm.Encrypt(data, associatedData: aad);
 using var verify = new GcmModeTransform(aes, nonce);   // fresh transform per message
 byte[] recovered = verify.Decrypt(ciphertextWithTag, associatedData: aad);
 </code></pre>
-<p>Swap <code>GcmModeTransform</code> for <code>CcmModeTransform</code>, <code>OcbModeTransform</code>, <code>EaxModeTransform</code>, <code>SivModeTransform</code>, or <code>GcmSivModeTransform</code>. AEAD transforms are <strong>single-use per message</strong> — construct a fresh transform on the encrypt side and another on the decrypt side.</p>
-<h3 id="aead--ascon-aead128-no-separate-cipher">AEAD — ASCON-AEAD128 (no separate cipher)</h3>
+<p>Swap <code>GcmModeTransform</code> for <code>CcmModeTransform</code>, <code>OcbModeTransform</code>, <code>EaxModeTransform</code>, <code>SivModeTransform</code>, or <code>GcmSivModeTransform</code>. AEAD transforms are <strong>single-use per message</strong> - construct a fresh transform on the encrypt side and another on the decrypt side.</p>
+<h3 id="aead---ascon-aead128-no-separate-cipher">AEAD - ASCON-AEAD128 (no separate cipher)</h3>
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
@@ -172,7 +172,7 @@ byte[] ciphertextWithTag = aead.Encrypt(data, associatedData: aad);
 using var verify = new AsconAead128(key, nonce);
 byte[] recovered = verify.Decrypt(ciphertextWithTag, associatedData: aad);
 </code></pre>
-<h3 id="keyed-hash-mac--siphash-64">Keyed hash (MAC) — SipHash-64</h3>
+<h3 id="keyed-hash-mac---siphash-64">Keyed hash (MAC) - SipHash-64</h3>
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using System.Text;
 using Bodu.Security.Cryptography;
@@ -183,7 +183,7 @@ byte[] key  = RandomNumberGenerator.GetBytes(16);
 using var sip = new SipHash64 { Key = key };
 ulong digest  = BitConverter.ToUInt64(sip.ComputeHash(data));
 </code></pre>
-<h3 id="cryptographic-digest--tiger-192">Cryptographic digest — Tiger-192</h3>
+<h3 id="cryptographic-digest---tiger-192">Cryptographic digest - Tiger-192</h3>
 <pre><code class="lang-csharp">using System.Text;
 using Bodu.Security.Cryptography;
 
@@ -193,7 +193,7 @@ using var tiger = new Tiger();
 byte[] digest   = tiger.ComputeHash(data);
 </code></pre>
 <p>Swap <code>Tiger</code> for <code>CubeHash</code>, <code>Blake2b</code>, <code>Whirlpool</code>, <code>Skein512</code>, or <code>AsconHash256</code>.</p>
-<h3 id="cryptographic-digest--variable-length-xof-ascon-xof-128">Cryptographic digest — variable length (XOF) ASCON-XOF-128</h3>
+<h3 id="cryptographic-digest---variable-length-xof-ascon-xof-128">Cryptographic digest - variable length (XOF) ASCON-XOF-128</h3>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
 
 // The ASCON XOFs are sponges, not HashAlgorithms: absorb, then squeeze as many bytes as you need.
@@ -205,7 +205,7 @@ byte[] output = xof.GetHash(outputLength: 64);      // squeeze 64 bytes and fina
 byte[] same = AsconXof128.HashData(data, outputLength: 64);
 </code></pre>
 <p><code>Squeeze(Span&lt;byte&gt;)</code> writes directly into a caller buffer, and <code>Initialize()</code> resets the sponge for the next message.</p>
-<h3 id="merkle-tree--an-rfc-6962-root-over-fixed-size-blocks-with-a-proof">Merkle tree — an RFC 6962 root over fixed-size blocks, with a proof</h3>
+<h3 id="merkle-tree---an-rfc-6962-root-over-fixed-size-blocks-with-a-proof">Merkle tree - an RFC 6962 root over fixed-size blocks, with a proof</h3>
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
@@ -224,7 +224,7 @@ bool included = tree.VerifyInclusionOfLeafHash(
     path: path.Select(step =&gt; (ReadOnlyMemory&lt;byte&gt;)step).ToArray());
 </code></pre>
 <p>The root is RFC 6962's Merkle Tree Hash over the blocks, whichever way the bytes arrive: <code>ComputeRootOfBlocks</code> folds as it reads, <code>CreateBlockAccumulator</code> builds the same root from incremental <code>Append</code> calls, and <code>new MerkleTree(SHA256.Create, maxDegreeOfParallelism: -1)</code> hashes leaves across cores without changing the tree.</p>
-<h3 id="digital-signature--ed25519">Digital signature — Ed25519</h3>
+<h3 id="digital-signature---ed25519">Digital signature - Ed25519</h3>
 <pre><code class="lang-csharp">using System.Text;
 using Bodu.Security.Cryptography;
 
@@ -236,8 +236,8 @@ signer.GenerateKey();
 byte[] signature = signer.SignData(message);          // 64 bytes
 bool valid       = signer.VerifyData(message, signature);   // true
 </code></pre>
-<p>Swap <code>Ed25519</code> for <code>MLDsa65</code> for a post-quantum (FIPS 204) signature — the lifecycle is identical, only the key and signature sizes differ.</p>
-<h3 id="key-agreement--x25519">Key agreement — X25519</h3>
+<p>Swap <code>Ed25519</code> for <code>MLDsa65</code> for a post-quantum (FIPS 204) signature - the lifecycle is identical, only the key and signature sizes differ.</p>
+<h3 id="key-agreement---x25519">Key agreement - X25519</h3>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
 
 using var alice = X25519.Create();
@@ -251,8 +251,8 @@ byte[] bobShared   = bob.DeriveSharedSecret(alice.ExportPublicKey());
 
 // aliceShared and bobShared are identical (32 bytes each).
 </code></pre>
-<p>Swap <code>X25519</code> for <code>MLKem768</code> when you need post-quantum (FIPS 203) key establishment — the receiver publishes an encapsulation key and the sender calls <code>Encapsulate()</code>.</p>
-<h3 id="hybrid-public-key-encryption--hpke">Hybrid public-key encryption — HPKE</h3>
+<p>Swap <code>X25519</code> for <code>MLKem768</code> when you need post-quantum (FIPS 203) key establishment - the receiver publishes an encapsulation key and the sender calls <code>Encapsulate()</code>.</p>
+<h3 id="hybrid-public-key-encryption---hpke">Hybrid public-key encryption - HPKE</h3>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
 
 using var recipient = X25519.Create();
@@ -263,13 +263,13 @@ HpkeSuite suite = HpkeSuite.X25519_HkdfSha256_Aes128Gcm;
 byte[] info = &quot;myapp v1&quot;u8.ToArray();   // binds the exchange to a context
 byte[] aad  = &quot;headers&quot;u8.ToArray();    // authenticated, not encrypted
 
-// Sender — needs only the recipient's public key.
+// Sender - needs only the recipient's public key.
 var (enc, ciphertext) = Hpke.Seal(suite, recipientPublicKey, info, aad, &quot;secret message&quot;u8);
 
-// Recipient — needs its private key, the encapsulated key, and the same info / aad.
+// Recipient - needs its private key, the encapsulated key, and the same info / aad.
 byte[] plaintext = Hpke.Open(suite, recipient, enc, info, aad, ciphertext);
 </code></pre>
-<h3 id="password-hashing--argon2id">Password hashing — Argon2id</h3>
+<h3 id="password-hashing---argon2id">Password hashing - Argon2id</h3>
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using System.Text;
 using Bodu.Security.Cryptography;
@@ -288,7 +288,7 @@ var parameters = new Argon2Parameters
 byte[] key = Argon2id.DeriveKey(password, salt, parameters);   // 32 bytes
 </code></pre>
 <p>Swap <code>Argon2id</code> for <code>Scrypt</code> (<code>Scrypt.DeriveKey(password, salt, costN: 16384, blockSizeR: 8, parallelization: 1, length: 32)</code>) for RFC 7914 interoperability.</p>
-<h3 id="key-derivation--hkdf">Key derivation — HKDF</h3>
+<h3 id="key-derivation---hkdf">Key derivation - HKDF</h3>
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
@@ -303,13 +303,13 @@ byte[] sessionKey = Hkdf.DeriveKey(
 
 CryptographicOperations.ZeroMemory(sharedSecret);   // wipe the raw secret once stretched
 </code></pre>
-<p>HKDF is for <em>high-entropy</em> inputs only — for passwords reach for Argon2id or scrypt above.</p>
+<p>HKDF is for <em>high-entropy</em> inputs only - for passwords reach for Argon2id or scrypt above.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="index.html">Bodu.Security.Cryptography introduction</a></strong> — namespaces, headline types, scenarios.</li>
-<li><strong><a href="../io-hashing/index.html">Bodu.IO.Hashing</a></strong> — the sibling library, for non-cryptographic checksums and fingerprints (no adversary model).</li>
-<li><strong><a href="../../guides/cryptography/index.html">Bodu.Security.Cryptography guides</a></strong> — encryption basics, modes, padding, AEAD, hashing.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="index.html">Bodu.Security.Cryptography introduction</a></strong> - namespaces, headline types, scenarios.</li>
+<li><strong><a href="../io-hashing/index.html">Bodu.IO.Hashing</a></strong> - the sibling library, for non-cryptographic checksums and fingerprints (no adversary model).</li>
+<li><strong><a href="../../guides/cryptography/index.html">Bodu.Security.Cryptography guides</a></strong> - encryption basics, modes, padding, AEAD, hashing.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography API reference</a></strong> - full type-by-type docs.</li>
 <li><strong>For non-cryptographic checksums and fingerprints</strong> (CRC, Fletcher, Adler, FNV, CityHash), see <a href="../io-hashing/index.html">Bodu.IO.Hashing</a>.</li>
 </ul>
 
@@ -330,7 +330,7 @@ CryptographicOperations.ZeroMemory(sharedSecret);   // wipe the raw secret once 
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

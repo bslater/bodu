@@ -89,8 +89,8 @@
 
 <p><code>Bodu.Collections.Generic</code> ships two insertion-ordered, uniqueness-enforcing sets built on the same open-addressing hash engine. They differ only in the surface they expose:</p>
 <ul>
-<li><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a> implements <code>IList&lt;T&gt;</code> — a list that silently refuses duplicates, with O(1) <code>Contains</code>, <code>IndexOf</code>, and indexed read <strong>and write</strong>.</li>
-<li><a class="xref" href="../../api/Bodu.Collections.Generic.OrderedSet-1.html">OrderedSet&lt;T&gt;</a> implements <code>ISet&lt;T&gt;</code> — the full set-algebra surface (<code>UnionWith</code>, <code>IntersectWith</code>, …) while preserving insertion order and exposing position only as a read-only index.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a> implements <code>IList&lt;T&gt;</code> - a list that silently refuses duplicates, with O(1) <code>Contains</code>, <code>IndexOf</code>, and indexed read <strong>and write</strong>.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.OrderedSet-1.html">OrderedSet&lt;T&gt;</a> implements <code>ISet&lt;T&gt;</code> - the full set-algebra surface (<code>UnionWith</code>, <code>IntersectWith</code>, …) while preserving insertion order and exposing position only as a read-only index.</li>
 </ul>
 <p>Both keep elements in the order they were first added, both reject <code>null</code> only when the element type and comparer reject it, and both compare with an <code>IEqualityComparer&lt;T&gt;</code> you can supply at construction.</p>
 <h2 id="when-to-reach-for-which">When to reach for which</h2>
@@ -128,8 +128,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="indexedsett--a-unique-indexable-list">IndexedSet&lt;T&gt; — a unique, indexable list</h2>
-<h3 id="pattern-1--add-reject-duplicates-look-up-by-index">Pattern 1 — add, reject duplicates, look up by index</h3>
+<h2 id="indexedsett---a-unique-indexable-list">IndexedSet&lt;T&gt; - a unique, indexable list</h2>
+<h3 id="pattern-1---add-reject-duplicates-look-up-by-index">Pattern 1 - add, reject duplicates, look up by index</h3>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
@@ -137,35 +137,35 @@ var tags = new IndexedSet&lt;string&gt;();
 
 bool addedFirst  = tags.Add(&quot;alpha&quot;);   // true
 bool addedSecond = tags.Add(&quot;beta&quot;);    // true
-bool addedDup    = tags.Add(&quot;alpha&quot;);   // false — already present, order unchanged
+bool addedDup    = tags.Add(&quot;alpha&quot;);   // false - already present, order unchanged
 
 int index = tags.IndexOf(&quot;beta&quot;);       // 1, O(1)
 string at = tags[0];                    // &quot;alpha&quot;, O(1)
 bool has  = tags.Contains(&quot;alpha&quot;);     // true, O(1)
 </code></pre>
 <p><code>Add</code> returns <code>false</code> rather than throwing when the element is already present. To add several at once, <code>AddRange</code> returns the number of elements actually inserted (duplicates skipped):</p>
-<pre><code class="lang-csharp">int inserted = tags.AddRange(new[] { &quot;beta&quot;, &quot;gamma&quot;, &quot;delta&quot; }); // 2 — &quot;beta&quot; skipped
+<pre><code class="lang-csharp">int inserted = tags.AddRange(new[] { &quot;beta&quot;, &quot;gamma&quot;, &quot;delta&quot; }); // 2 - &quot;beta&quot; skipped
 </code></pre>
-<h3 id="pattern-2--positional-editing">Pattern 2 — positional editing</h3>
+<h3 id="pattern-2---positional-editing">Pattern 2 - positional editing</h3>
 <p>Because <code>IndexedSet&lt;T&gt;</code> is an <code>IList&lt;T&gt;</code>, it supports positional mutation. Inserting a value that already exists throws (use <code>TryInsert</code> for the non-throwing form), and the indexer setter replaces the element at a position:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">var order = new IndexedSet&lt;string&gt; { &quot;first&quot;, &quot;third&quot; };
 
 order.Insert(1, &quot;second&quot;);          // first, second, third
-bool ok = order.TryInsert(0, &quot;second&quot;); // false — &quot;second&quot; already present
+bool ok = order.TryInsert(0, &quot;second&quot;); // false - &quot;second&quot; already present
 order.Move(2, 0);                   // third, first, second
 order[0] = &quot;head&quot;;                  // replaces &quot;third&quot; at position 0
 order.RemoveAt(2);                  // removes &quot;second&quot;
 </code></pre>
-<h3 id="pattern-3--capacity-management">Pattern 3 — capacity management</h3>
+<h3 id="pattern-3---capacity-management">Pattern 3 - capacity management</h3>
 <!-- compile -->
 <pre><code class="lang-csharp">var set = new IndexedSet&lt;int&gt;(capacity: 1024);
 set.EnsureCapacity(4096);   // pre-grow before a known burst
 // … fill …
 set.TrimExcess();           // release unused slots
 </code></pre>
-<h2 id="orderedsett--an-ordered-set-with-full-set-algebra">OrderedSet&lt;T&gt; — an ordered set with full set algebra</h2>
-<h3 id="pattern-4--set-operations-preserve-insertion-order">Pattern 4 — set operations preserve insertion order</h3>
+<h2 id="orderedsett---an-ordered-set-with-full-set-algebra">OrderedSet&lt;T&gt; - an ordered set with full set algebra</h2>
+<h3 id="pattern-4---set-operations-preserve-insertion-order">Pattern 4 - set operations preserve insertion order</h3>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
@@ -177,7 +177,7 @@ a.IntersectWith(b);         // keeps only members also in b
 a.ExceptWith(b);            // removes members found in b
 a.SymmetricExceptWith(b);   // keeps members in exactly one set
 </code></pre>
-<h3 id="pattern-5--relationship-tests">Pattern 5 — relationship tests</h3>
+<h3 id="pattern-5---relationship-tests">Pattern 5 - relationship tests</h3>
 <!-- compile -->
 <pre><code class="lang-csharp">var roles  = new OrderedSet&lt;string&gt; { &quot;reader&quot;, &quot;writer&quot; };
 var grant  = new OrderedSet&lt;string&gt; { &quot;reader&quot;, &quot;writer&quot;, &quot;admin&quot; };
@@ -188,19 +188,19 @@ bool superset = grant.IsSupersetOf(roles);      // true
 bool overlaps = roles.Overlaps(grant);          // true
 bool equal    = roles.SetEquals(grant);         // false
 </code></pre>
-<h3 id="pattern-6--read-only-positional-view">Pattern 6 — read-only positional view</h3>
+<h3 id="pattern-6---read-only-positional-view">Pattern 6 - read-only positional view</h3>
 <p><code>OrderedSet&lt;T&gt;</code> records insertion order and exposes it through a <strong>read-only</strong> indexer and <code>IndexOf</code>; unlike <code>IndexedSet&lt;T&gt;</code>, there is no indexer setter or positional <code>Insert</code>:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">var ordered = new OrderedSet&lt;string&gt; { &quot;x&quot;, &quot;y&quot;, &quot;z&quot; };
 int pos = ordered.IndexOf(&quot;y&quot;);   // 1
-string first = ordered[0];        // &quot;x&quot; — read only
+string first = ordered[0];        // &quot;x&quot; - read only
 </code></pre>
 <h2 id="custom-equality">Custom equality</h2>
 <p>Both types accept an <code>IEqualityComparer&lt;T&gt;</code> so uniqueness can be case-insensitive or structural:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">var ci = new IndexedSet&lt;string&gt;(StringComparer.OrdinalIgnoreCase);
 ci.Add(&quot;Alpha&quot;);
-bool dup = ci.Add(&quot;ALPHA&quot;);   // false — same key under the comparer
+bool dup = ci.Add(&quot;ALPHA&quot;);   // false - same key under the comparer
 </code></pre>
 <h2 id="api-summary">API summary</h2>
 <table>
@@ -246,7 +246,7 @@ bool dup = ci.Add(&quot;ALPHA&quot;);   // false — same key under the comparer
 <tr>
 <td><code>Insert</code> / <code>TryInsert</code> / <code>Move</code> / <code>RemoveAt</code></td>
 <td style="text-align: center;">✓</td>
-<td style="text-align: center;">—</td>
+<td style="text-align: center;">-</td>
 <td>Positional editing.</td>
 </tr>
 <tr>
@@ -257,13 +257,13 @@ bool dup = ci.Add(&quot;ALPHA&quot;);   // false — same key under the comparer
 </tr>
 <tr>
 <td><code>UnionWith</code> / <code>IntersectWith</code> / <code>ExceptWith</code> / <code>SymmetricExceptWith</code></td>
-<td style="text-align: center;">—</td>
+<td style="text-align: center;">-</td>
 <td style="text-align: center;">✓</td>
 <td>In-place set algebra.</td>
 </tr>
 <tr>
 <td><code>IsSubsetOf</code> / <code>IsSupersetOf</code> / <code>IsProperSubsetOf</code> / <code>IsProperSupersetOf</code> / <code>Overlaps</code> / <code>SetEquals</code></td>
-<td style="text-align: center;">—</td>
+<td style="text-align: center;">-</td>
 <td style="text-align: center;">✓</td>
 <td>Relationship tests.</td>
 </tr>
@@ -289,11 +289,11 @@ bool dup = ci.Add(&quot;ALPHA&quot;);   // false — same key under the comparer
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="choosing-a-collection.html">Choosing a collection</a> — the full decision guide.</li>
-<li><a href="multiset.html">Multiset</a> — when duplicates should be <em>retained</em> as multiplicity rather than rejected.</li>
-<li><a href="concurrent-collections.html">Concurrent collections</a> — <code>ConcurrentHashSet&lt;T&gt;</code> for thread-safe set membership.</li>
-<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> — full namespace overview.</li>
-<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> - the full decision guide.</li>
+<li><a href="multiset.html">Multiset</a> - when duplicates should be <em>retained</em> as multiplicity rather than rejected.</li>
+<li><a href="concurrent-collections.html">Concurrent collections</a> - <code>ConcurrentHashSet&lt;T&gt;</code> for thread-safe set membership.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> - full namespace overview.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -313,7 +313,7 @@ bool dup = ci.Add(&quot;ALPHA&quot;);   // false — same key under the comparer
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

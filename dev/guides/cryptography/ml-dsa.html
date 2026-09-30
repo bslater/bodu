@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="ml-dsa-post-quantum-signatures">ML-DSA post-quantum signatures</h1>
 
-<p>ML-DSA is the module-lattice digital signature algorithm standardized by NIST <strong>FIPS 204</strong> — the post-quantum companion to a classic signature scheme. Its security rests on the Module-LWE and SelfTargetMSIS problems, believed hard even for a large-scale quantum computer. This guide is for developers signing data whose signatures must remain trustworthy against future quantum attack.</p>
+<p>ML-DSA is the module-lattice digital signature algorithm standardized by NIST <strong>FIPS 204</strong> - the post-quantum companion to a classic signature scheme. Its security rests on the Module-LWE and SelfTargetMSIS problems, believed hard even for a large-scale quantum computer. This guide is for developers signing data whose signatures must remain trustworthy against future quantum attack.</p>
 <p><strong>Bodu.Security.Cryptography</strong> ships the three FIPS 204 parameter sets as sealed types over the shared <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa.html">MLDsa</a> base: <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a>, and <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa87.html">MLDsa87</a>. This is pure ML-DSA; the pre-hash variant HashML-DSA is out of scope.</p>
 <p>For a compact classic signature scheme, see <a href="signatures-ed25519.html">Ed25519</a>; for the post-quantum key-agreement counterpart, see <a href="ml-kem.html">ML-KEM</a>.</p>
 <h2 id="parameter-sets-and-sizes">Parameter sets and sizes</h2>
@@ -142,7 +142,7 @@ byte[] signature = signer.SignData(message);   // 3309 bytes
 
 bool valid = signer.VerifyData(message, signature);   // true
 </code></pre>
-<p><code>SignData</code> and <code>VerifyData</code> each have a context-string overload (next section) and a span overload — <code>SignData(data, context, destination)</code> writes the signature into a caller-supplied buffer of exactly <code>SignatureSizeInBytes</code>. <code>HasPrivateKey</code> / <code>HasPublicKey</code> report which halves an instance holds, exactly as for <a href="signatures-ed25519.html">Ed25519</a>.</p>
+<p><code>SignData</code> and <code>VerifyData</code> each have a context-string overload (next section) and a span overload - <code>SignData(data, context, destination)</code> writes the signature into a caller-supplied buffer of exactly <code>SignatureSizeInBytes</code>. <code>HasPrivateKey</code> / <code>HasPublicKey</code> report which halves an instance holds, exactly as for <a href="signatures-ed25519.html">Ed25519</a>.</p>
 <h2 id="key-distribution">Key distribution</h2>
 <p>The signer keeps the private key (or the compact 32-byte seed) secret; the public key is distributed to every verifier. Importing the seed regenerates the full key pair; importing a public key onto an instance discards any private key it held, leaving a verify-only instance.</p>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -159,7 +159,7 @@ verifier.ImportPublicKey(publicKey);
 bool ok = verifier.VerifyData(message, signature);
 </code></pre>
 <p><code>ImportPrivateKey</code> cross-checks the embedded public-key hash and throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> on a key whose secret vectors do not match.</p>
-<p>An instance keeps what FIPS 204 derives from its key on every operation — the matrix Â, the public-key hash tr, and the key's vectors in the form the arithmetic uses — from the moment the key is generated or imported, so reuse one instance for many signatures or verifications rather than importing the key for each. Beside the encoded keys these take about 32, 53 and 87 KiB for ML-DSA-44, 65 and 87, or 20, 36 and 64 KiB for a public key alone; the secret vectors are zeroed with the private key when the instance is disposed.</p>
+<p>An instance keeps what FIPS 204 derives from its key on every operation - the matrix Â, the public-key hash tr, and the key's vectors in the form the arithmetic uses - from the moment the key is generated or imported, so reuse one instance for many signatures or verifications rather than importing the key for each. Beside the encoded keys these take about 32, 53 and 87 KiB for ML-DSA-44, 65 and 87, or 20, 36 and 64 KiB for a public key alone; the secret vectors are zeroed with the private key when the instance is disposed.</p>
 <h2 id="context-strings">Context strings</h2>
 <p>ML-DSA signing accepts an optional <strong>context</strong> string of up to 255 bytes that domain-separates signatures across applications: a signature created with a context verifies <strong>only</strong> when the same context is supplied at verification. Use it to stop a signature minted for one purpose from being replayed in another.</p>
 <!-- compile -->
@@ -180,7 +180,7 @@ bool wrong = signer.VerifyData(message, signature);               // false (empt
 </code></pre>
 <p>A context longer than 255 bytes throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> at both sign and verify time.</p>
 <h2 id="deterministic-versus-hedged-signing">Deterministic versus hedged signing</h2>
-<p>By default ML-DSA signing is <strong>hedged</strong>: each signature mixes 32 fresh random bytes into the nonce derivation. This is the FIPS 204 default and protects against fault-injection and randomness-disclosure attacks. The same message signed twice under the same key therefore yields <strong>different</strong> signatures — both valid.</p>
+<p>By default ML-DSA signing is <strong>hedged</strong>: each signature mixes 32 fresh random bytes into the nonce derivation. This is the FIPS 204 default and protects against fault-injection and randomness-disclosure attacks. The same message signed twice under the same key therefore yields <strong>different</strong> signatures - both valid.</p>
 <p>Set <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_DeterministicSigning">DeterministicSigning</a> to <code>true</code> to substitute the all-zero string, making signatures reproducible for a fixed key, message, and context. Both variants are standard and verify identically.</p>
 <pre><code class="lang-csharp">using var signer = MLDsa65.Create();
 signer.GenerateKey();
@@ -192,13 +192,13 @@ byte[] b = signer.SignData(message);
 </code></pre>
 <p>Prefer the default hedged mode unless you have a specific reason to need reproducible signatures (for example, deterministic test vectors).</p>
 <h2 id="verification-never-throws-on-a-bad-signature">Verification never throws on a bad signature</h2>
-<p><code>VerifyData</code> returns <code>false</code> for every invalid input — a wrong-length, malformed, or non-canonical signature, a tampered message, or a mismatched context. It throws only when the instance holds no public key (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a>), or when the context exceeds 255 bytes. Treat the boolean result as the sole signal and reject on <code>false</code> without branching on the reason.</p>
+<p><code>VerifyData</code> returns <code>false</code> for every invalid input - a wrong-length, malformed, or non-canonical signature, a tampered message, or a mismatched context. It throws only when the instance holds no public key (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a>), or when the context exceeds 255 bytes. Treat the boolean result as the sole signal and reject on <code>false</code> without branching on the reason.</p>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="asymmetric-overview.html">Asymmetric algorithms overview</a> — where ML-DSA sits in the family.</li>
-<li><a href="signatures-ed25519.html">Signatures with Ed25519</a> — the compact classic signature counterpart.</li>
-<li><a href="ml-kem.html">ML-KEM post-quantum key encapsulation</a> — the post-quantum key-agreement companion.</li>
-<li><a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa.html">MLDsa</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa87.html">MLDsa87</a> — API reference.</li>
+<li><a href="asymmetric-overview.html">Asymmetric algorithms overview</a> - where ML-DSA sits in the family.</li>
+<li><a href="signatures-ed25519.html">Signatures with Ed25519</a> - the compact classic signature counterpart.</li>
+<li><a href="ml-kem.html">ML-KEM post-quantum key encapsulation</a> - the post-quantum key-agreement companion.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa.html">MLDsa</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa87.html">MLDsa87</a> - API reference.</li>
 </ul>
 
 </article>
@@ -218,7 +218,7 @@ byte[] b = signer.SignData(message);
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

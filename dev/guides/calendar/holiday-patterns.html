@@ -116,7 +116,7 @@ Console.WriteLine(onDay[0].DisplayName);   // Christmas Day
 <hr>
 <h2 id="weekend-substitution-via-a-reusable-adjustment-policy">Weekend substitution via a reusable adjustment policy</h2>
 <p>A substitution is authored once as an <code>&lt;AdjustmentPolicy&gt;</code> and referenced from any rule by <code>policyRef</code>. The policy pairs a <code>&lt;Trigger&gt;</code> (when it fires) with an <code>&lt;Action&gt;</code> (what it does) and an <code>&lt;Emission&gt;</code> (what is emitted).</p>
-<h3 id="au--nz--saturday-or-sunday-moves-to-monday">AU / NZ — Saturday or Sunday moves to Monday</h3>
+<h3 id="au--nz---saturday-or-sunday-moves-to-monday">AU / NZ - Saturday or Sunday moves to Monday</h3>
 <p>A single <code>IfWeekend</code> trigger covers both weekend days; <code>MoveToNextWorkingDay</code> advances to the following Monday, and <code>ObservedOnly</code> means the single occurrence moves.</p>
 <pre><code class="lang-xml">&lt;AdjustmentPolicies&gt;
   &lt;AdjustmentPolicy id=&quot;weekend-roll&quot; priority=&quot;100&quot;
@@ -143,7 +143,7 @@ Console.WriteLine(onDay[0].DisplayName);   // Christmas Day
 NotableDate auDay = service.Resolve(2025, &quot;AU&quot;).Single(d =&gt; d.NotableDateId == &quot;australia-day&quot;);
 Console.WriteLine($&quot;{auDay.Date} observed={auDay.IsObserved} (actual {auDay.ActualDate})&quot;);
 </code></pre>
-<h3 id="uk--saturday-and-sunday-each-get-their-own-substitute">UK — Saturday and Sunday each get their own substitute</h3>
+<h3 id="uk---saturday-and-sunday-each-get-their-own-substitute">UK - Saturday and Sunday each get their own substitute</h3>
 <p>UK bank-holiday law gives Saturday and Sunday different outcomes. A general weekend roll already lands both on the next working day, but where the law keeps the nominal day <em>and</em> grants an additional substitute, use <code>ActualAndObserved</code> so both occurrences are emitted.</p>
 <pre><code class="lang-xml">&lt;AdjustmentPolicy id=&quot;uk-substitute&quot; priority=&quot;100&quot;
                   description=&quot;Grant an additional substitute public holiday when the day falls on a weekend.&quot;&gt;
@@ -165,7 +165,7 @@ Console.WriteLine($&quot;{auDay.Date} observed={auDay.IsObserved} (actual {auDay
 <pre><code class="lang-csharp">IReadOnlyList&lt;NotableDate&gt; gbXmas = service.Resolve(2027, &quot;GB&quot;)
     .Where(d =&gt; d.NotableDateId == &quot;christmas-day&quot;).ToList();   // 25 Dec 2027 is a Saturday → nominal + substitute Monday
 </code></pre>
-<h3 id="us--saturday-moves-to-friday-sunday-moves-to-monday">US — Saturday moves to Friday, Sunday moves to Monday</h3>
+<h3 id="us---saturday-moves-to-friday-sunday-moves-to-monday">US - Saturday moves to Friday, Sunday moves to Monday</h3>
 <p>The federal US convention shifts Saturday holidays to the preceding Friday and Sunday holidays to the following Monday. That is two directions, so author two policies and reference both; first-match by priority selects the one whose trigger fires.</p>
 <pre><code class="lang-xml">&lt;AdjustmentPolicies&gt;
   &lt;AdjustmentPolicy id=&quot;us-saturday-to-friday&quot; priority=&quot;1&quot;
@@ -218,7 +218,7 @@ Console.WriteLine($&quot;{july4.Date} (actual {july4.ActualDate})&quot;);
 <pre><code class="lang-csharp">NotableDate thanksgiving = service.Resolve(2026, &quot;US&quot;).Single(d =&gt; d.NotableDateId == &quot;thanksgiving&quot;);
 Console.WriteLine(thanksgiving.Date);   // 26 November 2026
 </code></pre>
-<p><code>weekOrdinal=&quot;Last&quot;</code> resolves to the final occurrence regardless of whether it is the fourth or fifth — the shape used for the UK Summer Bank Holiday (last Monday in August) and the WA King's Birthday (last Monday in September).</p>
+<p><code>weekOrdinal=&quot;Last&quot;</code> resolves to the final occurrence regardless of whether it is the fourth or fifth - the shape used for the UK Summer Bank Holiday (last Monday in August) and the WA King's Birthday (last Monday in September).</p>
 <hr>
 <h2 id="the-easter-cluster">The Easter cluster</h2>
 <p>Easter Sunday is computed by the <code>&lt;Algorithm key=&quot;western-easter&quot;&gt;</code> strategy (or <code>orthodox-easter</code> for the Julian computus). Good Friday and Easter Monday hang off it with <code>&lt;OffsetFromRule&gt;</code>, so they track the anchor rather than re-deriving it.</p>
@@ -264,13 +264,13 @@ Console.WriteLine(thanksgiving.Date);   // 26 November 2026
 <pre><code class="lang-csharp">NotableDate vesak = service.Resolve(2026, &quot;MY&quot;).Single(d =&gt; d.NotableDateId == &quot;vesak&quot;);
 Console.WriteLine($&quot;{vesak.Date}  {vesak.DisplayName}&quot;);
 </code></pre>
-<p>Diwali (<code>diwali</code>), Holi (<code>holi</code>), Qingming (<code>qingming</code>), Losar (<code>losar</code>), and the other Hindu and Buddhist festival keys follow the same shape. A fixed date in a non-Gregorian calendar (Chinese New Year, Nowruz, Passover) is authored differently — see <a href="non-gregorian-calendars.html">Working with non-Gregorian calendars</a>.</p>
+<p>Diwali (<code>diwali</code>), Holi (<code>holi</code>), Qingming (<code>qingming</code>), Losar (<code>losar</code>), and the other Hindu and Buddhist festival keys follow the same shape. A fixed date in a non-Gregorian calendar (Chinese New Year, Nowruz, Passover) is authored differently - see <a href="non-gregorian-calendars.html">Working with non-Gregorian calendars</a>.</p>
 <hr>
 <h2 id="a-multi-day-event">A multi-day event</h2>
 <p>Set <code>durationDays</code> (on the rule, or <code>defaultDurationDays</code> on the concept) to the number of calendar days the event spans, inclusive of the start date. <code>NotableDate.EndDate</code> is then <code>Date + DurationDays − 1</code>.</p>
 <div class="TIP">
 <h5>Tip</h5>
-<p>When the span's length varies year to year — a year-end shutdown that runs to the first working day back, say — compute its end from a second strategy with a <code>&lt;Duration&gt;&lt;UntilDate&gt;</code> instead of a fixed <code>durationDays</code>. For repeating events (every fortnight, every Monday, the last Friday of each month), author a <code>&lt;Recurrence&gt;</code> source. Both are covered in <a href="strategy-reference.html">Notable-date rule strategies</a>.</p>
+<p>When the span's length varies year to year - a year-end shutdown that runs to the first working day back, say - compute its end from a second strategy with a <code>&lt;Duration&gt;&lt;UntilDate&gt;</code> instead of a fixed <code>durationDays</code>. For repeating events (every fortnight, every Monday, the last Friday of each month), author a <code>&lt;Recurrence&gt;</code> source. Both are covered in <a href="strategy-reference.html">Notable-date rule strategies</a>.</p>
 </div>
 <pre><code class="lang-xml">&lt;NotableDate id=&quot;national-reconciliation-week&quot; displayName=&quot;National Reconciliation Week&quot;
              category=&quot;Observance&quot; defaultNonWorkingDay=&quot;false&quot; defaultDurationDays=&quot;7&quot;&gt;
@@ -285,7 +285,7 @@ Console.WriteLine($&quot;{vesak.Date}  {vesak.DisplayName}&quot;);
 <pre><code class="lang-csharp">// A single-day query for any day inside the span returns the occurrence.
 NotableDate week = service.Resolve(new DateOnly(2026, 5, 30), &quot;AU&quot;)
     .Single(d =&gt; d.NotableDateId == &quot;national-reconciliation-week&quot;);
-Console.WriteLine($&quot;{week.Date} – {week.EndDate} ({week.DurationDays} days)&quot;);
+Console.WriteLine($&quot;{week.Date} - {week.EndDate} ({week.DurationDays} days)&quot;);
 </code></pre>
 <p>A multi-day occurrence is included in a range query when its span intersects the window; which occurrence controls inclusion is governed by the resource's <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a>.</p>
 <hr>
@@ -316,7 +316,7 @@ Console.WriteLine($&quot;{vicLabour.Date}  {vicLabour.DisplayName} (Victoria)&qu
 </code></pre>
 <p>A rule scoped to a country (<code>&lt;Territory code=&quot;AU&quot; /&gt;</code>) also resolves for every subdivision query, so national and regional rules compose: a national rule plus a subdivision-specific shadow rule both surface for the subdivision under the resource's collision policy. See <a href="territories.html">Territories and regional composition</a>.</p>
 <h3 id="year-bounded-subdivision-variant">Year-bounded subdivision variant</h3>
-<p>Combine <code>&lt;Territory&gt;</code> with <code>fromYear</code> / <code>toYear</code> (or <code>&lt;OnlyYear&gt;</code> / <code>&lt;ExceptYear&gt;</code>) on <code>&lt;Applicability&gt;</code> to gate a rule to specific years — for example a trial public holiday active only in 2026–2027:</p>
+<p>Combine <code>&lt;Territory&gt;</code> with <code>fromYear</code> / <code>toYear</code> (or <code>&lt;OnlyYear&gt;</code> / <code>&lt;ExceptYear&gt;</code>) on <code>&lt;Applicability&gt;</code> to gate a rule to specific years - for example a trial public holiday active only in 2026-2027:</p>
 <pre><code class="lang-xml">&lt;Rule id=&quot;nsw&quot;&gt;
   &lt;Applicability calendar=&quot;Gregorian&quot; fromYear=&quot;2026&quot; toYear=&quot;2027&quot;&gt;&lt;Territory code=&quot;AU-NSW&quot; /&gt;&lt;/Applicability&gt;
   &lt;Strategy&gt;&lt;Fixed month=&quot;April&quot; day=&quot;25&quot; /&gt;&lt;/Strategy&gt;
@@ -324,11 +324,11 @@ Console.WriteLine($&quot;{vicLabour.Date}  {vicLabour.DisplayName} (Victoria)&qu
 &lt;/Rule&gt;
 </code></pre>
 <pre><code class="lang-csharp">IReadOnlyList&lt;NotableDate&gt; nsw2026 = service.Resolve(2026, &quot;AU-NSW&quot;);   // includes the trial rule
-IReadOnlyList&lt;NotableDate&gt; nsw2030 = service.Resolve(2030, &quot;AU-NSW&quot;);   // outside the window — excluded
+IReadOnlyList&lt;NotableDate&gt; nsw2030 = service.Resolve(2030, &quot;AU-NSW&quot;);   // outside the window - excluded
 </code></pre>
 <hr>
 <h2 id="a-periodic-every-n-years-event">A periodic (every-n-years) event</h2>
-<p>For an event that recurs every <em>n</em>th year — a quadrennial census day, a leap-year-aligned civic observance — pair <code>everyYears</code> with <code>anchorYear</code> on <code>&lt;Applicability&gt;</code>. The rule is active only in years congruent to <code>anchorYear</code> modulo <code>everyYears</code>.</p>
+<p>For an event that recurs every <em>n</em>th year - a quadrennial census day, a leap-year-aligned civic observance - pair <code>everyYears</code> with <code>anchorYear</code> on <code>&lt;Applicability&gt;</code>. The rule is active only in years congruent to <code>anchorYear</code> modulo <code>everyYears</code>.</p>
 <pre><code class="lang-xml">&lt;NotableDate id=&quot;census-day&quot; displayName=&quot;Census Day&quot; category=&quot;Civic&quot; defaultNonWorkingDay=&quot;false&quot;&gt;
   &lt;Rules&gt;
     &lt;Rule id=&quot;au&quot;&gt;
@@ -341,10 +341,10 @@ IReadOnlyList&lt;NotableDate&gt; nsw2030 = service.Resolve(2030, &quot;AU-NSW&qu
 <pre><code class="lang-csharp">IReadOnlyList&lt;NotableDate&gt; in2026 = service.Resolve(2026, &quot;AU&quot;);   // 2026 ≡ 2021 (mod 5) → Census Day present
 IReadOnlyList&lt;NotableDate&gt; in2027 = service.Resolve(2027, &quot;AU&quot;);   // off-cycle → absent
 </code></pre>
-<p><code>everyYears</code> combines with <code>fromYear</code> / <code>toYear</code> and <code>&lt;OnlyYear&gt;</code> / <code>&lt;ExceptYear&gt;</code> — every applicability constraint must hold for the rule to fire in a given year.</p>
+<p><code>everyYears</code> combines with <code>fromYear</code> / <code>toYear</code> and <code>&lt;OnlyYear&gt;</code> / <code>&lt;ExceptYear&gt;</code> - every applicability constraint must hold for the rule to fire in a given year.</p>
 <hr>
 <h2 id="an-offset-from-an-algorithmic-anchor">An offset from an algorithmic anchor</h2>
-<p>Movable feasts that hang off Easter at a longer offset use the same <code>&lt;OffsetFromRule&gt;</code> shape as Good Friday — the anchor is computed once by its <code>&lt;Algorithm&gt;</code> rule and every dependant tracks it. Corpus Christi is Easter Sunday + 60 days:</p>
+<p>Movable feasts that hang off Easter at a longer offset use the same <code>&lt;OffsetFromRule&gt;</code> shape as Good Friday - the anchor is computed once by its <code>&lt;Algorithm&gt;</code> rule and every dependant tracks it. Corpus Christi is Easter Sunday + 60 days:</p>
 <pre><code class="lang-xml">&lt;NotableDate id=&quot;corpus-christi&quot; displayName=&quot;Corpus Christi&quot; category=&quot;Religious&quot; defaultNonWorkingDay=&quot;true&quot;&gt;
   &lt;Rules&gt;
     &lt;Rule id=&quot;default&quot;&gt;
@@ -360,12 +360,12 @@ Console.WriteLine($&quot;{corpus.Date}  {corpus.DisplayName}&quot;);   // tracks
 <hr>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="rule-reference.html">NotableDateRule and adjustment-policy reference</a> — the element-by-element field reference for every fragment above.</li>
-<li><a href="adjustment-rules.html">Observance adjustment rules</a> — the full trigger / action / emission catalogues for <code>&lt;AdjustmentPolicy&gt;</code>.</li>
-<li><a href="rule-authoring.html">Authoring notable date rules</a> — assembling whole documents, importing the common catalogues, and overrides.</li>
-<li><a href="algorithms.html">Date calculation algorithms</a> — the strategy kinds and the built-in <code>&lt;Algorithm&gt;</code> keys.</li>
-<li><a href="non-gregorian-calendars.html">Working with non-Gregorian calendars</a> — fixed dates in Hijri / Hebrew / Persian / Chinese lunisolar calendars.</li>
-<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+<li><a href="rule-reference.html">NotableDateRule and adjustment-policy reference</a> - the element-by-element field reference for every fragment above.</li>
+<li><a href="adjustment-rules.html">Observance adjustment rules</a> - the full trigger / action / emission catalogues for <code>&lt;AdjustmentPolicy&gt;</code>.</li>
+<li><a href="rule-authoring.html">Authoring notable date rules</a> - assembling whole documents, importing the common catalogues, and overrides.</li>
+<li><a href="algorithms.html">Date calculation algorithms</a> - the strategy kinds and the built-in <code>&lt;Algorithm&gt;</code> keys.</li>
+<li><a href="non-gregorian-calendars.html">Working with non-Gregorian calendars</a> - fixed dates in Hijri / Hebrew / Persian / Chinese lunisolar calendars.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
 </ul>
 
 </article>
@@ -385,7 +385,7 @@ Console.WriteLine($&quot;{corpus.Date}  {corpus.DisplayName}&quot;);   // tracks
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

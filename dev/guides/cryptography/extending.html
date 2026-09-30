@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="extending-the-library">Extending the library</h1>
 
-<p><code>Bodu.Security.Cryptography</code> is built from a small number of public abstract bases and interfaces, and the shipped algorithms use only those seams. This page shows how to add your own hash, your own block cipher, and your own transform on the same footing as the built-ins — and how to prove them with the contract-test bases the library's own tests derive from. It promotes the material in the <a href="../../samples/cryptography.html">runnable samples</a> (<code>Bodu.Security.Cryptography.Samples.CustomHash</code> and its <code>.Test</code> companion) into a walk-through.</p>
+<p><code>Bodu.Security.Cryptography</code> is built from a small number of public abstract bases and interfaces, and the shipped algorithms use only those seams. This page shows how to add your own hash, your own block cipher, and your own transform on the same footing as the built-ins - and how to prove them with the contract-test bases the library's own tests derive from. It promotes the material in the <a href="../../samples/cryptography.html">runnable samples</a> (<code>Bodu.Security.Cryptography.Samples.CustomHash</code> and its <code>.Test</code> companion) into a walk-through.</p>
 <div class="WARNING">
 <h5>Warning</h5>
 <p>The hash and cipher on this page are <strong>teaching devices</strong> with no security properties; they exist to show the plumbing. Do not ship them. Like the rest of the library, nothing here is independently audited.</p>
@@ -104,7 +104,7 @@
 <tbody>
 <tr>
 <td>Hash</td>
-<td><a class="xref" href="../../api/Bodu.Security.Cryptography.BlockHashAlgorithm.html">BlockHashAlgorithm</a> (Merkle–Damgård style, padded final block); <a class="xref" href="../../api/Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html">DeferredFinalBlockHashAlgorithm</a> (BLAKE-style, last block held back); <a class="xref" href="../../api/Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html">KeyedBlockHashAlgorithm</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a> (adds <code>Key</code>); or <a class="xref" href="../../api/Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html">BufferedBlockHashAlgorithm</a> for a sponge or other non-block shape</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.BlockHashAlgorithm.html">BlockHashAlgorithm</a> (Merkle-Damgård style, padded final block); <a class="xref" href="../../api/Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html">DeferredFinalBlockHashAlgorithm</a> (BLAKE-style, last block held back); <a class="xref" href="../../api/Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html">KeyedBlockHashAlgorithm</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a> (adds <code>Key</code>); or <a class="xref" href="../../api/Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html">BufferedBlockHashAlgorithm</a> for a sponge or other non-block shape</td>
 <td>every <code>HashAlgorithm</code> consumer: <code>ComputeHash</code>, <code>CryptoStream</code>, <code>AppendData</code> / <code>VerifyHash</code>, <code>MerkleTree</code>, <code>HashAlgorithmHelper</code></td>
 </tr>
 <tr>
@@ -130,17 +130,17 @@
 <tr>
 <td>Algorithm factory</td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.IHashAlgorithmFactory-1.html">IHashAlgorithmFactory&lt;T&gt;</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.DelegateHashAlgorithmFactory-1.html">DelegateHashAlgorithmFactory&lt;T&gt;</a></td>
-<td><code>HashAlgorithmHelper</code>; and <code>MerkleTree</code>, whose constructor takes a <code>Func&lt;HashAlgorithm&gt;</code> — pass <code>factory.Create</code></td>
+<td><code>HashAlgorithmHelper</code>; and <code>MerkleTree</code>, whose constructor takes a <code>Func&lt;HashAlgorithm&gt;</code> - pass <code>factory.Create</code></td>
 </tr>
 </tbody>
 </table>
-<h2 id="pattern-1--a-custom-blockhashalgorithm">Pattern 1 — a custom <code>BlockHashAlgorithm</code></h2>
+<h2 id="pattern-1---a-custom-blockhashalgorithm">Pattern 1 - a custom <code>BlockHashAlgorithm</code></h2>
 <p><code>BlockHashAlgorithm</code> owns the residual buffer and the byte counter; you supply the block size (in <strong>bits</strong>) and the digest size through <code>HashSizeValue</code>, plus three hooks: <code>ProcessBlock</code> for each full block, <code>PadBlock</code> to turn the residual into one or two final blocks, and <code>ProcessFinalBlock</code> to emit the digest. <code>Initialize()</code> must reset your chaining state after calling <code>base.Initialize()</code>, and the constructor should call it once.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.Buffers.Binary;
 using Bodu.Security.Cryptography;
 
-// A tiny 64-bit, 8-byte-block digest — illustrative only, NOT a secure hash.
+// A tiny 64-bit, 8-byte-block digest - illustrative only, NOT a secure hash.
 public sealed class Mix64Digest : BlockHashAlgorithm
 {
     private const ulong Prime = 0x9E3779B97F4A7C15UL;
@@ -206,12 +206,12 @@ bool same = streaming.Hash!.AsSpan().SequenceEqual(oneShot);   // true
 bool ok = digest.VerifyHash(message, oneShot);                   // true
 </code></pre>
 <p>For a keyed hash derive from <code>KeyedBlockHashAlgorithm</code> instead: it adds the <code>Key</code> property (defensive copy, length-checked against the <code>keySize</code> you pass to its constructor, zeroed on <code>Dispose</code>) and an <code>OnKeyChanged</code> hook to rebuild key-dependent state. Reconfiguring any of these after hashing has started throws <code>CryptographicUnexpectedOperationException</code>, which <code>ThrowIfInvalidState()</code> provides for your own settable properties.</p>
-<h2 id="pattern-2--a-custom-iblockcipher">Pattern 2 — a custom <code>IBlockCipher</code></h2>
+<h2 id="pattern-2---a-custom-iblockcipher">Pattern 2 - a custom <code>IBlockCipher</code></h2>
 <p><code>IBlockCipher</code> is four members: <code>BlockSize</code> in bits, single-block <code>Encrypt</code> / <code>Decrypt</code>, and <code>Dispose</code>. The <code>EncryptBlocks</code> / <code>DecryptBlocks</code> loops are default interface members. Validate lengths yourself and zero any key-derived state on dispose.</p>
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
-// A toy 64-bit block &quot;cipher&quot; (XOR with a key-derived mask) — illustrative only, NOT secure.
+// A toy 64-bit block &quot;cipher&quot; (XOR with a key-derived mask) - illustrative only, NOT secure.
 public sealed class XorBlockCipher : IBlockCipher
 {
     private readonly byte[] _mask;
@@ -257,7 +257,7 @@ byte[] padded = pkcs7.Pad(plaintext, cipher.BlockSize);       // 64 bits → 40 
 byte[] ciphertext = new byte[padded.Length];
 cbc.Transform(padded, ciphertext, encrypt: true);
 </code></pre>
-<h2 id="pattern-3--exposing-it-as-an-icryptotransform">Pattern 3 — exposing it as an <code>ICryptoTransform</code></h2>
+<h2 id="pattern-3---exposing-it-as-an-icryptotransform">Pattern 3 - exposing it as an <code>ICryptoTransform</code></h2>
 <p><a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a> is the <code>ICryptoTransform</code> the wrappers return: it owns the engine, a mode transform from <code>BlockCipherModeFactory</code>, and a padding strategy, and it implements the <code>TransformBlock</code> / <code>TransformFinalBlock</code> protocol (including the held-back final block on decrypt). Its constructors are <code>protected internal</code>, so a two-line subclass is the way to put a custom engine behind <code>CryptoStream</code>:</p>
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -279,15 +279,15 @@ byte[] plaintext = &quot;custom IBlockCipher + CBC + PKCS7&quot;u8.ToArray();
 
 byte[] ciphertext;
 using (ICryptoTransform t = new XorCbcTransform(key, iv, encrypt: true))
-    ciphertext = t.Transform(plaintext);                    // 7363636…5E3F — identical to the hand-composed bytes
+    ciphertext = t.Transform(plaintext);                    // 7363636…5E3F - identical to the hand-composed bytes
 
 byte[] recovered;
 using (ICryptoTransform t = new XorCbcTransform(key, iv, encrypt: false))
     recovered = t.Transform(ciphertext);
 </code></pre>
-<p>The transform disposes the engine, so construct a fresh engine per transform as the sample does. The base accepts either <code>PaddingMode</code> or <a class="xref" href="../../api/Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a> (for ISO 7816-4), and only the five factory modes — pass <code>CTS</code> or <code>XTS</code> and the base constructor throws <code>NotSupportedException</code>.</p>
-<h2 id="pattern-4--factories-and-hashalgorithmhelper">Pattern 4 — factories and <code>HashAlgorithmHelper</code></h2>
-<p>Consumers that need a <em>fresh</em> algorithm per operation — Merkle trees, parallel pipelines — take an <a class="xref" href="../../api/Bodu.Security.Cryptography.IHashAlgorithmFactory-1.html">IHashAlgorithmFactory&lt;T&gt;</a> rather than an instance. The interface is one covariant <code>Create()</code>; <a class="xref" href="../../api/Bodu.Security.Cryptography.DelegateHashAlgorithmFactory-1.html">DelegateHashAlgorithmFactory&lt;T&gt;</a> wraps a <code>Func&lt;T&gt;</code>, and <code>HashAlgorithmFactory.From(Func&lt;T&gt;)</code> on <a class="xref" href="../../api/Bodu.Security.Cryptography.HashAlgorithmFactory.html">HashAlgorithmFactory</a> is the inference-friendly way to build one. <a class="xref" href="../../api/Bodu.Security.Cryptography.HashAlgorithmHelper.html">HashAlgorithmHelper</a> then hashes through a factory, creating and disposing per call.</p>
+<p>The transform disposes the engine, so construct a fresh engine per transform as the sample does. The base accepts either <code>PaddingMode</code> or <a class="xref" href="../../api/Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a> (for ISO 7816-4), and only the five factory modes - pass <code>CTS</code> or <code>XTS</code> and the base constructor throws <code>NotSupportedException</code>.</p>
+<h2 id="pattern-4---factories-and-hashalgorithmhelper">Pattern 4 - factories and <code>HashAlgorithmHelper</code></h2>
+<p>Consumers that need a <em>fresh</em> algorithm per operation - Merkle trees, parallel pipelines - take an <a class="xref" href="../../api/Bodu.Security.Cryptography.IHashAlgorithmFactory-1.html">IHashAlgorithmFactory&lt;T&gt;</a> rather than an instance. The interface is one covariant <code>Create()</code>; <a class="xref" href="../../api/Bodu.Security.Cryptography.DelegateHashAlgorithmFactory-1.html">DelegateHashAlgorithmFactory&lt;T&gt;</a> wraps a <code>Func&lt;T&gt;</code>, and <code>HashAlgorithmFactory.From(Func&lt;T&gt;)</code> on <a class="xref" href="../../api/Bodu.Security.Cryptography.HashAlgorithmFactory.html">HashAlgorithmFactory</a> is the inference-friendly way to build one. <a class="xref" href="../../api/Bodu.Security.Cryptography.HashAlgorithmHelper.html">HashAlgorithmHelper</a> then hashes through a factory, creating and disposing per call.</p>
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
@@ -307,8 +307,8 @@ byte[] root = merkle.ComputeRootOfBlocks(new byte[5000], blockSize: 1024);
 IHashAlgorithmFactory&lt;HashAlgorithm&gt; general = factory;             // covariant: IHashAlgorithmFactory&lt;out T&gt;
 </code></pre>
 <p>A factory must return a new instance every time: <code>MerkleTree</code> creates one per computation, and a parallel instance creates one per worker, never sharing an algorithm between them. <code>MerkleTree</code> itself is immutable and holds no algorithm, so it is not <code>IDisposable</code> and needs no <code>using</code>.</p>
-<h2 id="pattern-5--proving-it-with-the-contract-test-bases">Pattern 5 — proving it with the contract-test bases</h2>
-<p>The library's own tests are written against abstract, generic contract bases in the <code>Bodu.Security.Cryptography.Test</code> project (namespace <code>Bodu.Security.Cryptography</code>, infrastructure in <code>Bodu.Security.Cryptography.Infrastructure</code>). They are not a NuGet package: reference the test project from your own MSTest project, as <code>Bodu.Security.Cryptography.Samples.CustomHash.Test</code> does with a <code>ProjectReference</code> to <code>Bodu.Security.Cryptography.Test.csproj</code> and <code>Bodu.Test.csproj</code>. Deriving one of them runs the same scenarios the shipped algorithms pass — constructors, <code>HashSize</code>, <code>Initialize</code>, <code>TransformBlock</code> / <code>TransformFinalBlock</code>, <code>TryComputeHash</code>, <code>ComputeHashAsync</code>, <code>CryptoStream</code>, <code>Dispose</code>, residual-buffer accumulation across chunk boundaries, block-aligned versus unaligned parity, and the padded final block.</p>
+<h2 id="pattern-5---proving-it-with-the-contract-test-bases">Pattern 5 - proving it with the contract-test bases</h2>
+<p>The library's own tests are written against abstract, generic contract bases in the <code>Bodu.Security.Cryptography.Test</code> project (namespace <code>Bodu.Security.Cryptography</code>, infrastructure in <code>Bodu.Security.Cryptography.Infrastructure</code>). They are not a NuGet package: reference the test project from your own MSTest project, as <code>Bodu.Security.Cryptography.Samples.CustomHash.Test</code> does with a <code>ProjectReference</code> to <code>Bodu.Security.Cryptography.Test.csproj</code> and <code>Bodu.Test.csproj</code>. Deriving one of them runs the same scenarios the shipped algorithms pass - constructors, <code>HashSize</code>, <code>Initialize</code>, <code>TransformBlock</code> / <code>TransformFinalBlock</code>, <code>TryComputeHash</code>, <code>ComputeHashAsync</code>, <code>CryptoStream</code>, <code>Dispose</code>, residual-buffer accumulation across chunk boundaries, block-aligned versus unaligned parity, and the padded final block.</p>
 <table>
 <thead>
 <tr>
@@ -355,7 +355,7 @@ IHashAlgorithmFactory&lt;HashAlgorithm&gt; general = factory;             // cov
 </tr>
 </tbody>
 </table>
-<p>A hash test supplies a <code>HashAlgorithmSpecification</code> (sizes, <code>ICryptoTransform</code> flags, boundary lengths, and <code>KnownAnswers</code> built with the <code>MessageDigestKnownAnswer</code> factories — note that <code>Abc</code> hashes the ASCII string <code>&quot;ABC&quot;</code>, and <code>Sequential0To255</code> is the 255 bytes <code>0x00…0xFE</code>), two <code>CreateAlgorithm</code> overloads, and the incremental series: entry <em>k</em> is the digest of the bytes <code>0, 1, …, k−1</code>, with <code>HashBlockSize + 2</code> entries required (ten for an 8-byte block). The values below were produced by running the digest from Pattern 1 once and pinning the output — the same way the shipped algorithms pin theirs against published vectors.</p>
+<p>A hash test supplies a <code>HashAlgorithmSpecification</code> (sizes, <code>ICryptoTransform</code> flags, boundary lengths, and <code>KnownAnswers</code> built with the <code>MessageDigestKnownAnswer</code> factories - note that <code>Abc</code> hashes the ASCII string <code>&quot;ABC&quot;</code>, and <code>Sequential0To255</code> is the 255 bytes <code>0x00…0xFE</code>), two <code>CreateAlgorithm</code> overloads, and the incremental series: entry <em>k</em> is the digest of the bytes <code>0, 1, …, k−1</code>, with <code>HashBlockSize + 2</code> entries required (ten for an 8-byte block). The values below were produced by running the digest from Pattern 1 once and pinning the output - the same way the shipped algorithms pin theirs against published vectors.</p>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Infrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -369,7 +369,7 @@ public sealed class Mix64DigestTests
     private static readonly HashAlgorithmSpecification Specification = new()
     {
         HashSize = 64,                         // bits
-        HashBlockSize = 8,                     // bytes — drives the incremental-coverage window
+        HashBlockSize = 8,                     // bytes - drives the incremental-coverage window
         InputBlockSize = 1,
         OutputBlockSize = 1,
         CanReuseTransform = true,
@@ -442,11 +442,11 @@ public sealed class Mix64DigestTests
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="../../samples/cryptography.html">Runnable samples</a> — <code>Bodu.Security.Cryptography.Samples.CustomHash</code> and its contract-test companion, built by CI.</li>
-<li><a href="cipher-composition-reference.html">Modes, transforms, and factories</a> — everything a custom engine plugs into.</li>
-<li><a href="hashing.html">Using hashes and checksums</a> — the three structural hash shapes the bases model.</li>
-<li><a href="security-posture.html">Security guarantees and limitations</a> — the contracts (zeroization, exceptions, single use) your type should honour.</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><a href="../../samples/cryptography.html">Runnable samples</a> - <code>Bodu.Security.Cryptography.Samples.CustomHash</code> and its contract-test companion, built by CI.</li>
+<li><a href="cipher-composition-reference.html">Modes, transforms, and factories</a> - everything a custom engine plugs into.</li>
+<li><a href="hashing.html">Using hashes and checksums</a> - the three structural hash shapes the bases model.</li>
+<li><a href="security-posture.html">Security guarantees and limitations</a> - the contracts (zeroization, exceptions, single use) your type should honour.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -466,7 +466,7 @@ public sealed class Mix64DigestTests
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

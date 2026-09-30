@@ -88,9 +88,9 @@
 <h1 id="writing-your-own-web-provider">Writing your own web provider</h1>
 
 <p>The eleven built-in providers are thin: each one supplies a feed-specific fetch and parse, and
-inherits everything else — the immutable snapshot, the full synchronous and asynchronous lookup
+inherits everything else - the immutable snapshot, the full synchronous and asynchronous lookup
 matrix, inverse fallback, request coalescing, <code>HttpClient</code> ownership, history advertisement, and
-the dependency-injection registration — from two base classes in <code>Bodu.Financial.ExchangeRates</code>.
+the dependency-injection registration - from two base classes in <code>Bodu.Financial.ExchangeRates</code>.
 A provider for a feed Bodu does not ship is the same amount of code. This page builds one,
 <code>AcmeRateProvider</code>, over a fictional CSV endpoint, registers it with the same <code>Financial:Acme</code>
 shape the built-in providers use, and proves it with the shipped contract tests. Every sample
@@ -114,7 +114,7 @@ runs offline against a <code>StubHttpMessageHandler</code>.</p>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProvider.html">WebRateProvider</a></td>
-<td>returns <strong>many pairs per download</strong> — a whole file, an era, a month (ECB, RBA, BoE, IMF)</td>
+<td>returns <strong>many pairs per download</strong> - a whole file, an era, a month (ECB, RBA, BoE, IMF)</td>
 <td><code>EnsureLoadedAsync</code>, <code>IsLoaded</code>, <code>ProviderId</code>, <code>AllowSynchronousNetworkAccess</code>, <code>DefaultLookback</code></td>
 <td>the accumulator, the snapshot, the lookup matrix, coalescing through <code>LoadCoalescedAsync</code></td>
 </tr>
@@ -124,7 +124,7 @@ runs offline against a <code>StubHttpMessageHandler</code>.</p>
 the same public surface: <code>IDatedRateProvider</code>, <code>IRateProvider</code>,
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IPairRateLoader.html">IPairRateLoader</a>, and
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IHistoricalRateProvider.html">IHistoricalRateProvider</a>.</p>
-<h2 id="pattern-1--the-options-type">Pattern 1 — the options type</h2>
+<h2 id="pattern-1---the-options-type">Pattern 1 - the options type</h2>
 <p>Derive <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a>. The base carries the shared
 surface (<code>BaseAddress</code>, <code>HttpTimeout</code>, <code>UserAgent</code>, <code>AllowSynchronousNetworkAccess</code>,
 <code>DefaultLookback</code>, <code>HistoryAvailability</code>, <code>CurrencyAliases</code>, the <code>*LogLevel</code> knobs) and its
@@ -177,7 +177,7 @@ public sealed class AcmeRateProviderOptions : WebRateProviderOptions
 aggregation layers consult it to skip or clamp doomed fetches, and the pair contract test
 fails when a provider forgets to set it. <code>RateHistoryAvailability.Since(date)</code> describes a
 fixed floor, <code>RollingDays(n)</code> a window that moves with the clock.</p>
-<h2 id="pattern-2--the-series-info-type">Pattern 2 — the series-info type</h2>
+<h2 id="pattern-2---the-series-info-type">Pattern 2 - the series-info type</h2>
 <p><code>GetAvailablePairs()</code> on a pair provider returns one <code>TSeries</code> per fetched pair. Keep it a small
 immutable class exposing at least the <code>CurrencyPair</code>, plus whatever the feed reports (a ticker,
 a series identifier, the quote symbol) that a caller might want to log or display:</p>
@@ -197,7 +197,7 @@ public sealed class AcmeSeriesInfo
     public string Symbol { get; }
 }
 </code></pre>
-<h2 id="pattern-3--the-source-fetch-and-parse">Pattern 3 — the source: fetch and parse</h2>
+<h2 id="pattern-3---the-source-fetch-and-parse">Pattern 3 - the source: fetch and parse</h2>
 <p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IPairRateSource-1.html">IPairRateSource&lt;TSeries&gt;</a> is the seam between the provider and the
 network. It receives a <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.CurrencyPairRequest.html">CurrencyPairRequest</a> (pair plus
 inclusive window) and returns a <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.PairRateData-1.html">PairRateData&lt;TSeries&gt;</a>: the
@@ -205,8 +205,8 @@ resolved pair, the observations <strong>already restricted to the window</strong
 The provider stamps its own <code>ProviderId</code> on every observation, so the source never sees a
 provider name.</p>
 <p>Two contracts matter inside it. A payload the parser cannot read is reported as
-<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRateFormatException.html">ExchangeRateFormatException</a> — the shared
-<code>FormatException</code> subtype every provider raises — so callers, the resilience pipeline (which
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRateFormatException.html">ExchangeRateFormatException</a> - the shared
+<code>FormatException</code> subtype every provider raises - so callers, the resilience pipeline (which
 never retries it), and the pair base's failure logging all recognize it. A transport failure is
 left to <code>HttpClient</code>: <code>EnsureSuccessStatusCode</code> (or <code>GetByteArrayAsync</code>) raises
 <code>HttpRequestException</code>, which the base logs at <code>DownloadFailedLogLevel</code> and rethrows.</p>
@@ -279,15 +279,15 @@ internal sealed class AcmeRateSource : IPairRateSource&lt;AcmeSeriesInfo&gt;
 </code></pre>
 <div class="TIP">
 <h5>Tip</h5>
-<p>Parse with <code>CultureInfo.InvariantCulture</code> throughout — a feed's dates and decimals are wire
-formats, not user-facing text — and reject non-positive rates: the snapshot reciprocates a
+<p>Parse with <code>CultureInfo.InvariantCulture</code> throughout - a feed's dates and decimals are wire
+formats, not user-facing text - and reject non-positive rates: the snapshot reciprocates a
 rate for inverse lookups, and a zero would surface far from the row that caused it.</p>
 </div>
-<h2 id="pattern-4--the-provider">Pattern 4 — the provider</h2>
+<h2 id="pattern-4---the-provider">Pattern 4 - the provider</h2>
 <p>The provider contributes the identity and the constructors. Follow the shipped convention of
 three: options-only (builds and <strong>owns</strong> an <code>HttpClient</code> through
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateProviderHttpClientFactory.html">RateProviderHttpClientFactory</a>), <code>HttpClient</code> + options (the
-caller's client, never disposed — the DI shape and the test shape), and source + options (the
+caller's client, never disposed - the DI shape and the test shape), and source + options (the
 seam a file-backed source plugs into). The <code>PairWebRateProvider&lt;TSeries&gt;</code> constructor takes the
 source, the options, an optional logger, the owned client or <code>null</code>, and an optional
 <code>TimeProvider</code>; it validates the options for you.</p>
@@ -299,7 +299,7 @@ public sealed class AcmeRateProvider : PairWebRateProvider&lt;AcmeSeriesInfo&gt;
 {
     public const string ProviderName = &quot;Acme&quot;;
 
-    // Options only: the provider builds and owns its HttpClient (no retry — see the DI registration).
+    // Options only: the provider builds and owns its HttpClient (no retry - see the DI registration).
     public AcmeRateProvider(AcmeRateProviderOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
         : this(options, CreateOwnedClient(options), logger, timeProvider)
     {
@@ -334,7 +334,7 @@ public sealed class AcmeRateProvider : PairWebRateProvider&lt;AcmeSeriesInfo&gt;
 <p>That is the whole provider. <code>AllowSynchronousNetworkAccess</code>, <code>DefaultLookback</code>, and
 <code>HistoryAvailability</code> are forwarded from the options by the pair base (which seals the first
 two); <code>FormatPairForLog</code> is the one further virtual worth overriding when the feed has a
-better label than <code>FROM/TO</code> — a ticker, say — for its download log lines. Exercised against a
+better label than <code>FROM/TO</code> - a ticker, say - for its download log lines. Exercised against a
 stub, the inherited machinery is visible end to end:</p>
 <pre><code class="lang-csharp">using System.Text;
 using Bodu.Financial.ExchangeRates;
@@ -370,7 +370,7 @@ catch (ExchangeRateFormatException ex)
     Console.WriteLine(ex.Message);   // The Acme feed did not start with the expected 'date,rate' header.
 }
 </code></pre>
-<h2 id="pattern-5--the-bulk-shape-deriving-webrateprovider-directly">Pattern 5 — the bulk shape: deriving <code>WebRateProvider</code> directly</h2>
+<h2 id="pattern-5---the-bulk-shape-deriving-webrateprovider-directly">Pattern 5 - the bulk shape: deriving <code>WebRateProvider</code> directly</h2>
 <p>When one download covers many pairs, derive <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProvider.html">WebRateProvider</a>
 directly. The contract is five abstract members plus a handful of protected helpers:</p>
 <table>
@@ -415,7 +415,7 @@ directly. The contract is five abstract members plus a handful of protected help
 <tr>
 <td><code>ValidateRangeRequest(...)</code></td>
 <td>virtual method</td>
-<td>Reject pairs the feed cannot carry — throw <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesNotFoundException.html">RateSeriesNotFoundException</a> — before any download.</td>
+<td>Reject pairs the feed cannot carry - throw <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesNotFoundException.html">RateSeriesNotFoundException</a> - before any download.</td>
 </tr>
 <tr>
 <td><code>CreateRangeInvertedException</code> / <code>FormatRateNotFound</code></td>
@@ -435,7 +435,7 @@ directly. The contract is five abstract members plus a handful of protected help
 <tr>
 <td><code>AddObservations(rates, fetchedAtUtc)</code> then <code>RebuildSnapshot()</code></td>
 <td>protected methods</td>
-<td>Upsert a batch under <code>ProviderId</code> and swap in the new immutable snapshot — both under <code>SyncRoot</code>.</td>
+<td>Upsert a batch under <code>ProviderId</code> and swap in the new immutable snapshot - both under <code>SyncRoot</code>.</td>
 </tr>
 <tr>
 <td><code>LoadCoalescedAsync(key, load, ct)</code></td>
@@ -554,7 +554,7 @@ public sealed class AcmeFeedRateProvider : WebRateProvider
 </code></pre>
 <p>The sequencing inside <code>LoadFeedCoreAsync</code> is the pattern every bulk provider follows: check
 coverage under <code>SyncRoot</code>, download <strong>outside</strong> the lock, then accumulate and publish under
-the lock. Readers never wait for a download — they read the previous snapshot until
+the lock. Readers never wait for a download - they read the previous snapshot until
 <code>RebuildSnapshot</code> swaps in the new one.</p>
 <pre><code class="lang-csharp">const string AcmeFeedCsv = &quot;date,from,to,rate\n2024-01-15,AUD,USD,0.6660\n2024-01-15,AUD,EUR,0.6082\n2024-01-16,AUD,USD,0.6660\n2024-01-16,AUD,EUR,0.6120\n&quot;;
 
@@ -564,19 +564,19 @@ using var feed = new AcmeFeedRateProvider(new HttpClient(handler), new Uri(&quot
 await feed.LoadFeedAsync();
 
 Console.WriteLine(feed.GetRate(&quot;AUD&quot;, &quot;EUR&quot;, new DateOnly(2024, 1, 16)).Rate.Rate);   // 0.6120
-Console.WriteLine(feed.GetRate(&quot;EUR&quot;, &quot;AUD&quot;, new DateOnly(2024, 1, 16)).Rate.IsInverted); // True — inverse fallback
+Console.WriteLine(feed.GetRate(&quot;EUR&quot;, &quot;AUD&quot;, new DateOnly(2024, 1, 16)).Rate.IsInverted); // True - inverse fallback
 Console.WriteLine(feed.GetLoadedPairs().Count);                                        // 2
 Console.WriteLine(handler.RequestCount);                                               // 1
 </code></pre>
 <p>A real bulk provider would additionally track <em>which</em> windows or units are loaded (a
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.DateRangeCoverage.html">DateRangeCoverage</a> per pair, an era set, a month set),
-override <code>ValidateRangeRequest</code> for a single-base feed, and keep a payload cache — the shipped
+override <code>ValidateRangeRequest</code> for a single-base feed, and keep a payload cache - the shipped
 ECB, RBA, BoE, and IMF sources are the worked references.</p>
-<h2 id="pattern-6--registering-with-addwebrateprovider">Pattern 6 — registering with <code>AddWebRateProvider</code></h2>
+<h2 id="pattern-6---registering-with-addwebrateprovider">Pattern 6 - registering with <code>AddWebRateProvider</code></h2>
 <p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProviderExtensions.html#Bodu_Financial_ExchangeRates_WebRateProviderExtensions_AddWebRateProvider_">AddWebRateProvider</a> in the
 <code>Bodu.Financial.ExchangeRates.DependencyInjection</code> package is the machinery every
-<code>Add&lt;Source&gt;ExchangeRates</code> delegates to. Its short overload — for an options type derived from
-<code>WebRateProviderOptions</code> — binds the section, wires <code>TryValidate</code> into <code>ValidateOnStart</code>,
+<code>Add&lt;Source&gt;ExchangeRates</code> delegates to. Its short overload - for an options type derived from
+<code>WebRateProviderOptions</code> - binds the section, wires <code>TryValidate</code> into <code>ValidateOnStart</code>,
 registers a named <code>HttpClient</code> with the standard resilience handler (user agent and per-attempt
 timeout from the options), and registers the provider singleton as <code>IDatedRateProvider</code> and
 <code>IRateProvider</code>. Your package's extension method supplies only what differs:</p>
@@ -610,7 +610,7 @@ public static class AcmeServiceCollectionExtensions
 <p>The full overload takes the same parameters plus explicit <code>validateOptions</code>, <code>getUserAgent</code>,
 and <code>getHttpTimeout</code> selectors, for an options type that does not derive from
 <code>WebRateProviderOptions</code> (the way BoE's nested-endpoint options are registered). Either way the
-consumer experience matches the built-in providers exactly — section, validation, resilience
+consumer experience matches the built-in providers exactly - section, validation, resilience
 hook, and all:</p>
 <pre><code class="lang-csharp">builder.Services
     .AddFinancialService(builder.Configuration)
@@ -636,8 +636,8 @@ RateLookupResult usd = await rates.GetRateAsync(&quot;AUD&quot;, &quot;USD&quot;
 </code></pre>
 <p>From here the provider is indistinguishable from a shipped one: wrap it with
 <code>AddCachedRateProvider&lt;AcmeRateProvider&gt;(&quot;Acme&quot;, …)</code>, make it an aggregation child, or warm it at
-startup — see <a href="caching-configuration.html">Configuring rate caching from appsettings</a>.</p>
-<h2 id="pattern-7--proving-it-with-the-contract-tests">Pattern 7 — proving it with the contract tests</h2>
+startup - see <a href="caching-configuration.html">Configuring rate caching from appsettings</a>.</p>
+<h2 id="pattern-7---proving-it-with-the-contract-tests">Pattern 7 - proving it with the contract tests</h2>
 <p>Derive <code>PairWebRateProviderContractTests&lt;AcmeRateProvider, AcmeSeriesInfo&gt;</code> from the
 in-repository <code>Bodu.Financial.ExchangeRates.Testing</code> project (a bulk-shaped provider derives
 <code>DatedRateProviderContractTests&lt;TProvider&gt;</code> instead), point <code>CreateProvider</code> at a stub, and the
@@ -698,7 +698,7 @@ for.</p>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.PairRateData-1.html">PairRateData&lt;TSeries&gt;</a></td>
-<td><code>(Pair, Observations, Series)</code> — window-restricted <code>RateObservation</code>s plus the series metadata.</td>
+<td><code>(Pair, Observations, Series)</code> - window-restricted <code>RateObservation</code>s plus the series metadata.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a></td>
@@ -718,7 +718,7 @@ for.</p>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateHistoryAvailability.html">RateHistoryAvailability</a></td>
-<td><code>Unbounded</code>, <code>Since(date)</code>, <code>RollingDays(n)</code> — declare it in the options constructor.</td>
+<td><code>Unbounded</code>, <code>Since(date)</code>, <code>RollingDays(n)</code> - declare it in the options constructor.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateProviderHttpClientFactory.html">RateProviderHttpClientFactory</a></td>
@@ -732,11 +732,11 @@ for.</p>
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="testing-providers.html">Testing your own provider</a> — the stub, the file-backed source, and both contract bases in detail.</li>
-<li><a href="provider-configuration.html">Configuring providers from appsettings</a> — the section shape and resilience pipeline your registration inherits.</li>
-<li><a href="exchange-rate-providers.html">Built-in exchange-rate providers</a> — the eleven worked references, and their failure modes.</li>
-<li><a href="exchange-rates.html">Working with exchange rates</a> — the contracts and provenance model your provider serves.</li>
-<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — every guide in this topic.</li>
+<li><a href="testing-providers.html">Testing your own provider</a> - the stub, the file-backed source, and both contract bases in detail.</li>
+<li><a href="provider-configuration.html">Configuring providers from appsettings</a> - the section shape and resilience pipeline your registration inherits.</li>
+<li><a href="exchange-rate-providers.html">Built-in exchange-rate providers</a> - the eleven worked references, and their failure modes.</li>
+<li><a href="exchange-rates.html">Working with exchange rates</a> - the contracts and provenance model your provider serves.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -756,7 +756,7 @@ for.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

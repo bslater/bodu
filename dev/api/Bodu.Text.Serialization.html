@@ -102,46 +102,46 @@
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-text-serialization.svg" alt="Bodu.Text.Serialization"></p>
 <h2 id="purpose">Purpose</h2>
-<p><strong>Bodu.Text.Serialization</strong> is the shared, format-agnostic core of the Bodu text serializers: the attribute family a model declares once, the naming policies, the ignore / object-creation / unmapped-member enums, and the four serialization-callback interfaces. It contains no reader, writer, or serializer — those live in the six packages that reference it: <a class="xref" href="Bodu.Text.Bencode.html">Bodu.Text.Bencode</a>, <a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a>, and <a class="xref" href="Bodu.Text.Yaml.html">Bodu.Text.Yaml</a> (which additionally compile this package's shared metadata resolver and converter engine under a per-format symbol), and the line formats <a class="xref" href="Bodu.Text.Delimited.html">Bodu.Text.Delimited</a>, <a class="xref" href="Bodu.Text.DotEnv.html">Bodu.Text.DotEnv</a>, and <a class="xref" href="Bodu.Text.Ini.html">Bodu.Text.Ini</a> (which read the attributes, naming policy, and callbacks through their own string-wire binders). Depends on <code>Bodu.Core</code> only, so a model or contracts assembly can reference it without taking a dependency on any wire format.</p>
+<p><strong>Bodu.Text.Serialization</strong> is the shared, format-agnostic core of the Bodu text serializers: the attribute family a model declares once, the naming policies, the ignore / object-creation / unmapped-member enums, and the four serialization-callback interfaces. It contains no reader, writer, or serializer - those live in the six packages that reference it: <a class="xref" href="Bodu.Text.Bencode.html">Bodu.Text.Bencode</a>, <a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a>, and <a class="xref" href="Bodu.Text.Yaml.html">Bodu.Text.Yaml</a> (which additionally compile this package's shared metadata resolver and converter engine under a per-format symbol), and the line formats <a class="xref" href="Bodu.Text.Delimited.html">Bodu.Text.Delimited</a>, <a class="xref" href="Bodu.Text.DotEnv.html">Bodu.Text.DotEnv</a>, and <a class="xref" href="Bodu.Text.Ini.html">Bodu.Text.Ini</a> (which read the attributes, naming policy, and callbacks through their own string-wire binders). Depends on <code>Bodu.Core</code> only, so a model or contracts assembly can reference it without taking a dependency on any wire format.</p>
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
-<li><strong><a href="../docs/serialization/core/index.html">Bodu.Text.Serialization introduction</a></strong> — the attribute family, naming policies, behavior enums, callbacks, and which serializers honor which parts.</li>
-<li><strong><a href="../docs/serialization/core/concepts.html">Bodu.Text.Serialization core concepts</a></strong> — attribute-versus-options precedence, naming-policy order, required members and constructor binding, extension data, unmapped members, callback order, options freezing and thread safety, converter resolution.</li>
-<li><strong><a href="../docs/serialization/core/getting-started.html">Bodu.Text.Serialization getting started</a></strong> — install, one DTO serialized by TOML and YAML, a callback, a naming policy.</li>
-<li><strong><a href="../docs/serialization/index.html">Bodu serializers</a></strong> and the <strong><a href="../docs/formats/index.html">line formats</a></strong> — the two families that consume this package.</li>
+<li><strong><a href="../docs/serialization/core/index.html">Bodu.Text.Serialization introduction</a></strong> - the attribute family, naming policies, behavior enums, callbacks, and which serializers honor which parts.</li>
+<li><strong><a href="../docs/serialization/core/concepts.html">Bodu.Text.Serialization core concepts</a></strong> - attribute-versus-options precedence, naming-policy order, required members and constructor binding, extension data, unmapped members, callback order, options freezing and thread safety, converter resolution.</li>
+<li><strong><a href="../docs/serialization/core/getting-started.html">Bodu.Text.Serialization getting started</a></strong> - install, one DTO serialized by TOML and YAML, a callback, a naming policy.</li>
+<li><strong><a href="../docs/serialization/index.html">Bodu serializers</a></strong> and the <strong><a href="../docs/formats/index.html">line formats</a></strong> - the two families that consume this package.</li>
 </ul>
 <h2 id="key-types">Key types</h2>
 <p><strong>Attribute family</strong> (every attribute derives from the abstract base)</p>
 <ul>
-<li><a class="xref" href="Bodu.Text.Serialization.SerializationAttribute.html">SerializationAttribute</a> — abstract base that lets the family be discovered as a unit.</li>
-<li><a class="xref" href="Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a> — pins a member's wire key, overriding the CLR name and any naming policy.</li>
-<li><a class="xref" href="Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a> — excludes a member unconditionally or under an <a class="xref" href="Bodu.Text.Serialization.IgnoreCondition.html">IgnoreCondition</a>.</li>
-<li><a class="xref" href="Bodu.Text.Serialization.IncludeAttribute.html">IncludeAttribute</a> — binds non-public accessors and surfaces public fields regardless of <code>IncludeFields</code>.</li>
-<li><a class="xref" href="Bodu.Text.Serialization.PropertyOrderAttribute.html">PropertyOrderAttribute</a> — relative write order (ascending; unannotated members are <code>0</code>).</li>
-<li><a class="xref" href="Bodu.Text.Serialization.RequiredAttribute.html">RequiredAttribute</a> — deserialization fails when the key is absent (same effect as C# <code>required</code>).</li>
-<li><a class="xref" href="Bodu.Text.Serialization.ConverterAttribute.html">ConverterAttribute</a> — names the converter type for a member or a type.</li>
-<li><a class="xref" href="Bodu.Text.Serialization.ExtensionDataAttribute.html">ExtensionDataAttribute</a> — the single dictionary-shaped member that captures unmapped keys.</li>
-<li><a class="xref" href="Bodu.Text.Serialization.ConstructorAttribute.html">ConstructorAttribute</a> — selects the deserialization constructor when several are declared.</li>
-<li><a class="xref" href="Bodu.Text.Serialization.NamingPolicyAttribute.html">NamingPolicyAttribute</a> — applies a <a class="xref" href="Bodu.Text.Serialization.KnownNamingPolicy.html">KnownNamingPolicy</a> to one type's members.</li>
-<li><a class="xref" href="Bodu.Text.Serialization.UnmappedMemberHandlingAttribute.html">UnmappedMemberHandlingAttribute</a> — per-type skip/reject policy for unknown keys.</li>
-<li><a class="xref" href="Bodu.Text.Serialization.ObjectCreationHandlingAttribute.html">ObjectCreationHandlingAttribute</a> — per-member or per-type replace/populate policy for collections.</li>
-<li><a class="xref" href="Bodu.Text.Serialization.StringEnumMemberNameAttribute.html">StringEnumMemberNameAttribute</a> — the string written for one enumeration member when serialized by name.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.SerializationAttribute.html">SerializationAttribute</a> - abstract base that lets the family be discovered as a unit.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a> - pins a member's wire key, overriding the CLR name and any naming policy.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a> - excludes a member unconditionally or under an <a class="xref" href="Bodu.Text.Serialization.IgnoreCondition.html">IgnoreCondition</a>.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.IncludeAttribute.html">IncludeAttribute</a> - binds non-public accessors and surfaces public fields regardless of <code>IncludeFields</code>.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.PropertyOrderAttribute.html">PropertyOrderAttribute</a> - relative write order (ascending; unannotated members are <code>0</code>).</li>
+<li><a class="xref" href="Bodu.Text.Serialization.RequiredAttribute.html">RequiredAttribute</a> - deserialization fails when the key is absent (same effect as C# <code>required</code>).</li>
+<li><a class="xref" href="Bodu.Text.Serialization.ConverterAttribute.html">ConverterAttribute</a> - names the converter type for a member or a type.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.ExtensionDataAttribute.html">ExtensionDataAttribute</a> - the single dictionary-shaped member that captures unmapped keys.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.ConstructorAttribute.html">ConstructorAttribute</a> - selects the deserialization constructor when several are declared.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.NamingPolicyAttribute.html">NamingPolicyAttribute</a> - applies a <a class="xref" href="Bodu.Text.Serialization.KnownNamingPolicy.html">KnownNamingPolicy</a> to one type's members.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.UnmappedMemberHandlingAttribute.html">UnmappedMemberHandlingAttribute</a> - per-type skip/reject policy for unknown keys.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.ObjectCreationHandlingAttribute.html">ObjectCreationHandlingAttribute</a> - per-member or per-type replace/populate policy for collections.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.StringEnumMemberNameAttribute.html">StringEnumMemberNameAttribute</a> - the string written for one enumeration member when serialized by name.</li>
 </ul>
 <p><strong>Naming policies</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a> — abstract base with <code>ConvertName(string)</code> and the singletons <code>CamelCase</code>, <code>SnakeCaseLower</code>, <code>SnakeCaseUpper</code>, <code>KebabCaseLower</code>, <code>KebabCaseUpper</code>.</li>
-<li><a class="xref" href="Bodu.Text.Serialization.KnownNamingPolicy.html">KnownNamingPolicy</a> — names each singleton (plus <code>Unspecified</code>) for declarative selection.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a> - abstract base with <code>ConvertName(string)</code> and the singletons <code>CamelCase</code>, <code>SnakeCaseLower</code>, <code>SnakeCaseUpper</code>, <code>KebabCaseLower</code>, <code>KebabCaseUpper</code>.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.KnownNamingPolicy.html">KnownNamingPolicy</a> - names each singleton (plus <code>Unspecified</code>) for declarative selection.</li>
 </ul>
 <p><strong>Behavior enums</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Text.Serialization.IgnoreCondition.html">IgnoreCondition</a> — <code>Never</code>, <code>Always</code>, <code>WhenWritingDefault</code>, <code>WhenWritingNull</code>.</li>
-<li><a class="xref" href="Bodu.Text.Serialization.ObjectCreationHandling.html">ObjectCreationHandling</a> — <code>Replace</code>, <code>Populate</code>.</li>
-<li><a class="xref" href="Bodu.Text.Serialization.UnmappedMemberHandling.html">UnmappedMemberHandling</a> — <code>Skip</code>, <code>Disallow</code>.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.IgnoreCondition.html">IgnoreCondition</a> - <code>Never</code>, <code>Always</code>, <code>WhenWritingDefault</code>, <code>WhenWritingNull</code>.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.ObjectCreationHandling.html">ObjectCreationHandling</a> - <code>Replace</code>, <code>Populate</code>.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.UnmappedMemberHandling.html">UnmappedMemberHandling</a> - <code>Skip</code>, <code>Disallow</code>.</li>
 </ul>
 <p><strong>Serialization callbacks</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a> / <a class="xref" href="Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a> — before / after a value's members are written.</li>
-<li><a class="xref" href="Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a> / <a class="xref" href="Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a> — after construction but before members are assigned / after every member is assigned.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a> / <a class="xref" href="Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a> - before / after a value's members are written.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a> / <a class="xref" href="Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a> - after construction but before members are assigned / after every member is assigned.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using Bodu.Text.Serialization;
@@ -174,7 +174,7 @@ string yaml = YamlSerializer.Serialize(profile);   // display_name: Billing API 
 </code></pre>
 <h2 id="notes">Notes</h2>
 <ul>
-<li><strong>Closest wins.</strong> A member attribute beats a type attribute, which beats the serializer options — the same rule for naming, ignore conditions, converters, object creation, and unmapped-member handling.</li>
+<li><strong>Closest wins.</strong> A member attribute beats a type attribute, which beats the serializer options - the same rule for naming, ignore conditions, converters, object creation, and unmapped-member handling.</li>
 <li><strong>Two consumption modes.</strong> Bencode, TOML, and YAML honor the whole family through the shared converter engine; Delimited, DotEnv, and INI honor <code>[PropertyName]</code>, <code>[Ignore]</code>, <code>[PropertyOrder]</code>, <code>[Required]</code> (INI and DotEnv), the options-level naming policy, and the callbacks, and convert scalars with the invariant culture.</li>
 <li><strong>No number handling here.</strong> Numeric representation is a per-format option; this package carries nothing format-specific.</li>
 <li><strong>See also:</strong> the <a href="../guides/serialization/index.html">serializer guides hub</a> and the <a href="../guides/formats/index.html">line-format guides</a>.</li>
@@ -342,7 +342,7 @@ deserialization.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

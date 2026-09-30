@@ -89,12 +89,12 @@
 
 <p>A converter factory dispatches over a <em>family</em> of types rather than a single type. Where a <a href="converters.html">hand-written converter</a> handles one fixed <code>T</code>, a <code>YamlConverterFactory</code> (<a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlConverterFactory.html">YamlConverterFactory</a>) decides <em>at resolution time</em> whether it applies to a requested type and builds the right concrete converter for it. This is the mechanism behind two common shapes:</p>
 <ul>
-<li><strong>Open-generic families</strong> — every closed <code>Money&lt;TCurrency&gt;</code>, every <code>Stack&lt;T&gt;</code>, where one factory serves an unbounded set of closed types.</li>
-<li><strong>Tagged (discriminated) hierarchies</strong> — a base type with a <code>kind</code> key whose value selects which derived type to materialize.</li>
+<li><strong>Open-generic families</strong> - every closed <code>Money&lt;TCurrency&gt;</code>, every <code>Stack&lt;T&gt;</code>, where one factory serves an unbounded set of closed types.</li>
+<li><strong>Tagged (discriminated) hierarchies</strong> - a base type with a <code>kind</code> key whose value selects which derived type to materialize.</li>
 </ul>
 <p>This guide builds on <a href="converters.html">Writing converters</a>; read that first for the single-type <code>Read</code> / <code>Write</code> pattern, the precedence ladder, and the statelessness rules. Everything here is YAML; the sibling libraries (<a href="../toml/index.html">Bodu.Text.Toml</a>, <a href="../bencode/index.html">Bodu.Text.Bencode</a>) follow the identical shape against their own reader/writer pair.</p>
 <h2 id="what-yaml-does-without-a-factory">What YAML does without a factory</h2>
-<p>Before writing one, it is worth knowing how far the built-ins go. The serializer already dispatches on the <strong>runtime</strong> type when writing, so a <code>Circle</code> held in a <code>Shape</code>-typed member serializes with <code>Circle</code>'s members — but with no discriminator, because nothing knows the family exists:</p>
+<p>Before writing one, it is worth knowing how far the built-ins go. The serializer already dispatches on the <strong>runtime</strong> type when writing, so a <code>Circle</code> held in a <code>Shape</code>-typed member serializes with <code>Circle</code>'s members - but with no discriminator, because nothing knows the family exists:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">public abstract class Shape
 {
@@ -129,8 +129,8 @@ YamlSerializer.Deserialize&lt;Drawing&gt;(plainYaml);
 <pre><code class="lang-csharp">public abstract bool CanConvert(Type typeToConvert);
 public abstract YamlConverter CreateConverter(Type typeToConvert, YamlSerializerOptions options);
 </code></pre>
-<p>The serializer treats the factory exactly like any other converter in the <a href="converters.html">resolution order</a>: member attribute, then type attribute, then <code>options.Converters</code>, then built-ins. When the candidate is a factory it calls <code>CanConvert(type)</code>; on <code>true</code> it calls <code>CreateConverter(type, options)</code> <strong>once per closed type</strong>, verifies that the returned converter's own <code>CanConvert</code> accepts the type, and caches the result. The factory itself never reads or writes a value — <code>CreateConverter</code> returns an ordinary <code>YamlConverter&lt;T&gt;</code> that does the work.</p>
-<h2 id="pattern-1--an-open-generic-family">Pattern 1 — an open-generic family</h2>
+<p>The serializer treats the factory exactly like any other converter in the <a href="converters.html">resolution order</a>: member attribute, then type attribute, then <code>options.Converters</code>, then built-ins. When the candidate is a factory it calls <code>CanConvert(type)</code>; on <code>true</code> it calls <code>CreateConverter(type, options)</code> <strong>once per closed type</strong>, verifies that the returned converter's own <code>CanConvert</code> accepts the type, and caches the result. The factory itself never reads or writes a value - <code>CreateConverter</code> returns an ordinary <code>YamlConverter&lt;T&gt;</code> that does the work.</p>
+<h2 id="pattern-1---an-open-generic-family">Pattern 1 - an open-generic family</h2>
 <p>To serve every closed <code>Money&lt;TCurrency&gt;</code> from one registration, match the open generic in <code>CanConvert</code> and close <code>MoneyConverter&lt;&gt;</code> over the requested type argument in <code>CreateConverter</code>:</p>
 <pre><code class="lang-csharp">using Bodu.Text.Yaml;
 using Bodu.Text.Yaml.Serialization;
@@ -146,7 +146,7 @@ public sealed class MoneyConverterFactory : YamlConverterFactory
             typeof(MoneyConverter&lt;&gt;).MakeGenericType(typeToConvert.GetGenericArguments()[0]))!;
 }
 </code></pre>
-<p><code>MoneyConverter&lt;TCurrency&gt;</code> is an ordinary <code>YamlConverter&lt;Money&lt;TCurrency&gt;&gt;</code> written as in <a href="converters.html">Writing converters</a> Pattern 1 — here it stores the amount as a fixed-point string scalar:</p>
+<p><code>MoneyConverter&lt;TCurrency&gt;</code> is an ordinary <code>YamlConverter&lt;Money&lt;TCurrency&gt;&gt;</code> written as in <a href="converters.html">Writing converters</a> Pattern 1 - here it stores the amount as a fixed-point string scalar:</p>
 <pre><code class="lang-csharp">public sealed class MoneyConverter&lt;TCurrency&gt; : YamlConverter&lt;Money&lt;TCurrency&gt;&gt;
 {
     public override Money&lt;TCurrency&gt; Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options) =&gt;
@@ -165,9 +165,9 @@ string w = YamlSerializer.Serialize(new Wallet { Cash = new(12.5m), Savings = ne
 // Cash: &quot;12.50&quot;
 // Savings: &quot;1000.00&quot;
 </code></pre>
-<p>The writer quotes the scalars because they would otherwise resolve as floats on the way back in — YAML's implicit typing is why a string-shaped wire form needs the quotes, and <code>WriteString</code> adds them for you. This is the same machinery the built-in nullable, enum, collection, and dictionary converters use.</p>
-<h2 id="pattern-2--a-tagged-discriminated-hierarchy">Pattern 2 — a tagged (discriminated) hierarchy</h2>
-<p>The richer case is a base type whose concrete shape is chosen by a discriminator key. Model the family as a closed set of derived types and a <code>kind</code> tag — the <code>Shape</code> / <code>Circle</code> pair above, plus a second subtype:</p>
+<p>The writer quotes the scalars because they would otherwise resolve as floats on the way back in - YAML's implicit typing is why a string-shaped wire form needs the quotes, and <code>WriteString</code> adds them for you. This is the same machinery the built-in nullable, enum, collection, and dictionary converters use.</p>
+<h2 id="pattern-2---a-tagged-discriminated-hierarchy">Pattern 2 - a tagged (discriminated) hierarchy</h2>
+<p>The richer case is a base type whose concrete shape is chosen by a discriminator key. Model the family as a closed set of derived types and a <code>kind</code> tag - the <code>Shape</code> / <code>Circle</code> pair above, plus a second subtype:</p>
 <pre><code class="lang-csharp">public sealed class Rectangle : Shape
 {
     public double Width { get; init; }
@@ -188,8 +188,8 @@ public sealed class ShapeConverterFactory : YamlConverterFactory
 }
 </code></pre>
 <p><code>CanConvert</code> returns <code>true</code> for <code>Shape</code> itself and for any <code>Circle</code> / <code>Rectangle</code> member declared as the base type, so a property typed <code>Shape Outline { get; set; }</code> routes through the factory regardless of which concrete value it currently holds.</p>
-<h2 id="pattern-3--reading-and-writing-the-discriminator">Pattern 3 — reading and writing the discriminator</h2>
-<p>The concrete converter is a <code>YamlConverter&lt;Shape&gt;</code>. On entry to <code>Read</code> the reader is positioned on the mapping's <code>StartMapping</code> token; the converter walks the composed token stream — a key scalar followed by the value's token, through to the matching <code>EndMapping</code> — collecting the discriminator and the payload fields, then constructs the matching derived type:</p>
+<h2 id="pattern-3---reading-and-writing-the-discriminator">Pattern 3 - reading and writing the discriminator</h2>
+<p>The concrete converter is a <code>YamlConverter&lt;Shape&gt;</code>. On entry to <code>Read</code> the reader is positioned on the mapping's <code>StartMapping</code> token; the converter walks the composed token stream - a key scalar followed by the value's token, through to the matching <code>EndMapping</code> - collecting the discriminator and the payload fields, then constructs the matching derived type:</p>
 <pre><code class="lang-csharp">using Bodu.Text.Yaml;
 using Bodu.Text.Yaml.Reader;
 using Bodu.Text.Yaml.Serialization;
@@ -235,7 +235,7 @@ public sealed class ShapeConverter : YamlConverter&lt;Shape&gt;
 
     public override void Write(Utf8YamlWriter writer, Shape value, YamlSerializerOptions options)
     {
-        // Dispatch on the runtime type so the right payload — including the tag — is written.
+        // Dispatch on the runtime type so the right payload - including the tag - is written.
         switch (value)
         {
             case Circle c:
@@ -262,9 +262,9 @@ public sealed class ShapeConverter : YamlConverter&lt;Shape&gt;
 <p>The key moves:</p>
 <ul>
 <li><strong>Override <code>CanConvert</code> on the converter too.</strong> After a factory creates a converter the serializer verifies that the <em>converter</em> accepts the requested type. <code>YamlConverter&lt;Shape&gt;.CanConvert</code> defaults to an exact match, which would reject <code>Circle</code> when the factory is asked for a member declared as the subtype; widening it to <code>IsAssignableFrom</code> keeps the factory and its product in agreement.</li>
-<li><strong>Walk the composed token stream.</strong> <code>Utf8YamlReader</code> presents an already-composed tree — anchors, aliases, and merge keys are resolved before the first token is delivered, and a block mapping and a flow mapping produce the same <code>StartMapping</code> / key / value / <code>EndMapping</code> sequence — so a single read loop handles every spelling. Call <code>Skip()</code> to step over an unknown member's whole value, including nested mappings and sequences.</li>
+<li><strong>Walk the composed token stream.</strong> <code>Utf8YamlReader</code> presents an already-composed tree - anchors, aliases, and merge keys are resolved before the first token is delivered, and a block mapping and a flow mapping produce the same <code>StartMapping</code> / key / value / <code>EndMapping</code> sequence - so a single read loop handles every spelling. Call <code>Skip()</code> to step over an unknown member's whole value, including nested mappings and sequences.</li>
 <li><strong>Dispatch on the runtime type when writing.</strong> The <code>switch</code> over the concrete subtype emits the discriminator plus exactly that type's payload, so the value round-trips back through <code>Read</code>.</li>
-<li><strong>Fail with the serialization exception.</strong> A missing or unknown tag is a <em>well-formed value that does not fit</em>, so throw <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> — the same family the built-in converters throw — not <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a>, which is reserved for syntactically invalid documents.</li>
+<li><strong>Fail with the serialization exception.</strong> A missing or unknown tag is a <em>well-formed value that does not fit</em>, so throw <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> - the same family the built-in converters throw - not <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a>, which is reserved for syntactically invalid documents.</li>
 </ul>
 <p>With the factory registered, a document holding a base-typed member and a base-typed list carries the tag everywhere:</p>
 <pre><code class="lang-csharp">var shapeOptions = new YamlSerializerOptions();
@@ -314,15 +314,15 @@ YamlSerializer.Deserialize&lt;Drawing&gt;(&quot;Outline: circle&quot;, shapeOpti
 <li>the built-in converters.</li>
 </ol>
 <p>For a <em>family</em>, the natural placements are a type-level attribute on the base type, or a single registration on the options:</p>
-<pre><code class="lang-csharp">// Option A — annotate the base type so every Shape-typed member uses the factory.
+<pre><code class="lang-csharp">// Option A - annotate the base type so every Shape-typed member uses the factory.
 [Converter(typeof(ShapeConverterFactory))]
 public abstract class Shape { /* … */ }
 
-// Option B — register once on the options.
+// Option B - register once on the options.
 var options = new YamlSerializerOptions();
 options.Converters.Add(new ShapeConverterFactory());
 </code></pre>
-<p>The two placements are not equivalent. The type-level attribute is looked up on the <em>declared</em> type of a member and is not inherited, so it governs members declared as <code>Shape</code> — a member declared as <code>Circle</code> resolves <code>Circle</code>'s own converter, which is the plain object mapping unless <code>Circle</code> carries its own attribute:</p>
+<p>The two placements are not equivalent. The type-level attribute is looked up on the <em>declared</em> type of a member and is not inherited, so it governs members declared as <code>Shape</code> - a member declared as <code>Circle</code> resolves <code>Circle</code>'s own converter, which is the plain object mapping unless <code>Circle</code> carries its own attribute:</p>
 <pre><code class="lang-csharp">public sealed class Holder
 {
     public Shape? Outline { get; set; }   // declared as the base → factory → tagged
@@ -341,16 +341,16 @@ Exact:
 <ul>
 <li><strong>The first match wins, and order in <code>options.Converters</code> matters.</strong> When more than one factory could claim a type, the earlier registration is asked first. Register the most specific factory ahead of any broader one whose <code>CanConvert</code> would also return <code>true</code>.</li>
 <li><strong><code>CreateConverter</code> runs once per closed type and is cached.</strong> A factory matching an open generic produces one converter per closed type (<code>Money&lt;Usd&gt;</code>, <code>Money&lt;Eur&gt;</code>, …), each cached independently on the options.</li>
-<li><strong>Register before first use.</strong> As with all converters, a <code>YamlSerializerOptions</code> instance freezes the first time it is used (or via <code>MakeReadOnly()</code>); add factories before then, and reuse one options instance so the resolution and reflection work is paid once — see <a href="../options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a>.</li>
+<li><strong>Register before first use.</strong> As with all converters, a <code>YamlSerializerOptions</code> instance freezes the first time it is used (or via <code>MakeReadOnly()</code>); add factories before then, and reuse one options instance so the resolution and reflection work is paid once - see <a href="../options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a>.</li>
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="converters.html">Writing converters</a> — the single-type <code>Read</code> / <code>Write</code> pattern, the precedence ladder, and converter statelessness.</li>
-<li><a href="builtin-converters.html">Built-in converter catalog</a> — the families that already have a factory (nullable, enum, collection, dictionary) and their wire forms.</li>
-<li><a href="attributes.html">Mapping attributes</a> — <code>[Converter]</code> placement and the precedence ladder in detail.</li>
-<li><a href="callbacks.html">Serialization callbacks</a> — the lifecycle hooks a converter-handled type gives up, and how to keep them on the members instead.</li>
-<li>The sibling guides — <a href="../toml/polymorphic-converters.html">TOML polymorphic converters</a> and <a href="../bencode/polymorphic-converters.html">Bencode polymorphic converters</a>.</li>
-<li>API reference — <a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlConverterFactory.html">YamlConverterFactory</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlConverter-1.html">YamlConverter&lt;T&gt;</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.Reader.Utf8YamlReader.html">Utf8YamlReader</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a>.</li>
+<li><a href="converters.html">Writing converters</a> - the single-type <code>Read</code> / <code>Write</code> pattern, the precedence ladder, and converter statelessness.</li>
+<li><a href="builtin-converters.html">Built-in converter catalog</a> - the families that already have a factory (nullable, enum, collection, dictionary) and their wire forms.</li>
+<li><a href="attributes.html">Mapping attributes</a> - <code>[Converter]</code> placement and the precedence ladder in detail.</li>
+<li><a href="callbacks.html">Serialization callbacks</a> - the lifecycle hooks a converter-handled type gives up, and how to keep them on the members instead.</li>
+<li>The sibling guides - <a href="../toml/polymorphic-converters.html">TOML polymorphic converters</a> and <a href="../bencode/polymorphic-converters.html">Bencode polymorphic converters</a>.</li>
+<li>API reference - <a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlConverterFactory.html">YamlConverterFactory</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlConverter-1.html">YamlConverter&lt;T&gt;</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.Reader.Utf8YamlReader.html">Utf8YamlReader</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a>.</li>
 <li><a href="../index.html">Bodu serializer guides</a> and the <a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a>.</li>
 </ul>
 
@@ -371,7 +371,7 @@ Exact:
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

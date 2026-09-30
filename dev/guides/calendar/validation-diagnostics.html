@@ -87,14 +87,14 @@
         <article data-uid="">
 <h1 id="calendar-validation-diagnostics">Calendar validation diagnostics</h1>
 
-<p>Every notable-date document — hand-authored XML/JSON, a bundled catalogue, or a document produced by the <a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> — passes through one validation pipeline in <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>. Each problem the pipeline finds is a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateValidationDiagnostic.html">NotableDateValidationDiagnostic</a> carrying a severity, a stable <code>BODU-CAL-*</code> code, and a message naming the offending concept, rule, or policy. This page is the code reference and shows the two ways to consume diagnostics: throwing loads and collect-mode linting.</p>
+<p>Every notable-date document - hand-authored XML/JSON, a bundled catalogue, or a document produced by the <a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> - passes through one validation pipeline in <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>. Each problem the pipeline finds is a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateValidationDiagnostic.html">NotableDateValidationDiagnostic</a> carrying a severity, a stable <code>BODU-CAL-*</code> code, and a message naming the offending concept, rule, or policy. This page is the code reference and shows the two ways to consume diagnostics: throwing loads and collect-mode linting.</p>
 <h2 id="throw-or-collect">Throw or collect</h2>
-<p><strong>Throwing (the default).</strong> <code>NotableDateResourceLoader.Load(...)</code> / <code>LoadJson(...)</code> and <code>NotableDateDocumentBuilder.Build()</code> validate the whole document, then throw a single <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a> when any error-severity diagnostic was produced. The exception's <code>Diagnostics</code> property carries the complete list — errors, warnings, and informational messages — not just the first failure.</p>
+<p><strong>Throwing (the default).</strong> <code>NotableDateResourceLoader.Load(...)</code> / <code>LoadJson(...)</code> and <code>NotableDateDocumentBuilder.Build()</code> validate the whole document, then throw a single <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a> when any error-severity diagnostic was produced. The exception's <code>Diagnostics</code> property carries the complete list - errors, warnings, and informational messages - not just the first failure.</p>
 <p><strong>Collecting (the lint surface).</strong> The <code>Try</code> overloads return the same complete diagnostic list without throwing, so build tooling and editors can lint arbitrary input:</p>
 <ul>
-<li><code>NotableDateResourceLoader.TryLoad(xml, resolver, out resource, out diagnostics)</code> (plus an overload taking a custom <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a>) and <code>TryLoadJson(...)</code> — malformed input becomes a <code>BODU-CAL-SYNTAX</code> error diagnostic instead of a <code>FormatException</code>.</li>
-<li><code>NotableDateDocumentBuilder.Validate()</code> — lints the authored document and returns the diagnostics; a clean result guarantees <code>Build()</code> succeeds for the same document, because both run the same pipeline.</li>
-<li><code>NotableDateDocumentBuilder.TryBuild(out resource, out diagnostics)</code> — the non-throwing counterpart of <code>Build()</code>.</li>
+<li><code>NotableDateResourceLoader.TryLoad(xml, resolver, out resource, out diagnostics)</code> (plus an overload taking a custom <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a>) and <code>TryLoadJson(...)</code> - malformed input becomes a <code>BODU-CAL-SYNTAX</code> error diagnostic instead of a <code>FormatException</code>.</li>
+<li><code>NotableDateDocumentBuilder.Validate()</code> - lints the authored document and returns the diagnostics; a clean result guarantees <code>Build()</code> succeeds for the same document, because both run the same pipeline.</li>
+<li><code>NotableDateDocumentBuilder.TryBuild(out resource, out diagnostics)</code> - the non-throwing counterpart of <code>Build()</code>.</li>
 </ul>
 <!-- compile -->
 <pre><code class="lang-csharp">NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create(&quot;corp.holidays&quot;)
@@ -109,7 +109,7 @@ if (builder.TryBuild(out NotableDateResource? resource, out var diagnostics))
     INotableDateService service = new NotableDateService(resource!);
 }
 </code></pre>
-<p>Argument errors (<code>null</code> inputs) still throw from the <code>Try</code> overloads — the <code>Try</code> contract covers document data, not API usage.</p>
+<p>Argument errors (<code>null</code> inputs) still throw from the <code>Try</code> overloads - the <code>Try</code> contract covers document data, not API usage.</p>
 <h2 id="severities">Severities</h2>
 <table>
 <thead>
@@ -348,16 +348,16 @@ if (builder.TryBuild(out NotableDateResource? resource, out var diagnostics))
 <tr>
 <td><code>BODU-CAL-BUILDER-INCOMPLETE</code></td>
 <td>Error</td>
-<td>The authored document is too incomplete to serialize for validation — a missing resource identifier, a concept with no rules, or a rule with no strategy. Produced only by <code>NotableDateDocumentBuilder.Validate()</code> / <code>TryBuild(...)</code>; the serializing members throw <code>InvalidOperationException</code> for the same states.</td>
+<td>The authored document is too incomplete to serialize for validation - a missing resource identifier, a concept with no rules, or a rule with no strategy. Produced only by <code>NotableDateDocumentBuilder.Validate()</code> / <code>TryBuild(...)</code>; the serializing members throw <code>InvalidOperationException</code> for the same states.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="rule-authoring.html">Authoring notable date rules</a> — the document model these diagnostics validate.</li>
-<li><a href="notable-date-builder.html">Authoring with the notable-date builder</a> — the fluent authoring surface behind <code>Validate()</code> / <code>TryBuild(...)</code>.</li>
-<li><a href="round-trip-guarantees.html">Builder round-trip guarantees</a> — the serialization contract shared by <code>Build()</code> and the lint.</li>
-<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+<li><a href="rule-authoring.html">Authoring notable date rules</a> - the document model these diagnostics validate.</li>
+<li><a href="notable-date-builder.html">Authoring with the notable-date builder</a> - the fluent authoring surface behind <code>Validate()</code> / <code>TryBuild(...)</code>.</li>
+<li><a href="round-trip-guarantees.html">Builder round-trip guarantees</a> - the serialization contract shared by <code>Build()</code> and the lint.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
 </ul>
 
 </article>
@@ -377,7 +377,7 @@ if (builder.TryBuild(out NotableDateResource? resource, out var diagnostics))
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

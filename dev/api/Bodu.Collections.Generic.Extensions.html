@@ -102,17 +102,17 @@
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-core.svg" alt="Bodu.Core"></p>
 <h2 id="purpose">Purpose</h2>
-<p><strong>Bodu.Collections.Generic.Extensions</strong> holds the sequence-shaping helpers for <code>IEnumerable&lt;T&gt;</code>, <code>IList&lt;T&gt;</code>, and <code>IDictionary&lt;TKey, TValue&gt;</code> — recursive selection, batched enumeration, sliding windows, and pluggable randomness-driven shuffles.</p>
+<p><strong>Bodu.Collections.Generic.Extensions</strong> holds the sequence-shaping helpers for <code>IEnumerable&lt;T&gt;</code>, <code>IList&lt;T&gt;</code>, and <code>IDictionary&lt;TKey, TValue&gt;</code> - recursive selection, batched enumeration, sliding windows, and pluggable randomness-driven shuffles.</p>
 <h2 id="key-types">Key types</h2>
 <ul>
-<li><a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html">IEnumerableExtensions</a> — generic enumerable utilities: <code>Aggregate</code>, <code>Batch</code>, <code>Cache</code>, <code>ContainsAll</code>, <code>ContainsAny</code>, <code>ForEach</code>, <code>Index</code>, <code>IsNullOrEmpty</code>, <code>Randomize</code>, <code>RecursiveSelect</code>, <code>WhereNotNull</code>, and more.</li>
-<li><a class="xref" href="Bodu.Collections.Generic.Extensions.IListExtensions.html">IListExtensions</a> — list-specific utilities: <code>IndexOf</code>, <code>LastIndexOf</code>, <code>ReplaceAll</code>, <code>TryMove</code>, <code>TrySwap</code>.</li>
-<li><a class="xref" href="Bodu.Collections.Generic.Extensions.IDictionaryExtensions.html">IDictionaryExtensions</a> — dictionary utilities: <code>AddOrUpdate</code>, <code>GetOrAdd</code>.</li>
-<li><a class="xref" href="Bodu.Collections.Generic.ShuffleHelpers.html">ShuffleHelpers</a>, <a class="xref" href="Bodu.Collections.Generic.Extensions.SystemRandomAdapter.html">SystemRandomAdapter</a>, <a class="xref" href="Bodu.Collections.Generic.Extensions.RandomizationMode.html">RandomizationMode</a> — pluggable randomness-driven shuffles backed by <a class="xref" href="Bodu.IRandomGenerator.html">IRandomGenerator</a>.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html">IEnumerableExtensions</a> - generic enumerable utilities: <code>Aggregate</code>, <code>Batch</code>, <code>Cache</code>, <code>ContainsAll</code>, <code>ContainsAny</code>, <code>ForEach</code>, <code>Index</code>, <code>IsNullOrEmpty</code>, <code>Randomize</code>, <code>RecursiveSelect</code>, <code>WhereNotNull</code>, and more.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.Extensions.IListExtensions.html">IListExtensions</a> - list-specific utilities: <code>IndexOf</code>, <code>LastIndexOf</code>, <code>ReplaceAll</code>, <code>TryMove</code>, <code>TrySwap</code>.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.Extensions.IDictionaryExtensions.html">IDictionaryExtensions</a> - dictionary utilities: <code>AddOrUpdate</code>, <code>GetOrAdd</code>.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.ShuffleHelpers.html">ShuffleHelpers</a>, <a class="xref" href="Bodu.Collections.Generic.Extensions.SystemRandomAdapter.html">SystemRandomAdapter</a>, <a class="xref" href="Bodu.Collections.Generic.Extensions.RandomizationMode.html">RandomizationMode</a> - pluggable randomness-driven shuffles backed by <a class="xref" href="Bodu.IRandomGenerator.html">IRandomGenerator</a>.</li>
 </ul>
 <div class="TIP">
 <h5>Tip</h5>
-<p>Looking for sequence <em>producers</em> — <code>Range</code>, <code>NextWhile</code>, or named series such as <code>Fibonacci</code>? Those live on <code>SequenceGenerator</code> in the dedicated <a class="xref" href="Bodu.Sequences.html">Bodu.Sequences</a> namespace.</p>
+<p>Looking for sequence <em>producers</em> - <code>Range</code>, <code>NextWhile</code>, or named series such as <code>Fibonacci</code>? Those live on <code>SequenceGenerator</code> in the dedicated <a class="xref" href="Bodu.Sequences.html">Bodu.Sequences</a> namespace.</p>
 </div>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic.Extensions;
@@ -140,15 +140,15 @@ Classes
 </h3>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Collections.Generic.Extensions.IDictionaryExtensions.html">IDictionaryExtensions</a></dt>
-      <dd><p>Provides retrieval-and-mutation helpers for <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a> — get-or-add and add-or-update
+      <dd><p>Provides retrieval-and-mutation helpers for <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a> - get-or-add and add-or-update
 operations modelled on the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.concurrent.concurrentdictionary-2">ConcurrentDictionary&lt;TKey, TValue&gt;</a> surface
 but available on any dictionary implementation.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html">IEnumerableExtensions</a></dt>
-      <dd><p>Provides deferred-execution combinators over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a> — batching, caching, multi-aggregate
-fan-out, recursive descent, randomization, and set-membership predicates — that complement the standard LINQ surface
+      <dd><p>Provides deferred-execution combinators over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a> - batching, caching, multi-aggregate
+fan-out, recursive descent, randomization, and set-membership predicates - that complement the standard LINQ surface
 for production pipeline code.</p>
 </dd>
     </dl>
@@ -189,7 +189,7 @@ Enums
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

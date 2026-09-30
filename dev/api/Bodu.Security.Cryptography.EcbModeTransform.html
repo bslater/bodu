@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_EcbModeTransform" data-uid="Bodu.Security.Cryptography.EcbModeTransform" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 EcbModeTransform Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/EcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/EcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ EcbModeTransform Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/EcbModeTransform.cs">EcbModeTransform.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/EcbModeTransform.cs">EcbModeTransform.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Applies the Electronic Codebook (ECB) mode transformation to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, encrypting
@@ -198,7 +198,7 @@ int written = ecb.Transform(plaintext, ciphertext, encrypt: true);</code></pre>
 
   <h2 id="Bodu_Security_Cryptography_EcbModeTransform_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-<img src="../images/diagrams/classic-modes.svg" alt="ECB panel — each plaintext block is encrypted independently to its ciphertext block with no feedback.">
+<img src="../images/diagrams/classic-modes.svg" alt="ECB panel - each plaintext block is encrypted independently to its ciphertext block with no feedback.">
 </p>
 <p>
 Encryption computes <code>Cᵢ = E(Pᵢ)</code> and decryption <code>Pᵢ = D(Cᵢ)</code>; no initialization vector is used. See <b>
@@ -211,15 +211,15 @@ blocks always yield identical ciphertext blocks, leaking structural information.
 authenticated mode unless ECB is required as a primitive inside a larger construction.
 </p>
 <p>
-<strong>When to use ECB.</strong> Only as a building block inside a larger, well-understood construction — for
+<strong>When to use ECB.</strong> Only as a building block inside a larger, well-understood construction - for
 example, encrypting a single fixed-length tweak inside an XTS or wide-block scheme. For protecting arbitrary
 plaintext, use <a class="xref" href="Bodu.Security.Cryptography.CbcModeTransform.html">CbcModeTransform</a> as a baseline, <a class="xref" href="Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a> when random access or
 stream-cipher behavior is wanted, or one of the AEAD modes (<a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>,
 <a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a>, …) when authentication matters.
 </p>
 <p>
-Because ECB has no chaining state, the transform is stateless — repeated <a class="xref" href="Bodu.Security.Cryptography.EcbModeTransform.html#Bodu_Security_Cryptography_EcbModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_">Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)</a> calls produce the
-same result for the same input — and is trivially parallelisable.
+Because ECB has no chaining state, the transform is stateless - repeated <a class="xref" href="Bodu.Security.Cryptography.EcbModeTransform.html#Bodu_Security_Cryptography_EcbModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_">Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)</a> calls produce the
+same result for the same input - and is trivially parallelisable.
 </p>
 </div>
 
@@ -233,7 +233,7 @@ same result for the same input — and is trivially parallelisable.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_EcbModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_" data-uid="Bodu.Security.Cryptography.EcbModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher)">
   EcbModeTransform(IBlockCipher)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/EcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/EcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -280,13 +280,13 @@ same result for the same input — and is trivially parallelisable.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_EcbModeTransform_Dispose" data-uid="Bodu.Security.Cryptography.EcbModeTransform.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/EcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/EcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
   <div class="markdown level1 summary"><p>Releases the resources used by this instance. ECB holds no per-message chaining state, so this is a no-op beyond
 satisfying the <a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a> contract. The underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> is
-not disposed by this type — ownership remains with the caller.</p>
+not disposed by this type - ownership remains with the caller.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -313,7 +313,7 @@ not disposed by this type — ownership remains with the caller.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_EcbModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_" data-uid="Bodu.Security.Cryptography.EcbModeTransform.Transform(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Boolean)">
   Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/EcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/EcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -377,7 +377,7 @@ not disposed by this type — ownership remains with the caller.</p>
 
   <h2 id="seealso">See Also</h2>
   <div class="seealso">
-      <div><span><a href="../guides/cryptography/cipher-modes.html#ecb--almost-never">ECB walk-through in the cipher-modes
+      <div><span><a href="../guides/cryptography/cipher-modes.html#ecb---almost-never">ECB walk-through in the cipher-modes
              guide</a></span></div>
   </div>
 
@@ -397,7 +397,7 @@ not disposed by this type — ownership remains with the caller.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

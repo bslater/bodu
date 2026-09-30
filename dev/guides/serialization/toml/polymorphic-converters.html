@@ -95,9 +95,9 @@ fixed <code>T</code>, a <code>TomlConverterFactory</code>
 right concrete converter for it. This is the mechanism behind two common
 shapes:</p>
 <ul>
-<li><strong>Open-generic families</strong> — every closed <code>Money&lt;TCurrency&gt;</code>, every
+<li><strong>Open-generic families</strong> - every closed <code>Money&lt;TCurrency&gt;</code>, every
 <code>Stack&lt;T&gt;</code>, where one factory serves an unbounded set of closed types.</li>
-<li><strong>Tagged (discriminated) hierarchies</strong> — a base type with a <code>&quot;kind&quot;</code>
+<li><strong>Tagged (discriminated) hierarchies</strong> - a base type with a <code>&quot;kind&quot;</code>
 field whose value selects which derived type to materialize.</li>
 </ul>
 <p>This guide builds on <a href="converters.html">Writing converters</a>; read that first
@@ -115,9 +115,9 @@ public abstract TomlConverter CreateConverter(Type typeToConvert, TomlSerializer
 then <code>options.Converters</code>, then built-ins. When the candidate is a factory
 it calls <code>CanConvert(type)</code>; on <code>true</code> it calls <code>CreateConverter(type, options)</code>
 <strong>once per closed type</strong> and caches the result. The factory itself never
-reads or writes a value — <code>CreateConverter</code> returns an ordinary
+reads or writes a value - <code>CreateConverter</code> returns an ordinary
 <code>TomlConverter&lt;T&gt;</code> that does the work.</p>
-<h2 id="pattern-1--an-open-generic-family">Pattern 1 — an open-generic family</h2>
+<h2 id="pattern-1---an-open-generic-family">Pattern 1 - an open-generic family</h2>
 <p>To serve every closed <code>Money&lt;TCurrency&gt;</code> from one registration, match the
 open generic in <code>CanConvert</code> and close <code>MoneyConverter&lt;&gt;</code> over the
 requested type argument in <code>CreateConverter</code>:</p>
@@ -143,7 +143,7 @@ options.Converters.Add(new MoneyConverterFactory());
 </code></pre>
 <p>This is the same machinery the built-in nullable, enum, collection, and
 dictionary converters use.</p>
-<h2 id="pattern-2--a-tagged-discriminated-hierarchy">Pattern 2 — a tagged (discriminated) hierarchy</h2>
+<h2 id="pattern-2---a-tagged-discriminated-hierarchy">Pattern 2 - a tagged (discriminated) hierarchy</h2>
 <p>The richer case is a base type whose concrete shape is chosen by a
 discriminator field. Model the family as a closed set of derived types and
 a <code>&quot;kind&quot;</code> tag:</p>
@@ -180,11 +180,11 @@ public sealed class ShapeConverterFactory : TomlConverterFactory
 <code>Rectangle</code> member declared as the base type, so a property typed
 <code>Shape Outline { get; set; }</code> routes through the factory regardless of
 which concrete value it currently holds.</p>
-<h2 id="pattern-3--reading-and-writing-the-discriminator">Pattern 3 — reading and writing the discriminator</h2>
+<h2 id="pattern-3---reading-and-writing-the-discriminator">Pattern 3 - reading and writing the discriminator</h2>
 <p>The concrete converter is a <code>TomlConverter&lt;Shape&gt;</code>. On entry to <code>Read</code> the
 reader is positioned on the table's <code>StartTable</code> token; the converter walks
-the normalized token stream — <code>PropertyName</code> followed by the value's token,
-through to the matching <code>EndTable</code> — collecting the discriminator and the
+the normalized token stream - <code>PropertyName</code> followed by the value's token,
+through to the matching <code>EndTable</code> - collecting the discriminator and the
 payload fields, then constructs the matching derived type:</p>
 <pre><code class="lang-csharp">using Bodu.Text.Toml;
 using Bodu.Text.Toml.Reader;
@@ -228,7 +228,7 @@ public sealed class ShapeConverter : TomlConverter&lt;Shape&gt;
 
     public override void Write(Utf8TomlWriter writer, Shape value, TomlSerializerOptions options)
     {
-        // Dispatch on the runtime type so the right payload — including the tag — is written.
+        // Dispatch on the runtime type so the right payload - including the tag - is written.
         switch (value)
         {
             case Circle c:
@@ -265,8 +265,8 @@ concrete subtype emits the discriminator plus exactly that type's
 payload, so the value round-trips back through <code>Read</code>.</li>
 <li><strong>Fail with the serialization exception.</strong> A missing or unknown tag is a
 <em>well-formed value that does not fit</em>, so throw
-<a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a> — the same family the
-built-in converters throw — not the parse exception, which is reserved
+<a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a> - the same family the
+built-in converters throw - not the parse exception, which is reserved
 for syntactically invalid documents.</li>
 </ul>
 <h2 id="registration-and-resolution-order">Registration and resolution order</h2>
@@ -281,11 +281,11 @@ highest first:</p>
 </ol>
 <p>For a <em>family</em>, the natural placements are a type-level attribute on the
 base type, or a single registration on the options:</p>
-<pre><code class="lang-csharp">// Option A — annotate the base type so every Shape member uses the factory.
+<pre><code class="lang-csharp">// Option A - annotate the base type so every Shape member uses the factory.
 [Converter(typeof(ShapeConverterFactory))]
 public abstract class Shape { /* … */ }
 
-// Option B — register once on the options.
+// Option B - register once on the options.
 var options = new TomlSerializerOptions();
 options.Converters.Add(new ShapeConverterFactory());
 </code></pre>
@@ -306,11 +306,11 @@ instance so the resolution and reflection work is paid once.</li>
 </ul>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="converters.html">Writing converters</a> — the single-type <code>Read</code> / <code>Write</code> pattern, the precedence ladder, and converter statelessness.</li>
-<li><a href="builtin-converters.html">Built-in converter catalog</a> — the families that already have a factory (nullable, enum, collection, dictionary) and their wire forms.</li>
-<li><a href="attributes.html">Mapping attributes</a> — <code>[Converter]</code> placement and the precedence ladder in detail.</li>
-<li>API reference — <a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlConverterFactory.html">TomlConverterFactory</a>, <a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlConverter-1.html">TomlConverter&lt;T&gt;</a>.</li>
-<li><strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic.</li>
+<li><a href="converters.html">Writing converters</a> - the single-type <code>Read</code> / <code>Write</code> pattern, the precedence ladder, and converter statelessness.</li>
+<li><a href="builtin-converters.html">Built-in converter catalog</a> - the families that already have a factory (nullable, enum, collection, dictionary) and their wire forms.</li>
+<li><a href="attributes.html">Mapping attributes</a> - <code>[Converter]</code> placement and the precedence ladder in detail.</li>
+<li>API reference - <a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlConverterFactory.html">TomlConverterFactory</a>, <a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlConverter-1.html">TomlConverter&lt;T&gt;</a>.</li>
+<li><strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -330,7 +330,7 @@ instance so the resolution and reflection work is paid once.</li>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

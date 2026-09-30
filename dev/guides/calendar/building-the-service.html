@@ -96,7 +96,7 @@
 NotableDateResource resource = NotableDateResourceLoader.Load(xml, CommonNotableDateResources.Resolver);
 NotableDateService  service  = new NotableDateService(resource);
 </code></pre>
-<p>Resolution <em>behaviour</em> is carried by the resource itself — its <code>&lt;ResolutionPolicy&gt;</code> decides duplicate handling, same-day collisions, the priority direction, observed-date inclusion, and the working week. To change those, edit the document or build the resource differently; see <a href="identity-and-resolution.html">Identity and resolution</a>. Runtime <em>collaborators</em> are supplied through <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a>, an object with <code>init</code>-only properties (there is no positional-collaborator constructor):</p>
+<p>Resolution <em>behaviour</em> is carried by the resource itself - its <code>&lt;ResolutionPolicy&gt;</code> decides duplicate handling, same-day collisions, the priority direction, observed-date inclusion, and the working week. To change those, edit the document or build the resource differently; see <a href="identity-and-resolution.html">Identity and resolution</a>. Runtime <em>collaborators</em> are supplied through <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a>, an object with <code>init</code>-only properties (there is no positional-collaborator constructor):</p>
 <table>
 <thead>
 <tr>
@@ -133,7 +133,7 @@ NotableDateService  service  = new NotableDateService(resource);
 </tr>
 </tbody>
 </table>
-<p>Set only the properties you need — unset ones keep the built-in defaults:</p>
+<p>Set only the properties you need - unset ones keep the built-in defaults:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">// Register your own INotableDateAlgorithm implementations by key (see the next section).
 var algorithms = new NotableDateAlgorithmRegistry();
@@ -197,7 +197,7 @@ NotableDateService service = new NotableDateService(
 </code></pre>
 <p>An <a class="xref" href="../../api/Bodu.Globalization.Calendar.IAdjustmentHandler.html">IAdjustmentHandler</a> implements <code>DateOnly? Adjust(AdjustmentHandlerContext)</code>; an <a class="xref" href="../../api/Bodu.Globalization.Calendar.IAdjustmentTriggerHandler.html">IAdjustmentTriggerHandler</a> implements <code>bool ShouldAdjust(AdjustmentTriggerContext)</code>. See <a href="adjustment-rules.html">Observance adjustment rules</a> for the trigger / action catalogues and the context members.</p>
 <h2 id="code-first-providers">Code-first providers</h2>
-<p>When a source cannot be expressed as an authored rule — occurrences pulled from a database, an HR system, or computed by bespoke logic — implement <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateProvider.html">INotableDateProvider</a> and register it through <code>NotableDateServiceOptions.Providers</code>. A provider returns finished <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a> occurrences for a requested range and territory:</p>
+<p>When a source cannot be expressed as an authored rule - occurrences pulled from a database, an HR system, or computed by bespoke logic - implement <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateProvider.html">INotableDateProvider</a> and register it through <code>NotableDateServiceOptions.Providers</code>. A provider returns finished <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a> occurrences for a requested range and territory:</p>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
 
 public sealed class CompanyEventsProvider : INotableDateProvider
@@ -226,17 +226,17 @@ public sealed class CompanyEventsProvider : INotableDateProvider
 NotableDateService service = new NotableDateService(
     resource, new NotableDateServiceOptions { Providers = new[] { new CompanyEventsProvider() } });
 </code></pre>
-<p>Provider occurrences are <em>terminal</em>: the service intersects them with the requested range and applies any query filter, but they do <strong>not</strong> pass through adjustment policies or declarative overrides — a provider that needs an observed-date shift must compute it itself. They do take part in the final ordering and the resource's same-day collision policy alongside resource occurrences.</p>
+<p>Provider occurrences are <em>terminal</em>: the service intersects them with the requested range and applies any query filter, but they do <strong>not</strong> pass through adjustment policies or declarative overrides - a provider that needs an observed-date shift must compute it itself. They do take part in the final ordering and the resource's same-day collision policy alongside resource occurrences.</p>
 <h2 id="swapping-the-rule-set-at-runtime">Swapping the rule set at runtime</h2>
 <p>A resource is immutable, so a <em>live</em> change means loading a new resource and swapping it in. Build the service over a <a class="xref" href="../../api/Bodu.Globalization.Calendar.MutableNotableDateResourceProvider.html">MutableNotableDateResourceProvider</a> via <a class="xref" href="../../api/Bodu.Globalization.Calendar.ReloadableNotableDateService.html">ReloadableNotableDateService</a>; the reloadable service rereads the provider's <code>Current</code> on each query:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">var provider = new MutableNotableDateResourceProvider(AsiaPacificCalendarData.LoadResource(&quot;AU&quot;));
 INotableDateService service = new ReloadableNotableDateService(provider);
 
-// later, when the rules change — the live service picks it up atomically on the next query:
+// later, when the rules change - the live service picks it up atomically on the next query:
 provider.Reload(AsiaPacificCalendarData.LoadResource(&quot;NZ&quot;));
 </code></pre>
-<p><code>ReloadableNotableDateService</code> accepts the same optional collaborators as <code>NotableDateService</code> (custom algorithm registry, collision resolver, adjustment-handler registries) after the provider argument. The pairing is what the DI companion's <code>AddReloadableNotableDateService</code> registers for you — see <a href="dependency-injection.html">Calendar dependency injection</a>.</p>
+<p><code>ReloadableNotableDateService</code> accepts the same optional collaborators as <code>NotableDateService</code> (custom algorithm registry, collision resolver, adjustment-handler registries) after the provider argument. The pairing is what the DI companion's <code>AddReloadableNotableDateService</code> registers for you - see <a href="dependency-injection.html">Calendar dependency injection</a>.</p>
 <h2 id="localizing-display-names">Localizing display names</h2>
 <p>Resolution stays culture-agnostic: each <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a> carries the invariant <code>DisplayName</code> authored in the resource. To present culture-specific names, implement <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateNameLocalizer.html">INotableDateNameLocalizer</a> and apply it to resolved occurrences with the <code>Localize</code> extensions on <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateLocalizationExtensions.html">NotableDateLocalizationExtensions</a>:</p>
 <pre><code class="lang-csharp">using System.Globalization;
@@ -357,20 +357,20 @@ IPluginTrustPolicy custom = new DelegatingPluginTrustPolicy(ctx =&gt;
 <h3 id="plugin-exceptions">Plugin exceptions</h3>
 <p>The loader signals failure with the <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.NotableDatePluginException.html">NotableDatePluginException</a> hierarchy:</p>
 <ul>
-<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException.html">PluginNotTrustedException</a> — the trust policy rejected the assembly; it is never activated.</li>
-<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException.html">PluginMissingAttributeException</a> — the assembly lacks a <code>[assembly: NotableDatePlugin(…)]</code> attribute.</li>
-<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginActivationException.html">PluginActivationException</a> — the named plugin type could not be instantiated.</li>
+<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException.html">PluginNotTrustedException</a> - the trust policy rejected the assembly; it is never activated.</li>
+<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException.html">PluginMissingAttributeException</a> - the assembly lacks a <code>[assembly: NotableDatePlugin(…)]</code> attribute.</li>
+<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginActivationException.html">PluginActivationException</a> - the named plugin type could not be instantiated.</li>
 </ul>
 <p>See the <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.html">Plugins package reference</a> for the full type list.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="notable-dates.html">Using NotableDateService</a> — query patterns, filters, and range queries.</li>
-<li><a href="dependency-injection.html">Calendar dependency injection</a> — registering the service (and the reloadable pair) through <code>IServiceCollection</code>.</li>
-<li><a href="algorithms.html">Date calculation algorithms</a> — built-in keys and implementing <code>INotableDateAlgorithm</code>.</li>
-<li><a href="adjustment-rules.html">Observance adjustment rules</a> — triggers, actions, and custom adjustment handlers.</li>
-<li><a href="rule-authoring.html">Authoring notable date rules</a> — XML / JSON documents, imports, and overrides.</li>
-<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a> — full type reference.</li>
-<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+<li><a href="notable-dates.html">Using NotableDateService</a> - query patterns, filters, and range queries.</li>
+<li><a href="dependency-injection.html">Calendar dependency injection</a> - registering the service (and the reloadable pair) through <code>IServiceCollection</code>.</li>
+<li><a href="algorithms.html">Date calculation algorithms</a> - built-in keys and implementing <code>INotableDateAlgorithm</code>.</li>
+<li><a href="adjustment-rules.html">Observance adjustment rules</a> - triggers, actions, and custom adjustment handlers.</li>
+<li><a href="rule-authoring.html">Authoring notable date rules</a> - XML / JSON documents, imports, and overrides.</li>
+<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a> - full type reference.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
 </ul>
 
 </article>
@@ -390,7 +390,7 @@ IPluginTrustPolicy custom = new DelegatingPluginTrustPolicy(ctx =&gt;
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

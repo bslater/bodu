@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 348" role="img" aria-labelledby="ihf-t ihf-d">
-  <title id="ihf-t">Bodu.IO.Hashing — the three subfamilies</title>
+  <title id="ihf-t">Bodu.IO.Hashing - the three subfamilies</title>
   <desc id="ihf-d">Every algorithm in Bodu.IO.Hashing derives from System.IO.Hashing.NonCryptographicHashAlgorithm, so the Append, GetCurrentHash, and Reset lifecycle is identical across the package. The package is organised into three subfamilies: Fingerprints are fast distribution-quality hashes for hash-table keys; Checksums are error-detection algorithms with characterised guarantees, also hosting alphanumeric identifier checksums; Check digits are single-character algorithms for human-typed identifiers. The Extensions namespace adds one-shot and async helpers over every algorithm.</desc>
 
   <defs>
@@ -32,8 +32,8 @@
     <rect class="ihf-pan" width="800" height="328" rx="8"/>
     <rect class="ihf-hdr" width="800" height="46" rx="8"/>
     <rect class="ihf-hdr" y="38" width="800" height="8"/>
-    <text class="ihf-ttl" x="16" y="29">Bodu.IO.Hashing — three subfamilies, one lifecycle</text>
-    <text class="ihf-form" x="784" y="29" text-anchor="end">adversary model: none — error detection, not security</text>
+    <text class="ihf-ttl" x="16" y="29">Bodu.IO.Hashing - three subfamilies, one lifecycle</text>
+    <text class="ihf-form" x="784" y="29" text-anchor="end">adversary model: none - error detection, not security</text>
 
     <!-- base type -->
     <rect class="ihf-base" x="250" y="58" width="300" height="40" rx="7"/>
@@ -86,6 +86,6 @@
     <!-- Extensions bar -->
     <rect class="ihf-ext" x="20" y="282" width="760" height="32" rx="6"/>
     <text class="ihf-extt" x="34" y="302">Bodu.IO.Hashing.Extensions</text>
-    <text class="ihf-exts" x="200" y="302">ComputeHash · ComputeHashAsync · VerifyHash · TryVerifyHash — ergonomic one-shot and async helpers over every algorithm above</text>
+    <text class="ihf-exts" x="200" y="302">ComputeHash · ComputeHashAsync · VerifyHash · TryVerifyHash - ergonomic one-shot and async helpers over every algorithm above</text>
   </g>
 </svg>

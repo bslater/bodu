@@ -87,10 +87,10 @@
         <article data-uid="">
 <h1 id="weekpattern">WeekPattern</h1>
 
-<p><code>WeekPattern</code> is an immutable value-type bitmask representing a set of selected days in a standard seven-day week. It supports non-destructive composition, bitwise operators, string parsing, formatting, and enumeration — making it a natural primitive for schedules, recurrence rules, and working-day calculations.</p>
+<p><code>WeekPattern</code> is an immutable value-type bitmask representing a set of selected days in a standard seven-day week. It supports non-destructive composition, bitwise operators, string parsing, formatting, and enumeration - making it a natural primitive for schedules, recurrence rules, and working-day calculations.</p>
 <p>Because <code>WeekPattern</code> is a value type, every operation that changes the selection returns a new instance rather than mutating the receiver.</p>
-<p><img src="../../images/diagrams/week-pattern.svg" alt="WeekPattern seven-day bitmask — one bit per day indexed by DayOfWeek, with composition and bitwise operators"></p>
-<h2 id="pattern-1--build-a-pattern-with-with--without">Pattern 1 — build a pattern with With / Without</h2>
+<p><img src="../../images/diagrams/week-pattern.svg" alt="WeekPattern seven-day bitmask - one bit per day indexed by DayOfWeek, with composition and bitwise operators"></p>
+<h2 id="pattern-1---build-a-pattern-with-with--without">Pattern 1 - build a pattern with With / Without</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu;
 
@@ -105,20 +105,20 @@ Console.WriteLine(weekdays.Count);                      // 5
 Console.WriteLine(weekdays.Contains(DayOfWeek.Monday)); // True
 Console.WriteLine(weekdays.Contains(DayOfWeek.Sunday)); // False
 </code></pre>
-<h2 id="pattern-2--use-the-built-in-well-known-patterns">Pattern 2 — use the built-in well-known patterns</h2>
+<h2 id="pattern-2---use-the-built-in-well-known-patterns">Pattern 2 - use the built-in well-known patterns</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu;
 
-WeekPattern workweek  = WeekPattern.Weekdays;           // Mon–Fri
-WeekPattern weekend   = WeekPattern.Weekend;            // Sat–Sun
-WeekPattern allDays   = WeekPattern.AllDays;            // Mon–Sun
+WeekPattern workweek  = WeekPattern.Weekdays;           // Mon-Fri
+WeekPattern weekend   = WeekPattern.Weekend;            // Sat-Sun
+WeekPattern allDays   = WeekPattern.AllDays;            // Mon-Sun
 WeekPattern empty     = WeekPattern.Empty;              // no days
 
 // Regional working weeks, one preset per WorkingDaysOfWeek member.
-WeekPattern gulf      = WeekPattern.SundayToThursday;   // Sun–Thu
-WeekPattern sixDay    = WeekPattern.MondayToSaturday;   // Mon–Sat
+WeekPattern gulf      = WeekPattern.SundayToThursday;   // Sun-Thu
+WeekPattern sixDay    = WeekPattern.MondayToSaturday;   // Mon-Sat
 </code></pre>
-<h2 id="pattern-3--bitwise-combination">Pattern 3 — bitwise combination</h2>
+<h2 id="pattern-3---bitwise-combination">Pattern 3 - bitwise combination</h2>
 <p>The <code>|</code>, <code>&amp;</code>, and <code>~</code> operators compose or intersect patterns:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu;
@@ -130,18 +130,18 @@ WeekPattern monFri = mon | fri;
 // Intersect with weekdays to strip any weekend days.
 WeekPattern safeSchedule = monFri &amp; WeekPattern.Weekdays;
 
-// Invert — days NOT in the pattern.
-WeekPattern nonWorking = ~WeekPattern.Weekdays;  // Sat–Sun
+// Invert - days NOT in the pattern.
+WeekPattern nonWorking = ~WeekPattern.Weekdays;  // Sat-Sun
 </code></pre>
-<p>All four bitwise operators are defined: <code>|</code> (union), <code>&amp;</code> (intersection), <code>^</code> (symmetric difference — days in exactly one operand), and <code>~</code> (complement within the seven-day week). Symmetric difference is handy for &quot;which days changed&quot; between two schedules:</p>
+<p>All four bitwise operators are defined: <code>|</code> (union), <code>&amp;</code> (intersection), <code>^</code> (symmetric difference - days in exactly one operand), and <code>~</code> (complement within the seven-day week). Symmetric difference is handy for &quot;which days changed&quot; between two schedules:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">WeekPattern oldShift = WeekPattern.Parse(&quot;_MTW___&quot;);
 WeekPattern newShift = WeekPattern.Parse(&quot;__TWT__&quot;);
-WeekPattern changed  = oldShift ^ newShift;   // Mon and Thu — the days that differ
+WeekPattern changed  = oldShift ^ newShift;   // Mon and Thu - the days that differ
 </code></pre>
 <h2 id="comparing-patterns">Comparing patterns</h2>
-<p><code>WeekPattern</code> implements <code>IEquatable&lt;WeekPattern&gt;</code> and <code>IComparable&lt;WeekPattern&gt;</code>, and defines <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>. Two patterns are equal when they select the same days; the ordering operators compare the underlying bitmask, so they give a total order suitable for sorting or use as a dictionary key — they are <em>not</em> a subset relation. Use <code>&amp;</code>/<code>==</code> to test containment (<code>(a &amp; b) == b</code> means &quot;a contains all of b&quot;).</p>
-<h2 id="pattern-4--parse-from-a-compact-string">Pattern 4 — parse from a compact string</h2>
+<p><code>WeekPattern</code> implements <code>IEquatable&lt;WeekPattern&gt;</code> and <code>IComparable&lt;WeekPattern&gt;</code>, and defines <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>. Two patterns are equal when they select the same days; the ordering operators compare the underlying bitmask, so they give a total order suitable for sorting or use as a dictionary key - they are <em>not</em> a subset relation. Use <code>&amp;</code>/<code>==</code> to test containment (<code>(a &amp; b) == b</code> means &quot;a contains all of b&quot;).</p>
+<h2 id="pattern-4---parse-from-a-compact-string">Pattern 4 - parse from a compact string</h2>
 <p><code>WeekPattern.Parse</code> accepts standard abbreviations (case-insensitive):</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu;
@@ -152,7 +152,7 @@ WeekPattern all  = WeekPattern.Parse(&quot;SMTWTFS&quot;);      // every day
 
 bool ok = WeekPattern.TryParse(&quot;MF&quot;, out WeekPattern result);
 </code></pre>
-<h2 id="pattern-5--enumerate-selected-days">Pattern 5 — enumerate selected days</h2>
+<h2 id="pattern-5---enumerate-selected-days">Pattern 5 - enumerate selected days</h2>
 <p><code>WeekPattern</code> implements <code>IEnumerable&lt;DayOfWeek&gt;</code>, always yielding selected days in <code>DayOfWeek</code> order (Sunday = 0 first, unless the first day of the week is configured otherwise):</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu;
@@ -164,7 +164,7 @@ foreach (DayOfWeek day in schedule)
 
 // Monday, Tuesday, Wednesday, Thursday, Friday
 </code></pre>
-<h2 id="pattern-6--remove-a-day">Pattern 6 — remove a day</h2>
+<h2 id="pattern-6---remove-a-day">Pattern 6 - remove a day</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu;
 
@@ -173,7 +173,7 @@ WeekPattern fourDays = fiveDays.Without(DayOfWeek.Friday);
 
 Console.WriteLine(fourDays.Count);   // 4
 </code></pre>
-<h2 id="pattern-7--schedule-a-recurring-date-using-weekpattern">Pattern 7 — schedule a recurring date using WeekPattern</h2>
+<h2 id="pattern-7---schedule-a-recurring-date-using-weekpattern">Pattern 7 - schedule a recurring date using WeekPattern</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu;
 
@@ -191,8 +191,8 @@ for (DateOnly d = start; d &lt;= end; d = d.AddDays(1))
         Console.WriteLine(d);
 }
 </code></pre>
-<h2 id="pattern-8--bridge-to-and-from-workingdaysofweek">Pattern 8 — bridge to and from WorkingDaysOfWeek</h2>
-<p><a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> is the companion enum naming the common working-week presets (<code>MondayToFriday</code>, <code>SaturdayToThursday</code>, …). Convert between the two through the extension methods on <a class="xref" href="../../api/Bodu.Extensions.WorkingDaysOfWeekExtensions.html">WorkingDaysOfWeekExtensions</a> — useful when an API takes the named preset but you need the raw day set (or vice versa):</p>
+<h2 id="pattern-8---bridge-to-and-from-workingdaysofweek">Pattern 8 - bridge to and from WorkingDaysOfWeek</h2>
+<p><a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> is the companion enum naming the common working-week presets (<code>MondayToFriday</code>, <code>SaturdayToThursday</code>, …). Convert between the two through the extension methods on <a class="xref" href="../../api/Bodu.Extensions.WorkingDaysOfWeekExtensions.html">WorkingDaysOfWeekExtensions</a> - useful when an API takes the named preset but you need the raw day set (or vice versa):</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu;
 using Bodu.Extensions;
@@ -211,23 +211,23 @@ WorkingDaysOfWeek back = WeekPattern.Weekdays.ToWorkingDaysOfWeek();   // Monday
 <tbody>
 <tr>
 <td><code>Empty</code></td>
-<td>Static field — no days selected.</td>
+<td>Static field - no days selected.</td>
 </tr>
 <tr>
 <td><code>Weekdays</code></td>
-<td>Static field — Mon–Fri.</td>
+<td>Static field - Mon-Fri.</td>
 </tr>
 <tr>
 <td><code>Weekend</code></td>
-<td>Static field — Sat–Sun.</td>
+<td>Static field - Sat-Sun.</td>
 </tr>
 <tr>
 <td><code>AllDays</code></td>
-<td>Static field — every day, Mon–Sun.</td>
+<td>Static field - every day, Mon-Sun.</td>
 </tr>
 <tr>
 <td><code>MondayToFriday</code>, <code>MondayToSaturday</code>, <code>MondayToThursdayAndSaturday</code>, <code>SaturdayToThursday</code>, <code>SaturdayToWednesday</code>, <code>SundayToFriday</code>, <code>SundayToThursday</code></td>
-<td>Static fields — the regional working-week presets, one per <code>WorkingDaysOfWeek</code> member (<code>MondayToFriday</code> is the same set as <code>Weekdays</code>).</td>
+<td>Static fields - the regional working-week presets, one per <code>WorkingDaysOfWeek</code> member (<code>MondayToFriday</code> is the same set as <code>Weekdays</code>).</td>
 </tr>
 <tr>
 <td><code>With(DayOfWeek)</code></td>
@@ -243,7 +243,7 @@ WorkingDaysOfWeek back = WeekPattern.Weekdays.ToWorkingDaysOfWeek();   // Monday
 </tr>
 <tr>
 <td><code>Count</code></td>
-<td>Number of selected days (0–7).</td>
+<td>Number of selected days (0-7).</td>
 </tr>
 <tr>
 <td><code>Parse(string)</code></td>
@@ -267,7 +267,7 @@ WorkingDaysOfWeek back = WeekPattern.Weekdays.ToWorkingDaysOfWeek();   // Monday
 </tr>
 <tr>
 <td><code>IComparable&lt;WeekPattern&gt;</code>, <code>IComparable&lt;byte&gt;</code>, <code>IComparable</code></td>
-<td><code>CompareTo</code> over the bitmask — the same total order the comparison operators use, so patterns sort with <code>OrderBy</code> and <code>SortedSet&lt;WeekPattern&gt;</code>.</td>
+<td><code>CompareTo</code> over the bitmask - the same total order the comparison operators use, so patterns sort with <code>OrderBy</code> and <code>SortedSet&lt;WeekPattern&gt;</code>.</td>
 </tr>
 <tr>
 <td><code>IEnumerable&lt;DayOfWeek&gt;</code></td>
@@ -277,10 +277,10 @@ WorkingDaysOfWeek back = WeekPattern.Weekdays.ToWorkingDaysOfWeek();   // Monday
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="circular-buffer.html">Circular buffer</a> — fixed-capacity FIFO ring buffer.</li>
-<li><a href="evicting-dictionary.html">Evicting dictionary</a> — capacity-bounded dictionary with FIFO / LRU / LFU eviction.</li>
-<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> — full namespace overview.</li>
-<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+<li><a href="circular-buffer.html">Circular buffer</a> - fixed-capacity FIFO ring buffer.</li>
+<li><a href="evicting-dictionary.html">Evicting dictionary</a> - capacity-bounded dictionary with FIFO / LRU / LFU eviction.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> - full namespace overview.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -300,7 +300,7 @@ WorkingDaysOfWeek back = WeekPattern.Weekdays.ToWorkingDaysOfWeek();   // Monday
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

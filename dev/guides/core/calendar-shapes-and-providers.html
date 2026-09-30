@@ -87,9 +87,9 @@
         <article data-uid="">
 <h1 id="fiscal-quarters-working-weeks-and-weekend-providers">Fiscal quarters, working weeks, and weekend providers</h1>
 
-<p>The <a href="date-extensions.html">date extensions</a> default to a January-to-December year, a Monday-to-Friday working week, and a Saturday–Sunday weekend. This guide covers the four types that change those defaults — <a class="xref" href="../../api/Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a> for the common month-anchored quarter systems, <a class="xref" href="../../api/Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a> for any other quarter shape (with the built-in <a class="xref" href="../../api/Bodu.Extensions.FiscalWeekQuarterProvider.html">FiscalWeekQuarterProvider</a> for 52/53-week retail calendars), <a class="xref" href="../../api/Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a> for a weekend that no <a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> preset names — and the bridge between <code>WorkingDaysOfWeek</code> and <a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a> in <a class="xref" href="../../api/Bodu.Extensions.WorkingDaysOfWeekExtensions.html">WorkingDaysOfWeekExtensions</a>.</p>
+<p>The <a href="date-extensions.html">date extensions</a> default to a January-to-December year, a Monday-to-Friday working week, and a Saturday-Sunday weekend. This guide covers the four types that change those defaults - <a class="xref" href="../../api/Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a> for the common month-anchored quarter systems, <a class="xref" href="../../api/Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a> for any other quarter shape (with the built-in <a class="xref" href="../../api/Bodu.Extensions.FiscalWeekQuarterProvider.html">FiscalWeekQuarterProvider</a> for 52/53-week retail calendars), <a class="xref" href="../../api/Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a> for a weekend that no <a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> preset names - and the bridge between <code>WorkingDaysOfWeek</code> and <a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a> in <a class="xref" href="../../api/Bodu.Extensions.WorkingDaysOfWeekExtensions.html">WorkingDaysOfWeekExtensions</a>.</p>
 <p>All of the examples below were run against the library; the comments show the actual results.</p>
-<h2 id="pattern-1--the-built-in-quarter-definitions">Pattern 1 — the built-in quarter definitions</h2>
+<h2 id="pattern-1---the-built-in-quarter-definitions">Pattern 1 - the built-in quarter definitions</h2>
 <p><a class="xref" href="../../api/Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a> names seven fixed quarter systems. Each is a value you pass to the <code>Quarter</code> / <code>FirstDateOfQuarter</code> / <code>LastDateOfQuarter</code> / <code>IsFirstDateOfQuarter</code> / <code>IsLastDateOfQuarter</code> / <code>FirstDateOfWeekInQuarter</code> / <code>LastDateOfWeekInQuarter</code> overloads, and to the static <code>GetFirstDateOfQuarter</code> / <code>GetLastDateOfQuarter</code> / <code>GetFirstDateOfWeekInQuarter</code> / <code>GetLastDateOfWeekInQuarter</code> companions.</p>
 <table>
 <thead>
@@ -105,67 +105,67 @@
 <tbody>
 <tr>
 <td><code>JanuaryToDecember</code> (default)</td>
-<td>1 Jan – 31 Mar</td>
-<td>1 Apr – 30 Jun</td>
-<td>1 Jul – 30 Sep</td>
-<td>1 Oct – 31 Dec</td>
+<td>1 Jan - 31 Mar</td>
+<td>1 Apr - 30 Jun</td>
+<td>1 Jul - 30 Sep</td>
+<td>1 Oct - 31 Dec</td>
 <td>Calendar year</td>
 </tr>
 <tr>
 <td><code>FebruaryToJanuary</code></td>
-<td>1 Feb – 30 Apr</td>
-<td>1 May – 31 Jul</td>
-<td>1 Aug – 31 Oct</td>
-<td>1 Nov – 31 Jan</td>
+<td>1 Feb - 30 Apr</td>
+<td>1 May - 31 Jul</td>
+<td>1 Aug - 31 Oct</td>
+<td>1 Nov - 31 Jan</td>
 <td>Some retail and agricultural years</td>
 </tr>
 <tr>
 <td><code>March25ToMarch24</code></td>
-<td>25 Mar – 24 Jun</td>
-<td>25 Jun – 24 Sep</td>
-<td>25 Sep – 24 Dec</td>
-<td>25 Dec – 24 Mar</td>
+<td>25 Mar - 24 Jun</td>
+<td>25 Jun - 24 Sep</td>
+<td>25 Sep - 24 Dec</td>
+<td>25 Dec - 24 Mar</td>
 <td>Historical civil year (Lady Day)</td>
 </tr>
 <tr>
 <td><code>AprilToMarch</code></td>
-<td>1 Apr – 30 Jun</td>
-<td>1 Jul – 30 Sep</td>
-<td>1 Oct – 31 Dec</td>
-<td>1 Jan – 31 Mar</td>
+<td>1 Apr - 30 Jun</td>
+<td>1 Jul - 30 Sep</td>
+<td>1 Oct - 31 Dec</td>
+<td>1 Jan - 31 Mar</td>
 <td>India, Japan, many public bodies</td>
 </tr>
 <tr>
 <td><code>April6ToApril5</code></td>
-<td>6 Apr – 5 Jul</td>
-<td>6 Jul – 5 Oct</td>
-<td>6 Oct – 5 Jan</td>
-<td>6 Jan – 5 Apr</td>
+<td>6 Apr - 5 Jul</td>
+<td>6 Jul - 5 Oct</td>
+<td>6 Oct - 5 Jan</td>
+<td>6 Jan - 5 Apr</td>
 <td>UK personal tax year</td>
 </tr>
 <tr>
 <td><code>JulyToJune</code></td>
-<td>1 Jul – 30 Sep</td>
-<td>1 Oct – 31 Dec</td>
-<td>1 Jan – 31 Mar</td>
-<td>1 Apr – 30 Jun</td>
+<td>1 Jul - 30 Sep</td>
+<td>1 Oct - 31 Dec</td>
+<td>1 Jan - 31 Mar</td>
+<td>1 Apr - 30 Jun</td>
 <td>Australia, New Zealand</td>
 </tr>
 <tr>
 <td><code>OctoberToSeptember</code></td>
-<td>1 Oct – 31 Dec</td>
-<td>1 Jan – 31 Mar</td>
-<td>1 Apr – 30 Jun</td>
-<td>1 Jul – 30 Sep</td>
+<td>1 Oct - 31 Dec</td>
+<td>1 Jan - 31 Mar</td>
+<td>1 Apr - 30 Jun</td>
+<td>1 Jul - 30 Sep</td>
 <td>US federal government</td>
 </tr>
 <tr>
 <td><code>Custom</code></td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td>Marker only; passing it throws <code>InvalidOperationException</code> — supply an <code>IQuarterDefinitionProvider</code> instead</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>Marker only; passing it throws <code>InvalidOperationException</code> - supply an <code>IQuarterDefinitionProvider</code> instead</td>
 </tr>
 </tbody>
 </table>
@@ -189,9 +189,9 @@ foreach (CalendarQuarterDefinition definition in Enum.GetValues&lt;CalendarQuart
 // OctoberToSeptember   Q3  2024-04-01 .. 2024-06-30
 </code></pre>
 <p>The definitions only know about <em>quarters</em>. The fiscal-year members (<code>FiscalYear</code>, <code>AddFiscalYears</code>, <code>FirstDateOfFiscalYear</code>, …) require a provider, because a fiscal year's label (&quot;FY2024&quot;) is a policy decision the enum does not encode.</p>
-<h2 id="pattern-2--implementing-iquarterdefinitionprovider">Pattern 2 — implementing <code>IQuarterDefinitionProvider</code></h2>
-<p><a class="xref" href="../../api/Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a> is the extension point for any quarter shape. It has twelve abstract members in <code>DateTime</code> / <code>DateOnly</code> pairs — <code>GetQuarter</code>, <code>GetQuarterStart</code>, <code>GetQuarterEnd</code>, <code>GetQuarterStartDate</code>, <code>GetQuarterEndDate</code> (each with a by-date and a by-<code>(quarter, fiscalYear)</code> form), <code>Is53WeekFiscalYear</code>, and <code>GetWeeksInFiscalYear</code> — plus two <code>GetFiscalYear</code> members with a <strong>default implementation</strong> that probes the candidate years around the date's calendar year against your <code>GetQuarterStart(1, y)</code> / <code>GetQuarterEnd(4, y)</code>. You can accept that default or override it directly.</p>
-<p>The provider below models a fiscal year that opens on 1 February and is labelled by its opening calendar year: FY2024 runs 1 Feb 2024 – 31 Jan 2025.</p>
+<h2 id="pattern-2---implementing-iquarterdefinitionprovider">Pattern 2 - implementing <code>IQuarterDefinitionProvider</code></h2>
+<p><a class="xref" href="../../api/Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a> is the extension point for any quarter shape. It has twelve abstract members in <code>DateTime</code> / <code>DateOnly</code> pairs - <code>GetQuarter</code>, <code>GetQuarterStart</code>, <code>GetQuarterEnd</code>, <code>GetQuarterStartDate</code>, <code>GetQuarterEndDate</code> (each with a by-date and a by-<code>(quarter, fiscalYear)</code> form), <code>Is53WeekFiscalYear</code>, and <code>GetWeeksInFiscalYear</code> - plus two <code>GetFiscalYear</code> members with a <strong>default implementation</strong> that probes the candidate years around the date's calendar year against your <code>GetQuarterStart(1, y)</code> / <code>GetQuarterEnd(4, y)</code>. You can accept that default or override it directly.</p>
+<p>The provider below models a fiscal year that opens on 1 February and is labelled by its opening calendar year: FY2024 runs 1 Feb 2024 - 31 Jan 2025.</p>
 <pre><code class="lang-csharp">using Bodu.Extensions;
 
 /// &lt;summary&gt;A fiscal year that opens on 1 February: quarters begin on 1 Feb, 1 May, 1 Aug, and 1 Nov.&lt;/summary&gt;
@@ -259,7 +259,7 @@ DateTime qEnd      = date.LastDateOfQuarter(provider);       // 2025-01-31
 bool lastDay       = date.IsLastDateOfFiscalYear(provider);  // false
 DateTime fyStart   = DateTimeExtensions.FirstDateOfFiscalYear(2024, provider);   // 2024-02-01
 DateTime fyEnd     = DateTimeExtensions.LastDateOfFiscalYear(2024, provider);    // 2025-01-31
-DateTime nextYear  = date.AddFiscalYears(1, provider);       // 2026-01-21 — keeps the day offset into the fiscal year
+DateTime nextYear  = date.AddFiscalYears(1, provider);       // 2026-01-21 - keeps the day offset into the fiscal year
 DateTime firstMonQ = date.FirstDateOfWeekInQuarter(DayOfWeek.Monday, provider);  // 2024-11-04
 int dateOnlyQ      = new DateOnly(2025, 1, 20).Quarter(provider);                // 4
 </code></pre>
@@ -267,9 +267,9 @@ int dateOnlyQ      = new DateOnly(2025, 1, 20).Quarter(provider);               
 <ul>
 <li><code>GetQuarterStart</code> / <code>GetQuarterEnd</code> return the boundary <strong>dates at midnight</strong> and should preserve the receiver's <code>DateTimeKind</code>; the extensions compare them against date-truncated values.</li>
 <li><code>GetQuarterEnd(q, fy)</code> must be the day before <code>GetQuarterStart(q + 1, fy)</code>, and <code>GetQuarterEnd(4, fy)</code> the day before <code>GetQuarterStart(1, fy + 1)</code>, or the default <code>GetFiscalYear</code> probe will find gaps.</li>
-<li><code>AddFiscalYears</code> preserves the date's offset (in days) from its fiscal-year start, which is why 20 Jan 2025 — day 354 of a 366-day fiscal year — becomes 21 Jan 2026 in the 365-day one.</li>
+<li><code>AddFiscalYears</code> preserves the date's offset (in days) from its fiscal-year start, which is why 20 Jan 2025 - day 354 of a 366-day fiscal year - becomes 21 Jan 2026 in the 365-day one.</li>
 </ul>
-<h2 id="pattern-3--5253-week-retail-calendars-with-fiscalweekquarterprovider">Pattern 3 — 52/53-week retail calendars with <code>FiscalWeekQuarterProvider</code></h2>
+<h2 id="pattern-3---5253-week-retail-calendars-with-fiscalweekquarterprovider">Pattern 3 - 52/53-week retail calendars with <code>FiscalWeekQuarterProvider</code></h2>
 <p><a class="xref" href="../../api/Bodu.Extensions.FiscalWeekQuarterProvider.html">FiscalWeekQuarterProvider</a> is the built-in provider for calendars whose year is made of whole weeks: four 13-week quarters (52 weeks), with a 53rd week folded into Q4 roughly every five or six years. It is configured entirely through its constructor:</p>
 <table>
 <thead>
@@ -282,8 +282,8 @@ int dateOnlyQ      = new DateOnly(2025, 1, 20).Quarter(provider);               
 <tbody>
 <tr>
 <td><code>month</code></td>
-<td>—</td>
-<td>The anchor month (1–12).</td>
+<td>-</td>
+<td>The anchor month (1-12).</td>
 </tr>
 <tr>
 <td><code>dayOfWeek</code></td>
@@ -303,7 +303,7 @@ int dateOnlyQ      = new DateOnly(2025, 1, 20).Quarter(provider);               
 <tr>
 <td><code>pattern</code></td>
 <td><code>Weeks445</code></td>
-<td>How the 13 weeks of a quarter split into three periods — see below.</td>
+<td>How the 13 weeks of a quarter split into three periods - see below.</td>
 </tr>
 </tbody>
 </table>
@@ -318,12 +318,12 @@ var retail = new FiscalWeekQuarterProvider(
     useNearestDayOfWeek: true,
     pattern: FiscalWeekPattern.Weeks454);
 
-DateTime q1Start = retail.GetQuarterStart(1, 2024);   // 2024-02-04 — the Sunday nearest 1 Feb 2024
-DateTime q1End   = retail.GetQuarterEnd(1, 2024);     // 2024-05-04 — 13 weeks later
+DateTime q1Start = retail.GetQuarterStart(1, 2024);   // 2024-02-04 - the Sunday nearest 1 Feb 2024
+DateTime q1End   = retail.GetQuarterEnd(1, 2024);     // 2024-05-04 - 13 weeks later
 DateTime q4Start = retail.GetQuarterStart(4, 2024);   // 2024-11-03
 DateTime q4End   = retail.GetQuarterEnd(4, 2024);     // 2025-02-01
 int weeks2024    = retail.GetWeeksInFiscalYear(2024); // 52
-bool long2023    = retail.Is53WeekFiscalYear(2023);   // true — FY2023 ran 29 Jan 2023 – 3 Feb 2024
+bool long2023    = retail.Is53WeekFiscalYear(2023);   // true - FY2023 ran 29 Jan 2023 - 3 Feb 2024
 int weeks2023    = retail.GetWeeksInFiscalYear(2023); // 53
 
 var date = new DateTime(2024, 5, 15);
@@ -331,11 +331,11 @@ int quarter      = date.Quarter(retail);              // 2
 int fiscalYear   = date.FiscalYear(retail);           // 2024
 DateTime qStart  = date.FirstDateOfQuarter(retail);   // 2024-05-05
 DateTime qEnd    = date.LastDateOfQuarter(retail);    // 2024-08-03
-int janFy        = new DateTime(2025, 1, 15).FiscalYear(retail);         // 2024 — January belongs to the prior label
-int lastDayFy    = retail.GetFiscalYear(new DateOnly(2024, 2, 3));       // 2023 — last day of the 53-week year
+int janFy        = new DateTime(2025, 1, 15).FiscalYear(retail);         // 2024 - January belongs to the prior label
+int lastDayFy    = retail.GetFiscalYear(new DateOnly(2024, 2, 3));       // 2023 - last day of the 53-week year
 </code></pre>
 <h3 id="the-three-week-patterns">The three week patterns</h3>
-<p><a class="xref" href="../../api/Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a> records how each 13-week quarter is divided into three periods (months). The quarter <em>boundaries</em> the provider reports are the same for all three — every quarter is 13 weeks, with the 53rd week added to Q4 — so the pattern is informational for consumers that need period-level arithmetic:</p>
+<p><a class="xref" href="../../api/Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a> records how each 13-week quarter is divided into three periods (months). The quarter <em>boundaries</em> the provider reports are the same for all three - every quarter is 13 weeks, with the 53rd week added to Q4 - so the pattern is informational for consumers that need period-level arithmetic:</p>
 <table>
 <thead>
 <tr>
@@ -348,17 +348,17 @@ int lastDayFy    = retail.GetFiscalYear(new DateOnly(2024, 2, 3));       // 2023
 <tr>
 <td><code>Weeks544</code></td>
 <td>5, 4, 4</td>
-<td>weeks 1–5, 6–9, 10–13</td>
+<td>weeks 1-5, 6-9, 10-13</td>
 </tr>
 <tr>
 <td><code>Weeks454</code></td>
 <td>4, 5, 4</td>
-<td>weeks 1–4, 5–9, 10–13</td>
+<td>weeks 1-4, 5-9, 10-13</td>
 </tr>
 <tr>
 <td><code>Weeks445</code> (default)</td>
 <td>4, 4, 5</td>
-<td>weeks 1–4, 5–8, 9–13; in a 53-week year Q4's third period is 6 weeks</td>
+<td>weeks 1-4, 5-8, 9-13; in a 53-week year Q4's third period is 6 weeks</td>
 </tr>
 </tbody>
 </table>
@@ -375,7 +375,7 @@ foreach (FiscalWeekPattern pattern in Enum.GetValues&lt;FiscalWeekPattern&gt;())
 // Weeks454: Q1 2024-02-04 .. 2024-05-04; FY2023 Q4 2023-10-29 .. 2024-02-03
 // Weeks445: Q1 2024-02-04 .. 2024-05-04; FY2023 Q4 2023-10-29 .. 2024-02-03
 </code></pre>
-<h2 id="pattern-4--weekordinal">Pattern 4 — <code>WeekOrdinal</code></h2>
+<h2 id="pattern-4---weekordinal">Pattern 4 - <code>WeekOrdinal</code></h2>
 <p><a class="xref" href="../../api/Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a> (<code>First</code>, <code>Second</code>, <code>Third</code>, <code>Fourth</code>, <code>Fifth</code>, <code>Last</code>) is the &quot;nth weekday of the month&quot; selector consumed by <code>NthDateOfWeekInMonth</code> / <code>GetNthDateOfWeekInMonth</code>, and reported by the <code>WeekOrdinalOfMonth</code> extension property.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Extensions;
@@ -405,12 +405,12 @@ WeekOrdinal a = new DateTime(2024, 5, 27).WeekOrdinalOfMonth;   // Fourth
 WeekOrdinal b = new DateTime(2024, 5, 31).WeekOrdinalOfMonth;   // Fifth
 </code></pre>
 <p><code>Fifth</code> throws when the month has only four of that weekday; <code>Last</code> always resolves.</p>
-<h2 id="pattern-5--a-fridaysaturday-weekend-with-iweekenddefinitionprovider">Pattern 5 — a Friday–Saturday weekend with <code>IWeekendDefinitionProvider</code></h2>
+<h2 id="pattern-5---a-friday-saturday-weekend-with-iweekenddefinitionprovider">Pattern 5 - a Friday-Saturday weekend with <code>IWeekendDefinitionProvider</code></h2>
 <p><a class="xref" href="../../api/Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a> has a single member, <code>bool IsWeekend(DayOfWeek)</code>. It is consulted by <code>IsWeekday</code>, <code>IsWeekend</code>, <code>NextWeekday</code>, <code>PreviousWeekday</code>, and <code>WorkingDaysOfWeek.ToWeekPattern(provider)</code> <strong>only when the working week is <code>WorkingDaysOfWeek.Custom</code></strong>; a named preset carries its own weekend and ignores the provider.</p>
 <pre><code class="lang-csharp">using Bodu;
 using Bodu.Extensions;
 
-/// &lt;summary&gt;Friday–Saturday weekend, as used across much of the Gulf region.&lt;/summary&gt;
+/// &lt;summary&gt;Friday-Saturday weekend, as used across much of the Gulf region.&lt;/summary&gt;
 public sealed class FridaySaturdayWeekend : IWeekendDefinitionProvider
 {
     public bool IsWeekend(DayOfWeek dayOfWeek) =&gt;
@@ -423,7 +423,7 @@ using Bodu.Extensions;
 var gulf = new FridaySaturdayWeekend();
 var friday = new DateTime(2024, 5, 17);
 
-bool defaultWeekend = friday.IsWeekend();                                    // false — Saturday–Sunday default
+bool defaultWeekend = friday.IsWeekend();                                    // false - Saturday-Sunday default
 bool gulfWeekend    = friday.IsWeekend(WorkingDaysOfWeek.Custom, gulf);      // true
 bool gulfWeekday    = friday.IsWeekday(WorkingDaysOfWeek.Custom, gulf);      // false
 DateTime next       = friday.NextWeekday(WorkingDaysOfWeek.Custom, gulf);    // 2024-05-19 (Sunday)
@@ -443,7 +443,7 @@ bool presetIgnoresProvider = friday.IsWeekend(WorkingDaysOfWeek.MondayToFriday, 
 <li>The provider is called once per day tested, so keep <code>IsWeekend</code> cheap and pure. A provider whose weekend is the whole week makes <code>NextWeekday</code> loop until it runs out of <code>DateTime</code> range.</li>
 </ul>
 <p><a class="xref" href="../../api/Bodu.Extensions.IWeekendDefinitionProviderExtensions.html#Bodu_Extensions_IWeekendDefinitionProviderExtensions_ToWeekPattern_">ToWeekPattern</a> is the bridge from a provider to a <a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a>: it asks the provider about each of the seven days and returns the working days. Once you have the pattern, the <code>WeekPattern</code> overloads of <code>IsInWorkingWeek</code>, <code>IsRestDay</code>, <code>NextWeekday</code>, and <code>PreviousWeekday</code> no longer need the provider at all.</p>
-<h2 id="pattern-6--bridging-workingdaysofweek-and-weekpattern">Pattern 6 — bridging <code>WorkingDaysOfWeek</code> and <code>WeekPattern</code></h2>
+<h2 id="pattern-6---bridging-workingdaysofweek-and-weekpattern">Pattern 6 - bridging <code>WorkingDaysOfWeek</code> and <code>WeekPattern</code></h2>
 <p><a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> is a closed list of named working weeks (<code>MondayToFriday</code>, <code>MondayToSaturday</code>, <code>MondayToThursdayAndSaturday</code>, <code>SaturdayToThursday</code>, <code>SaturdayToWednesday</code>, <code>SundayToFriday</code>, <code>SundayToThursday</code>, <code>AllDays</code>, plus the <code>Custom</code> marker); <a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a> is an open seven-day bitmask. <a class="xref" href="../../api/Bodu.Extensions.WorkingDaysOfWeekExtensions.html">WorkingDaysOfWeekExtensions</a> converts in both directions:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu;
@@ -452,8 +452,8 @@ using Bodu.Extensions;
 WeekPattern gulfWeek = WorkingDaysOfWeek.SundayToThursday.ToWeekPattern();
 string symbols       = gulfWeek.ToString();                                  // &quot;SMTWT__&quot;
 
-WeekPattern fourDay  = WeekPattern.Parse(&quot;_MTWT__&quot;);                         // Monday–Thursday
-WorkingDaysOfWeek back = fourDay.ToWorkingDaysOfWeek();                      // Custom — no preset matches
+WeekPattern fourDay  = WeekPattern.Parse(&quot;_MTWT__&quot;);                         // Monday-Thursday
+WorkingDaysOfWeek back = fourDay.ToWorkingDaysOfWeek();                      // Custom - no preset matches
 bool matched         = fourDay.TryGetWorkingDaysOfWeek(out WorkingDaysOfWeek named);   // false
 bool isWeekdays      = WeekPattern.Weekdays.TryGetWorkingDaysOfWeek(out named);        // true, named == MondayToFriday
 bool allDays         = WorkingDaysOfWeek.AllDays.ToWeekPattern() == WeekPattern.AllDays;   // true
@@ -500,11 +500,11 @@ bool allDays         = WorkingDaysOfWeek.AllDays.ToWeekPattern() == WeekPattern.
 </div>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="date-extensions.html">Date and time extensions</a> — every overload that accepts the types on this page.</li>
-<li><a href="week-pattern.html">WeekPattern</a> — parsing, formatting, and composing the seven-day bitmask.</li>
-<li><a href="../calendar/index.html">Working-day and notable-date calculations</a> — <code>Bodu.Globalization.Calendar</code> adds public holidays and observed-date rules on top of these working-week primitives.</li>
-<li><a class="xref" href="../../api/Bodu.Extensions.html"><code>Bodu.Extensions</code> API reference</a> — full signatures for the provider interfaces and the fiscal-week provider.</li>
-<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+<li><a href="date-extensions.html">Date and time extensions</a> - every overload that accepts the types on this page.</li>
+<li><a href="week-pattern.html">WeekPattern</a> - parsing, formatting, and composing the seven-day bitmask.</li>
+<li><a href="../calendar/index.html">Working-day and notable-date calculations</a> - <code>Bodu.Globalization.Calendar</code> adds public holidays and observed-date rules on top of these working-week primitives.</li>
+<li><a class="xref" href="../../api/Bodu.Extensions.html"><code>Bodu.Extensions</code> API reference</a> - full signatures for the provider interfaces and the fiscal-week provider.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -524,7 +524,7 @@ bool allDays         = WorkingDaysOfWeek.AllDays.ToWeekPattern() == WeekPattern.
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

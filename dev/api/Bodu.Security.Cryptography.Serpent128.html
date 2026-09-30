@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_Serpent128" data-uid="Bodu.Security.Cryptography.Serpent128" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Serpent128 Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ Serpent128 Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs">Serpent128.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs">Serpent128.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides a managed implementation of the canonical <code>Serpent</code> symmetric block cipher, which operates on 128-bit
@@ -402,7 +402,7 @@ byte[] roundTrip = serpent.Decrypt(ciphertext);</code></pre>
   <div class="markdown level0 remarks"><p>
 Serpent is an Advanced Encryption Standard (AES) finalist by Ross Anderson, Eli Biham, and Lars Knudsen, first
 published in 1998 (NESSIE submission, <em>Serpent: A Proposal for the Advanced Encryption Standard</em>). It is a
-32-round substitution–permutation network that combines eight 4-bit S-boxes with a bitsliced linear transform, and
+32-round substitution-permutation network that combines eight 4-bit S-boxes with a bitsliced linear transform, and
 is widely regarded as one of the most conservative designs among the AES finalists.
 </p>
 <p>
@@ -422,9 +422,9 @@ the canonical, externally vetted 128-bit cipher.
 Default mode: <a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html#Bodu_Security_Cryptography_CipherModeKind_CBC">CBC</a>; default padding: <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode#system-security-cryptography-paddingmode-pkcs7">PKCS7</a>.
 </li><li>32 rounds, 8 × 4-bit S-boxes, bitsliced linear transform.</li></ul>
 <p>
-<strong>When to choose Serpent128.</strong> Pick Serpent when a deliberately conservative AES alternative is wanted
-— the 32-round design has a wider security margin than AES's 14 rounds at 256-bit key, at the cost of noticeably
-lower throughput. For general-purpose encryption with hardware acceleration prefer
+<strong>When to choose Serpent128.</strong> Pick Serpent when a deliberately conservative AES alternative is
+wanted - the 32-round design has a wider security margin than AES's 14 rounds at 256-bit key, at the cost of
+noticeably lower throughput. For general-purpose encryption with hardware acceleration prefer
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.aes">Aes</a>; for an alternative AES finalist with better software performance
 prefer <a class="xref" href="Bodu.Security.Cryptography.Twofish.html">Twofish</a>. Use <a class="xref" href="Bodu.Security.Cryptography.Camellia.html">Camellia</a> when ISO/IEC, CRYPTREC, or NESSIE approval is a
 procurement requirement.
@@ -446,7 +446,7 @@ data: its running time does not depend on either.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Serpent128__ctor" data-uid="Bodu.Security.Cryptography.Serpent128.#ctor">
   Serpent128()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -487,7 +487,7 @@ before calling <a class="xref" href="Bodu.Security.Cryptography.Serpent128.html#
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Serpent128_Create" data-uid="Bodu.Security.Cryptography.Serpent128.Create">
   Create()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -524,7 +524,7 @@ before calling <a class="xref" href="Bodu.Security.Cryptography.Serpent128.html#
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Serpent128_CreateDecryptor_System_Byte___System_Byte___" data-uid="Bodu.Security.Cryptography.Serpent128.CreateDecryptor(System.Byte[],System.Byte[])">
   CreateDecryptor(byte[], byte[]?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -570,7 +570,7 @@ before calling <a class="xref" href="Bodu.Security.Cryptography.Serpent128.html#
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Serpent128_CreateEncryptor_System_Byte___System_Byte___" data-uid="Bodu.Security.Cryptography.Serpent128.CreateEncryptor(System.Byte[],System.Byte[])">
   CreateEncryptor(byte[], byte[]?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -616,7 +616,7 @@ before calling <a class="xref" href="Bodu.Security.Cryptography.Serpent128.html#
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Serpent128_Dispose_System_Boolean_" data-uid="Bodu.Security.Cryptography.Serpent128.Dispose(System.Boolean)">
   Dispose(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -653,7 +653,7 @@ before calling <a class="xref" href="Bodu.Security.Cryptography.Serpent128.html#
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Serpent128_GenerateIV" data-uid="Bodu.Security.Cryptography.Serpent128.GenerateIV">
   GenerateIV()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -684,7 +684,7 @@ before calling <a class="xref" href="Bodu.Security.Cryptography.Serpent128.html#
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Serpent128_GenerateKey" data-uid="Bodu.Security.Cryptography.Serpent128.GenerateKey">
   GenerateKey()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -746,7 +746,7 @@ before calling <a class="xref" href="Bodu.Security.Cryptography.Serpent128.html#
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

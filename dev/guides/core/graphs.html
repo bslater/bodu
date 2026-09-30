@@ -87,9 +87,9 @@
         <article data-uid="">
 <h1 id="graphs-and-graph-algorithms">Graphs and graph algorithms</h1>
 
-<p>The <code>Bodu.Collections.Generic.Graphs</code> namespace is a compact graph toolkit: an adjacency-list container, <code>Graph&lt;T&gt;</code>; a static catalogue of classic algorithms, <code>GraphAlgorithms</code>; and a union-find structure, <code>DisjointSet&lt;T&gt;</code>. The container holds vertices of any non-nullable type connected by optionally weighted edges, and the algorithms — breadth-first and depth-first traversal, Dijkstra shortest path, Kahn topological sort, and connected components — run over read-only interfaces, so they are decoupled from how the graph is stored.</p>
+<p>The <code>Bodu.Collections.Generic.Graphs</code> namespace is a compact graph toolkit: an adjacency-list container, <code>Graph&lt;T&gt;</code>; a static catalogue of classic algorithms, <code>GraphAlgorithms</code>; and a union-find structure, <code>DisjointSet&lt;T&gt;</code>. The container holds vertices of any non-nullable type connected by optionally weighted edges, and the algorithms - breadth-first and depth-first traversal, Dijkstra shortest path, Kahn topological sort, and connected components - run over read-only interfaces, so they are decoupled from how the graph is stored.</p>
 <p>Edge directedness is fixed at construction by <code>GraphKind</code>, weights are finite and non-negative <code>double</code>s defaulting to <code>1.0</code>, and vertex identity follows an optional <code>IEqualityComparer&lt;T&gt;</code>. The algorithms reuse the library's own <code>Deque&lt;T&gt;</code> and <code>IndexedPriorityQueue&lt;TElement, TPriority&gt;</code> primitives and evaluate iteratively, so they do not overflow the stack on deep graphs. See the full API surface at <a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.html">Bodu.Collections.Generic.Graphs</a>.</p>
-<h2 id="pattern-1--build-a-graph-and-enumerate-neighbors">Pattern 1 — Build a graph and enumerate neighbors</h2>
+<h2 id="pattern-1---build-a-graph-and-enumerate-neighbors">Pattern 1 - Build a graph and enumerate neighbors</h2>
 <p><code>Graph&lt;T&gt;</code> is directed or undirected for its whole life, chosen with <code>GraphKind</code> at construction. Vertices referenced by <code>AddEdge</code> are created on demand; you only call <code>AddVertex</code> for an isolated vertex with no edges.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic.Graphs;
@@ -131,13 +131,13 @@ foreach ((string neighbor, double weight) in weighted.WeightedNeighbors(&quot;A&
 
 bool added = weighted.TryAddEdge(&quot;A&quot;, &quot;B&quot;, 99.0);  // false: edge already exists
 </code></pre>
-<p>Use a comparer to control vertex identity — for example, case-insensitive string vertices:</p>
+<p>Use a comparer to control vertex identity - for example, case-insensitive string vertices:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">var graph = new Graph&lt;string&gt;(GraphKind.Undirected, StringComparer.OrdinalIgnoreCase);
 graph.AddEdge(&quot;Node&quot;, &quot;Other&quot;);
 Console.WriteLine(graph.ContainsVertex(&quot;NODE&quot;));   // true
 </code></pre>
-<h2 id="pattern-2--traverse-with-bfs-and-dfs">Pattern 2 — Traverse with BFS and DFS</h2>
+<h2 id="pattern-2---traverse-with-bfs-and-dfs">Pattern 2 - Traverse with BFS and DFS</h2>
 <p><code>GraphAlgorithms.BreadthFirstSearch</code> and <code>DepthFirstSearch</code> return lazily evaluated sequences of the vertices reachable from a source, beginning with the source itself. They accept any <code>IReadOnlyGraph&lt;T&gt;</code>, which <code>Graph&lt;T&gt;</code> implements.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic.Graphs;
@@ -156,7 +156,7 @@ var dfs = GraphAlgorithms.DepthFirstSearch(graph, 1).ToList();     // e.g. 1, 3,
 <p>Both throw <code>ArgumentException</code> if the source is not in the graph. Because the sequences are lazy, you can short-circuit a search with LINQ:</p>
 <pre><code class="lang-csharp">bool reachable = GraphAlgorithms.BreadthFirstSearch(graph, 1).Contains(4);   // true
 </code></pre>
-<h2 id="pattern-3--shortest-path-with-dijkstra">Pattern 3 — Shortest path with Dijkstra</h2>
+<h2 id="pattern-3---shortest-path-with-dijkstra">Pattern 3 - Shortest path with Dijkstra</h2>
 <p>The shortest-path family runs Dijkstra's algorithm over non-negative weights and accepts an <code>IReadOnlyWeightedGraph&lt;T&gt;</code>. There are three entry points:</p>
 <ul>
 <li><code>ShortestPath</code> returns just the vertex list (empty when unreachable).</li>
@@ -190,10 +190,10 @@ Console.WriteLine(miss.Path.Count);                        // 0
 <p>To get every distance from a source in one pass:</p>
 <pre><code class="lang-csharp">IReadOnlyDictionary&lt;string, double&gt; distances =
     GraphAlgorithms.ShortestPathLengths(graph, &quot;A&quot;);
-// { A: 0, B: 1, C: 3 }  — unreachable vertices (e.g. Z) are omitted
+// { A: 0, B: 1, C: 3 }  - unreachable vertices (e.g. Z) are omitted
 </code></pre>
-<p>Dijkstra relaxation here is backed by <code>IndexedPriorityQueue&lt;TElement, TPriority&gt;</code>, whose O(log n) decrease-key is exactly what an efficient Dijkstra needs — see the <a href="indexed-priority-queue.html">indexed priority queue guide</a>. Because weights must be non-negative, there is no negative-edge (Bellman-Ford) variant.</p>
-<h2 id="pattern-4--topological-sort">Pattern 4 — Topological sort</h2>
+<p>Dijkstra relaxation here is backed by <code>IndexedPriorityQueue&lt;TElement, TPriority&gt;</code>, whose O(log n) decrease-key is exactly what an efficient Dijkstra needs - see the <a href="indexed-priority-queue.html">indexed priority queue guide</a>. Because weights must be non-negative, there is no negative-edge (Bellman-Ford) variant.</p>
+<h2 id="pattern-4---topological-sort">Pattern 4 - Topological sort</h2>
 <p><code>TopologicalSort</code> orders the vertices of a directed acyclic graph so that every edge points from an earlier vertex to a later one, using Kahn's algorithm. It is directed-only: an undirected graph throws <code>InvalidOperationException</code>.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic.Graphs;
@@ -203,7 +203,7 @@ graph.AddEdge(&quot;compile&quot;, &quot;link&quot;);
 graph.AddEdge(&quot;link&quot;, &quot;run&quot;);
 
 IReadOnlyList&lt;string&gt; order = GraphAlgorithms.TopologicalSort(graph);
-// compile, link, run  — every edge respected
+// compile, link, run  - every edge respected
 </code></pre>
 <p><code>TopologicalSort</code> throws <code>InvalidOperationException</code> on a cycle. When a cycle is possible, prefer the non-throwing <code>TryTopologicalSort</code>, which returns <code>false</code> and an empty list instead:</p>
 <!-- compile -->
@@ -221,7 +221,7 @@ else
     Console.WriteLine(sorted.Count);   // 0
 }
 </code></pre>
-<h2 id="pattern-5--connected-components">Pattern 5 — Connected components</h2>
+<h2 id="pattern-5---connected-components">Pattern 5 - Connected components</h2>
 <p><code>ConnectedComponents</code> partitions the vertices into groups that are mutually reachable, treating every edge as undirected. For a directed graph this yields the weakly connected components.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic.Graphs;
@@ -236,7 +236,7 @@ IReadOnlyList&lt;IReadOnlyList&lt;int&gt;&gt; components = GraphAlgorithms.Conne
 // Three components: { 1, 2, 3 }, { 10, 11 }, { 20 }
 Console.WriteLine(components.Count);   // 3
 </code></pre>
-<h2 id="pattern-6--union-find-with-disjointset">Pattern 6 — Union-find with DisjointSet</h2>
+<h2 id="pattern-6---union-find-with-disjointset">Pattern 6 - Union-find with DisjointSet</h2>
 <p>Sometimes you want the connectivity machinery without building a graph at all. <code>DisjointSet&lt;T&gt;</code> is an element-keyed union-find: each element starts in its own singleton set, <code>Union</code> merges two sets, and <code>Find</code> returns a set's canonical representative. Two elements are connected exactly when they share a representative.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic.Graphs;
@@ -268,10 +268,10 @@ Console.WriteLine(ds.Contains(99));     // false
 <p><code>DisjointSet&lt;T&gt;</code> combines path-halving compression with union by size, giving amortized near-constant cost per operation. <code>ConnectedComponents</code> (Pattern 5) is itself built on <code>DisjointSet&lt;T&gt;</code>.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="indexed-priority-queue.html">Indexed priority queue</a> — the decrease-key heap that powers Dijkstra in Pattern 3.</li>
-<li><a href="choosing-a-collection.html">Choosing a collection</a> — where the graph types sit among the other <code>Bodu.Collections</code> collections.</li>
-<li><a href="../../docs/collections/index.html">Bodu.Collections introduction</a> — the headline <code>Bodu.Collections</code> building blocks.</li>
-<li><a href="../topics/core-foundations.html">Core foundations topic</a> — the wider tour of buffers, collections, and extensions.</li>
+<li><a href="indexed-priority-queue.html">Indexed priority queue</a> - the decrease-key heap that powers Dijkstra in Pattern 3.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> - where the graph types sit among the other <code>Bodu.Collections</code> collections.</li>
+<li><a href="../../docs/collections/index.html">Bodu.Collections introduction</a> - the headline <code>Bodu.Collections</code> building blocks.</li>
+<li><a href="../topics/core-foundations.html">Core foundations topic</a> - the wider tour of buffers, collections, and extensions.</li>
 <li>API reference: <a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.html">Bodu.Collections.Generic.Graphs</a>.</li>
 </ul>
 
@@ -292,7 +292,7 @@ Console.WriteLine(ds.Contains(99));     // false
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -87,9 +87,9 @@
         <article data-uid="">
 <h1 id="streaming-and-validation">Streaming and validation</h1>
 
-<p>Two things separate reading a PST you trust from reading one you do not: how much of it you let into memory at once, and how much of it you insist is well-formed. This guide covers both — the streaming twins of every payload accessor, the four knobs on <a class="xref" href="../../api/Bodu.IO.Pst.PstFileOptions.html">PstFileOptions</a>, what each <a class="xref" href="../../api/Bodu.IO.Pst.PstValidationLevel.html">PstValidationLevel</a> actually checks, and the complete <a class="xref" href="../../api/Bodu.IO.Pst.PstFileError.html">PstFileError</a> catalogue so you can say <em>why</em> a file was rejected.</p>
+<p>Two things separate reading a PST you trust from reading one you do not: how much of it you let into memory at once, and how much of it you insist is well-formed. This guide covers both - the streaming twins of every payload accessor, the four knobs on <a class="xref" href="../../api/Bodu.IO.Pst.PstFileOptions.html">PstFileOptions</a>, what each <a class="xref" href="../../api/Bodu.IO.Pst.PstValidationLevel.html">PstValidationLevel</a> actually checks, and the complete <a class="xref" href="../../api/Bodu.IO.Pst.PstFileError.html">PstFileError</a> catalogue so you can say <em>why</em> a file was rejected.</p>
 <p>The samples run against <code>sample1.pst</code> from the <a href="../../samples/io-pst.html">runnable PST sample</a>, copied as <code>archive.pst</code>; the quoted output is what they print.</p>
-<h2 id="pattern-1--price-a-payload-then-stream-it">Pattern 1 — price a payload, then stream it</h2>
+<h2 id="pattern-1---price-a-payload-then-stream-it">Pattern 1 - price a payload, then stream it</h2>
 <p>Every payload has a cheap length and a streaming read beside its buffered convenience. On a <a class="xref" href="../../api/Bodu.IO.Pst.PstNode.html">PstNode</a>: <code>DataLength</code> sums the data tree's leaf lengths from its index blocks without reading any leaf; <code>ReadAllBytes()</code> flattens the tree into one array; <code>OpenDataStream()</code> returns a seekable read-only <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> that keeps one leaf block resident, so the logical payload can exceed available memory.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.IO.Pst;
@@ -113,7 +113,7 @@ Console.WriteLine($&quot;streamed {total} bytes; ReadAllBytes would allocate {no
 // 0x00200024 (NormalMessage): 4198 bytes
 // streamed 4198 bytes; ReadAllBytes would allocate 4198
 </code></pre>
-<p>The interesting payloads are usually not node data but <em>property values</em> — an attachment's bytes live behind <code>PidTagAttachDataBinary</code> (<code>0x3701</code>) in the attachment object's property context. <a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyContext.html">PstPropertyContext</a> offers the same pair: <code>TryGetValueLength(id, out length)</code> reads only the value's index blocks, and <code>TryOpenValueStream(id, out stream)</code> serves a subnode-resident value block by block — the same stream <code>OpenDataStream</code> returns — while a heap-resident value is served from the decoded heap bytes.</p>
+<p>The interesting payloads are usually not node data but <em>property values</em> - an attachment's bytes live behind <code>PidTagAttachDataBinary</code> (<code>0x3701</code>) in the attachment object's property context. <a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyContext.html">PstPropertyContext</a> offers the same pair: <code>TryGetValueLength(id, out length)</code> reads only the value's index blocks, and <code>TryOpenValueStream(id, out stream)</code> serves a subnode-resident value block by block - the same stream <code>OpenDataStream</code> returns - while a heap-resident value is served from the decoded heap bytes.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.IO.Pst;
 
@@ -151,7 +151,7 @@ foreach (PstNodeInfo info in file.EnumerateNodes())
 // 0x00200024 -&gt; 0x00008025: 93142-byte payload
 </code></pre>
 <p>Both <code>Try*</code> members return <code>false</code> when the property is absent and throw <a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> when its storage is malformed. Inline and fixed-width values are exposed through the stream as their raw little-endian bytes for uniformity; the typed accessors on <a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyValue.html">PstPropertyValue</a> remain the natural way to read those.</p>
-<p>Table cells have the identical pair on <a class="xref" href="../../api/Bodu.IO.Pst.PstTableRow.html">PstTableRow</a> — <code>TryGetCellLength(id, out length)</code> and <code>TryOpenCellStream(id, out stream)</code> — which answer <code>false</code> when the column is missing <em>or</em> the row's existence bitmap marks the cell absent:</p>
+<p>Table cells have the identical pair on <a class="xref" href="../../api/Bodu.IO.Pst.PstTableRow.html">PstTableRow</a> - <code>TryGetCellLength(id, out length)</code> and <code>TryOpenCellStream(id, out stream)</code> - which answer <code>false</code> when the column is missing <em>or</em> the row's existence bitmap marks the cell absent:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.IO.Pst;
 
@@ -178,7 +178,7 @@ foreach (PstNodeInfo info in file.EnumerateNodes())
 </code></pre>
 <div class="WARNING">
 <h5>Warning</h5>
-<p>Every stream these members return is bound to the session. After the <a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html">PstFile</a> is disposed, each read throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a> — even for blocks already in the cache. Dispose the stream before the session, and never hand one across a <code>using</code> boundary that outlives the file.</p>
+<p>Every stream these members return is bound to the session. After the <a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html">PstFile</a> is disposed, each read throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a> - even for blocks already in the cache. Dispose the stream before the session, and never hand one across a <code>using</code> boundary that outlives the file.</p>
 </div>
 <table>
 <thead>
@@ -239,32 +239,32 @@ Console.WriteLine(file.Format);
 <tr>
 <td><code>ValidationLevel</code></td>
 <td><code>Compatible</code></td>
-<td>How much cross-checking each read performs — see the next section.</td>
+<td>How much cross-checking each read performs - see the next section.</td>
 <td>Depends on the level.</td>
 </tr>
 <tr>
 <td><code>BlockCacheSize</code></td>
 <td><code>256</code></td>
-<td>The least-recently-used cache of decoded pages and block payloads, in entries. Each entry is at most one 8 KiB block, so the default bounds the cache near 2 MB per session. Repeated structural reads — B-tree walks, the same node's contexts read twice — are served from it instead of re-reading and re-decoding the source. <code>0</code> disables caching; negative values throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a>.</td>
+<td>The least-recently-used cache of decoded pages and block payloads, in entries. Each entry is at most one 8 KiB block, so the default bounds the cache near 2 MB per session. Repeated structural reads - B-tree walks, the same node's contexts read twice - are served from it instead of re-reading and re-decoding the source. <code>0</code> disables caching; negative values throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a>.</td>
 <td>Not a limit.</td>
 </tr>
 <tr>
 <td><code>MaxNodeDataLength</code></td>
 <td>256 MiB</td>
-<td>The largest node payload the session <strong>materializes</strong>: it governs <code>ReadAllBytes</code>, the heap-on-node parse behind <code>ReadPropertyContext</code> / <code>ReadTableContext</code>, and subnode-resident property values read whole. The <em>declared</em> size is what is bounded — a crafted tree can reference the same physical block thousands of times, so the file size proves nothing. <code>OpenDataStream</code> and the <code>TryOpen*Stream</code> members are unaffected by design. Zero or negative values throw.</td>
+<td>The largest node payload the session <strong>materializes</strong>: it governs <code>ReadAllBytes</code>, the heap-on-node parse behind <code>ReadPropertyContext</code> / <code>ReadTableContext</code>, and subnode-resident property values read whole. The <em>declared</em> size is what is bounded - a crafted tree can reference the same physical block thousands of times, so the file size proves nothing. <code>OpenDataStream</code> and the <code>TryOpen*Stream</code> members are unaffected by design. Zero or negative values throw.</td>
 <td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> with <code>Error == PstFileError.LimitExceeded</code>, at every validation level.</td>
 </tr>
 <tr>
 <td><code>MaxDataTreeLeaves</code></td>
 <td>65,536</td>
-<td>The most leaf data blocks one node's data tree may reference (about 512 MiB of 8 KiB blocks). Enforced while the tree's internal blocks are walked, before any leaf is read, for streaming and buffered reads alike — the leaf list itself is the allocation it bounds. Zero or negative values throw.</td>
+<td>The most leaf data blocks one node's data tree may reference (about 512 MiB of 8 KiB blocks). Enforced while the tree's internal blocks are walked, before any leaf is read, for streaming and buffered reads alike - the leaf list itself is the allocation it bounds. Zero or negative values throw.</td>
 <td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> with <code>Error == PstFileError.LimitExceeded</code>, at every validation level.</td>
 </tr>
 </tbody>
 </table>
 <p>The mail-store reader forwards the first three from <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.html">OutlookMailStoreReaderOptions</a> and leaves <code>MaxDataTreeLeaves</code> at its default; open the file with <code>PstFile</code> when you need to change it.</p>
 <h2 id="what-each-validation-level-checks">What each validation level checks</h2>
-<p><a class="xref" href="../../api/Bodu.IO.Pst.PstValidationLevel.html">PstValidationLevel</a> governs only how the reader treats <em>recoverable</em> inconsistencies. The memory-safety invariants — the magic, a declared version, a header of the right size, the sentinel byte, page and block geometry, every bounds check on every offset, and the two resource limits above — hold at every level.</p>
+<p><a class="xref" href="../../api/Bodu.IO.Pst.PstValidationLevel.html">PstValidationLevel</a> governs only how the reader treats <em>recoverable</em> inconsistencies. The memory-safety invariants - the magic, a declared version, a header of the right size, the sentinel byte, page and block geometry, every bounds check on every offset, and the two resource limits above - hold at every level.</p>
 <table>
 <thead>
 <tr>
@@ -283,14 +283,14 @@ Console.WriteLine(file.Format);
 </tr>
 <tr>
 <td>Header CRC (<code>dwCRCPartial</code> over 471 bytes)</td>
-<td>—</td>
+<td>-</td>
 <td>Yes</td>
 <td>Yes</td>
 </tr>
 <tr>
 <td>Header file length within the stream</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
 <td>Yes</td>
 </tr>
 <tr>
@@ -301,8 +301,8 @@ Console.WriteLine(file.Format);
 </tr>
 <tr>
 <td>Page CRC, trailer signature, and recorded block identifier</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
 <td>Yes</td>
 </tr>
 <tr>
@@ -313,8 +313,8 @@ Console.WriteLine(file.Format);
 </tr>
 <tr>
 <td>Block CRC, trailer signature, and recorded block identifier</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
 <td>Yes</td>
 </tr>
 <tr>
@@ -331,8 +331,8 @@ Console.WriteLine(file.Format);
 </tr>
 <tr>
 <td>BTree-on-heap key order</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
 <td>Yes</td>
 </tr>
 <tr>
@@ -343,8 +343,8 @@ Console.WriteLine(file.Format);
 </tr>
 </tbody>
 </table>
-<p><code>Compatible</code> is the choice for real-world files — writers have shipped stores with stale trailer CRCs that Outlook reads happily. <code>Strict</code> is for validating a corpus or refusing tampered input. <code>Minimal</code> is for salvage: it still walks structure safely but will follow a checksum-failed page as far as the geometry allows.</p>
-<h2 id="pattern-2--open-under-strict-and-handle-a-truncated-file">Pattern 2 — open under <code>Strict</code> and handle a truncated file</h2>
+<p><code>Compatible</code> is the choice for real-world files - writers have shipped stores with stale trailer CRCs that Outlook reads happily. <code>Strict</code> is for validating a corpus or refusing tampered input. <code>Minimal</code> is for salvage: it still walks structure safely but will follow a checksum-failed page as far as the geometry allows.</p>
+<h2 id="pattern-2---open-under-strict-and-handle-a-truncated-file">Pattern 2 - open under <code>Strict</code> and handle a truncated file</h2>
 <p>A truncated PST is the commonest damage. Under <code>Strict</code> the header's declared file length is compared with the stream at open, so the file is rejected before a single node is read:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.IO.Pst;
@@ -364,17 +364,17 @@ catch (PstUnsupportedFormatException ex)
 }
 catch (PstFileFormatException ex) when (ex.Error == PstFileError.InvalidHeader)
 {
-    Console.WriteLine($&quot;rejected at open: {ex.Error} — {ex.Message}&quot;);
+    Console.WriteLine($&quot;rejected at open: {ex.Error} - {ex.Message}&quot;);
 }
 catch (PstFileException ex)
 {
-    Console.WriteLine($&quot;rejected: {ex.Error} — {ex.Message}&quot;);
+    Console.WriteLine($&quot;rejected: {ex.Error} - {ex.Message}&quot;);
 }
 
-// rejected at open: InvalidHeader — The header declares a file length beyond the end of the stream.
+// rejected at open: InvalidHeader - The header declares a file length beyond the end of the stream.
 </code></pre>
 <p>Catch <a class="xref" href="../../api/Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a> first when you want to say &quot;this is an OST&quot; rather than &quot;this is corrupt&quot;; it is a sibling of <a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a>, not a subclass, so the order between those two does not matter, but both derive from <a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a>, which must come last.</p>
-<p>The tolerant default opens the same stream — the header is intact and the B-tree pages sit in the surviving half — and fails only when a read reaches past the end:</p>
+<p>The tolerant default opens the same stream - the header is intact and the B-tree pages sit in the surviving half - and fails only when a read reaches past the end:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.IO.Pst;
 
@@ -398,14 +398,14 @@ try
 }
 catch (PstFileFormatException ex)
 {
-    Console.WriteLine($&quot;failed while reading: {ex.Error} — {ex.Message}&quot;);
+    Console.WriteLine($&quot;failed while reading: {ex.Error} - {ex.Message}&quot;);
 }
 
 // opened: Unicode
-// failed while reading: InvalidBlock — The block at offset 153152 is malformed or failed its trailer validation.
+// failed while reading: InvalidBlock - The block at offset 153152 is malformed or failed its trailer validation.
 </code></pre>
 <p>A read that escapes the file surfaces as <code>InvalidBlock</code> (or <code>InvalidPage</code> for a page), which is why a salvage tool can enumerate what survived and stop cleanly at the cut. Corruption never escapes as any other exception type.</p>
-<p>Damage that leaves the geometry intact is where the levels diverge. Flip one byte inside a block's payload and <code>Compatible</code> reads straight through it — the bytes are wrong, but nothing structural disagrees — while <code>Strict</code> catches the CRC:</p>
+<p>Damage that leaves the geometry intact is where the levels diverge. Flip one byte inside a block's payload and <code>Compatible</code> reads straight through it - the bytes are wrong, but nothing structural disagrees - while <code>Strict</code> catches the CRC:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.IO.Pst;
 
@@ -425,12 +425,12 @@ foreach (PstValidationLevel level in new[] { PstValidationLevel.Compatible, PstV
     }
     catch (PstFileFormatException ex)
     {
-        Console.WriteLine($&quot;{level}: {ex.Error} — {ex.Message}&quot;);
+        Console.WriteLine($&quot;{level}: {ex.Error} - {ex.Message}&quot;);
     }
 }
 
 // Compatible: read 52 nodes, 16650 payload bytes
-// Strict: InvalidBlock — The block at offset 19648 is malformed or failed its trailer validation.
+// Strict: InvalidBlock - The block at offset 19648 is malformed or failed its trailer validation.
 </code></pre>
 <h2 id="the-pstfileerror-catalogue">The <code>PstFileError</code> catalogue</h2>
 <p>Every failure surfaces through <a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a> or a subclass, and every one carries a <a class="xref" href="../../api/Bodu.IO.Pst.PstFileError.html">PstFileError</a> in <code>Error</code> so you can branch without parsing the message.</p>
@@ -522,12 +522,12 @@ foreach (PstValidationLevel level in new[] { PstValidationLevel.Compatible, PstV
 </div>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="reading-nodes-and-tables.html">Reading nodes and tables</a> — the open → look up → read recipe and the typed accessors.</li>
-<li><a href="../outlook/reader-options-and-limits.html">Reader options and resource limits</a> — how the mail-store reader forwards these options, and its own limits on top.</li>
-<li><a href="../outlook/reading-pst-mail-stores.html">Reading .pst mail stores</a> — the two exception families as the mail-store reader surfaces them.</li>
-<li><a href="../../docs/io-pst/concepts.html">Bodu.IO.Pst core concepts</a> — header, trailers, and the decoded-block cache in the vocabulary page.</li>
-<li><a href="../../samples/io-pst.html">Runnable PST sample</a> — the StreamingAndValidation scenario over the same fixtures.</li>
-<li><a href="index.html">Bodu.IO.Pst guides</a> — every guide in this topic.</li>
+<li><a href="reading-nodes-and-tables.html">Reading nodes and tables</a> - the open → look up → read recipe and the typed accessors.</li>
+<li><a href="../outlook/reader-options-and-limits.html">Reader options and resource limits</a> - how the mail-store reader forwards these options, and its own limits on top.</li>
+<li><a href="../outlook/reading-pst-mail-stores.html">Reading .pst mail stores</a> - the two exception families as the mail-store reader surfaces them.</li>
+<li><a href="../../docs/io-pst/concepts.html">Bodu.IO.Pst core concepts</a> - header, trailers, and the decoded-block cache in the vocabulary page.</li>
+<li><a href="../../samples/io-pst.html">Runnable PST sample</a> - the StreamingAndValidation scenario over the same fixtures.</li>
+<li><a href="index.html">Bodu.IO.Pst guides</a> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -547,7 +547,7 @@ foreach (PstValidationLevel level in new[] { PstValidationLevel.Compatible, PstV
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

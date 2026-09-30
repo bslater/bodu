@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 250" role="img" aria-labelledby="fg-t fg-d">
-  <title id="fg-t">NotableDateFilter — two-stage gate evaluation</title>
+  <title id="fg-t">NotableDateFilter - two-stage gate evaluation</title>
   <desc id="fg-d">A filtered Resolve call passes each rule through a primary gate before resolving its date, then passes each resolved NotableDate through a secondary gate. Rules that fail the primary gate are skipped entirely, avoiding the cost of date resolution. Dates that fail the secondary gate are discarded from the result.</desc>
 
   <defs>
@@ -45,9 +45,9 @@
     <rect class="pan" width="800" height="230" rx="8"/>
     <rect class="hdr" width="800" height="30" rx="8"/>
     <rect class="hdr" y="22" width="800" height="8"/>
-    <text class="ttl" x="16" y="20">NotableDateFilter — two-stage gate evaluation</text>
+    <text class="ttl" x="16" y="20">NotableDateFilter - two-stage gate evaluation</text>
 
-    <!-- ROW: main flow at y=78–116 (h=38, center y=97) -->
+    <!-- ROW: main flow at y=78-116 (h=38, center y=97) -->
 
     <!-- NotableDateRule input -->
     <g transform="translate(16 78)">

@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="using-base16-hexadecimal">Using Base16 (hexadecimal)</h1>
 
-<p><code>Base16</code> is the simplest of the encoding family — every input byte maps to exactly two hex characters, so 100 %
+<p><code>Base16</code> is the simplest of the encoding family - every input byte maps to exactly two hex characters, so 100 %
 payload expansion. It is the canonical form for hash digests, low-level binary inspection, and any time the data
 needs to be human-readable at the byte boundary.</p>
 <pre><code>input bytes  : DE AD BE EF                 (4 bytes)
@@ -110,17 +110,17 @@ string upper = Base16.Encode(data, BaseFormattingOptions.UpperCase); // &quot;DE
 // (bytes, variant, options) shape used by Base32/58/64/85:
 string up2  = Base16.Encode(data, Base16Variant.Upper);              // &quot;DEADBEEF&quot;
 
-// Decode (strict — no decorations, even length, alphabet-only)
+// Decode (strict - no decorations, even length, alphabet-only)
 byte[] back  = Base16.Decode(&quot;deadbeef&quot;);
 byte[] mixed = Base16.Decode(&quot;DeAdBeEf&quot;);                            // case-insensitive
 
-// Decode (lenient — 0x prefix, whitespace)
+// Decode (lenient - 0x prefix, whitespace)
 byte[] dump = Base16.Decode(
     &quot;0xDE AD BE EF&quot;,
     BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
 </code></pre>
 <h2 id="formatting-decorations">Formatting decorations</h2>
-<p><code>BaseFormattingOptions</code> is a flag enum — combine flags with <code>|</code>:</p>
+<p><code>BaseFormattingOptions</code> is a flag enum - combine flags with <code>|</code>:</p>
 <table>
 <thead>
 <tr>
@@ -166,7 +166,7 @@ Base16.Encode(hash, BaseFormattingOptions.UpperCase | BaseFormattingOptions.Incl
 <p><code>InsertLineBreaks</code> breaks at 64 chars to match the PEM / hex-dump convention; <code>InsertSpacing</code> adds one space
 between every encoded byte. The two are independent.</p>
 <h2 id="lenient-parsing">Lenient parsing</h2>
-<p>The decoder is <strong>strict</strong> by default — alphabet only, even length, no decorations. The <code>BaseFormatStyles</code> flags
+<p>The decoder is <strong>strict</strong> by default - alphabet only, even length, no decorations. The <code>BaseFormatStyles</code> flags
 relax specific rules:</p>
 <table>
 <thead>
@@ -178,7 +178,7 @@ relax specific rules:</p>
 <tbody>
 <tr>
 <td><code>None</code></td>
-<td>Strict mode — exact even-length hex digits, nothing else</td>
+<td>Strict mode - exact even-length hex digits, nothing else</td>
 </tr>
 <tr>
 <td><code>AllowPrefix</code></td>
@@ -190,11 +190,11 @@ relax specific rules:</p>
 </tr>
 <tr>
 <td><code>AllowMissingPadding</code></td>
-<td>No-op — Base16 has no padding character</td>
+<td>No-op - Base16 has no padding character</td>
 </tr>
 <tr>
 <td><code>RequireCanonicalEncoding</code></td>
-<td>No-op — every byte maps to exactly two characters, so there are no unused terminal bits to constrain</td>
+<td>No-op - every byte maps to exactly two characters, so there are no unused terminal bits to constrain</td>
 </tr>
 </tbody>
 </table>
@@ -203,7 +203,7 @@ Base16.Decode(&quot;0xDEADBEEF&quot;,      BaseFormatStyles.AllowPrefix);
 Base16.Decode(&quot;DE AD BE EF&quot;,     BaseFormatStyles.IgnoreWhitespace);
 Base16.Decode(&quot;0xDE AD BE EF&quot;,   BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
 </code></pre>
-<p>Non-ASCII whitespace (no-break space, em space) is <em>not</em> stripped — <code>IgnoreWhitespace</code> is deliberately strict
+<p>Non-ASCII whitespace (no-break space, em space) is <em>not</em> stripped - <code>IgnoreWhitespace</code> is deliberately strict
 about which characters count as whitespace.</p>
 <h2 id="bcl-style-aliases">BCL-style aliases</h2>
 <p>If you prefer the <code>System.Convert</code> naming convention:</p>
@@ -223,7 +223,7 @@ int written = Base16.Encode(data, buffer);
 if (Base16.TryEncode(data, buffer, out int charsWritten)) { … }
 </code></pre>
 <p>For UTF-8 byte buffers (network / file pipelines):</p>
-<pre><code class="lang-csharp">byte[] utf8 = Base16.EncodeToUtf8(data);                 // ASCII bytes — bit-identical to chars
+<pre><code class="lang-csharp">byte[] utf8 = Base16.EncodeToUtf8(data);                 // ASCII bytes - bit-identical to chars
 Base16.TryEncodeToUtf8(data, utf8Buffer, out int len);
 
 // Streaming decode using OperationStatus
@@ -236,7 +236,7 @@ var status = Base16.DecodeFromUtf8(
     isFinalBlock: false);
 </code></pre>
 <p><code>Base16.DecodeFromUtf8</code> with <code>isFinalBlock: false</code> returns <code>OperationStatus.NeedMoreData</code> when the chunk ends on
-an odd nibble — the partial pair is left unconsumed for the next call.</p>
+an odd nibble - the partial pair is left unconsumed for the next call.</p>
 <div class="TIP">
 <h5>Tip</h5>
 <p>The <code>TryToHexString</code> / <code>TryToHexStringLower</code> overloads come in both a <code>Span&lt;char&gt;</code> and a <code>Span&lt;byte&gt;</code> (UTF-8)
@@ -244,7 +244,7 @@ destination form, so the BCL-style alias surface covers the same zero-allocation
 <code>TryEncodeToUtf8</code>.</p>
 </div>
 <h2 id="encoding-a-guid">Encoding a GUID</h2>
-<p><code>Base16</code> encodes a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a> directly — handy for a stable, lower-case hex identifier without round-tripping
+<p><code>Base16</code> encodes a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a> directly - handy for a stable, lower-case hex identifier without round-tripping
 through <code>Guid.ToString(&quot;N&quot;)</code>:</p>
 <pre><code class="lang-csharp">Guid id = Guid.NewGuid();
 
@@ -256,12 +256,12 @@ bool ok      = Base16.TryDecodeGuid(hex, out Guid parsed);        // non-throwin
 </code></pre>
 <p>The bytes are the GUID's native mixed-endian layout (matching <code>Guid.TryWriteBytes</code>), so <code>DecodeGuid(Encode(id))</code>
 reconstructs <code>id</code> exactly. This differs from <code>Guid.ToString(&quot;N&quot;)</code>, which renders the first three fields in
-big-endian text order — the two forms are <em>not</em> interchangeable byte-for-byte, so decode hex produced by <code>Encode</code>
+big-endian text order - the two forms are <em>not</em> interchangeable byte-for-byte, so decode hex produced by <code>Encode</code>
 with <code>DecodeGuid</code>, not by re-parsing a <code>ToString(&quot;N&quot;)</code> result.</p>
 <h2 id="validation-and-sizing-helpers">Validation and sizing helpers</h2>
 <pre><code class="lang-csharp">Base16.IsValid(&quot;deadbeef&quot;);        // true
 Base16.IsValid(&quot;dead beef&quot;);       // false (whitespace under strict mode)
-Base16.IsValid(&quot;0xdead&quot;, BaseFormatStyles.AllowPrefix); // false — odd digit count after prefix
+Base16.IsValid(&quot;0xdead&quot;, BaseFormatStyles.AllowPrefix); // false - odd digit count after prefix
 Base16.IsHexDigit('A');            // true
 Base16.IsHexDigit('g');            // false
 
@@ -288,10 +288,10 @@ Base16.GetDecodedLength(&quot;deadbeef&quot;);                            // 4 (
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="base32.html">Base32 guide</a></strong> — when 60 % expansion is enough and you need a smaller alphabet.</li>
-<li><strong><a href="base64.html">Base64 guide</a></strong> — when 33 % expansion matters more than human readability.</li>
-<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> — runtime-selected encoding choice.</li>
-<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
+<li><strong><a href="base32.html">Base32 guide</a></strong> - when 60 % expansion is enough and you need a smaller alphabet.</li>
+<li><strong><a href="base64.html">Base64 guide</a></strong> - when 33 % expansion matters more than human readability.</li>
+<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> - runtime-selected encoding choice.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> - every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
 </ul>
 
 </article>
@@ -311,7 +311,7 @@ Base16.GetDecodedLength(&quot;deadbeef&quot;);                            // 4 (
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

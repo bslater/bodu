@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Text.Configuration — Introduction | BODU </title>
+      <title>Bodu.Text.Configuration - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Text.Configuration — Introduction | BODU ">
+      <meta name="title" content="Bodu.Text.Configuration - Introduction | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -90,22 +90,22 @@
 <p><img src="../../images/hero-configuration.svg" alt="Bodu.Text.Configuration"></p>
 <p><strong>Bodu.Text.Configuration</strong> is the configuration-layering package of the Bodu suite, and one half of the
 <strong><a href="../topics/configuration.html">Configuration</a></strong> topic. It reads a single text file in the
-familiar <strong>INI / EditorConfig</strong> shape — preamble, named sections, <code>key = value</code> properties — and projects it into a
+familiar <strong>INI / EditorConfig</strong> shape - preamble, named sections, <code>key = value</code> properties - and projects it into a
 flattened, target-aware <strong>view</strong> keyed by colon-delimited configuration keys. The result drops directly into the same
 shape <code>Microsoft.Extensions.Configuration</code> expects, without taking a dependency on that package: the bridge lives in
 the sibling <a href="../extensions-configuration-text/index.html"><code>Bodu.Extensions.Configuration.Text</code></a> library.</p>
 <p>The package is intentionally narrow: parse a document, optionally collect diagnostics, resolve it for a target path,
 and read typed values back out. No reflection, no <code>dynamic</code>, no schema, no global state.</p>
 <h2 id="core-mental-model">Core mental model</h2>
-<p><img src="../../images/diagrams/text-configuration-pipeline.svg" alt="Configuration pipeline — source text to resolved view"></p>
+<p><img src="../../images/diagrams/text-configuration-pipeline.svg" alt="Configuration pipeline - source text to resolved view"></p>
 <p>Configuration runs as a four-stage pipeline: the <strong>reader</strong> tokenises the source text and produces a
-<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> — a <code>sealed</code> type that inherits the read-only
+<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> - a <code>sealed</code> type that inherits the read-only
 <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> model; the <strong>resolver</strong> layers the document's preamble
 and matching glob-anchored sections in source order to produce a <code>ConfigurationView</code> for one target path; the <strong>getter
 API</strong> on the view returns typed values (<code>GetString</code>, <code>GetInt32</code>, <code>GetInt64</code>, <code>GetBoolean</code>, <code>GetEnum&lt;T&gt;</code>, and
 <code>GetValue&lt;T&gt;</code> for any <code>ISpanParsable&lt;T&gt;</code>). Every stage is opt-in: parse without resolving when you just want the
 document, resolve without typed accessors when you only need raw strings.</p>
-<p>A configuration file is <em>not</em> a snapshot of a single object graph — it is a layered description of how
+<p>A configuration file is <em>not</em> a snapshot of a single object graph - it is a layered description of how
 properties change as a target path moves through a directory tree. The library's job is to collapse those layers down
 to the right answer for a specific target.</p>
 <h2 id="the-shape-of-the-library">The shape of the library</h2>
@@ -130,7 +130,7 @@ to the right answer for a specific target.</p>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationExtensions.html">ConfigurationExtensions</a></td>
-<td>Extension methods on <code>IniDocumentBase</code> and <code>IniEntry</code> — including the <code>Resolve(targetPath)</code> projection and <code>ConfigurationPath</code>.</td>
+<td>Extension methods on <code>IniDocumentBase</code> and <code>IniEntry</code> - including the <code>Resolve(targetPath)</code> projection and <code>ConfigurationPath</code>.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationResolvedEntry.html">ConfigurationResolvedEntry</a></td>
@@ -138,7 +138,7 @@ to the right answer for a specific target.</p>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationParseResult.html">ConfigurationParseResult</a></td>
-<td>The output of <code>ParseWithDiagnostics</code> — carries both the document and any diagnostics collected during the parse.</td>
+<td>The output of <code>ParseWithDiagnostics</code> - carries both the document and any diagnostics collected during the parse.</td>
 </tr>
 </tbody>
 </table>
@@ -214,7 +214,7 @@ to the right answer for a specific target.</p>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDiagnosticCode.html">ConfigurationDiagnosticCode</a></td>
-<td>Enum identifying the diagnostic category — 16 stable codes plus <code>None</code> (duplicate key, unterminated section, unbalanced brace, …).</td>
+<td>Enum identifying the diagnostic category - 16 stable codes plus <code>None</code> (duplicate key, unterminated section, unbalanced brace, …).</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDiagnosticMode.html">ConfigurationDiagnosticMode</a></td>
@@ -245,7 +245,7 @@ to the right answer for a specific target.</p>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationSectionHeaderMode.html">ConfigurationSectionHeaderMode</a></td>
-<td>Enum: <code>Lenient</code> (default), <code>Strict</code>, <code>AllowTrailingInlineComment</code> — trailing content after <code>]</code>.</td>
+<td>Enum: <code>Lenient</code> (default), <code>Strict</code>, <code>AllowTrailingInlineComment</code> - trailing content after <code>]</code>.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationUnsetValueMode.html">ConfigurationUnsetValueMode</a></td>
@@ -317,7 +317,7 @@ to the right answer for a specific target.</p>
 <p>Profiles split across two option types: the <em>parse</em> columns (inline comments, section headers, duplicate keys,
 diagnostics) come from <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a>; the <em>resolve</em> columns (preamble, missing
 path root, unset) come from <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationResolveOptions.html">ConfigurationResolveOptions</a>. Both bags are
-<code>init</code>-only-property classes, so the presets are starting points, not contracts — compose a custom bag and override only
+<code>init</code>-only-property classes, so the presets are starting points, not contracts - compose a custom bag and override only
 what needs to differ.</p>
 <div class="NOTE">
 <h5>Note</h5>
@@ -363,7 +363,7 @@ resolved view simply contains no preamble keys at all.</p>
 </tr>
 <tr>
 <td>Use dots in keys but project to colon-delimited form</td>
-<td>(default — <code>ConfigurationKeyMapping.DotToColon</code>)</td>
+<td>(default - <code>ConfigurationKeyMapping.DotToColon</code>)</td>
 </tr>
 <tr>
 <td>Round-trip a document through save</td>
@@ -380,7 +380,7 @@ resolved view simply contains no preamble keys at all.</p>
 </tbody>
 </table>
 <h2 id="file-grammar-at-a-glance">File grammar at a glance</h2>
-<pre><code class="lang-ini"># A preamble property — applies before any section opens.
+<pre><code class="lang-ini"># A preamble property - applies before any section opens.
 root = true
 
 # A section: the header is a glob pattern matched against the resolver's target path.
@@ -402,13 +402,13 @@ lookup inputs on the view; the canonical stored form is the colon-delimited one.
 </ol>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — vocabulary: document vs view, profile, parse/resolve/write options, key mapping, glob pattern, preamble, target path, diagnostic mode, unset.</li>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install + minimal samples for parse-resolve-read, profile presets, diagnostics, round-trip save.</li>
-<li><strong><a href="../../guides/text-configuration/index.html">Bodu.Text.Configuration guides</a></strong> — worked patterns: <a href="../../guides/text-configuration/parsing-and-profiles.html">parsing and profiles</a>, <a href="../../guides/text-configuration/views-and-resolution.html">views and resolution</a>, and <a href="../../guides/text-configuration/diagnostics.html">diagnostics</a>.</li>
-<li><strong><a href="../extensions-configuration-text/index.html">Bodu.Extensions.Configuration.Text</a></strong> — <code>IConfigurationBuilder</code> integration, options binding, file probing.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Text.Configuration.html">Bodu.Text.Configuration API reference</a></strong> — full type-by-type docs.</li>
-<li><strong><a href="../formats/index.html">Bodu.Text.Ini</a></strong> — the standalone INI library, for codec-only INI reading and editing.</li>
-<li><strong><a href="../topics/configuration.html">Configuration topic</a></strong> — this package and its sibling Bodu.Extensions.Configuration.Text side by side.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - vocabulary: document vs view, profile, parse/resolve/write options, key mapping, glob pattern, preamble, target path, diagnostic mode, unset.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install + minimal samples for parse-resolve-read, profile presets, diagnostics, round-trip save.</li>
+<li><strong><a href="../../guides/text-configuration/index.html">Bodu.Text.Configuration guides</a></strong> - worked patterns: <a href="../../guides/text-configuration/parsing-and-profiles.html">parsing and profiles</a>, <a href="../../guides/text-configuration/views-and-resolution.html">views and resolution</a>, and <a href="../../guides/text-configuration/diagnostics.html">diagnostics</a>.</li>
+<li><strong><a href="../extensions-configuration-text/index.html">Bodu.Extensions.Configuration.Text</a></strong> - <code>IConfigurationBuilder</code> integration, options binding, file probing.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Text.Configuration.html">Bodu.Text.Configuration API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="../formats/index.html">Bodu.Text.Ini</a></strong> - the standalone INI library, for codec-only INI reading and editing.</li>
+<li><strong><a href="../topics/configuration.html">Configuration topic</a></strong> - this package and its sibling Bodu.Extensions.Configuration.Text side by side.</li>
 </ul>
 
 </article>
@@ -428,7 +428,7 @@ lookup inputs on the view; the canonical stored form is the colon-delimited one.
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

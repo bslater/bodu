@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_OcbModeTransform" data-uid="Bodu.Security.Cryptography.OcbModeTransform" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 OcbModeTransform Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/OcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/OcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ OcbModeTransform Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/OcbModeTransform.cs">OcbModeTransform.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/OcbModeTransform.cs">OcbModeTransform.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Applies Offset CodeBook mode version 3 (OCB3) to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, providing single-pass
@@ -223,12 +223,12 @@ byte[] sealed_ = ocb.Encrypt(plaintext, associatedData: header);</code></pre>
 
   <h2 id="Bodu_Security_Cryptography_OcbModeTransform_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-<img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — OCB3 realizes both the keystream and the MAC pipelines as a single offset-driven pass over each block.">
+<img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow - OCB3 realizes both the keystream and the MAC pipelines as a single offset-driven pass over each block.">
 </p>
 <p>
 OCB3 collapses the two pipelines of the generic AEAD shape above into a <em>single pass</em>: the keystream and the
 MAC chain share the same per-block offset Δ<sub>i</sub>, so each block is touched by the cipher exactly once. In the
-diagram, this corresponds to merging the top and bottom arrows that reach the MAC — the ciphertext output is
+diagram, this corresponds to merging the top and bottom arrows that reach the MAC - the ciphertext output is
 simultaneously the next input to the authentication accumulator.
 </p>
 <p>
@@ -250,7 +250,7 @@ The L array uses GF(2^128) doubling with polynomial x^128 + x^7 + x^2 + x + 1 (b
 </p>
 <p>
 <strong>When to use OCB3.</strong> Pick OCB3 when you want a single-pass AEAD mode without GCM's
-catastrophic-on-nonce-reuse profile — OCB still requires nonces to be unique per key, but the failure mode is
+catastrophic-on-nonce-reuse profile - OCB still requires nonces to be unique per key, but the failure mode is
 graceful (only that one message's confidentiality is lost; the GHASH-key-leak amplification does not apply). OCB
 historically had patent encumbrances that limited adoption; the patents have since been placed into the public
 domain, but <a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> remains the more widely deployed choice in practice. For nonce-misuse
@@ -269,7 +269,7 @@ environments prefer <a class="xref" href="Bodu.Security.Cryptography.CcmModeTran
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_OcbModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Byte___System_Int32_" data-uid="Bodu.Security.Cryptography.OcbModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,System.Byte[],System.Int32)">
   OcbModeTransform(IBlockCipher, byte[], int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/OcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/OcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -330,7 +330,7 @@ is not a positive multiple of 8.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_OcbModeTransform_TagSize" data-uid="Bodu.Security.Cryptography.OcbModeTransform.TagSize">
   TagSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/OcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/OcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -371,7 +371,7 @@ is not a positive multiple of 8.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_OcbModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.OcbModeTransform.Decrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/OcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/OcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -440,7 +440,7 @@ throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invali
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
     <dd><p>The instance has already encrypted or decrypted a message, including after a previous tag-mismatch failure. AEAD
-transforms are single-use per message — construct a fresh instance.</p>
+transforms are single-use per message - construct a fresh instance.</p>
 </dd>
   </dl>
 
@@ -453,7 +453,7 @@ transforms are single-use per message — construct a fresh instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_OcbModeTransform_Dispose" data-uid="Bodu.Security.Cryptography.OcbModeTransform.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/OcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/OcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -488,7 +488,7 @@ associated-data state from memory.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_OcbModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.OcbModeTransform.Encrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/OcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/OcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -531,7 +531,7 @@ at least <code>plaintext.Length + (TagSize / 8)</code> bytes long.</p>
     <dd><p><code class="paramref">output</code> is too small.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
-    <dd><p>The instance has already encrypted or decrypted a message. AEAD transforms are single-use per message —
+    <dd><p>The instance has already encrypted or decrypted a message. AEAD transforms are single-use per message -
 construct a fresh instance.</p>
 </dd>
   </dl>
@@ -545,7 +545,7 @@ construct a fresh instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_OcbModeTransform_ProcessAssociatedData_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.OcbModeTransform.ProcessAssociatedData(System.ReadOnlySpan{System.Byte})">
   ProcessAssociatedData(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Security.Cryptography/src/Security.Cryptography/OcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Security.Cryptography/src/Security.Cryptography/OcbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -597,7 +597,7 @@ construct a fresh instance.</p>
 
   <h2 id="seealso">See Also</h2>
   <div class="seealso">
-      <div><span><a href="../guides/cryptography/aead-modes.html#ocb3--single-pass-rfc-7253">OCB3 walk-through in the
+      <div><span><a href="../guides/cryptography/aead-modes.html#ocb3---single-pass-rfc-7253">OCB3 walk-through in the
              AEAD-modes guide</a></span></div>
       <div><a class="xref" href="Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a></div>
       <div><a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a></div>
@@ -619,7 +619,7 @@ construct a fresh instance.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

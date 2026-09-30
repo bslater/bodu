@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_XorShiftRandom" data-uid="Bodu.XorShiftRandom" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 XorShiftRandom Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ XorShiftRandom Class
   <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/XorShiftRandom.cs">XorShiftRandom.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/XorShiftRandom.cs">XorShiftRandom.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents a high-performance, non-cryptographic pseudo-random number generator based on Marsaglia's xorshift128
@@ -230,7 +230,7 @@ ShuffleHelpers.Shuffle(bag, rng);</code></pre>
   <h2 id="Bodu_XorShiftRandom_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 <a class="xref" href="Bodu.XorShiftRandom.html">XorShiftRandom</a> derives each output by combining four 32-bit state words through three xor-and-shift
-operations — a generator class introduced by George Marsaglia in 2003. The cost per draw is a handful of register
+operations - a generator class introduced by George Marsaglia in 2003. The cost per draw is a handful of register
 operations with no branching, no division, and no memory allocation, making it materially faster than
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.random">Random</a> in tight inner loops on every supported runtime.
 </p>
@@ -241,7 +241,7 @@ helpers. The default constructor seeds from <a class="xref" href="https://learn.
 preferred choice in tests and reproducible benchmarks.
 </p>
 <p>
-Instances are not thread-safe — state updates are non-atomic and concurrent draws will corrupt the internal state.
+Instances are not thread-safe - state updates are non-atomic and concurrent draws will corrupt the internal state.
 Use a per-thread instance, an external lock, or a thread-local pool when sharing across threads is required.
 </p>
 <p>
@@ -261,7 +261,7 @@ outputs and recover state. Use <span class="xref">System.Security.Cryptography.R
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_XorShiftRandom__ctor" data-uid="Bodu.XorShiftRandom.#ctor">
   XorShiftRandom()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -311,7 +311,7 @@ For <em>distinct sequences across many instances</em> derive the seed from <a cl
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_XorShiftRandom__ctor_System_Int32_" data-uid="Bodu.XorShiftRandom.#ctor(System.Int32)">
   XorShiftRandom(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -348,7 +348,7 @@ For <em>distinct sequences across many instances</em> derive the seed from <a cl
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_XorShiftRandom__ctor_System_UInt32_" data-uid="Bodu.XorShiftRandom.#ctor(System.UInt32)">
   XorShiftRandom(uint)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -389,7 +389,7 @@ For <em>distinct sequences across many instances</em> derive the seed from <a cl
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_XorShiftRandom_Next" data-uid="Bodu.XorShiftRandom.Next">
   Next()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -426,7 +426,7 @@ For <em>distinct sequences across many instances</em> derive the seed from <a cl
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_XorShiftRandom_Next_System_Int32_" data-uid="Bodu.XorShiftRandom.Next(System.Int32)">
   Next(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -479,7 +479,7 @@ rejection rather than modulo, eliminating the modulo-bias that would otherwise s
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_XorShiftRandom_Next_System_Int32_System_Int32_" data-uid="Bodu.XorShiftRandom.Next(System.Int32,System.Int32)">
   Next(int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -524,7 +524,7 @@ when <code class="paramref">minValue</code> equals <code class="paramref">maxVal
 <code class="paramref">maxValue</code>) raises <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>.
 </p>
 <p>
-The full <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> span <code>Next(int.MinValue, int.MaxValue)</code> is supported — the range is computed in
+The full <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> span <code>Next(int.MinValue, int.MaxValue)</code> is supported - the range is computed in
 64-bit space so the subtraction never overflows, and bounded generation uses Lemire-style rejection rather than
 modulo to avoid modulo-bias.
 </p>
@@ -546,7 +546,7 @@ modulo to avoid modulo-bias.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_XorShiftRandom_NextBytes_System_Byte___" data-uid="Bodu.XorShiftRandom.NextBytes(System.Byte[])">
   NextBytes(byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -589,7 +589,7 @@ modulo to avoid modulo-bias.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_XorShiftRandom_NextBytes_System_Span_System_Byte__" data-uid="Bodu.XorShiftRandom.NextBytes(System.Span{System.Byte})">
   NextBytes(Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -631,7 +631,7 @@ partial chunk taking the low-order bytes of one final draw. The packing is ident
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_XorShiftRandom_NextDouble" data-uid="Bodu.XorShiftRandom.NextDouble">
   NextDouble()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -674,7 +674,7 @@ non-cryptographic uses; callers needing finer-grained doubles should compose the
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_XorShiftRandom_NextInt64" data-uid="Bodu.XorShiftRandom.NextInt64">
   NextInt64()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -701,8 +701,8 @@ non-cryptographic uses; callers needing finer-grained doubles should compose the
 
 
   <h4 class="section" id="Bodu_XorShiftRandom_NextInt64_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>The result is composed from two consecutive 32-bit draws of the generator stream — the first draw supplies the
-high word, the second the low word — reduced to 63 bits; a draw equal to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64.maxvalue">MaxValue</a> is
+  <div class="markdown level1 remarks"><p>The result is composed from two consecutive 32-bit draws of the generator stream - the first draw supplies the
+high word, the second the low word - reduced to 63 bits; a draw equal to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64.maxvalue">MaxValue</a> is
 rejected and redrawn so the contractual range <code>[0, long.MaxValue)</code> is preserved without bias.</p>
 </div>
 
@@ -716,7 +716,7 @@ rejected and redrawn so the contractual range <code>[0, long.MaxValue)</code> is
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_XorShiftRandom_NextSingle" data-uid="Bodu.XorShiftRandom.NextSingle">
   NextSingle()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Core/src/XorShiftRandom.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -780,7 +780,7 @@ matches the 24-bit <a class="xref" href="https://learn.microsoft.com/dotnet/api/
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

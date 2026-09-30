@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Globalization_Calendar_NotableDateServiceCollectionExtensions" data-uid="Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 NotableDateServiceCollectionExtensions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ NotableDateServiceCollectionExtensions Class
   <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.DependencyInjection.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar.DependencyInjection">Bodu.Globalization.Calendar.DependencyInjection</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs">NotableDateServiceCollectionExtensions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs">NotableDateServiceCollectionExtensions.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a> extension methods for registering the Bodu notable-date service.</p>
@@ -161,15 +161,15 @@ NotableDateServiceCollectionExtensions Class
 <h1 id="boduglobalizationcalendardependencyinjection-package">Bodu.Globalization.Calendar.DependencyInjection (package)</h1>
 <h2 id="purpose">Purpose</h2>
 <p>The <strong>Bodu.Globalization.Calendar.DependencyInjection</strong> package provides the <code>Microsoft.Extensions.DependencyInjection</code>
-integration for <a href="../apidoc/Bodu.Globalization.Calendar.md"><code>Bodu.Globalization.Calendar</code></a>. It registers
+integration for <a class="xref" href="Bodu.Globalization.Calendar.html"><code>Bodu.Globalization.Calendar</code></a>. It registers
 <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> as a singleton over a loaded
-<a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a> (or a factory that produces one), so an ASP.NET Core application
-— or any <code>Microsoft.Extensions.*</code>-style host — can inject the calendar service rather than composing
+<a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a> (or a factory that produces one), so an ASP.NET Core application -
+or any <code>Microsoft.Extensions.*</code>-style host - can inject the calendar service rather than composing
 <code>new NotableDateService(...)</code> by hand.</p>
 <p>The package is intentionally thin: a resource is an immutable, already-validated value, so registration takes the
 resource (or a factory for it) directly, optionally with a <a class="xref" href="Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a>
 carrying the service collaborators (algorithm registry, collision resolver, adjustment handlers, code-first providers).
-There is no fluent builder — resource-level behavior is carried by the resource's <code>&lt;ResolutionPolicy&gt;</code>. Direct
+There is no fluent builder - resource-level behavior is carried by the resource's <code>&lt;ResolutionPolicy&gt;</code>. Direct
 construction continues to work for consoles, libraries, and tests that prefer not to bring in <code>IServiceCollection</code>.</p>
 <p>There is no <code>Bodu.Globalization.Calendar.DependencyInjection</code> namespace: the package contributes exactly one public
 type, this <a class="xref" href="Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.html">NotableDateServiceCollectionExtensions</a> class, declared in the
@@ -177,10 +177,10 @@ type, this <a class="xref" href="Bodu.Globalization.Calendar.NotableDateServiceC
 scope on <code>IServiceCollection</code>.</p>
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
-<li><strong><a href="../docs/calendar-di/index.html">Introduction</a></strong> — the mental model, the full overload table, lifetimes and idempotency, headline types, and scenarios.</li>
-<li><strong><a href="../docs/calendar-di/getting-started.html">Getting started</a></strong> — install, dependencies, and the plain, keyed, and reloadable samples with <code>appsettings.json</code>, plus composing the caching decorator.</li>
-<li><strong><a href="../guides/calendar/dependency-injection.html">Calendar dependency injection guide</a></strong> — the complete walkthrough: factories, collaborators, the reloadable workflow, and lifetime semantics.</li>
-<li><strong><a href="../guides/calendar/caching/notable-date-caching.html">Caching notable dates guide</a></strong> — <code>AddCachedNotableDateService</code> and the durable backends that wrap these registrations.</li>
+<li><strong><a href="../docs/calendar-di/index.html">Introduction</a></strong> - the mental model, the full overload table, lifetimes and idempotency, headline types, and scenarios.</li>
+<li><strong><a href="../docs/calendar-di/getting-started.html">Getting started</a></strong> - install, dependencies, and the plain, keyed, and reloadable samples with <code>appsettings.json</code>, plus composing the caching decorator.</li>
+<li><strong><a href="../guides/calendar/dependency-injection.html">Calendar dependency injection guide</a></strong> - the complete walkthrough: factories, collaborators, the reloadable workflow, and lifetime semantics.</li>
+<li><strong><a href="../guides/calendar/caching/notable-date-caching.html">Caching notable dates guide</a></strong> - <code>AddCachedNotableDateService</code> and the durable backends that wrap these registrations.</li>
 </ul>
 <h2 id="the-registration-surface">The registration surface</h2>
 <p>All ten overloads are <code>IServiceCollection</code> extension methods on
@@ -204,7 +204,7 @@ chaining and throws <code>ArgumentNullException</code> for a <code>null</code> <
 </tr>
 <tr>
 <td><code>AddNotableDateService(IServiceCollection, Func&lt;IServiceProvider, NotableDateResource&gt;)</code></td>
-<td>The resource is produced from the container when the service is first resolved — e.g. loaded from configuration or a data pack resolved through DI.</td>
+<td>The resource is produced from the container when the service is first resolved - e.g. loaded from configuration or a data pack resolved through DI.</td>
 </tr>
 <tr>
 <td><code>AddNotableDateService(IServiceCollection, Func&lt;IServiceProvider, NotableDateResource&gt;, Func&lt;IServiceProvider, NotableDateServiceOptions?&gt;?)</code></td>
@@ -237,7 +237,7 @@ chaining and throws <code>ArgumentNullException</code> for a <code>null</code> <
 </tbody>
 </table>
 <p><code>INotableDateService</code> is always a singleton, and every registration is idempotent (<code>TryAdd</code> semantics): a second
-registration for the same service — or the same key — leaves the first in place. Keyed and unkeyed registrations are
+registration for the same service - or the same key - leaves the first in place. Keyed and unkeyed registrations are
 independent, so both may coexist. Factories run lazily, on first resolution.</p>
 <h2 id="minimal-sample">Minimal sample</h2>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
@@ -269,7 +269,7 @@ provider.Reload(NotableDateResourceLoader.Load(updatedXml, CommonNotableDateReso
 builder.Services.AddReloadableNotableDateService&lt;CalendarOptions&gt;((sp, options) =&gt;
     AsiaPacificCalendarData.LoadResource(options.Territory));
 </code></pre>
-<p>The <a href="../apidoc/Bodu.Globalization.Calendar.Caching.md"><code>Bodu.Globalization.Calendar.Caching</code></a> decorator composes with any of
+<p>The <a class="xref" href="Bodu.Globalization.Calendar.Caching.html"><code>Bodu.Globalization.Calendar.Caching</code></a> decorator composes with any of
 these: <code>services.AddCachedNotableDateService(...)</code>, called after the registration it wraps, replaces the registered
 <code>INotableDateService</code> with a caching decorator over it and observes the reloadable provider automatically. See the
 <a href="../guides/calendar/dependency-injection.html">Calendar dependency injection</a> guide for the full walkthrough, including
@@ -296,8 +296,8 @@ public sealed class PayrollCalendar([FromKeyedServices("US")] INotableDateServic
   <div class="markdown level0 remarks"><p>
 The service is registered as a singleton because a <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a> is immutable and the resolver
 holds no shared mutable state, so a single instance can be shared across the application safely. Registrations are
-idempotent (<code>TryAdd</code> semantics): when an <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> — or, for the keyed overloads, a
-service under the same key — is already registered, the call leaves the existing registration in place.
+idempotent (<code>TryAdd</code> semantics): when an <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> - or, for the keyed overloads, a
+service under the same key - is already registered, the call leaves the existing registration in place.
 </p>
 <p>
 <strong>When to use.</strong> Use <a class="xref" href="Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.html#Bodu_Globalization_Calendar_NotableDateServiceCollectionExtensions_AddNotableDateService_Microsoft_Extensions_DependencyInjection_IServiceCollection_Bodu_Globalization_Calendar_NotableDateResource_">AddNotableDateService(IServiceCollection, NotableDateResource)</a> when
@@ -320,7 +320,7 @@ swapped at runtime without restarting the host.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateServiceCollectionExtensions_AddNotableDateService_Microsoft_Extensions_DependencyInjection_IServiceCollection_Bodu_Globalization_Calendar_NotableDateResource_" data-uid="Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.AddNotableDateService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Bodu.Globalization.Calendar.NotableDateResource)">
   AddNotableDateService(IServiceCollection, NotableDateResource)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -372,7 +372,7 @@ swapped at runtime without restarting the host.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateServiceCollectionExtensions_AddNotableDateService_Microsoft_Extensions_DependencyInjection_IServiceCollection_Bodu_Globalization_Calendar_NotableDateResource_Bodu_Globalization_Calendar_NotableDateServiceOptions_" data-uid="Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.AddNotableDateService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Bodu.Globalization.Calendar.NotableDateResource,Bodu.Globalization.Calendar.NotableDateServiceOptions)">
   AddNotableDateService(IServiceCollection, NotableDateResource, NotableDateServiceOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -394,7 +394,7 @@ collaborators.</p>
     <dd><p>The loaded resource the service resolves against.</p>
 </dd>
     <dt><code>options</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a></dt>
-    <dd><p>The collaborators composed into the service — for example a custom algorithm registry — or
+    <dd><p>The collaborators composed into the service - for example a custom algorithm registry - or
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for built-ins only.</p>
 </dd>
   </dl>
@@ -429,7 +429,7 @@ collaborators.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateServiceCollectionExtensions_AddNotableDateService_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Func_System_IServiceProvider_Bodu_Globalization_Calendar_NotableDateResource__" data-uid="Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.AddNotableDateService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{System.IServiceProvider,Bodu.Globalization.Calendar.NotableDateResource})">
   AddNotableDateService(IServiceCollection, Func&lt;IServiceProvider, NotableDateResource&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -446,7 +446,7 @@ collaborators.</p>
     <dt><code>services</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a></dt>
     <dd><p>The service collection to add the registration to.</p>
 </dd>
-    <dt><code>resourceFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a>, <a class="xref" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResource.cs">NotableDateResource</a>&gt;</dt>
+    <dt><code>resourceFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a>, <a class="xref" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResource.cs">NotableDateResource</a>&gt;</dt>
     <dd><p>A factory that produces the resource from the service provider.</p>
 </dd>
   </dl>
@@ -481,7 +481,7 @@ collaborators.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateServiceCollectionExtensions_AddNotableDateService_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Func_System_IServiceProvider_Bodu_Globalization_Calendar_NotableDateResource__System_Func_System_IServiceProvider_Bodu_Globalization_Calendar_NotableDateServiceOptions__" data-uid="Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.AddNotableDateService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{System.IServiceProvider,Bodu.Globalization.Calendar.NotableDateResource},System.Func{System.IServiceProvider,Bodu.Globalization.Calendar.NotableDateServiceOptions})">
   AddNotableDateService(IServiceCollection, Func&lt;IServiceProvider, NotableDateResource&gt;, Func&lt;IServiceProvider, NotableDateServiceOptions?&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -499,10 +499,10 @@ with collaborators produced by a second factory.</p>
     <dt><code>services</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a></dt>
     <dd><p>The service collection to add the registration to.</p>
 </dd>
-    <dt><code>resourceFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a>, <a class="xref" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResource.cs">NotableDateResource</a>&gt;</dt>
+    <dt><code>resourceFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a>, <a class="xref" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResource.cs">NotableDateResource</a>&gt;</dt>
     <dd><p>A factory that produces the resource from the service provider.</p>
 </dd>
-    <dt><code>optionsFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a>, <a class="xref" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateServiceOptions.cs">NotableDateServiceOptions</a>&gt;</dt>
+    <dt><code>optionsFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a>, <a class="xref" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateServiceOptions.cs">NotableDateServiceOptions</a>&gt;</dt>
     <dd><p>A factory that produces the collaborators composed into the service, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for built-ins
 only. The factory itself may also return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
@@ -538,7 +538,7 @@ only. The factory itself may also return <a href="https://learn.microsoft.com/do
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateServiceCollectionExtensions_AddNotableDateService_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_String_Bodu_Globalization_Calendar_NotableDateResource_Bodu_Globalization_Calendar_NotableDateServiceOptions_" data-uid="Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.AddNotableDateService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,Bodu.Globalization.Calendar.NotableDateResource,Bodu.Globalization.Calendar.NotableDateServiceOptions)">
   AddNotableDateService(IServiceCollection, string, NotableDateResource, NotableDateServiceOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -584,7 +584,7 @@ process can register one service per jurisdiction and resolve them by key.</p>
   <div class="markdown level1 remarks"><p>
 Consumers resolve the keyed service with <code>GetRequiredKeyedService&lt;INotableDateService&gt;(serviceKey)</code>
 or a <code>[FromKeyedServices(serviceKey)]</code> constructor parameter. Keyed registrations are independent of the
-unkeyed registration — registering both is supported.
+unkeyed registration - registering both is supported.
 </p>
 </div>
 
@@ -605,7 +605,7 @@ unkeyed registration — registering both is supported.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateServiceCollectionExtensions_AddNotableDateService_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_String_System_Func_System_IServiceProvider_Bodu_Globalization_Calendar_NotableDateResource__System_Func_System_IServiceProvider_Bodu_Globalization_Calendar_NotableDateServiceOptions__" data-uid="Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.AddNotableDateService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Func{System.IServiceProvider,Bodu.Globalization.Calendar.NotableDateResource},System.Func{System.IServiceProvider,Bodu.Globalization.Calendar.NotableDateServiceOptions})">
   AddNotableDateService(IServiceCollection, string, Func&lt;IServiceProvider, NotableDateResource&gt;, Func&lt;IServiceProvider, NotableDateServiceOptions?&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -625,10 +625,10 @@ unkeyed registration — registering both is supported.
     <dt><code>serviceKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The key the service is registered and resolved under.</p>
 </dd>
-    <dt><code>resourceFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a>, <a class="xref" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResource.cs">NotableDateResource</a>&gt;</dt>
+    <dt><code>resourceFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a>, <a class="xref" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResource.cs">NotableDateResource</a>&gt;</dt>
     <dd><p>A factory that produces the resource from the service provider.</p>
 </dd>
-    <dt><code>optionsFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a>, <a class="xref" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateServiceOptions.cs">NotableDateServiceOptions</a>&gt;</dt>
+    <dt><code>optionsFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a>, <a class="xref" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateServiceOptions.cs">NotableDateServiceOptions</a>&gt;</dt>
     <dd><p>A factory that produces the collaborators composed into the service, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for built-ins
 only. The factory itself may also return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
@@ -665,7 +665,7 @@ only. The factory itself may also return <a href="https://learn.microsoft.com/do
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateServiceCollectionExtensions_AddReloadableNotableDateService_Microsoft_Extensions_DependencyInjection_IServiceCollection_Bodu_Globalization_Calendar_NotableDateResource_" data-uid="Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.AddReloadableNotableDateService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Bodu.Globalization.Calendar.NotableDateResource)">
   AddReloadableNotableDateService(IServiceCollection, NotableDateResource)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -734,7 +734,7 @@ provider.Reload(AmericasCalendarData.LoadResource("CA"));</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateServiceCollectionExtensions_AddReloadableNotableDateService_Microsoft_Extensions_DependencyInjection_IServiceCollection_Bodu_Globalization_Calendar_NotableDateResource_Bodu_Globalization_Calendar_NotableDateServiceOptions_" data-uid="Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.AddReloadableNotableDateService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Bodu.Globalization.Calendar.NotableDateResource,Bodu.Globalization.Calendar.NotableDateServiceOptions)">
   AddReloadableNotableDateService(IServiceCollection, NotableDateResource, NotableDateServiceOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -790,7 +790,7 @@ rebuilt inner service.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateServiceCollectionExtensions_AddReloadableNotableDateService_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Func_System_IServiceProvider_Bodu_Globalization_Calendar_NotableDateResource__Bodu_Globalization_Calendar_NotableDateServiceOptions_" data-uid="Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.AddReloadableNotableDateService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{System.IServiceProvider,Bodu.Globalization.Calendar.NotableDateResource},Bodu.Globalization.Calendar.NotableDateServiceOptions)">
   AddReloadableNotableDateService(IServiceCollection, Func&lt;IServiceProvider, NotableDateResource&gt;, NotableDateServiceOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -807,7 +807,7 @@ rebuilt inner service.</p>
     <dt><code>services</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a></dt>
     <dd><p>The service collection to add the registration to.</p>
 </dd>
-    <dt><code>initialResourceFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a>, <a class="xref" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResource.cs">NotableDateResource</a>&gt;</dt>
+    <dt><code>initialResourceFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a>, <a class="xref" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResource.cs">NotableDateResource</a>&gt;</dt>
     <dd><p>A factory that produces the initial resource from the service provider.</p>
 </dd>
     <dt><code>options</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a></dt>
@@ -845,7 +845,7 @@ rebuilt inner service.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateServiceCollectionExtensions_AddReloadableNotableDateService__1_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Func_System_IServiceProvider___0_Bodu_Globalization_Calendar_NotableDateResource__Bodu_Globalization_Calendar_NotableDateServiceOptions_" data-uid="Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.AddReloadableNotableDateService``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{System.IServiceProvider,``0,Bodu.Globalization.Calendar.NotableDateResource},Bodu.Globalization.Calendar.NotableDateServiceOptions)">
   AddReloadableNotableDateService&lt;TOptions&gt;(IServiceCollection, Func&lt;IServiceProvider, TOptions, NotableDateResource&gt;, NotableDateServiceOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar.DependencyInjection/src/Globalization.Calendar/NotableDateServiceCollectionExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -863,7 +863,7 @@ monitored options change.</p>
     <dt><code>services</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a></dt>
     <dd><p>The service collection to add the registration to.</p>
 </dd>
-    <dt><code>resourceFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-3">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a>, TOptions, <a class="xref" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResource.cs">NotableDateResource</a>&gt;</dt>
+    <dt><code>resourceFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-3">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a>, TOptions, <a class="xref" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateResource.cs">NotableDateResource</a>&gt;</dt>
     <dd><p>The factory producing the resource from the current options; invoked once for the initial load and again on
 every options change.</p>
 </dd>
@@ -902,7 +902,7 @@ The registration binds the reloadable service to the options infrastructure: con
 <code class="typeparamref">TOptions</code> through the standard <code>AddOptions&lt;TOptions&gt;()</code> surface (for example
 bound to a configuration section), and every change notification rebuilds the resource through
 <code class="paramref">resourceFactory</code> and swaps it into the live service. A factory failure during a change is
-logged and leaves the previously loaded resource in effect — a broken configuration edit never faults the reload
+logged and leaves the previously loaded resource in effect - a broken configuration edit never faults the reload
 thread or takes the calendar offline.
 </p>
 </div>
@@ -953,7 +953,7 @@ thread or takes the calendar offline.
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

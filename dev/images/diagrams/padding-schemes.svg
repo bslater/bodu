@@ -29,14 +29,14 @@
     <rect class="panel" width="800" height="320" rx="8"/>
     <rect class="header" width="800" height="46" rx="8"/>
     <rect class="header" y="38" width="800" height="8"/>
-    <text class="title" x="16" y="20">Padding schemes — filling a partial final block (block size 8)</text>
+    <text class="title" x="16" y="20">Padding schemes - filling a partial final block (block size 8)</text>
     <text class="formula" x="784" y="38" text-anchor="end">5 data bytes ⟶ 3 pad bytes to the next 8-byte boundary</text>
 
     <!-- column headers over the 8 cells -->
     <g transform="translate(300 64)" class="sub-muted" text-anchor="middle">
       <text x="22"  y="0">D</text><text x="68"  y="0">D</text><text x="114" y="0">D</text>
       <text x="160" y="0">D</text><text x="206" y="0">D</text>
-      <text x="284" y="0" fill="#CBD5E1">— pad —</text>
+      <text x="284" y="0" fill="#CBD5E1">- pad -</text>
     </g>
     <text class="sub" x="240" y="64" text-anchor="end">real data ⟶</text>
 
@@ -109,7 +109,7 @@
         <g class="cell-text"><text x="22" y="17">D</text><text x="68" y="17">D</text><text x="114" y="17">D</text><text x="160" y="17">D</text><text x="206" y="17">D</text></g>
         <g class="cell-text-l"><text x="252" y="17">00</text><text x="298" y="17">00</text><text x="344" y="17">00</text></g>
       </g>
-      <text class="sub-muted" x="640" y="16">zeros — ambiguous unpad</text>
+      <text class="sub-muted" x="640" y="16">zeros - ambiguous unpad</text>
     </g>
 
     <!-- Row 5: ISO/IEC 7816-4 -->
@@ -131,6 +131,6 @@
     </g>
 
     <!-- footer note -->
-    <text class="sub" x="20" y="306">A block-aligned plaintext still gets a full extra pad block in every scheme except Zeros — so unpadding is never ambiguous.</text>
+    <text class="sub" x="20" y="306">A block-aligned plaintext still gets a full extra pad block in every scheme except Zeros - so unpadding is never ambiguous.</text>
   </g>
 </svg>

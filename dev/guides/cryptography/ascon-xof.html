@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>ASCON extendable output — AsconXof128 and AsconCxof128 | BODU </title>
+      <title>ASCON extendable output - AsconXof128 and AsconCxof128 | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="ASCON extendable output — AsconXof128 and AsconCxof128 | BODU ">
+      <meta name="title" content="ASCON extendable output - AsconXof128 and AsconCxof128 | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,10 +85,10 @@
         </div>
 
         <article data-uid="">
-<h1 id="ascon-extendable-output--asconxof128-and-asconcxof128">ASCON extendable output — AsconXof128 and AsconCxof128</h1>
+<h1 id="ascon-extendable-output---asconxof128-and-asconcxof128">ASCON extendable output - AsconXof128 and AsconCxof128</h1>
 
 <p>An <strong>extendable output function (XOF)</strong> is a hash with no fixed output length. You absorb any
-amount of input, then squeeze out as many bytes as you need — 32, 64, or a million. ASCON-XOF128
+amount of input, then squeeze out as many bytes as you need - 32, 64, or a million. ASCON-XOF128
 and ASCON-CXOF128 are the XOF members of the ASCON family, standardized in NIST SP 800-232.</p>
 <p><strong>Bodu.Security.Cryptography</strong> provides two concrete types, both inheriting from the abstract
 <code>AsconXof&lt;T&gt;</code> base:</p>
@@ -166,14 +166,14 @@ and ASCON-CXOF128 are the XOF members of the ASCON family, standardized in NIST 
 <h2 id="the-absorb-then-squeeze-lifecycle">The absorb-then-squeeze lifecycle</h2>
 <p>Both types follow the same three-phase lifecycle:</p>
 <ol>
-<li><strong>Absorb</strong> — call <code>Absorb(ReadOnlySpan&lt;byte&gt;)</code> zero or more times to feed input data.</li>
-<li><strong>Squeeze</strong> — call <code>Squeeze(Span&lt;byte&gt;)</code> one or more times to read output bytes.</li>
-<li><strong>Reset</strong> — call <code>Initialize()</code> to discard all state and start a fresh message.</li>
+<li><strong>Absorb</strong> - call <code>Absorb(ReadOnlySpan&lt;byte&gt;)</code> zero or more times to feed input data.</li>
+<li><strong>Squeeze</strong> - call <code>Squeeze(Span&lt;byte&gt;)</code> one or more times to read output bytes.</li>
+<li><strong>Reset</strong> - call <code>Initialize()</code> to discard all state and start a fresh message.</li>
 </ol>
 <p><code>Absorb</code> after <code>Squeeze</code> has started throws <code>InvalidOperationException</code>. Call <code>Initialize()</code> to
 reset. For <code>AsconCxof128</code>, there is a fourth phase before absorption: an optional call to
 <code>Customize</code>.</p>
-<h2 id="pattern-1--producing-output-of-a-fixed-length">Pattern 1 — producing output of a fixed length</h2>
+<h2 id="pattern-1---producing-output-of-a-fixed-length">Pattern 1 - producing output of a fixed length</h2>
 <p>The simplest path: absorb a message, squeeze an exact number of bytes.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.Text;
@@ -188,7 +188,7 @@ byte[] output  = xof.GetHash(64);    // squeeze exactly 64 bytes
 <p><code>GetHash(int length)</code> is a convenience wrapper around <code>Squeeze</code> that allocates and returns a new
 array. The instance transitions to the squeezing phase on the first call; subsequent calls to
 <code>Squeeze</code> continue from where the last call left off.</p>
-<h2 id="pattern-2--one-shot-static-method">Pattern 2 — one-shot static method</h2>
+<h2 id="pattern-2---one-shot-static-method">Pattern 2 - one-shot static method</h2>
 <p>For a single-pass operation that does not need a reusable instance, use the static <code>HashData</code>
 method:</p>
 <!-- compile -->
@@ -201,7 +201,7 @@ byte[] output  = AsconXof128.HashData(message, outputLength: 32);
 <p><code>HashData</code> constructs a temporary instance internally, absorbs the source, squeezes the
 requested number of bytes, and returns them. It is equivalent to the three-step instance API in
 a single call.</p>
-<h2 id="pattern-3--deriving-multiple-keys-from-one-input">Pattern 3 — deriving multiple keys from one input</h2>
+<h2 id="pattern-3---deriving-multiple-keys-from-one-input">Pattern 3 - deriving multiple keys from one input</h2>
 <p>Because squeezing is incremental, a single absorbed input can produce non-overlapping byte
 streams for different purposes without rehashing.</p>
 <pre><code class="lang-csharp">using System.Security.Cryptography;
@@ -220,13 +220,13 @@ byte[] macKey = new byte[32];   // 256-bit MAC key
 byte[] iv     = new byte[16];   // 128-bit IV
 
 xof.Squeeze(encKey);    // first 32 bytes of XOF output
-xof.Squeeze(macKey);    // next 32 bytes — independent of encKey
+xof.Squeeze(macKey);    // next 32 bytes - independent of encKey
 xof.Squeeze(iv);        // next 16 bytes
 </code></pre>
 <p>The three slices are deterministic and non-overlapping for the same inputs. This is the XOF
 alternative to HKDF-Expand: a single absorbed PRK produces an unlimited number of output bytes,
 each region serving a separate purpose.</p>
-<h2 id="pattern-4--incremental-absorption">Pattern 4 — incremental absorption</h2>
+<h2 id="pattern-4---incremental-absorption">Pattern 4 - incremental absorption</h2>
 <p>Call <code>Absorb</code> as many times as needed. The sponge buffers partial blocks internally, so calls do
 not need to align to the 8-byte rate.</p>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -239,7 +239,7 @@ foreach (byte[] chunk in GetMessageChunks())
 byte[] digest = xof.GetHash(32);
 </code></pre>
 <p>The result is identical to absorbing all chunks concatenated in a single call.</p>
-<h2 id="pattern-5--incremental-squeezing">Pattern 5 — incremental squeezing</h2>
+<h2 id="pattern-5---incremental-squeezing">Pattern 5 - incremental squeezing</h2>
 <p>Squeeze as many or as few bytes per call as you like. Each call continues from where the last
 left off.</p>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -255,8 +255,8 @@ for (int i = 0; i &lt; 1024; i++)
 }
 </code></pre>
 <p>This is useful for generating large amounts of deterministic pseudo-random material from a fixed
-seed — effectively a stream cipher output.</p>
-<h2 id="pattern-6--cxof128-with-a-customization-string">Pattern 6 — CXOF128 with a customization string</h2>
+seed - effectively a stream cipher output.</p>
+<h2 id="pattern-6---cxof128-with-a-customization-string">Pattern 6 - CXOF128 with a customization string</h2>
 <p><code>AsconCxof128</code> extends the XOF lifecycle with an optional customization step before absorption.
 Two instances with different customization strings produce completely independent outputs for the
 same absorbed input.</p>
@@ -266,13 +266,13 @@ using Bodu.Security.Cryptography;
 
 byte[] message = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
 
-// Derive an encryption key — customization string identifies the context.
+// Derive an encryption key - customization string identifies the context.
 using var encXof = new AsconCxof128();
 encXof.Customize(Encoding.UTF8.GetBytes(&quot;enc-key-v1&quot;));
 encXof.Absorb(message);
 byte[] encKey = encXof.GetHash(32);
 
-// Derive a MAC key — different customization string, independent output.
+// Derive a MAC key - different customization string, independent output.
 using var macXof = new AsconCxof128();
 macXof.Customize(Encoding.UTF8.GetBytes(&quot;mac-key-v1&quot;));
 macXof.Absorb(message);
@@ -291,9 +291,9 @@ absorption phase begins. This ensures:</p>
 <li>Two instances with different customization strings produce unrelated output.</li>
 <li>An instance with an empty customization string produces output that differs from
 <code>AsconXof128</code> for the same message (because the domain-separation constant is always applied).</li>
-<li>The customization string may be public — it is not a secret.</li>
+<li>The customization string may be public - it is not a secret.</li>
 </ul>
-<h2 id="pattern-7--empty-customization-string-not-the-same-as-no-customization">Pattern 7 — empty customization string (not the same as no customization)</h2>
+<h2 id="pattern-7---empty-customization-string-not-the-same-as-no-customization">Pattern 7 - empty customization string (not the same as no customization)</h2>
 <p>Calling <code>Customize(ReadOnlySpan&lt;byte&gt;.Empty)</code> still applies the ASCON-CXOF128 domain separation.
 The output differs from <code>AsconXof128</code> even with no customization bytes:</p>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -301,7 +301,7 @@ The output differs from <code>AsconXof128</code> even with no customization byte
 byte[] message = [0x01, 0x02, 0x03, 0x04];
 
 using AsconCxof128 cxof = new AsconCxof128();
-cxof.Customize(ReadOnlySpan&lt;byte&gt;.Empty);   // empty string — domain separation still applied
+cxof.Customize(ReadOnlySpan&lt;byte&gt;.Empty);   // empty string - domain separation still applied
 cxof.Absorb(message);
 byte[] cxofOutput = cxof.GetHash(32);
 
@@ -310,9 +310,9 @@ byte[] xofOutput = AsconXof128.HashData(message, 32);
 // cxofOutput != xofOutput
 </code></pre>
 <p>If <code>Customize</code> is not called at all, <code>AsconCxof128</code> operates without the customization domain
-separation — identically to a plain <code>AsconXof128</code> for the same absorbed input. The
+separation - identically to a plain <code>AsconXof128</code> for the same absorbed input. The
 customization step is optional by design.</p>
-<h2 id="pattern-8--reusing-an-instance">Pattern 8 — reusing an instance</h2>
+<h2 id="pattern-8---reusing-an-instance">Pattern 8 - reusing an instance</h2>
 <p>Call <code>Initialize()</code> to reset the sponge and reuse the instance for a new message:</p>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
 
@@ -356,11 +356,11 @@ called again on the reset instance.</p>
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="ascon.html">ASCON overview</a> — the full family and which algorithm to choose.</li>
-<li><a href="ascon-hashing.html">ASCON hashing</a> — fixed-length 256-bit digest patterns.</li>
-<li><a href="ascon-aead.html">ASCON AEAD</a> — authenticated encryption with <code>AsconAead128</code>.</li>
+<li><a href="ascon.html">ASCON overview</a> - the full family and which algorithm to choose.</li>
+<li><a href="ascon-hashing.html">ASCON hashing</a> - fixed-length 256-bit digest patterns.</li>
+<li><a href="ascon-aead.html">ASCON AEAD</a> - authenticated encryption with <code>AsconAead128</code>.</li>
 <li>API reference: <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a> · <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconCxof128.html">AsconCxof128</a></li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -380,7 +380,7 @@ called again on the reset instance.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

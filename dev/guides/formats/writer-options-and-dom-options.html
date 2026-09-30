@@ -87,8 +87,8 @@
         <article data-uid="">
 <h1 id="writer-options-and-dom-options">Writer options and DOM options</h1>
 
-<p>The <code>&lt;Format&gt;SerializerOptions</code> classes are not the only option types in the text libraries. Each format also has small <strong>option structs</strong> for the layers beneath the serializer: a <code>&lt;Format&gt;WriterOptions</code> passed to the <code>Utf8&lt;Format&gt;Writer</code> constructor, and — for the formats whose DOMs take one — a <code>&lt;Format&gt;NodeOptions</code> for the mutable DOM and a <code>&lt;Format&gt;DocumentOptions</code> (or reader options) for the read-only DOM's <code>Parse</code>. They are value types, the zero value is the default, and none of them freezes: a struct is copied into the writer or parser at construction and cannot be observed changing afterwards.</p>
-<p>This guide lists every member of every such struct with its default, and shows the effect of each knob on real bytes. The serializer-level lifecycle — freezing, caching, presets — is covered in <a href="../serialization/options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a>; the <em>reader</em> dialect knobs (<code>DelimitedReaderOptions</code>, <code>DotEnvReaderOptions</code>, <code>IniReaderOptions</code>) are tabulated on the <a href="../../docs/formats/parser-policies.html">parser policies</a> page and only cross-referenced here.</p>
+<p>The <code>&lt;Format&gt;SerializerOptions</code> classes are not the only option types in the text libraries. Each format also has small <strong>option structs</strong> for the layers beneath the serializer: a <code>&lt;Format&gt;WriterOptions</code> passed to the <code>Utf8&lt;Format&gt;Writer</code> constructor, and - for the formats whose DOMs take one - a <code>&lt;Format&gt;NodeOptions</code> for the mutable DOM and a <code>&lt;Format&gt;DocumentOptions</code> (or reader options) for the read-only DOM's <code>Parse</code>. They are value types, the zero value is the default, and none of them freezes: a struct is copied into the writer or parser at construction and cannot be observed changing afterwards.</p>
+<p>This guide lists every member of every such struct with its default, and shows the effect of each knob on real bytes. The serializer-level lifecycle - freezing, caching, presets - is covered in <a href="../serialization/options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a>; the <em>reader</em> dialect knobs (<code>DelimitedReaderOptions</code>, <code>DotEnvReaderOptions</code>, <code>IniReaderOptions</code>) are tabulated on the <a href="../../docs/formats/parser-policies.html">parser policies</a> page and only cross-referenced here.</p>
 <h2 id="the-option-structs-at-a-glance">The option structs at a glance</h2>
 <table>
 <thead>
@@ -163,7 +163,7 @@
 </table>
 <p>Delimited and DotEnv have no DOM option struct of their own: <code>DelimitedNode.Parse</code> / <code>DelimitedDocument.Parse</code> take a <a class="xref" href="../../api/Bodu.Text.Delimited.Reader.DelimitedReaderOptions.html">DelimitedReaderOptions</a>, and <code>DotEnvNode.Parse</code> / <code>DotEnvDocument.Parse</code> take a <a class="xref" href="../../api/Bodu.Text.DotEnv.Reader.DotEnvReaderOptions.html">DotEnvReaderOptions</a>. YAML's <code>YamlNode.Parse(string)</code> takes no options; the reader's <a class="xref" href="../../api/Bodu.Text.Yaml.Reader.YamlReaderOptions.html">YamlReaderOptions</a> mirrors <code>YamlDocumentOptions</code> member for member.</p>
 <p>The line-format structs are <code>readonly struct</code>s with <code>init</code> accessors and a static <code>Default</code>; the Bencode, TOML, and YAML structs are ordinary mutable structs whose <code>default</code> is the default configuration.</p>
-<h2 id="pattern-1--delimited-writer-dialect-and-header">Pattern 1 — Delimited writer: dialect and header</h2>
+<h2 id="pattern-1---delimited-writer-dialect-and-header">Pattern 1 - Delimited writer: dialect and header</h2>
 <table>
 <thead>
 <tr>
@@ -215,7 +215,7 @@ writer.Flush();
 MSFT,&quot;say &quot;&quot;hi&quot;&quot;, now&quot;
 </code></pre>
 <p>Records end with <code>\r\n</code> in both dialects. <code>DelimitedSerializerOptions</code> exposes the same three members and forwards them to this struct (and to the reader options) on your behalf.</p>
-<h2 id="pattern-2--dotenv-writer-the-export-prefix">Pattern 2 — DotEnv writer: the <code>export</code> prefix</h2>
+<h2 id="pattern-2---dotenv-writer-the-export-prefix">Pattern 2 - DotEnv writer: the <code>export</code> prefix</h2>
 <table>
 <thead>
 <tr>
@@ -251,7 +251,7 @@ writer.Flush();
 // SECRET=&quot;s3cret #1&quot;
 </code></pre>
 <p>The value containing <code> #</code> is double-quoted automatically, because unquoted it would read back as <code>s3cret</code> followed by a comment. <code>DotEnvSerializerOptions.WriteExportPrefix</code> is the serializer-level form of the same flag; the mutable <code>DotEnvObject</code> DOM preserves each entry's own export flag instead.</p>
-<h2 id="pattern-3--ini-writer-the-comment-prefix">Pattern 3 — INI writer: the comment prefix</h2>
+<h2 id="pattern-3---ini-writer-the-comment-prefix">Pattern 3 - INI writer: the comment prefix</h2>
 <table>
 <thead>
 <tr>
@@ -286,7 +286,7 @@ writer.Flush();
 // port=8080
 </code></pre>
 <p>Both <code>;</code> and <code>#</code> are comment starters on the read side by default, so either prefix round-trips; choose <code>#</code> only when a downstream reader with <code>IniReaderOptions.DisallowHashComments</code> will <em>not</em> be consuming the file.</p>
-<h2 id="pattern-4--bencode-writer-depth-and-multiple-roots">Pattern 4 — Bencode writer: depth and multiple roots</h2>
+<h2 id="pattern-4---bencode-writer-depth-and-multiple-roots">Pattern 4 - Bencode writer: depth and multiple roots</h2>
 <table>
 <thead>
 <tr>
@@ -334,7 +334,7 @@ writer.WriteStartList();
 writer.WriteStartList();
 // → throws BencodeSerializationException: The maximum write depth of 1 has been exceeded.
 </code></pre>
-<h2 id="pattern-5--toml-writer-depth">Pattern 5 — TOML writer: depth</h2>
+<h2 id="pattern-5---toml-writer-depth">Pattern 5 - TOML writer: depth</h2>
 <table>
 <thead>
 <tr>
@@ -354,7 +354,7 @@ writer.WriteStartList();
 <tr>
 <td><code>SpecVersion</code></td>
 <td><code>TomlSpecVersion</code></td>
-<td>—</td>
+<td>-</td>
 <td><strong>Obsolete.</strong> The writer emits output valid under both TOML v1.0.0 and v1.1.0, so the member has no effect and will be removed.</td>
 </tr>
 </tbody>
@@ -371,7 +371,7 @@ writer.WritePropertyName(&quot;tls&quot;);
 writer.WriteStartTable();
 // → throws TomlSerializationException: The maximum write depth of 1 has been exceeded.
 </code></pre>
-<p>With <code>MaxDepth = 2</code> the same two-level document renders — note that the TOML writer delivers its bytes when the <em>root table closes</em>, because it must decide between inline and header-defined tables with the whole document in hand:</p>
+<p>With <code>MaxDepth = 2</code> the same two-level document renders - note that the TOML writer delivers its bytes when the <em>root table closes</em>, because it must decide between inline and header-defined tables with the whole document in hand:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">var writer = new Utf8TomlWriter(buffer, new TomlWriterOptions { MaxDepth = 2 });
 writer.WriteStartTable();
@@ -383,7 +383,7 @@ writer.WriteEndTable();
 // [server]
 // port = 8080
 </code></pre>
-<h2 id="pattern-6--yaml-writer-indentation-line-endings-depth">Pattern 6 — YAML writer: indentation, line endings, depth</h2>
+<h2 id="pattern-6---yaml-writer-indentation-line-endings-depth">Pattern 6 - YAML writer: indentation, line endings, depth</h2>
 <table>
 <thead>
 <tr>
@@ -398,7 +398,7 @@ writer.WriteEndTable();
 <td><code>IndentSize</code></td>
 <td><code>int</code></td>
 <td><code>0</code> → 2</td>
-<td>Spaces per nesting level, 1–16.</td>
+<td>Spaces per nesting level, 1-16.</td>
 </tr>
 <tr>
 <td><code>NewLine</code></td>
@@ -443,8 +443,8 @@ writer.WriteEndMapping();
 new Utf8YamlWriter(buffer, new YamlWriterOptions { IndentSize = 32 });
 // → throws ArgumentOutOfRangeException: The writer indentation size must be between 1 and 16. (Parameter 'IndentSize')
 </code></pre>
-<p>Opening a container past <code>MaxDepth</code> throws <code>InvalidOperationException</code> (<em>The maximum write depth of 1 has been exceeded.</em>) from the writer; the same limit reached through <code>YamlSerializer</code> — which uses <code>YamlSerializerOptions.MaxDepth</code> and the default writer options — surfaces as <code>YamlSerializationException</code>. <code>YamlSerializer</code> does not expose the writer options, so serializer output is always two-space, <code>\n</code>-terminated YAML; drive <code>Utf8YamlWriter</code> directly (or call a node's <code>WriteTo(writer)</code>) when you need another layout.</p>
-<h2 id="pattern-7--bencode-doms-key-case-and-key-discipline">Pattern 7 — Bencode DOMs: key case and key discipline</h2>
+<p>Opening a container past <code>MaxDepth</code> throws <code>InvalidOperationException</code> (<em>The maximum write depth of 1 has been exceeded.</em>) from the writer; the same limit reached through <code>YamlSerializer</code> - which uses <code>YamlSerializerOptions.MaxDepth</code> and the default writer options - surfaces as <code>YamlSerializationException</code>. <code>YamlSerializer</code> does not expose the writer options, so serializer output is always two-space, <code>\n</code>-terminated YAML; drive <code>Utf8YamlWriter</code> directly (or call a node's <code>WriteTo(writer)</code>) when you need another layout.</p>
+<h2 id="pattern-7---bencode-doms-key-case-and-key-discipline">Pattern 7 - Bencode DOMs: key case and key discipline</h2>
 <table>
 <thead>
 <tr>
@@ -489,7 +489,7 @@ using Bodu.Text.Bencode.Nodes;
 BencodeNode node = BencodeNode.Parse(&quot;d4:NAME3:apie&quot;u8, new BencodeNodeOptions { PropertyNameCaseInsensitive = true })!;
 string name = node[&quot;name&quot;]!.GetValue&lt;string&gt;();      // api
 BencodeNode? missing = BencodeNode.Parse(&quot;d4:NAME3:apie&quot;u8)![&quot;name&quot;];
-// → throws KeyNotFoundException — the default lookup is case-sensitive
+// → throws KeyNotFoundException - the default lookup is case-sensitive
 
 BencodeDocument.Parse(&quot;d1:bi1e1:ai2ee&quot;u8);
 // → throws BencodeFormatException: Bencoded dictionary keys must be sorted by raw byte order.
@@ -499,7 +499,7 @@ long a = unsorted.RootElement.GetProperty(&quot;a&quot;).GetInt64();   // 2
 BencodeDocument.Parse(&quot;d1:ai1e1:ai2ee&quot;u8);
 // → throws BencodeFormatException: Bencoded dictionary keys must be unique.
 using BencodeDocument dup = BencodeDocument.Parse(&quot;d1:ai1e1:ai2ee&quot;u8, new BencodeDocumentOptions { AllowDuplicateKeys = true });
-long firstA = dup.RootElement.GetProperty(&quot;a&quot;).GetInt64();   // 1 — first wins
+long firstA = dup.RootElement.GetProperty(&quot;a&quot;).GetInt64();   // 1 - first wins
 
 BencodeDocument.Parse(&quot;lli1eee&quot;u8, new BencodeDocumentOptions { MaxDepth = 1 });
 // → throws BencodeFormatException: Bencoded value nesting exceeds the maximum permitted depth of 1.
@@ -507,7 +507,7 @@ BencodeDocument.Parse(&quot;lli1eee&quot;u8, new BencodeDocumentOptions { MaxDep
 long viaNode = BencodeNode.Parse(&quot;d1:bi1e1:ai2ee&quot;u8, default, new BencodeDocumentOptions { AllowUnsortedKeys = true })![&quot;a&quot;]!.GetValue&lt;long&gt;();   // 2
 </code></pre>
 <p><a class="xref" href="../../api/Bodu.Text.Bencode.Reader.BencodeReaderOptions.html">BencodeReaderOptions</a> carries the same three parsing members for the token reader, and <code>BencodeSerializerOptions</code> exposes <code>AllowUnsortedKeys</code> / <code>AllowDuplicateKeys</code> / <code>PropertyNameCaseInsensitive</code> (the last defaulting to <code>true</code> at the serializer level) for typed reads.</p>
-<h2 id="pattern-8--toml-doms-key-case-spec-version-depth">Pattern 8 — TOML DOMs: key case, spec version, depth</h2>
+<h2 id="pattern-8---toml-doms-key-case-spec-version-depth">Pattern 8 - TOML DOMs: key case, spec version, depth</h2>
 <table>
 <thead>
 <tr>
@@ -545,7 +545,7 @@ using Bodu.Text.Toml.Nodes;
 
 TomlNode tnode = TomlNode.Parse(&quot;Port = 8080&quot;u8, new TomlNodeOptions { PropertyNameCaseInsensitive = true })!;
 long port = tnode[&quot;port&quot;]!.GetValue&lt;long&gt;();       // 8080
-bool found = TomlNode.Parse(&quot;Port = 8080&quot;u8)!.AsObject().TryGetPropertyValue(&quot;port&quot;, out _);   // false — case-sensitive by default
+bool found = TomlNode.Parse(&quot;Port = 8080&quot;u8)!.AsObject().TryGetPropertyValue(&quot;port&quot;, out _);   // false - case-sensitive by default
 
 TomlDocument.Parse(&quot;a.b.c = 1&quot;, new TomlDocumentOptions { MaxDepth = 1 });
 // → throws TomlFormatException: TOML value nesting exceeds the maximum permitted depth of 1.
@@ -556,7 +556,7 @@ using TomlDocument d = TomlDocument.Parse(&quot;x = {\n a = 1\n}&quot;, new Toml
 long inner = d.RootElement.GetProperty(&quot;x&quot;).GetProperty(&quot;a&quot;).GetInt64();   // 1
 </code></pre>
 <p><a class="xref" href="../../api/Bodu.Text.Toml.Reader.TomlReaderOptions.html">TomlReaderOptions</a> carries the same <code>SpecVersion</code> / <code>MaxDepth</code> pair for the token reader; <code>TomlSerializerOptions</code> exposes both plus <code>PropertyNameCaseInsensitive</code>.</p>
-<h2 id="pattern-9--yaml-dom-duplicate-keys-merge-keys-spec-version-depth">Pattern 9 — YAML DOM: duplicate keys, merge keys, spec version, depth</h2>
+<h2 id="pattern-9---yaml-dom-duplicate-keys-merge-keys-spec-version-depth">Pattern 9 - YAML DOM: duplicate keys, merge keys, spec version, depth</h2>
 <table>
 <thead>
 <tr>
@@ -604,9 +604,9 @@ long value = last.RootElement.GetProperty(&quot;a&quot;).GetInt64();    // 2
 
 const string merge = &quot;base: &amp;b\n  x: 1\nchild:\n  &lt;&lt;: *b\n  y: 2\n&quot;;
 using YamlDocument expanded = YamlDocument.Parse(merge);
-bool merged = expanded.RootElement.GetProperty(&quot;child&quot;).TryGetProperty(&quot;x&quot;, out _);     // true — merged in
+bool merged = expanded.RootElement.GetProperty(&quot;child&quot;).TryGetProperty(&quot;x&quot;, out _);     // true - merged in
 using YamlDocument kept = YamlDocument.Parse(merge, new YamlDocumentOptions { MergeKeyBehavior = YamlMergeKeyBehavior.PreserveAsNormalKey });
-bool hasMergeKey = kept.RootElement.GetProperty(&quot;child&quot;).TryGetProperty(&quot;&lt;&lt;&quot;, out _);   // true — an ordinary key
+bool hasMergeKey = kept.RootElement.GetProperty(&quot;child&quot;).TryGetProperty(&quot;&lt;&lt;&quot;, out _);   // true - an ordinary key
 bool hasX = kept.RootElement.GetProperty(&quot;child&quot;).TryGetProperty(&quot;x&quot;, out _);            // false
 
 using YamlDocument core = YamlDocument.Parse(&quot;legacy: yes&quot;);
@@ -618,7 +618,7 @@ YamlDocument.Parse(&quot;a:\n  b: 1&quot;, new YamlDocumentOptions { MaxDepth = 
 // → throws YamlFormatException: YAML node nesting exceeds the maximum permitted depth of 1.
 </code></pre>
 <p><code>YamlReaderOptions</code> has the same four members for <code>Utf8YamlReader</code>, and <code>YamlSerializerOptions</code> exposes all four for typed reads. <code>YamlNode.Parse(string)</code> takes no options and parses with the defaults.</p>
-<h2 id="pattern-10--ini-dom-duplicate-policies-and-reader-dialect">Pattern 10 — INI DOM: duplicate policies and reader dialect</h2>
+<h2 id="pattern-10---ini-dom-duplicate-policies-and-reader-dialect">Pattern 10 - INI DOM: duplicate policies and reader dialect</h2>
 <table>
 <thead>
 <tr>
@@ -664,9 +664,9 @@ using Bodu.Text.Ini.Reader;
 const string ini = &quot;# hash comment\nname=a\nname=b\n[s]\nk=1\n[s]\nk=2\nj=3\n&quot;;
 
 IniObject root = IniNode.Parse(ini);
-string name = root[&quot;name&quot;].AsValue().Value;              // b  — LastWins
+string name = root[&quot;name&quot;].AsValue().Value;              // b  - LastWins
 string k = root[&quot;s&quot;].AsObject()[&quot;k&quot;].AsValue().Value;     // 2
-string j = root[&quot;s&quot;].AsObject()[&quot;j&quot;].AsValue().Value;     // 3  — the second [s] block merged in
+string j = root[&quot;s&quot;].AsObject()[&quot;j&quot;].AsValue().Value;     // 3  - the second [s] block merged in
 
 IniObject first = IniNode.Parse(Encoding.UTF8.GetBytes(ini), IniReaderOptions.Default,
     new IniDocumentOptions { DuplicateKeyBehavior = IniDuplicateKeyBehavior.FirstWins });
@@ -713,7 +713,7 @@ IniNode.Parse(Encoding.UTF8.GetBytes(ini), new IniReaderOptions { DisallowHashCo
 </tr>
 <tr>
 <td><code>BencodeSerializerOptions.PropertyNameCaseInsensitive</code></td>
-<td>member matching — the same rule <code>BencodeNodeOptions</code> applies to DOM lookups</td>
+<td>member matching - the same rule <code>BencodeNodeOptions</code> applies to DOM lookups</td>
 </tr>
 <tr>
 <td><code>TomlSerializerOptions.SpecVersion</code> / <code>MaxDepth</code></td>
@@ -728,11 +728,11 @@ IniNode.Parse(Encoding.UTF8.GetBytes(ini), new IniReaderOptions { DisallowHashCo
 <p><code>IniWriterOptions.CommentPrefix</code> and the three <code>YamlWriterOptions</code> members have no serializer-level counterpart.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="../../docs/formats/parser-policies.html">Parser policies</a> — the reader-option structs (<code>DelimitedReaderOptions</code>, <code>DotEnvReaderOptions</code>, <code>IniReaderOptions</code>) in full.</li>
-<li><a href="error-handling.html">Errors across the line formats</a> — the exceptions the strict defaults above raise, and how to catch them.</li>
-<li><a href="streaming.html">Streams and token-level I/O</a> — driving the <code>Utf8*Writer</code> types directly, which is where the writer structs apply.</li>
-<li><a href="../serialization/options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a> — the <code>&lt;Format&gt;SerializerOptions</code> lifecycle.</li>
-<li>The per-format guides — <a href="delimited.html">Delimited</a>, <a href="dotenv.html">DotEnv</a>, <a href="ini.html">INI</a> — and the serializer DOM walk-throughs in <a href="../serialization/toml/using.html">Using TOML</a>, <a href="../serialization/bencode/using.html">Using Bencode</a>, and <a href="../serialization/yaml/using.html">Using YAML</a>.</li>
+<li><a href="../../docs/formats/parser-policies.html">Parser policies</a> - the reader-option structs (<code>DelimitedReaderOptions</code>, <code>DotEnvReaderOptions</code>, <code>IniReaderOptions</code>) in full.</li>
+<li><a href="error-handling.html">Errors across the line formats</a> - the exceptions the strict defaults above raise, and how to catch them.</li>
+<li><a href="streaming.html">Streams and token-level I/O</a> - driving the <code>Utf8*Writer</code> types directly, which is where the writer structs apply.</li>
+<li><a href="../serialization/options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a> - the <code>&lt;Format&gt;SerializerOptions</code> lifecycle.</li>
+<li>The per-format guides - <a href="delimited.html">Delimited</a>, <a href="dotenv.html">DotEnv</a>, <a href="ini.html">INI</a> - and the serializer DOM walk-throughs in <a href="../serialization/toml/using.html">Using TOML</a>, <a href="../serialization/bencode/using.html">Using Bencode</a>, and <a href="../serialization/yaml/using.html">Using YAML</a>.</li>
 <li><a href="../../samples/formats.html">Runnable samples</a>, the <a href="index.html">line-format guides hub</a>, and the <a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a>.</li>
 </ul>
 
@@ -753,7 +753,7 @@ IniNode.Parse(Encoding.UTF8.GetBytes(ini), new IniReaderOptions { DisallowHashCo
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

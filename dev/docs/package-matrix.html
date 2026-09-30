@@ -93,7 +93,7 @@
   .bodu-matrix-gallery img { display: block; width: 100%; height: auto; aspect-ratio: 480 / 220; border-radius: 6px; }
   .bodu-matrix-gallery figcaption { margin-top: .3rem; font-size: .8rem; opacity: .85; overflow-wrap: anywhere; }
 </style>
-<p>The Bodu suite ships as a family of focused NuGet packages, each with a clear responsibility. This page is the authoritative list — what every package is for, where it lives in the dependency graph, and how mature its public surface is today.</p>
+<p>The Bodu suite ships as a family of focused NuGet packages, each with a clear responsibility. This page is the authoritative list - what every package is for, where it lives in the dependency graph, and how mature its public surface is today.</p>
 <p>For the high-level shape of each library, follow the <strong>Intro</strong> link in the table; for runnable samples, the <strong>Get started</strong> link.</p>
 <h2 id="at-a-glance">At a glance</h2>
 <table>
@@ -271,7 +271,7 @@
 </tbody>
 </table>
 <h2 id="companion-packages">Companion packages</h2>
-<p>Several capabilities ship as independent companion packages so they can release on their own cadence without forcing a main-library rebuild. The calendar runtime in particular is intentionally small — fluent rule authoring, plugin loading, and dependency-injection registration are all opt-in.</p>
+<p>Several capabilities ship as independent companion packages so they can release on their own cadence without forcing a main-library rebuild. The calendar runtime in particular is intentionally small - fluent rule authoring, plugin loading, and dependency-injection registration are all opt-in.</p>
 <table>
 <thead>
 <tr>
@@ -309,7 +309,7 @@
 <tr>
 <td><code>Bodu.Globalization.Calendar.Build</code></td>
 <td>Preview</td>
-<td>MSBuild integration for notable-date rule packs: the <code>CompileNotableDatePack</code> task and <code>NotableDatePack</code> items compile XML/JSON documents to sealed <code>.bcal</code> packs during build, incrementally, via the bundled <code>bodu-calendar</code> tool. A development dependency — no runtime reference is added to the consuming project.</td>
+<td>MSBuild integration for notable-date rule packs: the <code>CompileNotableDatePack</code> task and <code>NotableDatePack</code> items compile XML/JSON documents to sealed <code>.bcal</code> packs during build, incrementally, via the bundled <code>bodu-calendar</code> tool. A development dependency - no runtime reference is added to the consuming project.</td>
 <td>(build-time only; bundles the <code>bodu-calendar</code> tool)</td>
 </tr>
 <tr>
@@ -333,7 +333,7 @@
 <tr>
 <td><code>Bodu.Globalization.Recurrence</code></td>
 <td>Preview</td>
-<td>RFC 5545 (iCalendar) recurrence rules — <code>RecurrenceRule</code> / <code>RecurrenceRuleBuilder</code> / <code>RecurrenceSet</code> parsing, formatting, and occurrence enumeration — plus <code>CronExpression</code> cron-schedule parsing and <code>AnchoredInterval</code> instant-anchored intervals, every form answering both next- and previous-occurrence queries.</td>
+<td>RFC 5545 (iCalendar) recurrence rules - <code>RecurrenceRule</code> / <code>RecurrenceRuleBuilder</code> / <code>RecurrenceSet</code> parsing, formatting, and occurrence enumeration - plus <code>CronExpression</code> cron-schedule parsing and <code>AnchoredInterval</code> instant-anchored intervals, every form answering both next- and previous-occurrence queries.</td>
 <td><code>Bodu.Core</code></td>
 </tr>
 <tr>
@@ -391,43 +391,43 @@
 <tr>
 <td><code>Bodu.IO.Compound</code></td>
 <td>Stable</td>
-<td>Reader and writer for the OLE2 / Compound File Binary (CFB) container — the structured-storage envelope used by legacy Office files. Opens existing containers (exposing the embedded named streams) and authors new ones via <code>CompoundFile.Create</code> and the builder API, with no application-format knowledge.</td>
+<td>Reader and writer for the OLE2 / Compound File Binary (CFB) container - the structured-storage envelope used by legacy Office files. Opens existing containers (exposing the embedded named streams) and authors new ones via <code>CompoundFile.Create</code> and the builder API, with no application-format knowledge.</td>
 <td><code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.IO.Biff</code></td>
 <td>Preview</td>
-<td>A low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy <code>.xls</code> workbooks — the substrate beneath <code>Bodu.Formats.Excel.Binary</code>, in the same relation <code>Bodu.IO.Pst</code> has to <code>Bodu.Formats.Outlook.Pst</code>. The forward-only, allocation-free <code>BiffReader</code> frames each record, establishes the version from BOF and the code page from CODEPAGE, and exposes typed accessors for cell, sheet, and workbook-globals records; <code>BiffSstReader</code> walks the BIFF8 shared string table across its CONTINUE records; <code>BiffWriter</code> emits BIFF5 or BIFF8 records. No compound-file dependency, no workbook or cell model, no formula evaluation.</td>
+<td>A low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy <code>.xls</code> workbooks - the substrate beneath <code>Bodu.Formats.Excel.Binary</code>, in the same relation <code>Bodu.IO.Pst</code> has to <code>Bodu.Formats.Outlook.Pst</code>. The forward-only, allocation-free <code>BiffReader</code> frames each record, establishes the version from BOF and the code page from CODEPAGE, and exposes typed accessors for cell, sheet, and workbook-globals records; <code>BiffSstReader</code> walks the BIFF8 shared string table across its CONTINUE records; <code>BiffWriter</code> emits BIFF5 or BIFF8 records. No compound-file dependency, no workbook or cell model, no formula evaluation.</td>
 <td><code>Bodu.Core</code>, <code>System.Text.Encoding.CodePages</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Formats.Excel.Binary</code></td>
 <td>Stable</td>
-<td>Narrow, read-only BIFF5 and BIFF8 (<code>.xls</code>) reader that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation.</td>
+<td>Narrow, read-only BIFF5 and BIFF8 (<code>.xls</code>) reader that surfaces raw worksheet cell values - strings, numbers, booleans, and errors - without formula evaluation, styling, or higher-level interpretation.</td>
 <td><code>Bodu.IO.Compound</code>, <code>Bodu.IO.Biff</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.IO.Pst</code></td>
 <td>Preview</td>
-<td>Low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST). Reads the node database of Unicode and ANSI files — header, node and block B-trees, block data with the permute and cyclic encodings decoded and checksums verified, multi-block data trees, and per-node subnode trees — and the LTP layer over it: heap-on-node, BTree-on-heap, and per-node property-context and table-context views with wire-typed values. The substrate a message-level reader builds on. No MAPI semantics and no writing.</td>
+<td>Low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST). Reads the node database of Unicode and ANSI files - header, node and block B-trees, block data with the permute and cyclic encodings decoded and checksums verified, multi-block data trees, and per-node subnode trees - and the LTP layer over it: heap-on-node, BTree-on-heap, and per-node property-context and table-context views with wire-typed values. The substrate a message-level reader builds on. No MAPI semantics and no writing.</td>
 <td><code>Bodu.Collections</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Formats.Outlook</code></td>
 <td>Preview</td>
-<td>The shared MAPI value model for the Outlook format readers: property tags and types, decoded property values with a tag-addressed collection, named-property identities, recipient and attachment enumerations, and the shared exception hierarchy. Container-free — the <code>.msg</code> reader (<code>Bodu.Formats.Outlook.Msg</code>) and the <code>.pst</code> mail-store reader (<code>Bodu.Formats.Outlook.Pst</code>, over <code>Bodu.IO.Pst</code>) build on it rather than owning the model.</td>
+<td>The shared MAPI value model for the Outlook format readers: property tags and types, decoded property values with a tag-addressed collection, named-property identities, recipient and attachment enumerations, and the shared exception hierarchy. Container-free - the <code>.msg</code> reader (<code>Bodu.Formats.Outlook.Msg</code>) and the <code>.pst</code> mail-store reader (<code>Bodu.Formats.Outlook.Pst</code>, over <code>Bodu.IO.Pst</code>) build on it rather than owning the model.</td>
 <td><code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Formats.Outlook.Msg</code></td>
 <td>Preview</td>
-<td>Read-only reader for the Outlook message format (<code>.msg</code> / MS-OXMSG) over the <code>Bodu.IO.Compound</code> OLE2 container. Opens a message as a disposable session exposing every decoded MAPI property, the recipient and attachment tables, nested attached messages, named-property resolution, and the text, HTML, and compressed-RTF bodies — with no MAPI session emulation or message authoring.</td>
+<td>Read-only reader for the Outlook message format (<code>.msg</code> / MS-OXMSG) over the <code>Bodu.IO.Compound</code> OLE2 container. Opens a message as a disposable session exposing every decoded MAPI property, the recipient and attachment tables, nested attached messages, named-property resolution, and the text, HTML, and compressed-RTF bodies - with no MAPI session emulation or message authoring.</td>
 <td><code>Bodu.IO.Compound</code>, <code>Bodu.Formats.Outlook</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Formats.Outlook.Pst</code></td>
 <td>Preview</td>
-<td>Read-only reader for the Outlook personal-folders format (<code>.pst</code> / MS-PST, Unicode and ANSI formats) over the <code>Bodu.IO.Pst</code> node-database container. Opens a mail store as a disposable session exposing the store properties, the folder hierarchy, and every message with its decoded MAPI properties, recipients, attachments, nested embedded messages, store-wide named-property resolution, and the text, HTML, and compressed-RTF bodies — with no MAPI session emulation or store authoring.</td>
+<td>Read-only reader for the Outlook personal-folders format (<code>.pst</code> / MS-PST, Unicode and ANSI formats) over the <code>Bodu.IO.Pst</code> node-database container. Opens a mail store as a disposable session exposing the store properties, the folder hierarchy, and every message with its decoded MAPI properties, recipients, attachments, nested embedded messages, store-wide named-property resolution, and the text, HTML, and compressed-RTF bodies - with no MAPI session emulation or store authoring.</td>
 <td><code>Bodu.IO.Pst</code>, <code>Bodu.Formats.Outlook</code>, <code>Bodu.Core</code></td>
 </tr>
 </tbody>
@@ -440,7 +440,7 @@
 <figure><img src="../images/hero-outlook-pst.svg" alt="Bodu.Formats.Outlook.Pst"><figcaption><code>Bodu.Formats.Outlook.Pst</code></figcaption></figure>
 </div>
 <h2 id="exchange-rate-providers-and-caching">Exchange-rate providers and caching</h2>
-<p>Several exchange-rate providers ship as independent packages over a shared <code>IDatedRateProvider</code> / <code>IRateProvider</code> contract, so consumers pull in only the data sources they need; each provider package ships its own <code>Add&lt;Source&gt;ExchangeRates</code> dependency-injection registration, delegating the shared <code>HttpClient</code> and resilience plumbing to <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>. The contract exposes a symmetric single-date/range lookup matrix (synchronous and asynchronous): single-date getters return a <code>RateLookupResult</code> (the resolved rate plus the applied date-resolution and offset), and range getters return a <code>RateRangeResult</code> (the rates, the requested window, and the observed span; it is itself an <code>IReadOnlyList&lt;ExchangeRate&gt;</code>). The HTTP-backed providers share the <code>WebRateProvider</code> base from the <code>Bodu.Financial.ExchangeRates</code> infrastructure package and are <code>IDisposable</code> — each either builds and owns its <code>HttpClient</code> from options (via <code>RateProviderHttpClientFactory</code>) or borrows a caller-supplied one. The Reserve Bank of Australia provider reads the RBA's published <code>.xls</code> files through the binary-format packages above — a dependency on the container and codec layers, not on anything RBA-specific. A standalone caching layer can decorate any provider with a shared on-disk TOML cache.</p>
+<p>Several exchange-rate providers ship as independent packages over a shared <code>IDatedRateProvider</code> / <code>IRateProvider</code> contract, so consumers pull in only the data sources they need; each provider package ships its own <code>Add&lt;Source&gt;ExchangeRates</code> dependency-injection registration, delegating the shared <code>HttpClient</code> and resilience plumbing to <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>. The contract exposes a symmetric single-date/range lookup matrix (synchronous and asynchronous): single-date getters return a <code>RateLookupResult</code> (the resolved rate plus the applied date-resolution and offset), and range getters return a <code>RateRangeResult</code> (the rates, the requested window, and the observed span; it is itself an <code>IReadOnlyList&lt;ExchangeRate&gt;</code>). The HTTP-backed providers share the <code>WebRateProvider</code> base from the <code>Bodu.Financial.ExchangeRates</code> infrastructure package and are <code>IDisposable</code> - each either builds and owns its <code>HttpClient</code> from options (via <code>RateProviderHttpClientFactory</code>) or borrows a caller-supplied one. The Reserve Bank of Australia provider reads the RBA's published <code>.xls</code> files through the binary-format packages above - a dependency on the container and codec layers, not on anything RBA-specific. A standalone caching layer can decorate any provider with a shared on-disk TOML cache.</p>
 <p>The core money, currency, and FX value types live in <code>Bodu.Financial</code> (see <strong>At a glance</strong>); everything below is an opt-in companion.</p>
 <table>
 <thead>
@@ -455,7 +455,7 @@
 <tr>
 <td><code>Bodu.Financial.ExchangeRates</code></td>
 <td>Preview</td>
-<td>Web exchange-rate provider infrastructure: the abstract <code>WebRateProvider</code> and <code>PairWebRateProvider&lt;TSeries&gt;</code> bases every per-source provider package builds on, plus the shared fetch machinery — <code>WebRateProviderOptions</code>, single-flight request coalescing (<code>SingleFlightCoordinator&lt;TKey&gt;</code>), on-disk raw-response caching (<code>FileSystemByteCache&lt;TKey&gt;</code>), <code>HttpClient</code> construction (<code>RateProviderHttpClientFactory</code>), and the pair-load contracts (<code>IPairRateLoader</code>, <code>IPairRateSource&lt;TSeries&gt;</code>). Keeps the HTTP machinery out of the core <code>Bodu.Financial</code> package.</td>
+<td>Web exchange-rate provider infrastructure: the abstract <code>WebRateProvider</code> and <code>PairWebRateProvider&lt;TSeries&gt;</code> bases every per-source provider package builds on, plus the shared fetch machinery - <code>WebRateProviderOptions</code>, single-flight request coalescing (<code>SingleFlightCoordinator&lt;TKey&gt;</code>), on-disk raw-response caching (<code>FileSystemByteCache&lt;TKey&gt;</code>), <code>HttpClient</code> construction (<code>RateProviderHttpClientFactory</code>), and the pair-load contracts (<code>IPairRateLoader</code>, <code>IPairRateSource&lt;TSeries&gt;</code>). Keeps the HTTP machinery out of the core <code>Bodu.Financial</code> package.</td>
 <td><code>Bodu.Financial</code>, <code>Bodu.Core</code>, <code>Microsoft.Extensions.Logging.Abstractions</code></td>
 </tr>
 <tr>
@@ -497,7 +497,7 @@
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Xe</code></td>
 <td>Experimental</td>
-<td>Fetches and parses the XE.com charting-rates JSON service, serving the results as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API over arbitrary currency pairs; the authorization token the endpoint requires is recovered by scraping an unversioned public XE page, so a site change can silently reduce the provider to empty results — pair it with a stable primary feed. Includes its own <code>AddXeExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>XeRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
+<td>Fetches and parses the XE.com charting-rates JSON service, serving the results as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API over arbitrary currency pairs; the authorization token the endpoint requires is recovered by scraping an unversioned public XE page, so a site change can silently reduce the provider to empty results - pair it with a stable primary feed. Includes its own <code>AddXeExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>XeRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
 <td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
@@ -533,7 +533,7 @@
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Caching</code></td>
 <td>Stable</td>
-<td><code>CachingRateProvider</code>, a one-cache-per-provider decorator that wraps any <code>IDatedRateProvider</code> and serves fresh rates from a pluggable cache cascade — <code>InMemoryRateCache</code> and the on-disk <code>TomlFileRateCache</code> (one TOML file per provider and currency pair) — delegating to the inner provider only on a miss; plus <code>AggregatingRateProvider</code>, which groups named child providers behind one entry point and combines them with a pluggable strategy (prioritised fallback, averaging, or per-FX-pair routing). Includes its own DI registration (<code>AddCachedRateProvider</code>, <code>AddAggregatedRateProvider</code>, in the <code>Bodu.Financial.ExchangeRates</code> namespace).</td>
+<td><code>CachingRateProvider</code>, a one-cache-per-provider decorator that wraps any <code>IDatedRateProvider</code> and serves fresh rates from a pluggable cache cascade - <code>InMemoryRateCache</code> and the on-disk <code>TomlFileRateCache</code> (one TOML file per provider and currency pair) - delegating to the inner provider only on a miss; plus <code>AggregatingRateProvider</code>, which groups named child providers behind one entry point and combines them with a pluggable strategy (prioritised fallback, averaging, or per-FX-pair routing). Includes its own DI registration (<code>AddCachedRateProvider</code>, <code>AddAggregatedRateProvider</code>, in the <code>Bodu.Financial.ExchangeRates</code> namespace).</td>
 <td><code>Bodu.Text.Toml</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
@@ -569,7 +569,7 @@
 <figure><img src="../images/hero-fx-caching-sqlite.svg" alt="Bodu.Financial.ExchangeRates.Caching.Sqlite"><figcaption><code>Bodu.Financial.ExchangeRates.Caching.Sqlite</code></figcaption></figure>
 </div>
 <h2 id="calendar-data-packs">Calendar data packs</h2>
-<p>Region-specific public-holiday rules ship as independent NuGet packages — one per region — so consumers pull in only the territories they need. Each is built on the notable-date schema and exposes a <code>&lt;Region&gt;CalendarData</code> factory over per-country embedded resource packs.</p>
+<p>Region-specific public-holiday rules ship as independent NuGet packages - one per region - so consumers pull in only the territories they need. Each is built on the notable-date schema and exposes a <code>&lt;Region&gt;CalendarData</code> factory over per-country embedded resource packs.</p>
 <table>
 <thead>
 <tr>
@@ -643,7 +643,7 @@
 </tr>
 </tbody>
 </table>
-<p>Status describes the <strong>API contract</strong>, not availability: it says what a version bump may do to code you have already written. Whether a package is on nuget.org is a separate decision, and four packages in this matrix are deliberately not — see below.</p>
+<p>Status describes the <strong>API contract</strong>, not availability: it says what a version bump may do to code you have already written. Whether a package is on nuget.org is a separate decision, and four packages in this matrix are deliberately not - see below.</p>
 <h2 id="not-published-to-nugetorg">Not published to nuget.org</h2>
 <p>These four projects build and pack with the rest of the solution, and are documented here like any other package, but they are withheld from nuget.org on purpose. <code>bld/release-manifest.txt</code> records the reasoning; in short:</p>
 <table>
@@ -664,7 +664,7 @@
 </tr>
 <tr>
 <td><code>Bodu.Globalization.Calendar.Tool</code></td>
-<td>A <code>PackAsTool</code> CLI rather than a library — a different consumer contract from every other package here, warranting its own decision.</td>
+<td>A <code>PackAsTool</code> CLI rather than a library - a different consumer contract from every other package here, warranting its own decision.</td>
 </tr>
 <tr>
 <td><code>Bodu.Globalization.Calendar.Build</code></td>
@@ -744,7 +744,7 @@ dotnet add package Bodu.Globalization.Calendar.Europe
 dotnet add package Bodu.Globalization.Calendar.Africa
 dotnet add package Bodu.Globalization.Calendar.MiddleEast
 </code></pre>
-<p><code>Bodu.Financial.ExchangeRates.Testing</code> — the contract-test bases the provider and cache test projects derive — is a source-only project in the repository (<code>IsPackable=false</code>) and is not published to NuGet.</p>
+<p><code>Bodu.Financial.ExchangeRates.Testing</code> - the contract-test bases the provider and cache test projects derive - is a source-only project in the repository (<code>IsPackable=false</code>) and is not published to NuGet.</p>
 <h2 id="design-principles">Design principles</h2>
 <ul>
 <li><strong>Minimal external runtime dependencies.</strong> Core libraries depend only on the BCL. Extension packages (<code>Bodu.Extensions.Configuration.Text</code>, <code>Bodu.Globalization.Calendar.DependencyInjection</code>) intentionally bridge to the Microsoft.Extensions ecosystem.</li>
@@ -756,8 +756,8 @@ dotnet add package Bodu.Globalization.Calendar.MiddleEast
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="introduction.html">Introduction</a></strong> — high-level overview of the suite.</li>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install and run minimal samples across the suite.</li>
+<li><strong><a href="introduction.html">Introduction</a></strong> - high-level overview of the suite.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install and run minimal samples across the suite.</li>
 </ul>
 
 </article>
@@ -777,7 +777,7 @@ dotnet add package Bodu.Globalization.Calendar.MiddleEast
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -105,13 +105,13 @@
 <p><strong>Bodu.Collections.Extensions</strong> holds the non-generic / shape-agnostic enumeration helpers that complement <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a>. Reach for this namespace when you want recursive-descent helpers or count helpers that work against <code>IEnumerable</code> rather than <code>IEnumerable&lt;T&gt;</code>.</p>
 <h2 id="key-types">Key types</h2>
 <ul>
-<li><a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html">IEnumerableExtensions</a> — <code>CountOrDefault</code>, <code>RecursiveSelect</code> for non-generic shapes.</li>
-<li><a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html">RecursiveSelectControl</a> — <code>[Flags]</code> value returned by a recursion-control callback to decide, per element, whether to yield it, descend into its children, and whether to stop: the primitive flags <code>None</code>, <code>Yield</code>, <code>Recurse</code>, <code>Skip</code>, <code>Break</code>, <code>Exit</code>, and the named combinations <code>YieldOnly</code>, <code>RecurseOnly</code>, <code>YieldAndRecurse</code>, <code>SkipOnly</code>, <code>SkipAndRecurse</code>, <code>YieldAndBreak</code>, <code>SkipAndBreak</code>, <code>YieldAndExit</code>, <code>SkipAndExit</code>. Shared with the typed <code>RecursiveSelect</code> overloads in <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a>.</li>
+<li><a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html">IEnumerableExtensions</a> - <code>CountOrDefault</code>, <code>RecursiveSelect</code> for non-generic shapes.</li>
+<li><a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html">RecursiveSelectControl</a> - <code>[Flags]</code> value returned by a recursion-control callback to decide, per element, whether to yield it, descend into its children, and whether to stop: the primitive flags <code>None</code>, <code>Yield</code>, <code>Recurse</code>, <code>Skip</code>, <code>Break</code>, <code>Exit</code>, and the named combinations <code>YieldOnly</code>, <code>RecurseOnly</code>, <code>YieldAndRecurse</code>, <code>SkipOnly</code>, <code>SkipAndRecurse</code>, <code>YieldAndBreak</code>, <code>SkipAndBreak</code>, <code>YieldAndExit</code>, <code>SkipAndExit</code>. Shared with the typed <code>RecursiveSelect</code> overloads in <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a>.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using Bodu.Collections.Extensions;
 
-// Counts a non-generic IEnumerable — O(1) when the source is an ICollection, otherwise it enumerates.
+// Counts a non-generic IEnumerable - O(1) when the source is an ICollection, otherwise it enumerates.
 int n = source.CountOrDefault();
 
 // Recursive-select over a non-generic IEnumerable: the child selector and the result are untyped.
@@ -126,7 +126,7 @@ IEnumerable visible = root.RecursiveSelect(
           : ((Node)node).IsVisible  ? RecursiveSelectControl.YieldAndRecurse
                                     : RecursiveSelectControl.SkipOnly);
 </code></pre>
-<p>When the source is already an <code>IEnumerable&lt;T&gt;</code>, prefer the typed overloads in <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a> — the same <code>RecursiveSelectControl</code> vocabulary with strongly typed selectors and an <code>IEnumerable&lt;TResult&gt;</code> result.</p>
+<p>When the source is already an <code>IEnumerable&lt;T&gt;</code>, prefer the typed overloads in <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a> - the same <code>RecursiveSelectControl</code> vocabulary with strongly typed selectors and an <code>IEnumerable&lt;TResult&gt;</code> result.</p>
 <h2 id="notes">Notes</h2>
 <ul>
 <li><strong>Counterpart to the generic surface.</strong> Sequence helpers parameterised on <code>T</code> live in <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a>; this namespace covers the cases where the source is shape-agnostic.</li>
@@ -141,8 +141,8 @@ Classes
 </h3>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html">IEnumerableExtensions</a></dt>
-      <dd><p>Provides operations over the non-generic <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a> surface — counting without
-enumerating where the source is already a collection, and walking heterogeneous tree structures recursively — for
+      <dd><p>Provides operations over the non-generic <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a> surface - counting without
+enumerating where the source is already a collection, and walking heterogeneous tree structures recursively - for
 code that has to deal with reflection-shaped or legacy sequences.</p>
 </dd>
     </dl>
@@ -172,7 +172,7 @@ Enums
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

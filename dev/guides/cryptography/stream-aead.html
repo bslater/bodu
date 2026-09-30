@@ -117,9 +117,9 @@
 <td>XSalsa20-Poly1305 (secretbox)</td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a></td>
 <td>XSalsa20 (HSalsa20 subkey + Salsa20)</td>
-<td>NaCl secretbox — tag over the ciphertext only</td>
-<td><strong>No</strong> — non-empty AAD throws <code>ArgumentException</code></td>
-<td>NaCl / libsodium <code>crypto_secretbox</code> (same bytes, different order — see Pattern 3)</td>
+<td>NaCl secretbox - tag over the ciphertext only</td>
+<td><strong>No</strong> - non-empty AAD throws <code>ArgumentException</code></td>
+<td>NaCl / libsodium <code>crypto_secretbox</code> (same bytes, different order - see Pattern 3)</td>
 </tr>
 <tr>
 <td>XSalsa20-Poly1305-AEAD</td>
@@ -127,13 +127,13 @@
 <td>XSalsa20</td>
 <td>RFC 8439 AEAD</td>
 <td>Yes</td>
-<td><strong>Nothing</strong> — a Bodu-defined hybrid; use only when both peers are Bodu</td>
+<td><strong>Nothing</strong> - a Bodu-defined hybrid; use only when both peers are Bodu</td>
 </tr>
 </tbody>
 </table>
 <p>In every case the counter-0 keystream block supplies the one-time Poly1305 key and the message is encrypted from counter 1 (XChaCha20, XSalsa20-AEAD) or from byte 32 of the keystream (secretbox). The RFC 8439 framing authenticates <code>AAD ‖ pad16(AAD) ‖ ciphertext ‖ pad16(ciphertext) ‖ le64(|AAD|) ‖ le64(|ciphertext|)</code>.</p>
-<p><strong>Which one?</strong> <code>XChaCha20Poly1305</code> is the interoperable, random-nonce AEAD — the gap the BCL's 96-bit-nonce <code>ChaCha20Poly1305</code> leaves (<a href="bcl-interop.html#pattern-6--xchacha20poly1305-is-not-chacha20poly1305">BCL interop</a>). <code>XSalsa20Poly1305</code> exists to talk to NaCl secretbox. <code>XSalsa20Poly1305Aead</code> exists for symmetry; prefer the other two unless a protocol names it.</p>
-<h2 id="pattern-1--xchacha20-poly1305-with-associated-data">Pattern 1 — XChaCha20-Poly1305 with associated data</h2>
+<p><strong>Which one?</strong> <code>XChaCha20Poly1305</code> is the interoperable, random-nonce AEAD - the gap the BCL's 96-bit-nonce <code>ChaCha20Poly1305</code> leaves (<a href="bcl-interop.html#pattern-6---xchacha20poly1305-is-not-chacha20poly1305">BCL interop</a>). <code>XSalsa20Poly1305</code> exists to talk to NaCl secretbox. <code>XSalsa20Poly1305Aead</code> exists for symmetry; prefer the other two unless a protocol names it.</p>
+<h2 id="pattern-1---xchacha20-poly1305-with-associated-data">Pattern 1 - XChaCha20-Poly1305 with associated data</h2>
 <p>This is the <code>draft-irtf-cfrg-xchacha</code> appendix A.3.1 vector; the tag reproduces the draft's <code>c0875924c1c7987947deafd8780acf49</code>.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -151,13 +151,13 @@ using var dec = new XChaCha20Poly1305(key, nonce);
 byte[] recovered = dec.Decrypt(sealed_, associatedData: aad);        // throws CryptographicException on any tamper
 </code></pre>
 <p><code>Encrypt</code> / <code>Decrypt</code> come from <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.html">AeadTransformExtensions</a>, which size and allocate the array; <code>TagSize</code> is 128 bits, and <code>XChaCha20Poly1305.KeySize</code> / <code>NonceSize</code> are 256 / 192.</p>
-<p>The span overloads that write into your own buffer allocate nothing: the instance holds the key and nonce, and each message's keystream and Poly1305 state live on the stack, so the only allocation a message makes is the single-use instance itself. Whole 64-byte blocks of keystream are produced many at a time on processors with vector instructions. A message of up to 960 bytes (992 for <code>XSalsa20Poly1305</code>) can draw all of its keystream, including the block that keys Poly1305, in one or two such steps, which it does wherever the processor makes that cheaper than drawing a block at a time; and on x64 Poly1305 absorbs a message of 512 bytes or more several blocks at a time as well — see <a href="hardware-acceleration.html">Hardware acceleration</a>.</p>
+<p>The span overloads that write into your own buffer allocate nothing: the instance holds the key and nonce, and each message's keystream and Poly1305 state live on the stack, so the only allocation a message makes is the single-use instance itself. Whole 64-byte blocks of keystream are produced many at a time on processors with vector instructions. A message of up to 960 bytes (992 for <code>XSalsa20Poly1305</code>) can draw all of its keystream, including the block that keys Poly1305, in one or two such steps, which it does wherever the processor makes that cheaper than drawing a block at a time; and on x64 Poly1305 absorbs a message of 512 bytes or more several blocks at a time as well - see <a href="hardware-acceleration.html">Hardware acceleration</a>.</p>
 <div class="WARNING">
 <h5>Warning</h5>
 <p>Name the <code>associatedData:</code> argument. <code>Poly1305AeadTransform</code> also has a public <code>Encrypt(ReadOnlySpan&lt;byte&gt; plaintext, Span&lt;byte&gt; output, ReadOnlySpan&lt;byte&gt; associatedData = default)</code>; with two positional <code>byte[]</code> arguments that overload wins, your AAD array becomes the <strong>output buffer</strong>, and the call returns an <code>int</code>. <code>Encrypt(plaintext)</code> with a single argument is unambiguous.</p>
 </div>
-<h2 id="pattern-2--single-use-and-what-happens-on-tamper">Pattern 2 — single use, and what happens on tamper</h2>
-<p>Every instance is stateful and single-use. A second <code>Encrypt</code> or <code>Decrypt</code> on the same instance throws <code>InvalidOperationException</code> — including after a failed tag check, so a &quot;retry on the same transform&quot; is impossible by construction. A modified ciphertext, tag, or AAD throws <code>CryptographicException</code> and writes no plaintext.</p>
+<h2 id="pattern-2---single-use-and-what-happens-on-tamper">Pattern 2 - single use, and what happens on tamper</h2>
+<p>Every instance is stateful and single-use. A second <code>Encrypt</code> or <code>Decrypt</code> on the same instance throws <code>InvalidOperationException</code> - including after a failed tag check, so a &quot;retry on the same transform&quot; is impossible by construction. A modified ciphertext, tag, or AAD throws <code>CryptographicException</code> and writes no plaintext.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -179,7 +179,7 @@ try { dec.Decrypt(sealed_); } catch (InvalidOperationException) { /* the instanc
 <h5>Warning</h5>
 <p>A <code>(key, nonce)</code> pair must encrypt at most one message. The 24-byte nonce is large enough to draw from <code>RandomNumberGenerator</code> (or <a class="xref" href="../../api/Bodu.Security.Cryptography.Nonce.html#Bodu_Security_Cryptography_Nonce_Random_System_Int32_">Random(int)</a>) per message without meaningful collision risk; that is the whole point of the extended nonce. Do not reuse a key across these constructions and the raw <code>XChaCha20</code> / <code>XSalsa20</code> ciphers without an HKDF-style key separation.</p>
 </div>
-<h2 id="pattern-3--nacl-secretbox-and-the-libsodium-layout">Pattern 3 — NaCl secretbox and the libsodium layout</h2>
+<h2 id="pattern-3---nacl-secretbox-and-the-libsodium-layout">Pattern 3 - NaCl secretbox and the libsodium layout</h2>
 <p><a class="xref" href="../../api/Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a> reproduces the secretbox body byte for byte, but emits <code>ciphertext ‖ tag</code> like the rest of the library where libsodium's <code>crypto_secretbox_easy</code> emits <code>tag ‖ ciphertext</code>. Two static helpers swap the order at the boundary; both accept an aliased destination for in-place conversion.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -193,7 +193,7 @@ using var box = new XSalsa20Poly1305(key, nonce);
 byte[] sealed_ = box.Encrypt(plaintext);                     // ciphertext ‖ tag; tag = 838EBCFC76D4B1D823B89BB6E0FC0520
 
 byte[] libsodium = new byte[sealed_.Length];
-XSalsa20Poly1305.ToLibsodiumCombined(sealed_, libsodium);   // tag ‖ ciphertext — what crypto_secretbox_easy produces
+XSalsa20Poly1305.ToLibsodiumCombined(sealed_, libsodium);   // tag ‖ ciphertext - what crypto_secretbox_easy produces
 
 byte[] back = new byte[libsodium.Length];
 XSalsa20Poly1305.FromLibsodiumCombined(libsodium, back);    // ciphertext ‖ tag again
@@ -202,8 +202,8 @@ using var open = new XSalsa20Poly1305(key, nonce);
 byte[] recovered = open.Decrypt(back);
 </code></pre>
 <p>Secretbox authenticates no associated data: <code>Encrypt(plaintext, associatedData: header)</code> with a non-empty header throws <code>ArgumentException</code> (<code>associatedData</code>). When you need AAD with an XSalsa20 keystream use <code>XSalsa20Poly1305Aead</code>, whose call shape is identical to Pattern 1 but whose output no other library will open.</p>
-<h2 id="pattern-4--programming-against-the-interface">Pattern 4 — programming against the interface</h2>
-<p>All three types are <a class="xref" href="../../api/Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a>, and through it <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a> — the same interface the block-cipher AEADs and <code>AsconAead128</code> implement — so one code path can serve any of them. The span-based members return the number of bytes written; the output must be at least <code>plaintext.Length + TagSize / 8</code>.</p>
+<h2 id="pattern-4---programming-against-the-interface">Pattern 4 - programming against the interface</h2>
+<p>All three types are <a class="xref" href="../../api/Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a>, and through it <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a> - the same interface the block-cipher AEADs and <code>AsconAead128</code> implement - so one code path can serve any of them. The span-based members return the number of bytes written; the output must be at least <code>plaintext.Length + TagSize / 8</code>.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
 
@@ -225,7 +225,7 @@ foreach (Func&lt;IStreamAeadTransform&gt; make in new Func&lt;IStreamAeadTransfo
     int plainLength = dec.Decrypt(output.AsSpan(0, written), plain, aad);
 }
 </code></pre>
-<p>Exact in-place operation is supported — the output span may start at the same address as the input — but any other overlap throws <code>ArgumentException</code>:</p>
+<p>Exact in-place operation is supported - the output span may start at the same address as the input - but any other overlap throws <code>ArgumentException</code>:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
 
@@ -240,8 +240,8 @@ int written = enc.Encrypt(buffer.AsSpan(0, plaintext.Length), buffer);          
 using var dec = new XChaCha20Poly1305(key, nonce);
 int plainLength = dec.Decrypt(buffer.AsSpan(0, written), buffer);
 </code></pre>
-<h2 id="pattern-5--detached-tags">Pattern 5 — detached tags</h2>
-<p><code>EncryptDetached</code> / <code>DecryptDetached</code> — the overloads that return an <a class="xref" href="../../api/Bodu.Security.Cryptography.AuthenticationTag.html">AuthenticationTag</a> separately from the ciphertext — are declared on <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a> for <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> only. The stream AEADs do not have them; because their layout is always <code>ciphertext ‖ tag</code>, detaching is a slice:</p>
+<h2 id="pattern-5---detached-tags">Pattern 5 - detached tags</h2>
+<p><code>EncryptDetached</code> / <code>DecryptDetached</code> - the overloads that return an <a class="xref" href="../../api/Bodu.Security.Cryptography.AuthenticationTag.html">AuthenticationTag</a> separately from the ciphertext - are declared on <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a> for <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> only. The stream AEADs do not have them; because their layout is always <code>ciphertext ‖ tag</code>, detaching is a slice:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
@@ -261,7 +261,7 @@ byte[] recovered = dec.Decrypt([.. ciphertext, .. tag.AsSpan()], associatedData:
 </code></pre>
 <p>See <a href="value-types.html">Nonces, salts, tags, and secrets</a> for <code>AuthenticationTag</code> and the block-cipher <code>EncryptDetached</code> shape.</p>
 <h2 id="building-your-own">Building your own</h2>
-<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a> is abstract and public. A subclass supplies <code>CreateEngine()</code> — an <a class="xref" href="../../api/Bodu.Security.Cryptography.IStreamCipher.html">IStreamCipher</a> positioned at block counter 0 — and may override <code>SealCore</code> / <code>OpenCore</code> to substitute a framing (that is how the secretbox variant is built) or <code>SupportsAssociatedData</code> to reject AAD. The base handles length validation, the overlap rule, the single-use latch, and zeroizing the retained key and nonce on <code>Dispose</code>. The library's own keystream engines are internal, so a subclass brings its own <code>IStreamCipher</code>.</p>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a> is abstract and public. A subclass supplies <code>CreateEngine()</code> - an <a class="xref" href="../../api/Bodu.Security.Cryptography.IStreamCipher.html">IStreamCipher</a> positioned at block counter 0 - and may override <code>SealCore</code> / <code>OpenCore</code> to substitute a framing (that is how the secretbox variant is built) or <code>SupportsAssociatedData</code> to reject AAD. The base handles length validation, the overlap rule, the single-use latch, and zeroizing the retained key and nonce on <code>Dispose</code>. The library's own keystream engines are internal, so a subclass brings its own <code>IStreamCipher</code>.</p>
 <h2 id="api-summary">API summary</h2>
 <table>
 <thead>
@@ -311,11 +311,11 @@ byte[] recovered = dec.Decrypt([.. ciphertext, .. tag.AsSpan()], associatedData:
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="stream-ciphers.html">Using stream ciphers</a> — the raw, unauthenticated keystream ciphers these are built on.</li>
-<li><a href="poly1305.html">Using Poly1305</a> — the one-time authenticator on its own.</li>
-<li><a href="aead-modes.html">AEAD modes</a> and <a href="ascon-aead.html">ASCON AEAD</a> — the block-cipher and sponge alternatives.</li>
-<li><a href="bcl-interop.html">Interoperating with System.Security.Cryptography</a> — why this is not the BCL <code>ChaCha20Poly1305</code>.</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><a href="stream-ciphers.html">Using stream ciphers</a> - the raw, unauthenticated keystream ciphers these are built on.</li>
+<li><a href="poly1305.html">Using Poly1305</a> - the one-time authenticator on its own.</li>
+<li><a href="aead-modes.html">AEAD modes</a> and <a href="ascon-aead.html">ASCON AEAD</a> - the block-cipher and sponge alternatives.</li>
+<li><a href="bcl-interop.html">Interoperating with System.Security.Cryptography</a> - why this is not the BCL <code>ChaCha20Poly1305</code>.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -335,7 +335,7 @@ byte[] recovered = dec.Decrypt([.. ciphertext, .. tag.AsSpan()], associatedData:
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -51,7 +51,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Collections.Extensions.IEnumerableExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Collections.Extensions.IEnumerableExtensions.yml\" sourcestartlinenumber=\"1\">Provides operations over the non-generic <xref href=\"System.Collections.IEnumerable\" data-throw-if-not-resolved=\"false\"></xref> surface — counting without\nenumerating where the source is already a collection, and walking heterogeneous tree structures recursively — for\ncode that has to deal with reflection-shaped or legacy sequences.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Collections.Extensions.IEnumerableExtensions.yml\" sourcestartlinenumber=\"1\">Provides operations over the non-generic <xref href=\"System.Collections.IEnumerable\" data-throw-if-not-resolved=\"false\"></xref> surface - counting without\nenumerating where the source is already a collection, and walking heterogeneous tree structures recursively - for\ncode that has to deal with reflection-shaped or legacy sequences.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -415,7 +415,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Collections.Generic.Extensions.IDictionaryExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.Extensions.IDictionaryExtensions.yml\" sourcestartlinenumber=\"1\">Provides retrieval-and-mutation helpers for <xref href=\"System.Collections.Generic.IDictionary%602\" data-throw-if-not-resolved=\"false\"></xref> — get-or-add and add-or-update\noperations modelled on the <xref href=\"System.Collections.Concurrent.ConcurrentDictionary%602\" data-throw-if-not-resolved=\"false\"></xref> surface\nbut available on any dictionary implementation.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.Extensions.IDictionaryExtensions.yml\" sourcestartlinenumber=\"1\">Provides retrieval-and-mutation helpers for <xref href=\"System.Collections.Generic.IDictionary%602\" data-throw-if-not-resolved=\"false\"></xref> - get-or-add and add-or-update\noperations modelled on the <xref href=\"System.Collections.Concurrent.ConcurrentDictionary%602\" data-throw-if-not-resolved=\"false\"></xref> surface\nbut available on any dictionary implementation.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -429,7 +429,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Collections.Generic.Extensions.IEnumerableExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.Extensions.IEnumerableExtensions.yml\" sourcestartlinenumber=\"1\">Provides deferred-execution combinators over <xref href=\"System.Collections.Generic.IEnumerable%601\" data-throw-if-not-resolved=\"false\"></xref> — batching, caching, multi-aggregate\nfan-out, recursive descent, randomization, and set-membership predicates — that complement the standard LINQ surface\nfor production pipeline code.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.Extensions.IEnumerableExtensions.yml\" sourcestartlinenumber=\"1\">Provides deferred-execution combinators over <xref href=\"System.Collections.Generic.IEnumerable%601\" data-throw-if-not-resolved=\"false\"></xref> - batching, caching, multi-aggregate\nfan-out, recursive descent, randomization, and set-membership predicates - that complement the standard LINQ surface\nfor production pipeline code.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -653,7 +653,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Collections.Generic.IndexedSet<T>",
-      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.IndexedSet-1.yml\" sourcestartlinenumber=\"1\">Represents an index-addressable unique list — an insertion-ordered collection of unique elements that exposes the\nfull <xref href=\"System.Collections.Generic.IList%601\" data-throw-if-not-resolved=\"false\"></xref> contract.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.IndexedSet-1.yml\" sourcestartlinenumber=\"1\">Represents an index-addressable unique list - an insertion-ordered collection of unique elements that exposes the\nfull <xref href=\"System.Collections.Generic.IList%601\" data-throw-if-not-resolved=\"false\"></xref> contract.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -681,7 +681,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Collections.Generic.IntervalTree<T>",
-      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.IntervalTree-1.yml\" sourcestartlinenumber=\"1\">Represents a collection of closed intervals [low, high] that may freely overlap, answering stabbing queries (<xref href=\"Bodu.Collections.Generic.IntervalTree%601.QueryPoint(%600)\" data-throw-if-not-resolved=\"false\"></xref>\n— all intervals containing a point) and overlap-window queries (<xref href=\"Bodu.Collections.Generic.IntervalTree%601.QueryOverlaps(%600%2c%600)\" data-throw-if-not-resolved=\"false\"></xref> — all intervals\nintersecting a window) in O(log n + k).</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.IntervalTree-1.yml\" sourcestartlinenumber=\"1\">Represents a collection of closed intervals [low, high] that may freely overlap, answering stabbing queries\n(<xref href=\"Bodu.Collections.Generic.IntervalTree%601.QueryPoint(%600)\" data-throw-if-not-resolved=\"false\"></xref> - all intervals containing a point) and overlap-window queries\n(<xref href=\"Bodu.Collections.Generic.IntervalTree%601.QueryOverlaps(%600%2c%600)\" data-throw-if-not-resolved=\"false\"></xref> - all intervals intersecting a window) in O(log n + k).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -849,7 +849,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Collections.Generic.NavigableDictionary<TKey, TValue>",
-      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.NavigableDictionary-2.yml\" sourcestartlinenumber=\"1\">Represents a key-sorted dictionary augmented with order statistics — an <xref href=\"System.Collections.Generic.IDictionary%602\" data-throw-if-not-resolved=\"false\"></xref>\nthat keeps its entries in key comparer order and answers nearest-neighbour ( <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.TryGetFloorEntry(%600%2cSystem.Collections.Generic.KeyValuePair%7b%600%2c%601%7d%40)\" data-throw-if-not-resolved=\"false\"></xref> /\n<xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.TryGetCeilingEntry(%600%2cSystem.Collections.Generic.KeyValuePair%7b%600%2c%601%7d%40)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.TryGetHigherEntry(%600%2cSystem.Collections.Generic.KeyValuePair%7b%600%2c%601%7d%40)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.TryGetLowerEntry(%600%2cSystem.Collections.Generic.KeyValuePair%7b%600%2c%601%7d%40)\" data-throw-if-not-resolved=\"false\"></xref>), rank/select\n( <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.IndexOfKey(%600)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.GetAt(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref>), and range-counting queries in O(log n).</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.NavigableDictionary-2.yml\" sourcestartlinenumber=\"1\">Represents a key-sorted dictionary augmented with order statistics - an <xref href=\"System.Collections.Generic.IDictionary%602\" data-throw-if-not-resolved=\"false\"></xref>\nthat keeps its entries in key comparer order and answers nearest-neighbour ( <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.TryGetFloorEntry(%600%2cSystem.Collections.Generic.KeyValuePair%7b%600%2c%601%7d%40)\" data-throw-if-not-resolved=\"false\"></xref> /\n<xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.TryGetCeilingEntry(%600%2cSystem.Collections.Generic.KeyValuePair%7b%600%2c%601%7d%40)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.TryGetHigherEntry(%600%2cSystem.Collections.Generic.KeyValuePair%7b%600%2c%601%7d%40)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.TryGetLowerEntry(%600%2cSystem.Collections.Generic.KeyValuePair%7b%600%2c%601%7d%40)\" data-throw-if-not-resolved=\"false\"></xref>), rank/select\n( <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.IndexOfKey(%600)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableDictionary%602.GetAt(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref>), and range-counting queries in O(log n).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -877,7 +877,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Collections.Generic.NavigableSet<T>",
-      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.NavigableSet-1.yml\" sourcestartlinenumber=\"1\">Represents a sorted set augmented with order statistics — an <xref href=\"System.Collections.Generic.ISet%601\" data-throw-if-not-resolved=\"false\"></xref> that keeps its elements in\ncomparer order and answers nearest-neighbour (<xref href=\"Bodu.Collections.Generic.NavigableSet%601.TryGetFloor(%600%2c%600%40)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableSet%601.TryGetCeiling(%600%2c%600%40)\" data-throw-if-not-resolved=\"false\"></xref> /\n<xref href=\"Bodu.Collections.Generic.NavigableSet%601.TryGetHigher(%600%2c%600%40)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableSet%601.TryGetLower(%600%2c%600%40)\" data-throw-if-not-resolved=\"false\"></xref>), rank/select (<xref href=\"Bodu.Collections.Generic.NavigableSet%601.IndexOf(%600)\" data-throw-if-not-resolved=\"false\"></xref> /\n<xref href=\"Bodu.Collections.Generic.NavigableSet%601.GetAt(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref>), and range-counting queries in O(log n).</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.NavigableSet-1.yml\" sourcestartlinenumber=\"1\">Represents a sorted set augmented with order statistics - an <xref href=\"System.Collections.Generic.ISet%601\" data-throw-if-not-resolved=\"false\"></xref> that keeps its elements in\ncomparer order and answers nearest-neighbour (<xref href=\"Bodu.Collections.Generic.NavigableSet%601.TryGetFloor(%600%2c%600%40)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableSet%601.TryGetCeiling(%600%2c%600%40)\" data-throw-if-not-resolved=\"false\"></xref> /\n<xref href=\"Bodu.Collections.Generic.NavigableSet%601.TryGetHigher(%600%2c%600%40)\" data-throw-if-not-resolved=\"false\"></xref> / <xref href=\"Bodu.Collections.Generic.NavigableSet%601.TryGetLower(%600%2c%600%40)\" data-throw-if-not-resolved=\"false\"></xref>), rank/select (<xref href=\"Bodu.Collections.Generic.NavigableSet%601.IndexOf(%600)\" data-throw-if-not-resolved=\"false\"></xref> /\n<xref href=\"Bodu.Collections.Generic.NavigableSet%601.GetAt(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref>), and range-counting queries in O(log n).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -905,7 +905,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Collections.Generic.OrderedSet<T>",
-      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.OrderedSet-1.yml\" sourcestartlinenumber=\"1\">Represents an insertion-ordered set — a <xref href=\"System.Collections.Generic.ISet%601\" data-throw-if-not-resolved=\"false\"></xref> that preserves the order in which elements were first\nadded and exposes that order through <xref href=\"System.Collections.Generic.IReadOnlyList%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.OrderedSet-1.yml\" sourcestartlinenumber=\"1\">Represents an insertion-ordered set - a <xref href=\"System.Collections.Generic.ISet%601\" data-throw-if-not-resolved=\"false\"></xref> that preserves the order in which elements were first\nadded and exposes that order through <xref href=\"System.Collections.Generic.IReadOnlyList%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1003,7 +1003,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Collections.Generic.RingBackedCollection<T>",
-      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.RingBackedCollection-1.yml\" sourcestartlinenumber=\"1\">Provides the shared low-level mechanics for ring-buffer-backed collections — a contiguous backing array, head/tail\nindices with modulo wrap, a live element count, and a structural-version counter — as a reusable base type for\n<xref href=\"Bodu.Collections.Generic.CircularBuffer%601\" data-throw-if-not-resolved=\"false\"></xref> and <xref href=\"Bodu.Collections.Generic.Deque%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.RingBackedCollection-1.yml\" sourcestartlinenumber=\"1\">Provides the shared low-level mechanics for ring-buffer-backed collections - a contiguous backing array, head/tail\nindices with modulo wrap, a live element count, and a structural-version counter - as a reusable base type for\n<xref href=\"Bodu.Collections.Generic.CircularBuffer%601\" data-throw-if-not-resolved=\"false\"></xref> and <xref href=\"Bodu.Collections.Generic.Deque%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1101,7 +1101,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Collections.Generic.ShuffleHelpers",
-      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.ShuffleHelpers.yml\" sourcestartlinenumber=\"1\">Provides in-place and yield-based Fisher–Yates randomization over arrays, spans, memory regions, and arbitrary\n<xref href=\"System.Collections.Generic.IEnumerable%601\" data-throw-if-not-resolved=\"false\"></xref> sources.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.ShuffleHelpers.yml\" sourcestartlinenumber=\"1\">Provides in-place and yield-based Fisher-Yates randomization over arrays, spans, memory regions, and arbitrary\n<xref href=\"System.Collections.Generic.IEnumerable%601\" data-throw-if-not-resolved=\"false\"></xref> sources.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1325,7 +1325,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Collections.Generic.ValueRange<TKey, TValue>",
-      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.ValueRange-2.yml\" sourcestartlinenumber=\"1\">Represents a half-open range mapped to a value — the entry projection produced when enumerating a\n<xref href=\"Bodu.Collections.Generic.RangeDictionary%602\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Collections.Generic.ValueRange-2.yml\" sourcestartlinenumber=\"1\">Represents a half-open range mapped to a value - the entry projection produced when enumerating a\n<xref href=\"Bodu.Collections.Generic.RangeDictionary%602\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1465,7 +1465,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.ArrayExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.ArrayExtensions.yml\" sourcestartlinenumber=\"1\">Provides allocation-aware operations over <xref href=\"System.Array\" data-throw-if-not-resolved=\"false\"></xref> instances — clearing, copying, slicing, and reversing\n— that either match the missing primitives on <xref href=\"System.Array\" data-throw-if-not-resolved=\"false\"></xref> or supply more ergonomic counterparts to the BCL\nhelpers.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.ArrayExtensions.yml\" sourcestartlinenumber=\"1\">Provides allocation-aware operations over <xref href=\"System.Array\" data-throw-if-not-resolved=\"false\"></xref> instances - clearing, copying, slicing, and\nreversing - that either match the missing primitives on <xref href=\"System.Array\" data-throw-if-not-resolved=\"false\"></xref> or supply more ergonomic counterparts\nto the BCL helpers.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1493,7 +1493,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.CalendarQuarterDefinition",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.CalendarQuarterDefinition.yml\" sourcestartlinenumber=\"1\">Specifies how quarters (Q1–Q4) are defined within a given calendar-based system.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.CalendarQuarterDefinition.yml\" sourcestartlinenumber=\"1\">Specifies how quarters (Q1-Q4) are defined within a given calendar-based system.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1521,7 +1521,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.ComparableHelper",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.ComparableHelper.yml\" sourcestartlinenumber=\"1\">Provides null-tolerant ordering helpers — <code>Min</code>, <code>Max</code>, and <code>Coalesce</code> — for pairs of operands.\n<code>Min</code> and <code>Max</code> require <xref href=\"System.IComparable%601\" data-throw-if-not-resolved=\"false\"></xref> operands (reference types may be\n<a href=\"https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null\">null</a>); <code>Coalesce</code> is unconstrained and additionally accepts <xref href=\"System.Nullable%601\" data-throw-if-not-resolved=\"false\"></xref> value\ntypes.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.ComparableHelper.yml\" sourcestartlinenumber=\"1\">Provides null-tolerant ordering helpers - <code>Min</code>, <code>Max</code>, and <code>Coalesce</code> - for pairs of operands.\n<code>Min</code> and <code>Max</code> require <xref href=\"System.IComparable%601\" data-throw-if-not-resolved=\"false\"></xref> operands (reference types may be\n<a href=\"https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null\">null</a>); <code>Coalesce</code> is unconstrained and additionally accepts <xref href=\"System.Nullable%601\" data-throw-if-not-resolved=\"false\"></xref> value\ntypes.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1563,7 +1563,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.Configuration.Text.BencodeConfigurationSource",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.Configuration.Text.BencodeConfigurationSource.yml\" sourcestartlinenumber=\"1\">Represents a Bencode configuration source — either a one-shot <xref href=\"System.IO.Stream\" data-throw-if-not-resolved=\"false\"></xref> or a file path — that\nproduces a read-only <xref href=\"Bodu.Extensions.Configuration.Text.BencodeConfigurationProvider\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.Configuration.Text.BencodeConfigurationSource.yml\" sourcestartlinenumber=\"1\">Represents a Bencode configuration source - either a one-shot <xref href=\"System.IO.Stream\" data-throw-if-not-resolved=\"false\"></xref> or a file path - that\nproduces a read-only <xref href=\"Bodu.Extensions.Configuration.Text.BencodeConfigurationProvider\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1689,7 +1689,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.Configuration.Text.TomlConfigurationSource",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.Configuration.Text.TomlConfigurationSource.yml\" sourcestartlinenumber=\"1\">Represents a TOML configuration source — either a one-shot <xref href=\"System.IO.Stream\" data-throw-if-not-resolved=\"false\"></xref> or a file path — that\nproduces a read-only <xref href=\"Bodu.Extensions.Configuration.Text.TomlConfigurationProvider\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.Configuration.Text.TomlConfigurationSource.yml\" sourcestartlinenumber=\"1\">Represents a TOML configuration source - either a one-shot <xref href=\"System.IO.Stream\" data-throw-if-not-resolved=\"false\"></xref> or a file path - that\nproduces a read-only <xref href=\"Bodu.Extensions.Configuration.Text.TomlConfigurationProvider\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1717,7 +1717,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.DateOnlyExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.DateOnlyExtensions.yml\" sourcestartlinenumber=\"1\">Provides calendar-arithmetic operations over <xref href=\"System.DateOnly\" data-throw-if-not-resolved=\"false\"></xref> — age, period anchors, weekday navigation, week\nand quarter numbering, and culture-aware formatting helpers — that complement the small surface shipped with\n<xref href=\"System.DateOnly\" data-throw-if-not-resolved=\"false\"></xref> itself.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.DateOnlyExtensions.yml\" sourcestartlinenumber=\"1\">Provides calendar-arithmetic operations over <xref href=\"System.DateOnly\" data-throw-if-not-resolved=\"false\"></xref> - age, period anchors, weekday navigation, week\nand quarter numbering, and culture-aware formatting helpers - that complement the small surface shipped with\n<xref href=\"System.DateOnly\" data-throw-if-not-resolved=\"false\"></xref> itself.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1731,7 +1731,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.DateTimeExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.DateTimeExtensions.yml\" sourcestartlinenumber=\"1\">Provides calendar-arithmetic, period-anchoring, ISO-aware, and tick-level operations over <xref href=\"System.DateTime\" data-throw-if-not-resolved=\"false\"></xref>\nfor code that outgrows the BCL surface — fiscal calendars, ISO 8601 week numbering, weekend rules, and\nhigh-throughput tick math.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.DateTimeExtensions.yml\" sourcestartlinenumber=\"1\">Provides calendar-arithmetic, period-anchoring, ISO-aware, and tick-level operations over <xref href=\"System.DateTime\" data-throw-if-not-resolved=\"false\"></xref>\nfor code that outgrows the BCL surface - fiscal calendars, ISO 8601 week numbering, weekend rules, and\nhigh-throughput tick math.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1759,7 +1759,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.EnumExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.EnumExtensions.yml\" sourcestartlinenumber=\"1\">Provides non-boxing bitwise helpers for flag-style enumerations — membership tests and add, remove, and toggle\noperations that work uniformly across every enum underlying type.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.EnumExtensions.yml\" sourcestartlinenumber=\"1\">Provides non-boxing bitwise helpers for flag-style enumerations - membership tests and add, remove, and toggle\noperations that work uniformly across every enum underlying type.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1801,7 +1801,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.FiscalWeekQuarterProvider",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.FiscalWeekQuarterProvider.yml\" sourcestartlinenumber=\"1\">Provides quarter boundary logic for a week-based retail fiscal calendar using a configurable\n<xref href=\"Bodu.Extensions.FiscalWeekPattern\" data-throw-if-not-resolved=\"false\"></xref> (5–4–4, 4–5–4, or 4–4–5 week distribution).</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.FiscalWeekQuarterProvider.yml\" sourcestartlinenumber=\"1\">Provides quarter boundary logic for a week-based retail fiscal calendar using a configurable\n<xref href=\"Bodu.Extensions.FiscalWeekPattern\" data-throw-if-not-resolved=\"false\"></xref> (5-4-4, 4-5-4, or 4-4-5 week distribution).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1941,7 +1941,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.NumericExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.NumericExtensions.yml\" sourcestartlinenumber=\"1\">Provides bit-level and byte-level transformations over the integral primitive types — endian conversion, byte and\nword swaps, bit reversal and rotation, and unchecked arithmetic helpers — for hashing, serialization, and protocol\ncode.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.NumericExtensions.yml\" sourcestartlinenumber=\"1\">Provides bit-level and byte-level transformations over the integral primitive types - endian conversion, byte and\nword swaps, bit reversal and rotation, and unchecked arithmetic helpers - for hashing, serialization, and protocol\ncode.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1983,7 +1983,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.SpanExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.SpanExtensions.yml\" sourcestartlinenumber=\"1\">Provides span-shaping helpers — read-only conversion and copy-and-reverse operations — for code that already\noperates on <xref href=\"System.Span%601\" data-throw-if-not-resolved=\"false\"></xref> or <xref href=\"System.ReadOnlySpan%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.SpanExtensions.yml\" sourcestartlinenumber=\"1\">Provides span-shaping helpers - read-only conversion and copy-and-reverse operations - for code that already\noperates on <xref href=\"System.Span%601\" data-throw-if-not-resolved=\"false\"></xref> or <xref href=\"System.ReadOnlySpan%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1997,7 +1997,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.StreamExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.StreamExtensions.yml\" sourcestartlinenumber=\"1\">Provides whole-payload read and write helpers for <xref href=\"System.IO.Stream\" data-throw-if-not-resolved=\"false\"></xref> — synchronous and asynchronous\noperations that consume or emit an entire byte buffer in a single call.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.StreamExtensions.yml\" sourcestartlinenumber=\"1\">Provides whole-payload read and write helpers for <xref href=\"System.IO.Stream\" data-throw-if-not-resolved=\"false\"></xref> - synchronous and asynchronous\noperations that consume or emit an entire byte buffer in a single call.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2011,7 +2011,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.StringExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.StringExtensions.yml\" sourcestartlinenumber=\"1\">Provides ergonomic, allocation-aware extension methods on <xref href=\"System.String\" data-throw-if-not-resolved=\"false\"></xref> that fill gaps in the BCL —\npositive-form null/empty predicates, fluent fallbacks, whitespace and line-ending normalisation, affix management,\nsubstring windowing, case conversion, identifier sanitisation, and generic parsing.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.StringExtensions.yml\" sourcestartlinenumber=\"1\">Provides ergonomic, allocation-aware extension methods on <xref href=\"System.String\" data-throw-if-not-resolved=\"false\"></xref> that fill gaps in the BCL -\npositive-form null/empty predicates, fluent fallbacks, whitespace and line-ending normalisation, affix management,\nsubstring windowing, case conversion, identifier sanitisation, and generic parsing.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -5091,7 +5091,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ExchangeRates.Caching.DistributedRateCache",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.Caching.DistributedRateCache.yml\" sourcestartlinenumber=\"1\">An <xref href=\"Bodu.Financial.ExchangeRates.Caching.IRateCache\" data-throw-if-not-resolved=\"false\"></xref> that persists a single provider's rates and fetch-coverage windows in an injected\n<xref href=\"Microsoft.Extensions.Caching.Distributed.IDistributedCache\" data-throw-if-not-resolved=\"false\"></xref> — for example a Redis cache — expiring them through the same freshness mechanism as\nthe in-memory, TOML, and SQLite caches.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.Caching.DistributedRateCache.yml\" sourcestartlinenumber=\"1\">An <xref href=\"Bodu.Financial.ExchangeRates.Caching.IRateCache\" data-throw-if-not-resolved=\"false\"></xref> that persists a single provider's rates and fetch-coverage windows in an injected\n<xref href=\"Microsoft.Extensions.Caching.Distributed.IDistributedCache\" data-throw-if-not-resolved=\"false\"></xref> - for example a Redis cache - expiring them through the same freshness mechanism as\nthe in-memory, TOML, and SQLite caches.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -5371,7 +5371,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ExchangeRates.Caching.RateCacheFileLayout",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.Caching.RateCacheFileLayout.yml\" sourcestartlinenumber=\"1\">Describes where a file-backed exchange-rate cache stores a currency pair's rows: the folder that holds the pair's\nfile or files, the name of each file, and — through its <xref href=\"Bodu.Financial.ExchangeRates.Caching.RateCacheFileLayout.PartitionStrategy\" data-throw-if-not-resolved=\"false\"></xref> — whether the rows are\nsplit across files by date.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.Caching.RateCacheFileLayout.yml\" sourcestartlinenumber=\"1\">Describes where a file-backed exchange-rate cache stores a currency pair's rows: the folder that holds the pair's\nfile or files, the name of each file, and - through its <xref href=\"Bodu.Financial.ExchangeRates.Caching.RateCacheFileLayout.PartitionStrategy\" data-throw-if-not-resolved=\"false\"></xref> - whether the rows are\nsplit across files by date.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -5707,7 +5707,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ExchangeRates.ExchangeRateFormatException",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.ExchangeRateFormatException.yml\" sourcestartlinenumber=\"1\">The exception thrown when an upstream exchange-rate feed returns data that cannot be interpreted as exchange-rate\ninformation — because it is malformed or omits the expected values.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.ExchangeRateFormatException.yml\" sourcestartlinenumber=\"1\">The exception thrown when an upstream exchange-rate feed returns data that cannot be interpreted as exchange-rate\ninformation - because it is malformed or omits the expected values.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -6393,7 +6393,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ExchangeRates.PairWebRateProvider<TSeries>",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.PairWebRateProvider-1.yml\" sourcestartlinenumber=\"1\">Provides the shared machinery for a <xref href=\"Bodu.Financial.ExchangeRates.WebRateProvider\" data-throw-if-not-resolved=\"false\"></xref> that fetches one currency pair per request from a\nremote feed — per-pair coverage tracking, single-flight request coalescing, the fetch-and-accumulate orchestration,\nand the diagnostic logging — leaving a derived type to supply only the feed identity and the feed-specific exception\ntext. The actual fetch and parse are delegated to an <xref href=\"Bodu.Financial.ExchangeRates.IPairRateSource%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.PairWebRateProvider-1.yml\" sourcestartlinenumber=\"1\">Provides the shared machinery for a <xref href=\"Bodu.Financial.ExchangeRates.WebRateProvider\" data-throw-if-not-resolved=\"false\"></xref> that fetches one currency pair per request from a\nremote feed - per-pair coverage tracking, single-flight request coalescing, the fetch-and-accumulate orchestration,\nand the diagnostic logging - leaving a derived type to supply only the feed identity and the feed-specific exception\ntext. The actual fetch and parse are delegated to an <xref href=\"Bodu.Financial.ExchangeRates.IPairRateSource%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -6547,7 +6547,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ExchangeRates.RateProvenance",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.RateProvenance.yml\" sourcestartlinenumber=\"1\">Captures the lineage of a single served exchange rate: the provider name it is attributed to, whether it was\nresolved directly by a provider or served from a cache, the cache backend that served it, and — for a cache serve —\nthe instant the served data was cached together with the derived age at the time of the lookup.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.RateProvenance.yml\" sourcestartlinenumber=\"1\">Captures the lineage of a single served exchange rate: the provider name it is attributed to, whether it was\nresolved directly by a provider or served from a cache, the cache backend that served it, and - for a cache serve -\nthe instant the served data was cached together with the derived age at the time of the lookup.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -7009,7 +7009,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.Extensions.MoneyExchangeRateExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.Extensions.MoneyExchangeRateExtensions.yml\" sourcestartlinenumber=\"1\">Provides extension methods that resolve a dated exchange rate from an <xref href=\"Bodu.Financial.ExchangeRates.IDatedRateProvider\" data-throw-if-not-resolved=\"false\"></xref> and apply it\nto a <xref href=\"Bodu.Financial.Money\" data-throw-if-not-resolved=\"false\"></xref> — the runtime-tagged counterpart of <xref href=\"Bodu.Financial.Extensions.MoneyOfTCurrencyExchangeRateExtensions\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.Extensions.MoneyExchangeRateExtensions.yml\" sourcestartlinenumber=\"1\">Provides extension methods that resolve a dated exchange rate from an <xref href=\"Bodu.Financial.ExchangeRates.IDatedRateProvider\" data-throw-if-not-resolved=\"false\"></xref> and apply it\nto a <xref href=\"Bodu.Financial.Money\" data-throw-if-not-resolved=\"false\"></xref> - the runtime-tagged counterpart of <xref href=\"Bodu.Financial.Extensions.MoneyOfTCurrencyExchangeRateExtensions\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -7149,7 +7149,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.IRoundingStrategy",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.IRoundingStrategy.yml\" sourcestartlinenumber=\"1\">Rounds a raw monetary amount to a given number of fractional digits. Implementations encapsulate the rounding\nconvention applied at operation boundaries — banker's rounding, away-from-zero, and so on.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.IRoundingStrategy.yml\" sourcestartlinenumber=\"1\">Rounds a raw monetary amount to a given number of fractional digits. Implementations encapsulate the rounding\nconvention applied at operation boundaries - banker's rounding, away-from-zero, and so on.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -7177,7 +7177,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.MonetaryContext",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.MonetaryContext.yml\" sourcestartlinenumber=\"1\">Carries the rounding and scaling policy applied at a monetary operation boundary — multiplication, division,\nconversion, allocation, and the conversion of a high-precision calculation back to a settlement value.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.MonetaryContext.yml\" sourcestartlinenumber=\"1\">Carries the rounding and scaling policy applied at a monetary operation boundary - multiplication, division,\nconversion, allocation, and the conversion of a high-precision calculation back to a settlement value.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -7387,7 +7387,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.Serialization.Json.CalculatedMoneyJsonConverter",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.Serialization.Json.CalculatedMoneyJsonConverter.yml\" sourcestartlinenumber=\"1\">Converts a <xref href=\"Bodu.Financial.CalculatedMoney\" data-throw-if-not-resolved=\"false\"></xref> to and from JSON using the policy supplied at construction. Because\n<xref href=\"Bodu.Financial.CalculatedMoney\" data-throw-if-not-resolved=\"false\"></xref> is the unrounded, deferred-arithmetic tier, its full <xref href=\"System.Decimal\" data-throw-if-not-resolved=\"false\"></xref> precision</p>\n<ul sourcefile=\"api/Bodu.Financial.Serialization.Json.CalculatedMoneyJsonConverter.yml\" sourcestartlinenumber=\"3\">\n<li sourcefile=\"api/Bodu.Financial.Serialization.Json.CalculatedMoneyJsonConverter.yml\" sourcestartlinenumber=\"3\">including trailing zeros - is written verbatim and read back unchanged, so a high-precision unit price survives a\nround-trip without settling to the currency's minor units.</li>\n</ul>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.Serialization.Json.CalculatedMoneyJsonConverter.yml\" sourcestartlinenumber=\"1\">Converts a <xref href=\"Bodu.Financial.CalculatedMoney\" data-throw-if-not-resolved=\"false\"></xref> to and from JSON using the policy supplied at construction. Because\n<xref href=\"Bodu.Financial.CalculatedMoney\" data-throw-if-not-resolved=\"false\"></xref> is the unrounded, deferred-arithmetic tier, its full <xref href=\"System.Decimal\" data-throw-if-not-resolved=\"false\"></xref>\nprecision - including trailing zeros - is written verbatim and read back unchanged, so a high-precision unit price\nsurvives a round-trip without settling to the currency's minor units.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9025,7 +9025,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.Caching.DistributedNotableDateCache",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.Caching.DistributedNotableDateCache.yml\" sourcestartlinenumber=\"1\">An <xref href=\"Bodu.Globalization.Calendar.Caching.INotableDateCache\" data-throw-if-not-resolved=\"false\"></xref> that persists computed years in any <xref href=\"Microsoft.Extensions.Caching.Distributed.IDistributedCache\" data-throw-if-not-resolved=\"false\"></xref> — Redis,\nSQL Server, or an in-memory distributed cache — as one JSON blob per territory, expiring them through the same\nfreshness and version mechanism as the other backends.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.Caching.DistributedNotableDateCache.yml\" sourcestartlinenumber=\"1\">An <xref href=\"Bodu.Globalization.Calendar.Caching.INotableDateCache\" data-throw-if-not-resolved=\"false\"></xref> that persists computed years in any <xref href=\"Microsoft.Extensions.Caching.Distributed.IDistributedCache\" data-throw-if-not-resolved=\"false\"></xref> - Redis,\nSQL Server, or an in-memory distributed cache - as one JSON blob per territory, expiring them through the same\nfreshness and version mechanism as the other backends.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9361,7 +9361,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.CommonNotableDateResources",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.CommonNotableDateResources.yml\" sourcestartlinenumber=\"1\">Provides the shared, reusable notable-date resources bundled with the library — the civil, Christian, and other\nthematic catalogues that define common observances (New Year's Day, Easter, Christmas, and the like) once for\nterritory packs to import rather than redefine.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.CommonNotableDateResources.yml\" sourcestartlinenumber=\"1\">Provides the shared, reusable notable-date resources bundled with the library - the civil, Christian, and other\nthematic catalogues that define common observances (New Year's Day, Easter, Christmas, and the like) once for\nterritory packs to import rather than redefine.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9557,7 +9557,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.INotableDateService",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.INotableDateService.yml\" sourcestartlinenumber=\"1\">Resolves notable-date occurrences — public holidays, observances, and other named dates — for a requested territory\nand a single day or an inclusive date range.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.INotableDateService.yml\" sourcestartlinenumber=\"1\">Resolves notable-date occurrences - public holidays, observances, and other named dates - for a requested territory\nand a single day or an inclusive date range.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9949,7 +9949,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.Plugins.CompositePluginTrustPolicy",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.Plugins.CompositePluginTrustPolicy.yml\" sourcestartlinenumber=\"1\">A trust policy that trusts a candidate only when every composed policy trusts it; the first rejection short-circuits\nand its reason is surfaced. An empty policy set fails closed — it rejects every candidate rather than vacuously\ntrusting it — so a misconfigured composite cannot silently disable the trust gate.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.Plugins.CompositePluginTrustPolicy.yml\" sourcestartlinenumber=\"1\">A trust policy that trusts a candidate only when every composed policy trusts it; the first rejection short-circuits\nand its reason is surfaced. An empty policy set fails closed - it rejects every candidate rather than vacuously\ntrusting it - so a misconfigured composite cannot silently disable the trust gate.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10369,7 +10369,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.Tool.CalendarTool",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.Tool.CalendarTool.yml\" sourcestartlinenumber=\"1\">Implements the <code>bodu-calendar</code> command surface — <code>lint</code>, <code>compile</code>, and <code>info</code> — as an\nin-process entry point the console host and the tests share.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.Tool.CalendarTool.yml\" sourcestartlinenumber=\"1\">Implements the <code>bodu-calendar</code> command surface - <code>lint</code>, <code>compile</code>, and <code>info</code> - as an\nin-process entry point the console host and the tests share.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10733,7 +10733,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Biff.BiffFontRecord",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Biff.BiffFontRecord.yml\" sourcestartlinenumber=\"1\">Represents a decoded <code>FONT</code> record: size, style attributes, color, character set, and face name. The name is an\n8-bit-length string in both versions — a Unicode string in BIFF8, a code-page byte string in BIFF5.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Biff.BiffFontRecord.yml\" sourcestartlinenumber=\"1\">Represents a decoded <code>FONT</code> record: size, style attributes, color, character set, and face name. The name is an\n8-bit-length string in both versions - a Unicode string in BIFF8, a code-page byte string in BIFF5.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10873,7 +10873,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Biff.BiffRStringRecord",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Biff.BiffRStringRecord.yml\" sourcestartlinenumber=\"1\">Represents a decoded <code>RSTRING</code> record: a BIFF5 rich-text label cell — a 16-bit-length code-page byte string\nfollowed by a run table of two-byte entries (character index, font index).</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Biff.BiffRStringRecord.yml\" sourcestartlinenumber=\"1\">Represents a decoded <code>RSTRING</code> record: a BIFF5 rich-text label cell - a 16-bit-length code-page byte string\nfollowed by a run table of two-byte entries (character index, font index).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -11069,7 +11069,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Biff.BiffString",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Biff.BiffString.yml\" sourcestartlinenumber=\"1\">Provides a span-backed view over a text value embedded in a BIFF record — a BIFF8 Unicode string (16-bit or\ncompressed 8-bit characters with option flags, rich-text runs, and extended data) or a BIFF5 code-page byte string —\nwithout materializing a <xref href=\"System.String\" data-throw-if-not-resolved=\"false\"></xref> until the caller asks for one.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Biff.BiffString.yml\" sourcestartlinenumber=\"1\">Provides a span-backed view over a text value embedded in a BIFF record - a BIFF8 Unicode string (16-bit or\ncompressed 8-bit characters with option flags, rich-text runs, and extended data) or a BIFF5 code-page byte string -\nwithout materializing a <xref href=\"System.String\" data-throw-if-not-resolved=\"false\"></xref> until the caller asks for one.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -11209,7 +11209,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Compound.Builders.CompoundEntryBuilder",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Compound.Builders.CompoundEntryBuilder.yml\" sourcestartlinenumber=\"1\">Represents a node in a mutable compound-file object model — either a storage (a named container) or a stream (a\nnamed byte payload).</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Compound.Builders.CompoundEntryBuilder.yml\" sourcestartlinenumber=\"1\">Represents a node in a mutable compound-file object model - either a storage (a named container) or a stream (a\nnamed byte payload).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -11223,7 +11223,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Compound.Builders.CompoundStorageBuilder",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Compound.Builders.CompoundStorageBuilder.yml\" sourcestartlinenumber=\"1\">Represents a storage entry in a mutable compound-file object model — a named container of child storages and\nstreams.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Compound.Builders.CompoundStorageBuilder.yml\" sourcestartlinenumber=\"1\">Represents a storage entry in a mutable compound-file object model - a named container of child storages and\nstreams.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -11251,7 +11251,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Compound.Builders.CompoundStreamBuilder",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Compound.Builders.CompoundStreamBuilder.yml\" sourcestartlinenumber=\"1\">Represents a stream entry in a mutable compound-file object model — a named, file-like node carrying an opaque byte\npayload.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Compound.Builders.CompoundStreamBuilder.yml\" sourcestartlinenumber=\"1\">Represents a stream entry in a mutable compound-file object model - a named, file-like node carrying an opaque byte\npayload.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -11293,7 +11293,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Compound.CompoundEntryInfo",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Compound.CompoundEntryInfo.yml\" sourcestartlinenumber=\"1\">Provides an immutable snapshot of the metadata recorded for a single compound-file directory entry — a storage, a\nstream, or the root storage.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Compound.CompoundEntryInfo.yml\" sourcestartlinenumber=\"1\">Provides an immutable snapshot of the metadata recorded for a single compound-file directory entry - a storage, a\nstream, or the root storage.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -11391,7 +11391,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Compound.CompoundFileSerializationException",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Compound.CompoundFileSerializationException.yml\" sourcestartlinenumber=\"1\">The exception thrown when a compound file cannot be authored or serialized — for example, when a storage contains a\nduplicate or invalid child name, the directory nesting is too deep, or a value cannot be represented in the\ncontainer.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Compound.CompoundFileSerializationException.yml\" sourcestartlinenumber=\"1\">The exception thrown when a compound file cannot be authored or serialized - for example, when a storage contains a\nduplicate or invalid child name, the directory nesting is too deep, or a value cannot be represented in the\ncontainer.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -11433,7 +11433,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Compound.CompoundStorage",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Compound.CompoundStorage.yml\" sourcestartlinenumber=\"1\">Represents a storage within a compound file — a named container of child storages and streams — and provides\nnavigation over its immediate children.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Compound.CompoundStorage.yml\" sourcestartlinenumber=\"1\">Represents a storage within a compound file - a named container of child storages and streams - and provides\nnavigation over its immediate children.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -11517,7 +11517,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Compound.PropertySets.OlePropertySection",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Compound.PropertySets.OlePropertySection.yml\" sourcestartlinenumber=\"1\">Represents a single section of an OLE property set — a format-identified group of properties keyed by property\nidentifier (PID).</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Compound.PropertySets.OlePropertySection.yml\" sourcestartlinenumber=\"1\">Represents a single section of an OLE property set - a format-identified group of properties keyed by property\nidentifier (PID).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -11531,7 +11531,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Compound.PropertySets.OlePropertySet",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Compound.PropertySets.OlePropertySet.yml\" sourcestartlinenumber=\"1\">Represents a parsed OLE property set — the managed counterpart of the COM <code>IPropertyStorage</code> interface —\nexposing its sections and the typed values they contain.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Compound.PropertySets.OlePropertySet.yml\" sourcestartlinenumber=\"1\">Represents a parsed OLE property set - the managed counterpart of the COM <code>IPropertyStorage</code> interface -\nexposing its sections and the typed values they contain.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -11671,7 +11671,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.yml\" sourcestartlinenumber=\"1\">Base class for non-cryptographic hash algorithms whose internal state advances one fixed-size block at a time —\nhandles residual buffering, block alignment, total-length tracking, snapshot-based <code>GetCurrentHash</code>, and\noptional final-block padding so that derived implementations only need to express the per-block compression step.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.yml\" sourcestartlinenumber=\"1\">Base class for non-cryptographic hash algorithms whose internal state advances one fixed-size block at a time -\nhandles residual buffering, block alignment, total-length tracking, snapshot-based <code>GetCurrentHash</code>, and\noptional final-block padding so that derived implementations only need to express the per-block compression step.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -11993,7 +11993,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.yml\" sourcestartlinenumber=\"1\">Represents the abstract base class from which check-digit algorithms that emit a fixed-length multi-character check\ncode — most notably ISO 7064 MOD 97-10 and its derivatives (IBAN, LEI) — derive.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.yml\" sourcestartlinenumber=\"1\">Represents the abstract base class from which check-digit algorithms that emit a fixed-length multi-character check\ncode - most notably ISO 7064 MOD 97-10 and its derivatives (IBAN, LEI) - derive.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12147,7 +12147,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Hashing.Checksums.Crc",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.Crc.yml\" sourcestartlinenumber=\"1\">General-purpose CRC (Cyclic Redundancy Check) engine driven by a <xref href=\"Bodu.IO.Hashing.Checksums.Crc.CrcStandard\" data-throw-if-not-resolved=\"false\"></xref> parameter set — supports\nany catalogue width from 1 to 64 bits, snapshot-style intermediate digests, and resumption of a previous digest with\nadditional input.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.Crc.yml\" sourcestartlinenumber=\"1\">General-purpose CRC (Cyclic Redundancy Check) engine driven by a <xref href=\"Bodu.IO.Hashing.Checksums.Crc.CrcStandard\" data-throw-if-not-resolved=\"false\"></xref> parameter set - supports\nany catalogue width from 1 to 64 bits, snapshot-style intermediate digests, and resumption of a previous digest with\nadditional input.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12175,7 +12175,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Hashing.Checksums.CrcLookupTableCache",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.CrcLookupTableCache.yml\" sourcestartlinenumber=\"1\">Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection — amortizes the\nper-tuple build cost of <xref href=\"Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.BuildLookupTable(System.Int32%2cSystem.UInt64%2cSystem.Boolean)\" data-throw-if-not-resolved=\"false\"></xref> across every\n<xref href=\"Bodu.IO.Hashing.Checksums.Crc\" data-throw-if-not-resolved=\"false\"></xref> instance that uses the same <xref href=\"Bodu.IO.Hashing.Checksums.CrcStandard\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.CrcLookupTableCache.yml\" sourcestartlinenumber=\"1\">Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection - amortizes the\nper-tuple build cost of <xref href=\"Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.BuildLookupTable(System.Int32%2cSystem.UInt64%2cSystem.Boolean)\" data-throw-if-not-resolved=\"false\"></xref> across every\n<xref href=\"Bodu.IO.Hashing.Checksums.Crc\" data-throw-if-not-resolved=\"false\"></xref> instance that uses the same <xref href=\"Bodu.IO.Hashing.Checksums.CrcStandard\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12189,7 +12189,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Hashing.Checksums.CrcStandard",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.CrcStandard.yml\" sourcestartlinenumber=\"1\">Immutable parameter bundle that fully describes a CRC variant — width, polynomial, initial value, input/output bit\nreflection, and final XOR — and serves as the lookup key into the RevEng catalogue used by <xref href=\"Bodu.IO.Hashing.Checksums.Crc\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.CrcStandard.yml\" sourcestartlinenumber=\"1\">Immutable parameter bundle that fully describes a CRC variant - width, polynomial, initial value, input/output bit\nreflection, and final XOR - and serves as the lookup key into the RevEng catalogue used by <xref href=\"Bodu.IO.Hashing.Checksums.Crc\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12357,7 +12357,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.yml\" sourcestartlinenumber=\"1\">Extends <xref href=\"System.IO.Hashing.NonCryptographicHashAlgorithm\" data-throw-if-not-resolved=\"false\"></xref> with one-shot hashing, streaming and async input, and\nconstant-time hash verification — the high-level surface that <xref href=\"System.IO.Hashing.NonCryptographicHashAlgorithm\" data-throw-if-not-resolved=\"false\"></xref> itself\nomits.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.yml\" sourcestartlinenumber=\"1\">Extends <xref href=\"System.IO.Hashing.NonCryptographicHashAlgorithm\" data-throw-if-not-resolved=\"false\"></xref> with one-shot hashing, streaming and async input, and\nconstant-time hash verification - the high-level surface that <xref href=\"System.IO.Hashing.NonCryptographicHashAlgorithm\" data-throw-if-not-resolved=\"false\"></xref> itself\nomits.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12777,7 +12777,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Pst.PstNodeType",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Pst.PstNodeType.yml\" sourcestartlinenumber=\"1\">Identifies the kind of object a node holds — the five type bits of a <xref href=\"Bodu.IO.Pst.PstNodeId\" data-throw-if-not-resolved=\"false\"></xref> (the <code>NID_TYPE_*</code>\nvalues of MS-PST §2.2.2.1).</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Pst.PstNodeType.yml\" sourcestartlinenumber=\"1\">Identifies the kind of object a node holds - the five type bits of a <xref href=\"Bodu.IO.Pst.PstNodeId\" data-throw-if-not-resolved=\"false\"></xref> (the <code>NID_TYPE_*</code>\nvalues of MS-PST §2.2.2.1).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12791,7 +12791,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Pst.PstPropertyContext",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Pst.PstPropertyContext.yml\" sourcestartlinenumber=\"1\">Represents a node's property context (<code>PC</code>): the LTP property bag of 16-bit property identifiers with\nwire-typed values, in the manner the exploration plan sketches — format-agnostic, with no MAPI semantics.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Pst.PstPropertyContext.yml\" sourcestartlinenumber=\"1\">Represents a node's property context (<code>PC</code>): the LTP property bag of 16-bit property identifiers with\nwire-typed values, in the manner the exploration plan sketches - format-agnostic, with no MAPI semantics.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12833,7 +12833,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Pst.PstTableContext",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Pst.PstTableContext.yml\" sourcestartlinenumber=\"1\">Represents a node's table context (<code>TC</code>): the LTP table of typed columns over identifier-keyed rows, with\nforward-only row enumeration and keyed row lookup — format-agnostic, with no MAPI semantics.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Pst.PstTableContext.yml\" sourcestartlinenumber=\"1\">Represents a node's table context (<code>TC</code>): the LTP table of typed columns over identifier-keyed rows, with\nforward-only row enumeration and keyed row lookup - format-agnostic, with no MAPI semantics.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12931,7 +12931,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Numerics.BigDecimal",
-      "Summary": "<p sourcefile=\"api/Bodu.Numerics.BigDecimal.yml\" sourcestartlinenumber=\"1\">Represents an immutable, arbitrary-precision decimal number — a <xref href=\"System.Numerics.BigInteger\" data-throw-if-not-resolved=\"false\"></xref> unscaled value together\nwith a base-ten scale.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Numerics.BigDecimal.yml\" sourcestartlinenumber=\"1\">Represents an immutable, arbitrary-precision decimal number - a <xref href=\"System.Numerics.BigInteger\" data-throw-if-not-resolved=\"false\"></xref> unscaled value together\nwith a base-ten scale.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12945,7 +12945,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Numerics.Complex<T>",
-      "Summary": "<p sourcefile=\"api/Bodu.Numerics.Complex-1.yml\" sourcestartlinenumber=\"1\">Represents an immutable complex number — a value with a real and an imaginary component — backed by an arbitrary\n<xref href=\"System.Numerics.IFloatingPointIeee754%601\" data-throw-if-not-resolved=\"false\"></xref> component type.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Numerics.Complex-1.yml\" sourcestartlinenumber=\"1\">Represents an immutable complex number - a value with a real and an imaginary component - backed by an arbitrary\n<xref href=\"System.Numerics.IFloatingPointIeee754%601\" data-throw-if-not-resolved=\"false\"></xref> component type.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12959,7 +12959,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Numerics.DiscreteInterval<T>",
-      "Summary": "<p sourcefile=\"api/Bodu.Numerics.DiscreteInterval-1.yml\" sourcestartlinenumber=\"1\">Represents an immutable interval over a discrete integer domain — a set of consecutive integers of type\n<code class=\"typeparamref\">T</code> — with successor/predecessor-aware emptiness and adjacency.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Numerics.DiscreteInterval-1.yml\" sourcestartlinenumber=\"1\">Represents an immutable interval over a discrete integer domain - a set of consecutive integers of type\n<code class=\"typeparamref\">T</code> - with successor/predecessor-aware emptiness and adjacency.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -13001,7 +13001,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Numerics.DiscreteIntervalPair<T>",
-      "Summary": "<p sourcefile=\"api/Bodu.Numerics.DiscreteIntervalPair-1.yml\" sourcestartlinenumber=\"1\">Represents the result of a binary <xref href=\"Bodu.Numerics.DiscreteInterval%601\" data-throw-if-not-resolved=\"false\"></xref> set operation as zero, one, or two disjoint,\nnon-adjacent intervals in ascending order — the discrete counterpart to <xref href=\"Bodu.Numerics.IntervalPair%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Numerics.DiscreteIntervalPair-1.yml\" sourcestartlinenumber=\"1\">Represents the result of a binary <xref href=\"Bodu.Numerics.DiscreteInterval%601\" data-throw-if-not-resolved=\"false\"></xref> set operation as zero, one, or two disjoint,\nnon-adjacent intervals in ascending order - the discrete counterpart to <xref href=\"Bodu.Numerics.IntervalPair%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -13015,7 +13015,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Numerics.Fraction<T>",
-      "Summary": "<p sourcefile=\"api/Bodu.Numerics.Fraction-1.yml\" sourcestartlinenumber=\"1\">Represents an immutable exact rational number — a ratio of two integers — backed by an arbitrary\n<xref href=\"System.Numerics.IBinaryInteger%601\" data-throw-if-not-resolved=\"false\"></xref> component type.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Numerics.Fraction-1.yml\" sourcestartlinenumber=\"1\">Represents an immutable exact rational number - a ratio of two integers - backed by an arbitrary\n<xref href=\"System.Numerics.IBinaryInteger%601\" data-throw-if-not-resolved=\"false\"></xref> component type.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -13071,7 +13071,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Numerics.IntervalPair<T>",
-      "Summary": "<p sourcefile=\"api/Bodu.Numerics.IntervalPair-1.yml\" sourcestartlinenumber=\"1\">Represents the result of a binary interval set operation as zero, one, or two disjoint intervals in ascending order\n— the maximum number of pieces that subtracting or symmetric-differencing two intervals can produce.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Numerics.IntervalPair-1.yml\" sourcestartlinenumber=\"1\">Represents the result of a binary interval set operation as zero, one, or two disjoint intervals in ascending\norder - the maximum number of pieces that subtracting or symmetric-differencing two intervals can produce.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -13099,7 +13099,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Numerics.IntervalSet<T>",
-      "Summary": "<p sourcefile=\"api/Bodu.Numerics.IntervalSet-1.yml\" sourcestartlinenumber=\"1\">Represents an immutable set of values as a normalized collection of disjoint, non-adjacent\n<xref href=\"Bodu.Numerics.Interval%601\" data-throw-if-not-resolved=\"false\"></xref> pieces in ascending order — the general result of interval algebra that can produce a\ndisconnected range.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Numerics.IntervalSet-1.yml\" sourcestartlinenumber=\"1\">Represents an immutable set of values as a normalized collection of disjoint, non-adjacent\n<xref href=\"Bodu.Numerics.Interval%601\" data-throw-if-not-resolved=\"false\"></xref> pieces in ascending order - the general result of interval algebra that can produce a\ndisconnected range.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -13449,7 +13449,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.Argon2d",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Argon2d.yml\" sourcestartlinenumber=\"1\">Computes the Argon2d password-hashing and key-derivation function (RFC 9106) — the variant that uses data-dependent\nmemory addressing, maximizing time-memory trade-off resistance at the cost of exposing memory access patterns to\nside-channel observation. This class cannot be inherited.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Argon2d.yml\" sourcestartlinenumber=\"1\">Computes the Argon2d password-hashing and key-derivation function (RFC 9106) - the variant that uses data-dependent\nmemory addressing, maximizing time-memory trade-off resistance at the cost of exposing memory access patterns to\nside-channel observation. This class cannot be inherited.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -13463,7 +13463,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.Argon2i",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Argon2i.yml\" sourcestartlinenumber=\"1\">Computes the Argon2i password-hashing and key-derivation function (RFC 9106) — the variant that uses\ndata-independent memory addressing, making it resistant to side-channel timing attacks. This class cannot be\ninherited.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Argon2i.yml\" sourcestartlinenumber=\"1\">Computes the Argon2i password-hashing and key-derivation function (RFC 9106) - the variant that uses\ndata-independent memory addressing, making it resistant to side-channel timing attacks. This class cannot be\ninherited.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -13477,7 +13477,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.Argon2id",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Argon2id.yml\" sourcestartlinenumber=\"1\">Computes the Argon2id password-hashing and key-derivation function (RFC 9106) — the hybrid variant that uses\ndata-independent addressing for the first half of the first pass and data-dependent addressing thereafter. This is\nthe RECOMMENDED default for password hashing. This class cannot be inherited.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Argon2id.yml\" sourcestartlinenumber=\"1\">Computes the Argon2id password-hashing and key-derivation function (RFC 9106) - the hybrid variant that uses\ndata-independent addressing for the first half of the first pass and data-dependent addressing thereafter. This is\nthe RECOMMENDED default for password hashing. This class cannot be inherited.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -13995,7 +13995,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.yml\" sourcestartlinenumber=\"1\">Extends <xref href=\"System.Security.Cryptography.ICryptoTransform\" data-throw-if-not-resolved=\"false\"></xref> with one-shot, span/memory-aware, stream-to-stream, and async transform\nhelpers — sized buffers, finalization, and stream pumping rolled into single calls.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.yml\" sourcestartlinenumber=\"1\">Extends <xref href=\"System.Security.Cryptography.ICryptoTransform\" data-throw-if-not-resolved=\"false\"></xref> with one-shot, span/memory-aware, stream-to-stream, and async transform\nhelpers - sized buffers, finalization, and stream pumping rolled into single calls.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -14275,7 +14275,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.HpkeSuite",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.HpkeSuite.yml\" sourcestartlinenumber=\"1\">Describes a complete HPKE cipher suite — the combination of a Key Encapsulation Mechanism (KEM), a Key Derivation\nFunction (KDF), and an Authenticated Encryption with Associated Data (AEAD) function — and exposes the derived\nelement lengths defined by RFC 9180. Instances are immutable.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.HpkeSuite.yml\" sourcestartlinenumber=\"1\">Describes a complete HPKE cipher suite - the combination of a Key Encapsulation Mechanism (KEM), a Key Derivation\nFunction (KDF), and an Authenticated Encryption with Associated Data (AEAD) function - and exposes the derived\nelement lengths defined by RFC 9180. Instances are immutable.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -14303,7 +14303,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.IAeadTransform",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.IAeadTransform.yml\" sourcestartlinenumber=\"1\">Represents an authenticated encryption with associated data (AEAD) transform — the construction-neutral surface\nshared by block-cipher AEAD modes (<xref href=\"Bodu.Security.Cryptography.IAeadBlockCipherModeTransform\" data-throw-if-not-resolved=\"false\"></xref>) and stream-cipher AEADs (\n<xref href=\"Bodu.Security.Cryptography.IStreamAeadTransform\" data-throw-if-not-resolved=\"false\"></xref>). A single call encrypts or decrypts a message together with its associated\ndata; associated data is optional and defaults to empty.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.IAeadTransform.yml\" sourcestartlinenumber=\"1\">Represents an authenticated encryption with associated data (AEAD) transform - the construction-neutral surface\nshared by block-cipher AEAD modes (<xref href=\"Bodu.Security.Cryptography.IAeadBlockCipherModeTransform\" data-throw-if-not-resolved=\"false\"></xref>) and stream-cipher AEADs (\n<xref href=\"Bodu.Security.Cryptography.IStreamAeadTransform\" data-throw-if-not-resolved=\"false\"></xref>). A single call encrypts or decrypts a message together with its associated\ndata; associated data is optional and defaults to empty.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -14373,7 +14373,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.IStreamAeadTransform",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.IStreamAeadTransform.yml\" sourcestartlinenumber=\"1\">Represents a stream-cipher authenticated-encryption (AEAD) transform — an <xref href=\"Bodu.Security.Cryptography.IAeadTransform\" data-throw-if-not-resolved=\"false\"></xref> backed by a\nstream cipher and a one-time message-authentication code rather than a block-cipher mode. The extended-nonce\nPoly1305 AEADs (<xref href=\"Bodu.Security.Cryptography.XChaCha20Poly1305\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Security.Cryptography.XSalsa20Poly1305\" data-throw-if-not-resolved=\"false\"></xref>,\n<xref href=\"Bodu.Security.Cryptography.XSalsa20Poly1305Aead\" data-throw-if-not-resolved=\"false\"></xref> ) implement this surface.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.IStreamAeadTransform.yml\" sourcestartlinenumber=\"1\">Represents a stream-cipher authenticated-encryption (AEAD) transform - an <xref href=\"Bodu.Security.Cryptography.IAeadTransform\" data-throw-if-not-resolved=\"false\"></xref> backed by a\nstream cipher and a one-time message-authentication code rather than a block-cipher mode. The extended-nonce\nPoly1305 AEADs (<xref href=\"Bodu.Security.Cryptography.XChaCha20Poly1305\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Security.Cryptography.XSalsa20Poly1305\" data-throw-if-not-resolved=\"false\"></xref>,\n<xref href=\"Bodu.Security.Cryptography.XSalsa20Poly1305Aead\" data-throw-if-not-resolved=\"false\"></xref> ) implement this surface.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -14485,7 +14485,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.MLDsa65",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.MLDsa65.yml\" sourcestartlinenumber=\"1\">Provides the ML-DSA-65 parameter set of NIST FIPS 204 (matrix 6×5, NIST security category 3 — the most widely\nrecommended general-purpose set). This class cannot be inherited.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.MLDsa65.yml\" sourcestartlinenumber=\"1\">Provides the ML-DSA-65 parameter set of NIST FIPS 204 (matrix 6×5, NIST security category 3 - the most widely\nrecommended general-purpose set). This class cannot be inherited.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -14555,7 +14555,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.MLKem768",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.MLKem768.yml\" sourcestartlinenumber=\"1\">Provides the ML-KEM-768 parameter set of NIST FIPS 203 (module rank 3, NIST security category 3, comparable to\nAES-192) — the parameter set most widely deployed for TLS hybrid key exchange. This class cannot be inherited.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.MLKem768.yml\" sourcestartlinenumber=\"1\">Provides the ML-KEM-768 parameter set of NIST FIPS 203 (module rank 3, NIST security category 3, comparable to\nAES-192) - the parameter set most widely deployed for TLS hybrid key exchange. This class cannot be inherited.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -14569,7 +14569,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.MerkleBlockAccumulator",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.MerkleBlockAccumulator.yml\" sourcestartlinenumber=\"1\">Accumulates a byte stream into fixed-size Merkle leaves as it is written, so a root can be produced from the same\ncalls that already feed a flat digest — without a second pass over the input.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.MerkleBlockAccumulator.yml\" sourcestartlinenumber=\"1\">Accumulates a byte stream into fixed-size Merkle leaves as it is written, so a root can be produced from the same\ncalls that already feed a flat digest - without a second pass over the input.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -14597,7 +14597,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.MerkleTree",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.MerkleTree.yml\" sourcestartlinenumber=\"1\">The block arithmetic every consumer of block mode shares — the number of blocks a byte length divides into, and the\noffset and length of each one.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.MerkleTree.yml\" sourcestartlinenumber=\"1\">The block arithmetic every consumer of block mode shares - the number of blocks a byte length divides into, and the\noffset and length of each one.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -14765,7 +14765,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.Poly1305AeadTransform",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Poly1305AeadTransform.yml\" sourcestartlinenumber=\"1\">Provides the common <xref href=\"Bodu.Security.Cryptography.IStreamAeadTransform\" data-throw-if-not-resolved=\"false\"></xref> implementation shared by the extended-nonce Poly1305 AEAD\nconstructions — argument validation, buffer-overlap rules, single-use lifecycle, and secure clearing of retained key\nmaterial. Derived types supply the keystream engine and, when required, an alternative framing.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Poly1305AeadTransform.yml\" sourcestartlinenumber=\"1\">Provides the common <xref href=\"Bodu.Security.Cryptography.IStreamAeadTransform\" data-throw-if-not-resolved=\"false\"></xref> implementation shared by the extended-nonce Poly1305 AEAD\nconstructions - argument validation, buffer-overlap rules, single-use lifecycle, and secure clearing of retained key\nmaterial. Derived types supply the keystream engine and, when required, an alternative framing.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -15297,7 +15297,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.Threefish1024Cipher",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Threefish1024Cipher.yml\" sourcestartlinenumber=\"1\">AVX-512 vectorised implementation of <xref href=\"Bodu.Security.Cryptography.Threefish1024Cipher\" data-throw-if-not-resolved=\"false\"></xref>. The sixteen 64-bit state words are split\nacross two <xref href=\"System.Runtime.Intrinsics.Vector512%601\" data-throw-if-not-resolved=\"false\"></xref> registers — <code>loVec</code> holds the eight even-position words\n<code>(x0, x2, x4, x6, x8, x10, x12, x14)</code> and <code>hiVec</code> the eight odd-position words\n<code>(x1, x3, x5, x7, x9, x11, x13, x15)</code>. Each round performs a vector add, a per-lane variable rotate (\n<code>VPROLVQ</code>), an XOR, and a pair of single-source <code>VPERMQ</code> shuffles that realign the registers for the next\nround's MIX pairing.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Threefish1024Cipher.yml\" sourcestartlinenumber=\"1\">AVX-512 vectorised implementation of <xref href=\"Bodu.Security.Cryptography.Threefish1024Cipher\" data-throw-if-not-resolved=\"false\"></xref>. The sixteen 64-bit state words are split\nacross two <xref href=\"System.Runtime.Intrinsics.Vector512%601\" data-throw-if-not-resolved=\"false\"></xref> registers - <code>loVec</code> holds the eight even-position words\n<code>(x0, x2, x4, x6, x8, x10, x12, x14)</code> and <code>hiVec</code> the eight odd-position words\n<code>(x1, x3, x5, x7, x9, x11, x13, x15)</code>. Each round performs a vector add, a per-lane variable rotate (\n<code>VPROLVQ</code>), an XOR, and a pair of single-source <code>VPERMQ</code> shuffles that realign the registers for the next\nround's MIX pairing.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -15325,7 +15325,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.Threefish256Cipher",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Threefish256Cipher.yml\" sourcestartlinenumber=\"1\">AVX-512 vectorised implementation of <xref href=\"Bodu.Security.Cryptography.Threefish256Cipher\" data-throw-if-not-resolved=\"false\"></xref>. The four 64-bit state words are split across\ntwo <xref href=\"System.Runtime.Intrinsics.Vector128%601\" data-throw-if-not-resolved=\"false\"></xref> registers — <code>lo</code> holds the even-position words <code>(b0, b2)</code> and <code>hi</code>\nthe odd-position words <code>(b1, b3)</code>. Each round performs a vector add, a per-lane variable rotate (<code>VPROLVQ</code>\n), an XOR, and a single 64-bit lane swap on <code>hi</code> that realigns it for the next round's MIX pairing.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Threefish256Cipher.yml\" sourcestartlinenumber=\"1\">AVX-512 vectorised implementation of <xref href=\"Bodu.Security.Cryptography.Threefish256Cipher\" data-throw-if-not-resolved=\"false\"></xref>. The four 64-bit state words are split across\ntwo <xref href=\"System.Runtime.Intrinsics.Vector128%601\" data-throw-if-not-resolved=\"false\"></xref> registers - <code>lo</code> holds the even-position words <code>(b0, b2)</code> and <code>hi</code>\nthe odd-position words <code>(b1, b3)</code>. Each round performs a vector add, a per-lane variable rotate (<code>VPROLVQ</code>\n), an XOR, and a single 64-bit lane swap on <code>hi</code> that realigns it for the next round's MIX pairing.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -15353,7 +15353,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.Threefish512Cipher",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Threefish512Cipher.yml\" sourcestartlinenumber=\"1\">AVX-512 vectorised implementation of <xref href=\"Bodu.Security.Cryptography.Threefish512Cipher\" data-throw-if-not-resolved=\"false\"></xref>. The eight 64-bit state words are split\nacross two <xref href=\"System.Runtime.Intrinsics.Vector256%601\" data-throw-if-not-resolved=\"false\"></xref> registers — <code>lo</code> holds the even-position words <code>(x0, x2, x4, x6)</code>\nand <code>hi</code> the odd-position words <code>(x1, x3, x5, x7)</code> — and each round applies a vector add, a per-lane\nvariable rotate (<code>VPROLVQ</code>), an XOR, and a pair of lane shuffles that realign the registers for the next\nround's MIX pairing.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Threefish512Cipher.yml\" sourcestartlinenumber=\"1\">AVX-512 vectorised implementation of <xref href=\"Bodu.Security.Cryptography.Threefish512Cipher\" data-throw-if-not-resolved=\"false\"></xref>. The eight 64-bit state words are split\nacross two <xref href=\"System.Runtime.Intrinsics.Vector256%601\" data-throw-if-not-resolved=\"false\"></xref> registers - <code>lo</code> holds the even-position words <code>(x0, x2, x4, x6)</code>\nand <code>hi</code> the odd-position words <code>(x1, x3, x5, x7)</code> - and each round applies a vector add, a per-lane\nvariable rotate (<code>VPROLVQ</code>), an XOR, and a pair of lane shuffles that realign the registers for the next\nround's MIX pairing.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -15633,7 +15633,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Sequences.SequenceGenerator",
-      "Summary": "<p sourcefile=\"api/Bodu.Sequences.SequenceGenerator.yml\" sourcestartlinenumber=\"1\">Provides static factory methods that produce lazily evaluated <xref href=\"System.Collections.Generic.IEnumerable%601\" data-throw-if-not-resolved=\"false\"></xref> sequences without\nmaterializing the underlying collection — both general-purpose shapes (<code>Range</code>, <code>NextWhile</code>,\n<code>Factory</code>) and a catalogue of well-known mathematical sequences (Fibonacci, Farey, Leibniz, look-and-say, and\nThue–Morse).</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Sequences.SequenceGenerator.yml\" sourcestartlinenumber=\"1\">Provides static factory methods that produce lazily evaluated <xref href=\"System.Collections.Generic.IEnumerable%601\" data-throw-if-not-resolved=\"false\"></xref> sequences without\nmaterializing the underlying collection - both general-purpose shapes (<code>Range</code>, <code>NextWhile</code>,\n<code>Factory</code>) and a catalogue of well-known mathematical sequences (Fibonacci, Farey, Leibniz, look-and-say, and\nThue-Morse).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -15675,7 +15675,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Bencode.BencodeSerializationException",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Bencode.BencodeSerializationException.yml\" sourcestartlinenumber=\"1\">The exception thrown when a value cannot be bound to or from a Bencode document during serialization — for example a\ntype mismatch, a missing required member, or a value Bencode cannot represent.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Bencode.BencodeSerializationException.yml\" sourcestartlinenumber=\"1\">The exception thrown when a value cannot be bound to or from a Bencode document during serialization - for example a\ntype mismatch, a missing required member, or a value Bencode cannot represent.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -15815,7 +15815,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Bencode.Document.BencodeElement",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Bencode.Document.BencodeElement.yml\" sourcestartlinenumber=\"1\">Represents a single read-only value within a <xref href=\"Bodu.Text.Bencode.Document.BencodeDocument\" data-throw-if-not-resolved=\"false\"></xref>. The element is a lightweight view — a\npair of the owning document and a row index — so copying it is cheap and never materializes a node.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Bencode.Document.BencodeElement.yml\" sourcestartlinenumber=\"1\">Represents a single read-only value within a <xref href=\"Bodu.Text.Bencode.Document.BencodeDocument\" data-throw-if-not-resolved=\"false\"></xref>. The element is a lightweight view - a\npair of the owning document and a row index - so copying it is cheap and never materializes a node.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -15871,7 +15871,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Bencode.Nodes.BencodeNode",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Bencode.Nodes.BencodeNode.yml\" sourcestartlinenumber=\"1\">Represents a single node in a mutable Bencode (BEP 3) document object model, serving as the base for the three\nconcrete node kinds — <xref href=\"Bodu.Text.Bencode.Nodes.BencodeObject\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Text.Bencode.Nodes.BencodeArray\" data-throw-if-not-resolved=\"false\"></xref>, and <xref href=\"Bodu.Text.Bencode.Nodes.BencodeValue\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Bencode.Nodes.BencodeNode.yml\" sourcestartlinenumber=\"1\">Represents a single node in a mutable Bencode (BEP 3) document object model, serving as the base for the three\nconcrete node kinds - <xref href=\"Bodu.Text.Bencode.Nodes.BencodeObject\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Text.Bencode.Nodes.BencodeArray\" data-throw-if-not-resolved=\"false\"></xref>, and <xref href=\"Bodu.Text.Bencode.Nodes.BencodeValue\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -15913,7 +15913,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Bencode.Nodes.BencodeValue",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Bencode.Nodes.BencodeValue.yml\" sourcestartlinenumber=\"1\">Represents a scalar Bencode (BEP 3) value — either an integer or a byte string — within a node tree.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Bencode.Nodes.BencodeValue.yml\" sourcestartlinenumber=\"1\">Represents a scalar Bencode (BEP 3) value - either an integer or a byte string - within a node tree.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16011,7 +16011,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Bencode.Serialization.BencodeConverterFactory",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Bencode.Serialization.BencodeConverterFactory.yml\" sourcestartlinenumber=\"1\">Produces a <xref href=\"Bodu.Text.Bencode.Serialization.BencodeConverter\" data-throw-if-not-resolved=\"false\"></xref> for a family of types that cannot be served by a single\n<xref href=\"Bodu.Text.Bencode.Serialization.BencodeConverter%601\" data-throw-if-not-resolved=\"false\"></xref> — for example every <xref href=\"System.Nullable%601\" data-throw-if-not-resolved=\"false\"></xref>, every enumeration, or every\ncollection.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Bencode.Serialization.BencodeConverterFactory.yml\" sourcestartlinenumber=\"1\">Produces a <xref href=\"Bodu.Text.Bencode.Serialization.BencodeConverter\" data-throw-if-not-resolved=\"false\"></xref> for a family of types that cannot be served by a single\n<xref href=\"Bodu.Text.Bencode.Serialization.BencodeConverter%601\" data-throw-if-not-resolved=\"false\"></xref> - for example every <xref href=\"System.Nullable%601\" data-throw-if-not-resolved=\"false\"></xref>, every enumeration, or every\ncollection.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16137,7 +16137,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationDiagnostic",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationDiagnostic.yml\" sourcestartlinenumber=\"1\">Represents a single diagnostic — informational message, warning, or recoverable error — produced while reading or\nresolving a configuration document.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationDiagnostic.yml\" sourcestartlinenumber=\"1\">Represents a single diagnostic - informational message, warning, or recoverable error - produced while reading or\nresolving a configuration document.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16165,7 +16165,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationDiagnosticMode",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationDiagnosticMode.yml\" sourcestartlinenumber=\"1\">Controls how the reader reacts to recoverable diagnostics — either throwing immediately, gathering them on the\nresulting document, or silently ignoring them.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationDiagnosticMode.yml\" sourcestartlinenumber=\"1\">Controls how the reader reacts to recoverable diagnostics - either throwing immediately, gathering them on the\nresulting document, or silently ignoring them.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16193,7 +16193,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationDocument",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationDocument.yml\" sourcestartlinenumber=\"1\">Represents a parsed Bodu Text Configuration document and provides the profile-aware entry points for parsing,\nloading, and saving such documents. It inherits the read-only INI model from <xref href=\"Bodu.Text.Configuration.IniDocumentBase\" data-throw-if-not-resolved=\"false\"></xref> (global\nsection, named sections, lookup) and adds Bodu-specific behaviour — profile presets, inline-comment-mode handling,\ndiagnostic routing, and round-trip support — on top of the shared INI infrastructure.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationDocument.yml\" sourcestartlinenumber=\"1\">Represents a parsed Bodu Text Configuration document and provides the profile-aware entry points for parsing,\nloading, and saving such documents. It inherits the read-only INI model from <xref href=\"Bodu.Text.Configuration.IniDocumentBase\" data-throw-if-not-resolved=\"false\"></xref> (global\nsection, named sections, lookup) and adds Bodu-specific behaviour - profile presets, inline-comment-mode handling,\ndiagnostic routing, and round-trip support - on top of the shared INI infrastructure.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16375,7 +16375,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationResolvedEntry",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationResolvedEntry.yml\" sourcestartlinenumber=\"1\">Carries the origin metadata for a single key/value pair in a <xref href=\"Bodu.Text.Configuration.ConfigurationView\" data-throw-if-not-resolved=\"false\"></xref> — which section &quot;won&quot;\nfor the key, which line of which file supplied the value, and the resolved key path itself.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationResolvedEntry.yml\" sourcestartlinenumber=\"1\">Carries the origin metadata for a single key/value pair in a <xref href=\"Bodu.Text.Configuration.ConfigurationView\" data-throw-if-not-resolved=\"false\"></xref> - which section &quot;won&quot;\nfor the key, which line of which file supplied the value, and the resolved key path itself.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16767,7 +16767,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Delimited.Document.DelimitedElement",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Delimited.Document.DelimitedElement.yml\" sourcestartlinenumber=\"1\">Represents a single element — the document array, a record, or a field value — within a\n<xref href=\"Bodu.Text.Delimited.Document.DelimitedDocument\" data-throw-if-not-resolved=\"false\"></xref>, shaped after <code>System.Text.Json</code>'s <code>JsonElement</code>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Delimited.Document.DelimitedElement.yml\" sourcestartlinenumber=\"1\">Represents a single element - the document array, a record, or a field value - within a\n<xref href=\"Bodu.Text.Delimited.Document.DelimitedDocument\" data-throw-if-not-resolved=\"false\"></xref>, shaped after <code>System.Text.Json</code>'s <code>JsonElement</code>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -17019,7 +17019,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.DotEnv.Document.DotEnvElement",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.DotEnv.Document.DotEnvElement.yml\" sourcestartlinenumber=\"1\">Represents a single element — the root object or one of its string values — within a <xref href=\"Bodu.Text.DotEnv.Document.DotEnvDocument\" data-throw-if-not-resolved=\"false\"></xref>,\nshaped after <code>System.Text.Json</code>'s <code>JsonElement</code>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.DotEnv.Document.DotEnvElement.yml\" sourcestartlinenumber=\"1\">Represents a single element - the root object or one of its string values - within a <xref href=\"Bodu.Text.DotEnv.Document.DotEnvDocument\" data-throw-if-not-resolved=\"false\"></xref>,\nshaped after <code>System.Text.Json</code>'s <code>JsonElement</code>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -17369,7 +17369,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Encoding.Base45",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Encoding.Base45.yml\" sourcestartlinenumber=\"1\">Provides Base45 encoding and decoding of binary data as defined by RFC 9285 — the compact alphanumeric encoding used\nto carry binary payloads inside a QR code's Alphanumeric mode.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Encoding.Base45.yml\" sourcestartlinenumber=\"1\">Provides Base45 encoding and decoding of binary data as defined by RFC 9285 - the compact alphanumeric encoding used\nto carry binary payloads inside a QR code's Alphanumeric mode.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -17397,7 +17397,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Encoding.Base58Check",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Encoding.Base58Check.yml\" sourcestartlinenumber=\"1\">Provides Base58Check encoding and decoding — a Base58 superset used by Bitcoin addresses, WIF private keys, and\nrelated protocols. The encoder appends a four-byte checksum derived from the leading bytes of\n<code>SHA-256(SHA-256(payload))</code> so that mistyped or truncated input can be detected at decode time.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Encoding.Base58Check.yml\" sourcestartlinenumber=\"1\">Provides Base58Check encoding and decoding - a Base58 superset used by Bitcoin addresses, WIF private keys, and\nrelated protocols. The encoder appends a four-byte checksum derived from the leading bytes of\n<code>SHA-256(SHA-256(payload))</code> so that mistyped or truncated input can be detected at decode time.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -17537,7 +17537,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Encoding.Bech32",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Encoding.Bech32.yml\" sourcestartlinenumber=\"1\">Provides Bech32 (BIP-173) and Bech32m (BIP-350) encoding and decoding — a checksummed base-32 format consisting of a\nhuman-readable part (HRP), the <code>1</code> separator, a data part of 5-bit groups, and a six-symbol error-detecting\nchecksum.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Encoding.Bech32.yml\" sourcestartlinenumber=\"1\">Provides Bech32 (BIP-173) and Bech32m (BIP-350) encoding and decoding - a checksummed base-32 format consisting of a\nhuman-readable part (HRP), the <code>1</code> separator, a data part of 5-bit groups, and a six-symbol error-detecting\nchecksum.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -17551,7 +17551,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Encoding.Bech32Encoding",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Encoding.Bech32Encoding.yml\" sourcestartlinenumber=\"1\">Identifies the checksum constant used by <xref href=\"Bodu.Text.Encoding.Bech32Encoding.Bech32\" data-throw-if-not-resolved=\"false\"></xref> — the original Bech32 scheme defined by BIP-173 or\nthe Bech32m revision defined by BIP-350.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Encoding.Bech32Encoding.yml\" sourcestartlinenumber=\"1\">Identifies the checksum constant used by <xref href=\"Bodu.Text.Encoding.Bech32Encoding.Bech32\" data-throw-if-not-resolved=\"false\"></xref> - the original Bech32 scheme defined by BIP-173 or\nthe Bech32m revision defined by BIP-350.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -17957,7 +17957,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Ini.Document.IniElement",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Ini.Document.IniElement.yml\" sourcestartlinenumber=\"1\">Represents a single element within an <xref href=\"Bodu.Text.Ini.Document.IniDocument\" data-throw-if-not-resolved=\"false\"></xref> — the root object, a section object, or a string\nvalue — shaped after <code>System.Text.Json</code>'s <code>JsonElement</code>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Ini.Document.IniElement.yml\" sourcestartlinenumber=\"1\">Represents a single element within an <xref href=\"Bodu.Text.Ini.Document.IniDocument\" data-throw-if-not-resolved=\"false\"></xref> - the root object, a section object, or a string\nvalue - shaped after <code>System.Text.Json</code>'s <code>JsonElement</code>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -17971,7 +17971,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Ini.Document.IniProperty",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Ini.Document.IniProperty.yml\" sourcestartlinenumber=\"1\">Represents a single name/value property of an <xref href=\"Bodu.Text.Ini.Document.IniElement\" data-throw-if-not-resolved=\"false\"></xref> object — a global key, a section, or a\nsection entry.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Ini.Document.IniProperty.yml\" sourcestartlinenumber=\"1\">Represents a single name/value property of an <xref href=\"Bodu.Text.Ini.Document.IniElement\" data-throw-if-not-resolved=\"false\"></xref> object - a global key, a section, or a\nsection entry.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -18727,7 +18727,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Toml.Document.TomlElement",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Toml.Document.TomlElement.yml\" sourcestartlinenumber=\"1\">Represents a single read-only value within a <xref href=\"Bodu.Text.Toml.Document.TomlDocument\" data-throw-if-not-resolved=\"false\"></xref>. The element is a lightweight view — a pair\nof the owning document and a row index — so copying it is cheap and never materializes a node.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Toml.Document.TomlElement.yml\" sourcestartlinenumber=\"1\">Represents a single read-only value within a <xref href=\"Bodu.Text.Toml.Document.TomlDocument\" data-throw-if-not-resolved=\"false\"></xref>. The element is a lightweight view - a pair\nof the owning document and a row index - so copying it is cheap and never materializes a node.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -18783,7 +18783,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Toml.Nodes.TomlNode",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Toml.Nodes.TomlNode.yml\" sourcestartlinenumber=\"1\">Represents a single node in a mutable TOML document object model, serving as the base for the three concrete node\nkinds — <xref href=\"Bodu.Text.Toml.Nodes.TomlObject\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Text.Toml.Nodes.TomlArray\" data-throw-if-not-resolved=\"false\"></xref>, and <xref href=\"Bodu.Text.Toml.Nodes.TomlValue\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Toml.Nodes.TomlNode.yml\" sourcestartlinenumber=\"1\">Represents a single node in a mutable TOML document object model, serving as the base for the three concrete node\nkinds - <xref href=\"Bodu.Text.Toml.Nodes.TomlObject\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Text.Toml.Nodes.TomlArray\" data-throw-if-not-resolved=\"false\"></xref>, and <xref href=\"Bodu.Text.Toml.Nodes.TomlValue\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -18825,7 +18825,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Toml.Nodes.TomlValue",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Toml.Nodes.TomlValue.yml\" sourcestartlinenumber=\"1\">Represents a scalar TOML value within a node tree — one of the eight TOML scalar kinds: a string, a 64-bit integer,\na floating-point number, a Boolean, or one of the four date-time kinds.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Toml.Nodes.TomlValue.yml\" sourcestartlinenumber=\"1\">Represents a scalar TOML value within a node tree - one of the eight TOML scalar kinds: a string, a 64-bit integer,\na floating-point number, a Boolean, or one of the four date-time kinds.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -18895,7 +18895,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Toml.Reader.Utf8TomlReader",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Toml.Reader.Utf8TomlReader.yml\" sourcestartlinenumber=\"1\">Provides a forward-only, source-order reader for UTF-8 TOML bytes: a <code>ref struct</code> that holds the\ninput span and scans it incrementally. Each <xref href=\"Bodu.Text.Toml.Reader.Utf8TomlReader.Read\" data-throw-if-not-resolved=\"false\"></xref> advances to the next lexical token in document order\n— for example <code>[server.tls]</code> surfaces as <xref href=\"Bodu.Text.Toml.TomlTokenType.TableHeader\" data-throw-if-not-resolved=\"false\"></xref> followed by a\n<xref href=\"Bodu.Text.Toml.TomlTokenType.Key\" data-throw-if-not-resolved=\"false\"></xref> per dotted segment, and <code>ports = [1, 2]</code> as a key, then\n<xref href=\"Bodu.Text.Toml.TomlTokenType.StartArray\" data-throw-if-not-resolved=\"false\"></xref>, two integers, and <xref href=\"Bodu.Text.Toml.TomlTokenType.EndArray\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Toml.Reader.Utf8TomlReader.yml\" sourcestartlinenumber=\"1\">Provides a forward-only, source-order reader for UTF-8 TOML bytes: a <code>ref struct</code> that holds the\ninput span and scans it incrementally. Each <xref href=\"Bodu.Text.Toml.Reader.Utf8TomlReader.Read\" data-throw-if-not-resolved=\"false\"></xref> advances to the next lexical token in document\norder - for example <code>[server.tls]</code> surfaces as <xref href=\"Bodu.Text.Toml.TomlTokenType.TableHeader\" data-throw-if-not-resolved=\"false\"></xref> followed by a\n<xref href=\"Bodu.Text.Toml.TomlTokenType.Key\" data-throw-if-not-resolved=\"false\"></xref> per dotted segment, and <code>ports = [1, 2]</code> as a key, then\n<xref href=\"Bodu.Text.Toml.TomlTokenType.StartArray\" data-throw-if-not-resolved=\"false\"></xref>, two integers, and <xref href=\"Bodu.Text.Toml.TomlTokenType.EndArray\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -18951,7 +18951,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Toml.Serialization.TomlConverterFactory",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Toml.Serialization.TomlConverterFactory.yml\" sourcestartlinenumber=\"1\">Produces a <xref href=\"Bodu.Text.Toml.Serialization.TomlConverter\" data-throw-if-not-resolved=\"false\"></xref> for a family of types that cannot be served by a single\n<xref href=\"Bodu.Text.Toml.Serialization.TomlConverter%601\" data-throw-if-not-resolved=\"false\"></xref> — for example every <xref href=\"System.Nullable%601\" data-throw-if-not-resolved=\"false\"></xref>, every enumeration, or every\ncollection.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Toml.Serialization.TomlConverterFactory.yml\" sourcestartlinenumber=\"1\">Produces a <xref href=\"Bodu.Text.Toml.Serialization.TomlConverter\" data-throw-if-not-resolved=\"false\"></xref> for a family of types that cannot be served by a single\n<xref href=\"Bodu.Text.Toml.Serialization.TomlConverter%601\" data-throw-if-not-resolved=\"false\"></xref> - for example every <xref href=\"System.Nullable%601\" data-throw-if-not-resolved=\"false\"></xref>, every enumeration, or every\ncollection.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -19063,7 +19063,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Toml.TomlSerializationException",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Toml.TomlSerializationException.yml\" sourcestartlinenumber=\"1\">The exception thrown when a value cannot be bound to or from a TOML document during serialization — for example a\ntype mismatch, a missing required member, or a value TOML cannot represent.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Toml.TomlSerializationException.yml\" sourcestartlinenumber=\"1\">The exception thrown when a value cannot be bound to or from a TOML document during serialization - for example a\ntype mismatch, a missing required member, or a value TOML cannot represent.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -19455,7 +19455,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Yaml.Serialization.YamlConverterFactory",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Yaml.Serialization.YamlConverterFactory.yml\" sourcestartlinenumber=\"1\">Produces a <xref href=\"Bodu.Text.Yaml.Serialization.YamlConverter\" data-throw-if-not-resolved=\"false\"></xref> for a family of types that cannot be served by a single\n<xref href=\"Bodu.Text.Yaml.Serialization.YamlConverter%601\" data-throw-if-not-resolved=\"false\"></xref> — for example every <xref href=\"System.Nullable%601\" data-throw-if-not-resolved=\"false\"></xref>, every enumeration, or every\ncollection.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Yaml.Serialization.YamlConverterFactory.yml\" sourcestartlinenumber=\"1\">Produces a <xref href=\"Bodu.Text.Yaml.Serialization.YamlConverter\" data-throw-if-not-resolved=\"false\"></xref> for a family of types that cannot be served by a single\n<xref href=\"Bodu.Text.Yaml.Serialization.YamlConverter%601\" data-throw-if-not-resolved=\"false\"></xref> - for example every <xref href=\"System.Nullable%601\" data-throw-if-not-resolved=\"false\"></xref>, every enumeration, or every\ncollection.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -19651,7 +19651,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Yaml.YamlSerializationException",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Yaml.YamlSerializationException.yml\" sourcestartlinenumber=\"1\">The exception thrown when a value cannot be bound to or from a YAML document during serialization — for example a\ntype mismatch, a missing required member, or a value YAML cannot represent.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Yaml.YamlSerializationException.yml\" sourcestartlinenumber=\"1\">The exception thrown when a value cannot be bound to or from a YAML document during serialization - for example a\ntype mismatch, a missing required member, or a value YAML cannot represent.</p>\n"
     },
     {
       "type": "ManagedReference",

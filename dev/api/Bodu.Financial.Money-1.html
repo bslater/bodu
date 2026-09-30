@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Financial_Money_1" data-uid="Bodu.Financial.Money`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Money&lt;TCurrency&gt; Struct
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Allocation.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Allocation.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ Money&lt;TCurrency&gt; Struct
   <dl><dt>Assembly</dt><dd>Bodu.Financial.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial">Bodu.Financial</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Allocation.cs">Money{T}.Allocation.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Allocation.cs">Money{T}.Allocation.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents an immutable monetary amount denominated in the currency identified by <code class="typeparamref">TCurrency</code>.</p>
@@ -232,7 +232,7 @@ shipped tag types in <code>Bodu.Financial.Currencies</code> (for example,
 
   <h2 id="Bodu_Financial_Money_1_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-<a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> represents a <b>settlement-grade</b> monetary value — an amount already rounded to
+<a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> represents a <b>settlement-grade</b> monetary value - an amount already rounded to
 the currency's minor-unit precision and ready to be posted to a ledger, displayed to a user, or serialized to
 storage. It is deliberately not a calculation type: every operation that produces a <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>
 returns a value that respects <code>TCurrency.MinorUnits</code>, so chained scalar operations round at each step rather
@@ -251,7 +251,7 @@ runtime exceptions; cross-currency conversion is available exclusively through t
 </p>
 <p>
 Scalar multiplication and division round their result to <code>TCurrency.MinorUnits</code>. For chains where rounding at
-each step would accumulate error — compound interest, unit-rate products, percentages — defer rounding: use
+each step would accumulate error - compound interest, unit-rate products, percentages - defer rounding: use
 <a class="xref" href="Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a> for high-precision <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> calculation rounded once at settlement, or,
 when the calculation must be mathematically exact, perform it in <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> via
 <a class="xref" href="Bodu.Financial.Money-1.html#Bodu_Financial_Money_1_ToFraction">ToFraction()</a> and snap to <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> only at the final settlement boundary with
@@ -299,7 +299,7 @@ var euros = price.Convert&lt;EUR&gt;(0.92m);          // 18.40 EUR
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1__ctor_System_Decimal_" data-uid="Bodu.Financial.Money`1.#ctor(System.Decimal)">
   Money(decimal)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -328,7 +328,7 @@ var euros = price.Convert&lt;EUR&gt;(0.92m);          // 18.40 EUR
 
   <h4 class="section" id="Bodu_Financial_Money_1__ctor_System_Decimal__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
-The supplied amount is rounded to the currency's minor-unit precision using banker's rounding — midpoint values
+The supplied amount is rounded to the currency's minor-unit precision using banker's rounding - midpoint values
 round toward the nearer even final digit, in both directions. For example, <code>new Money&lt;USD&gt;(1.225m)</code>
 is stored as <code>1.22m</code> (down toward the even hundredth <code>2</code>) while <code>new Money&lt;USD&gt;(1.235m)</code> is
 stored as <code>1.24m</code> (up toward the even hundredth <code>4</code>). Non-midpoint values round in the natural
@@ -342,7 +342,7 @@ To round with a different rule, use the <a class="xref" href="Bodu.Financial.Mon
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
-    <dd><p>Thrown when <code class="typeparamref">TCurrency</code> reports invalid metadata — an <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html#Bodu_Financial_Currencies_ICurrency_IsoCode">IsoCode</a>
+    <dd><p>Thrown when <code class="typeparamref">TCurrency</code> reports invalid metadata - an <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html#Bodu_Financial_Currencies_ICurrency_IsoCode">IsoCode</a>
 that is not exactly three uppercase ASCII letters, an <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html#Bodu_Financial_Currencies_ICurrency_MinorUnits">MinorUnits</a> outside the inclusive
 range <code>[0, 28]</code>, or a <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html#Bodu_Financial_Currencies_ICurrency_CashRoundingIncrement">CashRoundingIncrement</a> that is negative or finer than the
 currency's minor-unit precision.</p>
@@ -358,7 +358,7 @@ currency's minor-unit precision.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1__ctor_System_Decimal_System_MidpointRounding_" data-uid="Bodu.Financial.Money`1.#ctor(System.Decimal,System.MidpointRounding)">
   Money(decimal, MidpointRounding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -409,7 +409,7 @@ currency's minor-unit precision.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_Amount" data-uid="Bodu.Financial.Money`1.Amount">
   Amount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -446,7 +446,7 @@ currency's minor-unit precision.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_CashRoundingIncrement" data-uid="Bodu.Financial.Money`1.CashRoundingIncrement">
   CashRoundingIncrement
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.CashRounding.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.CashRounding.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -488,7 +488,7 @@ currency does not require special cash rounding beyond its <a class="xref" href=
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_DemonetizedOn" data-uid="Bodu.Financial.Money`1.DemonetizedOn">
   DemonetizedOn
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.CashRounding.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.CashRounding.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -525,7 +525,7 @@ currency does not require special cash rounding beyond its <a class="xref" href=
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_IsHistoric" data-uid="Bodu.Financial.Money`1.IsHistoric">
   IsHistoric
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.CashRounding.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.CashRounding.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -562,7 +562,7 @@ currency does not require special cash rounding beyond its <a class="xref" href=
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_IsoCode" data-uid="Bodu.Financial.Money`1.IsoCode">
   IsoCode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -605,7 +605,7 @@ currency does not require special cash rounding beyond its <a class="xref" href=
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_MinorUnits" data-uid="Bodu.Financial.Money`1.MinorUnits">
   MinorUnits
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -648,7 +648,7 @@ currency does not require special cash rounding beyond its <a class="xref" href=
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_SuccessorIsoCode" data-uid="Bodu.Financial.Money`1.SuccessorIsoCode">
   SuccessorIsoCode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.CashRounding.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.CashRounding.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -687,7 +687,7 @@ successor.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_Zero" data-uid="Bodu.Financial.Money`1.Zero">
   Zero
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -728,7 +728,7 @@ successor.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_Allocate_System_Int32_" data-uid="Bodu.Financial.Money`1.Allocate(System.Int32)">
   Allocate(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Allocation.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Allocation.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -795,7 +795,7 @@ minor units than <code class="paramref">parts</code>, trailing shares are zero (
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_Allocate_System_ReadOnlySpan_System_Decimal__" data-uid="Bodu.Financial.Money`1.Allocate(System.ReadOnlySpan{System.Decimal})">
   Allocate(ReadOnlySpan&lt;decimal&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Allocation.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Allocation.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -821,7 +821,7 @@ produce a zero share.</p>
     <dt><a class="xref" href="Bodu.Financial.Money-1.html">Money</a>&lt;TCurrency&gt;[]</dt>
     <dd><p>An array of <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> values whose length equals <code class="paramref">ratios</code>.
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1.length">Length</a> and whose sum equals this instance. Residual minor units are distributed
-by the <i>largest-remainder method</i> — each slot receives one extra unit in descending order of its fractional
+by the <i>largest-remainder method</i> - each slot receives one extra unit in descending order of its fractional
 remainder, with ties broken by stable input order. Zero-ratio slots never receive residual.</p>
 </dd>
   </dl>
@@ -849,7 +849,7 @@ remainder, with ties broken by stable input order. Zero-ratio slots never receiv
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_CompareTo_Bodu_Financial_Money__0__" data-uid="Bodu.Financial.Money`1.CompareTo(Bodu.Financial.Money{`0})">
   CompareTo(Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -893,7 +893,7 @@ instance is greater.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_CompareTo_System_Object_" data-uid="Bodu.Financial.Money`1.CompareTo(System.Object)">
   CompareTo(object?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -944,7 +944,7 @@ rules of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ico
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_Convert__1_Bodu_Financial_ExchangeRates_ExchangeRate__0___0__System_MidpointRounding_" data-uid="Bodu.Financial.Money`1.Convert``1(Bodu.Financial.ExchangeRates.ExchangeRate{`0,``0},System.MidpointRounding)">
   Convert&lt;TQuote&gt;(ExchangeRate&lt;TCurrency, TQuote&gt;, MidpointRounding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1002,7 +1002,7 @@ inverted-direction rate.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_Convert__1_System_Decimal_System_MidpointRounding_" data-uid="Bodu.Financial.Money`1.Convert``1(System.Decimal,System.MidpointRounding)">
   Convert&lt;TTarget&gt;(decimal, MidpointRounding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1076,7 +1076,7 @@ in real FX code; for the rare legitimate scalar-zero case, construct the destina
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_Divide_System_Decimal_" data-uid="Bodu.Financial.Money`1.Divide(System.Decimal)">
   Divide(decimal)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1128,7 +1128,7 @@ in real FX code; for the rare legitimate scalar-zero case, construct the destina
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_Divide_System_Decimal_System_MidpointRounding_" data-uid="Bodu.Financial.Money`1.Divide(System.Decimal,System.MidpointRounding)">
   Divide(decimal, MidpointRounding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1184,7 +1184,7 @@ using the supplied rule.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_Equals_Bodu_Financial_Money__0__" data-uid="Bodu.Financial.Money`1.Equals(Bodu.Financial.Money{`0})">
   Equals(Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1228,7 +1228,7 @@ rounded amount; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/lan
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_Equals_System_Object_" data-uid="Bodu.Financial.Money`1.Equals(System.Object)">
   Equals(object?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1273,7 +1273,7 @@ and equal in amount; otherwise <a href="https://learn.microsoft.com/dotnet/cshar
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_FromFraction_Bodu_Numerics_Fraction_System_Numerics_BigInteger__System_MidpointRounding_" data-uid="Bodu.Financial.Money`1.FromFraction(Bodu.Numerics.Fraction{System.Numerics.BigInteger},System.MidpointRounding)">
   FromFraction(Fraction&lt;BigInteger&gt;, MidpointRounding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1290,7 +1290,7 @@ precision retain their exact rounding direction.</p>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>value</code> <a class="xref" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/Fraction%7BT%7D.Arithmetic.cs">Fraction</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a>&gt;</dt>
+    <dt><code>value</code> <a class="xref" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/Fraction%7BT%7D.Arithmetic.cs">Fraction</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a>&gt;</dt>
     <dd><p>The exact amount.</p>
 </dd>
     <dt><code>rounding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding">MidpointRounding</a></dt>
@@ -1328,7 +1328,7 @@ precision retain their exact rounding direction.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_FromMinorUnits_System_Int64_" data-uid="Bodu.Financial.Money`1.FromMinorUnits(System.Int64)">
   FromMinorUnits(long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.MinorUnits.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.MinorUnits.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1377,11 +1377,11 @@ is the canonical bridge from that representation. For example, <code>Money&lt;US
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_GetHashCode" data-uid="Bodu.Financial.Money`1.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns a hash code consistent with <a class="xref" href="Bodu.Financial.Money-1.html#Bodu_Financial_Money_1_Equals_Bodu_Financial_Money__0__">Equals(Money&lt;TCurrency&gt;)</a> — combining the closed generic type
+  <div class="markdown level1 summary"><p>Returns a hash code consistent with <a class="xref" href="Bodu.Financial.Money-1.html#Bodu_Financial_Money_1_Equals_Bodu_Financial_Money__0__">Equals(Money&lt;TCurrency&gt;)</a> - combining the closed generic type
 identity (not the runtime <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html#Bodu_Financial_Currencies_ICurrency_IsoCode">IsoCode</a> string) with the amount so hashing matches equality
 even when two different currency tag types share an ISO code or when a custom tag mutates its reported code.</p>
 </div>
@@ -1416,7 +1416,7 @@ even when two different currency tag types share an ISO code or when a custom ta
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_Multiply_System_Decimal_" data-uid="Bodu.Financial.Money`1.Multiply(System.Decimal)">
   Multiply(decimal)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1470,7 +1470,7 @@ rounding is required.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_Multiply_System_Decimal_Bodu_Financial_MonetaryContext_" data-uid="Bodu.Financial.Money`1.Multiply(System.Decimal,Bodu.Financial.MonetaryContext)">
   Multiply(decimal, MonetaryContext)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1531,7 +1531,7 @@ value and round once at the end.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_Multiply_System_Decimal_System_MidpointRounding_" data-uid="Bodu.Financial.Money`1.Multiply(System.Decimal,System.MidpointRounding)">
   Multiply(decimal, MidpointRounding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1598,7 +1598,7 @@ signatures cannot accept a rounding-mode parameter.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_MultiplyExact_Bodu_Numerics_Fraction_System_Numerics_BigInteger__System_MidpointRounding_" data-uid="Bodu.Financial.Money`1.MultiplyExact(Bodu.Numerics.Fraction{System.Numerics.BigInteger},System.MidpointRounding)">
   MultiplyExact(Fraction&lt;BigInteger&gt;, MidpointRounding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1612,7 +1612,7 @@ signatures cannot accept a rounding-mode parameter.</p>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>factor</code> <a class="xref" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/Fraction%7BT%7D.Arithmetic.cs">Fraction</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a>&gt;</dt>
+    <dt><code>factor</code> <a class="xref" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/Fraction%7BT%7D.Arithmetic.cs">Fraction</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a>&gt;</dt>
     <dd><p>The exact multiplier.</p>
 </dd>
     <dt><code>rounding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding">MidpointRounding</a></dt>
@@ -1655,7 +1655,7 @@ pattern in a single call. Inherits the exact <a class="xref" href="https://learn
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_RatioTo_Bodu_Financial_Money__0__" data-uid="Bodu.Financial.Money`1.RatioTo(Bodu.Financial.Money{`0})">
   RatioTo(Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1708,7 +1708,7 @@ which returns the same value. Both forms are equivalent.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_Round_System_Int32_System_MidpointRounding_" data-uid="Bodu.Financial.Money`1.Round(System.Int32,System.MidpointRounding)">
   Round(int, MidpointRounding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1746,7 +1746,7 @@ digits using the specified rule.</p>
 
 
   <h4 class="section" id="Bodu_Financial_Money_1_Round_System_Int32_System_MidpointRounding__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Use this to coarsen below the currency's natural precision — for example, rounding USD to whole dollars before
+  <div class="markdown level1 remarks"><p>Use this to coarsen below the currency's natural precision - for example, rounding USD to whole dollars before
 display. Rounding above <a class="xref" href="Bodu.Financial.Money-1.html#Bodu_Financial_Money_1_MinorUnits">MinorUnits</a> has no effect because the stored amount is already limited to
 the minor-unit precision.</p>
 </div>
@@ -1767,7 +1767,7 @@ the minor-unit precision.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_RoundToCash" data-uid="Bodu.Financial.Money`1.RoundToCash">
   RoundToCash()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.CashRounding.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.CashRounding.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1799,7 +1799,7 @@ or this instance unchanged when the currency does not declare a cash-rounding in
   <div class="markdown level1 remarks"><p>Cash rounding applies to physical cash totals only; electronic transactions retain the full
 <a class="xref" href="Bodu.Financial.Money-1.html#Bodu_Financial_Money_1_MinorUnits">MinorUnits</a> precision. For Switzerland (CHF, 5-rappen rounding), Canada (CAD, 5-cent cash rounding
 since 2013), Australia (AUD, 5-cent cash rounding since 1992), and other currencies whose smallest circulating
-coin is larger than <code>10^-MinorUnits</code>, this method snaps to the cash denomination — for example,
+coin is larger than <code>10^-MinorUnits</code>, this method snaps to the cash denomination - for example,
 <code>CHF 12.34</code> rounds to <code>CHF 12.35</code>.</p>
 </div>
 
@@ -1813,7 +1813,7 @@ coin is larger than <code>10^-MinorUnits</code>, this method snaps to the cash d
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_RoundToCash_System_MidpointRounding_" data-uid="Bodu.Financial.Money`1.RoundToCash(System.MidpointRounding)">
   RoundToCash(MidpointRounding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.CashRounding.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.CashRounding.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1858,7 +1858,7 @@ or this instance unchanged when the currency does not declare a cash-rounding in
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_ToCalculated" data-uid="Bodu.Financial.Money`1.ToCalculated">
   ToCalculated()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1896,7 +1896,7 @@ currency derived from <code class="typeparamref">TCurrency</code>, suitable for 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_ToFraction" data-uid="Bodu.Financial.Money`1.ToFraction">
   ToFraction()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1912,7 +1912,7 @@ arithmetic that must not round at each step.</p>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Numerics/src/Numerics/Fraction%7BT%7D.Arithmetic.cs">Fraction</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a>&gt;</dt>
+    <dt><a class="xref" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Numerics/src/Numerics/Fraction%7BT%7D.Arithmetic.cs">Fraction</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a>&gt;</dt>
     <dd><p>The amount as an exact rational value.</p>
 </dd>
   </dl>
@@ -1940,7 +1940,7 @@ before converting back to <a class="xref" href="Bodu.Financial.Money-1.html">Mon
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_ToMinorUnits" data-uid="Bodu.Financial.Money`1.ToMinorUnits">
   ToMinorUnits()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.MinorUnits.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.MinorUnits.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1985,7 +1985,7 @@ major units) this is unreachable; the exception covers pathological values built
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_ToMoney" data-uid="Bodu.Financial.Money`1.ToMoney">
   ToMoney()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2027,7 +2027,7 @@ runtime APIs without an explicit cast.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_ToString" data-uid="Bodu.Financial.Money`1.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2065,7 +2065,7 @@ minor-unit precision, using thousand separators from the current culture.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_ToString_System_String_" data-uid="Bodu.Financial.Money`1.ToString(System.String)">
   ToString(string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2124,7 +2124,7 @@ string roundTrip = amount.ToString("R");   // "USD 1234.56" (invariant, parser-f
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_ToString_System_String_System_IFormatProvider_" data-uid="Bodu.Financial.Money`1.ToString(System.String,System.IFormatProvider)">
   ToString(string?, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2176,7 +2176,7 @@ string roundTrip = amount.ToString("R");   // "USD 1234.56" (invariant, parser-f
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Financial.Money`1.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
   TryFormat(Span&lt;byte&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2235,7 +2235,7 @@ string roundTrip = amount.ToString("R");   // "USD 1234.56" (invariant, parser-f
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Financial.Money`1.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
   TryFormat(Span&lt;char&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2294,7 +2294,7 @@ string roundTrip = amount.ToString("R");   // "USD 1234.56" (invariant, parser-f
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_TryToMinorUnits_System_Int64__" data-uid="Bodu.Financial.Money`1.TryToMinorUnits(System.Int64@)">
   TryToMinorUnits(out long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.MinorUnits.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.MinorUnits.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2342,7 +2342,7 @@ of throwing when the value would overflow <a class="xref" href="https://learn.mi
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_op_Addition_Bodu_Financial_Money__0__Bodu_Financial_Money__0__" data-uid="Bodu.Financial.Money`1.op_Addition(Bodu.Financial.Money{`0},Bodu.Financial.Money{`0})">
   operator +(Money&lt;TCurrency&gt;, Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2399,7 +2399,7 @@ of throwing when the value would overflow <a class="xref" href="https://learn.mi
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_op_Division_Bodu_Financial_Money__0__Bodu_Financial_Money__0__" data-uid="Bodu.Financial.Money`1.op_Division(Bodu.Financial.Money{`0},Bodu.Financial.Money{`0})">
   operator /(Money&lt;TCurrency&gt;, Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2455,7 +2455,7 @@ domain code or when the ratio is the primary computation being expressed.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_op_Division_Bodu_Financial_Money__0__System_Decimal_" data-uid="Bodu.Financial.Money`1.op_Division(Bodu.Financial.Money{`0},System.Decimal)">
   operator /(Money&lt;TCurrency&gt;, decimal)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2525,7 +2525,7 @@ the operator.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_op_Equality_Bodu_Financial_Money__0__Bodu_Financial_Money__0__" data-uid="Bodu.Financial.Money`1.op_Equality(Bodu.Financial.Money{`0},Bodu.Financial.Money{`0})">
   operator ==(Money&lt;TCurrency&gt;, Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2571,7 +2571,7 @@ the operator.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_op_Explicit_Bodu_Financial_Money__Bodu_Financial_Money__0_" data-uid="Bodu.Financial.Money`1.op_Explicit(Bodu.Financial.Money)~Bodu.Financial.Money{`0}">
   explicit operator Money&lt;TCurrency&gt;(Money)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2622,7 +2622,7 @@ currency matches <code class="typeparamref">TCurrency</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_op_GreaterThan_Bodu_Financial_Money__0__Bodu_Financial_Money__0__" data-uid="Bodu.Financial.Money`1.op_GreaterThan(Bodu.Financial.Money{`0},Bodu.Financial.Money{`0})">
   operator &gt;(Money&lt;TCurrency&gt;, Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2669,7 +2669,7 @@ currency matches <code class="typeparamref">TCurrency</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_op_GreaterThanOrEqual_Bodu_Financial_Money__0__Bodu_Financial_Money__0__" data-uid="Bodu.Financial.Money`1.op_GreaterThanOrEqual(Bodu.Financial.Money{`0},Bodu.Financial.Money{`0})">
   operator &gt;=(Money&lt;TCurrency&gt;, Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2716,7 +2716,7 @@ otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_op_Implicit_Bodu_Financial_Money__0___Bodu_Financial_Money" data-uid="Bodu.Financial.Money`1.op_Implicit(Bodu.Financial.Money{`0})~Bodu.Financial.Money">
   implicit operator Money(Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Conversion.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2759,7 +2759,7 @@ otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_op_Inequality_Bodu_Financial_Money__0__Bodu_Financial_Money__0__" data-uid="Bodu.Financial.Money`1.op_Inequality(Bodu.Financial.Money{`0},Bodu.Financial.Money{`0})">
   operator !=(Money&lt;TCurrency&gt;, Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2805,7 +2805,7 @@ otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_op_LessThan_Bodu_Financial_Money__0__Bodu_Financial_Money__0__" data-uid="Bodu.Financial.Money`1.op_LessThan(Bodu.Financial.Money{`0},Bodu.Financial.Money{`0})">
   operator &lt;(Money&lt;TCurrency&gt;, Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2852,7 +2852,7 @@ otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_op_LessThanOrEqual_Bodu_Financial_Money__0__Bodu_Financial_Money__0__" data-uid="Bodu.Financial.Money`1.op_LessThanOrEqual(Bodu.Financial.Money{`0},Bodu.Financial.Money{`0})">
   operator &lt;=(Money&lt;TCurrency&gt;, Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2899,7 +2899,7 @@ otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_op_Multiply_Bodu_Financial_Money__0__System_Decimal_" data-uid="Bodu.Financial.Money`1.op_Multiply(Bodu.Financial.Money{`0},System.Decimal)">
   operator *(Money&lt;TCurrency&gt;, decimal)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2962,7 +2962,7 @@ control the rounding rule on a single scalar multiplication, use
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_op_Multiply_System_Decimal_Bodu_Financial_Money__0__" data-uid="Bodu.Financial.Money`1.op_Multiply(System.Decimal,Bodu.Financial.Money{`0})">
   operator *(decimal, Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3015,7 +3015,7 @@ banker's rounding (<a class="xref" href="https://learn.microsoft.com/dotnet/api/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_op_Subtraction_Bodu_Financial_Money__0__Bodu_Financial_Money__0__" data-uid="Bodu.Financial.Money`1.op_Subtraction(Bodu.Financial.Money{`0},Bodu.Financial.Money{`0})">
   operator -(Money&lt;TCurrency&gt;, Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3067,7 +3067,7 @@ banker's rounding (<a class="xref" href="https://learn.microsoft.com/dotnet/api/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_op_UnaryNegation_Bodu_Financial_Money__0__" data-uid="Bodu.Financial.Money`1.op_UnaryNegation(Bodu.Financial.Money{`0})">
   operator -(Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3116,7 +3116,7 @@ banker's rounding (<a class="xref" href="https://learn.microsoft.com/dotnet/api/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_op_UnaryPlus_Bodu_Financial_Money__0__" data-uid="Bodu.Financial.Money`1.op_UnaryPlus(Bodu.Financial.Money{`0})">
   operator +(Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3163,7 +3163,7 @@ banker's rounding (<a class="xref" href="https://learn.microsoft.com/dotnet/api/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Financial.Money`1.Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)">
   Parse(ReadOnlySpan&lt;char&gt;, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3215,7 +3215,7 @@ banker's rounding (<a class="xref" href="https://learn.microsoft.com/dotnet/api/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_Parse_System_String_System_IFormatProvider_" data-uid="Bodu.Financial.Money`1.Parse(System.String,System.IFormatProvider)">
   Parse(string, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3271,7 +3271,7 @@ accepted forms.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_Financial_Money__0___" data-uid="Bodu.Financial.Money`1.TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.Financial.Money{`0}@)">
   TryParse(ReadOnlySpan&lt;char&gt;, IFormatProvider?, out Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3335,7 +3335,7 @@ bool ok = Money&lt;USD&gt;.TryParse("EUR 19.99", CultureInfo.InvariantCulture, o
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Money_1_TryParse_System_String_System_IFormatProvider_Bodu_Financial_Money__0___" data-uid="Bodu.Financial.Money`1.TryParse(System.String,System.IFormatProvider,Bodu.Financial.Money{`0}@)">
   TryParse(string?, IFormatProvider?, out Money&lt;TCurrency&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/3537272bb41dbcf6d2029d75f98abc3ee843de77/Bodu.Financial/src/Financial/Money%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7c23a51e6f6a02d091f3dc4c0eb85bba5b033d21/Bodu.Financial/src/Financial/Money%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3406,7 +3406,7 @@ bool ok = Money&lt;USD&gt;.TryParse("EUR 19.99", CultureInfo.InvariantCulture, o
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

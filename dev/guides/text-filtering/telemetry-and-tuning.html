@@ -87,8 +87,8 @@
         <article data-uid="">
 <h1 id="telemetry-and-tuning">Telemetry and tuning</h1>
 
-<p>A <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.html"><code>TextFilter</code></a> is built for bulk work — 100k+ values against
-tens to hundreds of patterns — so it ships with the observability needed to understand and tune a
+<p>A <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.html"><code>TextFilter</code></a> is built for bulk work - 100k+ values against
+tens to hundreds of patterns - so it ships with the observability needed to understand and tune a
 filter at that volume: always-on counters, per-pattern hit attribution, and an optional
 per-decision observer.</p>
 <h2 id="quick-reference">Quick reference</h2>
@@ -125,10 +125,10 @@ per-decision observer.</p>
 </table>
 <h2 id="the-statistics-snapshot">The statistics snapshot</h2>
 <p><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterStatistics.html"><code>TextFilterStatistics</code></a> is an immutable snapshot.
-The buckets always reconcile — <code>ItemsEvaluated == ItemsAccepted + ItemsExcluded + ItemsNotIncluded</code> — and per-pattern
+The buckets always reconcile - <code>ItemsEvaluated == ItemsAccepted + ItemsExcluded + ItemsNotIncluded</code> - and per-pattern
 <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterPatternStatistics.html"><code>HitCount</code></a> credits the <strong>deciding</strong> pattern
 only: the include that admitted the value or the exclude that vetoed it. That is exactly the signal
-selectivity tuning needs — a pattern with a near-zero hit count over a large corpus is either
+selectivity tuning needs - a pattern with a near-zero hit count over a large corpus is either
 redundant or shadowed.</p>
 <p>Counters are deliberately plain (not interlocked): matching results are always exact under
 concurrency (the compiled state is immutable), but counters may undercount when evaluating from
@@ -137,8 +137,8 @@ multiple threads. Single-threaded pipelines get exact statistics for free. Timin
 accumulates into <code>EvaluationTime</code>.</p>
 <h2 id="the-observer-hook">The observer hook</h2>
 <p>Attach an <a class="xref" href="../../api/Bodu.Text.Filtering.ITextFilterObserver.html"><code>ITextFilterObserver</code></a> to see every
-decision — the evaluated value, the <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterDecision.html"><code>TextFilterDecision</code></a>,
-and the deciding pattern — for sampling, audit logging, or debugging a surprising veto. The
+decision - the evaluated value, the <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterDecision.html"><code>TextFilterDecision</code></a>,
+and the deciding pattern - for sampling, audit logging, or debugging a surprising veto. The
 callback runs synchronously on the evaluating thread; exceptions propagate to the caller; when no
 observer is attached the evaluation path pays only a single null check.</p>
 <h2 id="cost-tiers-and-what-they-mean-for-tuning">Cost tiers and what they mean for tuning</h2>
@@ -187,9 +187,9 @@ observer is attached the evaluation path pays only a single null check.</p>
 </table>
 <p>Practical consequences:</p>
 <ul>
-<li>Prefer glob shapes over regexes when both can express the rule — <code>{error,warn}*</code> compiles to two
+<li>Prefer glob shapes over regexes when both can express the rule - <code>{error,warn}*</code> compiles to two
 tier-2 prefix checks, while <code>^(error|warn)</code> is tier 5.</li>
-<li>Order within a group does not matter in <code>AnyMatch</code> — write rules for readability; the engine
+<li>Order within a group does not matter in <code>AnyMatch</code> - write rules for readability; the engine
 sorts by cost.</li>
 <li>The indicative benchmark (100k values, 100 mixed patterns) runs ~3× faster than a compiled
 per-pattern-regex baseline, with zero allocations per value.</li>
@@ -199,15 +199,15 @@ per-pattern-regex baseline, with zero allocations per value.</li>
 (backreferences, lookarounds) fall back to the backtracking engine guarded by
 <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterOptions.html"><code>RegexMatchTimeout</code></a>. If a match times out, the
 decision fails safe <strong>by action</strong>: a timed-out include does not admit the value, and a timed-out
-exclude still vetoes it — the filter never accidentally lets a value through because its exclude
+exclude still vetoes it - the filter never accidentally lets a value through because its exclude
 timed out. Timeouts are counted in
 <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterStatistics.html"><code>TextFilterStatistics.RegexTimeouts</code></a> and visible
 to the observer.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="patterns-and-globs.html">Patterns and globs</a></strong> — shaping rules into cheap tiers.</li>
-<li><strong><a href="evaluation-modes.html">Evaluation modes</a></strong> — set vs ordered semantics.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterStatistics.html">API reference</a></strong> — the statistics types.</li>
+<li><strong><a href="patterns-and-globs.html">Patterns and globs</a></strong> - shaping rules into cheap tiers.</li>
+<li><strong><a href="evaluation-modes.html">Evaluation modes</a></strong> - set vs ordered semantics.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterStatistics.html">API reference</a></strong> - the statistics types.</li>
 </ul>
 
 </article>
@@ -227,7 +227,7 @@ to the observer.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3537272 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7c23a51 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>
