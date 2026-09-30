@@ -27,7 +27,7 @@ internal sealed class Argon2FillDriver
     private const int AutoKernel = 0;
 
     /// <summary>The value of <c>FillOptions.DefaultMinimumParallelSegmentLength</c>.</summary>
-    private const int DefaultMinimumParallelSegmentLength = 256;
+    private const int DefaultMinimumParallelSegmentLength = 64;
 
     /// <summary>The emitted method: derives a tag with the named fill options.</summary>
     private readonly DeriveFunction _derive;

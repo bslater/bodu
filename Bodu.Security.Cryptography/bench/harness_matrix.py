@@ -9,6 +9,9 @@ package (``-p:BoduCryptoBaseline=1.0.0``). It then runs each suite in its config
 one run to the next so that drift over the job falls on each of them alike:
 
 * ``vector``: this checkout, with the kernels dispatch selects;
+* ``avx2``: this checkout with the runtime's AVX-512 switched off (``DOTNET_EnableAVX512F=0`` for .NET 8,
+  ``DOTNET_EnableAVX512=0`` for .NET 10), so that on x64 the AVX2 kernels run where the AVX-512 ones would; the ``x64``
+  suite alone runs it, and on a processor without AVX-512 it repeats ``vector``;
 * ``ssse3``: this checkout with the runtime's AVX2 switched off (``DOTNET_EnableAVX2=0``), so that on x64 the SSSE3
   kernels run where the AVX2 ones would; the ``x64`` suite alone runs it;
 * ``scalar``: this checkout with the library's ``DisableSimd`` switch set (``--disable-simd``), so every kernel gives
@@ -35,11 +38,12 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 PROJECT = os.path.join(HERE, 'Bodu.Security.Cryptography.Benchmarks.csproj')
 ASSEMBLY = 'Bodu.Security.Cryptography.Benchmarks.dll'
-CONFIGURATIONS = ['vector', 'ssse3', 'scalar', '1.0.0']
+CONFIGURATIONS = ['vector', 'avx2', 'ssse3', 'scalar', '1.0.0']
 
 # Each configuration: the build it runs, the harness arguments it adds, and the environment it sets.
 CONFIGURATION_SETTINGS = {
     'vector': ('current', [], {}),
+    'avx2': ('current', [], {'DOTNET_EnableAVX512F': '0', 'DOTNET_EnableAVX512': '0'}),
     'ssse3': ('current', [], {'DOTNET_EnableAVX2': '0'}),
     'scalar': ('current', ['--disable-simd'], {}),
     '1.0.0': ('1.0.0', [], {}),
@@ -59,14 +63,14 @@ CRYPTO_FILTERS = [
 ]
 
 # The crypto-harness cases whose x64 kernels spread one state across a vector's lanes, the layout F7 found losing on
-# ARM64: BLAKE2b, BLAKE2s, BLAKE3's single block, scrypt and Argon2. On an AVX2 machine without AVX-512 the ``vector``
-# configuration runs their AVX2 kernels and ``ssse3`` their 128-bit ones.
+# ARM64: BLAKE2b, BLAKE2s, BLAKE3's single block, scrypt and Argon2. The ``avx2`` configuration runs their AVX2 kernels
+# whether or not the machine has AVX-512, and ``ssse3`` their 128-bit ones.
 X64_FILTERS = ['hash/Bodu BLAKE2', 'hash/Bodu BLAKE3', 'kdf/Bodu']
 
 # Each suite: its harness arguments, and the configurations it runs in.
 SUITES = {
     'crypto': (['--crypto-harness', *CRYPTO_FILTERS], ['vector', 'scalar', '1.0.0']),
-    'x64': (['--crypto-harness', *X64_FILTERS], ['vector', 'ssse3', 'scalar', '1.0.0']),
+    'x64': (['--crypto-harness', *X64_FILTERS], ['vector', 'avx2', 'ssse3', 'scalar', '1.0.0']),
     'argon2': (['--argon2-harness'], ['vector', 'scalar', '1.0.0']),
     'sweep': (['--argon2-harness', '--sweep'], ['vector', 'scalar', '1.0.0']),
 }
@@ -192,7 +196,7 @@ def summarize(out):
 
             print()
             present = [c for c in CONFIGURATIONS if c in headers]
-            comparisons = [(a, b) for a, b in (('vector', 'scalar'), ('ssse3', 'scalar'), ('vector', '1.0.0')) if a in present and b in present]
+            comparisons = [(a, b) for a, b in (('vector', 'scalar'), ('avx2', 'scalar'), ('ssse3', 'scalar'), ('vector', '1.0.0')) if a in present and b in present]
             print('| Case | Unit | ' + ' | '.join(present) + ' | ' + ' | '.join(f'{a} vs {b}' for a, b in comparisons) + ' |')
             print('|---|---|' + '---|' * (len(present) + len(comparisons)))
             for case, by_configuration in measured.items():
