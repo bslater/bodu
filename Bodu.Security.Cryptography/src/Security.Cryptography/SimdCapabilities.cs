@@ -23,8 +23,8 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="DisableSimdSwitchName" /> feature switch.
 /// </para>
 /// <para>
-/// On ARM64, <see cref="AdvSimdSingleState" /> holds back the AdvSimd kernels of BLAKE2b, BLAKE2s, Argon2, and scrypt,
-/// and BLAKE3's for a single block, which ran slower than the scalar kernels on the processors measured.
+/// On ARM64, <see cref="AdvSimdSingleState" /> holds back the AdvSimd kernels of BLAKE2b, BLAKE2s, and scrypt, BLAKE3's
+/// for a single block, and Argon2's under .NET 10, which ran slower than the scalar kernels on the processors measured.
 /// </para>
 /// <para>
 /// The switch exists for <strong>determinism, reproducibility, and audit</strong> — pinning execution to the single
@@ -158,7 +158,8 @@ internal static class SimdCapabilities
 
     /// <summary>
     /// Gets a value indicating whether dispatch should select the AdvSimd kernels that spread a single state across
-    /// their vectors' lanes: those of BLAKE2b, BLAKE2s, Argon2, and scrypt, and BLAKE3's for a single block.
+    /// their vectors' lanes: those of BLAKE2b, BLAKE2s, and scrypt, BLAKE3's for a single block, and Argon2's under
+    /// .NET 10.
     /// </summary>
     /// <value>
     /// <see langword="false" />: on a Neoverse N2, the scalar kernels ran every one of these primitives faster.
@@ -172,6 +173,10 @@ internal static class SimdCapabilities
     /// alike, and an Apple M1 agreed but for Argon2 and scrypt under .NET 8. Until these kernels are tuned, dispatch
     /// runs the scalar kernels in their place on ARM64. The kernels run only where a caller names one, as the tests do
     /// to hold each to the scalar kernel.
+    /// </para>
+    /// <para>
+    /// Argon2 consults this gate only under .NET 10. Under .NET 8 its AdvSimd kernel ran 1.5 to 1.6 times as fast as
+    /// the scalar kernel on the M1, where the scalar kernel took nearly two thirds of 1.0.0's CPU, so it runs there.
     /// </para>
     /// <para>
     /// The AdvSimd kernels that give each lane a state of its own (ChaCha20 and Salsa20 over several blocks, BLAKE3
