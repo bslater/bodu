@@ -1,0 +1,57 @@
+<Project>
+
+  <!--
+    Reports what the API documentation pipeline (bld/docs/build-api-docs.sh) needs from one build of
+    one project for one target framework: the compiled assembly with its XML documentation and
+    portable PDB, the package identity the assembly ships in, and the exact reference assemblies the
+    compiler resolved.
+
+    bld/docs/Bodu.Docs.Api.proj calls this target on every documented project for every framework in
+    $(BoduNetTargets), with TargetFramework as a global property, so each call runs in the project's
+    inner build. DependsOnTargets="Build" makes the call build the project first; the values below are
+    then the ones that build actually used.
+
+    The package identity is read from the evaluated project rather than from bld/Versioning.props, so
+    a project's BoduPackageVersionOverride (applied in Directory.Build.targets) is reflected exactly as
+    `dotnet pack` would reflect it. Paths are made absolute so the caller can copy the files without
+    knowing each project's directory layout.
+
+    The references are the compiler's own ReferencePath, less the project references (every Bodu
+    assembly a documented project references is itself documented and staged beside it). They carry
+    the framework reference pack and each NuGet package's compile assembly, whose sibling .xml files
+    DocFX reads when it expands <inheritdoc /> from a framework or package member.
+  -->
+  <Target Name="BoduGetDocsInputs"
+          DependsOnTargets="Build"
+          Returns="@(_BoduDocsInput)">
+    <PropertyGroup>
+      <_BoduDocsTargetPath>$([System.IO.Path]::GetFullPath('$(TargetPath)'))</_BoduDocsTargetPath>
+      <_BoduDocsXmlPath>$([System.IO.Path]::ChangeExtension('$(_BoduDocsTargetPath)', '.xml'))</_BoduDocsXmlPath>
+      <_BoduDocsPdbPath>$([System.IO.Path]::ChangeExtension('$(_BoduDocsTargetPath)', '.pdb'))</_BoduDocsPdbPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <_BoduDocsInput Include="$(_BoduDocsTargetPath)"
+                      Kind="Assembly"
+                      ProjectName="$(MSBuildProjectName)"
+                      ProjectPath="$(MSBuildProjectFullPath)"
+                      TargetFramework="$(TargetFramework)"
+                      AssemblyName="$(AssemblyName)"
+                      PackageId="$(PackageId)"
+                      PackageVersion="$(PackageVersion)"
+                      BoduPackageVersionOverride="$(BoduPackageVersionOverride)"
+                      IsPackable="$(IsPackable)"
+                      GenerateDocumentationFile="$(GenerateDocumentationFile)"
+                      XmlPath="$(_BoduDocsXmlPath)"
+                      PdbPath="$(_BoduDocsPdbPath)" />
+
+      <_BoduDocsInput Include="@(ReferencePath->'%(FullPath)')"
+                      Condition="'%(ReferencePath.ReferenceSourceTarget)' != 'ProjectReference'"
+                      Kind="Reference"
+                      ProjectName="$(MSBuildProjectName)"
+                      TargetFramework="$(TargetFramework)"
+                      FusionName="%(ReferencePath.FusionName)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

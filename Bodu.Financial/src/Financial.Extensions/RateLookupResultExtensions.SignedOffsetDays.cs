@@ -36,8 +36,8 @@ public static partial class RateLookupResultExtensions
 #else
 
     /// <summary>
-    /// Returns the signed difference, in days, from <see cref="RateLookupResult.RequestedDate" /> to the
-    /// resolved observation date.
+    /// Returns the signed difference, in days, from <see cref="RateLookupResult.RequestedDate" /> to the resolved
+    /// observation date.
     /// </summary>
     /// <param name="result">The lookup outcome to inspect.</param>
     /// <returns>
@@ -46,8 +46,8 @@ public static partial class RateLookupResultExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// Accounting and tax workflows typically distinguish between historical and forward-looking fallbacks; this
-    /// member surfaces that distinction without forcing the caller to recompute it from
+    /// Accounting and tax workflows typically distinguish between historical and forward-looking fallbacks; this member
+    /// surfaces that distinction without forcing the caller to recompute it from
     /// <see cref="RateLookupResult.OffsetDays" />.
     /// </para>
     /// </remarks>

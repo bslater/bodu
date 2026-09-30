@@ -1,0 +1,12 @@
+# Packages recorded in bld/release-manifest.txt that the API reference does not document.
+#
+# The API reference documents every package the manifest records, published or withheld, except the
+# ones listed here. Each line is "<PackageId>  # reason". An id listed here that the manifest no longer
+# records fails `bld/docs/prepare-api-inputs.py projects`, so the list cannot go stale.
+#
+# Projects outside the manifest (test infrastructure such as Bodu.Financial.ExchangeRates.Testing, the
+# Bodu.Text.Formats.Generators source generator, and the Bodu.CodeStyle analyzers) are never
+# documented, and need no entry.
+
+Bodu.Globalization.Calendar.Build  # MSBuild task package (CompileNotableDatePack); it has no API for a consumer to call
+Bodu.Text.Formats                  # meta-package that references the format libraries and contains no code
