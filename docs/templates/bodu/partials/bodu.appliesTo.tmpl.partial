@@ -1,0 +1,16 @@
+{{!Bodu: the Microsoft Learn-style "Applies to" section, from the frameworks the merged metadata records for this API.}}
+{{#boduAppliesTo.0}}
+<h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+<table class="table bodu-applies-to" data-bodu-frameworks="{{boduFrameworksAttr}}">
+  <thead>
+    <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+  </thead>
+  <tbody>
+{{/boduAppliesTo.0}}
+{{#boduAppliesTo}}
+    <tr><td>{{product}}</td><td>{{versions}}</td></tr>
+{{/boduAppliesTo}}
+{{#boduAppliesTo.0}}
+  </tbody>
+</table>
+{{/boduAppliesTo.0}}
