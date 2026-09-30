@@ -11,7 +11,7 @@ the dependency-injection registration — from two base classes in `Bodu.Financi
 A provider for a feed Bodu does not ship is the same amount of code. This page builds one,
 `AcmeRateProvider`, over a fictional CSV endpoint, registers it with the same `Financial:Acme`
 shape the built-in providers use, and proves it with the shipped contract tests. Every sample
-runs offline against a <xref:Bodu.Financial.ExchangeRates.Testing.StubHttpMessageHandler>.
+runs offline against a `StubHttpMessageHandler`.
 
 Two bases, one choice:
 

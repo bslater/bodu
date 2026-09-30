@@ -114,12 +114,15 @@
     imports bld/Bodu.props. VersionGreaterThanOrEquals avoids the lexical trap where "10.0" sorts
     before "8.0".
 
-    The symbol is additionally suppressed when BuildingForDocfx=true (set by docs/docfx.json metadata
-    properties). DocFX 2.78.5 cannot model C# 14 extension blocks: it hashes each extension(Receiver)
-    block by receiver type, so members split one-per-partial-file collapse to a single UID and emit
-    "duplicated member" warnings that fail the docfx warnings-as-errors build. Compiling the
-    extension-method fallback for documentation yields the same members in a form DocFX renders cleanly
-    (as Bodu.Core's DateTimeExtensions already does); the shipped library still compiles the properties.
+    The symbol is additionally suppressed when BuildingForDocfx=true, which bld/docs/build-api-docs.sh
+    passes when it builds the assemblies the API reference is generated from. DocFX cannot model C# 14
+    extension blocks: reading project sources, DocFX 2.78.5 hashed each extension(Receiver) block by
+    receiver type, collapsing members split one-per-partial-file into one UID; reading compiled
+    assemblies, DocFX 2.81.0 documents each extension property as its implementation method (for
+    example get_IsoWeekOfYear(DateTime)). Compiling the extension-method fallback for documentation
+    yields the same members in a form DocFX renders cleanly; the shipped library still compiles the
+    properties. The fallback is therefore compiled only for documentation, under warnings as errors,
+    so its XML documentation must satisfy the same analyzers as the shipped branch.
   -->
   <PropertyGroup Condition="'$(NETCoreSdkVersion)' != '' and '$([MSBuild]::VersionGreaterThanOrEquals($(NETCoreSdkVersion), 10.0))' == 'true' and '$(BuildingForDocfx)' != 'true'">
     <DefineConstants>$(DefineConstants);BODU_EXTENSION_MEMBERS</DefineConstants>
@@ -266,5 +269,8 @@
 
   <!-- Strip InternalsVisibleTo grants to test assemblies from Release builds. -->
   <Import Project="$(MSBuildThisFileDirectory)bld/InternalsVisibleTo.targets" />
+
+  <!-- Report a build's assembly, package identity, and references to the API documentation pipeline. -->
+  <Import Project="$(MSBuildThisFileDirectory)bld/DocsInputs.targets" />
 
 </Project>

@@ -1,0 +1,2 @@
+{{!Bodu: the framework list the selector in public/main.js reads, newest first, as "tfm|label|view" entries separated by ";". Rendered only on pages that carry framework data.}}
+{{#boduHasFrameworkState}}<div id="bodu-framework-state" hidden data-bodu-framework-list="{{boduFrameworkList}}"></div>{{/boduHasFrameworkState}}
