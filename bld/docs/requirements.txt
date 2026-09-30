@@ -1,0 +1,4 @@
+# Python packages for the API documentation pipeline (bld/docs/build-api-docs.sh).
+# PyYAML is read and written through bld/docs/docfx_yaml.py, which gives it the YAML 1.2 core schema
+# DocFX writes. The wheel bundles libyaml, which the merge is several times faster with.
+PyYAML==6.0.3

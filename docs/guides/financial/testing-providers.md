@@ -112,7 +112,7 @@ When a test must exercise a custom ambient lookup, prefer the flow-scoped
 
 ## Pattern 3 — `StubHttpMessageHandler` drives a real provider offline
 
-<xref:Bodu.Financial.ExchangeRates.Testing.StubHttpMessageHandler> is an `HttpMessageHandler`
+`StubHttpMessageHandler` is an `HttpMessageHandler`
 that answers **every** request with one canned body and status code, and records what it saw.
 Hand it to an `HttpClient`, hand that client to a provider's `(HttpClient, options)`
 constructor, and the whole download-parse-accumulate path runs with no network. Its surface:

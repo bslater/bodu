@@ -1,0 +1,2 @@
+{{!Bodu: one package, as "Id Version": the id links to nuget.org only when the package is published there, and the version is always plain text.}}
+{{#boduPackageUrl}}<a class="bodu-package-id" href="{{boduPackageUrl}}">{{boduPackageId}}</a>{{/boduPackageUrl}}{{^boduPackageUrl}}<span class="bodu-package-id">{{boduPackageId}}</span>{{/boduPackageUrl}} <span class="bodu-package-version">{{boduPackageVersion}}</span>{{^boduPackagePublished}} <span class="bodu-package-note">(not published on nuget.org)</span>{{/boduPackagePublished}}

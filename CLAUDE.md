@@ -138,7 +138,7 @@ Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled acr
 - Analyzers in use: **StyleCop.Analyzers**, **Roslynator.Analyzers**, **Microsoft.CodeAnalysis.NetAnalyzers**, **AsyncFixer**, **VisualStudio.Threading.Analyzers**. Treat analyzer warnings as actionable — fix rather than suppress unless there is a strong reason.
 - Licence header template: `Bodu.sln.licenseheader` (carries `company="Bodu Pty. Ltd."`, matching `stylecop.json:companyName` — preserve the banner exactly as used in existing files).
 - `.filenesting.json` nests partial-class files: any `<Base>.<Part>.cs` file nests under `<Base>.cs`. Keep partial splits consistent with this pattern.
-- CI: `.github/workflows/docfx-build-publish.yml` builds DocFX documentation on pushes to `master` and publishes to GitHub Pages.
+- CI: `.github/workflows/docfx-build-publish.yml` builds the DocFX site on every pull request and push to `master` or a `v*` tag, through `bld/docs/build-api-docs.sh` (see **API documentation pipeline** below), and publishes it to the `gh-pages` branch: `/dev/` from `master`, the root and `/<series>/` from a release tag.
 
 ### Common Commands
 
@@ -238,6 +238,49 @@ A plain `dotnet restore` rewrites the assets files in place and clears it; delet
   multi-targeted project genuinely does not have it. Seeing it means the IDE is still addressing
   these projects as single-targeting from cached state written before the retarget. Close the
   solution, delete `.vs/`, reopen, and let the restore run.
+
+### API documentation pipeline
+
+The API reference is generated from the **compiled Release assemblies**, once per framework in
+`$(BoduNetTargets)`, and merged into **one page per API** that says which frameworks it applies to
+and which package, at which version, it ships in. `bld/docs/build-api-docs.sh` runs the stages, in
+the same order locally and in CI:
+
+```bash
+python3 -m venv docs/obj/venv && docs/obj/venv/bin/pip install -r bld/docs/requirements.txt
+export PYTHON=docs/obj/venv/bin/python          # docs/obj is git-ignored
+bash bld/docs/build-api-docs.sh all             # assemblies metadata merge build validate
+bash bld/docs/build-api-docs.sh test            # the pipeline's own unit tests
+bash bld/docs/build-api-docs.sh serve           # browse docs/_site
+```
+
+| Stage | What it does |
+|---|---|
+| `assemblies` | Builds every package `bld/release-manifest.txt` records (published or withheld), less `bld/docs/api-exclusions.txt`, in Release for every framework, with warnings as errors (`bld/docs/Bodu.Docs.Api.proj` over each project's `BoduGetDocsInputs` target in `bld/DocsInputs.targets`). `bld/docs/prepare_api_inputs.py` then checks each build produced its `.dll`, `.xml`, and `.pdb`, resolves each package's id and version **as MSBuild evaluated them** (so a `BoduPackageVersionOverride` shows exactly), and stages each framework's assemblies with the exact reference assemblies the compiler used, and their `.xml`, in `docs/obj/api/input/<tfm>` — which is what lets `<inheritdoc />` resolve framework documentation. |
+| `metadata` | `docfx metadata` once per framework, from `docs/docfx.metadata.json` (the shared API settings), into `docs/obj/api/metadata/<tfm>`. |
+| `merge` | `bld/docs/merge_framework_metadata.py` unions the frameworks by UID into `docs/api` — the newest framework supplies an API's content, an API only an older framework has is kept — and annotates every item with `frameworks`, every type with `package`, and every namespace with `packages`. It compares every API present in more than one framework (declaration, and the compiler-written XML documentation) and **fails on a difference** not listed, with a reason, in `bld/docs-checks/framework-divergence-allowlist.txt`. The report lands in `docs/obj/api/divergence-report.md` and the CI job summary. |
+| `build` | `docfx build docs/docfx.json` with the `default` + `modern` + `templates/bodu` templates. |
+| `validate` | `bld/docs/validate_api_site.py` checks the merged metadata and the rendered pages (Applies to, package facts, source links, navigation, landing pages, overlay version). |
+
+Things to know when changing it:
+
+- **Sources of truth.** Frameworks come from `$(BoduNetTargets)` and are labelled by rule (`net10.0` →
+  ".NET 10"); packages from the release manifest; versions from MSBuild. Adding a framework to
+  `bld/TargetFrameworks.props` needs no pipeline or template change.
+- **C# 14 extension blocks.** The documentation assemblies are built with `BuildingForDocfx=true`,
+  which compiles the classic extension-method fallback instead (see the comment in
+  `Directory.Build.targets`). That fallback exists only for documentation, but it compiles under
+  warnings as errors, so its XML documentation must satisfy the BODU analyzers too.
+- **The overlay is thin.** `docs/templates/bodu` overrides only the partials it must (`class.header`,
+  `class`, `enum`, `namespace`, `title`) plus its own `bodu.*` partials, `ManagedReference.extension.js`,
+  and `public/main.{css,js}` (the framework selector). Each overridden partial's first line names the
+  DocFX version it was copied from, and `validate` fails when that differs from the DocFX pinned in
+  `docs/.config/dotnet-tools.json` — re-copy the partial from the new version and re-apply the Bodu
+  changes when bumping DocFX.
+- **YAML.** DocFX writes YAML 1.2; the scripts read and write it through `bld/docs/docfx_yaml.py`,
+  never PyYAML's YAML 1.1 defaults (which cannot read DocFX's `name.vb: =`).
+- **Generated output is not committed.** `docs/obj/` and `docs/api/` are ignored; `docs/apidoc/*.md`
+  (namespace overviews) is the hand-written API content.
 
 ### SDK Bootstrap (Claude Code on the web)
 

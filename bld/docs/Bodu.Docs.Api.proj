@@ -1,0 +1,60 @@
+<Project DefaultTargets="Build">
+
+  <!--
+    Builds the assemblies the API reference is generated from, and records what each build produced.
+
+    Every documented project (the DocsProject items in $(BoduDocsProjectsFile), written by
+    `bld/docs/prepare-api-inputs.py projects` from bld/release-manifest.txt) is built in Release for
+    every framework in $(BoduNetTargets). The two are crossed here rather than looped in a script so
+    MSBuild builds the whole matrix in parallel, and each project's BoduGetDocsInputs target
+    (bld/DocsInputs.targets) returns its assembly, package identity, and references. The result is
+    written as one tab-separated line per item to $(BoduDocsInputsFile), which
+    `bld/docs/prepare-api-inputs.py stage` reads.
+
+    Invoke through bld/docs/build-api-docs.sh, or directly with `dotnet msbuild -m` after restoring
+    with `dotnet restore bodu.slnx -p:Configuration=Release`. `dotnet build` is not usable here: it
+    adds -restore, and this project has no Restore target.
+
+    Extra global properties for the documentation build (for example BuildingForDocfx=true) are
+    passed through $(BoduDocsBuildProperties).
+  -->
+
+  <Import Project="$(MSBuildThisFileDirectory)../TargetFrameworks.props" />
+
+  <PropertyGroup>
+    <BoduDocsObjDir Condition="'$(BoduDocsObjDir)' == ''">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../../docs/obj/api'))</BoduDocsObjDir>
+    <BoduDocsProjectsFile Condition="'$(BoduDocsProjectsFile)' == ''">$(BoduDocsObjDir)/projects.props</BoduDocsProjectsFile>
+    <BoduDocsInputsFile Condition="'$(BoduDocsInputsFile)' == ''">$(BoduDocsObjDir)/inputs.tsv</BoduDocsInputsFile>
+    <BoduDocsFrameworks Condition="'$(BoduDocsFrameworks)' == ''">$(BoduNetTargets)</BoduDocsFrameworks>
+  </PropertyGroup>
+
+  <Import Project="$(BoduDocsProjectsFile)" Condition="Exists('$(BoduDocsProjectsFile)')" />
+
+  <Target Name="Build">
+    <Error Condition="!Exists('$(BoduDocsProjectsFile)')"
+           Text="$(BoduDocsProjectsFile) does not exist. Run `python3 bld/docs/prepare-api-inputs.py projects` first." />
+    <Error Condition="'@(DocsProject)' == ''" Text="$(BoduDocsProjectsFile) lists no DocsProject items." />
+
+    <ItemGroup>
+      <_BoduDocsFramework Include="$(BoduDocsFrameworks)" />
+      <_BoduDocsBuild Include="@(DocsProject)">
+        <AdditionalProperties>TargetFramework=%(_BoduDocsFramework.Identity)</AdditionalProperties>
+      </_BoduDocsBuild>
+    </ItemGroup>
+
+    <MSBuild Projects="@(_BoduDocsBuild)"
+             Targets="BoduGetDocsInputs"
+             Properties="Configuration=Release;TreatWarningsAsErrors=true;$(BoduDocsBuildProperties)"
+             BuildInParallel="true">
+      <Output TaskParameter="TargetOutputs" ItemName="_BoduDocsInput" />
+    </MSBuild>
+
+    <ItemGroup>
+      <_BoduDocsLine Include="@(_BoduDocsInput->'%(Kind)&#9;%(TargetFramework)&#9;%(ProjectName)&#9;%(Identity)&#9;%(AssemblyName)&#9;%(PackageId)&#9;%(PackageVersion)&#9;%(BoduPackageVersionOverride)&#9;%(IsPackable)&#9;%(GenerateDocumentationFile)&#9;%(XmlPath)&#9;%(PdbPath)&#9;%(FusionName)&#9;%(ProjectPath)')" />
+    </ItemGroup>
+
+    <WriteLinesToFile File="$(BoduDocsInputsFile)" Lines="@(_BoduDocsLine)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <Message Importance="high" Text="Documentation inputs: @(_BoduDocsInput->WithMetadataValue('Kind', 'Assembly')->Count()) assemblies written to $(BoduDocsInputsFile)." />
+  </Target>
+
+</Project>
