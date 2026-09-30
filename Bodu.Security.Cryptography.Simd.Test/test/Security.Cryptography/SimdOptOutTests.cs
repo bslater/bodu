@@ -28,6 +28,7 @@ public sealed class SimdOptOutTests
         Assert.IsFalse(SimdCapabilities.Ssse3, "Expected the disable switch to force Ssse3 off.");
         Assert.IsFalse(SimdCapabilities.Sse2, "Expected the disable switch to force Sse2 off.");
         Assert.IsFalse(SimdCapabilities.AdvSimd, "Expected the disable switch to force AdvSimd off.");
+        Assert.IsFalse(SimdCapabilities.AdvSimdSingleState, "Expected the AdvSimd single-state kernels to stay held back.");
         Assert.IsFalse(SimdCapabilities.Pmull, "Expected the disable switch to force the polynomial-multiply GHASH gate off.");
     }
 
@@ -53,13 +54,15 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
-    /// Verifies that with SIMD disabled, BLAKE3 dispatches to its scalar compression kernel whatever the processor
-    /// supports, so the linked BLAKE3 vectors in this assembly hold the scalar kernel to them.
+    /// Verifies that with SIMD disabled, BLAKE3 dispatches to its scalar compression kernel, for several inputs and for
+    /// a single block, whatever the processor supports, so the linked BLAKE3 vectors in this assembly hold the scalar
+    /// kernel to them.
     /// </summary>
     [TestMethod]
     public void Blake3CoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernel()
     {
         Assert.AreEqual(Blake3Core.KernelKind.Scalar, Blake3Core.SelectKernel());
+        Assert.AreEqual(Blake3Core.KernelKind.Scalar, Blake3Core.SelectSingleBlockKernel());
     }
 
     /// <summary>

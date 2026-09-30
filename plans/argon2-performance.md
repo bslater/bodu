@@ -1,7 +1,7 @@
 # Implementation plan: a faster Argon2id
 
 **Status:** Done and released: merged in #710 and shipped in `Bodu.Security.Cryptography` 1.1.0,
-released out of band (#711); measured on one x64 machine (§10), ARM64 performance still to measure (§10.3) · **Source:** FallbackPlan requirements document "a faster
+released out of band (#711); measured on one x64 machine (§10), then on ARM64 and a small-L3 x64 machine (§10.3) · **Source:** FallbackPlan requirements document "a faster
 Argon2id in Bodu" (`ARG-F-*` / `ARG-N-*`, raised 2026-09-27 against 1.0.0) ·
 **Target:** `Bodu.Security.Cryptography` 1.1.0
 
@@ -691,13 +691,13 @@ capped at 16 MiB vectors.
 | ARG-F-002 | Additive API only | `MaxDegreeOfParallelism`, a bounded constructor per variant, and a bounded `Verify`; nothing changed or removed |
 | ARG-F-003 | A bound on threads | Implemented; `1` is 1.0.0's behaviour |
 | ARG-N-001 | Wall ≤ 40 % | 12 % (AVX2), 17 % (SSSE3), 25 % (scalar) |
-| ARG-N-002 | CPU ≤ 60 % with vector code | 37 % (AVX2), 53 % (SSSE3); **ARM64 not yet measured** |
+| ARG-N-002 | CPU ≤ 60 % with vector code | 37 % (AVX2), 53 % (SSSE3); on ARM64 (§10.3), with the kernels dispatch now selects, 56-57 % on a Neoverse N2 and 36-48 % on an Apple M1 under .NET 8 (AdvSimd), and 45-50 % on the N2 under .NET 10 (scalar), where the M1's readings of the same code spread from 47 % to 67 % |
 | ARG-N-003 | Scalar no slower | 77-79 % |
 | ARG-N-004 | < 1 MiB allocated, no gen2 | 26 KiB with threads, 0.2-0.3 KiB without; gen2 0 |
 | ARG-N-005 | Four at once ≥ 1.0.0 | 2.4× (AVX2), 1.7× (SSSE3), 1.2× (scalar) |
 | ARG-N-006 | Clearing | The matrix, H0, per-segment scratch and the first- and last-block buffers are cleared |
 | ARG-N-007 | Data independence | Kernels branch-free, shuffles by constant indices; checklist §7 in `SECURITY-CHECKLIST.md` |
-| ARG-N-008 | Scalar held to the vectors; ARM64 in CI | The SIMD-off assembly runs the Argon2 vectors; the ARM64 job is in place but has not yet run |
+| ARG-N-008 | Scalar held to the vectors; ARM64 in CI | The SIMD-off assembly runs the Argon2 vectors; the ARM64 job runs both suites on every pull request |
 | ARG-N-009 | Measurement | The harness gained one-thread rows and was run here |
 | ARG-N-010 | In-box APIs; AOT | In-box only; AOT selects SSSE3 by default and AVX2 with `IlcInstructionSet` |
 
@@ -715,14 +715,27 @@ capped at 16 MiB vectors.
   one thread each (AVX2 3 %, SSSE3 6 %, scalar 7 %), which the per-instance bound
   recovers.
 
-### 10.3 Still open
+### 10.3 Measured since
 
-- **ARM64 performance**, the riskiest target: run the harness on Apple silicon (or
-  Graviton) against 1.0.0, and tune the shim (for example `SHL`/`SRI` in place of `TBL`)
-  if CPU exceeds 60 %. CI and emulation check the AdvSimd kernel's output, not its speed.
-- **A small-L3 desktop**, the second machine §7 names.
+Both items this section left open were measured by F7 of
+[`crypto-performance-followups.md`](crypto-performance-followups.md), whose §9 has the
+figures, on GitHub's hosted runners:
 
-Both are planned as F7 in [`crypto-performance-followups.md`](crypto-performance-followups.md).
+- **ARM64 performance.** On a Neoverse N2 the AdvSimd kernel ran at 0.76-0.81 of the
+  scalar kernel's speed, on .NET 8 and .NET 10, and took 56-59 % of 1.0.0's CPU. On an
+  Apple M1 it ran 1.3-1.6 times as fast as the scalar kernel under .NET 8, taking
+  36-48 % of 1.0.0's CPU where the scalar kernel took 58-67 %, and about as fast under
+  .NET 10. BLAKE2b's and BLAKE2s's AdvSimd kernels lost by more, so the layout they share
+  with Argon2's, one state across a vector's lanes, is the cause rather than the shim's
+  rotations. Dispatch therefore follows the runtime: under .NET 8 it keeps the AdvSimd
+  kernel, which meets ARG-N-002 on both processors, and under .NET 10 it runs the scalar
+  kernel (`SimdCapabilities.AdvSimdSingleState`), which takes 45-50 % of 1.0.0's CPU on
+  the N2. On the M1 the same code read anywhere from 47 % to 67 % across the runs, twice
+  within one job, so that virtual machine cannot place it either side of the target.
+- **A small-L3 machine.** An AMD EPYC 7763 whose 32 MiB of L3 holds half of the 64 MiB
+  matrix. From the 256-block threshold the threads cut the wall time by 1.6-2.4 times, on
+  both runtimes, so the threshold stands; below it both runs take one thread. The AVX2
+  kernel takes 21-23 % of 1.0.0's CPU and 7-9 % of its wall time.
 
 Closed since this section was written:
 

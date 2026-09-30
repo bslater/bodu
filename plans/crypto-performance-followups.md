@@ -1,6 +1,6 @@
 # Implementation plan: the cryptography speed-ups left for later
 
-**Status:** In progress - F1 to F6 done (§9) · **Source:** the "Left for later" items in
+**Status:** In progress - F1 to F7 done (§9) · **Source:** the "Left for later" items in
 [`crypto-performance.md`](crypto-performance.md) §10 and the open items in
 [`argon2-performance.md`](argon2-performance.md) §10.3, after `Bodu.Security.Cryptography` 1.1.0 ·
 **Target:** `Bodu.Security.Cryptography`, next lock-step release
@@ -242,6 +242,8 @@ Done: see §9 for the results and where the build departs from this design.
 
 ### F7 - ARM64 on real hardware, and a small-L3 desktop
 
+Done: see §9 for the results and where the build departs from this design.
+
 - **Problem:**
   - CI's hosted ARM64 runner and qemu prove the AdvSimd kernels correct, but nothing has
     measured their speed. `argon2-performance.md` calls this the riskiest target.
@@ -324,7 +326,8 @@ As `crypto-performance.md` §6:
 
 Figures are from the `--crypto-harness` of `Bodu.Security.Cryptography.Benchmarks`. F1's and F2's
 are from the same 4-vCPU Xeon VM as §1, at 2.8 GHz with AVX-512F/VL but no IFMA; F3's section
-describes the machine the work moved to, where F4's, F5's and F6's were measured as well. Each is the range over
+describes the machine the work moved to, where F4's, F5's and F6's were measured as well; F7's come from GitHub's
+hosted runners, as its section describes. Each is the range over
 two runs of the median of five rounds. The baselines were measured the same day on this
 branch before the item's code, with the harness change that added the case in place.
 
@@ -1523,3 +1526,251 @@ How it was done, and where it departs from the design above:
   - The wide-block variants' CTR still encrypts one counter block per `Encrypt` call. F5 left their many-block kernel for
     later.
   - AES cannot fuse, because its rounds run in the BCL.
+
+### F7 - ARM64 on real hardware, and a small-L3 desktop (done)
+
+F7's figures come from GitHub's hosted runners, through a new workflow, *Cryptography benchmarks*
+(`.github/workflows/crypto-benchmarks.yml`). It runs on manual dispatch, and on any pull request that changes it, on
+three machines:
+
+| Runner | Processor | Cores | Cache, as the VM reports it |
+|---|---|---|---|
+| `ubuntu-24.04-arm` | Arm Neoverse N2 | 4 | 1 MiB L2 per core, 128 MiB L3 |
+| `macos-15` | Apple M1, virtualized | 3 | 12 MiB L2 |
+| `ubuntu-24.04` | AMD EPYC 7763 (Zen 3): AVX2, no AVX-512 | 2, with 2 threads each | 32 MiB L3 |
+
+Each machine builds the harness twice, from the pull request and against the published 1.0.0 package
+(`-p:BoduCryptoBaseline=1.0.0`). `Bodu.Security.Cryptography/bench/harness_matrix.py` then runs each suite in three
+configurations, twice, the second time in the opposite order:
+
+- *vector*: the kernels dispatch selects.
+- *scalar*: the same build with `--disable-simd`, a new harness option that sets the library's `DisableSimd` switch.
+  Every library kernel gives way to its scalar path, while the runtime, the BCL and the `umulh` products keep their
+  own code.
+- *1.0.0*: the published package.
+
+The suites are the crypto harness, over the rows with an ARM64 path of their own; the Argon2 harness (m = 64 MiB,
+t = 3, at p = 4 and p = 1); and a new sweep, `--argon2-harness --sweep`, of m from 1 to 32 MiB at p = 4, with threads
+and without. The x64 machine runs only the Argon2 suites. The N2's two runs mostly agreed within 2%. The M1 is
+a three-core virtual machine whose runs spread by up to ±30%, so its ratios are rougher.
+
+**The AdvSimd kernels against their scalar paths.** Vector ÷ scalar, by the medians of the two runs, before F7's
+gate. Below 1, the AdvSimd kernel ran slower:
+
+| Case | N2, .NET 8 | N2, .NET 10 | M1, .NET 8 | M1, .NET 10 |
+|---|---|---|---|---|
+| BLAKE2b-512, 1 MiB | 0.32 | 0.32 | 0.33 | 0.30 |
+| BLAKE2b-512, 64 B | 0.42 | 0.42 | 0.39 | 0.37 |
+| BLAKE2s-256, 1 MiB | 0.50 | 0.50 | 0.56 | 0.52 |
+| BLAKE2s-256, 64 B | 0.64 | 0.63 | 0.63 | 0.60 |
+| BLAKE3, 64 B (one block) | 0.68 | 0.69 | 0.73 | 0.62 |
+| scrypt N = 2¹⁴, r = 8, p = 1 | 0.86 | 0.48 | 0.99 | 0.63 |
+| scrypt N = 2¹⁷, r = 8, p = 1 | 0.86 | 0.50 | 1.07 | 0.64 |
+| scrypt N = 2¹⁴, r = 8, p = 4, four threads | 0.62 | 0.48 | 0.81 | 0.56 |
+| Argon2id m = 19 MiB, t = 2, p = 1 | 0.77 | 0.76 | 1.63 | 1.22 |
+| Argon2id m = 64 MiB, t = 3, p = 1 (CPU) | 0.79 | 0.80 | 1.49 | 0.96 |
+| Argon2id m = 64 MiB, t = 3, p = 4 (CPU) | 0.80 | 0.77 | 1.60 | 0.91 |
+| BLAKE3, 1 MiB | 1.48 | 1.49 | 2.53 | 2.13 |
+| BLAKE3, 16 MiB, all cores | 1.49 | 1.51 | 3.15 | 2.15 |
+| CubeHash, 1 MiB | 7.24 | 6.91 | 9.00 | 8.77 |
+| ChaCha20, 1 MiB | 1.64 | 1.63 | 2.53 | 1.99 |
+| Salsa20, 1 MiB | 2.10 | 1.51 | 2.18 | 1.97 |
+| XChaCha20-Poly1305, 1 MiB | 1.42 | 1.40 | 1.84 | 1.63 |
+| XChaCha20-Poly1305, 64 B | 1.00 | 1.00 | 1.09 | 0.97 |
+| AES-128-GCM, 1 MiB (PMULL) | 3.67 | 3.62 | 5.41 | 4.99 |
+| AES-128-GCM-SIV, 1 MiB (PMULL) | 3.71 | 3.76 | 5.48 | 5.25 |
+| Serpent-128-CTR, 1 MiB | 1.44 | 1.43 | 2.19 | 1.92 |
+| Serpent-128-ECB, 1 MiB | 1.46 | 1.45 | 2.21 | 1.91 |
+| Poly1305, 1 MiB (`umulh`; no library vector kernel) | 1.00 | 1.00 | 1.06 | 1.00 |
+| Ed25519 verify (`umulh`) | 1.01 | 1.01 | 1.11 | 1.02 |
+
+Every kernel that gives each lane a state of its own won on both processors and both runtimes: ChaCha20 and Salsa20
+over four blocks, BLAKE3 over four chunks or parents, and Serpent-128 over four blocks. So did CubeHash's, whose
+1024-bit state fills eight vectors, and PMULL's GHASH and POLYVAL, by 3.6-5.5×. The kernels that spread one state
+across a vector's lanes lost on the N2, on both runtimes:
+
+- BLAKE2b ran at 0.32-0.42 of its scalar path, and BLAKE2s at 0.50-0.64.
+- A single BLAKE3 block ran at 0.68-0.69.
+- scrypt ran at 0.48-0.86.
+- Argon2 ran at 0.76-0.80.
+
+The M1 agreed for BLAKE2 and the single BLAKE3 block on both runtimes, and for scrypt on .NET 10. Under .NET 8 its
+scrypt kernel ran about as fast as the scalar path, and its Argon2 kernel 1.5-1.6 times as fast; under .NET 10 its
+Argon2 kernel ran about as fast.
+
+The rotations are not what loses. BLAKE3's four-input kernel and its one-block kernel rotate through the same shim,
+`Blake2sCore.AdvSimdIsa`, whose 12- and 7-bit rotations already take `SHL` and `SRI`. On the N2 the first ran 1.5
+times as fast as the scalar kernel and the second at 0.68 of it. What the losers share is their layout: one state
+across a vector's four 32-bit or two 64-bit lanes, with the lanes rearranged between the column and diagonal steps of
+every round. On x64 that layout wins, because sixteen general registers cannot hold the state. ARM64's thirty-one
+can, and rotate a word in one instruction, so its scalar kernels have little left to gain. The design's first
+tuning candidate, `SHL` / `SRI` in place of `TBL` in `VectorRotation.AdvSimd`, was therefore not tried: every kernel
+that rotates through `VectorRotation.AdvSimd` won.
+
+.NET 10's scalar paths gained the most. On the N2, scrypt's scalar path ran N = 2¹⁴ in 40.8-41.1 ms under .NET 8
+and 22.8-22.9 ms under .NET 10, while its AdvSimd kernel took 47.3-47.8 ms under both. Under .NET 10 the scalar path
+beat OpenSSL's `EVP_PBE_scrypt` on the same machine, which took 23.8-24.2 ms.
+
+**F2's ARM64 estimate.** F2 left `StepCost`'s cost for an AdvSimd step of four blocks, twice the block function's, for
+this run to check. On the N2 the kernels' rates over 1 MiB put the step at 2.5 block-function times for ChaCha20, and
+1.9-2.7 for Salsa20. With the step at 2.5 times, every one-pass plan up to 1 KiB comes out the same as with 2, and it
+would take 3 to change any. The M1's rates put the step at 1.6-2.0, noisily. A step under 2 would draw keystreams of
+65-128 bytes, and the same window past each further 256 bytes, in one pass rounded up to whole steps, where they are
+now drawn as they come. The estimate stays. At 64 bytes the AEADs sealed as fast under the AdvSimd kernel's plan as
+under the scalar kernel's: 0.99-1.00 on the N2, and 0.95-1.09 on the M1.
+
+**The gate.** As the target asks, dispatch no longer selects the losing kernels.
+`SimdCapabilities.AdvSimdSingleState` holds back every AdvSimd kernel that spreads one state across its lanes, and it
+is closed. BLAKE2b, BLAKE2s and scrypt select their scalar kernels on ARM64. BLAKE3 keeps its four-input AdvSimd kernel,
+and compresses a single block, or a lone input among several, with the scalar kernel. Argon2 selects its scalar kernel
+under .NET 10 and keeps its AdvSimd kernel under .NET 8, for the reason ARG-N-002 below gives.
+
+The workflow ran again on the gated build, in which Argon2 took its scalar kernel under both runtimes. On the N2 every
+gated row now runs at 0.95-1.00 of its scalar path, which is the same code, and its gain over 1.0.0 grew:
+
+| Case, vector ÷ 1.0.0 on the N2 | .NET 8 before the gate | .NET 8 gated | .NET 10 before the gate | .NET 10 gated |
+|---|---|---|---|---|
+| BLAKE2b-512, 1 MiB | 1.37 | 4.25 | 1.35 | 4.23 |
+| BLAKE2b-512, 64 B | 1.32 | 3.23 | 1.38 | 3.29 |
+| BLAKE2s-256, 1 MiB | 2.17 | 4.35 | 2.20 | 4.34 |
+| BLAKE2s-256, 64 B | 2.03 | 3.31 | 2.50 | 3.92 |
+| BLAKE3, 64 B (one block) | 2.15 | 3.17 | 2.08 | 2.98 |
+| scrypt N = 2¹⁴, r = 8, p = 1 | 1.45 | 1.64 | 1.25 | 2.56 |
+| scrypt N = 2¹⁷, r = 8, p = 1 | 1.36 | 1.54 | 1.22 | 2.37 |
+| Argon2id m = 19 MiB, t = 2, p = 1 | 2.07 | 2.58 | 1.99 | 2.35 |
+| Argon2id m = 64 MiB, t = 3, p = 4 (CPU) | 1.80 | 2.12 | 1.70 | 2.02 |
+
+Each run measures 1.0.0 afresh, on the runner it was given, so each ratio holds within its run. The kernels that were
+not gated ran as before, within 1-2%. On the M1 the gated rows read 0.80-1.26 of the scalar path, the same code, which
+is how far that machine drifts within one run.
+
+**ARG-N-002 on ARM64.** `argon2-performance.md` asks that a 64 MiB derivation at p = 4 take at most 60% of 1.0.0's
+CPU with vector code, on Apple silicon above all. The share of 1.0.0's CPU and wall time, by the midpoints of the two
+runs before the gate:
+
+| 64 MiB, t = 3, p = 4 | N2, .NET 8 | N2, .NET 10 | M1, .NET 8 | M1, .NET 10 | EPYC, .NET 8 | EPYC, .NET 10 |
+|---|---|---|---|---|---|---|
+| CPU, the vector kernel | 56% | 59% | 36% | 55% | 21% | 23% |
+| CPU, the scalar kernel | 44% | 46% | 58% | 50% | 63% | 69% |
+| Wall, the vector kernel | 16% | 21% | 16% | 25% | 7% | 9% |
+| Wall, the scalar kernel | 12% | 16% | 26% | 30% | 19% | 24% |
+
+In the gated run the scalar kernel took 46-50% on the N2, but 66-67% on the M1 under .NET 8, past the target, and
+55-59% under .NET 10. The M1's rows drift between runs, but under .NET 8 its scalar kernel took 58-67% in both, against
+36% for the AdvSimd kernel, which also ran 1.5-1.6 times as fast there. So Argon2 keeps the AdvSimd kernel under
+.NET 8, at 0.8 of the scalar kernel's speed on the N2, and selects the scalar kernel under .NET 10, where it runs at
+least as fast as the AdvSimd kernel.
+
+A third run, on the build as it merges, held both choices:
+
+| 64 MiB, t = 3, p = 4, share of 1.0.0's CPU | N2, .NET 8 | N2, .NET 10 | M1, .NET 8 | M1, .NET 10 |
+|---|---|---|---|---|
+| *vector*: AdvSimd under .NET 8, scalar under .NET 10 | 56% | 47% | 48% | 67% |
+| *scalar* | 45% | 45% | 63% | 47% |
+
+Under .NET 8 the AdvSimd kernel meets the target on both processors, and on the M1 ran 1.3-1.4 times as fast as the
+scalar kernel, which missed it again. Under .NET 10 both configurations run the scalar kernel. It meets the target on
+the N2, but the M1 read the same code at 47% and 67% within one job, and at 47-67% over the three runs, so that virtual
+machine cannot place it either side. The AdvSimd kernel read 55% there in the one run that timed it under .NET 10. On
+the EPYC the AVX2 kernel takes 21-23%.
+
+**The small-L3 machine.** The EPYC's 32 MiB of L3 holds half of the harness's 64 MiB matrix, where the machine
+Argon2's thread threshold was set on held all of it. The sweep compares the default, which runs lanes on threads from
+256 blocks per segment (4 MiB at p = 4), with one thread. One thread's wall time over the default's, by the midpoints:
+
+| m, t = 3, p = 4 | EPYC, .NET 8 | EPYC, .NET 10 | N2, .NET 8 | N2, .NET 10 | M1, .NET 8 | M1, .NET 10 |
+|---|---|---|---|---|---|---|
+| 1 MiB | 1.00 | 1.00 | 1.00 | 1.00 | 1.03 | 1.13 |
+| 2 MiB | 1.00 | 1.00 | 1.00 | 0.98 | 1.02 | 0.96 |
+| 4 MiB | 2.06 | 1.65 | 2.85 | 2.20 | 1.44 | 1.51 |
+| 8 MiB | 2.23 | 1.64 | 2.90 | 2.65 | 1.66 | 1.46 |
+| 16 MiB | 2.01 | 1.84 | 3.06 | 2.82 | 2.14 | 0.92 |
+| 32 MiB | 1.98 | 1.72 | 2.92 | 2.64 | 1.68 | 0.77 |
+| 64 MiB (the harness) | 2.39 | 1.78 | 3.55 | 2.68 | 1.92 | 2.01 |
+
+Below the threshold both columns run one thread, so the ratio is 1 but for noise. From the threshold up the threads
+cut the wall time on every machine, the small-L3 EPYC included, by 1.6-2.4 times there. The M1's two readings below 1,
+at 16 and 32 MiB under .NET 10, come from runs whose threaded times spread from 13 to 60 ms and from 35 to 135 ms. The
+threshold stands. Whether it could be lower cannot be read here: the harness cannot run threads below it, since the
+threshold is internal.
+
+With AVX2 the EPYC runs Argon2 2.6-3.0 times as fast as its scalar kernel, on both runtimes, and at 64 MiB and p = 4
+in 7-9% of 1.0.0's wall time.
+
+**x64's own single-state kernels.** The ARM64 result raised the question for x64, where the SSE2, SSSE3 and AVX2
+kernels of BLAKE2b, BLAKE2s, BLAKE3's single block, scrypt and Argon2 share the layout. On the second machine, F3's,
+vector ÷ scalar in two alternating runs, in three of its configurations:
+
+| .NET 10 / .NET 8 | This host's default (AVX-512) | AVX-512 off | AVX2 off |
+|---|---|---|---|
+| BLAKE2b-512, 1 MiB | 1.21 / 1.03 | 1.08 / 0.95 | 0.96 / 0.88 |
+| BLAKE2b-512, 64 B | 1.09 / 1.00 | 1.05 / 0.96 | 0.92 / 0.90 |
+| BLAKE2s-256, 1 MiB | 1.29 / 1.33 | 1.30 / 0.99 | 1.04 / 1.06 |
+| BLAKE2s-256, 64 B | 1.17 / 1.19 | 1.23 / 1.07 | 1.02 / 1.03 |
+| BLAKE3, 64 B (one block) | 1.25 / 1.07 | 1.24 / 0.98 | 1.15 / 1.29 |
+| scrypt N = 2¹⁴, r = 8, p = 1 | 1.54 / 1.47 | 1.58 / 1.51 | 1.25 / 1.64 |
+| scrypt N = 2¹⁷, r = 8, p = 1 | 1.26 / 1.27 | 1.23 / 1.32 | 1.12 / 1.29 |
+| Argon2id m = 19 MiB, t = 2, p = 1 | 2.38 / 2.03 | 2.31 / 2.14 | 1.38 / 1.37 |
+
+Everything wins with AVX-512, and scrypt, Argon2 and BLAKE3's single block win everywhere. BLAKE2b's kernels are the
+exception. With AVX-512 off, its AVX2 kernel runs at 0.95-1.08 of the scalar path, and with AVX2 off, its 128-bit
+SSSE3 kernel at 0.88-0.96. F7's target covers only the AdvSimd kernels, so x64 dispatch is unchanged, and BLAKE2b is
+left for later.
+
+How it was done, and where it departs from the design above:
+
+- **The harness.**
+  - `-p:BoduCryptoBaseline=1.0.0` builds against the published package again, which `#if !BODU_CRYPTO_BASELINE`
+    now allows by leaving out the rows 1.0.0 cannot run: BLAKE3 over all cores, and scrypt with a thread bound.
+  - `--disable-simd` sets the library's switch before the first use of any primitive, and every header names the
+    state of the library's SIMD, so each result says what it measured.
+  - `--argon2-harness --sweep` runs m from 1 to 32 MiB at p = 4, by default and on one thread.
+- **The workflow and `harness_matrix.py`.**
+  - `harness_matrix.py run` builds both builds for each framework, then runs each suite in each configuration in
+    alternating order, one output file per run.
+  - `harness_matrix.py summarize` prints a table per suite and framework, with each row's range over the runs and the
+    ratios of the medians. Rates divide one way and times the other, and a per-operation row reads its time, since
+    whole operations a second are too coarse for the key derivations.
+  - The workflow runs it on the three machines, reports each processor, writes the tables into the job summary and
+    uploads the raw outputs. It runs on manual dispatch, and on a pull request that changes the workflow, which is how
+    this one ran.
+- **Departure: Apple silicon was available.** The design allowed for it where it could be had. GitHub's `macos-15`
+  runner is an M1, so the workflow runs there too. No Graviton runner is hosted.
+- **Departure: gating, not tuning.** The target gates a losing kernel until it is tuned. The measurements say the
+  rotations were not the cause, so nothing was tuned. `SimdCapabilities.AdvSimdSingleState`, which is closed, holds
+  back the losing kernels; `SimdCapabilities.AdvSimd` still gates the others.
+  - `Blake2bCore`, `Blake2sCore` and `ScryptCore` select their AdvSimd kernel only through the new gate, so on ARM64
+    they select the scalar kernel. `Argon2Core` does so under .NET 10, and under .NET 8 selects the AdvSimd kernel
+    through `SimdCapabilities.AdvSimd`, as before.
+  - `Blake3Core.SelectSingleBlockKernel` gives the kernel for a single block: `SelectKernel`'s, except the scalar
+    kernel in place of AdvSimd. The kindless `Compress`, `Compress(KernelKind.Auto, …)` and `HashOne`, which
+    compresses a lone input among several, go through it. The four-input AdvSimd kernel is unchanged.
+  - Every AdvSimd kernel stays in place, and the tests still drive each one explicitly on the ARM64 job and hold it
+    to the scalar kernel.
+- **Departure: test-first commits.** The design expected no new tests. Dispatch changing on ARM64 is a behaviour
+  change, so the ARM64 selection tests of BLAKE2b, BLAKE2s, scrypt and Argon2 were changed first to expect the scalar
+  kernel. Under qemu they failed against the ungated build, with `AdvSimd` selected, and passed against the gated one.
+  Argon2's test was then split by runtime, to expect the AdvSimd kernel under .NET 8, and failed under qemu's .NET 8
+  until dispatch followed the runtime.
+  - The new members have tests of their own: the gate is closed, BLAKE3 selects the scalar kernel for a single block
+    on ARM64 and the kernel `SelectKernel` selects everywhere else, and the SIMD-off assembly checks both.
+  - The full suites pass on both runtimes, and on GitHub's ARM64 runners. On .NET 8 under qemu, the BLAKE2, BLAKE3
+    and scrypt test classes pass with the gate in place, and Argon2's selection follows the runtime under .NET 8 and
+    .NET 10.
+- **The documentation.** The package README's acceleration table, the hardware-acceleration guide and CLAUDE.md name
+  the scalar kernels as ARM64's for these primitives, and say why. The cost remark on `ChaCha20Core.StepCost` now
+  cites F7: on the N2, a 64-byte XChaCha20-Poly1305 message sealed as fast under the AdvSimd kernel's plan as under
+  the scalar kernel's, 1.00 on both runtimes.
+- **Left for later.**
+  - Tuning the gated kernels. The losing layout, not the rotations, is the cause, and the M1 hints that a core with
+    more vector pipes can win: its Argon2 kernel ran 1.3-1.6 times as fast as its scalar path under .NET 8. Dispatch
+    cannot tell an M1 from an N2, so under .NET 8 the N2 runs Argon2's AdvSimd kernel at 0.8 of its scalar path's
+    speed. BLAKE2's parallel variants, BLAKE2bp and BLAKE2sp, would give each lane a state of its own, but they are
+    different functions.
+  - A Poly1305 AdvSimd kernel. F1's design had a two-lane one, which waited for this run. On the N2, OpenSSL's NEON
+    code took 1 MiB at 3,156-3,174 MiB/s against the scalar loop's 1,610-1,652.
+  - BLAKE2b on x64 without AVX-512: its AVX2 kernel ran at 0.95-1.08 of the scalar path, and its SSSE3 kernel at
+    0.88-0.96. A five-round A/B would settle whether x64 should gate them too.
+  - Argon2's thread threshold below 4 MiB. At the threshold the threads already cut the wall time 1.4-2.9 times on
+    all three machines, so it may sit too high. Measuring below it needs the harness to reach the internal
+    `FillOptions`.

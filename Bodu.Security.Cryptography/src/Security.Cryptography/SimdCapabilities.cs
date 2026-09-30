@@ -16,11 +16,15 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// Several primitives dispatch to a vector kernel when the host supports it and fall back to a scalar reference
-/// implementation otherwise: BLAKE2b, BLAKE2s, BLAKE3, Threefish-256/512/1024, and CubeHash to AVX-512; GHASH and
-/// POLYVAL to the carry-less multiply on x64 or the polynomial multiply on ARM64; Argon2 to AVX2, to SSSE3 on other x64
-/// hosts, or to AdvSimd on ARM64; and scrypt's Salsa20/8 to SSE2 on x64 or AdvSimd on ARM64. The properties here
-/// replace a bare <c>IsSupported</c> check at each dispatch site so a caller can force the scalar paths for the whole
-/// process by enabling the <see cref="DisableSimdSwitchName" /> feature switch.
+/// implementation otherwise: among them BLAKE2b, BLAKE2s, BLAKE3, Threefish-256/512/1024, and CubeHash to AVX-512;
+/// GHASH and POLYVAL to the carry-less multiply on x64 or the polynomial multiply on ARM64; Argon2 to AVX2, or to SSSE3
+/// on other x64 hosts; and scrypt's Salsa20/8 to SSE2 on x64. The properties here replace a bare <c>IsSupported</c>
+/// check at each dispatch site so a caller can force the scalar paths for the whole process by enabling the
+/// <see cref="DisableSimdSwitchName" /> feature switch.
+/// </para>
+/// <para>
+/// On ARM64, <see cref="AdvSimdSingleState" /> holds back the AdvSimd kernels of BLAKE2b, BLAKE2s, and scrypt, BLAKE3's
+/// for a single block, and Argon2's under .NET 10, which ran slower than the scalar kernels on the processors measured.
 /// </para>
 /// <para>
 /// The switch exists for <strong>determinism, reproducibility, and audit</strong> - pinning execution to the single
@@ -150,6 +154,40 @@ internal static class SimdCapabilities
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported && !s_disabled;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether dispatch should select the AdvSimd kernels that spread a single state across
+    /// their vectors' lanes: those of BLAKE2b, BLAKE2s, and scrypt, BLAKE3's for a single block, and Argon2's under
+    /// .NET 10.
+    /// </summary>
+    /// <value>
+    /// <see langword="false" />: on a Neoverse N2, the scalar kernels ran every one of these primitives faster.
+    /// </value>
+    /// <remarks>
+    /// <para>
+    /// Each of these kernels holds one state in its vectors and rearranges the lanes between the column and diagonal
+    /// steps of every round. Built the same way over SSE2, SSSE3, or AVX2, they run faster than the scalar kernels on
+    /// x64, whose sixteen general registers cannot hold the state. ARM64 has thirty-one and rotates a register in one
+    /// instruction; on a Neoverse N2 the scalar kernels ran every one of these primitives faster, on .NET 8 and .NET 10
+    /// alike, and an Apple M1 agreed but for Argon2 and scrypt under .NET 8. Until these kernels are tuned, dispatch
+    /// runs the scalar kernels in their place on ARM64. The kernels run only where a caller names one, as the tests do
+    /// to hold each to the scalar kernel.
+    /// </para>
+    /// <para>
+    /// Argon2 consults this gate only under .NET 10. Under .NET 8 its AdvSimd kernel ran 1.3 to 1.6 times as fast as
+    /// the scalar kernel on the M1, where the scalar kernel took 58 to 67 percent of 1.0.0's CPU, so it runs there.
+    /// </para>
+    /// <para>
+    /// The AdvSimd kernels that give each lane a state of its own (ChaCha20 and Salsa20 over several blocks, BLAKE3
+    /// over several chunks or parents, Serpent-128 over several blocks) and CubeHash's ran faster than the scalar
+    /// kernels on both processors, and <see cref="AdvSimd" /> alone gates them.
+    /// </para>
+    /// </remarks>
+    internal static bool AdvSimdSingleState
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => false;
     }
 
     /// <summary>

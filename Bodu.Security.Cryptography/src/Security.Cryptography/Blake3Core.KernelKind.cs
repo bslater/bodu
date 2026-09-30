@@ -14,7 +14,8 @@ internal static partial class Blake3Core
     internal enum KernelKind
     {
         /// <summary>
-        /// The widest kernel the processor supports and the process allows: the kind dispatch selects.
+        /// The kind dispatch selects: the widest kernel the processor supports and the process allows, bar the 128-bit
+        /// AdvSimd kernel for a single block, which <see cref="SimdCapabilities.AdvSimdSingleState" /> holds back.
         /// </summary>
         Auto = 0,
 
@@ -29,7 +30,9 @@ internal static partial class Blake3Core
         Ssse3,
 
         /// <summary>
-        /// The 128-bit kernel on ARM64, over AdvSimd.
+        /// The kernels on ARM64: up to four inputs at once over AdvSimd, and for a lone input the scalar kernel, which
+        /// compressed a block faster than the 128-bit kernel on the ARM64 processors measured. A single compression
+        /// runs the 128-bit kernel only where a caller names this kind.
         /// </summary>
         AdvSimd,
 

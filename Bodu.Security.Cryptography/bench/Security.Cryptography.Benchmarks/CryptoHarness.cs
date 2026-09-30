@@ -29,9 +29,11 @@ namespace Bodu.Security.Cryptography.Benchmarks;
 /// median of five rounds; allocation is the process-wide allocation per operation over all five.
 /// </para>
 /// <para>
-/// Built with <c>-p:BoduCryptoBaseline=1.0.0</c>, the same source measures the published package. SIMD tiers are
-/// selected with the runtime's switches: <c>DOTNET_EnableAVX512F=0</c> (.NET 8) or <c>DOTNET_EnableAVX512=0</c> (.NET
-/// 10) removes AVX-512, <c>DOTNET_EnableAVX2=0</c> AVX2, and <c>DOTNET_EnableHWIntrinsic=0</c> every vector path.
+/// Built with <c>-p:BoduCryptoBaseline=1.0.0</c>, the same source measures the published package, leaving out the cases
+/// for APIs 1.0.0 lacks. SIMD tiers are selected with the runtime's switches: <c>DOTNET_EnableAVX512F=0</c> (.NET 8) or
+/// <c>DOTNET_EnableAVX512=0</c> (.NET 10) removes AVX-512, <c>DOTNET_EnableAVX2=0</c> AVX2, and
+/// <c>DOTNET_EnableHWIntrinsic=0</c> every vector path, the BCL's included. <c>--disable-simd</c> sets the library's
+/// own switch instead, so only the library's kernels give way to their scalar paths.
 /// </para>
 /// </remarks>
 internal static class CryptoHarness
@@ -122,11 +124,13 @@ internal static class CryptoHarness
         using (var blake3 = new Blake3())
             Measure("hash", "Bodu BLAKE3 16 MiB", large.Length, () => blake3.TryComputeHash(large, digest, out _));
 
+#if !BODU_CRYPTO_BASELINE
         using (var blake3 = new Blake3(maxDegreeOfParallelism: -1))
         {
             Measure("hash", "Bodu BLAKE3 1 MiB, all cores", BulkLength, () => blake3.TryComputeHash(bulk, digest, out _));
             Measure("hash", "Bodu BLAKE3 16 MiB, all cores", large.Length, () => blake3.TryComputeHash(large, digest, out _));
         }
+#endif
 
         Measure("hash", "BCL SHA-256 1 MiB", BulkLength, () => SHA256.HashData(bulk, digest));
         if (Shake128.IsSupported)
@@ -304,8 +308,10 @@ internal static class CryptoHarness
                 Measure("kdf", $"OpenSSL scrypt {parameters}", 0, () => OpenSsl.Scrypt(password, salt, 1UL << log2N, (ulong)r, (ulong)p, key));
         }
 
+#if !BODU_CRYPTO_BASELINE
         var threaded = new Scrypt(1 << 14, 8, 4, maxDegreeOfParallelism: 4);
         Measure("kdf", "Bodu scrypt N=2^14 r=8 p=4 bound 4", 0, () => threaded.DeriveKey(password, salt, key));
+#endif
 
         var argon2 = new Argon2Parameters { MemoryKiB = 19 * 1024, Iterations = 2, Parallelism = 1 };
         Measure("kdf", "Bodu Argon2id m=19 MiB t=2 p=1", 0, () => Argon2id.DeriveKey(password, salt, argon2));
@@ -505,7 +511,8 @@ internal static class CryptoHarness
         string isa = RuntimeInformation.ProcessArchitecture == Architecture.Arm64
             ? $"AdvSimd={System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported}"
             : $"AVX-512={System.Runtime.Intrinsics.X86.Avx512F.IsSupported} AVX2={System.Runtime.Intrinsics.X86.Avx2.IsSupported} SSSE3={System.Runtime.Intrinsics.X86.Ssse3.IsSupported}";
-        return $"Bodu.Security.Cryptography {version}; {RuntimeInformation.FrameworkDescription}; {Environment.ProcessorCount} processors; {isa}; OpenSSL references {(OpenSsl.IsAvailable ? "on" : "off")}";
+        string simd = Program.IsSimdDisabled ? "library SIMD off" : "library SIMD on";
+        return $"Bodu.Security.Cryptography {version}; {RuntimeInformation.FrameworkDescription}; {Environment.ProcessorCount} processors; {isa}; {simd}; OpenSSL references {(OpenSsl.IsAvailable ? "on" : "off")}";
     }
 
     /// <summary>

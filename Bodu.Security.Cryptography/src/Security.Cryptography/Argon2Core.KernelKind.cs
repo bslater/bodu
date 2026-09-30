@@ -14,7 +14,8 @@ internal static partial class Argon2Core
     internal enum KernelKind
     {
         /// <summary>
-        /// The widest kernel the processor supports and the process allows: the kind dispatch selects.
+        /// The kind dispatch selects: the widest kernel the processor supports and the process allows, bar the AdvSimd
+        /// kernel under .NET 10, which <see cref="SimdCapabilities.AdvSimdSingleState" /> holds back there.
         /// </summary>
         Auto = 0,
 
@@ -29,7 +30,9 @@ internal static partial class Argon2Core
         Ssse3,
 
         /// <summary>
-        /// The 128-bit kernel on ARM64, over AdvSimd.
+        /// The 128-bit kernel on ARM64, over AdvSimd, which dispatch selects under .NET 8. Under .NET 10 it runs only
+        /// where a caller names it, and dispatch selects the scalar kernel, which ran faster on a Neoverse N2 and as
+        /// fast on an Apple M1.
         /// </summary>
         AdvSimd,
 
