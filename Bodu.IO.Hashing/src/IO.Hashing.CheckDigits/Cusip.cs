@@ -13,9 +13,9 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </summary>
 /// <remarks>
 /// <para>
-/// CUSIP body characters are drawn from the decimal digits (<c>'0'</c>-<c>'9'</c>), uppercase Latin letters (<c>'A'</c>
-/// -<c>'Z'</c>, with values 10-35), and the historical sentinels <c>'*'</c>=36, <c>'@'</c>=37 and <c>'#'</c>=38. The
-/// body is eight characters; the ninth character is the check digit.
+/// CUSIP body characters are drawn from the decimal digits (<c>'0'</c>-<c>'9'</c>), uppercase Latin letters (<c>'A'</c>-<c>'Z'</c>,
+/// with values 10-35), and the historical sentinels <c>'*'</c>=36, <c>'@'</c>=37 and <c>'#'</c>=38. The body is eight
+/// characters; the ninth character is the check digit.
 /// </para>
 /// <para>
 /// Each body character's numeric value is multiplied by a positional weight (<c>1</c> at even left-to-right indices,
