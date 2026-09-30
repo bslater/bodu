@@ -14,12 +14,15 @@ internal static partial class Argon2Core
     /// </summary>
     internal readonly struct FillOptions
     {
-        /// <summary>The shortest segment, in blocks, whose slice is divided among threads by default: 64 blocks, a lane of 256 KiB, as in a 1 MiB matrix at four lanes.</summary>
+        /// <summary>The shortest segment, in blocks, whose slice is divided among threads by default: 192 blocks, a lane of 768 KiB, as in a 3 MiB matrix at four lanes.</summary>
         /// <remarks>
-        /// From 64-block segments, the shortest measured, dividing each slice among threads cut the wall time on a
-        /// Neoverse N2, an Apple M1 and an Intel Xeon under .NET 8 and .NET 10, at about twice the processor time.
+        /// From 192-block segments, dividing each slice among threads cut the wall time on every machine measured,
+        /// under .NET 8 and .NET 10, at up to twice the processor time: a Neoverse N2, an Apple M1, an Intel Xeon
+        /// Platinum 8370C, an AMD EPYC 9V74, and a four-core Xeon virtual machine at 2.8 GHz. The first four gained
+        /// from 64-block segments, but on the fifth one thread ran 64-block segments faster, and 128-block segments as
+        /// fast under .NET 8.
         /// </remarks>
-        internal const int DefaultMinimumParallelSegmentLength = 64;
+        internal const int DefaultMinimumParallelSegmentLength = 192;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FillOptions" /> struct.

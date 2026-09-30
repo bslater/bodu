@@ -209,7 +209,7 @@ Four types can spread a single operation across threads. Each takes a `maxDegree
 |---|---|---|
 | `MerkleTree` | `1` | Leaf hashing, in batches with one `HashAlgorithm` per worker; the tree is folded on the calling thread |
 | `Blake3` | `1` | The whole chunks of a write of 256 KiB or more, as independent 64 KiB subtrees joined on the calling thread |
-| `Argon2d` / `Argon2i` / `Argon2id` | `-1` | A derivation's lanes, once they reach 256 KiB each |
+| `Argon2d` / `Argon2i` / `Argon2id` | `-1` | A derivation's lanes, once they reach 768 KiB each |
 | `Scrypt` | `1` | A derivation's `p` units, each with its own `V`; small units stay on the calling thread, and large ones use fewer threads so their `V`s stay within 2 GiB |
 
 `Argon2.Verify` and `Scrypt.Verify` take the same bound. The defaults are `1` where a busy service would only pay for the hand-offs (or, for scrypt, the extra memory); raise the bound to process one large input faster. Argon2 defaults to `-1` because its lanes share one memory matrix, so threads do not multiply its memory the way scrypt's units do.

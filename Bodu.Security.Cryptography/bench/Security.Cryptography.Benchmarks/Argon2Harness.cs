@@ -28,7 +28,7 @@ namespace Bodu.Security.Cryptography.Benchmarks;
 /// </para>
 /// <para>
 /// <c>--argon2-harness --sweep</c> measures where threads pay instead: matrices of 256 KiB to 32 MiB at p = 4, each with
-/// the default bound and, where the build has one, confined to one thread; and below 1 MiB, where the library keeps a
+/// the default bound and, where the build has one, confined to one thread; and below 3 MiB, where the library keeps a
 /// derivation on one thread, with every slice divided among threads regardless.
 /// </para>
 /// </remarks>
@@ -87,8 +87,8 @@ internal static class Argon2Harness
 
     /// <summary>
     /// Measures where threads pay: for matrices of 256 KiB to 32 MiB at p = 4, derivations with the default bound, which
-    /// divide a slice among threads once its segments reach the library's threshold (64 blocks, a 1 MiB matrix, where
-    /// 1.2.0 sets it), and, where the build has a bound, the same derivations confined to one thread. Below 1 MiB the
+    /// divide a slice among threads once its segments reach the library's threshold (192 blocks, a 3 MiB matrix, where
+    /// 1.2.0 sets it), and, where the build has a bound, the same derivations confined to one thread. Below 3 MiB the
     /// build's own derivations also run with every slice divided among threads, through <see cref="Argon2FillDriver" />,
     /// to show whether the threshold could sit lower still.
     /// </summary>
@@ -108,7 +108,7 @@ internal static class Argon2Harness
 #if !BODU_CRYPTO_BASELINE
             var oneThread = new Argon2id(sized, maxDegreeOfParallelism: 1);
             Measure($"m = {size}, p = 4, one thread", () => oneThread.GetBytes(Password, Salt));
-            if (kibibytes < 1024)
+            if (kibibytes < 3072)
                 Measure($"m = {size}, p = 4, threaded", () => driver.DeriveKey(sized, Password, Salt, minimumParallelSegmentLength: 1));
 #endif
         }

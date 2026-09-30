@@ -25,7 +25,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// A derivation fills its lanes on several threads when that pays: up to <see cref="Argon2Parameters.Parallelism" />
 /// threads, bounded by the processor count, once each lane's share of a pass is large enough to be worth dividing (from
-/// 256 KiB). The calling thread always takes part, so a derivation never waits on an idle thread pool, and the tag
+/// 768 KiB). The calling thread always takes part, so a derivation never waits on an idle thread pool, and the tag
 /// never depends on the threads used. <see cref="MaxDegreeOfParallelism" /> bounds a derivation's threads for callers
 /// that already run many derivations at once.
 /// </para>
