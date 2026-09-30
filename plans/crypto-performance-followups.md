@@ -1,6 +1,6 @@
 # Implementation plan: the cryptography speed-ups left for later
 
-**Status:** In progress — F1, F2 and F3 done (§9) · **Source:** the "Left for later" items in
+**Status:** In progress — F1, F2, F3 and F4 done (§9) · **Source:** the "Left for later" items in
 [`crypto-performance.md`](crypto-performance.md) §10 and the open items in
 [`argon2-performance.md`](argon2-performance.md) §10.3, after `Bodu.Security.Cryptography` 1.1.0 ·
 **Target:** `Bodu.Security.Cryptography`, next lock-step release
@@ -168,6 +168,8 @@ Done: see §9 for the results and where the build departs from this design.
 
 ### F4 — Ed25519's fixed-base table and verification
 
+Done: see §9 for the results and where the build departs from this design.
+
 - **Problem:**
   - Signing and X25519 key generation spend each of their 64 windows on a constant-time
     scan of 16 entries in extended coordinates, plus a unified addition.
@@ -318,7 +320,7 @@ As `crypto-performance.md` §6:
 
 Figures are from the `--crypto-harness` of `Bodu.Security.Cryptography.Benchmarks`. F1's and F2's
 are from the same 4-vCPU Xeon VM as §1, at 2.8 GHz with AVX-512F/VL but no IFMA; F3's section
-describes the machine it moved to. Each is the range over
+describes the machine the work moved to, where F4's were measured as well. Each is the range over
 two runs of the median of five rounds. The baselines were measured the same day on this
 branch before the item's code, with the harness change that added the case in place.
 
@@ -1035,3 +1037,218 @@ How it was done, and where it departs from the design above:
     not spill on that form would let every kernel have it.
   - ML-KEM's scalar base-case product runs 0.75× on .NET 10 with AVX2 disabled, now that it
     shares a method with the dispatch to its kernel.
+
+### F4 — Ed25519's fixed-base table and verification (done)
+
+F4's figures come from the second machine, F3's. The before build is this branch at 95dc3aef, which
+adds F4's harness rows to master at 6b341cd3 (#728) and the rotation change F3's section describes;
+the after build is at 8c24adf5, with F4's code. Both ran alternately, in each of the harness's five
+processor configurations on both runtimes, in two runs, the second in the opposite order. *Change*
+is the ratio of the two ranges' midpoints, above 1 where F4 is faster; *allocated* is the harness's
+managed bytes per operation.
+
+| Operation (net10.0, this host's default) | Before F4 (µs) | After F4 (µs) | Change | Allocated before → after (B/op) |
+|---|---|---|---|---|
+| X25519 shared secret | 67.8–70.9 | 67.2–68.3 | 1.02× | 56 → 56 |
+| X25519 key generation | 36.8–37.1 | 24.4–26.6 | 1.45× | 144 → 144 |
+| Ed25519 sign | 36.3 | 29.8–31.0 | 1.19× | 224 → 88 |
+| Ed25519 verify | 98.8–98.9 | 79.3–79.6 | 1.24× | 136 → 0 |
+| Ed25519 sign into a span | 35.1–35.6 | 28.6–29.3 | 1.22× | 136 → 0 |
+| Ed25519 sign 1 KiB into a span | 40.7–41.8 | 31.6–33.4 | 1.27× | 136 → 0 |
+| Ed25519 verify 1 KiB | 108 | 77.2–78.9 | 1.38× | 136 → 0 |
+| Ed25519 sign 16 KiB into a span | 87.5–89.2 | 80.0–83.7 | 1.08× | 136 → 136 |
+| Ed25519 verify 16 KiB | 122–125 | 106–116 | 1.11× | 136 → 136 |
+
+| Operation (net8.0, this host's default) | Before F4 (µs) | After F4 (µs) | Change | Allocated before → after (B/op) |
+|---|---|---|---|---|
+| X25519 shared secret | 68.2–71.0 | 64.9–71.5 | 1.02× | 56 → 56 |
+| X25519 key generation | 33.1–36.1 | 26.6–28.6 | 1.25× | 144 → 144 |
+| Ed25519 sign | 38.0–40.6 | 30.5–31.7 | 1.26× | 224 → 88 |
+| Ed25519 verify | 97.9–98.1 | 76.9–82.5 | 1.23× | 136 → 0 |
+| Ed25519 sign into a span | 37.1–40.3 | 30.4–31.4 | 1.25× | 136 → 0 |
+| Ed25519 sign 1 KiB into a span | 43.0–48.8 | 32.9–34.7 | 1.36× | 136 → 0 |
+| Ed25519 verify 1 KiB | 99–110 | 79.8–87.0 | 1.25× | 136 → 0 |
+| Ed25519 sign 16 KiB into a span | 88.3–90.9 | 82.7–86.1 | 1.06× | 136 → 136 |
+| Ed25519 verify 16 KiB | 122–132 | 104–107 | 1.21× | 136 → 136 |
+
+This machine's runs vary by 10–15% between processes, so alternating A/B runs of the three target
+rows, five rounds of each build in separate processes, give a steadier reading:
+
+| Operation | Configuration | Runtime | Before F4 (µs) | After F4 (µs) | Change (medians) |
+|---|---|---|---|---|---|
+| X25519 key generation | this host's default | net10.0 | 34.4–37.7 | 25.0–28.2 | 1.33× |
+| X25519 key generation | this host's default | net8.0 | 34.5–38.7 | 25.5–27.5 | 1.37× |
+| X25519 key generation | no vector instructions | net10.0 | 56.4–62.0 | 46.4–51.6 | 1.21× |
+| X25519 key generation | no vector instructions | net8.0 | 60.7–66.7 | 45.8–56.6 | 1.33× |
+| Ed25519 sign | this host's default | net10.0 | 34.8–38.3 | 28.4–29.8 | 1.24× |
+| Ed25519 sign | this host's default | net8.0 | 36.8–44.3 | 28.7–33.1 | 1.20× |
+| Ed25519 sign | no vector instructions | net10.0 | 61.0–66.0 | 48.7–56.4 | 1.26× |
+| Ed25519 sign | no vector instructions | net8.0 | 60.9–69.2 | 50.8–54.0 | 1.23× |
+| Ed25519 verify | this host's default | net10.0 | 97–119 | 75.2–82.2 | 1.36× |
+| Ed25519 verify | this host's default | net8.0 | 94–121 | 79.3–82.8 | 1.28× |
+| Ed25519 verify | no vector instructions | net10.0 | 192–208 | 138–150 | 1.41× |
+| Ed25519 verify | no vector instructions | net8.0 | 190–234 | 143–173 | 1.41× |
+
+The best of fifteen timed rounds, in two processes per build run alternately, shows where each
+operation's time goes. The parts F4 does not touch cost the same before and after:
+
+| Part (µs, best of 15 rounds) | net10.0 before | net10.0 after | net8.0 before | net8.0 after |
+|---|---|---|---|---|
+| sign into a span, whole | 33.0 | 25.8 (1.28×) | 34.4–36.8 | 27.2–27.3 (1.31×) |
+| verify, whole | 88.8–89.3 | 69.0–69.6 (1.29×) | 88.8 | 69.5–70.8 (1.27×) |
+| fixed-base multiplication | 23.2 | 16.8 (1.38×) | 24.2 | 17.1–17.2 (1.41×) |
+| double-scalar multiplication | 80.5–81.1 | 62.4–62.6 (1.29×) | 79.3–81.2 | 63.2–64.0 (1.26×) |
+| encoding a point (one inversion) | 4.8 | 4.7–4.8 | 4.8 | 4.8–4.9 |
+| decoding R (a square root) | 5.1 | 5.1–5.3 | 5.2–5.4 | 5.1–5.2 |
+| R's small-order check | 0.6–0.7 | 0.6 | 0.6 | 0.6 |
+| SHA-512 of the seed / of 128 bytes | 0.8 / 0.9–1.0 | 0.8 / 1.0 | 1.0–1.1 / 1.2–1.3 | 1.0–1.7 / 1.2 |
+| reducing a digest / the multiply-add mod L | 0.3 / 0.5–0.6 | 0.3 / 0.5 | 0.3 / 0.6 | 0.3 / 0.6 |
+
+The plan's targets are met on the machine they were set on. They were 42 µs for signing, 38 µs for
+X25519 key generation and 110 µs for verification, against 1.1.0's 51–56, 49–51 and 136–150 µs:
+gains of about 1.27×, 1.32× and 1.30×. On that machine, before the work moved, one harness run of
+each build signed in 48.5 → 38.0 µs on .NET 10 and 50.9 → 39.2 µs on .NET 8, generated an X25519
+key in 48.4 → 35.2 and 45.6 → 34.3 µs, and verified in 131 → 99 and 132 → 102 µs. On the second
+machine, key generation meets the target's ratio by every measure (1.25–1.45×), and verification
+by the A/B medians and the best rounds on .NET 10 (1.29–1.36×) and within 2–3% of it on .NET 8
+(1.23–1.28×). Signing reaches it by the best rounds (1.28–1.31×) but not by the harness's medians
+(1.19–1.26×). The multiplications F4 changed gained 1.38–1.41× (fixed base) and 1.26–1.29×
+(double-scalar), which matches their operation counts; about 7.5 µs of signing and 7 µs of
+verification on this machine lie outside them and are unchanged.
+
+The three targets in each configuration:
+
+| net10.0 | Ed25519 sign | X25519 key generation | Ed25519 verify |
+|---|---|---|---|
+| this host's default | 36.3 → 29.8–31.0 (1.19×) | 36.8–37.1 → 24.4–26.6 (1.45×) | 98.8–98.9 → 79.3–79.6 (1.24×) |
+| `DOTNET_PreferredVectorBitWidth=512` | 35.8–37.3 → 30.3–31.8 (1.18×) | 35.3–37.5 → 27.3–27.4 (1.33×) | 95.6–99.7 → 79.7–83.9 (1.19×) |
+| AVX-512 off | 35.4–41.9 → 33.1–34.3 (1.15×) | 38.4–41.9 → 27.4–31.6 (1.36×) | 104–106 → 76.4–82.5 (1.32×) |
+| AVX2 off | 62.4–63.8 → 48.1–51.1 (1.27×) | 61.3–62.9 → 45.3–55.0 (1.24×) | 201–234 → 135–150 (1.53×) |
+| no vector instructions | 62.3–63.0 → 50.9–54.7 (1.19×) | 59.5–61.7 → 45.8–50.0 (1.26×) | 202–209 → 146–150 (1.39×) |
+
+| net8.0 | Ed25519 sign | X25519 key generation | Ed25519 verify |
+|---|---|---|---|
+| this host's default | 38.0–40.6 → 30.5–31.7 (1.26×) | 33.1–36.1 → 26.6–28.6 (1.25×) | 97.9–98.1 → 76.9–82.5 (1.23×) |
+| `DOTNET_PreferredVectorBitWidth=512` | 35.6–36.9 → 31.9–32.7 (1.12×) | 32.7–34.9 → 26.1–26.9 (1.27×) | 95.8–98.5 → 79.2–83.1 (1.20×) |
+| AVX-512 off | 38.2–39.5 → 29.4–31.5 (1.28×) | 33.4–33.8 → 27.0–28.2 (1.22×) | 97–108 → 77.2–88.8 (1.23×) |
+| AVX2 off | 40.7–41.0 → 32.0–32.3 (1.27×) | 34.0–34.5 → 26.0–28.1 (1.27×) | 100–111 → 72.7–89.9 (1.30×) |
+| no vector instructions | 65.0–66.3 → 53.3–56.6 (1.19×) | 56.7–64.8 → 51.5–64.2 (1.05×) | 191–204 → 154–155 (1.28×) |
+
+Every row's change, in every configuration:
+
+| Operation (net10.0) | this host's default | `DOTNET_PreferredVectorBitWidth=512` | AVX-512 off | AVX2 off | no vector instructions |
+|---|---|---|---|---|---|
+| X25519 shared secret | 1.02× | 0.99× | 0.94× | 0.95× | 1.00× |
+| X25519 key generation | 1.45× | 1.33× | 1.36× | 1.24× | 1.26× |
+| Ed25519 sign | 1.19× | 1.18× | 1.15× | 1.27× | 1.19× |
+| Ed25519 verify | 1.24× | 1.19× | 1.32× | 1.53× | 1.39× |
+| Ed25519 sign into a span | 1.22× | 1.31× | 1.16× | 1.21× | 1.26× |
+| Ed25519 sign 1 KiB into a span | 1.27× | 1.30× | 1.30× | 1.15× | 1.04× |
+| Ed25519 verify 1 KiB | 1.38× | 1.19× | 1.26× | 1.38× | 1.34× |
+| Ed25519 sign 16 KiB into a span | 1.08× | 0.97× | 1.03× | 1.20× | 1.14× |
+| Ed25519 verify 16 KiB | 1.11× | 1.15× | 1.11× | 1.23× | 1.33× |
+
+| Operation (net8.0) | this host's default | `DOTNET_PreferredVectorBitWidth=512` | AVX-512 off | AVX2 off | no vector instructions |
+|---|---|---|---|---|---|
+| X25519 shared secret | 1.02× | 0.92× | 0.99× | 1.04× | 0.89× |
+| X25519 key generation | 1.25× | 1.27× | 1.22× | 1.27× | 1.05× |
+| Ed25519 sign | 1.26× | 1.12× | 1.28× | 1.27× | 1.19× |
+| Ed25519 verify | 1.23× | 1.20× | 1.23× | 1.30× | 1.28× |
+| Ed25519 sign into a span | 1.25× | 1.32× | 1.30× | 1.14× | 1.16× |
+| Ed25519 sign 1 KiB into a span | 1.36× | 1.36× | 1.23× | 1.17× | 1.21× |
+| Ed25519 verify 1 KiB | 1.25× | 1.29× | 1.41× | 1.31× | 1.50× |
+| Ed25519 sign 16 KiB into a span | 1.06× | 1.07× | 1.04× | 1.03× | 1.06× |
+| Ed25519 verify 16 KiB | 1.21× | 1.13× | 1.24× | 1.18× | 1.29× |
+
+On .NET 10, disabling AVX2 disables BMI2 with it, so the field multiplication loses `mulx` and runs
+at the speed it has with no intrinsics at all; on .NET 8 it keeps BMI2, and AVX2 off matches the
+default. The long-message rows gain least: at 16 KiB the hash is most of the time.
+
+How it was done, and where it departs from the design above:
+
+- **Signed digits over a table of 32 rows.** `Ed25519Point.ScalarMultBase` recodes the scalar into
+  64 signed radix-16 digits from −8 to 7 (`RecodeSignedRadix16`) and adds one multiple per digit
+  from a table of 32 rows of 8, row i holding 1 to 8 times 256^i·B: the odd digits first, then four
+  doublings, then the even digits, as ref10 does.
+  - The table is held in affine Niels form (y + x, y − x, 2d·x·y) as the design asked, normalized
+    once with one inversion for all 256 entries (Montgomery's trick). An addition from it costs
+    three multiplications before the four that convert the sum out of completed coordinates, where
+    1.1.0's unified addition cost nine.
+  - `SelectBaseMultiple` reads all 8 entries of the row and keeps the one for the digit's magnitude
+    by masks, then negates it with a conditional swap of y + x and y − x and a conditional negation
+    of 2d·x·y.
+  - The table is 30 KB, where 1.1.0's 64 rows of 16 extended points were 160 KB.
+  - Departure: ref10's recoding needs the scalar's top bit clear, leaving the top digit from 0 to 8.
+    Every caller passes such a scalar, but 1.1.0's routine served every 256-bit scalar and the
+    tests pass larger ones. So the top digit is recoded too, and its carry, worth 2^256·B, enters
+    before the doublings as 2^252·B through a conditional move.
+  - In the spike, 64 rows without the doublings ran within noise of 32 rows on both machines
+    (16.2 against 16.7 µs on .NET 10 and 16.4 against 15.4 on .NET 8 on the second; 24.2 against
+    25.4 and 24.7 against 26.0 on the first), at twice the size.
+- **Verification over non-adjacent forms.** `DoubleScalarMultBaseVartime` recodes S into a width-7
+  form over 32 precomputed odd multiples of B, in affine Niels form, and k into a width-5 form over
+  the 8 odd multiples of −A, formed on the stack in projective Niels form, as designed
+  (`ComputeNonAdjacentForm`). A negative digit subtracts its multiple. The doublings stay in
+  projective coordinates, and T is formed only when an addition follows. For scalars of 253 bits
+  that is about 253 doublings of seven multiplications, 43 additions of eight and 32 of seven, where
+  1.1.0 took 256 doublings of eight and about 120 additions of nine: the 1.26–1.29× measured.
+  - The recoding places a digit past bit 255 when a scalar at or above 2^255 carries out of its top
+    window, so this routine too serves every 256-bit scalar; verification's are below the group
+    order.
+  - The spike measured width 7 for B within noise of width 5 (58.0 against 54.0 µs on .NET 10 and
+    55.4 against 62.0 on .NET 8 on the second machine, 83.7 against 86.2 and 85.8 against 88.0 on the
+    first); width 7 is kept, as designed, for its fewer additions.
+- **Hashing.** A message of up to `Ed25519.StackHashMaximumMessageLength` (1 KiB) is copied after
+  its prefix into a buffer on the stack and hashed with one `SHA512.HashData` call. The prefix's
+  copy, the secret nonce prefix when signing, is cleared before returning.
+  - The design expected a limit of a few hundred bytes. On both machines and runtimes the one-call
+    hash measured faster than `IncrementalHash` at every length up to 4 KiB: at 1 KiB, 2.6 against
+    3.2 µs on .NET 10 and 3.1 against 3.9 on .NET 8 on the first machine. The limit is 1 KiB to keep
+    the copy's stack use small.
+  - A longer message is hashed incrementally, and signing's two hashes of it share one
+    `IncrementalHash`. They did not at first: the harness showed signing 16 KiB allocating 272
+    bytes, and a test added first (`SignData_WhenMessageExceedsTheStackHash_ForSpanOverload_*`)
+    failed until they did.
+  - Signing into a span, and verifying, allocate nothing below the limit; the allocating
+    `SignData` allocates only its 64-byte signature.
+- **Generated code, on both runtimes.**
+  - `ScalarMultBase` and `DoubleScalarMultBaseVartime` compile once, fully optimized (their
+    `stackalloc` rules out on-stack replacement), and call the point formulas, which tier up on
+    their own.
+  - `SelectBaseMultiple`'s only conditional jumps are the row's bounds check and its 8-entry loop.
+    `RecodeSignedRadix16`'s are the length and index checks and its 64-digit loop, and
+    `ScalarMultBase`'s the class-initialization and length checks, its two digit loops, the frame
+    zeroing and the stack cookie. None depends on the scalar. The selection keeps its three
+    accumulators' limbs on the stack, at fixed offsets.
+- **Tests.**
+  - The replaced routines stay in the tests as the oracle, `Ed25519PointReference`: the 1.1.0 table
+    of 64 rows of 16 extended points and its unsigned 4-bit windows. It landed, with the tests
+    below that need no new API, before the change and passed against 1.1.0's code.
+  - `ScalarMultBase` is held to the ladder and to the oracle over scalars that give every window
+    each digit from −8 to 7 (a byte of n, or of 16n, in every position), the recoding's bounds (the
+    group order and its neighbours, 2^255, 2^256 − 1, a top nibble of 7 that carries), and seeded
+    unreduced, clamped and reduced scalars.
+  - `DoubleScalarMultBaseVartime` is held to two separate ladders and to the oracle over boundary
+    scalars, with a multiple of B, a decoded and negated point, a point with a component of order 8
+    and the identity, and over seeded inputs of the shape verification passes.
+  - `SelectBaseMultiple` is held to a plain lookup, the multiple formed by doublings and additions
+    without the table, for every digit from −8 to 8 of every row. Both recodings are held to their
+    values as integers, and the non-adjacent form's digits to their bounds and spacing, at every
+    width from 2 to 8.
+  - The mixed additions and subtractions, and the projective doubling and its chains, are held to
+    the unified addition and doubling, the eight points of small order included.
+  - RFC 8032's TEST 1024, whose message is 1023 bytes, joins the signing vectors, built from the
+    embedded Wycheproof row that carries it and the RFC's private seed. Signing and verification
+    either side of the limit, and far beyond it, are held to an RFC 8032 signer built from one-call
+    hashes and the oracle, and a changed last byte fails verification on both sides.
+  - The full suite passes on both runtimes.
+- **Left for later.**
+  - The inversion that encodes R when signing (4.8 µs) and the square root that decodes it when
+    verifying (5.1 µs) are now the largest costs outside the multiplications. A constant-time
+    inversion by divsteps (Bernstein–Yang) is the known faster alternative to the exponentiation.
+  - Signing recomputes the expanded key, SHA-512 of the seed, on every call (0.8–1.1 µs). The key
+    material could keep it, as it keeps the decoded public point, at the price of holding more
+    secret material.
+  - Verification forms the 8 odd multiples of −A on every call, about 70 field multiplications,
+    which the key material could keep as well.
+  - X25519's shared secret, the Montgomery ladder, is unchanged.
