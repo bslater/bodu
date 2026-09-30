@@ -191,6 +191,32 @@ internal static class SimdCapabilities
     }
 
     /// <summary>
+    /// Gets a value indicating whether the process runs on ARM64 under one of Apple's operating systems, and so on
+    /// Apple's own cores.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> if <see cref="System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported" /> and the
+    /// process runs on macOS, iOS, tvOS, or Mac Catalyst; otherwise, <see langword="false" />.
+    /// </value>
+    /// <remarks>
+    /// <para>
+    /// Where an Apple M1 and a Neoverse N2 disagreed on a kernel, dispatch passes this value to choose between them.
+    /// Apple's cores have four 128-bit vector pipes, where the N2 has two.
+    /// </para>
+    /// <para>
+    /// The value describes the platform rather than gating a code path, so the disable switch does not close it; the
+    /// gates it is combined with do that. Linux on Apple's cores is reported as any other ARM64 processor. Each
+    /// operating-system check is a constant in its platform's runtime, so the JIT folds the whole property.
+    /// </para>
+    /// </remarks>
+    internal static bool AppleSilicon
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported
+            && (OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsTvOS() || OperatingSystem.IsMacCatalyst());
+    }
+
+    /// <summary>
     /// Gets a value indicating whether the ARM64 polynomial-multiply <c>GF(2¹²⁸)</c> code paths (GHASH / POLYVAL)
     /// should run.
     /// </summary>

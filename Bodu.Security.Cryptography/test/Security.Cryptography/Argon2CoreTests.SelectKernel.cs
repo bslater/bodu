@@ -21,41 +21,57 @@ public sealed partial class Argon2CoreTests
     }
 
     /// <summary>
-    /// Verifies that dispatch prefers the AVX2 kernel wherever its gate is open.
+    /// Verifies that dispatch prefers the AVX2 kernel wherever its gate is open, whatever the platform.
     /// </summary>
+    /// <param name="appleSilicon">Whether dispatch makes the choice for Apple's cores.</param>
     [TestMethod]
-    public void SelectKernel_WhenAvx2IsAvailable_ShouldReturnAvx2()
+    [DataRow(false)]
+    [DataRow(true)]
+    public void SelectKernel_WhenAvx2IsAvailable_ShouldReturnAvx2(bool appleSilicon)
     {
         if (!SimdCapabilities.Avx2)
             Assert.Inconclusive("AVX2 is not available on this processor.");
 
-        Assert.AreEqual(Argon2Core.KernelKind.Avx2, Argon2Core.SelectKernel());
+        Assert.AreEqual(Argon2Core.KernelKind.Avx2, Argon2Core.SelectKernel(appleSilicon));
     }
 
     /// <summary>
-    /// Verifies that under .NET 10 dispatch selects the scalar kernel on ARM64, where it ran faster than the AdvSimd
-    /// kernel on a Neoverse N2 and as fast on an Apple M1.
+    /// Verifies that dispatch makes the choice of the platform <see cref="SimdCapabilities.AppleSilicon" /> reports when
+    /// the caller names none.
     /// </summary>
     [TestMethod]
-    public void SelectKernel_WhenAdvSimdIsAvailableUnderNet10_ShouldReturnScalar()
+    public void SelectKernel_WhenNoPlatformIsNamed_ShouldMakeThisPlatformsChoice()
+    {
+        Assert.AreEqual(Argon2Core.SelectKernel(SimdCapabilities.AppleSilicon), Argon2Core.SelectKernel());
+    }
+
+    /// <summary>
+    /// Verifies that under .NET 10 dispatch selects the scalar kernel on every ARM64 processor, Apple's included: it
+    /// ran faster than the AdvSimd kernel on a Neoverse N2 and as fast on an Apple M1.
+    /// </summary>
+    /// <param name="appleSilicon">Whether dispatch makes the choice for Apple's cores.</param>
+    [TestMethod]
+    [DataRow(false)]
+    [DataRow(true)]
+    public void SelectKernel_WhenAdvSimdIsAvailableUnderNet10_ShouldReturnScalar(bool appleSilicon)
     {
         if (!SimdCapabilities.AdvSimd)
             Assert.Inconclusive("AdvSimd is not available on this processor.");
 
 #if NET10_0_OR_GREATER
-        Assert.AreEqual(Argon2Core.KernelKind.Scalar, Argon2Core.SelectKernel());
+        Assert.AreEqual(Argon2Core.KernelKind.Scalar, Argon2Core.SelectKernel(appleSilicon));
 #else
         Assert.Inconclusive("The runtime is not .NET 10 or later.");
 #endif
     }
 
     /// <summary>
-    /// Verifies that under .NET 8 dispatch selects the AdvSimd kernel on ARM64, which ran 1.5 to 1.6 times as fast as
-    /// the scalar kernel on an Apple M1, and took about a third of 1.0.0's CPU where the scalar kernel took nearly
-    /// two thirds.
+    /// Verifies that under .NET 8 dispatch selects the AdvSimd kernel on Apple's cores, where it ran 1.3 to 1.6 times
+    /// as fast as the scalar kernel on an Apple M1, and took about a third of 1.0.0's CPU where the scalar kernel took
+    /// nearly two thirds.
     /// </summary>
     [TestMethod]
-    public void SelectKernel_WhenAdvSimdIsAvailableUnderNet8_ShouldReturnAdvSimd()
+    public void SelectKernel_WhenAdvSimdIsAvailableUnderNet8OnAppleSilicon_ShouldReturnAdvSimd()
     {
         if (!SimdCapabilities.AdvSimd)
             Assert.Inconclusive("AdvSimd is not available on this processor.");
@@ -63,7 +79,24 @@ public sealed partial class Argon2CoreTests
 #if NET10_0_OR_GREATER
         Assert.Inconclusive("The runtime is .NET 10 or later.");
 #else
-        Assert.AreEqual(Argon2Core.KernelKind.AdvSimd, Argon2Core.SelectKernel());
+        Assert.AreEqual(Argon2Core.KernelKind.AdvSimd, Argon2Core.SelectKernel(appleSilicon: true));
+#endif
+    }
+
+    /// <summary>
+    /// Verifies that under .NET 8 dispatch selects the scalar kernel on ARM64 processors other than Apple's: on a
+    /// Neoverse N2 the AdvSimd kernel ran at 0.77 to 0.80 of its speed.
+    /// </summary>
+    [TestMethod]
+    public void SelectKernel_WhenAdvSimdIsAvailableUnderNet8ElsewhereThanAppleSilicon_ShouldReturnScalar()
+    {
+        if (!SimdCapabilities.AdvSimd)
+            Assert.Inconclusive("AdvSimd is not available on this processor.");
+
+#if NET10_0_OR_GREATER
+        Assert.Inconclusive("The runtime is .NET 10 or later.");
+#else
+        Assert.AreEqual(Argon2Core.KernelKind.Scalar, Argon2Core.SelectKernel(appleSilicon: false));
 #endif
     }
 

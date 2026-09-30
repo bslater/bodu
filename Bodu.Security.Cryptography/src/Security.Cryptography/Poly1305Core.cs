@@ -33,8 +33,8 @@ namespace Bodu.Security.Cryptography;
 /// are five limbs of 26 bits, because the only vector multiply is 32 × 32 → 64 bits. Each lane multiplies by <c>r²</c>,
 /// <c>r⁴</c> or <c>r⁸</c> per group of blocks, and by the power of <c>r</c> its last block needs at the end, so the
 /// lanes sum to exactly the accumulator the scalar loop reaches. Each run computes its powers of <c>r</c> afresh, with
-/// one to eight scalar multiplications, so <see cref="SelectKernel" /> keeps runs too short to repay them on the scalar
-/// loop, at thresholds measured on both runtimes.
+/// one to eight scalar multiplications, so <see cref="SelectKernel(int)" /> keeps runs too short to repay them on the
+/// scalar loop, at thresholds measured on both runtimes.
 /// </para>
 /// <para>
 /// The core is a mutable struct that callers keep in a field or a local and use in place. It holds a partial block
@@ -97,6 +97,9 @@ internal partial struct Poly1305Core
     /// an Apple M1; below 256 bytes the N2's scalar loop, with <c>umulh</c>, finished first.
     /// </remarks>
     internal const int AdvSimdMinimumBytes = 256;
+
+    /// <summary>The shortest run of whole blocks, in bytes, that dispatch gives the two-lane AdvSimd kernel on Apple's cores (<see cref="SimdCapabilities.AppleSilicon" />).</summary>
+    internal const int AppleAdvSimdMinimumBytes = 128;
 
     /// <summary>
     /// Gets the shortest run of whole blocks, in bytes, that any kernel dispatch may select on this processor takes:
@@ -204,9 +207,9 @@ internal partial struct Poly1305Core
     /// </exception>
     /// <remarks>
     /// Every kernel produces the accumulator of the scalar loop. A kernel named explicitly runs whenever the whole
-    /// blocks fill at least one group of its lanes, whatever the thresholds <see cref="SelectKernel" /> applies, so
-    /// that tests can drive it over short messages; the blocks after its last whole group, and everything shorter, go
-    /// through the scalar loop.
+    /// blocks fill at least one group of its lanes, whatever the thresholds <see cref="SelectKernel(int)" /> applies,
+    /// so that tests can drive it over short messages; the blocks after its last whole group, and everything shorter,
+    /// go through the scalar loop.
     /// </remarks>
     internal void Update(KernelKind kernel, ReadOnlySpan<byte> data)
     {
@@ -361,7 +364,19 @@ internal partial struct Poly1305Core
     /// <c>DOTNET_PreferredVectorBitWidth=512</c> opts such a processor in.
     /// </para>
     /// </remarks>
-    internal static KernelKind SelectKernel(int length)
+    internal static KernelKind SelectKernel(int length) =>
+        SelectKernel(length, SimdCapabilities.AppleSilicon);
+
+    /// <summary>
+    /// Selects the kernel for a run of whole blocks as <see cref="SelectKernel(int)" /> does, on the specified
+    /// platform.
+    /// </summary>
+    /// <param name="length">The length of the run, in bytes.</param>
+    /// <param name="appleSilicon">
+    /// Whether to make the choices for Apple's cores, as <see cref="SimdCapabilities.AppleSilicon" /> reports them.
+    /// </param>
+    /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
+    internal static KernelKind SelectKernel(int length, bool appleSilicon)
     {
         if (SimdCapabilities.AdvSimd)
             return length < AdvSimdMinimumBytes ? KernelKind.Scalar : KernelKind.AdvSimd;

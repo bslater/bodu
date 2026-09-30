@@ -34,12 +34,15 @@ public sealed class SimdOptOutTests
 
     /// <summary>
     /// Verifies that with SIMD disabled, Argon2 dispatches to its scalar compression kernel whatever the processor
-    /// supports, so the linked Argon2 vectors in this assembly hold the scalar kernel to them.
+    /// supports, on Apple's cores and elsewhere, so the linked Argon2 vectors in this assembly hold the scalar kernel to
+    /// them.
     /// </summary>
     [TestMethod]
     public void Argon2CoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernel()
     {
         Assert.AreEqual(Argon2Core.KernelKind.Scalar, Argon2Core.SelectKernel());
+        Assert.AreEqual(Argon2Core.KernelKind.Scalar, Argon2Core.SelectKernel(appleSilicon: false));
+        Assert.AreEqual(Argon2Core.KernelKind.Scalar, Argon2Core.SelectKernel(appleSilicon: true));
     }
 
     /// <summary>
@@ -104,13 +107,15 @@ public sealed class SimdOptOutTests
 
     /// <summary>
     /// Verifies that with SIMD disabled, Poly1305 absorbs every run of whole blocks, however long, through its scalar
-    /// loop, whatever the processor supports: from each length at which a vector kernel would take over, up to 1 MiB.
+    /// loop, whatever the processor supports, on Apple's cores and elsewhere: from each length at which a vector kernel
+    /// would take over, up to 1 MiB.
     /// </summary>
     [TestMethod]
     public void Poly1305CoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarLoop()
     {
         int[] lengths =
         [
+            Poly1305Core.AppleAdvSimdMinimumBytes,
             Poly1305Core.AdvSimdMinimumBytes,
             Poly1305Core.Avx2MinimumBytes,
             Poly1305Core.Avx2PairedMinimumBytes,
@@ -119,7 +124,11 @@ public sealed class SimdOptOutTests
         ];
 
         foreach (int length in lengths)
+        {
             Assert.AreEqual(Poly1305Core.KernelKind.Scalar, Poly1305Core.SelectKernel(length), $"length {length}");
+            Assert.AreEqual(Poly1305Core.KernelKind.Scalar, Poly1305Core.SelectKernel(length, appleSilicon: false), $"length {length}, elsewhere");
+            Assert.AreEqual(Poly1305Core.KernelKind.Scalar, Poly1305Core.SelectKernel(length, appleSilicon: true), $"length {length}, on Apple's cores");
+        }
     }
 
     /// <summary>

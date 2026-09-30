@@ -156,7 +156,17 @@ internal static partial class Argon2Core
     /// Every gate honors the <see cref="SimdCapabilities.DisableSimdSwitchName" /> switch, which pins the scalar
     /// kernel.
     /// </remarks>
-    internal static KernelKind SelectKernel()
+    internal static KernelKind SelectKernel() =>
+        SelectKernel(SimdCapabilities.AppleSilicon);
+
+    /// <summary>
+    /// Selects the compression kernel as <see cref="SelectKernel()" /> does, on the specified platform.
+    /// </summary>
+    /// <param name="appleSilicon">
+    /// Whether to make the choices for Apple's cores, as <see cref="SimdCapabilities.AppleSilicon" /> reports them.
+    /// </param>
+    /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
+    internal static KernelKind SelectKernel(bool appleSilicon)
     {
         if (SimdCapabilities.Avx2)
             return KernelKind.Avx2;

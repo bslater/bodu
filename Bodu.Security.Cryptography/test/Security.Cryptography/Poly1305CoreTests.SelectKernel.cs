@@ -23,16 +23,46 @@ public sealed partial class Poly1305CoreTests
     }
 
     /// <summary>
-    /// Verifies that the shortest run any kernel takes is <see cref="Poly1305Core.AdvSimdMinimumBytes" /> on ARM64 and
+    /// Verifies that the shortest run any kernel takes is <see cref="Poly1305Core.AppleAdvSimdMinimumBytes" /> on
+    /// Apple's cores, <see cref="Poly1305Core.AdvSimdMinimumBytes" /> on other ARM64 processors, and
     /// <see cref="Poly1305Core.Avx2MinimumBytes" /> everywhere else, so that the block loop sends every shorter run to
     /// the scalar loop without consulting dispatch.
     /// </summary>
     [TestMethod]
     public void KernelMinimumBytes_WhenRead_ShouldBeTheShortestRunAKernelTakesOnThisProcessor()
     {
-        int expected = System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported ? Poly1305Core.AdvSimdMinimumBytes : Poly1305Core.Avx2MinimumBytes;
+        int expected = Poly1305Core.Avx2MinimumBytes;
+        if (SimdCapabilities.AppleSilicon)
+            expected = Poly1305Core.AppleAdvSimdMinimumBytes;
+        else if (System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported)
+            expected = Poly1305Core.AdvSimdMinimumBytes;
 
         Assert.AreEqual(expected, Poly1305Core.KernelMinimumBytes);
+    }
+
+    /// <summary>
+    /// Verifies that dispatch makes the choices of the platform <see cref="SimdCapabilities.AppleSilicon" /> reports
+    /// when the caller names none.
+    /// </summary>
+    [TestMethod]
+    public void SelectKernel_WhenNoPlatformIsNamed_ShouldMakeThisPlatformsChoices()
+    {
+        for (int length = 0; length <= Poly1305Core.Avx512MinimumBytes; length += Poly1305Core.BlockBytes)
+            Assert.AreEqual(Poly1305Core.SelectKernel(length, SimdCapabilities.AppleSilicon), Poly1305Core.SelectKernel(length), $"length {length}");
+    }
+
+    /// <summary>
+    /// Verifies that the platform changes no choice dispatch makes on a processor other than ARM64, on which Apple's
+    /// cores differ from others only in the AdvSimd kernel's threshold.
+    /// </summary>
+    [TestMethod]
+    public void SelectKernel_WhenProcessorIsNotArm64_ShouldIgnoreThePlatform()
+    {
+        if (System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported)
+            Assert.Inconclusive("The processor is an ARM64 processor.");
+
+        for (int length = 0; length <= Poly1305Core.Avx512MinimumBytes; length += Poly1305Core.BlockBytes)
+            Assert.AreEqual(Poly1305Core.SelectKernel(length, appleSilicon: false), Poly1305Core.SelectKernel(length, appleSilicon: true), $"length {length}");
     }
 
     /// <summary>
@@ -117,18 +147,62 @@ public sealed partial class Poly1305CoreTests
 
     /// <summary>
     /// Verifies that dispatch gives runs of <see cref="Poly1305Core.AdvSimdMinimumBytes" /> or more to the AdvSimd
-    /// kernel on ARM64.
+    /// kernel on every ARM64 processor, Apple's included.
     /// </summary>
     /// <param name="length">The length of the run, in bytes.</param>
+    /// <param name="appleSilicon">Whether dispatch makes the choices for Apple's cores.</param>
     [TestMethod]
-    [DataRow(Poly1305Core.AdvSimdMinimumBytes)]
-    [DataRow(1 << 20)]
-    public void SelectKernel_WhenRunReachesTheAdvSimdMinimum_ShouldReturnAdvSimd(int length)
+    [DataRow(Poly1305Core.AdvSimdMinimumBytes, false)]
+    [DataRow(1 << 20, false)]
+    [DataRow(Poly1305Core.AdvSimdMinimumBytes, true)]
+    [DataRow(1 << 20, true)]
+    public void SelectKernel_WhenRunReachesTheAdvSimdMinimum_ShouldReturnAdvSimd(int length, bool appleSilicon)
     {
         if (!SimdCapabilities.AdvSimd)
             Assert.Inconclusive("AdvSimd is not available on this processor, or the process allows no vector code.");
 
-        Assert.AreEqual(Poly1305Core.KernelKind.AdvSimd, Poly1305Core.SelectKernel(length));
+        Assert.AreEqual(Poly1305Core.KernelKind.AdvSimd, Poly1305Core.SelectKernel(length, appleSilicon));
+    }
+
+    /// <summary>
+    /// Verifies that on Apple's cores dispatch gives runs from <see cref="Poly1305Core.AppleAdvSimdMinimumBytes" /> up
+    /// to <see cref="Poly1305Core.AdvSimdMinimumBytes" /> to the AdvSimd kernel, which caught the scalar loop at 128
+    /// bytes on an Apple M1.
+    /// </summary>
+    /// <param name="length">The length of the run, in bytes.</param>
+    [TestMethod]
+    [DataRow(Poly1305Core.AppleAdvSimdMinimumBytes)]
+    [DataRow(Poly1305Core.AdvSimdMinimumBytes - Poly1305Core.BlockBytes)]
+    public void SelectKernel_WhenRunReachesTheAppleMinimumOnAppleSilicon_ShouldReturnAdvSimd(int length)
+    {
+        if (!SimdCapabilities.AdvSimd)
+            Assert.Inconclusive("AdvSimd is not available on this processor, or the process allows no vector code.");
+
+        Assert.AreEqual(Poly1305Core.KernelKind.AdvSimd, Poly1305Core.SelectKernel(length, appleSilicon: true));
+    }
+
+    /// <summary>
+    /// Verifies that on Apple's cores dispatch keeps every run shorter than
+    /// <see cref="Poly1305Core.AppleAdvSimdMinimumBytes" /> on the scalar loop.
+    /// </summary>
+    [TestMethod]
+    public void SelectKernel_WhenRunIsShorterThanTheAppleMinimumOnAppleSilicon_ShouldReturnScalar()
+    {
+        for (int length = 0; length < Poly1305Core.AppleAdvSimdMinimumBytes; length += Poly1305Core.BlockBytes)
+            Assert.AreEqual(Poly1305Core.KernelKind.Scalar, Poly1305Core.SelectKernel(length, appleSilicon: true), $"length {length}");
+    }
+
+    /// <summary>
+    /// Verifies that on ARM64 processors other than Apple's, dispatch keeps runs shorter than
+    /// <see cref="Poly1305Core.AdvSimdMinimumBytes" /> on the scalar loop, which finished them first on a Neoverse N2.
+    /// </summary>
+    /// <param name="length">The length of the run, in bytes.</param>
+    [TestMethod]
+    [DataRow(Poly1305Core.AppleAdvSimdMinimumBytes)]
+    [DataRow(Poly1305Core.AdvSimdMinimumBytes - Poly1305Core.BlockBytes)]
+    public void SelectKernel_WhenRunIsShorterThanTheAdvSimdMinimumElsewhere_ShouldReturnScalar(int length)
+    {
+        Assert.AreEqual(Poly1305Core.KernelKind.Scalar, Poly1305Core.SelectKernel(length, appleSilicon: false));
     }
 
     /// <summary>
