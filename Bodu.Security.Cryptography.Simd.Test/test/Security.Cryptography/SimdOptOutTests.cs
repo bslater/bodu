@@ -137,8 +137,8 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
-    /// Verifies that with SIMD disabled, Serpent-128 encrypts and decrypts runs of blocks with its scalar rounds, one
-    /// block at a time, whatever the processor supports.
+    /// Verifies that with SIMD disabled, Serpent-128 encrypts and decrypts runs of blocks, and forms its counter blocks,
+    /// with its scalar rounds, one block at a time, whatever the processor supports.
     /// </summary>
     [TestMethod]
     public void SerpentCoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernel()

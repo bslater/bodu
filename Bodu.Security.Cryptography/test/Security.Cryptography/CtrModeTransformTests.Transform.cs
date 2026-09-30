@@ -178,4 +178,79 @@ public sealed partial class CtrModeTransformTests
             CollectionAssert.AreEqual(expected, actual, $"{name}, calls {string.Join("+", calls)}");
         }
     }
+
+    /// <summary>
+    /// Verifies that a message split into two calls at every byte gives the output of a block-at-a-time reference, so
+    /// each call's whole blocks, its partial last block and the counter it hands on agree wherever the split falls.
+    /// </summary>
+    /// <param name="name">The cipher's name, for the test's display.</param>
+    /// <param name="create">Creates a fresh keyed cipher.</param>
+    /// <remarks>
+    /// The message is long enough to reach a group of eight blocks, a group of four and single blocks on either side of
+    /// every split, for ciphers that run their counters in groups.
+    /// </remarks>
+    [TestMethod]
+    [DynamicData(nameof(BatchingCiphers))]
+    public void Transform_WhenSplitIntoTwoCallsAtEveryByte_ShouldMatchBlockAtATimeReference(string name, Func<IBlockCipher> create)
+    {
+        using IBlockCipher cipher = create();
+        int blockSize = cipher.BlockSize / 8;
+        byte[] initialCounter = new byte[blockSize];
+        initialCounter[^1] = 0xF7;
+
+        byte[] input = new byte[(16 * 13) + 7];
+        new Random(0x5E17).NextBytes(input);
+
+        for (int split = 0; split <= input.Length; split++)
+        {
+            int[] calls = [split, input.Length - split];
+            byte[] expected = ReferenceKeystreamXor(cipher, initialCounter, input, calls);
+
+            byte[] actual = new byte[input.Length];
+            using var transform = new CtrModeTransform(cipher, initialCounter);
+            transform.Transform(input.AsSpan(0, split), actual.AsSpan(0, split), encrypt: true);
+            transform.Transform(input.AsSpan(split), actual.AsSpan(split), encrypt: true);
+
+            CollectionAssert.AreEqual(expected, actual, $"{name}, split at {split}");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that the counter carries out of its last four, and its last eight, bytes as a block-at-a-time reference
+    /// carries it: the carry falls inside the first group of blocks, and the message runs on for several groups.
+    /// </summary>
+    /// <param name="name">The cipher's name, for the test's display.</param>
+    /// <param name="create">Creates a fresh keyed cipher.</param>
+    /// <remarks>
+    /// For a 16-byte block these are the carries out of the counter's lowest 32-bit word and out of its lower 64-bit
+    /// half, which a cipher forming its counters a word at a time must propagate.
+    /// </remarks>
+    [TestMethod]
+    [DynamicData(nameof(BatchingCiphers))]
+    public void Transform_WhenCounterCarriesOutOfItsLowWords_ShouldMatchBlockAtATimeReference(string name, Func<IBlockCipher> create)
+    {
+        using IBlockCipher cipher = create();
+        int blockSize = cipher.BlockSize / 8;
+        byte[] input = new byte[(16 * 40) + 3];
+        new Random(0x5E18).NextBytes(input);
+
+        foreach (int carryBytes in new[] { 4, 8 })
+        {
+            if (carryBytes >= blockSize)
+                continue;
+
+            byte[] initialCounter = new byte[blockSize];
+            initialCounter[0] = 0x5A;
+            initialCounter.AsSpan(blockSize - carryBytes).Fill(0xFF);
+            initialCounter[^1] = 0xFA;
+
+            byte[] expected = ReferenceKeystreamXor(cipher, initialCounter, input, [input.Length]);
+
+            byte[] actual = new byte[input.Length];
+            using var transform = new CtrModeTransform(cipher, initialCounter);
+            transform.Transform(input, actual, encrypt: true);
+
+            CollectionAssert.AreEqual(expected, actual, $"{name}, carry out of the last {carryBytes} bytes");
+        }
+    }
 }
