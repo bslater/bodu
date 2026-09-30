@@ -59,6 +59,12 @@ internal static class CryptoHarness
     /// </summary>
     private static readonly int[] s_shortAeadLengths = [0, 16, 128, 192, 320, 384, 448, 512, 576, 768, 960];
 
+    /// <summary>
+    /// The message lengths the Poly1305 kernel cases sweep: each side of every length at which dispatch moves from one
+    /// kernel to the next, then up to the bulk input.
+    /// </summary>
+    private static readonly int[] s_kernelLengths = [64, 128, 192, 256, 384, 512, 768, 1 << 10, 2 << 10, 4 << 10, 16 << 10, BulkLength];
+
     /// <summary>The case filters from the command line; empty to run every case.</summary>
     private static string[] s_filters = [];
 
@@ -88,6 +94,9 @@ internal static class CryptoHarness
         RunHashes();
         RunStreamCiphers();
         RunAeadsAndModes();
+#if !BODU_CRYPTO_BASELINE
+        RunPoly1305Kernels();
+#endif
         RunBlockCiphers();
         RunKeyDerivation();
         RunPublicKey();
@@ -254,6 +263,32 @@ internal static class CryptoHarness
             Measure("mode", $"Bodu {name}-ECB bulk 1 MiB", BulkLength, () => cipher.EncryptBlocks(bulk, output.AsSpan(0, BulkLength)));
         }
     }
+
+#if !BODU_CRYPTO_BASELINE
+    /// <summary>
+    /// Measures Poly1305 through each kernel the processor supports, named explicitly, at lengths either side of the
+    /// dispatch thresholds, to show where each kernel overtakes the one below it.
+    /// </summary>
+    /// <remarks>
+    /// The library's switch does not reach a kernel named explicitly, so with <c>--disable-simd</c> these cases would
+    /// repeat the default configuration's, and they are left out.
+    /// </remarks>
+    private static void RunPoly1305Kernels()
+    {
+        if (Program.IsSimdDisabled)
+            return;
+
+        var driver = Poly1305KernelDriver.Create();
+        byte[] key = Random(32, 16);
+        byte[] tag = new byte[16];
+        foreach (int length in s_kernelLengths)
+        {
+            byte[] message = Random(length, 17);
+            foreach ((string name, int kernel) in driver.Kernels)
+                Measure("kernel", $"Poly1305 {name} {SizeLabel(length)}", length, () => driver.ComputeTag(kernel, key, message, tag));
+        }
+    }
+#endif
 
     /// <summary>
     /// Measures block ciphers one block per call, through <see cref="IBlockCipher.Encrypt" /> and

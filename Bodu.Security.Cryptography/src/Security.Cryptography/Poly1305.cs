@@ -33,7 +33,8 @@ namespace Bodu.Security.Cryptography;
 /// accumulator is finalized by adding the second half of the key <c>s</c> and serializing the result as the final MAC
 /// tag. The arithmetic runs on three 64-bit limbs with 128-bit products, straight from the caller's buffers, and takes
 /// the same time for every message of a given length. On x64 processors with AVX2, runs of 512 bytes or more are
-/// absorbed four or eight blocks at a time in vector registers, over 26-bit limbs, to the same result.
+/// absorbed four or eight blocks at a time in vector registers, and on ARM64 runs of 256 bytes or more two at a time,
+/// over 26-bit limbs, to the same result.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>

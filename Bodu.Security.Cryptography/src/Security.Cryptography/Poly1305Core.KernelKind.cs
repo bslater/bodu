@@ -40,5 +40,11 @@ internal partial struct Poly1305Core
         /// Eight blocks at once over 512-bit vectors on x64 with AVX-512F, one block in each 64-bit lane.
         /// </summary>
         Avx512,
+
+        /// <summary>
+        /// Two blocks at once over 128-bit vectors on ARM64 with AdvSimd, one block in each 64-bit lane, two groups of
+        /// two per step.
+        /// </summary>
+        AdvSimd,
     }
 }
