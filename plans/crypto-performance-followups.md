@@ -1,6 +1,6 @@
 # Implementation plan: the cryptography speed-ups left for later
 
-**Status:** In progress — F1, F2, F3 and F4 done (§9) · **Source:** the "Left for later" items in
+**Status:** In progress — F1 to F5 done (§9) · **Source:** the "Left for later" items in
 [`crypto-performance.md`](crypto-performance.md) §10 and the open items in
 [`argon2-performance.md`](argon2-performance.md) §10.3, after `Bodu.Security.Cryptography` 1.1.0 ·
 **Target:** `Bodu.Security.Cryptography`, next lock-step release
@@ -203,6 +203,8 @@ Done: see §9 for the results and where the build departs from this design.
 
 ### F5 — Serpent's wide-block variants
 
+Done: see §9 for the results and where the build departs from this design.
+
 - **Problem:**
   - Serpent-256, 512 and 1024 gained 7× in 1.1.0, against Serpent-128's 20×.
   - Every round sends each four-word group through the indexed S-box dispatch as a call.
@@ -320,7 +322,7 @@ As `crypto-performance.md` §6:
 
 Figures are from the `--crypto-harness` of `Bodu.Security.Cryptography.Benchmarks`. F1's and F2's
 are from the same 4-vCPU Xeon VM as §1, at 2.8 GHz with AVX-512F/VL but no IFMA; F3's section
-describes the machine the work moved to, where F4's were measured as well. Each is the range over
+describes the machine the work moved to, where F4's and F5's were measured as well. Each is the range over
 two runs of the median of five rounds. The baselines were measured the same day on this
 branch before the item's code, with the harness change that added the case in place.
 
@@ -1252,3 +1254,128 @@ How it was done, and where it departs from the design above:
   - Verification forms the 8 odd multiples of −A on every call, about 70 field multiplications,
     which the key material could keep as well.
   - X25519's shared secret, the Montgomery ladder, is unchanged.
+
+### F5 — Serpent's wide-block variants (done)
+
+F5's figures come from the second machine, F3's. The before build is this branch at 6ef77d8f, which adds the harness's
+block rows to master at 57c0ab26 (#729); the after build is at 9182607e, with F5's code. Both ran alternately, in each
+of the harness's five processor configurations on both runtimes, in two runs, the second in the opposite order. The rows
+encrypt and decrypt 64 KiB one block per call, through `IBlockCipher.Encrypt` and `Decrypt`. Serpent-128's rows run
+code F5 does not touch, so they show how far the runs drift on their own. *Change* is the ratio of the two ranges'
+midpoints, above 1 where F5 is faster. Nothing is allocated before or after.
+
+| One block per call (net10.0, this host's default) | Before F5 (MiB/s) | After F5 (MiB/s) | Change |
+|---|---|---|---|
+| Serpent-128 encrypt | 81.0–85.7 | 87.1–88.6 | 1.05× |
+| Serpent-128 decrypt | 82.9–86.6 | 82.7–88.4 | 1.01× |
+| Serpent-256 encrypt | 22.9–26.1 | 78.7–81.2 | 3.26× |
+| Serpent-256 decrypt | 21.6–22.9 | 79.4–81.5 | 3.62× |
+| Serpent-512 encrypt | 19.2–22.0 | 51.2–51.8 | 2.50× |
+| Serpent-512 decrypt | 19.4 | 47.9–50.6 | 2.54× |
+| Serpent-1024 encrypt | 16.9–17.7 | 40.1–41.9 | 2.37× |
+| Serpent-1024 decrypt | 15.7–16.3 | 40.7–41.7 | 2.58× |
+
+| One block per call (net8.0, this host's default) | Before F5 (MiB/s) | After F5 (MiB/s) | Change |
+|---|---|---|---|
+| Serpent-128 encrypt | 83.0–86.4 | 83.8–84.2 | 0.99× |
+| Serpent-128 decrypt | 88.3–88.4 | 78.7–88.1 | 0.94× |
+| Serpent-256 encrypt | 23.5–24.6 | 70.0–77.9 | 3.07× |
+| Serpent-256 decrypt | 20.0–20.6 | 76.3–82.4 | 3.91× |
+| Serpent-512 encrypt | 19.0–21.3 | 50.2–55.0 | 2.61× |
+| Serpent-512 decrypt | 16.4–17.9 | 49.0–50.2 | 2.89× |
+| Serpent-1024 encrypt | 15.5–17.6 | 39.1–43.5 | 2.50× |
+| Serpent-1024 decrypt | 13.9–14.3 | 41.3–43.0 | 2.99× |
+
+Five alternating A/B rounds of the wide-block rows, each build in its own process, give the same picture:
+
+| One block per call | Runtime | Before F5 (MiB/s) | After F5 (MiB/s) | Change (medians) |
+|---|---|---|---|---|
+| Serpent-256 encrypt | net10.0 | 24.5–25.8 | 71.7–79.5 | 3.06× |
+| Serpent-256 encrypt | net8.0 | 20.4–24.9 | 77.5–81.3 | 3.32× |
+| Serpent-256 decrypt | net10.0 | 23.0–24.5 | 76.1–86.9 | 3.31× |
+| Serpent-256 decrypt | net8.0 | 19.5–24.1 | 76.2–83.4 | 3.68× |
+| Serpent-512 encrypt | net10.0 | 18.7–21.7 | 44.2–51.9 | 2.52× |
+| Serpent-512 encrypt | net8.0 | 14.2–19.8 | 44.8–54.9 | 2.61× |
+| Serpent-512 decrypt | net10.0 | 16.5–20.6 | 45.2–48.9 | 2.54× |
+| Serpent-512 decrypt | net8.0 | 16.7–19.1 | 44.7–49.4 | 2.64× |
+| Serpent-1024 encrypt | net10.0 | 16.0–17.6 | 36.2–42.9 | 2.48× |
+| Serpent-1024 encrypt | net8.0 | 10.5–17.2 | 39.1–44.3 | 2.60× |
+| Serpent-1024 decrypt | net10.0 | 15.1–17.0 | 32.3–40.0 | 2.25× |
+| Serpent-1024 decrypt | net8.0 | 12.2–15.3 | 35.1–41.0 | 2.89× |
+
+The target, at least twice each variant's 1.1.0 speed one block per call, is met by every wide-block row in every
+configuration on both runtimes: Serpent-256 gains 3.0–4.1×, Serpent-512 2.3–3.1× and Serpent-1024 2.25–3.0×, while
+the Serpent-128 rows move 0.94–1.05×. Serpent-256 now runs about as fast per byte as Serpent-128 does one block per call,
+although a block of it takes 48 rounds of two groups where Serpent-128's takes 32 rounds of one.
+
+Every row's change, in every configuration:
+
+| One block per call (net10.0) | this host's default | `DOTNET_PreferredVectorBitWidth=512` | AVX-512 off | AVX2 off | no vector instructions |
+|---|---|---|---|---|---|
+| Serpent-128 encrypt | 1.05× | 0.95× | 1.01× | 1.01× | 1.00× |
+| Serpent-128 decrypt | 1.01× | 0.98× | 0.99× | 0.97× | 0.97× |
+| Serpent-256 encrypt | 3.26× | 3.25× | 3.16× | 3.32× | 3.25× |
+| Serpent-256 decrypt | 3.62× | 3.33× | 3.53× | 3.56× | 3.64× |
+| Serpent-512 encrypt | 2.50× | 3.09× | 2.42× | 2.65× | 2.61× |
+| Serpent-512 decrypt | 2.54× | 2.88× | 2.33× | 2.50× | 2.60× |
+| Serpent-1024 encrypt | 2.37× | 2.87× | 2.53× | 2.54× | 2.35× |
+| Serpent-1024 decrypt | 2.58× | 2.82× | 2.38× | 2.52× | 2.57× |
+
+| One block per call (net8.0) | this host's default | `DOTNET_PreferredVectorBitWidth=512` | AVX-512 off | AVX2 off | no vector instructions |
+|---|---|---|---|---|---|
+| Serpent-128 encrypt | 0.99× | 1.03× | 0.98× | 1.00× | 1.00× |
+| Serpent-128 decrypt | 0.94× | 0.99× | 1.00× | 0.95× | 0.98× |
+| Serpent-256 encrypt | 3.07× | 3.30× | 3.02× | 3.40× | 3.18× |
+| Serpent-256 decrypt | 3.91× | 3.82× | 4.11× | 3.62× | 3.61× |
+| Serpent-512 encrypt | 2.61× | 2.52× | 2.71× | 2.64× | 2.60× |
+| Serpent-512 decrypt | 2.89× | 2.63× | 2.88× | 3.06× | 2.94× |
+| Serpent-1024 encrypt | 2.50× | 2.66× | 2.42× | 2.56× | 2.53× |
+| Serpent-1024 decrypt | 2.99× | 2.88× | 2.98× | 2.70× | 2.75× |
+
+The rounds are scalar, so the vector configurations change nothing but the drift between runs.
+
+How it was done, and where it departs from the design above:
+
+- **Eight rounds at a time, the S-box a type argument.** The rounds run in `SerpentCore`, eight at a time, one per
+  S-box, as the design asked. Each round names its S-box as a type argument, one of eight structs behind
+  `IRoundSBox`, so every circuit is inlined where the round is compiled.
+  - W7 had found a version generic over wrappers of the *words* running out of inlining budget. Here the type argument
+    only selects the circuit, and the words stay plain `uint`.
+  - The generated code on both runtimes calls nothing inside the rounds.
+- **Two paths.**
+  - Serpent-256's eight words fit in the registers. `EncryptResidentWideBlock` / `DecryptResidentWideBlock` hold
+    them in locals for the whole block, so the word rotation between rounds is a renaming of the locals, which returns
+    them to their places every eight rounds, and each pass of eight rounds is written out once. The generated code makes
+    three stack references on either runtime.
+  - Serpent-512's sixteen words and Serpent-1024's thirty-two do not fit in x64's sixteen registers.
+    `EncryptStreamedWideBlock` / `DecryptStreamedWideBlock` pass each round over the state a four-word group at a time.
+    The group is read into locals, takes its round key, S-box and linear transform, and is written to a second copy of
+    the state one word to the left, which is the rotation. The two copies take 256 bytes of stack and are cleared after
+    the block.
+  - In the spike, the resident rounds ran Serpent-256 1.27–1.30× faster than streaming it, on both runtimes. A width
+    fixed at compile time made no measurable difference to the streamed rounds.
+- **Departure: the tweak is folded into the round keys.** The design kept the tweak injection every fourth round.
+  Each injection is followed at once by the next round's key, so `SerpentBlockCipher` adds the injected material to
+  that key when the key is set, and keeps no tweak schedule. The construction and every output are unchanged. In the
+  spike, folding ran 2–13% faster than injecting.
+- **Removed code.** The per-pass helpers went, with the base class's inverse S-box and linear-transform wrappers, which
+  nothing else called. The indexed `SerpentCore.SBox` stays for the key schedules, and `InverseSBox` for the circuit
+  tests.
+- **Generated code, on both runtimes.** Each of the four entry points is `NoInlining | AggressiveOptimization`, so it
+  compiles once, fully optimized, with its own inlining budget: the resident ones to 3.1–3.3 KB and the streamed ones to
+  2.7–2.8 KB. They call only the throw helpers, and the streamed ones the argument check and the clearing of the
+  copies as well.
+- **Tests.**
+  - The replaced rounds stay in the tests as the oracle, `SerpentWideReference`, which applies `SerpentReference`'s
+    table-driven S-boxes. It landed before the change, with tests that hold `Serpent256/512/1024Cipher` to it in and
+    out of place over a key, tweak and blocks of all-ones and all-zero bytes and six seeded keys and tweaks, and passed
+    against 1.1.0's rounds.
+  - `SerpentCoreTests` hold both paths to the oracle, given the round keys with the tweak folded in: at every width, at
+    one, two and the variant's own number of eight-round passes, and in and out of place. They also check the guards
+    and that every entry point forbids inlining.
+  - The variants' pinned vectors still pass, and the full suite passes on both runtimes.
+- **Left for later.**
+  - A kernel with one block per vector lane, which the design left as a second step. The wide variants'
+    `EncryptBlocks` is still the default, one `Encrypt` per block, so their ECB and CTR would gain from it.
+  - ARM64's thirty-one general registers could hold Serpent-512's sixteen words too. F7's hardware run would show
+    whether a resident path pays there.
