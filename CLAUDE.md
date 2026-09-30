@@ -260,7 +260,7 @@ bash bld/docs/build-api-docs.sh serve           # browse docs/_site
 | `metadata` | `docfx metadata` once per framework, from `docs/docfx.metadata.json` (the shared API settings), into `docs/obj/api/metadata/<tfm>`. |
 | `merge` | `bld/docs/merge_framework_metadata.py` unions the frameworks by UID into `docs/api` - the newest framework supplies an API's content, an API only an older framework has is kept - and annotates every item with `frameworks`, every type with `package`, and every namespace with `packages`. It compares every API present in more than one framework (declaration, and the compiler-written XML documentation) and **fails on a difference** not listed, with a reason, in `bld/docs-checks/framework-divergence-allowlist.txt`. The report lands in `docs/obj/api/divergence-report.md` and the CI job summary. |
 | `build` | `docfx build docs/docfx.json` with the `default` + `modern` + `templates/bodu` templates. |
-| `validate` | `bld/docs/validate_api_site.py` checks the merged metadata and the rendered pages (Applies to, package facts, source links, navigation, landing pages, overlay version), that every link in the rendered site reaches a file and anchor the site has, and that every href in an XML documentation comment anywhere in the codebase that leads into the site (relative, as the API pages render it, or an absolute URL of the published site) does too. DocFX checks neither the links in an `apidoc` overwrite file nor XML-doc hrefs, so link an overview to another namespace with `xref:`, never by its `.md` file. |
+| `validate` | `bld/docs/validate_api_site.py` checks the merged metadata and the rendered pages (Applies to, package facts, source links, navigation, landing pages, overlay version), that every link in the rendered site reaches a file and anchor the site has, and that every href in an XML documentation comment anywhere in the codebase that leads into the site (relative, as the API pages render it, or an absolute URL of the published site) does too. DocFX checks neither the links in an `apidoc` overwrite file nor XML-doc hrefs, so link an overview to another namespace with `xref:`, never by its `.md` file. It also fails when a line of documented XML documentation continues a paragraph with a Markdown block marker (see **Punctuation** under Documentation Tone). |
 
 Things to know when changing it:
 
@@ -667,6 +667,23 @@ This convention is the dotted-flat reading of `dotnet_style_namespace_match_fold
 - Do not repeat obvious type information unnecessarily.
 - Do not over-explain trivial members.
 - Do not use casual or conversational wording.
+
+#### Punctuation
+
+- **Never use an em-dash or an en-dash**, anywhere written to this repository: code, comments, XML
+  documentation, resx strings, Markdown, scripts, workflows, commit messages, and pull request text. Use a
+  hyphen: ` - ` (spaced) for an aside, `-` (unspaced) in a range such as `2020-2026` or `net8.0-net10.0`. Often a
+  comma, a colon, or parentheses reads better than a dash at all.
+- The only exceptions are dashes that are data rather than prose (a test input exercising non-ASCII text, verbatim
+  third-party text). Each such file is listed, with its reason, in `bld/policy/dash-allowlist.txt`. Policy
+  **BODU-P014** (`bld/check-policy.sh`, run by the Policy Gate and the pre-push hook) fails on a dash in any other
+  added line.
+- **Never let a Markdown block marker open a continuation line.** DocFX renders XML documentation as Markdown, so a
+  wrapped line that begins with `- `, `+ `, `* `, `1. `, `#` or `>` (written `&gt;`) turns the rest of the paragraph
+  into a list, heading or quote on the API site. The same holds for hand-wrapped Markdown. The Bodu XML-doc formatter
+  never wraps a marker to the start of a line (it keeps it on the line before), and the docs pipeline's `doclines`
+  check (**BODU-P015**) fails on one in documented source. In Markdown, end the previous line with the dash instead,
+  or reword.
 
 ### Inline Comments
 

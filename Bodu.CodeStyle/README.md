@@ -102,6 +102,10 @@ Defaults match the Bodu codebase conventions:
 - Lines wrap at `120` characters by default, breaking only between tokens.
 - If a single atomic token exceeds the configured maximum, the line is allowed to exceed it rather than corrupt
   the content.
+- A wrapped line never begins with a token Markdown reads as the start of a block (`-`, `+` or `*`, a run of `-`
+  or `=`, one to six `#`, `>` or `&gt;`, `1.` or `1)`): DocFX renders documentation text as Markdown, so the line
+  would become a list, heading or quote. The break moves before the preceding word instead, or, when the line holds
+  no other word, the token stays on it over budget.
 
 ## Configuration
 
