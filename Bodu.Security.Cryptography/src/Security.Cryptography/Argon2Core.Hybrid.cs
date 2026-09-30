@@ -6,6 +6,7 @@
 
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -13,17 +14,23 @@ internal static partial class Argon2Core
 {
     /// <summary>
     /// The compression function over pairs of rows and pairs of columns: one of each pair in the vector registers, laid
-    /// out as <see cref="Vector128Kernel{TIsa}" /> lays out a row, and the other in general registers, as
-    /// <see cref="ResidentScalarKernel" /> holds one, their steps interleaved so that the vector pipes and the integer
-    /// pipes work at once. Temporary: F13 of the follow-up plan measures it on ARM64 against the scalar and AdvSimd
-    /// kernels.
+    /// out as <see cref="Vector128Kernel{TIsa}" /> lays out a row, and the other in sixteen general registers, their
+    /// steps interleaved so that the vector pipes and the integer pipes work at once. Dispatch selects it on ARM64.
     /// </summary>
     /// <typeparam name="TIsa">The instruction set supplying the vector operations with no portable form.</typeparam>
     /// <remarks>
+    /// <para>
     /// The eight rows of a block are independent of each other, as are its eight columns, so any two can be computed at
     /// once. Per round of one row, the AdvSimd kernel issues about 150 instructions to the vector pipes and the scalar
-    /// kernel about 200 to the integer pipes; on a processor with two vector pipes and four integer pipes neither alone
-    /// keeps the other's pipes busy.
+    /// kernel about 200 to the integer pipes; on a processor with two vector pipes and four integer pipes, neither
+    /// alone keeps the other's pipes busy.
+    /// </para>
+    /// <para>
+    /// Each row or column in general registers stays there across its round, where <see cref="ScalarKernel" /> loads
+    /// and stores four words for every <c>GB</c>: ARM64's thirty-one general registers hold the sixteen words and the
+    /// kernel's pointers. On a Neoverse N2 this kernel ran 1.25 to 1.28 times as fast as the scalar kernel, and on an
+    /// Apple M1 1.3 times as fast as the AdvSimd kernel, under .NET 8 and .NET 10 alike.
+    /// </para>
     /// </remarks>
     internal readonly struct HybridKernel<TIsa>
         : IArgon2Kernel
@@ -130,15 +137,15 @@ internal static partial class Argon2Core
             // Each half of each vector step is followed by the same half of the four matching scalar steps, so the two
             // streams of instructions stay close enough together for the processor to issue them side by side.
             Vector128Kernel<TIsa>.G1(ref a0, ref b0, ref c0, ref d0, ref a1, ref b1, ref c1, ref d1);
-            ResidentScalarKernel.GB1(ref w0, ref w4, ref w8, ref w12);
-            ResidentScalarKernel.GB1(ref w1, ref w5, ref w9, ref w13);
-            ResidentScalarKernel.GB1(ref w2, ref w6, ref w10, ref w14);
-            ResidentScalarKernel.GB1(ref w3, ref w7, ref w11, ref w15);
+            GB1(ref w0, ref w4, ref w8, ref w12);
+            GB1(ref w1, ref w5, ref w9, ref w13);
+            GB1(ref w2, ref w6, ref w10, ref w14);
+            GB1(ref w3, ref w7, ref w11, ref w15);
             Vector128Kernel<TIsa>.G2(ref a0, ref b0, ref c0, ref d0, ref a1, ref b1, ref c1, ref d1);
-            ResidentScalarKernel.GB2(ref w0, ref w4, ref w8, ref w12);
-            ResidentScalarKernel.GB2(ref w1, ref w5, ref w9, ref w13);
-            ResidentScalarKernel.GB2(ref w2, ref w6, ref w10, ref w14);
-            ResidentScalarKernel.GB2(ref w3, ref w7, ref w11, ref w15);
+            GB2(ref w0, ref w4, ref w8, ref w12);
+            GB2(ref w1, ref w5, ref w9, ref w13);
+            GB2(ref w2, ref w6, ref w10, ref w14);
+            GB2(ref w3, ref w7, ref w11, ref w15);
 
             // Shift b, c, and d by one, two, and three words across each register pair, so the diagonals line up.
             Vector128<ulong> t0 = TIsa.UpperThenLower(b0, b1);
@@ -152,15 +159,15 @@ internal static partial class Argon2Core
             d1 = t1;
 
             Vector128Kernel<TIsa>.G1(ref a0, ref b0, ref c0, ref d0, ref a1, ref b1, ref c1, ref d1);
-            ResidentScalarKernel.GB1(ref w0, ref w5, ref w10, ref w15);
-            ResidentScalarKernel.GB1(ref w1, ref w6, ref w11, ref w12);
-            ResidentScalarKernel.GB1(ref w2, ref w7, ref w8, ref w13);
-            ResidentScalarKernel.GB1(ref w3, ref w4, ref w9, ref w14);
+            GB1(ref w0, ref w5, ref w10, ref w15);
+            GB1(ref w1, ref w6, ref w11, ref w12);
+            GB1(ref w2, ref w7, ref w8, ref w13);
+            GB1(ref w3, ref w4, ref w9, ref w14);
             Vector128Kernel<TIsa>.G2(ref a0, ref b0, ref c0, ref d0, ref a1, ref b1, ref c1, ref d1);
-            ResidentScalarKernel.GB2(ref w0, ref w5, ref w10, ref w15);
-            ResidentScalarKernel.GB2(ref w1, ref w6, ref w11, ref w12);
-            ResidentScalarKernel.GB2(ref w2, ref w7, ref w8, ref w13);
-            ResidentScalarKernel.GB2(ref w3, ref w4, ref w9, ref w14);
+            GB2(ref w0, ref w5, ref w10, ref w15);
+            GB2(ref w1, ref w6, ref w11, ref w12);
+            GB2(ref w2, ref w7, ref w8, ref w13);
+            GB2(ref w3, ref w4, ref w9, ref w14);
 
             t0 = TIsa.UpperThenLower(b1, b0);
             t1 = TIsa.UpperThenLower(b0, b1);
@@ -197,6 +204,53 @@ internal static partial class Argon2Core
             Unsafe.Add(ref w, (6 * pairStride) + 1) = w13;
             Unsafe.Add(ref w, 7 * pairStride) = w14;
             Unsafe.Add(ref w, (7 * pairStride) + 1) = w15;
+        }
+
+        /// <summary>
+        /// Applies the first half of <c>GB</c> - the steps that rotate by 32 and by 24 - to four words held in general
+        /// registers.
+        /// </summary>
+        /// <param name="a">The <c>a</c> word.</param>
+        /// <param name="b">The <c>b</c> word.</param>
+        /// <param name="c">The <c>c</c> word.</param>
+        /// <param name="d">The <c>d</c> word.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void GB1(ref ulong a, ref ulong b, ref ulong c, ref ulong d)
+        {
+            a = FBlaMka(a, b);
+            d = (d ^ a).RotateBitsRightUnchecked(32);
+            c = FBlaMka(c, d);
+            b = (b ^ c).RotateBitsRightUnchecked(24);
+        }
+
+        /// <summary>
+        /// Applies the second half of <c>GB</c> - the steps that rotate by 16 and by 63 - to four words held in general
+        /// registers.
+        /// </summary>
+        /// <param name="a">The <c>a</c> word.</param>
+        /// <param name="b">The <c>b</c> word.</param>
+        /// <param name="c">The <c>c</c> word.</param>
+        /// <param name="d">The <c>d</c> word.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void GB2(ref ulong a, ref ulong b, ref ulong c, ref ulong d)
+        {
+            a = FBlaMka(a, b);
+            d = (d ^ a).RotateBitsRightUnchecked(16);
+            c = FBlaMka(c, d);
+            b = (b ^ c).RotateBitsRightUnchecked(63);
+        }
+
+        /// <summary>
+        /// Computes <c>x + y + 2 * trunc(x) * trunc(y)</c> modulo 2^64, where <c>trunc(x)</c> is the low 32 bits of x.
+        /// </summary>
+        /// <param name="x">The first operand.</param>
+        /// <param name="y">The second operand.</param>
+        /// <returns>The value <c>x + y + 2·trunc(x)·trunc(y)</c> modulo 2^64.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong FBlaMka(ulong x, ulong y)
+        {
+            ulong xy = (ulong)(uint)x * (uint)y;
+            return x + y + (2 * xy);
         }
     }
 }

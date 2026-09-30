@@ -65,7 +65,6 @@ public sealed partial class Argon2CoreTests
     [TestMethod]
     [DataRow("Auto")]
     [DataRow("Scalar")]
-    [DataRow("ScalarResident")]
     public void IsSupported_WhenKernelRunsEverywhere_ShouldReturnTrue(string kernel)
     {
         Assert.IsTrue(Argon2Core.IsSupported(Enum.Parse<Argon2Core.KernelKind>(kernel)));

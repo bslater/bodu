@@ -20,7 +20,6 @@ public sealed partial class Argon2CoreTests
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
-    [DataRow("ScalarResident")]
     [DataRow("AdvSimdHybrid")]
     public void FillBlock_WhenOverwriting_ShouldMatchTheScalarKernel(string kernel) =>
         AssertKernelMatchesScalar(ParseSupportedKernel(kernel), withXor: false, referenceIsDestination: false);
@@ -34,7 +33,6 @@ public sealed partial class Argon2CoreTests
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
-    [DataRow("ScalarResident")]
     [DataRow("AdvSimdHybrid")]
     public void FillBlock_WhenXoring_ShouldMatchTheScalarKernel(string kernel) =>
         AssertKernelMatchesScalar(ParseSupportedKernel(kernel), withXor: true, referenceIsDestination: false);
@@ -49,7 +47,6 @@ public sealed partial class Argon2CoreTests
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
-    [DataRow("ScalarResident")]
     [DataRow("AdvSimdHybrid")]
     public void FillBlock_WhenReferenceIsTheDestination_ShouldMatchTheScalarKernel(string kernel) =>
         AssertKernelMatchesScalar(ParseSupportedKernel(kernel), withXor: false, referenceIsDestination: true);
@@ -124,10 +121,6 @@ public sealed partial class Argon2CoreTests
 
             case Argon2Core.KernelKind.Ssse3:
                 FillBlock<Argon2Core.Vector128Kernel<Argon2Core.Ssse3Isa>>(state, scratch, reference, next, withXor);
-                break;
-
-            case Argon2Core.KernelKind.ScalarResident:
-                FillBlock<Argon2Core.ResidentScalarKernel>(state, scratch, reference, next, withXor);
                 break;
 
             case Argon2Core.KernelKind.AdvSimdHybrid:

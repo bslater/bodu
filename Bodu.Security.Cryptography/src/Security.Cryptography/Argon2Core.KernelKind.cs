@@ -14,8 +14,8 @@ internal static partial class Argon2Core
     internal enum KernelKind
     {
         /// <summary>
-        /// The kind dispatch selects: the widest kernel the processor supports and the process allows, bar the AdvSimd
-        /// kernel, which dispatch selects only on Apple's cores under .NET 8.
+        /// The kind dispatch selects: the widest x64 kernel the processor supports and the process allows, the hybrid
+        /// kernel on ARM64, and the scalar kernel elsewhere.
         /// </summary>
         Auto = 0,
 
@@ -30,9 +30,9 @@ internal static partial class Argon2Core
         Ssse3,
 
         /// <summary>
-        /// The 128-bit kernel on ARM64, over AdvSimd, which dispatch selects on Apple's cores under .NET 8. Elsewhere,
-        /// and under .NET 10, it runs only where a caller names it, and dispatch selects the scalar kernel, which ran
-        /// faster on a Neoverse N2 under both runtimes and as fast on an Apple M1 under .NET 10.
+        /// The 128-bit kernel on ARM64, over AdvSimd, one row or column in eight vector registers. It runs only where a
+        /// caller names it: dispatch selects <see cref="AdvSimdHybrid" />, and the scalar kernel ran faster than this
+        /// one on a Neoverse N2.
         /// </summary>
         AdvSimd,
 
@@ -42,14 +42,8 @@ internal static partial class Argon2Core
         Avx2,
 
         /// <summary>
-        /// The scalar kernel holding each row or column in general registers across its round. Temporary: F13 of the
-        /// follow-up plan measures it against <see cref="Scalar" />.
-        /// </summary>
-        ScalarResident,
-
-        /// <summary>
-        /// Pairs of rows and pairs of columns on ARM64, one of each pair over AdvSimd and the other in general
-        /// registers, interleaved. Temporary, as <see cref="ScalarResident" /> is.
+        /// The kernel dispatch selects on ARM64: pairs of rows and pairs of columns, one of each pair over AdvSimd and
+        /// the other in general registers, interleaved so that the vector and integer pipes work at once.
         /// </summary>
         AdvSimdHybrid,
     }
