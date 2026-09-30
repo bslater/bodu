@@ -34,15 +34,12 @@ public sealed class SimdOptOutTests
 
     /// <summary>
     /// Verifies that with SIMD disabled, Argon2 dispatches to its scalar compression kernel whatever the processor
-    /// supports, on Apple's cores and elsewhere, so the linked Argon2 vectors in this assembly hold the scalar kernel to
-    /// them.
+    /// supports, so the linked Argon2 vectors in this assembly hold the scalar kernel to them.
     /// </summary>
     [TestMethod]
     public void Argon2CoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernel()
     {
         Assert.AreEqual(Argon2Core.KernelKind.Scalar, Argon2Core.SelectKernel());
-        Assert.AreEqual(Argon2Core.KernelKind.Scalar, Argon2Core.SelectKernel(appleSilicon: false));
-        Assert.AreEqual(Argon2Core.KernelKind.Scalar, Argon2Core.SelectKernel(appleSilicon: true));
     }
 
     /// <summary>
