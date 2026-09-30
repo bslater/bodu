@@ -102,6 +102,9 @@ internal static class CryptoHarness
 #endif
         RunBlockCiphers();
         RunKeyDerivation();
+#if !BODU_CRYPTO_BASELINE
+        RunArgon2Kernels();
+#endif
         RunPublicKey();
     }
 
@@ -298,6 +301,23 @@ internal static class CryptoHarness
             foreach ((string name, int kernel) in driver.Kernels)
                 Measure("kernel", $"Poly1305 {name} {SizeLabel(length)}", length, () => driver.ComputeTag(kernel, key, message, tag));
         }
+    }
+
+    /// <summary>
+    /// Measures Argon2id through each compression kernel the processor supports, named explicitly and on the calling
+    /// thread, with the parameters of the key-derivation case.
+    /// </summary>
+    private static void RunArgon2Kernels()
+    {
+        if (Program.IsSimdDisabled)
+            return;
+
+        var driver = Argon2FillDriver.Create();
+        byte[] password = Random(32, 21);
+        byte[] salt = Random(16, 22);
+        var argon2 = new Argon2Parameters { MemoryKiB = 19 * 1024, Iterations = 2, Parallelism = 1 };
+        foreach ((string name, int kernel) in driver.Kernels)
+            Measure("kernel", $"Argon2id {name} m=19 MiB t=2 p=1", 0, () => driver.DeriveKeyWithKernel(argon2, password, salt, kernel));
     }
 #endif
 

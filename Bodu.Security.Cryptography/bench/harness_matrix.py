@@ -49,12 +49,12 @@ CONFIGURATION_SETTINGS = {
 # CubeHash, ChaCha20 and Salsa20, Poly1305, Serpent-128, scrypt, Argon2), the PMULL GHASH and POLYVAL kernels (GCM,
 # GCM-SIV), and the umulh products of Poly1305's scalar loop and of Curve25519, which the library's switch leaves in
 # place. Poly1305 and its AEADs run at lengths either side of the AdvSimd kernel's thresholds, and the kernel cases time
-# each Poly1305 kernel on its own.
+# each Poly1305 kernel and each Argon2 kernel on its own.
 CRYPTO_FILTERS = [
     'hash/Bodu BLAKE2', 'hash/Bodu BLAKE3', 'hash/Bodu CubeHash',
     'stream/Bodu ChaCha20', 'stream/Bodu XChaCha20', 'stream/Bodu Salsa20', 'stream/Bodu XSalsa20',
     'Poly1305 64 B', 'Poly1305 128 B', 'Poly1305 192 B', 'Poly1305 256 B', 'Poly1305 512 B', 'Poly1305 1 KiB',
-    'Poly1305 1 MiB', 'kernel/Poly1305', 'GCM',
+    'Poly1305 1 MiB', 'kernel/Poly1305', 'kernel/Argon2', 'GCM',
     'Serpent-128-', 'kdf/', 'asym/Bodu X25519', 'asym/Bodu Ed25519 sign', 'asym/Bodu Ed25519 verify',
 ]
 
