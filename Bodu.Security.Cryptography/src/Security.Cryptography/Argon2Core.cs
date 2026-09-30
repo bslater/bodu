@@ -158,10 +158,10 @@ internal static partial class Argon2Core
     /// kernel.
     /// </para>
     /// <para>
-    /// On ARM64 the hybrid kernel ran 1.25 to 1.28 times as fast as the scalar kernel on a Neoverse N2 and 1.3 times as
-    /// fast as the AdvSimd kernel on an Apple M1, under .NET 8 and .NET 10 alike. The AdvSimd kernel, which holds one
-    /// row in eight vector registers, ran slower than the scalar kernel on the N2 and runs only where a caller names
-    /// it.
+    /// On ARM64 the hybrid kernel ran 1.24 to 1.28 times as fast as the scalar kernel on a Neoverse N2 and 1.3 to 1.6
+    /// times as fast as the AdvSimd kernel on an Apple M1, under .NET 8 and .NET 10 alike. The AdvSimd kernel, which
+    /// holds one row in eight vector registers, ran slower than the scalar kernel on the N2 and runs only where a
+    /// caller names it.
     /// </para>
     /// </remarks>
     internal static KernelKind SelectKernel()

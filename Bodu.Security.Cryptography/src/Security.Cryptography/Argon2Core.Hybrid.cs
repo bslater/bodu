@@ -28,8 +28,8 @@ internal static partial class Argon2Core
     /// <para>
     /// Each row or column in general registers stays there across its round, where <see cref="ScalarKernel" /> loads
     /// and stores four words for every <c>GB</c>: ARM64's thirty-one general registers hold the sixteen words and the
-    /// kernel's pointers. On a Neoverse N2 this kernel ran 1.25 to 1.28 times as fast as the scalar kernel, and on an
-    /// Apple M1 1.3 times as fast as the AdvSimd kernel, under .NET 8 and .NET 10 alike.
+    /// kernel's pointers. On a Neoverse N2 this kernel ran 1.24 to 1.28 times as fast as the scalar kernel, and on an
+    /// Apple M1 1.3 to 1.6 times as fast as the AdvSimd kernel, under .NET 8 and .NET 10 alike.
     /// </para>
     /// </remarks>
     internal readonly struct HybridKernel<TIsa>

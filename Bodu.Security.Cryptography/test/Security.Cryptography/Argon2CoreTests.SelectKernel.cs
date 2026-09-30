@@ -33,9 +33,9 @@ public sealed partial class Argon2CoreTests
     }
 
     /// <summary>
-    /// Verifies that dispatch selects the hybrid kernel on every ARM64 processor under both runtimes: it ran 1.25 to
-    /// 1.28 times as fast as the scalar kernel on a Neoverse N2, and 1.3 times as fast as the AdvSimd kernel on an
-    /// Apple M1.
+    /// Verifies that dispatch selects the hybrid kernel on every ARM64 processor under both runtimes: it ran 1.24 to
+    /// 1.28 times as fast as the scalar kernel on a Neoverse N2, and 1.3 to 1.6 times as fast as the AdvSimd kernel on
+    /// an Apple M1.
     /// </summary>
     [TestMethod]
     public void SelectKernel_WhenAdvSimdIsAvailable_ShouldReturnAdvSimdHybrid()
