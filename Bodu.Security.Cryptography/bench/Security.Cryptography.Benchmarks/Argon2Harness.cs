@@ -28,7 +28,8 @@ namespace Bodu.Security.Cryptography.Benchmarks;
 /// </para>
 /// <para>
 /// <c>--argon2-harness --sweep</c> measures where threads pay instead: matrices of 1 to 32 MiB at p = 4, each with the
-/// default bound and, where the build has one, confined to one thread.
+/// default bound and, where the build has one, confined to one thread; and below 4 MiB, where the library keeps a
+/// derivation on one thread, with every slice divided among threads regardless.
 /// </para>
 /// </remarks>
 internal static class Argon2Harness
@@ -86,19 +87,26 @@ internal static class Argon2Harness
 
     /// <summary>
     /// Measures where threads pay: for matrices of 1 to 32 MiB at p = 4, derivations with the default bound, which
-    /// divide a slice among threads once its segments reach 256 blocks (a 4 MiB matrix), and, where the build has a
-    /// bound, the same derivations confined to one thread.
+    /// divide a slice among threads once its segments reach the library's threshold (256 blocks, a 4 MiB matrix, as
+    /// 1.1.0 set it), and, where the build has a bound, the same derivations confined to one thread. Below 4 MiB the
+    /// build's own derivations also run with every slice divided among threads, through <see cref="Argon2FillDriver" />,
+    /// to show whether the threshold could sit lower.
     /// </summary>
     /// <param name="parameters">The parameters to vary the memory size of.</param>
     private static void Sweep(Argon2Parameters parameters)
     {
-        foreach (int mebibytes in new[] { 1, 2, 4, 8, 16, 32 })
+#if !BODU_CRYPTO_BASELINE
+        Argon2FillDriver driver = Argon2FillDriver.Create();
+#endif
+        foreach (int mebibytes in new[] { 1, 2, 3, 4, 8, 16, 32 })
         {
             Argon2Parameters sized = parameters with { MemoryKiB = mebibytes * 1024 };
             Measure($"m = {mebibytes} MiB, p = 4", () => Argon2id.DeriveKey(Password, Salt, sized));
 #if !BODU_CRYPTO_BASELINE
             var oneThread = new Argon2id(sized, maxDegreeOfParallelism: 1);
             Measure($"m = {mebibytes} MiB, p = 4, one thread", () => oneThread.GetBytes(Password, Salt));
+            if (mebibytes < 4)
+                Measure($"m = {mebibytes} MiB, p = 4, threaded", () => driver.DeriveKey(sized, Password, Salt, minimumParallelSegmentLength: 1));
 #endif
         }
     }

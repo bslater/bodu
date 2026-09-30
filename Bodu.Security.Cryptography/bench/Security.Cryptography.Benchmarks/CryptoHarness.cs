@@ -59,6 +59,9 @@ internal static class CryptoHarness
     /// </summary>
     private static readonly int[] s_shortAeadLengths = [0, 16, 128, 192, 320, 384, 448, 512, 576, 768, 960];
 
+    /// <summary>The message lengths below 256 bytes the MAC cases add, from 128 bytes, where Apple silicon's AdvSimd kernel takes over.</summary>
+    private static readonly int[] s_macThresholdLengths = [128, 192];
+
     /// <summary>
     /// The message lengths the Poly1305 kernel cases sweep: each side of every length at which dispatch moves from one
     /// kernel to the next, then up to the bulk input.
@@ -221,6 +224,14 @@ internal static class CryptoHarness
             Measure("aead", $"Bodu XSalsa20-Poly1305 {size}", length, () => { using var aead = new XSalsa20Poly1305(key32, nonce24); aead.Encrypt(message, output); });
             if (bcl is not null)
                 Measure("aead", $"BCL ChaCha20-Poly1305 {size}", length, () => bcl.Encrypt(nonce12, message, output.AsSpan(0, length), tag));
+        }
+
+        // The MAC alone between the AdvSimd kernel's two thresholds: Apple silicon's kernel takes runs from 128 bytes,
+        // every other ARM64 processor's from 256.
+        foreach (int length in s_macThresholdLengths)
+        {
+            byte[] message = Random(length, 16);
+            Measure("mac", $"Bodu Poly1305 {SizeLabel(length)}", length, () => { using var mac = new Poly1305(); mac.Key = key32; mac.TryComputeHash(message, digest, out _); });
         }
 
         using (var aes = new AesBlockCipher(key16))
