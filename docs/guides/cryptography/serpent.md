@@ -98,7 +98,7 @@ alg.Tweak = Convert.FromHexString("404142434445464748494a4b4c4d4e50");   // one 
 byte[] other = alg.Encrypt(plaintext);           // B8B27397…351E678C
 ```
 
-The tweak is injected into the state after every fourth round together with a round counter, so - as with Threefish - it separates *domains* under one key rather than replacing the IV. [Using Threefish-256](threefish-256.md#what-the-tweak-is--and-why-it-is-not-an-iv) explains the IV-versus-tweak distinction; it applies verbatim here.
+The tweak is injected into the state after every fourth round together with a round counter, so - as with Threefish - it separates *domains* under one key rather than replacing the IV. [Using Threefish-256](threefish-256.md#what-the-tweak-is---and-why-it-is-not-an-iv) explains the IV-versus-tweak distinction; it applies verbatim here.
 
 The raw engines take the key and tweak together and drop into `BlockCipherModeFactory` like any other `IBlockCipher`:
 

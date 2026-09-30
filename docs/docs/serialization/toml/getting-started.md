@@ -69,7 +69,7 @@ string text = TomlSerializer.Serialize(telemetry);
 // Samples = 4096
 ```
 
-`DateTimeOffset`, `DateTime` (`Unspecified`), `DateOnly`, and `TimeOnly` map one-to-one onto offset date-time, local date-time, local date, and local time. The full per-type catalogue, including the `decimal` and `byte[]` representation choices, is in the [type-mapping table](../../../guides/serialization/toml/using.md#pattern-2--know-the-type-mapping) and the [built-in converter catalog](../../../guides/serialization/toml/builtin-converters.md).
+`DateTimeOffset`, `DateTime` (`Unspecified`), `DateOnly`, and `TimeOnly` map one-to-one onto offset date-time, local date-time, local date, and local time. The full per-type catalogue, including the `decimal` and `byte[]` representation choices, is in the [type-mapping table](../../../guides/serialization/toml/using.md#pattern-2---know-the-type-mapping) and the [built-in converter catalog](../../../guides/serialization/toml/builtin-converters.md).
 
 ## Rename members
 

@@ -19,7 +19,7 @@ A raw stream cipher gives confidentiality only. `Bodu.Security.Cryptography` pai
 
 In every case the counter-0 keystream block supplies the one-time Poly1305 key and the message is encrypted from counter 1 (XChaCha20, XSalsa20-AEAD) or from byte 32 of the keystream (secretbox). The RFC 8439 framing authenticates `AAD ‖ pad16(AAD) ‖ ciphertext ‖ pad16(ciphertext) ‖ le64(|AAD|) ‖ le64(|ciphertext|)`.
 
-**Which one?** `XChaCha20Poly1305` is the interoperable, random-nonce AEAD - the gap the BCL's 96-bit-nonce `ChaCha20Poly1305` leaves ([BCL interop](bcl-interop.md#pattern-6--xchacha20poly1305-is-not-chacha20poly1305)). `XSalsa20Poly1305` exists to talk to NaCl secretbox. `XSalsa20Poly1305Aead` exists for symmetry; prefer the other two unless a protocol names it.
+**Which one?** `XChaCha20Poly1305` is the interoperable, random-nonce AEAD - the gap the BCL's 96-bit-nonce `ChaCha20Poly1305` leaves ([BCL interop](bcl-interop.md#pattern-6---xchacha20poly1305-is-not-chacha20poly1305)). `XSalsa20Poly1305` exists to talk to NaCl secretbox. `XSalsa20Poly1305Aead` exists for symmetry; prefer the other two unless a protocol names it.
 
 ## Pattern 1 - XChaCha20-Poly1305 with associated data
 

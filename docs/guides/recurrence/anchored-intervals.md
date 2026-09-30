@@ -182,7 +182,7 @@ DateTimeOffset firstLocal = sixHourly.GetOccurrences(new DateTimeOffset(2026, 3,
 // 2026-03-08 06:00 -05:00 - enumeration keeps the anchor's offset
 ```
 
-Contrast a cron or rule schedule, which names a *wall-clock* time and therefore needs the host to decide what "02:00" means on a transition day - see [Hosting schedules](scheduling-host.md#pattern-4--daylight-saving-and-time-zones-at-the-boundary).
+Contrast a cron or rule schedule, which names a *wall-clock* time and therefore needs the host to decide what "02:00" means on a transition day - see [Hosting schedules](scheduling-host.md#pattern-4---daylight-saving-and-time-zones-at-the-boundary).
 
 ## API summary
 

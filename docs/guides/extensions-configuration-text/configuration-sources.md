@@ -39,7 +39,7 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 ```
 
-Pass an `IFileProvider` to read from a specific physical or embedded location rather than the builder's default file provider. The `targetPath` argument, when supplied, enables EditorConfig glob anchoring - sections become globs that the resolver matches against the target path. See [Views and resolution](../text-configuration/views-and-resolution.md#pattern-2--anchored-editorconfig-globs).
+Pass an `IFileProvider` to read from a specific physical or embedded location rather than the builder's default file provider. The `targetPath` argument, when supplied, enables EditorConfig glob anchoring - sections become globs that the resolver matches against the target path. See [Views and resolution](../text-configuration/views-and-resolution.md#pattern-2---anchored-editorconfig-globs).
 
 ## Pattern 3 - convention-based discovery
 

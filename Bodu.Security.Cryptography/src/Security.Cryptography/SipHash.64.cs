@@ -59,7 +59,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/hashing.html#pattern-2--a-keyed-hash-siphash">Keyed-hash (SipHash) guide
+/// <seealso href="../guides/cryptography/hashing.html#pattern-2---a-keyed-hash-siphash">Keyed-hash (SipHash) guide
 /// </seealso> <seealso cref="SipHash"/> <seealso cref="SipHash128"/>
 public sealed class SipHash64
     : SipHash

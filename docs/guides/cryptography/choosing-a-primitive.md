@@ -83,7 +83,7 @@ Every Bodu AEAD implements <xref:Bodu.Security.Cryptography.IAeadTransform>, emi
 
 | Construction | Type | Key | Nonce | Nonce-misuse resistant | Tag | Associated data | Wire-compatible with |
 |---|---|---|---|---|---|---|---|
-| AES-GCM | <xref:Bodu.Security.Cryptography.GcmModeTransform> over <xref:Bodu.Security.Cryptography.AesBlockCipher> | 128 / 192 / 256 | **exactly 12 bytes** | No - reuse is catastrophic | 128 bits | Yes | `System.Security.Cryptography.AesGcm` (same bytes; see [BCL interop](bcl-interop.md#pattern-5--aes-gcm-is-wire-compatible-with-aesgcm)) |
+| AES-GCM | <xref:Bodu.Security.Cryptography.GcmModeTransform> over <xref:Bodu.Security.Cryptography.AesBlockCipher> | 128 / 192 / 256 | **exactly 12 bytes** | No - reuse is catastrophic | 128 bits | Yes | `System.Security.Cryptography.AesGcm` (same bytes; see [BCL interop](bcl-interop.md#pattern-5---aes-gcm-is-wire-compatible-with-aesgcm)) |
 | AES-GCM-SIV | <xref:Bodu.Security.Cryptography.GcmSivModeTransform> | 128 / 256 | 12 bytes (first 12 of a 16-byte IV) | **Yes** | 128 bits | Yes | RFC 8452 |
 | AES-CCM | <xref:Bodu.Security.Cryptography.CcmModeTransform> | 128 / 192 / 256 | 12 bytes (first 12 of a 16-byte IV) | No | 128 bits | Yes | NIST SP 800-38C profile (12-byte nonce, 16-byte tag, messages < 2²⁴ bytes) |
 | AES-OCB3 | <xref:Bodu.Security.Cryptography.OcbModeTransform> | 128 / 192 / 256 | 12 bytes (first 12 of a 16-byte IV) | No | 64 / 96 / **128** bits (`tagSize`) | Yes | RFC 7253 |

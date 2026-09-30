@@ -219,7 +219,7 @@ A document with **no** `<Imports>` loads with the single-argument overload, `Not
 </Overrides>
 ```
 
-Overrides run during loading and produce a normal immutable resource. *Runtime* change (swapping the rule set after the service is built) is a separate mechanism: load a new resource and hand it to a <xref:Bodu.Globalization.Calendar.MutableNotableDateResourceProvider>, then resolve through a <xref:Bodu.Globalization.Calendar.ReloadableNotableDateService>. See [Using NotableDateService](notable-dates.md#pattern-9--swap-the-rule-set-at-runtime).
+Overrides run during loading and produce a normal immutable resource. *Runtime* change (swapping the rule set after the service is built) is a separate mechanism: load a new resource and hand it to a <xref:Bodu.Globalization.Calendar.MutableNotableDateResourceProvider>, then resolve through a <xref:Bodu.Globalization.Calendar.ReloadableNotableDateService>. See [Using NotableDateService](notable-dates.md#pattern-9---swap-the-rule-set-at-runtime).
 
 ---
 
@@ -302,7 +302,7 @@ JSON and XML are accepted by separate loader entry points - `LoadJson` for JSON,
 
 ## Year periodicity
 
-Beyond `fromYear` / `toYear` bounds, `<Applicability>` supports a periodicity pair for rules that recur every *n*th year: `everyYears` sets the period and `anchorYear` the reference year it is counted from. A quadrennial civic day active from a known base year is `everyYears="4"` with `anchorYear="2024"`. They surface on the loaded <xref:Bodu.Globalization.Calendar.NotableDateRule>'s applicability alongside `OnlyYears` / `ExceptYears`. See [NotableDateRule and adjustment-policy reference](rule-reference.md#applicability--calendar-year-and-territory-filtering).
+Beyond `fromYear` / `toYear` bounds, `<Applicability>` supports a periodicity pair for rules that recur every *n*th year: `everyYears` sets the period and `anchorYear` the reference year it is counted from. A quadrennial civic day active from a known base year is `everyYears="4"` with `anchorYear="2024"`. They surface on the loaded <xref:Bodu.Globalization.Calendar.NotableDateRule>'s applicability alongside `OnlyYears` / `ExceptYears`. See [NotableDateRule and adjustment-policy reference](rule-reference.md#applicability---calendar-year-and-territory-filtering).
 
 ---
 

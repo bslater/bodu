@@ -15,7 +15,7 @@ string text = TomlSerializer.Serialize(config);
 ServerConfig back = TomlSerializer.Deserialize<ServerConfig>(text);
 ```
 
-`Serialize` also writes to an `IBufferWriter<byte>` (UTF-8) or a `Stream` (with `SerializeAsync`); `Deserialize` reads a `string`, a `ReadOnlySpan<byte>` (UTF-8), or a `Stream` (with `DeserializeAsync`). Output is canonical TOML in document order, so `[PropertyOrder]` is honored. See [Pattern 8](#pattern-8--streams-and-async) for the stream surface.
+`Serialize` also writes to an `IBufferWriter<byte>` (UTF-8) or a `Stream` (with `SerializeAsync`); `Deserialize` reads a `string`, a `ReadOnlySpan<byte>` (UTF-8), or a `Stream` (with `DeserializeAsync`). Output is canonical TOML in document order, so `[PropertyOrder]` is honored. See [Pattern 8](#pattern-8---streams-and-async) for the stream surface.
 
 ## Pattern 2 - Know the type mapping
 
@@ -115,7 +115,7 @@ AppConfig back = TomlSerializer.Deserialize<AppConfig>(text);
 // back.Endpoints[1].Path → "/admin"
 ```
 
-To emit lowercase keys (`title`, `[server]`, …) apply a naming policy ([Pattern 4](#pattern-4--rename-members)); to reorder the lines, use `[PropertyOrder]` ([Mapping attributes](attributes.md)).
+To emit lowercase keys (`title`, `[server]`, …) apply a naming policy ([Pattern 4](#pattern-4---rename-members)); to reorder the lines, use `[PropertyOrder]` ([Mapping attributes](attributes.md)).
 
 ## Pattern 4 - Rename members
 

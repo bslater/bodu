@@ -185,7 +185,7 @@ DateTime[] firstHalf2026 = lastWorkingDay.GetOccurrences(new DateTime(2026, 1, 1
 // 2026-01-30 Fri, 2026-02-27 Fri, 2026-03-31 Tue, 2026-04-30 Thu, 2026-05-29 Fri, 2026-06-30 Tue
 ```
 
-"Working day" here means Monday-Friday only. To also skip public holidays, filter the stream with `IsNonWorkingDay` from `Bodu.Globalization.Calendar` - see [Hosting schedules](scheduling-host.md#pattern-5--skip-non-working-days-with-the-calendar-package).
+"Working day" here means Monday-Friday only. To also skip public holidays, filter the stream with `IsNonWorkingDay` from `Bodu.Globalization.Calendar` - see [Hosting schedules](scheduling-host.md#pattern-5---skip-non-working-days-with-the-calendar-package).
 
 ## Pattern 7 - every second Tuesday
 

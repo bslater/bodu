@@ -376,7 +376,7 @@ On, a synchronous miss blocks to download the missing window - `DefaultLookback`
 `OnDemandWindowDays`) ending on the requested date - which is convenient in a worker but can
 deadlock on a thread with a captured `SynchronizationContext`; the provider converts that case
 into an `InvalidOperationException` rather than a hang. Prefer warming at startup: the
-[warm-up hosted service](caching-configuration.md#pattern-4--warming-the-cache-at-startup)
+[warm-up hosted service](caching-configuration.md#pattern-4---warming-the-cache-at-startup)
 does exactly that.
 
 **`EnableDiskCache` / `CacheDirectory`.** The bulk providers keep the raw bytes they downloaded

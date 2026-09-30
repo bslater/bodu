@@ -6,7 +6,7 @@ title: N-ary tree
 
 <xref:Bodu.Collections.Generic.Trees.Tree`1> is a mutable **n-ary tree node**: every instance carries a `Value`, an optional `Parent`, and an ordered list of `Children`, and is at the same time the root of the subtree beneath it. There is no separate "tree" container - a root is simply a node whose `Parent` is `null` - so the same type models an org chart, a file system, a parsed outline, or a scene graph.
 
-The type lives in `Bodu.Collections.Generic.Trees` alongside the trie family, but it is not a trie: it has no keys, no lookup, and no ordering constraint. Use it when the *shape* of the hierarchy is the data. For keyed prefix structures see [Tries and text search](trie.md); for flattening an existing object graph without building nodes, see `RecursiveSelect` in [Sequence operators and generators](sequence-operators.md#pattern-7--recursiveselect-and-recursiveselectcontrol).
+The type lives in `Bodu.Collections.Generic.Trees` alongside the trie family, but it is not a trie: it has no keys, no lookup, and no ordering constraint. Use it when the *shape* of the hierarchy is the data. For keyed prefix structures see [Tries and text search](trie.md); for flattening an existing object graph without building nodes, see `RecursiveSelect` in [Sequence operators and generators](sequence-operators.md#pattern-7---recursiveselect-and-recursiveselectcontrol).
 
 All examples below were run; the comments show the actual results.
 

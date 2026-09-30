@@ -92,7 +92,7 @@ Base62.IsBase62Digit('+');    // false
 | Hand-transcribed identifiers (no `0`/`O`/`I`/`l` ambiguity) | [Base58](base58.md) |
 | Blockchain / Bitcoin / IPFS interop | [Base58](base58.md) |
 | Densest URL-safe identifier, machine-to-machine | **Base62** |
-| Built-in checksum on addresses / keys | [Base58Check](base58.md#base58check--checksum-protected-payloads) |
+| Built-in checksum on addresses / keys | [Base58Check](base58.md#base58check---checksum-protected-payloads) |
 
 ## Where to go next
 

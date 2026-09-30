@@ -25,7 +25,7 @@ tag to every encrypted message.
 
 `AsconAead128` is a *complete* AEAD primitive in its own right. Unlike the [AES-based AEAD modes](aead-modes.md) - where you pair an <xref:Bodu.Security.Cryptography.AesBlockCipher> with a separate mode transform (<xref:Bodu.Security.Cryptography.GcmModeTransform>, <xref:Bodu.Security.Cryptography.OcbModeTransform>, …) - `AsconAead128` needs no companion cipher. Confidentiality, integrity, and authenticity all come from the single Ascon-p permutation over the 320-bit sponge.
 
-It still implements the shared <xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform> contract, so the call shape (`ProcessAssociatedData` then `Encrypt`/`Decrypt`) and the single-use lifecycle are identical to the AES modes, and the [extension helpers](aead-modes.md#prerequisites--the-extension-methods) on `Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions` work on it too:
+It still implements the shared <xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform> contract, so the call shape (`ProcessAssociatedData` then `Encrypt`/`Decrypt`) and the single-use lifecycle are identical to the AES modes, and the [extension helpers](aead-modes.md#prerequisites---the-extension-methods) on `Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions` work on it too:
 
 ```csharp
 using Bodu.Security.Cryptography;

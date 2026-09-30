@@ -126,7 +126,7 @@ Two implementation details of the query path explain results that otherwise look
 
 ## Worked trace - Christmas Day (AU) 2027
 
-Christmas Day 2027 falls on a Saturday; Boxing Day on a Sunday. Assume an Australian resource whose Christmas and Boxing Day rules reference the two policies from the [adjustment-rules worked pattern](adjustment-rules.md#worked-pattern--christmas-and-boxing-day-substitution): `weekend-to-next-weekday` (priority 10, `IfWeekend → MoveToNextWeekday`) and `skip-nonworking` (priority 20, `IfNonWorkingDay → MoveToNextWorkingDay`). Here is `service.Resolve(2027, "AU")` stage by stage.
+Christmas Day 2027 falls on a Saturday; Boxing Day on a Sunday. Assume an Australian resource whose Christmas and Boxing Day rules reference the two policies from the [adjustment-rules worked pattern](adjustment-rules.md#worked-pattern---christmas-and-boxing-day-substitution): `weekend-to-next-weekday` (priority 10, `IfWeekend → MoveToNextWeekday`) and `skip-nonworking` (priority 20, `IfNonWorkingDay → MoveToNextWorkingDay`). Here is `service.Resolve(2027, "AU")` stage by stage.
 
 **Stage 6 - Strategy → nominal date**
 

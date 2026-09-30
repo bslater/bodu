@@ -185,7 +185,7 @@ IReadOnlyList<string>         territories = service.GetSupportedTerritories();  
 IReadOnlyList<CalendarSystem> calendars   = service.GetSupportedCalendars();   // e.g. Gregorian (+ Hijri / Hebrew where used)
 ```
 
-`GetSupportedTerritories` returns every distinct territory mentioned by a rule's `<Territory>` scope; `GetSupportedCalendars` returns the distinct <xref:Bodu.Globalization.Calendar.CalendarSystem> values across the rules' `<Applicability calendar="…">` (`Gregorian`, `Hijri`, `UmmAlQura`, `Hebrew`, `Persian`, `ChineseLunisolar`). Both are stable for the life of the service; a reload via the [reloadable workflow](#pattern-9--swap-the-rule-set-at-runtime) recomputes them for the new resource.
+`GetSupportedTerritories` returns every distinct territory mentioned by a rule's `<Territory>` scope; `GetSupportedCalendars` returns the distinct <xref:Bodu.Globalization.Calendar.CalendarSystem> values across the rules' `<Applicability calendar="…">` (`Gregorian`, `Hijri`, `UmmAlQura`, `Hebrew`, `Persian`, `ChineseLunisolar`). Both are stable for the life of the service; a reload via the [reloadable workflow](#pattern-9---swap-the-rule-set-at-runtime) recomputes them for the new resource.
 
 ## Pattern 11 - supply custom collaborators
 

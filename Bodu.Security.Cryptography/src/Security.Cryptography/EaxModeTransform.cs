@@ -78,7 +78,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/aead-modes.html#eax--two-pass-fse-2004">EAX walk-through in the AEAD-modes
+/// <seealso href="../guides/cryptography/aead-modes.html#eax---two-pass-fse-2004">EAX walk-through in the AEAD-modes
 /// guide</seealso> <seealso cref="AesBlockCipher"/>
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class EaxModeTransform

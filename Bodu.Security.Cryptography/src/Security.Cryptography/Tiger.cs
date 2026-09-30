@@ -75,7 +75,7 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso href="https://www.cs.technion.ac.il/~biham/Reports/Tiger/">Tiger home page (Anderson / Biham)</seealso>
 /// <seealso href="../guides/cryptography/tiger.html">Using Tiger</seealso>
-/// <seealso href="../guides/cryptography/hashing.html#pattern-3--a-cryptographic-digest">Cryptographic digest guide
+/// <seealso href="../guides/cryptography/hashing.html#pattern-3---a-cryptographic-digest">Cryptographic digest guide
 /// </seealso>
 public sealed partial class Tiger
     : BlockHashAlgorithm

@@ -34,7 +34,7 @@ Every Bodu attribute lives in `Bodu.Text.Serialization` and derives from <xref:B
 | `[JsonPropertyOrder(n)]` | <xref:Bodu.Text.Serialization.PropertyOrderAttribute> `[PropertyOrder(n)]` | Ascending; unannotated members are `0`. |
 | `[JsonRequired]` / C# `required` | <xref:Bodu.Text.Serialization.RequiredAttribute> `[Required]` / C# `required` | Not honored by Delimited. |
 | `[JsonConverter(typeof(…))]` | <xref:Bodu.Text.Serialization.ConverterAttribute> `[Converter(typeof(…))]` | Member, type, or enum placement. Structured serializers only. |
-| `[JsonExtensionData]` | <xref:Bodu.Text.Serialization.ExtensionDataAttribute> `[ExtensionData]` | The member's *type* differs per format - see [Pattern 8](#pattern-8--extension-data). Structured serializers only. |
+| `[JsonExtensionData]` | <xref:Bodu.Text.Serialization.ExtensionDataAttribute> `[ExtensionData]` | The member's *type* differs per format - see [Pattern 8](#pattern-8---extension-data). Structured serializers only. |
 | `[JsonConstructor]` | <xref:Bodu.Text.Serialization.ConstructorAttribute> `[Constructor]` | Structured serializers only. |
 | `[JsonUnmappedMemberHandling(…)]` | <xref:Bodu.Text.Serialization.UnmappedMemberHandlingAttribute> `[UnmappedMemberHandling(…)]` | `Skip` / `Disallow`. Structured serializers only. |
 | `[JsonObjectCreationHandling(…)]` | <xref:Bodu.Text.Serialization.ObjectCreationHandlingAttribute> `[ObjectCreationHandling(…)]` | `Replace` / `Populate`. Structured serializers only. |
@@ -137,12 +137,12 @@ YamlSerializer.Deserialize<ServerConfig>("Name: edge\nlisten_port: 8443");
 | `JsonSerializerOptions` | Bodu | Notes |
 |---|---|---|
 | `JsonSerializerOptions` | <xref:Bodu.Text.Toml.TomlSerializerOptions> · <xref:Bodu.Text.Yaml.YamlSerializerOptions> · <xref:Bodu.Text.Bencode.BencodeSerializerOptions> · <xref:Bodu.Text.Delimited.DelimitedSerializerOptions> · <xref:Bodu.Text.DotEnv.DotEnvSerializerOptions> · <xref:Bodu.Text.Ini.IniSerializerOptions> | One options type per format; none is interchangeable with another. |
-| `new JsonSerializerOptions(JsonSerializerDefaults.Web)` | `new <Format>SerializerOptions(<Format>SerializerDefaults.Web)` | The `Web` preset means different things per format, and INI offers `Strict` instead - see [Serializer options: freezing, caching, and thread safety](options-and-lifetime.md#pattern-6--start-from-a-defaults-preset). |
-| `PropertyNamingPolicy` | `PropertyNamingPolicy` | Takes a <xref:Bodu.Text.Serialization.NamingPolicy> ([Pattern 5](#pattern-5--naming-policies)). |
+| `new JsonSerializerOptions(JsonSerializerDefaults.Web)` | `new <Format>SerializerOptions(<Format>SerializerDefaults.Web)` | The `Web` preset means different things per format, and INI offers `Strict` instead - see [Serializer options: freezing, caching, and thread safety](options-and-lifetime.md#pattern-6---start-from-a-defaults-preset). |
+| `PropertyNamingPolicy` | `PropertyNamingPolicy` | Takes a <xref:Bodu.Text.Serialization.NamingPolicy> ([Pattern 5](#pattern-5---naming-policies)). |
 | `PropertyNameCaseInsensitive` | `PropertyNameCaseInsensitive` | Bencode defaults to `true`; every other format defaults to `false`. |
 | `DefaultIgnoreCondition` | `DefaultIgnoreCondition` | As in STJ, `Always` is rejected at the setter (`ArgumentOutOfRangeException`). DotEnv and INI default to `WhenWritingNull`; the structured serializers default to `Never`. Delimited has no such option. |
 | `IncludeFields` | `IncludeFields` | Same semantics. |
-| `Converters` | `Converters` | `IList<<Format>Converter>`; registration order matters ([resolution order](options-and-lifetime.md#pattern-3--understand-converter-resolution-order)). Structured serializers only. |
+| `Converters` | `Converters` | `IList<<Format>Converter>`; registration order matters ([resolution order](options-and-lifetime.md#pattern-3---understand-converter-resolution-order)). Structured serializers only. |
 | `MakeReadOnly()` / `IsReadOnly` | `MakeReadOnly()` / `IsReadOnly` | Structured serializers expose both. The line formats expose `IsReadOnly` and a pre-frozen static `Default`, but freeze only on first use - there is no public `MakeReadOnly()`. |
 | `MaxDepth` | `MaxDepth` | Structured serializers only; `0` selects the format default (64). |
 | `UnmappedMemberHandling` | `UnmappedMemberHandling` | Structured serializers only. |

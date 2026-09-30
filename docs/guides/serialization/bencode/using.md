@@ -15,7 +15,7 @@ byte[] payload = BencodeSerializer.Serialize(new FileEntry { Name = "ubuntu.iso"
 FileEntry entry = BencodeSerializer.Deserialize<FileEntry>(payload);
 ```
 
-`Serialize` also writes to an `IBufferWriter<byte>` or a `Stream` (with `SerializeAsync`); `Deserialize` reads a `ReadOnlySpan<byte>`, a `byte[]`, or a `Stream` (with `DeserializeAsync`). See [Pattern 8](#pattern-8--streams-and-async) for the stream surface. To project a model into a DOM without re-encoding to bytes, `SerializeToNode` / `SerializeToDocument` go straight to the mutable and read-only trees, and `Deserialize<T>(BencodeNode, …)` binds a node tree back to a type - see [Pattern 7](#pattern-7--use-a-document-model-instead-of-a-type).
+`Serialize` also writes to an `IBufferWriter<byte>` or a `Stream` (with `SerializeAsync`); `Deserialize` reads a `ReadOnlySpan<byte>`, a `byte[]`, or a `Stream` (with `DeserializeAsync`). See [Pattern 8](#pattern-8---streams-and-async) for the stream surface. To project a model into a DOM without re-encoding to bytes, `SerializeToNode` / `SerializeToDocument` go straight to the mutable and read-only trees, and `Deserialize<T>(BencodeNode, …)` binds a node tree back to a type - see [Pattern 7](#pattern-7---use-a-document-model-instead-of-a-type).
 
 ## Pattern 2 - Know the type mapping
 

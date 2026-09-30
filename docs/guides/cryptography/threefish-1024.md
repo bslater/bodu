@@ -79,7 +79,7 @@ Debug.Assert(plaintext.SequenceEqual(recovered));
 
 - **Most rounds in the family.** Threefish-1024 runs **80 rounds** over sixteen 64-bit words, injecting a subkey every four rounds plus a final injection - 21 subkeys in all. That is the largest key schedule of the family and therefore the largest per-instance memory footprint. Throughput is roughly half of Threefish-512 on the same CPU.
 - **Padding waste.** A PKCS7 round-up to the next 128-byte boundary costs *more* than the 32-byte Threefish-256 round-up. If your plaintexts are short, Threefish-256 produces smaller ciphertexts.
-- **Same 128-bit tweak.** The tweak does not scale with the block - it is 16 bytes here exactly as in Threefish-256/512, so the per-context domain-separation pattern ([Threefish-256](threefish-256.md#what-the-tweak-is--and-why-it-is-not-an-iv)) carries over unchanged.
+- **Same 128-bit tweak.** The tweak does not scale with the block - it is 16 bytes here exactly as in Threefish-256/512, so the per-context domain-separation pattern ([Threefish-256](threefish-256.md#what-the-tweak-is---and-why-it-is-not-an-iv)) carries over unchanged.
 - **When to prefer it.** When your natural record size is already ≥ 128 bytes, when you want a single-block encryption of a large structured field, or when you want the widest defensive margin against future block-size attacks. For everyday use [Threefish-512](threefish-512.md) is the better balance.
 
 ## The raw primitive

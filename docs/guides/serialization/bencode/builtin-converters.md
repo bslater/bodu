@@ -8,7 +8,7 @@ Every type that <xref:Bodu.Text.Bencode.BencodeSerializer> handles without a use
 
 The library follows the design shared across the [Bodu serializers](../index.md): exact-type scalar converters first, factories for open type families (nullables, enums, dictionaries, collections, plain objects) last, with the document object model bridges ahead of everything so a DOM value is never claimed by a structural factory.
 
-Bencode (BEP 3) has exactly two scalar forms - integers and byte strings - and the built-in set deliberately covers only types with a native mapping. Boolean, floating-point, `char`, `Guid`, `Uri`, `Version`, `TimeSpan`, and the date-time types are **not** provisioned: serializing one without a registered converter surfaces a missing-converter error rather than silently inventing a lossy representation. See [Pattern 5 in Writing converters](converters.md#pattern-5--map-a-type-the-format-cannot-represent) for the bridging recipe.
+Bencode (BEP 3) has exactly two scalar forms - integers and byte strings - and the built-in set deliberately covers only types with a native mapping. Boolean, floating-point, `char`, `Guid`, `Uri`, `Version`, `TimeSpan`, and the date-time types are **not** provisioned: serializing one without a registered converter surfaces a missing-converter error rather than silently inventing a lossy representation. See [Pattern 5 in Writing converters](converters.md#pattern-5---map-a-type-the-format-cannot-represent) for the bridging recipe.
 
 ## Scalars and binary data
 
@@ -53,7 +53,7 @@ Registered on the options or referenced from a `[Converter(...)]` attribute:
 | Document root | any value kind |
 | `object` / element / document bridges | yes |
 
-Each of the converter-only types maps cleanly onto an integer or a byte string - see [Pattern 5 in Writing converters](converters.md#pattern-5--map-a-type-the-format-cannot-represent) and [Pattern 6 in Using Bencode](using.md#pattern-6--handle-the-kinds-bencode-cannot-represent) for worked bridges.
+Each of the converter-only types maps cleanly onto an integer or a byte string - see [Pattern 5 in Writing converters](converters.md#pattern-5---map-a-type-the-format-cannot-represent) and [Pattern 6 in Using Bencode](using.md#pattern-6---handle-the-kinds-bencode-cannot-represent) for worked bridges.
 
 ## See also
 

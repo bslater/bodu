@@ -118,7 +118,7 @@ using (var aes = new AesBlockCipher(key))
 bool same = result.tag.FixedTimeEquals(fromWire.AsSpan());   // true
 ```
 
-The stream AEADs have no detached overloads; slice the tag off the combined output and rebuild it with `AuthenticationTag.FromBytes` - see [Authenticated stream ciphers](stream-aead.md#pattern-5--detached-tags).
+The stream AEADs have no detached overloads; slice the tag off the combined output and rebuild it with `AuthenticationTag.FromBytes` - see [Authenticated stream ciphers](stream-aead.md#pattern-5---detached-tags).
 
 ## Pattern 5 - `SignatureValue` and `SignatureFormat`
 
@@ -167,5 +167,5 @@ No library member consumes `SignatureValue`; the signers and verifiers take span
 - [Authenticated stream ciphers](stream-aead.md) - detaching a tag from the stream AEADs.
 - [Using scrypt](scrypt.md) and [Using Argon2](argon2.md) - the password KDFs that salts feed.
 - [Security guarantees and limitations](security-posture.md) - zeroization and constant-time claims across the library.
-- [Interoperating with System.Security.Cryptography](bcl-interop.md#pattern-9--constant-time-comparison) - `CryptographicOperations.FixedTimeEquals` beside the value types.
+- [Interoperating with System.Security.Cryptography](bcl-interop.md#pattern-9---constant-time-comparison) - `CryptographicOperations.FixedTimeEquals` beside the value types.
 - **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

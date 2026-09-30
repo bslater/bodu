@@ -21,19 +21,19 @@ Match how the date is *defined* to the strategy that expresses it directly. Pref
 
 | If the date is defined as… | Use |
 |---|---|
-| A fixed month + day | [`<Fixed>`](#fixed--a-fixed-month-and-day) |
-| A position from the start or end of a month | [`<OrdinalDayOfMonth>`](#ordinaldayofmonth--a-signed-day-of-month) |
-| A position from the start or end of a year | [`<DayOfYear>`](#dayofyear--a-signed-day-of-year) |
-| A weekday within an ISO-8601 week | [`<IsoWeekDate>`](#isoweekdate--a-weekday-in-an-iso-week) |
+| A fixed month + day | [`<Fixed>`](#fixed---a-fixed-month-and-day) |
+| A position from the start or end of a month | [`<OrdinalDayOfMonth>`](#ordinaldayofmonth---a-signed-day-of-month) |
+| A position from the start or end of a year | [`<DayOfYear>`](#dayofyear---a-signed-day-of-year) |
+| A weekday within an ISO-8601 week | [`<IsoWeekDate>`](#isoweekdate---a-weekday-in-an-iso-week) |
 | The *n*th or last weekday of a month | [`<DayOfWeekInMonth>`](#weekday-in-month) |
 | A weekday near a fixed date | [`<WeekdayNearDate>`](#weekday-in-month) |
 | A weekday relative to a weekday-in-month anchor | [`<RelativeWeekdayInMonth>`](#weekday-in-month) |
-| A fixed day offset from another rule | [`<OffsetFromRule>`](#offsetfromrule--a-signed-offset-from-another-rule) |
-| A weekday near another rule's date | [`<WeekdayNearRule>`](#weekdaynearrule--a-weekday-near-another-rule) |
-| The *n*th weekday before/after another rule | [`<NthWeekdayFromRule>`](#nthweekdayfromrule--the-nth-weekday-from-another-rule) |
-| A count of **working** days from another rule | [`<WorkingDayOffsetFromRule>`](#workingdayoffsetfromrule--a-working-day-offset-from-another-rule) |
-| The *n*th working day of a month | [`<WorkingDayInMonth>`](#workingdayinmonth--the-nth-working-day-of-a-month) |
-| An astronomical / ecclesiastical date | [`<Algorithm>`](#algorithm--a-named-calculator) |
+| A fixed day offset from another rule | [`<OffsetFromRule>`](#offsetfromrule---a-signed-offset-from-another-rule) |
+| A weekday near another rule's date | [`<WeekdayNearRule>`](#weekdaynearrule---a-weekday-near-another-rule) |
+| The *n*th weekday before/after another rule | [`<NthWeekdayFromRule>`](#nthweekdayfromrule---the-nth-weekday-from-another-rule) |
+| A count of **working** days from another rule | [`<WorkingDayOffsetFromRule>`](#workingdayoffsetfromrule---a-working-day-offset-from-another-rule) |
+| The *n*th working day of a month | [`<WorkingDayInMonth>`](#workingdayinmonth---the-nth-working-day-of-a-month) |
+| An astronomical / ecclesiastical date | [`<Algorithm>`](#algorithm---a-named-calculator) |
 | A repeating cadence (every *n* days / weeks / months) | a [recurrence source](#recurrence-sources) |
 
 > [!NOTE]
@@ -51,7 +51,7 @@ The first six kinds pin a date by calendar position, with no dependency on any o
 
 #### `<Fixed>` - a fixed month and day
 
-The same calendar position every year (see [reference](rule-reference.md#fixed--a-fixed-month-and-day) for `skipLeapMonth` / `sweepCalendarYears` and non-Gregorian calendars).
+The same calendar position every year (see [reference](rule-reference.md#fixed---a-fixed-month-and-day) for `skipLeapMonth` / `sweepCalendarYears` and non-Gregorian calendars).
 
 ```xml
 <Strategy><Fixed month="December" day="25" /></Strategy>
@@ -125,7 +125,7 @@ These derive a date from **another rule's** occurrence, resolved cycle-safely wi
 
 #### `<OffsetFromRule>` - a signed offset from another rule
 
-A fixed **calendar-day** offset (see [reference](rule-reference.md#offsetfromrule--a-signed-offset-from-another-rule)). This is how Good Friday hangs off Easter Sunday.
+A fixed **calendar-day** offset (see [reference](rule-reference.md#offsetfromrule---a-signed-offset-from-another-rule)). This is how Good Friday hangs off Easter Sunday.
 
 ```xml
 <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-2" /></Strategy>
@@ -211,7 +211,7 @@ When the requested ordinal does not exist within the month the rule produces no 
 
 #### `<Algorithm>` - a named calculator
 
-Delegates to a built-in astronomical / ecclesiastical calculator (Easter, the equinoxes, Vesak, …) or a registered custom one (see [reference](rule-reference.md#algorithm--dispatch-to-a-named-calculator) and [Date calculation algorithms](algorithms.md)).
+Delegates to a built-in astronomical / ecclesiastical calculator (Easter, the equinoxes, Vesak, …) or a registered custom one (see [reference](rule-reference.md#algorithm---dispatch-to-a-named-calculator) and [Date calculation algorithms](algorithms.md)).
 
 ```xml
 <Strategy><Algorithm key="western-easter" /></Strategy>

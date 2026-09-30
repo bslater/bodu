@@ -100,7 +100,7 @@ A `<Rule>` is one calculation recipe for its concept. It contains, **in order**,
 </Rule>
 ```
 
-The `<Adjustments>` block holds one or more `<Adjustment policyRef="..."/>` references to policies declared in `<AdjustmentPolicies>`. Adjustments are always referenced by id; see [`<AdjustmentPolicy>`](#adjustmentpolicy--the-reusable-shift) below.
+The `<Adjustments>` block holds one or more `<Adjustment policyRef="..."/>` references to policies declared in `<AdjustmentPolicies>`. Adjustments are always referenced by id; see [`<AdjustmentPolicy>`](#adjustmentpolicy---the-reusable-shift) below.
 
 ---
 

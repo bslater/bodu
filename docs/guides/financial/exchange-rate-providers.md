@@ -497,7 +497,7 @@ condition, and where in the call chain it surfaces:
 
 Each case, exercised against the ECB provider over a
 `StubHttpMessageHandler` (the two-day `eurofxref`
-document from [Testing your own provider](testing-providers.md#pattern-3--stubhttpmessagehandler-drives-a-real-provider-offline)
+document from [Testing your own provider](testing-providers.md#pattern-3---stubhttpmessagehandler-drives-a-real-provider-offline)
 is the feed constant here), with the payload cache off so nothing touches the disk:
 
 ```csharp

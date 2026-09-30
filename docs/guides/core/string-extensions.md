@@ -9,7 +9,7 @@ title: String extensions
 The surface is organized below by task. Each table gives the one-line contract and the behaviour on `null` or empty input; every example in this guide has been run against the library, and the values in the comments are the real outputs.
 
 > [!NOTE]
-> **Null and empty conventions.** Methods whose receiver is declared `string` (not `string?`) throw <xref:System.ArgumentNullException> when called on `null`; only the eight coalescing helpers in [Pattern 5](#pattern-5--null-empty-and-whitespace-coalescing) accept a `null` receiver. An empty receiver is always valid and yields the natural empty result (an empty string, an empty sequence, `false`, or - for the substring family - `null` because the marker cannot be found). Every string comparison defaults to <xref:System.StringComparison.Ordinal>; the methods that take a `StringComparison` parameter accept any member.
+> **Null and empty conventions.** Methods whose receiver is declared `string` (not `string?`) throw <xref:System.ArgumentNullException> when called on `null`; only the eight coalescing helpers in [Pattern 5](#pattern-5---null-empty-and-whitespace-coalescing) accept a `null` receiver. An empty receiver is always valid and yields the natural empty result (an empty string, an empty sequence, `false`, or - for the substring family - `null` because the marker cannot be found). Every string comparison defaults to <xref:System.StringComparison.Ordinal>; the methods that take a `StringComparison` parameter accept any member.
 
 ## Pattern 1 - substring by marker
 

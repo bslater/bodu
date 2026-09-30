@@ -156,7 +156,7 @@ DateTime lastDay   = nextFirst.AddDays(-1);                           // 2026-03
 DateTime lastDayAtEleven = lastDay.AddHours(23);
 ```
 
-Equivalently, `GetPreviousOccurrence` on `0 0 1 * *` from a point in the *next* month gives the same boundary. For a calendar-aligned "last Friday" or "last working day", use a `RecurrenceRule` with `BYSETPOS=-1` - see [RFC 5545 recurrence rules](rrule.md#pattern-6--last-working-day-of-the-month).
+Equivalently, `GetPreviousOccurrence` on `0 0 1 * *` from a point in the *next* month gives the same boundary. For a calendar-aligned "last Friday" or "last working day", use a `RecurrenceRule` with `BYSETPOS=-1` - see [RFC 5545 recurrence rules](rrule.md#pattern-6---last-working-day-of-the-month).
 
 ## The search horizon
 
@@ -175,7 +175,7 @@ DateTime? neverBack = CronExpression.Parse("0 0 30 2 *").GetPreviousOccurrence(n
 
 ## `DateTimeOffset` handling
 
-The `DateTimeOffset` overloads interpret the argument's wall-clock time in its own offset and return an occurrence carrying that offset - no conversion, no time-zone lookup. `0 9 * * *` queried at `2026-03-10 14:32 +10:00` answers `2026-03-11 09:00 +10:00`; queried at `14:32 +00:00` it answers `09:00 +00:00`. A host that wants "09:00 local" across a daylight-saving change re-derives the offset on every evaluation; see [Hosting schedules](scheduling-host.md#pattern-4--daylight-saving-and-time-zones-at-the-boundary).
+The `DateTimeOffset` overloads interpret the argument's wall-clock time in its own offset and return an occurrence carrying that offset - no conversion, no time-zone lookup. `0 9 * * *` queried at `2026-03-10 14:32 +10:00` answers `2026-03-11 09:00 +10:00`; queried at `14:32 +00:00` it answers `09:00 +00:00`. A host that wants "09:00 local" across a daylight-saving change re-derives the offset on every evaluation; see [Hosting schedules](scheduling-host.md#pattern-4---daylight-saving-and-time-zones-at-the-boundary).
 
 <!-- compile -->
 ```csharp

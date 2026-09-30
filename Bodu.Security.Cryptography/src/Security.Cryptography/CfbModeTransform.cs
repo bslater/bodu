@@ -54,7 +54,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/cipher-modes.html#cfb--self-synchronizing-stream-cipher">CFB walk-through in
+/// <seealso href="../guides/cryptography/cipher-modes.html#cfb---self-synchronizing-stream-cipher">CFB walk-through in
 /// the cipher-modes guide</seealso>
 public sealed class CfbModeTransform
     : IBlockCipherModeTransform

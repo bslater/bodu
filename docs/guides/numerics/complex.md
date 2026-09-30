@@ -8,7 +8,7 @@ title: Working with Complex<T>
 
 The type parameter is constrained to <xref:System.Numerics.IFloatingPointIeee754`1>, so `float`, `double`, `Half`, and any conforming user-defined type qualify. `Complex<T>` itself implements <xref:System.Numerics.INumberBase`1> and <xref:System.Numerics.ISignedNumber`1> - not `INumber<T>`, because complex numbers have no total order - together with the `IEquatable`, formatting, and parsing interfaces (string, `char` span, and UTF-8) that back the members shown below.
 
-Every value in the comments of this guide was produced by running the sample; the function table in [Pattern 4](#pattern-4--elementary-functions-pinned-against-systemnumericscomplex) was pinned against `System.Numerics.Complex` on the same inputs.
+Every value in the comments of this guide was produced by running the sample; the function table in [Pattern 4](#pattern-4---elementary-functions-pinned-against-systemnumericscomplex) was pinned against `System.Numerics.Complex` on the same inputs.
 
 ## Pattern 1 - construction
 

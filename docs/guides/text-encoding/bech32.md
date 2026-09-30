@@ -21,7 +21,7 @@ four parts:
    └─ human-readable part (HRP)
 ```
 
-Because the HRP and checksum are integral to the string, `Bech32` is modelled on [`Base58Check`](base58.md#base58check--checksum-protected-payloads)
+Because the HRP and checksum are integral to the string, `Bech32` is modelled on [`Base58Check`](base58.md#base58check---checksum-protected-payloads)
 rather than the [`IBinaryEncoding`](binary-encodings-interface.md) family - it sits outside the runtime registry.
 
 ## 5-bit groups vs. 8-bit bytes

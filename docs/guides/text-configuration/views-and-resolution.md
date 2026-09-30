@@ -226,7 +226,7 @@ Patterns without `/` match at any depth. Patterns with `/` anchor to the start o
 
 - **You only need to read or write the INI bytes.** Reach for [`Bodu.Text.Ini`](../formats/ini.md) directly - `ConfigurationView` is the projection layer; you do not need it for codec-only use.
 - **You need `IConfiguration` integration.** Reach for [`Bodu.Extensions.Configuration.Text`](../extensions-configuration-text/index.md), which bridges `ConfigurationView` into `IConfigurationBuilder` so the rest of the standard configuration pipeline works unchanged.
-- **You need diagnostics at parse time.** That work lives in [`ConfigurationDocument.ParseWithDiagnostics`](parsing-and-profiles.md#pattern-4--collect-diagnostics-instead-of-throwing) - `Resolve` runs against a successfully parsed document.
+- **You need diagnostics at parse time.** That work lives in [`ConfigurationDocument.ParseWithDiagnostics`](parsing-and-profiles.md#pattern-4---collect-diagnostics-instead-of-throwing) - `Resolve` runs against a successfully parsed document.
 
 ## See also
 

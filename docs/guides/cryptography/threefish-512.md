@@ -118,7 +118,7 @@ byte[] EncryptRecord(byte[] key, byte[] iv, long recordId, byte[] plaintext)
 }
 ```
 
-The 8-byte little-endian record ID fills the low half of the 16-byte tweak; the high half stays zero, leaving room to encode a second discriminator (a table ID, a tenant ID) if you need it. Because the tweak is mixed into every round's subkey, two records with different IDs are cryptographically unrelated even under the same key and IV - see [Threefish-256](threefish-256.md#what-the-tweak-is--and-why-it-is-not-an-iv) for the mechanism.
+The 8-byte little-endian record ID fills the low half of the 16-byte tweak; the high half stays zero, leaving room to encode a second discriminator (a table ID, a tenant ID) if you need it. Because the tweak is mixed into every round's subkey, two records with different IDs are cryptographically unrelated even under the same key and IV - see [Threefish-256](threefish-256.md#what-the-tweak-is---and-why-it-is-not-an-iv) for the mechanism.
 
 ## Why 512 is the general-purpose pick
 

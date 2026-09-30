@@ -160,7 +160,7 @@ uint crcWord = BitConverter.ToUInt32(crc32);                                    
 
 ## Where to go next
 
-- [Using CRC](crc.md#pattern-6--resume-from-a-stored-digest) - the CRC-specific reverse-finalization in more depth.
+- [Using CRC](crc.md#pattern-6---resume-from-a-stored-digest) - the CRC-specific reverse-finalization in more depth.
 - [Using Fletcher](fletcher.md) and [Using Adler](adler.md) - the twin-accumulator checksums this page resumes.
 - [Streams and async](../cryptography/streaming-and-async.md) - the equivalent surfaces for the cryptographic hashes and ciphers.
 - [Runnable samples](../../samples/io-hashing.md) - `Bodu.IO.Hashing.Samples.ChecksumTour` exercises `HashingStream` and resumable hashing over a committed file.

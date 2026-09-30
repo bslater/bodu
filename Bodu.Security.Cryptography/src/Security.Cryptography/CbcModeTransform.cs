@@ -59,8 +59,8 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/cipher-modes.html#cbc--the-default">CBC walk-through in the cipher-modes guide
-/// </seealso>
+/// <seealso href="../guides/cryptography/cipher-modes.html#cbc---the-default">CBC walk-through in the cipher-modes
+/// guide </seealso>
 public sealed class CbcModeTransform
     : IBlockCipherModeTransform
 {

@@ -123,7 +123,7 @@ using var sip = new SipHash64 { Key = key };
 bool ok = sip.VerifyHash(message, expectedDigest);
 ```
 
-See the [hashing overview](hashing.md#pattern-4--verifying-a-hash) for the general pattern.
+See the [hashing overview](hashing.md#pattern-4---verifying-a-hash) for the general pattern.
 
 ## What SipHash is not
 

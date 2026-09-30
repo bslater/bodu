@@ -115,7 +115,7 @@ The full per-profile table:
 | `DiagnosticMode` | `Throw` | `Throw` | `Throw` | `Collect` |
 
 > [!NOTE]
-> The same four profiles also drive *resolve* defaults through <xref:Bodu.Text.Configuration.ConfigurationResolveOptions> - `ApplyPreambleProperties`, `MissingPathRootMode`, and `UnsetValueMode`. Selecting a profile at parse time does not automatically apply its resolve defaults; pass the matching `ConfigurationResolveOptions` (or its `For(profile)` result) to `Resolve` so both halves of the pipeline agree. See [Views and resolution](views-and-resolution.md#pattern-5--resolve-options).
+> The same four profiles also drive *resolve* defaults through <xref:Bodu.Text.Configuration.ConfigurationResolveOptions> - `ApplyPreambleProperties`, `MissingPathRootMode`, and `UnsetValueMode`. Selecting a profile at parse time does not automatically apply its resolve defaults; pass the matching `ConfigurationResolveOptions` (or its `For(profile)` result) to `Resolve` so both halves of the pipeline agree. See [Views and resolution](views-and-resolution.md#pattern-5---resolve-options).
 
 ## `ConfigurationParseOptions` field-by-field
 
@@ -141,7 +141,7 @@ Construct a custom option set when none of the four profiles fits. `Configuratio
 
 ### Duplicate handling
 
-- `DuplicateKeyMode` (<xref:Bodu.Text.Configuration.DuplicateKeyPolicy>, default per profile) - `LastWins`, `FirstWins`, or `Disallowed`. See [INI duplicate-key policies](../formats/ini.md#pattern-4--duplicate-policies).
+- `DuplicateKeyMode` (<xref:Bodu.Text.Configuration.DuplicateKeyPolicy>, default per profile) - `LastWins`, `FirstWins`, or `Disallowed`. See [INI duplicate-key policies](../formats/ini.md#pattern-4---duplicate-policies).
 - `DuplicateSectionMode` (<xref:Bodu.Text.Configuration.IniDuplicateSectionBehavior>, default per profile) - `Preserve`, `Merge`, `MergeAdjacent`, or `Disallowed` (`MergeAll` is an alias for `Merge`).
 
 ### Diagnostic handling
