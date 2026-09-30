@@ -43,4 +43,42 @@ public abstract partial class SerpentCipherTests<TTest, TCipher>
     /// <inheritdoc />
     protected sealed override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>
         CreateCipher(answer.Key!, answer.Tweak!);
+
+    /// <summary>
+    /// Yields keys and tweaks sized for the variant under test, each with the blocks to transform under it: a key,
+    /// tweak and blocks of all-ones and all-zero bytes, then seeded ones.
+    /// </summary>
+    /// <param name="seed">The seed of the generator.</param>
+    /// <returns>The cases, each named for its failure messages.</returns>
+    private IEnumerable<(string Name, byte[] Key, byte[] Tweak, byte[][] Blocks)> SeededCases(int seed)
+    {
+        BlockCipherSpecification specification = GetSpecification(TweakableBlockCipherVariant.DefaultKeyAndTweak);
+        int blockLength = specification.BlockSize;
+
+        byte[] ones = new byte[Math.Max(specification.KeySize, blockLength)];
+        ones.AsSpan().Fill(0xFF);
+        yield return (
+            "all-ones key and tweak",
+            ones[..specification.KeySize],
+            ones[..specification.TweakSize],
+            [ones[..blockLength], new byte[blockLength]]);
+
+        var random = new Random(seed);
+        for (int c = 0; c < 6; c++)
+        {
+            byte[] key = new byte[specification.KeySize];
+            byte[] tweak = new byte[specification.TweakSize];
+            random.NextBytes(key);
+            random.NextBytes(tweak);
+
+            byte[][] blocks = new byte[6][];
+            for (int b = 0; b < blocks.Length; b++)
+            {
+                blocks[b] = new byte[blockLength];
+                random.NextBytes(blocks[b]);
+            }
+
+            yield return ($"seeded key {c}", key, tweak, blocks);
+        }
+    }
 }
