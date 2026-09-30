@@ -243,6 +243,11 @@ internal static class CryptoHarness
             using IBlockCipher cipher = create();
             byte[] iv = Random(ivLength, 13);
             Measure("mode", $"Bodu {name}-CTR 1 MiB", BulkLength, () => { using var ctr = new CtrModeTransform(cipher, iv); ctr.Transform(bulk, output.AsSpan(0, BulkLength), encrypt: true); });
+            Measure("mode", $"Bodu {name}-CTR 64 B", SmallLength, () => { using var ctr = new CtrModeTransform(cipher, iv); ctr.Transform(small, output.AsSpan(0, SmallLength), encrypt: true); });
+
+            // The same blocks encrypted without the counter mode: what CTR's keystream costs before the counters and
+            // the XOR.
+            Measure("mode", $"Bodu {name}-ECB bulk 1 MiB", BulkLength, () => cipher.EncryptBlocks(bulk, output.AsSpan(0, BulkLength)));
         }
     }
 
