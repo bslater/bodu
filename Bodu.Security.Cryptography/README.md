@@ -184,7 +184,7 @@ These primitives dispatch to vector, carry-less-multiply or wide-multiply instru
 | AES, in every mode | the platform `Aes` (AES-NI where the OS provider uses it) | the platform `Aes` (the AES instructions where the OS provider uses them) |
 | GHASH and POLYVAL (GCM, GMAC, GCM-SIV) | PCLMULQDQ | PMULL |
 | ChaCha20, XChaCha20, Salsa20, XSalsa20 | AVX-512 (16 blocks at a time), AVX2 (8) or SSSE3 (4) | AdvSimd (4) |
-| Poly1305 (and the Poly1305 AEADs) | AVX-512 (8 blocks at a time) or AVX2 (4) from 512 bytes; BMI2 `mulx` for 64-bit products below that | AdvSimd (2 blocks at a time) from 256 bytes; `umulh` for 64-bit products below that |
+| Poly1305 (and the Poly1305 AEADs) | AVX-512 (8 blocks at a time) or AVX2 (4) from 512 bytes; BMI2 `mulx` for 64-bit products below that | AdvSimd (2 blocks at a time) from 256 bytes, and from 128 on Apple silicon; `umulh` for 64-bit products below that |
 | X25519, Ed25519 | BMI2 `mulx` for 64-bit products | `umulh` for 64-bit products |
 | BLAKE2b | AVX-512 or AVX2, else SSSE3 | - |
 | BLAKE2s | AVX-512 or SSSE3 | - |
@@ -192,12 +192,12 @@ These primitives dispatch to vector, carry-less-multiply or wide-multiply instru
 | CubeHash | AVX-512, AVX2 or SSSE3 | AdvSimd |
 | Serpent-128, over several blocks, and the counter blocks of CTR, EAX and SIV | AVX-512 or AVX2 (8 blocks at a time), else SSSE3 (4) | AdvSimd (4) |
 | Threefish-256 / 512 / 1024 | AVX-512 | - |
-| Argon2 | AVX2, else SSSE3 | AdvSimd on .NET 8 |
+| Argon2 | AVX2, else SSSE3 | AdvSimd with the general registers (two rows or columns at a time) |
 | scrypt | SSE2 | - |
 
 The 16-wide ChaCha20, Salsa20 and BLAKE3 kernels, and the 8-wide Poly1305 kernel, run where .NET accelerates 512-bit vectors (`Vector512.IsHardwareAccelerated`); other AVX-512 processors run the next narrower kernels.
 
-On ARM64, BLAKE2b, BLAKE2s, scrypt, BLAKE3 over a single block, and Argon2 on .NET 10 run their portable kernels, which ran faster than their AdvSimd kernels on a Neoverse N2 under .NET 8 and .NET 10, and faster or about as fast on an Apple M1 under .NET 10. On .NET 8, Argon2 keeps its AdvSimd kernel, which ran 1.3 to 1.6 times as fast as the portable one on an Apple M1. Those kernels hold one state across a vector's lanes, which pays on x64 but not against ARM64's thirty-one general registers and one-instruction rotations.
+On ARM64, BLAKE2b, BLAKE2s, scrypt and BLAKE3 over a single block run their portable kernels, which ran faster than their AdvSimd kernels on a Neoverse N2 under .NET 8 and .NET 10, and faster or about as fast on an Apple M1 under .NET 10. Those kernels hold one state across a vector's lanes, which pays on x64 but not against ARM64's thirty-one general registers and one-instruction rotations. Argon2's rows, and then its columns, are independent of each other, so on ARM64 it works one row or column in vector registers and the next in general registers at once: 1.25 to 1.28 times as fast as its portable kernel on a Neoverse N2, and 1.3 times as fast as its AdvSimd kernel on an Apple M1.
 
 Set the process-wide feature switch **`Bodu.Security.Cryptography.DisableSimd`** to `true` to force the portable path in place of every vector and carry-less-multiply kernel above (AES and the 64-bit multiplies are unaffected) - useful for reproducibility, differential testing, or audit. It is read once, before first use of any accelerated primitive, so set it via `runtimeconfig.json` / a `<RuntimeHostConfigurationOption>` item or an early `AppContext.SetSwitch(...)`. The paths are equivalent (the ARX designs such as BLAKE2/3, ChaCha20 and Threefish are constant-time in both forms); the switch is not a security control. See the [hardware-acceleration guide](https://bslater.github.io/bodu/guides/cryptography/hardware-acceleration.html) for details.
 
@@ -209,7 +209,7 @@ Four types can spread a single operation across threads. Each takes a `maxDegree
 |---|---|---|
 | `MerkleTree` | `1` | Leaf hashing, in batches with one `HashAlgorithm` per worker; the tree is folded on the calling thread |
 | `Blake3` | `1` | The whole chunks of a write of 256 KiB or more, as independent 64 KiB subtrees joined on the calling thread |
-| `Argon2d` / `Argon2i` / `Argon2id` | `-1` | A derivation's lanes, once they reach about 1 MiB each |
+| `Argon2d` / `Argon2i` / `Argon2id` | `-1` | A derivation's lanes, once they reach 256 KiB each |
 | `Scrypt` | `1` | A derivation's `p` units, each with its own `V`; small units stay on the calling thread, and large ones use fewer threads so their `V`s stay within 2 GiB |
 
 `Argon2.Verify` and `Scrypt.Verify` take the same bound. The defaults are `1` where a busy service would only pay for the hand-offs (or, for scrypt, the extra memory); raise the bound to process one large input faster. Argon2 defaults to `-1` because its lanes share one memory matrix, so threads do not multiply its memory the way scrypt's units do.
