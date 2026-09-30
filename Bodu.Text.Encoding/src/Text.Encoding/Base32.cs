@@ -18,7 +18,7 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// <para>
 /// The <see cref="BaseFormattingOptions.UpperCase" />, <see cref="BaseFormattingOptions.IncludePrefix" />, and
-/// <see cref="BaseFormattingOptions.InsertSpacing" /> flags have no effect on Base32 — each variant emits its canonical
+/// <see cref="BaseFormattingOptions.InsertSpacing" /> flags have no effect on Base32 - each variant emits its canonical
 /// alphabet case and there is no standard prefix. The <see cref="BaseFormatStyles.AllowPrefix" /> flag is also ignored
 /// on decode for the same reason.
 /// </para>
@@ -31,10 +31,10 @@ namespace Bodu.Text.Encoding;
 /// // RFC 4648 Standard Base32 (default).
 /// string standard = Base32.Encode(data);                                      // "NBSWY3DP"
 ///
-/// // Crockford Base32 — human-friendly alphabet, no padding.
+/// // Crockford Base32 - human-friendly alphabet, no padding.
 /// string crockford = Base32.Encode(data, Base32Variant.Crockford);
 ///
-/// // RFC 4648 base32hex — preserves sort order with binary keys.
+/// // RFC 4648 base32hex - preserves sort order with binary keys.
 /// string base32hex = Base32.Encode(data, Base32Variant.HexExtended);
 ///
 /// // Round-trip.
@@ -360,7 +360,7 @@ public static partial class Base32
 
         // Padding alignment: Standard / HexExtended require canonical padding by default. AllowMissingPadding
         // bypasses the "must have padding" requirement; Crockford / Z-Base32 ignore padding entirely. In every
-        // case, if padding IS present it must match the canonical count for the data — partial or excessive
+        // case, if padding IS present it must match the canonical count for the data - partial or excessive
         // padding ("MZXW6Y========" or "M=") is always rejected.
         if (variant is Base32Variant.Standard or Base32Variant.HexExtended)
         {

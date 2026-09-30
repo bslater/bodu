@@ -28,7 +28,7 @@ public static partial class AeadBlockCipherModeTransformExtensions
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="transform" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">
-    /// The transform has already encrypted or decrypted a message. AEAD transforms are single-use per message —
+    /// The transform has already encrypted or decrypted a message. AEAD transforms are single-use per message -
     /// construct a fresh instance.
     /// </exception>
     public static (byte[] Ciphertext, AuthenticationTag Tag) EncryptDetached(
@@ -64,7 +64,7 @@ public static partial class AeadBlockCipherModeTransformExtensions
     /// <exception cref="CryptographicException">The authentication tag did not verify.</exception>
     /// <exception cref="InvalidOperationException">
     /// The transform has already encrypted or decrypted a message, including after a previous tag-mismatch failure.
-    /// AEAD transforms are single-use per message — construct a fresh instance.
+    /// AEAD transforms are single-use per message - construct a fresh instance.
     /// </exception>
     public static byte[] DecryptDetached(
         this IAeadBlockCipherModeTransform transform,

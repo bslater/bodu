@@ -149,9 +149,9 @@ public partial class CrcTests
     /// continues a prior hash by undoing finalisation and hashing additional data, yielding the same digest as
     /// a single-shot hash over the combined input. Covers each reflection branch:
     /// <list type="bullet">
-    ///   <item><c>CRC32_ISOHDLC</c> — fully reflecting (<c>ReflectIn = ReflectOut = true</c>).</item>
-    ///   <item><c>CRC16_XMODEM</c> — non-reflecting (<c>ReflectIn = ReflectOut = false</c>).</item>
-    ///   <item><c>CRC12_UMTS</c> — asymmetric (<c>ReflectIn != ReflectOut</c>) so the bit-reversal branch in
+    ///   <item><c>CRC32_ISOHDLC</c> - fully reflecting (<c>ReflectIn = ReflectOut = true</c>).</item>
+    ///   <item><c>CRC16_XMODEM</c> - non-reflecting (<c>ReflectIn = ReflectOut = false</c>).</item>
+    ///   <item><c>CRC12_UMTS</c> - asymmetric (<c>ReflectIn != ReflectOut</c>) so the bit-reversal branch in
     ///   <see cref="Crc.TryComputeHashFrom" /> is exercised.</item>
     /// </list>
     /// </summary>

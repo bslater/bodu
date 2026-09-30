@@ -74,8 +74,8 @@ public static partial class StringExtensions
     /// <para>
     /// Known acronyms and fully-uppercase tokens keep their acronym spelling when
     /// <see cref="WordCasingOptions.PreserveAcronyms" /> is set; recognised mixed-case words are emitted verbatim when
-    /// <see cref="WordCasingOptions.PreserveMixedCaseWords" /> is set. Only sentence terminators — never an apostrophe
-    /// — trigger capitalisation, so <c>o'connor</c> becomes <c>O'connor</c>.
+    /// <see cref="WordCasingOptions.PreserveMixedCaseWords" /> is set. Only sentence terminators - never an
+    /// apostrophe - trigger capitalisation, so <c>o'connor</c> becomes <c>O'connor</c>.
     /// </para>
     /// </remarks>
     public static string ToSentenceCase(this string value, WordCasingOptions options)
@@ -155,7 +155,7 @@ public static partial class StringExtensions
 
     /// <summary>
     /// Applies sentence-case rules to a single word: preserved acronyms and mixed-case words are emitted verbatim,
-    /// otherwise the word is lower-cased and — when it starts a sentence — its first letter is capitalised.
+    /// otherwise the word is lower-cased and - when it starts a sentence - its first letter is capitalised.
     /// </summary>
     /// <param name="word">The word to case.</param>
     /// <param name="canonical">The canonical acronym lookup keyed by upper-case form.</param>

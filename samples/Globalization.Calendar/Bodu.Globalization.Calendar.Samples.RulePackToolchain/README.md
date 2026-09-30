@@ -7,7 +7,7 @@ task and `NotableDatePack` items) driving the `bodu-calendar` tool from
 **Unlike every other sample, the interesting part happens at build time.** The csproj declares
 `rules/company-holidays.xml` as a `NotableDatePack` item; the task lints and compiles it with the
 tool and copies the sealed `.bcal` pack beside the application. What the program does is only the
-consumer side — loading that pack with `NotableDateResourceLoader.LoadBinary`. If you want to see the
+consumer side - loading that pack with `NotableDateResourceLoader.LoadBinary`. If you want to see the
 toolchain work, watch the build, or delete `company-holidays.bcal` from the output directory and
 rebuild.
 
@@ -15,7 +15,7 @@ rebuild.
 dotnet run --project samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.RulePackToolchain
 ```
 
-Offline and deterministic, and the compile step is incremental — a rebuild with no edit to the
+Offline and deterministic, and the compile step is incremental - a rebuild with no edit to the
 document does no work.
 
 ## The one thing a consumer writes
@@ -28,8 +28,8 @@ document does no work.
 
 A NuGet consumer writes exactly that and nothing else: the package's `build/*.targets` is imported
 automatically and finds the task and the tool inside the package. This sample carries extra
-plumbing — an explicit `<Import>` of the `.targets` and overrides for `BoduCalendarTaskAssembly` and
-`BoduCalendarToolDll` — because inside this repository the task and tool are *projects* rather than a
+plumbing - an explicit `<Import>` of the `.targets` and overrides for `BoduCalendarTaskAssembly` and
+`BoduCalendarToolDll` - because inside this repository the task and tool are *projects* rather than a
 restored package. That plumbing is repository-specific and is commented as such in the csproj.
 
 ## Scenarios
@@ -44,7 +44,7 @@ and compares the two. Prints the size of each representation.
 
 **Expected output.** Both resolve the same three holidays and the comparison reports `True`. The pack
 is far smaller (255 bytes against 1,946) and needs no schema validation to read. The pack's presence
-is itself the evidence that the task ran during the build — if it were missing the program says so
+is itself the evidence that the task ran during the build - if it were missing the program says so
 and stops.
 
 **APIs.** `NotableDateResourceLoader.LoadBinary`, `NotableDateResourceLoader.Load`,
@@ -69,7 +69,7 @@ dotnet tool install --global Bodu.Globalization.Calendar.Tool   # only if you wa
 
 ## Related
 
-- `Bodu.Globalization.Calendar.Samples.ValidationLint` — the diagnostics the tool reports, reached
+- `Bodu.Globalization.Calendar.Samples.ValidationLint` - the diagnostics the tool reports, reached
   through the library's validation API instead of the CLI.
-- `Bodu.Globalization.Calendar.Samples.CustomCalendar` — authoring the same kind of document in code
+- `Bodu.Globalization.Calendar.Samples.CustomCalendar` - authoring the same kind of document in code
   with `NotableDateDocumentBuilder`, which is how this sample's XML was generated.

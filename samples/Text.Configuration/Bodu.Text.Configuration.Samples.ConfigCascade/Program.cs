@@ -10,7 +10,7 @@ namespace Bodu.Samples.Text.Configuration.ConfigCascade;
 
 /// <summary>
 /// Entry point for the configuration-cascade sample: the <c>Bodu.Text.Configuration</c>
-/// pipeline — parse (with diagnostics), path-targeted resolution where matching sections
+/// pipeline - parse (with diagnostics), path-targeted resolution where matching sections
 /// cascade EditorConfig-style, typed view getters with <c>unset</c> handling, and saving a
 /// mutated document with comments preserved. Everything runs offline against the committed
 /// <c>Data/sample.boduconfig</c>.

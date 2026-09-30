@@ -113,7 +113,7 @@ internal static partial class WildcardPattern
 
             // A '-' forms a range only when it sits BETWEEN two members: the member just read and a following
             // character that is not the closing ']'. This one lookahead rule gives '-' its three glob meanings for
-            // free — leading ('[-a]') and trailing ('[a-]') dashes fall through to the single-member branch.
+            // free - leading ('[-a]') and trailing ('[a-]') dashes fall through to the single-member branch.
             if (j < pattern.Length - 1 && pattern[j] == '-' && pattern[j + 1] != ']')
             {
                 j++;

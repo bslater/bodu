@@ -22,8 +22,8 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Within the transforms and products, coefficients are reduced by Montgomery reduction and a Barrett-style reduction
 /// (see the Reduction partial): fixed sequences of multiplications, shifts and masks, never a division. Of the two
-/// factors in each coefficient-wise product, the one fixed for the whole operation — the matrix Â, ŝ₁, ŝ₂, t̂₀, or
-/// t̂₁·2ᵈ — is held in Montgomery form, so each product needs a single reduction and comes out exact.
+/// factors in each coefficient-wise product, the one fixed for the whole operation - the matrix Â, ŝ₁, ŝ₂, t̂₀, or
+/// t̂₁·2ᵈ - is held in Montgomery form, so each product needs a single reduction and comes out exact.
 /// </para>
 /// <para>
 /// The number of rejection-loop restarts during signing is public by design (FIPS 204 §3.5); the per-iteration work is

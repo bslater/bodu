@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// ChaCha20 is an additive stream cipher designed by Daniel J. Bernstein. It uses a 256-bit key, a 96-bit nonce, and a
 /// 32-bit block counter to generate a keystream that is XORed with the plaintext. This class exposes the <em>raw</em>
-/// keystream cipher — confidentiality only, with no authentication. For authenticated encryption use the BCL's
+/// keystream cipher - confidentiality only, with no authentication. For authenticated encryption use the BCL's
 /// <see cref="System.Security.Cryptography.ChaCha20Poly1305" />; the raw cipher exists for libsodium-, Noise-, and
 /// age-style protocols that build their own authentication layer or use ChaCha20 as a keystream primitive.
 /// </para>
@@ -67,7 +67,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="https://www.rfc-editor.org/rfc/rfc8439">RFC 8439 — ChaCha20 and Poly1305 for IETF Protocols</seealso>
+/// <seealso href="https://www.rfc-editor.org/rfc/rfc8439">RFC 8439 - ChaCha20 and Poly1305 for IETF Protocols</seealso>
 /// <seealso cref="XChaCha20" />
 public sealed class ChaCha20
     : SymmetricStreamAlgorithm

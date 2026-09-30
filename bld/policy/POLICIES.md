@@ -25,7 +25,7 @@ catch should be distilled into the Learning log below so the next author applies
 | ID | Policy | Tier | Enforced by | Conforming form |
 |---|---|---|---|---|
 | BODU-P001 | Every `.cs` file starts with the copyright banner | 1 | `check-policy.sh` (added files) | The `<copyright file=…>` banner block from CLAUDE.md > File Header |
-| BODU-P002 | File-scoped namespaces (`namespace X;`) | 0/1 | IDE0161 · `check-policy.sh` (added files) | `namespace Bodu.X;` — never the `{ }` block form |
+| BODU-P002 | File-scoped namespaces (`namespace X;`) | 0/1 | IDE0161 · `check-policy.sh` (added files) | `namespace Bodu.X;` - never the `{ }` block form |
 | BODU-P003 | No string-literal exception messages | 1 | `check-policy.sh` (added src lines) | `throw new ArgumentException(ResourceStrings.Arg_Invalid_X, nameof(x))` |
 | BODU-P004 | Folder ↔ namespace alignment (flat, dotted) | 1 | `check-folder-namespace-alignment.sh` | Folder = namespace − RootNamespace, dots preserved |
 | BODU-P005 | `var` per the CLAUDE.md cascade | 0 | IDE0007 | `var` for built-ins / apparent types; explicit otherwise |
@@ -37,13 +37,15 @@ catch should be distilled into the Learning log below so the next author applies
 | BODU-P011 | `<returns>` not used on a property | 2 | Claude Policy Review | Use `<value>` for the property's value |
 | BODU-P012 | resx key follows the taxonomy | 2 | Claude Policy Review | `Arg_Invalid_*` / `Arg_Null_*` / `Op_Invalid_*` / `Format_Invalid_*` / … |
 | BODU-P013 | Validation grouped at the top of the member | 2 | Claude Policy Review | All guards contiguous before the body, then a blank line |
+| BODU-P014 | No em-dashes or en-dashes, in any file | 1 | `check-policy.sh` (added lines, every text file) | ` - ` for an aside, `-` in a range (`2020-2026`); a dash that is test data is listed in `bld/policy/dash-allowlist.txt` |
+| BODU-P015 | No XML-doc line continues a paragraph with a Markdown block marker | 0/1 | BODU1001/BODU1002 (the formatter never wraps one there) · `validate_api_site.py` `doclines` | Keep `-`, `+`, `*`, `#`, `&gt;` or `1.` at the end of the previous line; DocFX renders the text as Markdown |
 
 ## Learning log
 
 Append-only. Each downstream catch is distilled here so upstream authors (human or agent) apply
 the rule *before* CI catches it. The fix-and-learn workflow (`claude-policy-fix.yml`) writes an
 entry every time it remediates a violation. When an entry's rule is deterministically checkable,
-promote it into `check-policy.sh` and note the promotion here — that is how a Tier-2 judgment
+promote it into `check-policy.sh` and note the promotion here - that is how a Tier-2 judgment
 becomes a Tier-1 script and the catch-point moves upstream.
 
 Entry format:

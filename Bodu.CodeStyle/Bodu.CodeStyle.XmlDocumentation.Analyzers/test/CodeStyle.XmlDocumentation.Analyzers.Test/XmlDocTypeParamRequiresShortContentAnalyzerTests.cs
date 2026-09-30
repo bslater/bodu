@@ -44,7 +44,7 @@ public sealed class XmlDocTypeParamRequiresShortContentAnalyzerTests
 
     /// <summary>
     /// Verifies that a <c>&lt;typeparam&gt;</c> authored across multiple source lines whose canonical
-    /// single-line rendering fits the budget does not trigger BODU1406 — the rule measures the canonical
+    /// single-line rendering fits the budget does not trigger BODU1406 - the rule measures the canonical
     /// rendering, not the inflated raw multi-line span, so it does not fire on content the formatter would
     /// simply join back onto one line.
     /// </summary>
@@ -109,7 +109,7 @@ public sealed class XmlDocTypeParamRequiresShortContentAnalyzerTests
 
     /// <summary>
     /// Verifies that a long single-sentence <c>&lt;typeparam&gt;</c> (no internal sentence boundary) does not
-    /// trigger BODU1406 — the rule defers to the format analyzer's BODU1011 in that case so the auto-fix is
+    /// trigger BODU1406 - the rule defers to the format analyzer's BODU1011 in that case so the auto-fix is
     /// always able to succeed when BODU1406 fires.
     /// </summary>
     [TestMethod]

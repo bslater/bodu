@@ -9,8 +9,8 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Verifies that a lookup served from cached rows applies the full date-resolution contract — previous/next/nearest
-/// selection, tie handling, the tolerance clamp, same-currency identity, and the direct-before-inverse preference —
+/// Verifies that a lookup served from cached rows applies the full date-resolution contract - previous/next/nearest
+/// selection, tie handling, the tolerance clamp, same-currency identity, and the direct-before-inverse preference -
 /// identically to a lookup resolved by a live provider.
 /// </summary>
 public sealed partial class CachingRateProviderTests

@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic;
 public partial class IndexedSetTests
 {
     // --------------------------------------------------------
-    // CopyTo — argument validation
+    // CopyTo - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -72,7 +72,7 @@ public partial class IndexedSetTests
     }
 
     // --------------------------------------------------------
-    // CopyTo — behaviour
+    // CopyTo - behaviour
     // --------------------------------------------------------
 
     /// <summary>

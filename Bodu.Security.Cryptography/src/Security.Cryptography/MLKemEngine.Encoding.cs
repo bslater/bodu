@@ -7,14 +7,14 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the ML-KEM bit-packing codecs and coefficient compression (FIPS 203 Algorithms 4–6 and §4.2.1).
+/// Provides the ML-KEM bit-packing codecs and coefficient compression (FIPS 203 Algorithms 4-6 and §4.2.1).
 /// </summary>
 internal static partial class MLKemEngine
 {
     /// <summary>
     /// Serializes 256 d-bit coefficients into 32·d bytes in little-endian bit order (FIPS 203 ByteEncode_d).
     /// </summary>
-    /// <param name="bits">The bit width d of each coefficient (1–12).</param>
+    /// <param name="bits">The bit width d of each coefficient (1-12).</param>
     /// <param name="coefficients">The 256 coefficients, each below 2^d.</param>
     /// <param name="destination">The span receiving 32·d bytes.</param>
     private static void ByteEncode(int bits, ReadOnlySpan<int> coefficients, Span<byte> destination)
@@ -40,7 +40,7 @@ internal static partial class MLKemEngine
     /// <summary>
     /// Deserializes 32·d bytes into 256 d-bit coefficients in little-endian bit order (FIPS 203 ByteDecode_d).
     /// </summary>
-    /// <param name="bits">The bit width d of each coefficient (1–12).</param>
+    /// <param name="bits">The bit width d of each coefficient (1-12).</param>
     /// <param name="source">The 32·d source bytes.</param>
     /// <param name="destination">The span receiving the 256 coefficients.</param>
     private static void ByteDecode(int bits, ReadOnlySpan<byte> source, Span<int> destination)

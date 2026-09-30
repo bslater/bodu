@@ -12,8 +12,8 @@ namespace Bodu.Globalization.Recurrence.Samples.SchedulingHost;
 /// <remarks>
 /// <para>
 /// The package deliberately does not ship this abstraction. The four forms differ in what they need
-/// to answer a query — a rule and an interval need a series origin, a cron expression and a set do
-/// not — and collapsing that difference is a hosting decision rather than a library one. What the
+/// to answer a query - a rule and an interval need a series origin, a cron expression and a set do
+/// not - and collapsing that difference is a hosting decision rather than a library one. What the
 /// package does guarantee is that every form answers <c>GetNextOccurrence</c> and
 /// <c>GetPreviousOccurrence</c> with the same inclusive-flag semantics, which is exactly what makes
 /// an adapter this small possible.

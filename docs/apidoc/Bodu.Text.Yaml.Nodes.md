@@ -10,10 +10,10 @@ uid: Bodu.Text.Yaml.Nodes
 
 ## Key types
 
-- <xref:Bodu.Text.Yaml.Nodes.YamlNode> — abstract base: `Parse`, `AsObject` / `AsArray` / `AsValue`, string and integer indexers, `WriteTo`, and `ToYamlString`.
-- <xref:Bodu.Text.Yaml.Nodes.YamlObject> — a mapping node keyed by string, with `Add` / `Remove` / `TryGetValue` and an indexer.
-- <xref:Bodu.Text.Yaml.Nodes.YamlArray> — a sequence node with `Add` / `Remove` / `RemoveAt` and an integer indexer.
-- <xref:Bodu.Text.Yaml.Nodes.YamlValue> — a scalar leaf (string, integer, float, or boolean), created via `Create` and read via `GetValue<T>`.
+- <xref:Bodu.Text.Yaml.Nodes.YamlNode> - abstract base: `Parse`, `AsObject` / `AsArray` / `AsValue`, string and integer indexers, `WriteTo`, and `ToYamlString`.
+- <xref:Bodu.Text.Yaml.Nodes.YamlObject> - a mapping node keyed by string, with `Add` / `Remove` / `TryGetValue` and an indexer.
+- <xref:Bodu.Text.Yaml.Nodes.YamlArray> - a sequence node with `Add` / `Remove` / `RemoveAt` and an integer indexer.
+- <xref:Bodu.Text.Yaml.Nodes.YamlValue> - a scalar leaf (string, integer, float, or boolean), created via `Create` and read via `GetValue<T>`.
 
 ## Example
 
@@ -31,4 +31,4 @@ string yaml = root.ToYamlString();
 
 - **Explicit scalar creation.** Unlike the TOML and Bencode node DOMs there are no implicit conversions; wrap scalars with `YamlValue.Create` so the value kind is unambiguous under YAML's implicit typing.
 - **Presentation is normalized.** Comments, anchors, aliases, and the original scalar styles are not retained; `ToYamlString` re-emits the tree in block style.
-- **See also:** the [Bodu.Text.Yaml introduction](~/docs/serialization/yaml/index.md) and the [Using YAML](~/guides/serialization/yaml/using.md) guide (Pattern 4 — Edit a document with the mutable DOM).
+- **See also:** the [Bodu.Text.Yaml introduction](~/docs/serialization/yaml/index.md) and the [Using YAML](~/guides/serialization/yaml/using.md) guide (Pattern 4 - Edit a document with the mutable DOM).

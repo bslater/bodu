@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="mm-title mm-desc">
-  <title id="mm-title">MurmurHash3 — block mixing and avalanche finalization</title>
-  <desc id="mm-desc">MurmurHash3 processes the input in fixed-size blocks. Each block k is scrambled by multiply, rotate, multiply with the constants c1 and c2, then XORed into the hash accumulator h, which is itself rotated and combined with h times five plus a constant. After all blocks, a finalization mix of alternating XOR-shift and multiply steps spreads every input bit across every output bit — the avalanche property.</desc>
+  <title id="mm-title">MurmurHash3 - block mixing and avalanche finalization</title>
+  <desc id="mm-desc">MurmurHash3 processes the input in fixed-size blocks. Each block k is scrambled by multiply, rotate, multiply with the constants c1 and c2, then XORed into the hash accumulator h, which is itself rotated and combined with h times five plus a constant. After all blocks, a finalization mix of alternating XOR-shift and multiply steps spreads every input bit across every output bit - the avalanche property.</desc>
 
   <defs>
     <style>
@@ -44,7 +44,7 @@
     <rect class="panel" width="800" height="300" rx="8"/>
     <rect class="header" width="800" height="46" rx="8"/>
     <rect class="header" y="38" width="800" height="8"/>
-    <text class="title" x="16" y="20">MurmurHash3 — block mix, then avalanche finalize</text>
+    <text class="title" x="16" y="20">MurmurHash3 - block mix, then avalanche finalize</text>
     <text class="formula" x="784" y="38" text-anchor="end">c1, c2, r1, r2 and the 5·h + n step are fixed constants</text>
 
     <!-- input block -->
@@ -94,7 +94,7 @@
     <text class="sub-muted" x="584" y="146" text-anchor="middle">repeat for every block</text>
 
     <!-- finalization -->
-    <text class="group" x="40" y="190" fill="#60A5FA">Avalanche finalization — fmix(h) after the last block</text>
+    <text class="group" x="40" y="190" fill="#60A5FA">Avalanche finalization - fmix(h) after the last block</text>
     <g transform="translate(96 222)">
       <rect class="step-f" x="-46" y="-16" width="92" height="32" rx="5"/>
       <text class="step-text" x="0" y="4">h ^= len</text>
@@ -119,7 +119,7 @@
     <line class="wire-f" x1="284" y1="222" x2="321" y2="222" marker-end="url(#mm-arr-f)"/>
     <line class="wire-f" x1="428" y1="222" x2="461" y2="222" marker-end="url(#mm-arr-f)"/>
     <line class="wire-f" x1="568" y1="222" x2="601" y2="222" marker-end="url(#mm-arr-f)"/>
-    <text class="sub-muted" x="446" y="206" text-anchor="middle">xor-shift / multiply chain — drives every output bit</text>
+    <text class="sub-muted" x="446" y="206" text-anchor="middle">xor-shift / multiply chain - drives every output bit</text>
 
     <!-- final digest -->
     <g transform="translate(740 222)">
@@ -129,6 +129,6 @@
     <line class="wire" x1="708" y1="222" x2="710" y2="222" marker-end="url(#mm-arr-d)"/>
 
     <!-- footer note -->
-    <text class="sub" x="20" y="282">The body mixes blocks fast; finalization is what makes one flipped input bit flip roughly half the output bits — full avalanche.</text>
+    <text class="sub" x="20" y="282">The body mixes blocks fast; finalization is what makes one flipped input bit flip roughly half the output bits - full avalanche.</text>
   </g>
 </svg>

@@ -13,8 +13,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <typeparam name="TTest">The concrete test type inheriting this class.</typeparam>
 /// <typeparam name="TAlgorithm">The Fletcher variant under test.</typeparam>
 /// <remarks>
-/// The shared behaviour captured here — empty input producing an all-zero checksum, the <c>Fletcher-</c> name
-/// prefix, and sixteen-zero input stability — holds for every derived Fletcher variant. Size-specific known
+/// The shared behaviour captured here - empty input producing an all-zero checksum, the <c>Fletcher-</c> name
+/// prefix, and sixteen-zero input stability - holds for every derived Fletcher variant. Size-specific known
 /// answers are supplied by the concrete test classes through
 /// <see cref="NonCryptographicHashAlgorithmSpecification.KnownAnswers" /> and
 /// <see cref="NonCryptographicHashAlgorithmTests{TTest, TAlgorithm, TVariant}.GetExpectedHashesForIncrementalInput(TVariant)" />.

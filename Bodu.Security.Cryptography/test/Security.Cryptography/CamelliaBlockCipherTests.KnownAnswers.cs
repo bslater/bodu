@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// All vectors target single-block ECB encryption with no padding or IV — the raw block primitive contract. The
+/// All vectors target single-block ECB encryption with no padding or IV - the raw block primitive contract. The
 /// plaintext is identical across all three key sizes (RFC 3713 reuses the same 128-bit input); only the key
 /// length and ciphertext differ. The keys themselves share the same 128-bit prefix and append further bytes for
 /// 192- and 256-bit variants, exactly as published in the RFC.
@@ -26,8 +26,8 @@ namespace Bodu.Security.Cryptography;
 /// on locally generated expected values.
 /// </para>
 /// </remarks>
-/// <seealso href="https://datatracker.ietf.org/doc/html/rfc3713#appendix-A">RFC 3713 Appendix A — Camellia test vectors</seealso>
-/// <seealso href="https://datatracker.ietf.org/doc/html/rfc5528#section-4.1">RFC 5528 Section 4.1 — Camellia-CTR test vectors</seealso>
+/// <seealso href="https://datatracker.ietf.org/doc/html/rfc3713#appendix-A">RFC 3713 Appendix A - Camellia test vectors</seealso>
+/// <seealso href="https://datatracker.ietf.org/doc/html/rfc5528#section-4.1">RFC 5528 Section 4.1 - Camellia-CTR test vectors</seealso>
 internal sealed partial class CamelliaBlockCipherTests
 {
     private const string CamelliaPlaintext = "0123456789ABCDEFFEDCBA9876543210";

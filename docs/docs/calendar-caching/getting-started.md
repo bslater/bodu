@@ -1,8 +1,8 @@
 ---
-title: Bodu.Globalization.Calendar.Caching — Getting started
+title: Bodu.Globalization.Calendar.Caching - Getting started
 ---
 
-# Bodu.Globalization.Calendar.Caching — Getting started
+# Bodu.Globalization.Calendar.Caching - Getting started
 
 Unfamiliar with terms like *decorator*, *cache unit*, *resource version*, *refresh-ahead*, *warm-up*, or *storage
 failure policy*? Read [Core concepts](concepts.md) first.
@@ -19,12 +19,12 @@ dotnet add package Bodu.Globalization.Calendar.Caching.Distributed
 
 Targets `net8.0`. Depends on:
 
-- **`Bodu.Globalization.Calendar.Caching`** — `Bodu.Core`, `Bodu.Globalization.Calendar` (the service contract it
+- **`Bodu.Globalization.Calendar.Caching`** - `Bodu.Core`, `Bodu.Globalization.Calendar` (the service contract it
   decorates), `Bodu.Text.Toml` (the TOML file cache), and `Microsoft.Extensions.Configuration.Abstractions` /
   `.Configuration.Binder` / `.DependencyInjection.Abstractions` / `.Hosting.Abstractions` /
   `.Logging.Abstractions` / `.Options` / `.Options.ConfigurationExtensions`, all at the .NET 8.0 LTS line.
-- **`Bodu.Globalization.Calendar.Caching.Sqlite`** — the core caching package plus `Microsoft.Data.Sqlite`.
-- **`Bodu.Globalization.Calendar.Caching.Distributed`** — the core caching package plus
+- **`Bodu.Globalization.Calendar.Caching.Sqlite`** - the core caching package plus `Microsoft.Data.Sqlite`.
+- **`Bodu.Globalization.Calendar.Caching.Distributed`** - the core caching package plus
   `Microsoft.Extensions.Caching.Abstractions` and `Microsoft.Extensions.Caching.StackExchangeRedis`.
 
 The samples below resolve the wrapped service from a regional data pack (`Bodu.Globalization.Calendar.Americas` /
@@ -83,7 +83,7 @@ IReadOnlyList<NotableDate> year = calendar.Resolve(2026, "US");   // written to 
 
 Leave `CacheDirectory` as `null` to use a `bodu-notable-dates` folder under the system temporary path. Swap
 `TomlNotableDateCache` for `JsonNotableDateCache` to write JSON with the same options and layout. Without a resource
-provider the fixed `ResourceVersion` keys every entry — bump it after a data update so stale years recompute.
+provider the fixed `ResourceVersion` keys every entry - bump it after a data update so stale years recompute.
 
 ### Invalidate on reload with a resource provider
 
@@ -107,7 +107,7 @@ _ = calendar.Resolve(2026, "AU-NSW");                              // version ch
 ```
 
 The decorator derives the version token from the provider's current resource and a reload generation, so a reload
-invalidates every cached year on the next query — even when the reloaded resource carries the same identifier.
+invalidates every cached year on the next query - even when the reloaded resource carries the same identifier.
 
 ### Register under dependency injection
 
@@ -201,10 +201,10 @@ builder.Services.AddCachedNotableDateService(
 }
 ```
 
-Either `DatabaseFilePath` or a full `ConnectionString` is required (the connection string wins when both are set —
+Either `DatabaseFilePath` or a full `ConnectionString` is required (the connection string wins when both are set -
 use it for a shared in-memory database such as `Data Source=holidays;Mode=Memory;Cache=Shared`). With
 `ValidateStorageOnStart` the registration opens and initializes the database during `ValidateOnStart`, so an
-unwritable path fails the host start. The container disposes the cache — and its keep-alive connection — on
+unwritable path fails the host start. The container disposes the cache - and its keep-alive connection - on
 shutdown.
 
 ### Use Redis (or any `IDistributedCache`)
@@ -342,7 +342,7 @@ public sealed class DictionaryNotableDateCache : INotableDateCache
 }
 ```
 
-Plug it in exactly like a shipped backend — `new CachingNotableDateService(engine, new DictionaryNotableDateCache(),
+Plug it in exactly like a shipped backend - `new CachingNotableDateService(engine, new DictionaryNotableDateCache(),
 options)` or `AddCachedNotableDateService(cacheFactory: _ => new DictionaryNotableDateCache())`. The shipped
 backends additionally derive from <xref:Bodu.Globalization.Calendar.Caching.NotableDateCacheBase`1>, which supplies
 the merge-and-prune, validity, and per-territory locking; that storage seam is opened to the companion SQLite and
@@ -350,9 +350,9 @@ distributed packages, so a third-party backend implements the interface directly
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — vocabulary refresher.
-- **[Introduction](index.md)** — package family, type map, and scenario index.
-- **[Caching notable dates guide](../../guides/calendar/caching/notable-date-caching.md)** — freshness tuning, observability, troubleshooting.
-- **[Calendar dependency injection](../../guides/calendar/dependency-injection.md)** — the registrations the decorator wraps, including the reloadable and keyed forms.
-- **[Bodu.Globalization.Calendar.Caching API reference](xref:Bodu.Globalization.Calendar.Caching)** — full type-by-type docs.
-- **[Runnable samples](../../samples/calendar.md)** — offline calendar sample projects you can `dotnet run`.
+- **[Core concepts](concepts.md)** - vocabulary refresher.
+- **[Introduction](index.md)** - package family, type map, and scenario index.
+- **[Caching notable dates guide](../../guides/calendar/caching/notable-date-caching.md)** - freshness tuning, observability, troubleshooting.
+- **[Calendar dependency injection](../../guides/calendar/dependency-injection.md)** - the registrations the decorator wraps, including the reloadable and keyed forms.
+- **[Bodu.Globalization.Calendar.Caching API reference](xref:Bodu.Globalization.Calendar.Caching)** - full type-by-type docs.
+- **[Runnable samples](../../samples/calendar.md)** - offline calendar sample projects you can `dotnet run`.

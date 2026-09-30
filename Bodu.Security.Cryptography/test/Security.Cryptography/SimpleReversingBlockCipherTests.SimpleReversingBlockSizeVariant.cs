@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 public enum SimpleReversingBlockSizeVariant
 {
-    /// <summary>128-bit (16-byte) block — the default block size.</summary>
+    /// <summary>128-bit (16-byte) block - the default block size.</summary>
     Block128 = 128,
 
     /// <summary>192-bit (24-byte) block.</summary>

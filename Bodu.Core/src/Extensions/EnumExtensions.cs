@@ -7,7 +7,7 @@
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Provides non-boxing bitwise helpers for flag-style enumerations — membership tests and add, remove, and toggle
+/// Provides non-boxing bitwise helpers for flag-style enumerations - membership tests and add, remove, and toggle
 /// operations that work uniformly across every enum underlying type.
 /// </summary>
 /// <remarks>
@@ -17,8 +17,8 @@ namespace Bodu.Extensions;
 /// supplies generic, allocation-free equivalents constrained to <c>struct, System.Enum</c>.
 /// </para>
 /// <para>
-/// Each operation reinterprets the enum value as its underlying integer, applies the bitwise operation, and — for the
-/// mutating helpers — reinterprets the result back to the enum type. No boxing, reflection, or
+/// Each operation reinterprets the enum value as its underlying integer, applies the bitwise operation, and - for the
+/// mutating helpers - reinterprets the result back to the enum type. No boxing, reflection, or
 /// <see cref="System.Convert" /> call is involved, so the helpers are safe to use on hot paths.
 /// </para>
 /// <para>

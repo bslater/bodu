@@ -1,12 +1,12 @@
 # Bodu.IO.Biff
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 A low-level **codec for the Excel Binary Interchange File Format (BIFF)** record streams found
 inside legacy `.xls` workbooks, covering **BIFF5** and **BIFF8**.
 
 It understands how BIFF is *encoded*, not what a workbook *means*. There is no compound-file
-container, no workbook or cell model, and no formula evaluation — it frames records, resolves
+container, no workbook or cell model, and no formula evaluation - it frames records, resolves
 their strings and numbers, and hands you the values. That separation is deliberate: it is the
 substrate beneath [`Bodu.Formats.Excel.Binary`](https://www.nuget.org/packages/Bodu.Formats.Excel.Binary),
 in the same relation `Bodu.IO.Pst` has to `Bodu.Formats.Outlook.Pst`.
@@ -14,7 +14,7 @@ in the same relation `Bodu.IO.Pst` has to `Bodu.Formats.Outlook.Pst`.
 ```csharp
 using Bodu.IO.Biff;
 
-// BiffReader is a forward-only ref struct over a span — no allocation per record.
+// BiffReader is a forward-only ref struct over a span - no allocation per record.
 var reader = new BiffReader(workbookStreamBytes);
 
 while (reader.Read())
@@ -36,7 +36,7 @@ while (reader.Read())
             Console.WriteLine($"({number.Row},{number.Column}) = {number.Value}");
             break;
 
-        // An unknown record is never an error — its identifier and raw payload are still exposed.
+        // An unknown record is never an error - its identifier and raw payload are still exposed.
         default:
             Process(reader.RecordId, reader.ValueSpan);
             break;
@@ -52,13 +52,13 @@ while (reader.Read())
 - **Resumable across buffers.** The `(data, isFinalBlock, state)` constructor plus
   `CurrentState` / `BytesConsumed` let a caller feed the stream in chunks, so a workbook need not
   be buffered whole.
-- **Version and code page established from the stream itself** — `BOF` sets `Version`, `CODEPAGE`
-  sets `CodePage` — so BIFF5 byte strings decode in the workbook's own encoding rather than a
+- **Version and code page established from the stream itself** - `BOF` sets `Version`, `CODEPAGE`
+  sets `CodePage` - so BIFF5 byte strings decode in the workbook's own encoding rather than a
   guess.
 - **Typed accessors for the common structural and cell records**: `GetBof`, `GetBoundSheet`,
   `GetDimensions`, `GetRow`, `GetNumber`, `GetRk`, `GetMulRk`, `GetLabel`, `GetLabelSst`,
   `GetRString`, `GetBoolErr`, `GetBlank`, `GetMulBlank`, `GetFormula`, `GetString`, `GetXf`,
-  `GetFormat`, `GetFont`, `GetCodePage`, `GetDateMode`, `GetFilePass`, `GetSstHeader` — each
+  `GetFormat`, `GetFont`, `GetCodePage`, `GetDateMode`, `GetFilePass`, `GetSstHeader` - each
   returning a typed `Biff*Record`.
 - **Shared string table across `CONTINUE` boundaries.** `BiffSstReader` walks the SST even when a
   single string is split across records, reporting `IsFragmented` and exposing `GetString` /
@@ -81,9 +81,9 @@ The repository ships an offline, `dotnet run`-able sample for this package under
 
 ## Out of scope
 
-The compound-file (OLE2) container that holds the `Workbook` stream — use
+The compound-file (OLE2) container that holds the `Workbook` stream - use
 [`Bodu.IO.Compound`](https://www.nuget.org/packages/Bodu.IO.Compound). A workbook or cell object
-model, number-format application, and formula evaluation — use
+model, number-format application, and formula evaluation - use
 [`Bodu.Formats.Excel.Binary`](https://www.nuget.org/packages/Bodu.Formats.Excel.Binary), which is
 built on this package. Decrypting a password-protected workbook is not supported; such a stream is
 reported, not read.

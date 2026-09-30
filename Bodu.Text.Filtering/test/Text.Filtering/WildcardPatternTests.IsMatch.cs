@@ -76,7 +76,7 @@ public partial class WildcardPatternTests
 
     /// <summary>
     /// Verifies that the optimized matcher agrees with the naive recursive oracle for every pattern over
-    /// <c>{a, b, *, ?}</c> up to length 5 against every text over <c>{a, b}</c> up to length 6 — an exhaustive pin of
+    /// <c>{a, b, *, ?}</c> up to length 5 against every text over <c>{a, b}</c> up to length 6 - an exhaustive pin of
     /// the two-pointer algorithm and the strategy classification against an independent implementation.
     /// </summary>
     [TestMethod]

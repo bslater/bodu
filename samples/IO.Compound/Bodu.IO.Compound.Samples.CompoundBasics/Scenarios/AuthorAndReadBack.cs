@@ -13,7 +13,7 @@ namespace Bodu.IO.Compound.Samples.CompoundBasics.Scenarios;
 /// <summary>
 /// Demonstrates the authoring loop: build a container bottom-up with the staged
 /// <see cref="CompoundStorageBuilder" /> API (storages nest, streams carry bytes), write it to
-/// a stream, then reopen it with <see cref="CompoundFile" /> and walk the tree back — a whole
+/// a stream, then reopen it with <see cref="CompoundFile" /> and walk the tree back - a whole
 /// structured-storage round trip with no file on disk.
 /// </summary>
 public static class AuthorAndReadBack

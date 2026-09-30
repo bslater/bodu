@@ -12,8 +12,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <summary>
 /// Parses Project NESSIE hash test-vector files (the <c>message=… / hash=…</c> format used for Tiger, Whirlpool, and
 /// related primitives) into known-answer records. The reader decodes the NESSIE message descriptions it can express as
-/// byte inputs — quoted literals, <c>N times "X"</c> repetitions, byte-aligned <c>N zero bits</c> strings, and
-/// <c>M-bit string: pattern</c> patterns — and skips the ones that are not a plain byte message (bit-unaligned zero-bit
+/// byte inputs - quoted literals, <c>N times "X"</c> repetitions, byte-aligned <c>N zero bits</c> strings, and
+/// <c>M-bit string: pattern</c> patterns - and skips the ones that are not a plain byte message (bit-unaligned zero-bit
 /// strings and the Set-4 <c>iterated</c> Monte-Carlo rows).
 /// </summary>
 public static partial class NessieHashKatReader
@@ -114,7 +114,7 @@ public static partial class NessieHashKatReader
         if (desc.Length >= 2 && desc[0] == '"' && desc[^1] == '"')
             return Encoding.ASCII.GetBytes(desc[1..^1]);
 
-        // N zero bits — only byte-aligned lengths map onto a byte message.
+        // N zero bits - only byte-aligned lengths map onto a byte message.
         Match zeroBits = ZeroBits().Match(desc);
         if (zeroBits.Success)
         {
@@ -132,8 +132,8 @@ public static partial class NessieHashKatReader
     }
 
     /// <summary>
-    /// Expands a NESSIE byte-pattern such as <c>63*00,08, 0*00</c> — comma-separated <c>count*HH</c> runs or single
-    /// <c>HH</c> bytes — into the byte sequence it denotes.
+    /// Expands a NESSIE byte-pattern such as <c>63*00,08, 0*00</c> - comma-separated <c>count*HH</c> runs or single
+    /// <c>HH</c> bytes - into the byte sequence it denotes.
     /// </summary>
     /// <param name="pattern">The comma-separated pattern text.</param>
     /// <returns>The expanded bytes.</returns>

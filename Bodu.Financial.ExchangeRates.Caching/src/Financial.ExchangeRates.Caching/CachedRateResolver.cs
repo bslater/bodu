@@ -15,7 +15,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <remarks>
 /// <para>
 /// The caching decorator previously answered a cached single-date lookup by copying every cached row into a throwaway
-/// <see cref="FixedDatedRateProvider" /> — building a frozen rate book, per-pair series storage, and several interim
+/// <see cref="FixedDatedRateProvider" /> - building a frozen rate book, per-pair series storage, and several interim
 /// collections per lookup. This resolver answers the same question over the row lists the decorator already holds: a
 /// binary search over the date-sorted rows, the shared <see cref="RateDateSearch" /> candidate selection (the single
 /// source of truth for previous/next/nearest and tie semantics), and the same strict tolerance clamp as
@@ -51,8 +51,8 @@ internal static class CachedRateResolver
     /// <param name="provider">The provider name the served rate is attributed to.</param>
     /// <param name="result">When this method returns <see langword="true" />, the resolved lookup result.</param>
     /// <param name="matched">
-    /// When this method returns <see langword="true" />, the cached row the resolution selected — from the direct or
-    /// the inverse list — or <see langword="null" /> for the same-currency identity serve, which synthesizes its rate
+    /// When this method returns <see langword="true" />, the cached row the resolution selected - from the direct or
+    /// the inverse list - or <see langword="null" /> for the same-currency identity serve, which synthesizes its rate
     /// without consulting any row.
     /// </param>
     /// <returns>
@@ -107,8 +107,8 @@ internal static class CachedRateResolver
     }
 
     /// <summary>
-    /// Resolves the requested date against one pair's date-sorted rows: an exact binary-search hit, or — for non-exact
-    /// resolutions — the shared candidate selection followed by the strict tolerance clamp.
+    /// Resolves the requested date against one pair's date-sorted rows: an exact binary-search hit, or - for non-exact
+    /// resolutions - the shared candidate selection followed by the strict tolerance clamp.
     /// </summary>
     /// <param name="rows">The fresh cached rows, ordered ascending by date.</param>
     /// <param name="date">The requested date.</param>

@@ -35,7 +35,7 @@
     <rect class="hdr" y="22" width="800" height="8"/>
     <text class="ttl" x="16" y="20">TOML parse/format pipeline</text>
 
-    <!-- ===== Top row — PARSE (left-to-right, teal) ===== -->
+    <!-- ===== Top row - PARSE (left-to-right, teal) ===== -->
     <text class="row" x="20" y="58">PARSE  ▸ Toml.Parse · TomlReader.Read  ·  text → document</text>
 
     <g transform="translate(20 70)">
@@ -71,7 +71,7 @@
     <!-- ===== Middle separator ===== -->
     <line x1="20" y1="138" x2="780" y2="138" stroke="#334155" stroke-width="1"/>
 
-    <!-- ===== Bottom row — FORMAT (left-to-right, purple) ===== -->
+    <!-- ===== Bottom row - FORMAT (left-to-right, purple) ===== -->
     <text class="rowd" x="20" y="160">FORMAT  ▸ Toml.Format · TomlWriter.Write  ·  document → text</text>
 
     <g transform="translate(20 172)">

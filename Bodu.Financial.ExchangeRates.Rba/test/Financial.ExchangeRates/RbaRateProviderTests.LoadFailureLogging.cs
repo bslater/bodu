@@ -31,8 +31,8 @@ public partial class RbaRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that an unexpected exception type thrown by the source — indicating a provider bug rather than a
-    /// transport or data failure — is logged as a distinct unexpected error at <see cref="LogLevel.Error" /> and
+    /// Verifies that an unexpected exception type thrown by the source - indicating a provider bug rather than a
+    /// transport or data failure - is logged as a distinct unexpected error at <see cref="LogLevel.Error" /> and
     /// rethrown, without being relabelled as an ordinary era-load failure.
     /// </summary>
     [TestMethod]

@@ -52,7 +52,7 @@ public sealed class TextFilterStatistics
     public long ItemsEvaluated { get; }
 
     /// <summary>
-    /// Gets the number of evaluated values that were accepted — the sum of the
+    /// Gets the number of evaluated values that were accepted - the sum of the
     /// <see cref="TextFilterDecision.IncludedByDefault" /> and <see cref="TextFilterDecision.Included" /> outcomes.
     /// </summary>
     public long ItemsAccepted { get; }

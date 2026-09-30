@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// CCM encodes the message length in only three bytes of the B0 block and drives a 3-byte CTR counter, so the
 /// message must be smaller than <c>2²⁴</c> bytes. A longer message would silently truncate the CBC-MAC length field
-/// and wrap the counter, reusing keystream — a real authentication failure. The validator accepts a <see cref="long" />
+/// and wrap the counter, reusing keystream - a real authentication failure. The validator accepts a <see cref="long" />
 /// so the boundary can be exercised without allocating a 16 MiB buffer.
 /// </remarks>
 public sealed partial class CcmModeTransformTests

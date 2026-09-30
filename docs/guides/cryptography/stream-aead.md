@@ -14,14 +14,14 @@ A raw stream cipher gives confidentiality only. `Bodu.Security.Cryptography` pai
 | Construction | Type | Keystream | Framing | Associated data | Interoperates with |
 |---|---|---|---|---|---|
 | XChaCha20-Poly1305 | <xref:Bodu.Security.Cryptography.XChaCha20Poly1305> | XChaCha20 (HChaCha20 subkey + ChaCha20) | RFC 8439 AEAD | Yes | `draft-irtf-cfrg-xchacha`; libsodium `crypto_aead_xchacha20poly1305_ietf` |
-| XSalsa20-Poly1305 (secretbox) | <xref:Bodu.Security.Cryptography.XSalsa20Poly1305> | XSalsa20 (HSalsa20 subkey + Salsa20) | NaCl secretbox — tag over the ciphertext only | **No** — non-empty AAD throws `ArgumentException` | NaCl / libsodium `crypto_secretbox` (same bytes, different order — see Pattern 3) |
-| XSalsa20-Poly1305-AEAD | <xref:Bodu.Security.Cryptography.XSalsa20Poly1305Aead> | XSalsa20 | RFC 8439 AEAD | Yes | **Nothing** — a Bodu-defined hybrid; use only when both peers are Bodu |
+| XSalsa20-Poly1305 (secretbox) | <xref:Bodu.Security.Cryptography.XSalsa20Poly1305> | XSalsa20 (HSalsa20 subkey + Salsa20) | NaCl secretbox - tag over the ciphertext only | **No** - non-empty AAD throws `ArgumentException` | NaCl / libsodium `crypto_secretbox` (same bytes, different order - see Pattern 3) |
+| XSalsa20-Poly1305-AEAD | <xref:Bodu.Security.Cryptography.XSalsa20Poly1305Aead> | XSalsa20 | RFC 8439 AEAD | Yes | **Nothing** - a Bodu-defined hybrid; use only when both peers are Bodu |
 
 In every case the counter-0 keystream block supplies the one-time Poly1305 key and the message is encrypted from counter 1 (XChaCha20, XSalsa20-AEAD) or from byte 32 of the keystream (secretbox). The RFC 8439 framing authenticates `AAD ‖ pad16(AAD) ‖ ciphertext ‖ pad16(ciphertext) ‖ le64(|AAD|) ‖ le64(|ciphertext|)`.
 
-**Which one?** `XChaCha20Poly1305` is the interoperable, random-nonce AEAD — the gap the BCL's 96-bit-nonce `ChaCha20Poly1305` leaves ([BCL interop](bcl-interop.md#pattern-6--xchacha20poly1305-is-not-chacha20poly1305)). `XSalsa20Poly1305` exists to talk to NaCl secretbox. `XSalsa20Poly1305Aead` exists for symmetry; prefer the other two unless a protocol names it.
+**Which one?** `XChaCha20Poly1305` is the interoperable, random-nonce AEAD - the gap the BCL's 96-bit-nonce `ChaCha20Poly1305` leaves ([BCL interop](bcl-interop.md#pattern-6---xchacha20poly1305-is-not-chacha20poly1305)). `XSalsa20Poly1305` exists to talk to NaCl secretbox. `XSalsa20Poly1305Aead` exists for symmetry; prefer the other two unless a protocol names it.
 
-## Pattern 1 — XChaCha20-Poly1305 with associated data
+## Pattern 1 - XChaCha20-Poly1305 with associated data
 
 This is the `draft-irtf-cfrg-xchacha` appendix A.3.1 vector; the tag reproduces the draft's `c0875924c1c7987947deafd8780acf49`.
 
@@ -44,14 +44,14 @@ byte[] recovered = dec.Decrypt(sealed_, associatedData: aad);        // throws C
 
 `Encrypt` / `Decrypt` come from <xref:Bodu.Security.Cryptography.Extensions.AeadTransformExtensions>, which size and allocate the array; `TagSize` is 128 bits, and `XChaCha20Poly1305.KeySize` / `NonceSize` are 256 / 192.
 
-The span overloads that write into your own buffer allocate nothing: the instance holds the key and nonce, and each message's keystream and Poly1305 state live on the stack, so the only allocation a message makes is the single-use instance itself. Whole 64-byte blocks of keystream are produced many at a time on processors with vector instructions. A message of up to 960 bytes (992 for `XSalsa20Poly1305`) can draw all of its keystream, including the block that keys Poly1305, in one or two such steps, which it does wherever the processor makes that cheaper than drawing a block at a time; and on x64 Poly1305 absorbs a message of 512 bytes or more several blocks at a time as well — see [Hardware acceleration](hardware-acceleration.md).
+The span overloads that write into your own buffer allocate nothing: the instance holds the key and nonce, and each message's keystream and Poly1305 state live on the stack, so the only allocation a message makes is the single-use instance itself. Whole 64-byte blocks of keystream are produced many at a time on processors with vector instructions. A message of up to 960 bytes (992 for `XSalsa20Poly1305`) can draw all of its keystream, including the block that keys Poly1305, in one or two such steps, which it does wherever the processor makes that cheaper than drawing a block at a time; and on x64 Poly1305 absorbs a message of 512 bytes or more several blocks at a time as well - see [Hardware acceleration](hardware-acceleration.md).
 
 > [!WARNING]
 > Name the `associatedData:` argument. `Poly1305AeadTransform` also has a public `Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output, ReadOnlySpan<byte> associatedData = default)`; with two positional `byte[]` arguments that overload wins, your AAD array becomes the **output buffer**, and the call returns an `int`. `Encrypt(plaintext)` with a single argument is unambiguous.
 
-## Pattern 2 — single use, and what happens on tamper
+## Pattern 2 - single use, and what happens on tamper
 
-Every instance is stateful and single-use. A second `Encrypt` or `Decrypt` on the same instance throws `InvalidOperationException` — including after a failed tag check, so a "retry on the same transform" is impossible by construction. A modified ciphertext, tag, or AAD throws `CryptographicException` and writes no plaintext.
+Every instance is stateful and single-use. A second `Encrypt` or `Decrypt` on the same instance throws `InvalidOperationException` - including after a failed tag check, so a "retry on the same transform" is impossible by construction. A modified ciphertext, tag, or AAD throws `CryptographicException` and writes no plaintext.
 
 <!-- compile -->
 ```csharp
@@ -75,7 +75,7 @@ try { dec.Decrypt(sealed_); } catch (InvalidOperationException) { /* the instanc
 > [!WARNING]
 > A `(key, nonce)` pair must encrypt at most one message. The 24-byte nonce is large enough to draw from `RandomNumberGenerator` (or <xref:Bodu.Security.Cryptography.Nonce.Random(System.Int32)>) per message without meaningful collision risk; that is the whole point of the extended nonce. Do not reuse a key across these constructions and the raw `XChaCha20` / `XSalsa20` ciphers without an HKDF-style key separation.
 
-## Pattern 3 — NaCl secretbox and the libsodium layout
+## Pattern 3 - NaCl secretbox and the libsodium layout
 
 <xref:Bodu.Security.Cryptography.XSalsa20Poly1305> reproduces the secretbox body byte for byte, but emits `ciphertext ‖ tag` like the rest of the library where libsodium's `crypto_secretbox_easy` emits `tag ‖ ciphertext`. Two static helpers swap the order at the boundary; both accept an aliased destination for in-place conversion.
 
@@ -92,7 +92,7 @@ using var box = new XSalsa20Poly1305(key, nonce);
 byte[] sealed_ = box.Encrypt(plaintext);                     // ciphertext ‖ tag; tag = 838EBCFC76D4B1D823B89BB6E0FC0520
 
 byte[] libsodium = new byte[sealed_.Length];
-XSalsa20Poly1305.ToLibsodiumCombined(sealed_, libsodium);   // tag ‖ ciphertext — what crypto_secretbox_easy produces
+XSalsa20Poly1305.ToLibsodiumCombined(sealed_, libsodium);   // tag ‖ ciphertext - what crypto_secretbox_easy produces
 
 byte[] back = new byte[libsodium.Length];
 XSalsa20Poly1305.FromLibsodiumCombined(libsodium, back);    // ciphertext ‖ tag again
@@ -103,9 +103,9 @@ byte[] recovered = open.Decrypt(back);
 
 Secretbox authenticates no associated data: `Encrypt(plaintext, associatedData: header)` with a non-empty header throws `ArgumentException` (`associatedData`). When you need AAD with an XSalsa20 keystream use `XSalsa20Poly1305Aead`, whose call shape is identical to Pattern 1 but whose output no other library will open.
 
-## Pattern 4 — programming against the interface
+## Pattern 4 - programming against the interface
 
-All three types are <xref:Bodu.Security.Cryptography.IStreamAeadTransform>, and through it <xref:Bodu.Security.Cryptography.IAeadTransform> — the same interface the block-cipher AEADs and `AsconAead128` implement — so one code path can serve any of them. The span-based members return the number of bytes written; the output must be at least `plaintext.Length + TagSize / 8`.
+All three types are <xref:Bodu.Security.Cryptography.IStreamAeadTransform>, and through it <xref:Bodu.Security.Cryptography.IAeadTransform> - the same interface the block-cipher AEADs and `AsconAead128` implement - so one code path can serve any of them. The span-based members return the number of bytes written; the output must be at least `plaintext.Length + TagSize / 8`.
 
 <!-- compile -->
 ```csharp
@@ -130,7 +130,7 @@ foreach (Func<IStreamAeadTransform> make in new Func<IStreamAeadTransform>[]
 }
 ```
 
-Exact in-place operation is supported — the output span may start at the same address as the input — but any other overlap throws `ArgumentException`:
+Exact in-place operation is supported - the output span may start at the same address as the input - but any other overlap throws `ArgumentException`:
 
 <!-- compile -->
 ```csharp
@@ -148,9 +148,9 @@ using var dec = new XChaCha20Poly1305(key, nonce);
 int plainLength = dec.Decrypt(buffer.AsSpan(0, written), buffer);
 ```
 
-## Pattern 5 — detached tags
+## Pattern 5 - detached tags
 
-`EncryptDetached` / `DecryptDetached` — the overloads that return an <xref:Bodu.Security.Cryptography.AuthenticationTag> separately from the ciphertext — are declared on <xref:Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions> for <xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform> only. The stream AEADs do not have them; because their layout is always `ciphertext ‖ tag`, detaching is a slice:
+`EncryptDetached` / `DecryptDetached` - the overloads that return an <xref:Bodu.Security.Cryptography.AuthenticationTag> separately from the ciphertext - are declared on <xref:Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions> for <xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform> only. The stream AEADs do not have them; because their layout is always `ciphertext ‖ tag`, detaching is a slice:
 
 <!-- compile -->
 ```csharp
@@ -175,7 +175,7 @@ See [Nonces, salts, tags, and secrets](value-types.md) for `AuthenticationTag` a
 
 ## Building your own
 
-<xref:Bodu.Security.Cryptography.Poly1305AeadTransform> is abstract and public. A subclass supplies `CreateEngine()` — an <xref:Bodu.Security.Cryptography.IStreamCipher> positioned at block counter 0 — and may override `SealCore` / `OpenCore` to substitute a framing (that is how the secretbox variant is built) or `SupportsAssociatedData` to reject AAD. The base handles length validation, the overlap rule, the single-use latch, and zeroizing the retained key and nonce on `Dispose`. The library's own keystream engines are internal, so a subclass brings its own `IStreamCipher`.
+<xref:Bodu.Security.Cryptography.Poly1305AeadTransform> is abstract and public. A subclass supplies `CreateEngine()` - an <xref:Bodu.Security.Cryptography.IStreamCipher> positioned at block counter 0 - and may override `SealCore` / `OpenCore` to substitute a framing (that is how the secretbox variant is built) or `SupportsAssociatedData` to reject AAD. The base handles length validation, the overlap rule, the single-use latch, and zeroizing the retained key and nonce on `Dispose`. The library's own keystream engines are internal, so a subclass brings its own `IStreamCipher`.
 
 ## API summary
 
@@ -191,8 +191,8 @@ See [Nonces, salts, tags, and secrets](value-types.md) for `AuthenticationTag` a
 
 ## Where to go next
 
-- [Using stream ciphers](stream-ciphers.md) — the raw, unauthenticated keystream ciphers these are built on.
-- [Using Poly1305](poly1305.md) — the one-time authenticator on its own.
-- [AEAD modes](aead-modes.md) and [ASCON AEAD](ascon-aead.md) — the block-cipher and sponge alternatives.
-- [Interoperating with System.Security.Cryptography](bcl-interop.md) — why this is not the BCL `ChaCha20Poly1305`.
-- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
+- [Using stream ciphers](stream-ciphers.md) - the raw, unauthenticated keystream ciphers these are built on.
+- [Using Poly1305](poly1305.md) - the one-time authenticator on its own.
+- [AEAD modes](aead-modes.md) and [ASCON AEAD](ascon-aead.md) - the block-cipher and sponge alternatives.
+- [Interoperating with System.Security.Cryptography](bcl-interop.md) - why this is not the BCL `ChaCha20Poly1305`.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

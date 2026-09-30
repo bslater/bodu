@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-labelledby="pe-title pe-desc">
-  <title id="pe-title">Pearson hash — table-driven indexed XOR loop</title>
+  <title id="pe-title">Pearson hash - table-driven indexed XOR loop</title>
   <desc id="pe-desc">Peter Pearson's hash updates a single byte of running state per input byte. For each message byte b, the state h is XORed with b, that result indexes a 256-entry byte permutation table T, and the looked-up value becomes the new h. Wider outputs run several parallel accumulators in lockstep, each seeded with a different shifted starting state, and concatenate their final bytes into the digest.</desc>
 
   <defs>
@@ -45,7 +45,7 @@
     <rect class="panel" width="800" height="280" rx="8"/>
     <rect class="header" width="800" height="46" rx="8"/>
     <rect class="header" y="38" width="800" height="8"/>
-    <text class="title" x="16" y="20">Pearson — one indexed XOR per byte</text>
+    <text class="title" x="16" y="20">Pearson - one indexed XOR per byte</text>
     <text class="formula" x="784" y="38" text-anchor="end">h ← T[h ⊕ b];   T is a permutation of 0…255</text>
 
     <!-- incoming byte -->
@@ -115,6 +115,6 @@
     <line class="wire" x1="392" y1="196" x2="664" y2="196" marker-end="url(#pe-arr-d)"/>
 
     <!-- footer note -->
-    <text class="sub" x="20" y="262">The table is the hash: any 256-byte permutation works, but distribution quality — and collision behaviour — is entirely determined by that table.</text>
+    <text class="sub" x="20" y="262">The table is the hash: any 256-byte permutation works, but distribution quality - and collision behaviour - is entirely determined by that table.</text>
   </g>
 </svg>

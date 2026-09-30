@@ -68,7 +68,7 @@ public partial class CountMinSketchTests
     }
 
     /// <summary>
-    /// Verifies that values a custom comparer treats as equal report the same estimate — here a case-insensitive
+    /// Verifies that values a custom comparer treats as equal report the same estimate - here a case-insensitive
     /// string comparer.
     /// </summary>
     [TestMethod]

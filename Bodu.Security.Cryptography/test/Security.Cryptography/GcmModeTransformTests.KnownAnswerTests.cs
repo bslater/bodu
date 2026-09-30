@@ -10,7 +10,7 @@ using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 
 namespace Bodu.Security.Cryptography;
 
-// Known-answer vectors — NIST SP 800-38D, Appendix B Test Case 4 (AES-128-GCM, no AAD)
+// Known-answer vectors - NIST SP 800-38D, Appendix B Test Case 4 (AES-128-GCM, no AAD)
 // Source: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf
 //
 // GcmModeTransform takes the initial counter block J0 directly as its 16-byte IV.
@@ -21,10 +21,10 @@ public sealed partial class GcmModeTransformTests
 {
     private static readonly AeadKnownAnswer[] KnownAnswers =
     [
-        // TC4 — 128-bit key, 96-bit nonce, 64-byte plaintext, empty AAD.
+        // TC4 - 128-bit key, 96-bit nonce, 64-byte plaintext, empty AAD.
         new AeadKnownAnswer
         {
-            Name = "NIST SP 800-38D TC4 — AES-128-GCM (no AAD)",
+            Name = "NIST SP 800-38D TC4 - AES-128-GCM (no AAD)",
             Provenance = KatProvenance.Standard("NIST SP 800-38D Appendix B Test Case 4"),
             Key = Hex("feffe9928665731c6d6a8f9467308308"),
             Nonce = Hex("cafebabefacedbaddecaf888"),
@@ -42,10 +42,10 @@ public sealed partial class GcmModeTransformTests
             Tag = Hex("4d5c2af327cd64a62cf35abd2ba6fab4"),
         },
 
-        // TC7 — 128-bit key, 96-bit nonce, 60-byte plaintext, 20-byte AAD.
+        // TC7 - 128-bit key, 96-bit nonce, 60-byte plaintext, 20-byte AAD.
         new AeadKnownAnswer
         {
-            Name = "NIST SP 800-38D TC7 — AES-128-GCM (with AAD)",
+            Name = "NIST SP 800-38D TC7 - AES-128-GCM (with AAD)",
             Provenance = KatProvenance.Standard("NIST SP 800-38D Appendix B Test Case 7"),
             Key = Hex("feffe9928665731c6d6a8f9467308308"),
             Nonce = Hex("cafebabefacedbaddecaf888"),
@@ -63,11 +63,11 @@ public sealed partial class GcmModeTransformTests
             Tag = Hex("5bc94fbc3221a5db94fae95ae7121a47"),
         },
 
-        // TC1 — all-zero 128-bit key, zero nonce, empty plaintext, empty AAD. Exercises the
+        // TC1 - all-zero 128-bit key, zero nonce, empty plaintext, empty AAD. Exercises the
         // GHASH length block and tag path with no ciphertext folded in.
         new AeadKnownAnswer
         {
-            Name = "NIST SP 800-38D TC1 — AES-128-GCM (empty plaintext, empty AAD)",
+            Name = "NIST SP 800-38D TC1 - AES-128-GCM (empty plaintext, empty AAD)",
             Provenance = KatProvenance.Standard("NIST SP 800-38D Appendix B Test Case 1"),
             Key = Hex("00000000000000000000000000000000"),
             Nonce = Hex("000000000000000000000000"),
@@ -77,10 +77,10 @@ public sealed partial class GcmModeTransformTests
             Tag = Hex("58e2fccefa7e3061367f1d57a4e7455a"),
         },
 
-        // TC2 — all-zero key/nonce, single all-zero plaintext block, empty AAD.
+        // TC2 - all-zero key/nonce, single all-zero plaintext block, empty AAD.
         new AeadKnownAnswer
         {
-            Name = "NIST SP 800-38D TC2 — AES-128-GCM (one zero block)",
+            Name = "NIST SP 800-38D TC2 - AES-128-GCM (one zero block)",
             Provenance = KatProvenance.Standard("NIST SP 800-38D Appendix B Test Case 2"),
             Key = Hex("00000000000000000000000000000000"),
             Nonce = Hex("000000000000000000000000"),
@@ -90,10 +90,10 @@ public sealed partial class GcmModeTransformTests
             Tag = Hex("ab6e47d42cec13bdf53a67b21257bddf"),
         },
 
-        // TC15 — 256-bit key, 96-bit nonce, 64-byte plaintext, empty AAD.
+        // TC15 - 256-bit key, 96-bit nonce, 64-byte plaintext, empty AAD.
         new AeadKnownAnswer
         {
-            Name = "NIST SP 800-38D TC15 — AES-256-GCM (no AAD)",
+            Name = "NIST SP 800-38D TC15 - AES-256-GCM (no AAD)",
             Provenance = KatProvenance.Standard("NIST SP 800-38D Appendix B Test Case 15"),
             Key = Hex(
                 "feffe9928665731c6d6a8f9467308308" +
@@ -113,10 +113,10 @@ public sealed partial class GcmModeTransformTests
             Tag = Hex("b094dac5d93471bdec1a502270e3cc6c"),
         },
 
-        // TC16 — 256-bit key, 96-bit nonce, 60-byte plaintext, 20-byte AAD.
+        // TC16 - 256-bit key, 96-bit nonce, 60-byte plaintext, 20-byte AAD.
         new AeadKnownAnswer
         {
-            Name = "NIST SP 800-38D TC16 — AES-256-GCM (with AAD)",
+            Name = "NIST SP 800-38D TC16 - AES-256-GCM (with AAD)",
             Provenance = KatProvenance.Standard("NIST SP 800-38D Appendix B Test Case 16"),
             Key = Hex(
                 "feffe9928665731c6d6a8f9467308308" +

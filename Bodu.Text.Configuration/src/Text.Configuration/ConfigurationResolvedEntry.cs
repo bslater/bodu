@@ -7,7 +7,7 @@
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Carries the origin metadata for a single key/value pair in a <see cref="ConfigurationView" /> — which section "won"
+/// Carries the origin metadata for a single key/value pair in a <see cref="ConfigurationView" /> - which section "won"
 /// for the key, which line of which file supplied the value, and the resolved key path itself.
 /// </summary>
 /// <remarks>
@@ -79,7 +79,7 @@ public sealed class ConfigurationResolvedEntry
     /// Gets the position in the source document that supplied the value.
     /// </summary>
     /// <value>
-    /// The source location. Only the <see cref="ConfigurationSourceLocation.LineNumber" /> is reliably populated — line
+    /// The source location. Only the <see cref="ConfigurationSourceLocation.LineNumber" /> is reliably populated - line
     /// position and length are approximate and the document path is propagated only when the document was loaded from a
     /// file.
     /// </value>

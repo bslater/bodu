@@ -17,8 +17,8 @@ namespace Bodu.Text.Toml.Writer;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The writer is a <see langword="ref struct" /> whose mutable state lives in shared managed objects — a stack of open
-/// containers and the buffered value tree — so a copy taken by value continues to write to the same output. Whether a
+/// The writer is a <see langword="ref struct" /> whose mutable state lives in shared managed objects - a stack of open
+/// containers and the buffered value tree - so a copy taken by value continues to write to the same output. Whether a
 /// table becomes a <c>[header]</c> block or an inline <c>{ … }</c> depends on where it sits in the finished document,
 /// and arrays are inline, so the layout cannot be decided incrementally: the forward <c>Write*</c> calls only build the
 /// tree.
@@ -132,8 +132,8 @@ public ref partial struct Utf8TomlWriter
     /// <remarks>
     /// A <see cref="TomlWriterOptions.MaxDepth" /> of zero or less selects the default maximum depth of 64, and a
     /// larger value is clamped to <see cref="TomlLimits.AbsoluteMaxDepth" /> so that an unbounded configured value
-    /// cannot drive the writer into a <see cref="StackOverflowException" />. Opening a container past that depth — a
-    /// table or array nested deeper than the effective limit — throws <see cref="TomlSerializationException" />.
+    /// cannot drive the writer into a <see cref="StackOverflowException" />. Opening a container past that depth - a
+    /// table or array nested deeper than the effective limit - throws <see cref="TomlSerializationException" />.
     /// </remarks>
     public Utf8TomlWriter(IBufferWriter<byte> output, TomlWriterOptions options)
     {
@@ -156,7 +156,7 @@ public ref partial struct Utf8TomlWriter
         _writeStack[0];
 
     /// <summary>
-    /// Gets the current container nesting depth — the number of open tables and arrays.
+    /// Gets the current container nesting depth - the number of open tables and arrays.
     /// </summary>
     /// <value>The number of containers currently open.</value>
     internal readonly int Depth =>

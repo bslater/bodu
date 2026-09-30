@@ -22,28 +22,28 @@ namespace Bodu.Extensions.Configuration.Text;
 /// Five overload shapes are available, mirroring the JSON provider's surface:
 /// <list type="bullet">
 /// <item>
-/// <description>File path with optional reload-on-change — the everyday production shape.</description>
+/// <description>File path with optional reload-on-change - the everyday production shape.</description>
 /// </item>
 /// <item>
 /// <description>
-/// File path with an explicit <see cref="IFileProvider" /> — useful when the file lives outside the default content
+/// File path with an explicit <see cref="IFileProvider" /> - useful when the file lives outside the default content
 /// root, in an embedded assembly resource, or under a virtual file system.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// Lambda configure-source overload — the most flexible shape, exposes every <see cref="TextConfigurationSource" />
+/// Lambda configure-source overload - the most flexible shape, exposes every <see cref="TextConfigurationSource" />
 /// property.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// Convention-discovery overload — probes for <c>.boduconfig</c>, then <c>bodu.config</c>, in that order.
+/// Convention-discovery overload - probes for <c>.boduconfig</c>, then <c>bodu.config</c>, in that order.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// Stream overload (and a lambda <see cref="TextStreamConfigurationSource" /> variant) — one-shot, no reload-on-change
+/// Stream overload (and a lambda <see cref="TextStreamConfigurationSource" /> variant) - one-shot, no reload-on-change
 /// machinery; ideal for tests and synthetic configuration.
 /// </description>
 /// </item>
@@ -54,7 +54,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// optional-file, exception wrapping) and resolve <c>path</c>-relative paths through the supplied or builder-default
 /// <see cref="IFileProvider" />. The convention overload uses the builder's default <see cref="IFileProvider" />; note
 /// that <see cref="IFileProvider" /> implementations such as
-/// <see cref="Microsoft.Extensions.FileProviders.PhysicalFileProvider" /> filter out dot-prefixed files by default —
+/// <see cref="Microsoft.Extensions.FileProviders.PhysicalFileProvider" /> filter out dot-prefixed files by default -
 /// see the remarks on <see cref="AddTextConfiguration(IConfigurationBuilder, bool, bool)" /> for the workaround
 /// required to surface <c>.boduconfig</c>.
 /// </para>
@@ -68,10 +68,10 @@ namespace Bodu.Extensions.Configuration.Text;
 ///     .AddTextConfigurationFile("appsettings.boduconfig", optional: true, reloadOnChange: true)
 ///     .AddTextConfigurationFile("appsettings.boduconfig", targetPath: "src/Foo.cs"); // path-aware view
 ///
-/// // 2. Convention discovery — probes .boduconfig, then bodu.config.
+/// // 2. Convention discovery - probes .boduconfig, then bodu.config.
 /// builder.Configuration.AddTextConfiguration(optional: true, reloadOnChange: true);
 ///
-/// // 3. Lambda overload — pin every option, including parse/resolve behaviour.
+/// // 3. Lambda overload - pin every option, including parse/resolve behaviour.
 /// builder.Configuration.AddTextConfigurationFile(source =>
 /// {
 ///     source.Path           = "app.boduconfig";
@@ -85,11 +85,11 @@ namespace Bodu.Extensions.Configuration.Text;
 ///     };
 /// });
 ///
-/// // 4. In-memory stream — handy in unit tests.
+/// // 4. In-memory stream - handy in unit tests.
 /// using var ms = new MemoryStream(Encoding.UTF8.GetBytes("[*]\nLogging:Level=Debug\n"));
 /// builder.Configuration.AddTextConfigurationStream(ms);
 ///
-/// // 5. Pre-parsed document — share one parse across multiple builders.
+/// // 5. Pre-parsed document - share one parse across multiple builders.
 /// ConfigurationDocument doc = ConfigurationDocument.Parse(text);
 /// builder.Configuration.AddTextConfigurationDocument(doc, targetPath: "src/Foo.cs");
 ///]]>
@@ -315,7 +315,7 @@ public static class TextConfigurationExtensions
     /// <remarks>
     /// This overload takes a <b>one-shot snapshot</b> of <paramref name="document" /> as it stands when called: the
     /// document is resolved immediately and the flattened values are added in-memory. Unlike the file-based overloads,
-    /// it has <b>no reload-on-change</b> behaviour — subsequent edits to the document or its backing file are not
+    /// it has <b>no reload-on-change</b> behaviour - subsequent edits to the document or its backing file are not
     /// reflected in the built configuration.
     /// </remarks>
     /// <exception cref="ArgumentNullException">

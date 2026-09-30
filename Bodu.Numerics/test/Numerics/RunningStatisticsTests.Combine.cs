@@ -86,7 +86,7 @@ public partial class RunningStatisticsTests
     }
 
     /// <summary>
-    /// Verifies that different merge trees over the same partitions agree within floating-point tolerance —
+    /// Verifies that different merge trees over the same partitions agree within floating-point tolerance -
     /// floating-point addition is not associative, so exact bitwise equality is deliberately not asserted.
     /// </summary>
     [TestMethod]

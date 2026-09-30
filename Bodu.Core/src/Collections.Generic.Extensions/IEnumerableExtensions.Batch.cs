@@ -122,7 +122,7 @@ public static partial class IEnumerableExtensions
     /// Every yielded batch is a window over the <em>same</em> pooled buffer, which is overwritten by the next iteration
     /// step and returned to the pool when enumeration ends. A batch is therefore valid only until the enumerator
     /// advances (or is disposed): to retain one, copy it with <c>.ToArray()</c> before advancing. Retaining the
-    /// <see cref="ReadOnlyMemory{T}" /> values themselves — for example via <c>ToList()</c> on the returned sequence —
+    /// <see cref="ReadOnlyMemory{T}" /> values themselves - for example via <c>ToList()</c> on the returned sequence -
     /// observes overwritten or recycled data. For independently owned batches, use
     /// <see cref="System.Linq.Enumerable.Chunk{TSource}(IEnumerable{TSource}, int)" /> or the projecting
     /// <see cref="Batch{TSource, TResult}(IEnumerable{TSource}, int, Func{TSource, TResult})" /> overload instead.
@@ -165,7 +165,7 @@ public static partial class IEnumerableExtensions
         IEnumerable<ReadOnlyMemory<TResult>> BatchIterator()
         {
             // One rental for the whole enumeration; every batch is a window over it. Yielding the live window rather
-            // than a snapshot is the point of this operator — the copying variant is plain Batch.
+            // than a snapshot is the point of this operator - the copying variant is plain Batch.
             TResult[] buffer = System.Buffers.ArrayPool<TResult>.Shared.Rent(size);
             try
             {
@@ -212,7 +212,7 @@ public static partial class IEnumerableExtensions
     /// </exception>
     /// <remarks>
     /// This overload returns untransformed batches of the original element type. Each batch is valid only until the
-    /// enumerator advances — see
+    /// enumerator advances - see
     /// <see cref="BatchPooled{TSource,TResult}(IEnumerable{TSource},int,Func{TSource,int,TResult})" /> for the full
     /// lifetime contract and for a variant that applies a projection.
     /// </remarks>

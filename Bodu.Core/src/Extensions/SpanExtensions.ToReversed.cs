@@ -21,7 +21,7 @@ public static partial class SpanExtensions
     /// <remarks>
     /// <para>
     /// Unlike the BCL <see cref="MemoryExtensions.Reverse{T}(Span{T})" />, which reverses a span <em>in place</em>,
-    /// this method never mutates <paramref name="source" /> — the reversal is applied to a fresh heap-allocated copy.
+    /// this method never mutates <paramref name="source" /> - the reversal is applied to a fresh heap-allocated copy.
     /// </para>
     /// <para>
     /// Delegates to <see cref="ToReversed{T}(ReadOnlySpan{T}, int, int)" /> with <c>start = 0</c> and
@@ -58,7 +58,7 @@ public static partial class SpanExtensions
     /// <remarks>
     /// <para>
     /// Unlike the BCL <see cref="MemoryExtensions.Reverse{T}(Span{T})" />, which reverses a span <em>in place</em>,
-    /// this method never mutates <paramref name="source" /> — the reversal is applied to a fresh heap-allocated copy.
+    /// this method never mutates <paramref name="source" /> - the reversal is applied to a fresh heap-allocated copy.
     /// </para>
     /// <para>
     /// This is the canonical public implementation. The full-span overload (<see cref="ToReversed{T}(ReadOnlySpan{T})" />)
@@ -117,7 +117,7 @@ public static partial class SpanExtensions
     /// <remarks>
     /// <para>
     /// Unlike the BCL <see cref="MemoryExtensions.Reverse{T}(Span{T})" />, which reverses a span <em>in place</em>,
-    /// this method never mutates <paramref name="source" /> — the reversal is applied to a fresh heap-allocated copy.
+    /// this method never mutates <paramref name="source" /> - the reversal is applied to a fresh heap-allocated copy.
     /// </para>
     /// <para>
     /// Resolves <paramref name="range" /> to an offset and length via <see cref="Range.GetOffsetAndLength" /> and
@@ -145,7 +145,7 @@ public static partial class SpanExtensions
     }
 
     // -------------------------------------------------------------------------
-    // Span<T> — convenience overloads (forward to ReadOnlySpan<T>)
+    // Span<T> - convenience overloads (forward to ReadOnlySpan<T>)
     // -------------------------------------------------------------------------
 
     /// <inheritdoc cref="ToReversed{T}(ReadOnlySpan{T})" />

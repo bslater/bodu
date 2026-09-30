@@ -14,9 +14,9 @@ public partial class PstNodeTests
     /// <summary>
     /// Verifies the streaming-first invariant (exploration doc §4, risk R4): reading a node whose logical payload is
     /// hundreds of megabytes through <see cref="PstNode.OpenDataStream" /> in small chunks stays under a memory
-    /// ceiling a materializing implementation cannot meet. The fixture is physically tiny — one 8176-byte data block
+    /// ceiling a materializing implementation cannot meet. The fixture is physically tiny - one 8176-byte data block
     /// referenced 1021 times by an <c>XBLOCK</c> that an <c>XXBLOCK</c> references 32 times, giving a ~255 MB logical
-    /// payload from three distinct blocks — so only the reader's buffering strategy is measured.
+    /// payload from three distinct blocks - so only the reader's buffering strategy is measured.
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
@@ -67,7 +67,7 @@ public partial class PstNodeTests
         Assert.AreEqual(expectedLength, totalRead, "The stream must yield the full logical payload.");
         Assert.IsTrue(maxDelta < CeilingBytes,
             $"Streaming a {expectedLength / (1024 * 1024)} MB logical payload must stay under the " +
-            $"{CeilingBytes / (1024 * 1024)} MB ceiling; observed a {maxDelta / (1024 * 1024)} MB peak — " +
+            $"{CeilingBytes / (1024 * 1024)} MB ceiling; observed a {maxDelta / (1024 * 1024)} MB peak - " +
             "the payload is being materialized instead of streamed.");
     }
 

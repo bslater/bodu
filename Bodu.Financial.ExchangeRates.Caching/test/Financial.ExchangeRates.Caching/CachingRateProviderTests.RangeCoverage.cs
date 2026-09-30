@@ -61,7 +61,7 @@ public sealed partial class CachingRateProviderTests
 
     /// <summary>
     /// Verifies that once the recorded coverage has expired, a previously cached range is refetched even though the rows
-    /// remain present, because coverage freshness — not row presence — governs range serving.
+    /// remain present, because coverage freshness - not row presence - governs range serving.
     /// </summary>
     [TestMethod]
     public async Task GetRatesAsync_WhenRecordedCoverageExpired_ShouldRefetch()
@@ -80,7 +80,7 @@ public sealed partial class CachingRateProviderTests
 
     /// <summary>
     /// Verifies that a fetch returning zero rows still records the window as covered, so the same range is served from
-    /// the cache on the next call without a second fetch — the empty-but-fetched fix.
+    /// the cache on the next call without a second fetch - the empty-but-fetched fix.
     /// </summary>
     [TestMethod]
     public async Task GetRatesAsync_WhenFetchReturnsNoRows_ShouldRecordCoverageAndNotRefetch()

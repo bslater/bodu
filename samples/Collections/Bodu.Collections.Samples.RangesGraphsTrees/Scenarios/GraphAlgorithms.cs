@@ -11,8 +11,8 @@ namespace Bodu.Collections.Samples.RangesGraphsTrees.Scenarios;
 /// <summary>
 /// Demonstrates <see cref="Graph{T}" /> together with the static <see cref="GraphAlgorithms" /> helpers:
 /// breadth-first traversal, Dijkstra shortest path over edge weights, and a topological ordering of a
-/// directed acyclic dependency graph. A stable comparer keeps the internal adjacency iteration — and hence
-/// the traversal order — identical on every run.
+/// directed acyclic dependency graph. A stable comparer keeps the internal adjacency iteration - and hence
+/// the traversal order - identical on every run.
 /// </summary>
 public static class GraphAlgorithmsScenario
 {

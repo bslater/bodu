@@ -11,7 +11,7 @@ public partial class ThrowHelperTests
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiHexDigit" /> does not throw for all valid decimal
-    /// digit characters ('0'–'9').
+    /// digit characters ('0'-'9').
     /// </summary>
     [TestMethod]
     [DataRow('0')]
@@ -22,7 +22,7 @@ public partial class ThrowHelperTests
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiHexDigit" /> does not throw for all valid
-    /// lowercase hex letter characters ('a'–'f').
+    /// lowercase hex letter characters ('a'-'f').
     /// </summary>
     [TestMethod]
     [DataRow('a')]
@@ -59,7 +59,7 @@ public partial class ThrowHelperTests
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiHexDigit" /> does not throw for all valid
-    /// uppercase hex letter characters ('A'–'F').
+    /// uppercase hex letter characters ('A'-'F').
     /// </summary>
     [TestMethod]
     [DataRow('A')]
@@ -70,8 +70,8 @@ public partial class ThrowHelperTests
     [DataRow('F')]
     public void ThrowIfNotAsciiHexDigit_WhenCharIsUppercaseHexLetter_ShouldNotThrow(char value) => ThrowHelper.ThrowIfNotAsciiHexDigit(value);
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiHexDigit" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for ASCII hex digits at boundary positions of the
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiHexDigit" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for ASCII hex digits at boundary positions of the
     /// accepted ranges.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

@@ -11,7 +11,7 @@ namespace Bodu.Text.Bencode;
 
 /// <summary>
 /// Characterizes the managed-heap allocation profile of the principal read and write paths, recording a baseline that
-/// allocation regressions can be measured against — the same contract <c>TomlAllocationTests</c> pins for the TOML
+/// allocation regressions can be measured against - the same contract <c>TomlAllocationTests</c> pins for the TOML
 /// package. The lexical reader is pinned near-zero; the materializing pipelines are bounded by a multiple of the
 /// input size.
 /// </summary>
@@ -80,8 +80,8 @@ public sealed class BencodeAllocationTests
     }
 
     /// <summary>
-    /// Verifies that deserializing a list of dictionaries into POCO instances — the compiled-accessor, slot-buffered
-    /// metadata path — stays within the recorded allocation baseline relative to the input size.
+    /// Verifies that deserializing a list of dictionaries into POCO instances - the compiled-accessor, slot-buffered
+    /// metadata path - stays within the recorded allocation baseline relative to the input size.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]

@@ -13,7 +13,7 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// <c>Bodu.Globalization.Calendar.Caching.Distributed</c>: swallowed best-effort storage failures, tagged by operation.
 /// </summary>
 /// <remarks>
-/// The counter complements — never replaces — the existing log messages, and increments on <em>every</em> swallowed
+/// The counter complements - never replaces - the existing log messages, and increments on <em>every</em> swallowed
 /// failure, deliberately outside the rate-limited warning gate that throttles log volume, so sustained degradation is
 /// quantifiable even while its logging is suppressed. With no listener attached the add is a no-op branch.
 /// </remarks>

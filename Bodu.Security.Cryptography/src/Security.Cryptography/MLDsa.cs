@@ -30,7 +30,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong><see cref="AsymmetricAlgorithm.KeySize" /> semantics.</strong> The reported key size is the FIPS 204
-/// parameter-set designator (44, 65, or 87) identifying the matrix dimensions and security category — it is not a key
+/// parameter-set designator (44, 65, or 87) identifying the matrix dimensions and security category - it is not a key
 /// length in bits.
 /// </para>
 /// <para>
@@ -43,7 +43,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>Memory.</strong> When a key is generated or imported, the instance also keeps the values FIPS 204 derives
-/// from it on every operation — the matrix Â, the hash tr, and the key's vectors in the form the arithmetic uses — so
+/// from it on every operation - the matrix Â, the hash tr, and the key's vectors in the form the arithmetic uses - so
 /// that signing and verification do not recompute them. Beside the encoded keys they take about 32, 53 and 87 KiB for
 /// ML-DSA-44, 65 and 87, or 20, 36 and 64 KiB for an instance holding only a public key.
 /// </para>

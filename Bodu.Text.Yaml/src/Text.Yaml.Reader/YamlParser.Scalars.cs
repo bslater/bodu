@@ -384,7 +384,7 @@ internal sealed partial class YamlParser
     /// <param name="codePoint">The decoded escape code point.</param>
     /// <returns>The validated code point.</returns>
     /// <exception cref="YamlFormatException">
-    /// The code point is a surrogate (<c>U+D800</c>–<c>U+DFFF</c>) or exceeds <c>U+10FFFF</c>.
+    /// The code point is a surrogate (<c>U+D800</c>-<c>U+DFFF</c>) or exceeds <c>U+10FFFF</c>.
     /// </exception>
     private int ValidateEscapeCodePoint(int codePoint)
     {

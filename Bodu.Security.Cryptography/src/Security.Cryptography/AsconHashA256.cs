@@ -15,8 +15,8 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// ASCON-HASHA256 uses an 8-round Ascon-p permutation (Ascon-p8) during message block absorption and the full 12-round
 /// permutation (Ascon-p12) during the initial squeeze phase. Subsequent squeeze blocks also use Ascon-p8. The reduced
-/// absorption round count improves throughput for long messages relative to <see cref="AsconHash256" /> at a reduced —
-/// though still substantial — security margin.
+/// absorption round count improves throughput for long messages relative to <see cref="AsconHash256" /> at a reduced -
+/// though still substantial - security margin.
 /// </para>
 /// <para>
 /// For the highest security margin, use <see cref="AsconHash256" />, which applies Ascon-p12 at every phase.
@@ -42,7 +42,7 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// <para>
 /// <strong>When to choose ASCON-HASHA256.</strong> Pick this when ASCON-family interop is required and message
-/// throughput matters more than the extra round-count margin of <see cref="AsconHash256" /> — typical for IoT gateways
+/// throughput matters more than the extra round-count margin of <see cref="AsconHash256" /> - typical for IoT gateways
 /// and lightweight protocols that hash sustained streams of telemetry. For maximum margin use
 /// <see cref="AsconHash256" />; for non-ASCON throughput-sensitive hashing on commodity hardware <see cref="Blake3" />
 /// is faster still.

@@ -17,19 +17,19 @@ internal static partial class CryptoTestUtilities
     /// <summary>A single zero byte.</summary>
     public static readonly byte[] EmptyByteArray = [];
 
-    /// <summary>Sequential bytes 0x00–0x0F (16 bytes) — 128-bit block size.</summary>
+    /// <summary>Sequential bytes 0x00-0x0F (16 bytes) - 128-bit block size.</summary>
     public static readonly byte[] ByteSequence16 = Enumerable.Range(0, 16).Select(i => (byte)i).ToArray();
 
-    /// <summary>Sequential bytes 0x00–0x1F (32 bytes) — 256-bit block size.</summary>
+    /// <summary>Sequential bytes 0x00-0x1F (32 bytes) - 256-bit block size.</summary>
     public static readonly byte[] ByteSequence32 = Enumerable.Range(0, 32).Select(i => (byte)i).ToArray();
 
-    /// <summary>Sequential bytes 0x00–0x3F (64 bytes) — 512-bit block size.</summary>
+    /// <summary>Sequential bytes 0x00-0x3F (64 bytes) - 512-bit block size.</summary>
     public static readonly byte[] ByteSequence64 = Enumerable.Range(0, 64).Select(i => (byte)i).ToArray();
 
-    /// <summary>Sequential bytes 0x00–0x7F (128 bytes) — 1024-bit block size (Threefish-1024).</summary>
+    /// <summary>Sequential bytes 0x00-0x7F (128 bytes) - 1024-bit block size (Threefish-1024).</summary>
     public static readonly byte[] ByteSequence128 = Enumerable.Range(0, 128).Select(i => (byte)i).ToArray();
 
-    /// <summary>Sequential bytes 0x00–0xFF (256 bytes) — 2048-bit block size.</summary>
+    /// <summary>Sequential bytes 0x00-0xFF (256 bytes) - 2048-bit block size.</summary>
     public static readonly byte[] ByteSequence256 = Enumerable.Range(0, 256).Select(i => (byte)i).ToArray();
 
     /// <summary>

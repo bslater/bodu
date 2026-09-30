@@ -26,7 +26,7 @@ using Microsoft.Extensions.Logging;
 public sealed class EcbRateProviderOptions
 {
     /// <summary>
-    /// Gets or sets the endpoint options describing the provider's connection to the ECB <c>eurofxref</c> endpoints —
+    /// Gets or sets the endpoint options describing the provider's connection to the ECB <c>eurofxref</c> endpoints -
     /// the base URL, transport timeout, and request identity.
     /// </summary>
     /// <value>The endpoint options; defaults to a new <see cref="EcbEndpointOptions" /> targeting the ECB.</value>

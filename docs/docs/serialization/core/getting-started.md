@@ -1,5 +1,5 @@
 ---
-title: Bodu.Text.Serialization — Getting started
+title: Bodu.Text.Serialization - Getting started
 ---
 
 # Getting started
@@ -8,7 +8,7 @@ Unfamiliar with terms like *naming policy*, *ignore condition*, *required member
 
 ## Install
 
-You rarely add this package by hand: every format package (`Bodu.Text.Toml`, `Bodu.Text.Yaml`, `Bodu.Text.Bencode`, `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`, `Bodu.Text.Ini`) restores it transitively. Add it directly when a project only *declares* models and should not depend on any one format — a shared DTO or contracts assembly:
+You rarely add this package by hand: every format package (`Bodu.Text.Toml`, `Bodu.Text.Yaml`, `Bodu.Text.Bencode`, `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`, `Bodu.Text.Ini`) restores it transitively. Add it directly when a project only *declares* models and should not depend on any one format - a shared DTO or contracts assembly:
 
 ```shell
 dotnet add package Bodu.Text.Serialization
@@ -16,15 +16,15 @@ dotnet add package Bodu.Text.Serialization
 
 Targets `net8.0`. Depends on `Bodu.Core` only.
 
-A typical split — the model library references the core package; the application references the formats it actually uses:
+A typical split - the model library references the core package; the application references the formats it actually uses:
 
 ```xml
-<!-- Contracts.csproj — DTOs annotated once -->
+<!-- Contracts.csproj - DTOs annotated once -->
 <ItemGroup>
   <PackageReference Include="Bodu.Text.Serialization" Version="…" />
 </ItemGroup>
 
-<!-- App.csproj — picks the wire formats -->
+<!-- App.csproj - picks the wire formats -->
 <ItemGroup>
   <ProjectReference Include="..\Contracts\Contracts.csproj" />
   <PackageReference Include="Bodu.Text.Toml" Version="…" />
@@ -90,7 +90,7 @@ Reading the output against the attributes:
 - `[NamingPolicy(KnownNamingPolicy.SnakeCaseLower)]` turned `DisplayName` and `MaxRetryCount` into `display_name` / `max_retry_count`.
 - `[PropertyName("listen-port")]` pinned one key and was **not** passed through the policy.
 - `[Ignore(Condition = IgnoreCondition.WhenWritingNull)]` dropped `description` because it was `null`; had it been set, both documents would carry it.
-- `[Ignore]` removed `ApiKey` entirely — it is neither written nor read back (`fromToml.ApiKey` is `null`).
+- `[Ignore]` removed `ApiKey` entirely - it is neither written nor read back (`fromToml.ApiKey` is `null`).
 - `[Required]` has no effect on the write, but a document missing `display_name` fails to bind with the format's serialization exception:
 
 ```csharp
@@ -180,11 +180,11 @@ Serializing the annotated profile type from the first sample with those same opt
 
 ## Reuse the options
 
-Once an options instance has been used it is frozen — `IsReadOnly` reports `true`, and setting a property throws `InvalidOperationException`. Configure one instance, then share it; it caches per-type metadata and is safe to use from many threads.
+Once an options instance has been used it is frozen - `IsReadOnly` reports `true`, and setting a property throws `InvalidOperationException`. Configure one instance, then share it; it caches per-type metadata and is safe to use from many threads.
 
 ```csharp
 var options = new TomlSerializerOptions { PropertyNamingPolicy = NamingPolicy.CamelCase };
-options.MakeReadOnly();                                   // optional — first use freezes anyway
+options.MakeReadOnly();                                   // optional - first use freezes anyway
 
 _ = TomlSerializer.Serialize(profile, options);
 options.PropertyNamingPolicy = NamingPolicy.SnakeCaseLower;   // throws InvalidOperationException
@@ -192,8 +192,8 @@ options.PropertyNamingPolicy = NamingPolicy.SnakeCaseLower;   // throws InvalidO
 
 ## Where to go next
 
-- **[Bodu.Text.Serialization introduction](index.md)** — the full attribute family and which serializers honor which parts.
-- **[Core concepts](concepts.md)** — precedence, naming order, required members, extension data, callback order, options freezing, converter resolution.
-- **[TOML attribute patterns](../../../guides/serialization/toml/attributes.md)** — the remaining attributes (`[Include]`, `[Constructor]`, `[ExtensionData]`, `[UnmappedMemberHandling]`, `[ObjectCreationHandling]`, `[Converter]`, `[StringEnumMemberName]`) as worked recipes.
-- **[Line formats getting started](../../formats/getting-started.md)** — the same attributes over CSV, `.env`, and INI.
-- **[Text & Serialization topic overview](../../topics/text-and-serialization.md)** — where the serializers sit among the codecs and document formats.
+- **[Bodu.Text.Serialization introduction](index.md)** - the full attribute family and which serializers honor which parts.
+- **[Core concepts](concepts.md)** - precedence, naming order, required members, extension data, callback order, options freezing, converter resolution.
+- **[TOML attribute patterns](../../../guides/serialization/toml/attributes.md)** - the remaining attributes (`[Include]`, `[Constructor]`, `[ExtensionData]`, `[UnmappedMemberHandling]`, `[ObjectCreationHandling]`, `[Converter]`, `[StringEnumMemberName]`) as worked recipes.
+- **[Line formats getting started](../../formats/getting-started.md)** - the same attributes over CSV, `.env`, and INI.
+- **[Text & Serialization topic overview](../../topics/text-and-serialization.md)** - where the serializers sit among the codecs and document formats.

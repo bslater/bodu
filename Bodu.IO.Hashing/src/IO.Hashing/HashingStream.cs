@@ -25,14 +25,14 @@ namespace Bodu.IO.Hashing;
 /// <para>
 /// <see cref="GetCurrentHash" /> reports the digest of the bytes transferred so far without finalizing the ongoing
 /// computation; <see cref="GetHashAndReset" /> additionally resets the algorithm. The algorithm instance is supplied by
-/// the caller, is not disposed by this stream, and — like all <see cref="NonCryptographicHashAlgorithm" /> instances —
+/// the caller, is not disposed by this stream, and - like all <see cref="NonCryptographicHashAlgorithm" /> instances -
 /// is not thread-safe, so concurrent reads and writes through the same <see cref="HashingStream" /> are not supported.
 /// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Compute a CRC-32 over a payload while streaming it to its destination — a single pass over the bytes.
+/// // Compute a CRC-32 over a payload while streaming it to its destination - a single pass over the bytes.
 /// using var source = File.OpenRead("payload.bin");
 /// using var destination = File.Create("payload.copy");
 /// using var hashing = new HashingStream(source, new Crc32());

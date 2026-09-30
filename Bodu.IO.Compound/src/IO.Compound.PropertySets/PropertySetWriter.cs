@@ -141,7 +141,7 @@ internal static class PropertySetWriter
             : Typed(value.Type, EncodeScalarBody(value.Type, value.Value, encoding));
 
     /// <summary>
-    /// Encodes a scalar value body — no type word and no trailing padding — mirroring the scalar types
+    /// Encodes a scalar value body - no type word and no trailing padding - mirroring the scalar types
     /// <see cref="PropertySetReader" /> decodes.
     /// </summary>
     /// <param name="type">The scalar property type.</param>
@@ -176,7 +176,7 @@ internal static class PropertySetWriter
 
     /// <summary>
     /// Encodes a <c>VT_VECTOR</c>-flagged value: the vector type word, a four-byte element count, then each element's
-    /// scalar body padded to a four-byte boundary — the exact inverse of the reader's vector loop.
+    /// scalar body padded to a four-byte boundary - the exact inverse of the reader's vector loop.
     /// </summary>
     /// <param name="value">The vector value; its <see cref="OlePropertyValue.Value" /> must be an object array.</param>
     /// <param name="encoding">The encoding for ANSI strings.</param>
@@ -185,7 +185,7 @@ internal static class PropertySetWriter
     /// <para>
     /// Fixed-size, string, and blob elements carry no per-element type word; <see cref="OlePropertyType.Variant" />
     /// elements each carry an inner type word inferred from the element's CLR type (see <see cref="InferVariantType" />).
-    /// The round-trip guarantee for variant vectors is therefore value identity, not byte identity — an element
+    /// The round-trip guarantee for variant vectors is therefore value identity, not byte identity - an element
     /// originally tagged <c>VT_FILETIME</c> is surfaced as <see cref="long" /> and re-emits as <c>VT_I8</c>, and
     /// <c>VT_BSTR</c> strings re-emit as <c>VT_LPSTR</c>; both read back to the identical value.
     /// </para>

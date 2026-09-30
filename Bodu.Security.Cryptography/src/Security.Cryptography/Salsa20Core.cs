@@ -20,7 +20,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// The state is sixteen 32-bit words: the four constant words on the diagonal (positions 0, 5, 10 and 15), the key in
-/// words 1–4 and 11–14, the nonce in words 6 and 7, and the 64-bit block counter in words 8 (low) and 9 (high). Every
+/// words 1-4 and 11-14, the nonce in words 6 and 7, and the 64-bit block counter in words 8 (low) and 9 (high). Every
 /// entry point takes the counter of its first block separately, whatever the state's counter words hold, and the blocks
 /// after it count up modulo 2^64.
 /// </para>
@@ -90,7 +90,7 @@ internal static partial class Salsa20Core
     /// long, or <paramref name="nonce" /> is not 8 bytes long.
     /// </exception>
     /// <remarks>
-    /// For a 256-bit key the second key half occupies words 11–14; for a 128-bit key the single 16-byte key is repeated
+    /// For a 256-bit key the second key half occupies words 11-14; for a 128-bit key the single 16-byte key is repeated
     /// into both halves, and the <c>"expand 16-byte k"</c> constants are used.
     /// </remarks>
     internal static void Initialize(Span<uint> state, ReadOnlySpan<byte> key, ReadOnlySpan<byte> nonce)

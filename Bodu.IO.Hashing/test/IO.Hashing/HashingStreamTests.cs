@@ -30,7 +30,7 @@ public sealed partial class HashingStreamTests
     /// Creates a deterministic test payload of the specified length.
     /// </summary>
     /// <param name="length">The payload length in bytes.</param>
-    /// <returns>An array whose bytes cycle through <c>0x00</c>–<c>0xFF</c>.</returns>
+    /// <returns>An array whose bytes cycle through <c>0x00</c>-<c>0xFF</c>.</returns>
     private static byte[] CreatePayload(int length)
     {
         byte[] payload = new byte[length];

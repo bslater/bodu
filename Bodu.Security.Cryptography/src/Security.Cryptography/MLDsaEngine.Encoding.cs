@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the ML-DSA bit-packing codecs and the hint encoding (FIPS 204 Algorithms 16–21).
+/// Provides the ML-DSA bit-packing codecs and the hint encoding (FIPS 204 Algorithms 16-21).
 /// </summary>
 internal static partial class MLDsaEngine
 {
@@ -120,7 +120,7 @@ internal static partial class MLDsaEngine
     /// </returns>
     /// <remarks>
     /// The whole vector is unpacked regardless of any out-of-range code point so the running time reveals only that a
-    /// canonical-encoding check occurred, not which coefficient — if any — drove the rejection.
+    /// canonical-encoding check occurred, not which coefficient - if any - drove the rejection.
     /// </remarks>
     private static bool TryBitUnpackSigned(int bits, int bound, int maxEncoded, ReadOnlySpan<byte> source, Span<int> destination)
     {

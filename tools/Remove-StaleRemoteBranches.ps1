@@ -159,12 +159,12 @@ if ($LASTEXITCODE -ne 0) {
 
 # Landed-ness cannot be decided from git topology in this repository. `git branch -r --merged` answers
 # by ancestry, which reports nothing when pull requests are squash-merged: the squash commit is not a
-# descendant of the branch it came from. Comparing content does not rescue it either — the base branch
+# descendant of the branch it came from. Comparing content does not rescue it either - the base branch
 # legitimately changes those files afterwards, and branches predating a history rewrite share no merge
 # base at all, so every branch looks unmerged. Measured against 40 branches in this repository, both
 # topology tests recognised none of the squash-merged ones.
 #
-# The signal that does hold is the pull request — but a merged PR is not sufficient on its own. A branch
+# The signal that does hold is the pull request - but a merged PR is not sufficient on its own. A branch
 # that was pushed to after its PR merged still carries work nobody reviewed, and three such branches
 # existed in this repository (one with 9 later commits adding 46 documentation files). So a branch counts
 # as landed only when its PR is merged AND it has no commits after that merge. Both halves need the gh
@@ -228,7 +228,7 @@ function Test-BranchLanded {
     .DESCRIPTION
         Returns $true when the branch is an ancestor of the base branch, or when its pull request is
         merged and nothing was pushed to the branch afterwards. Everything else returns $false,
-        including every branch when the pull request lookup is unavailable — for a tool that deletes
+        including every branch when the pull request lookup is unavailable - for a tool that deletes
         branches, a false "unmerged" costs a branch that lingers while a false "merged" loses work.
     #>
     param(

@@ -10,7 +10,7 @@ namespace Bodu.Numerics;
 
 /// <summary>
 /// Represents the result of a binary <see cref="DiscreteInterval{T}" /> set operation as zero, one, or two disjoint,
-/// non-adjacent intervals in ascending order — the discrete counterpart to <see cref="IntervalPair{T}" />.
+/// non-adjacent intervals in ascending order - the discrete counterpart to <see cref="IntervalPair{T}" />.
 /// </summary>
 /// <typeparam name="T">The integer type used for the intervals' endpoints.</typeparam>
 /// <remarks>
@@ -64,7 +64,7 @@ public readonly struct DiscreteIntervalPair<T>
     }
 
     /// <summary>
-    /// Gets the empty result — zero pieces.
+    /// Gets the empty result - zero pieces.
     /// </summary>
     /// <value>A <see cref="DiscreteIntervalPair{T}" /> whose <see cref="Count" /> is zero.</value>
     public static DiscreteIntervalPair<T> Empty =>
@@ -135,7 +135,7 @@ public readonly struct DiscreteIntervalPair<T>
     /// <summary>
     /// Returns an <see cref="IntervalSet{T}" /> covering the same integers as the pieces of this result.
     /// </summary>
-    /// <returns>The equivalent normalized set — empty, or the one or two disjoint runs this pair holds.</returns>
+    /// <returns>The equivalent normalized set - empty, or the one or two disjoint runs this pair holds.</returns>
     /// <remarks>
     /// There is deliberately no <c>DiscreteIntervalSet&lt;T&gt;</c>; a discrete result is lifted into the continuous
     /// <see cref="IntervalSet{T}" /> through each run's <see cref="DiscreteInterval{T}.ToInterval" /> so it composes

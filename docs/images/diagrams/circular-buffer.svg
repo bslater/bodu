@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 340" role="img" aria-labelledby="cb-t cb-d">
-  <title id="cb-t">CircularBuffer&lt;T&gt; — fixed-capacity FIFO ring</title>
+  <title id="cb-t">CircularBuffer&lt;T&gt; - fixed-capacity FIFO ring</title>
   <desc id="cb-d">A CircularBuffer is a contiguous array of slots arranged conceptually as a ring. A Head pointer marks the oldest element (read end) and a Tail pointer marks the next free slot (write end). Enqueue advances Tail, Dequeue advances Head, and both indices wrap modulo Capacity. When the buffer is full, AllowOverwrite=true overwrites the oldest entry and pushes Head forwards, while AllowOverwrite=false rejects the insert.</desc>
 
   <defs>
@@ -48,7 +48,7 @@
     <rect class="pan" width="800" height="320" rx="8"/>
     <rect class="hdr" width="800" height="30" rx="8"/>
     <rect class="hdr" y="22" width="800" height="8"/>
-    <text class="ttl" x="16" y="20">CircularBuffer&lt;T&gt; — fixed-capacity FIFO ring</text>
+    <text class="ttl" x="16" y="20">CircularBuffer&lt;T&gt; - fixed-capacity FIFO ring</text>
 
     <!-- Ring of 8 slots (clockwise from 12 o'clock).
          center (200, 185), radius 95, slot size 36x36 -->
@@ -114,7 +114,7 @@
       <text class="pin-t" x="0" y="3" fill="#0F172A">Tail</text>
     </g>
     <line class="wy" x1="328" y1="248" x2="293" y2="252" marker-end="url(#cb-ay)"/>
-    <text class="mut" x="267" y="290">next free — Enqueue writes here</text>
+    <text class="mut" x="267" y="290">next free - Enqueue writes here</text>
 
     <!-- direction-of-rotation arc -->
     <path class="arc-cw" d="M 200 145 A 40 40 0 0 1 240 185" marker-end="url(#cb-a)"/>
@@ -133,7 +133,7 @@
       <text class="lbl-l" x="14" y="20" fill="#2DD4BF">AllowOverwrite = true  (default)</text>
       <text class="sub-l" x="14" y="38">Tail wraps over Head: the oldest slot is overwritten</text>
       <text class="sub-l" x="14" y="54">and Head advances by one. Count stays at Capacity.</text>
-      <text class="mut-l" x="14" y="74">Use for sliding windows — keep the most-recent N values.</text>
+      <text class="mut-l" x="14" y="74">Use for sliding windows - keep the most-recent N values.</text>
     </g>
 
     <!-- AllowOverwrite = false case -->

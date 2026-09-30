@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ---------------------------------------------------------------------------------------------------------------
-# pre-push — author-time (upstream) coding-policy enforcement.
+# pre-push - author-time (upstream) coding-policy enforcement.
 #
 # Runs the deterministic Tier-1 policy checks (bld/check-policy.sh) over the range being pushed,
 # BEFORE it reaches the remote and the CI Policy Gate. This is the "apply the policy before it
@@ -24,7 +24,7 @@ zero="0000000000000000000000000000000000000000"
 status=0
 
 while read -r local_ref local_sha remote_ref remote_sha; do
-  # Branch deletion — nothing to check.
+  # Branch deletion - nothing to check.
   [ "$local_sha" = "$zero" ] && continue
 
   if [ "$remote_sha" = "$zero" ]; then

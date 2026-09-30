@@ -19,7 +19,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </para>
 /// <para>
 /// <strong>When to choose Fletcher.</strong> Fletcher was designed as a cheaper alternative to CRC for detecting
-/// accidental corruption in network protocols and file formats — TCP, Modbus ASCII, and ZFS all use a Fletcher variant.
+/// accidental corruption in network protocols and file formats - TCP, Modbus ASCII, and ZFS all use a Fletcher variant.
 /// It catches single-bit errors and many burst errors at a fraction of CRC's per-byte cost, making it attractive on
 /// resource-constrained microcontrollers and in tight inner loops. Pick <see cref="Fletcher16" /> for embedded
 /// protocols where 16 bits is enough, <see cref="Fletcher32" /> as the workhorse for general file-integrity work, and
@@ -33,7 +33,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})" /> /
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Reset" /> /
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" /> shape via
-/// <see cref="BlockNonCryptographicHashAlgorithm" />. Snapshotting is non-destructive — call <c>GetCurrentHash</c> as
+/// <see cref="BlockNonCryptographicHashAlgorithm" />. Snapshotting is non-destructive - call <c>GetCurrentHash</c> as
 /// often as needed. Instances are not thread-safe; share behind explicit synchronization, or allocate one per consumer.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
@@ -135,8 +135,8 @@ public abstract class Fletcher
     /// <remarks>
     /// <para>
     /// Both accumulators enter reduced (below <see cref="_modulus" />), and the batch length is bounded so the running
-    /// <c>B</c> accumulator cannot overflow a 64-bit value. Reducing per batch is congruent to — and therefore produces
-    /// the identical result as — the per-byte <c>A = (A + b) mod m; B = (B + A) mod m</c> recurrence, regardless of how
+    /// <c>B</c> accumulator cannot overflow a 64-bit value. Reducing per batch is congruent to - and therefore produces
+    /// the identical result as - the per-byte <c>A = (A + b) mod m; B = (B + A) mod m</c> recurrence, regardless of how
     /// the input is split across calls.
     /// </para>
     /// <para>

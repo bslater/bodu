@@ -99,7 +99,7 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
     /// </summary>
     /// <param name="evicted">The buffer that receives entries evicted from the cold queue.</param>
     /// <returns>
-    /// <see langword="true" /> if the pass moved, dropped, or evicted at least one node — meaning another pass may make
+    /// <see langword="true" /> if the pass moved, dropped, or evicted at least one node - meaning another pass may make
     /// further progress; <see langword="false" /> when every queue was already within its slice.
     /// </returns>
     /// <remarks>
@@ -107,7 +107,7 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
     /// Hot drain: an accessed node is promoted to warm, an unaccessed one demoted to cold. Warm drain: an accessed node
     /// recycles to the warm tail (its flag cleared, so it gets exactly one free pass), an unaccessed one demotes to
     /// cold; the drain is bounded by the warm count observed at the start so a fully accessed warm queue cannot spin
-    /// the pass. Cold drain: an accessed node resurrects to warm, an unaccessed one is evicted — claimed with an
+    /// the pass. Cold drain: an accessed node resurrects to warm, an unaccessed one is evicted - claimed with an
     /// interlocked Cold→Removed transition and then removed from the dictionary with the node-conditional overload so a
     /// same-key successor entry is never removed.
     /// </para>
@@ -192,7 +192,7 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
         }
 
         // Hard capacity enforcement. The policy cycling above can stall against readers that continuously re-flag
-        // resident entries — every cold examination then resurrects instead of evicting, and the live count creeps
+        // resident entries - every cold examination then resurrects instead of evicting, and the live count creeps
         // above the capacity. When that happens, evict from the cold head regardless of accessed flags, demoting from
         // warm and hot to refill cold as needed, until the live count is back within the bound. Accessed entries
         // sacrificed here are the price of the documented capacity contract under pathological read pressure.

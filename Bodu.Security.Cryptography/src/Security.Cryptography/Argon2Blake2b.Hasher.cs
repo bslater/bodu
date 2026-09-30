@@ -16,7 +16,7 @@ internal static partial class Argon2Blake2b
     /// one message without first being copied into a single buffer.
     /// </summary>
     /// <remarks>
-    /// The caller supplies the chaining state and the block buffer — typically on its own stack — so the hasher
+    /// The caller supplies the chaining state and the block buffer - typically on its own stack - so the hasher
     /// allocates nothing. <see cref="Finish" /> clears both, and a hasher must not be used after it.
     /// </remarks>
     internal ref struct Hasher

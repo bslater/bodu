@@ -20,7 +20,7 @@ namespace Bodu.IO.Compound.Internal;
 /// The layout is computed once into a small plan (the directory entries and the sector geometry), then emitted to the
 /// destination one sector at a time. The header, directory, file-allocation table (FAT), mini-FAT, and double-indirect
 /// FAT (DIFAT) are generated on the fly, and stream payloads are streamed directly from their sources, so peak memory
-/// is proportional to the number of directory entries plus a single sector — independent of the output size.
+/// is proportional to the number of directory entries plus a single sector - independent of the output size.
 /// </para>
 /// <para>
 /// Streams are partitioned into the mini stream (small) and the regular sectors, the directory is encoded as a
@@ -104,7 +104,7 @@ internal static partial class CompoundContainerLayout
     }
 
     /// <summary>
-    /// Computes the container geometry — the directory entries and every sector count and start index — without
+    /// Computes the container geometry - the directory entries and every sector count and start index - without
     /// emitting any bytes, so the synchronous and asynchronous emit paths consume one plan and cannot diverge in
     /// layout.
     /// </summary>

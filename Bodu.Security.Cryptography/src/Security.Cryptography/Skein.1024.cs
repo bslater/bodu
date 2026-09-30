@@ -29,7 +29,7 @@ namespace Bodu.Security.Cryptography;
 /// <description>State / block size: 1024 bits (128 bytes).</description>
 /// </item>
 /// <item>
-/// <description>Output sizes: 384, 512, or 1024 bits — default 1024.</description>
+/// <description>Output sizes: 384, 512, or 1024 bits - default 1024.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -37,11 +37,11 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>Optional variable-length key: 0–<see cref="Skein.MaxKeySize" /> / 8 bytes.</description>
+/// <description>Optional variable-length key: 0-<see cref="Skein.MaxKeySize" /> / 8 bytes.</description>
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Skein-1024.</strong> The widest-state Skein variant — pick it when you want the largest
+/// <strong>When to choose Skein-1024.</strong> The widest-state Skein variant - pick it when you want the largest
 /// security margin in the Skein family or when the surrounding system explicitly requires Skein-1024. Throughput on
 /// short inputs is lower than <see cref="Skein512" />; for general use the 512-bit variant is the recommended Skein
 /// default.

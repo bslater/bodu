@@ -343,7 +343,7 @@ public class BencodeArrayTests
     }
 
     /// <summary>
-    /// Verifies that serialization preserves insertion order — list elements are never sorted.
+    /// Verifies that serialization preserves insertion order - list elements are never sorted.
     /// </summary>
     [TestMethod]
     public void ToByteArray_WhenElementsAdded_ShouldPreserveInsertionOrder()

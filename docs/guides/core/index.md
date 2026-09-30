@@ -4,32 +4,32 @@ title: Core Foundations guides
 
 # Core Foundations guides
 
-Recipe-style walk-throughs for the **Core Foundations** package family — **Bodu.Core**, **Bodu.Collections**, and **Bodu.Collections.Concurrent** — organized by namespace. Each guide on this page is a focused walk-through of one headline type.
+Recipe-style walk-throughs for the **Core Foundations** package family - **Bodu.Core**, **Bodu.Collections**, and **Bodu.Collections.Concurrent** - organized by namespace. Each guide on this page is a focused walk-through of one headline type.
 
-If you have not yet installed the packages or want the high-level shape of each library, start with the [Bodu.Core](../../docs/core/index.md), [Bodu.Collections](../../docs/collections/index.md), and [Bodu.Collections.Concurrent](../../docs/collections-concurrent/index.md) introductions and their getting-started pages. New to the many collection types? Read **[Choosing a collection](choosing-a-collection.md)** — a decision guide that maps requirements to the correct type. For the auto-generated API reference, see the [Bodu.Collections.Generic namespace page](xref:Bodu.Collections.Generic).
+If you have not yet installed the packages or want the high-level shape of each library, start with the [Bodu.Core](../../docs/core/index.md), [Bodu.Collections](../../docs/collections/index.md), and [Bodu.Collections.Concurrent](../../docs/collections-concurrent/index.md) introductions and their getting-started pages. New to the many collection types? Read **[Choosing a collection](choosing-a-collection.md)** - a decision guide that maps requirements to the correct type. For the auto-generated API reference, see the [Bodu.Collections.Generic namespace page](xref:Bodu.Collections.Generic).
 
 These guides anchor the **Core Foundations** topic: the [topic guide landing](../topics/core-foundations.md) places them alongside the rest of the topic, and the [topic overview](../../docs/topics/core-foundations.md) carries the package map and install commands.
 
 > [!NOTE]
-> Three packages share this page. The specialized collection catalogue — the `Bodu.Collections.Generic`, `.Graphs`, `.Trees`, and `Bodu.Collections.Probabilistic` namespaces below — ships in the **`Bodu.Collections`** package (which depends on `Bodu.Core`); the thread-safe `Bodu.Collections.Generic.Concurrent` namespace ships in the **`Bodu.Collections.Concurrent`** package (which depends on `Bodu.Collections`). The namespaces are unchanged; only the package boundaries moved. Install with `dotnet add package Bodu.Collections` / `dotnet add package Bodu.Collections.Concurrent`. The remaining namespaces on this page ship in **`Bodu.Core`** itself.
+> Three packages share this page. The specialized collection catalogue - the `Bodu.Collections.Generic`, `.Graphs`, `.Trees`, and `Bodu.Collections.Probabilistic` namespaces below - ships in the **`Bodu.Collections`** package (which depends on `Bodu.Core`); the thread-safe `Bodu.Collections.Generic.Concurrent` namespace ships in the **`Bodu.Collections.Concurrent`** package (which depends on `Bodu.Collections`). The namespaces are unchanged; only the package boundaries moved. Install with `dotnet add package Bodu.Collections` / `dotnet add package Bodu.Collections.Concurrent`. The remaining namespaces on this page ship in **`Bodu.Core`** itself.
 
 ## Namespace map
 
 | Namespace | What lives here | Guides |
 |---|---|---|
-| `Bodu.Collections.Generic` | Bounded ring-backed collections, sets, multisets, and range-keyed lookups — `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, `SequencedDictionary<TKey,TValue>`, `BiDictionary<TKey,TValue>`, `LayeredDictionary<TKey,TValue>`, `DefaultingDictionary<TKey,TValue>`, `Table<TRow,TColumn,TValue>`, `IndexedPriorityQueue<TElement,TPriority>`, `IndexedSet<T>`, `OrderedSet<T>`, `NavigableSet<T>`, `NavigableDictionary<TKey,TValue>`, `Multiset<T>`, `MultiValueDictionary<TKey,TValue>`, `RangeDictionary<TKey,TValue>`, `RangeSet<T>`, `IntervalTree<T>`, `IntervalTree<TKey,TValue>`, `SegmentedBuffer<T>`, `RingBackedCollection<T>` base. | [Choosing a collection](choosing-a-collection.md) · [Circular buffer](circular-buffer.md) · [Deque](deque.md) · [Evicting dictionary](evicting-dictionary.md) · [Sequenced dictionary](sequenced-dictionary.md) · [Bidirectional dictionary](bi-dictionary.md) · [Layered and defaulting dictionaries](layered-and-defaulting-dictionaries.md) · [Table (two-key map)](table.md) · [Indexed priority queue](indexed-priority-queue.md) · [Indexed and ordered sets](ordered-sets.md) · [Navigable set](navigable-set.md) · [Navigable dictionary](navigable-dictionary.md) · [Multiset](multiset.md) · [Multi-value dictionary](multi-value-dictionary.md) · [Range-keyed lookups](range-dictionary.md) · [Interval tree](interval-tree.md) · [Segmented buffer](segmented-buffer.md) |
-| `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants — `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache (ships in the `Bodu.Collections.Concurrent` package). | [Concurrent collections](concurrent-collections.md) |
-| `Bodu.Collections.Specialized` | Specialised structures that are not general-purpose containers — the packed `BitSet`. | [Bit set](bit-set.md) |
-| `Bodu.Collections.Probabilistic` | Approximate sketch structures with quantified error bounds — `BloomFilter<T>` (membership, no false negatives), `CountMinSketch<T>` (frequencies, never underestimates), `HyperLogLog<T>` (distinct counts, ~1.04/√m standard error). | [Probabilistic collections (sketches)](probabilistic-collections.md) |
-| `Bodu.Collections.Generic.Graphs` | Graphs and graph algorithms — `Graph<T>`, the read-only `IReadOnlyGraph<T>` / `IReadOnlyWeightedGraph<T>` views, `GraphAlgorithms` (BFS/DFS, shortest path, topological sort, connected components), `ShortestPathResult<T>`, and the `DisjointSet<T>` union-find. | [Graphs and graph algorithms](graphs.md) |
-| `Bodu.Collections.Generic.Trees` | The trie family and an n-ary tree — `Trie` / `Trie<TValue>`, the path-compressed `RadixTrie` / `RadixTrie<TValue>`, the multi-pattern `AhoCorasickAutomaton` / `AhoCorasickAutomaton<TValue>`, and `Tree<T>`. | [Tries and text search](trie.md) · [N-ary tree](tree.md) |
-| `Bodu.Threading` | Async coordination primitives — `AsyncLock`, `AsyncSemaphore`, `AsyncReaderWriterLock`, `AsyncAutoResetEvent` / `AsyncManualResetEvent` / `AsyncCountdownEvent`, `AsyncLazy<T>`, `AsyncDebouncer`, and `RateGate`. | [Async coordination primitives](async-primitives.md) |
-| `Bodu.Functional` | Functional helpers — `Memoizer`, and the railway primitives `Option<T>`, `Result` / `Result<T>` / `ResultError`, `Either<TLeft,TRight>` with Task-based async combinators. | [Memoization](memoization.md) · [Options, results, and eithers](functional-results.md) |
-| `Bodu` | Root namespace primitives — `WeekPattern`, `WorkingDaysOfWeek`, `IRandomGenerator`, `XorShiftRandom`, `ThrowHelper`. | [WeekPattern](week-pattern.md) · [Fiscal quarters, working weeks, and weekend providers](calendar-shapes-and-providers.md) |
-| `Bodu.Buffers` | Pooled buffer infrastructure — `PooledBufferBuilder<T>`. | [Pooled buffer builder](pooled-buffer-builder.md) |
-| `Bodu.Extensions` | Date, numeric, span, array, string, enum, stream, and comparable extension methods — `DateTimeExtensions`, `DateOnlyExtensions`, `NumericExtensions`, `ArrayExtensions`, `BufferConverter`, `SpanExtensions`, `ComparableExtensions`, `StringExtensions`, `EnumExtensions`, `StreamExtensions` — the calendar-shape types (`CalendarQuarterDefinition`, `IQuarterDefinitionProvider`, `FiscalWeekQuarterProvider`, `IWeekendDefinitionProvider`), and the `NaturalStringComparer`. | [String extensions](string-extensions.md) · [Date and time extensions](date-extensions.md) · [Fiscal quarters, working weeks, and weekend providers](calendar-shapes-and-providers.md) · [Numeric, enum, array, span, and stream extensions](numeric-enum-stream-extensions.md) · [Natural string comparer](natural-string-comparer.md) |
+| `Bodu.Collections.Generic` | Bounded ring-backed collections, sets, multisets, and range-keyed lookups - `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, `SequencedDictionary<TKey,TValue>`, `BiDictionary<TKey,TValue>`, `LayeredDictionary<TKey,TValue>`, `DefaultingDictionary<TKey,TValue>`, `Table<TRow,TColumn,TValue>`, `IndexedPriorityQueue<TElement,TPriority>`, `IndexedSet<T>`, `OrderedSet<T>`, `NavigableSet<T>`, `NavigableDictionary<TKey,TValue>`, `Multiset<T>`, `MultiValueDictionary<TKey,TValue>`, `RangeDictionary<TKey,TValue>`, `RangeSet<T>`, `IntervalTree<T>`, `IntervalTree<TKey,TValue>`, `SegmentedBuffer<T>`, `RingBackedCollection<T>` base. | [Choosing a collection](choosing-a-collection.md) · [Circular buffer](circular-buffer.md) · [Deque](deque.md) · [Evicting dictionary](evicting-dictionary.md) · [Sequenced dictionary](sequenced-dictionary.md) · [Bidirectional dictionary](bi-dictionary.md) · [Layered and defaulting dictionaries](layered-and-defaulting-dictionaries.md) · [Table (two-key map)](table.md) · [Indexed priority queue](indexed-priority-queue.md) · [Indexed and ordered sets](ordered-sets.md) · [Navigable set](navigable-set.md) · [Navigable dictionary](navigable-dictionary.md) · [Multiset](multiset.md) · [Multi-value dictionary](multi-value-dictionary.md) · [Range-keyed lookups](range-dictionary.md) · [Interval tree](interval-tree.md) · [Segmented buffer](segmented-buffer.md) |
+| `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants - `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache (ships in the `Bodu.Collections.Concurrent` package). | [Concurrent collections](concurrent-collections.md) |
+| `Bodu.Collections.Specialized` | Specialised structures that are not general-purpose containers - the packed `BitSet`. | [Bit set](bit-set.md) |
+| `Bodu.Collections.Probabilistic` | Approximate sketch structures with quantified error bounds - `BloomFilter<T>` (membership, no false negatives), `CountMinSketch<T>` (frequencies, never underestimates), `HyperLogLog<T>` (distinct counts, ~1.04/√m standard error). | [Probabilistic collections (sketches)](probabilistic-collections.md) |
+| `Bodu.Collections.Generic.Graphs` | Graphs and graph algorithms - `Graph<T>`, the read-only `IReadOnlyGraph<T>` / `IReadOnlyWeightedGraph<T>` views, `GraphAlgorithms` (BFS/DFS, shortest path, topological sort, connected components), `ShortestPathResult<T>`, and the `DisjointSet<T>` union-find. | [Graphs and graph algorithms](graphs.md) |
+| `Bodu.Collections.Generic.Trees` | The trie family and an n-ary tree - `Trie` / `Trie<TValue>`, the path-compressed `RadixTrie` / `RadixTrie<TValue>`, the multi-pattern `AhoCorasickAutomaton` / `AhoCorasickAutomaton<TValue>`, and `Tree<T>`. | [Tries and text search](trie.md) · [N-ary tree](tree.md) |
+| `Bodu.Threading` | Async coordination primitives - `AsyncLock`, `AsyncSemaphore`, `AsyncReaderWriterLock`, `AsyncAutoResetEvent` / `AsyncManualResetEvent` / `AsyncCountdownEvent`, `AsyncLazy<T>`, `AsyncDebouncer`, and `RateGate`. | [Async coordination primitives](async-primitives.md) |
+| `Bodu.Functional` | Functional helpers - `Memoizer`, and the railway primitives `Option<T>`, `Result` / `Result<T>` / `ResultError`, `Either<TLeft,TRight>` with Task-based async combinators. | [Memoization](memoization.md) · [Options, results, and eithers](functional-results.md) |
+| `Bodu` | Root namespace primitives - `WeekPattern`, `WorkingDaysOfWeek`, `IRandomGenerator`, `XorShiftRandom`, `ThrowHelper`. | [WeekPattern](week-pattern.md) · [Fiscal quarters, working weeks, and weekend providers](calendar-shapes-and-providers.md) |
+| `Bodu.Buffers` | Pooled buffer infrastructure - `PooledBufferBuilder<T>`. | [Pooled buffer builder](pooled-buffer-builder.md) |
+| `Bodu.Extensions` | Date, numeric, span, array, string, enum, stream, and comparable extension methods - `DateTimeExtensions`, `DateOnlyExtensions`, `NumericExtensions`, `ArrayExtensions`, `BufferConverter`, `SpanExtensions`, `ComparableExtensions`, `StringExtensions`, `EnumExtensions`, `StreamExtensions` - the calendar-shape types (`CalendarQuarterDefinition`, `IQuarterDefinitionProvider`, `FiscalWeekQuarterProvider`, `IWeekendDefinitionProvider`), and the `NaturalStringComparer`. | [String extensions](string-extensions.md) · [Date and time extensions](date-extensions.md) · [Fiscal quarters, working weeks, and weekend providers](calendar-shapes-and-providers.md) · [Numeric, enum, array, span, and stream extensions](numeric-enum-stream-extensions.md) · [Natural string comparer](natural-string-comparer.md) |
 | `Bodu.Collections.Generic.Extensions`, `Bodu.Collections.Extensions`, `Bodu.Sequences` | The LINQ-style operator catalogue (`IEnumerableExtensions`, `IListExtensions`, `IDictionaryExtensions`, `RandomizationMode`, `RecursiveSelectControl`), `ShuffleHelpers`, and `SequenceGenerator`. | [Sequence operators and generators](sequence-operators.md) |
-| `Bodu.Text`, `Bodu.Xml.Linq` | Small text and XML helpers used internally. | — |
+| `Bodu.Text`, `Bodu.Xml.Linq` | Small text and XML helpers used internally. | - |
 | *(cross-cutting)* | Which types are safe to share between threads, and how each enumerates under mutation. | [Thread-safety contracts across Core Foundations](thread-safety.md) |
 
 ## Guides
@@ -40,17 +40,17 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="choosing-a-collection.md">Choosing a collection</a></h3>
-  <p>The decision guide — quick decision tree, per-axis tables, real-world scenarios, and the anti-patterns that come up when picking between similar types.</p>
+  <p>The decision guide - quick decision tree, per-axis tables, real-world scenarios, and the anti-patterns that come up when picking between similar types.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="circular-buffer.md">Circular buffer</a></h3>
-  <p>Fixed-capacity FIFO ring buffer — single-threaded <code>CircularBuffer&lt;T&gt;</code> and thread-safe <code>ConcurrentCircularBuffer&lt;T&gt;</code>; configurable overwrite-on-full.</p>
+  <p>Fixed-capacity FIFO ring buffer - single-threaded <code>CircularBuffer&lt;T&gt;</code> and thread-safe <code>ConcurrentCircularBuffer&lt;T&gt;</code>; configurable overwrite-on-full.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="deque.md">Deque</a></h3>
-  <p>Double-ended queue — <code>Deque&lt;T&gt;</code> with O(1) <code>AddFirst</code> / <code>AddLast</code> / <code>RemoveFirst</code> / <code>RemoveLast</code>; growable or fixed-capacity.</p>
+  <p>Double-ended queue - <code>Deque&lt;T&gt;</code> with O(1) <code>AddFirst</code> / <code>AddLast</code> / <code>RemoveFirst</code> / <code>RemoveLast</code>; growable or fixed-capacity.</p>
 </div>
 
 <div class="bodu-card">
@@ -70,17 +70,17 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="indexed-priority-queue.md">Indexed priority queue</a></h3>
-  <p>Min-heap priority queue with O(1) lookup-by-element and in-place priority updates — for Dijkstra, Prim, and A*.</p>
+  <p>Min-heap priority queue with O(1) lookup-by-element and in-place priority updates - for Dijkstra, Prim, and A*.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="ordered-sets.md">Indexed and ordered sets</a></h3>
-  <p>Insertion-ordered unique collections — <code>IndexedSet&lt;T&gt;</code> (unique <code>IList&lt;T&gt;</code>) and <code>OrderedSet&lt;T&gt;</code> (ordered set algebra).</p>
+  <p>Insertion-ordered unique collections - <code>IndexedSet&lt;T&gt;</code> (unique <code>IList&lt;T&gt;</code>) and <code>OrderedSet&lt;T&gt;</code> (ordered set algebra).</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="multiset.md">Multiset</a></h3>
-  <p>A bag that retains duplicates as multiplicity — frequency counting and multiset algebra (sum, union, intersect, except).</p>
+  <p>A bag that retains duplicates as multiplicity - frequency counting and multiset algebra (sum, union, intersect, except).</p>
 </div>
 
 <div class="bodu-card">
@@ -90,42 +90,42 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="range-dictionary.md">Range-keyed lookups</a></h3>
-  <p>Half-open interval keys — <code>Range&lt;T&gt;</code>, <code>RangeDictionary&lt;TKey,TValue&gt;</code>, and <code>RangeSet&lt;T&gt;</code> with union / intersect / except.</p>
+  <p>Half-open interval keys - <code>Range&lt;T&gt;</code>, <code>RangeDictionary&lt;TKey,TValue&gt;</code>, and <code>RangeSet&lt;T&gt;</code> with union / intersect / except.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="interval-tree.md">Interval tree</a></h3>
-  <p>Closed intervals that may freely overlap — O(log n + k) stabbing (<code>QueryPoint</code>) and window (<code>QueryOverlaps</code>) queries over a max-endpoint augmented red-black tree; the only range type that stores overlaps.</p>
+  <p>Closed intervals that may freely overlap - O(log n + k) stabbing (<code>QueryPoint</code>) and window (<code>QueryOverlaps</code>) queries over a max-endpoint augmented red-black tree; the only range type that stores overlaps.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="segmented-buffer.md">Segmented buffer</a></h3>
-  <p>Append-only buffer that grows in fixed-size segments — avoids the array-doubling copy for streams of unknown length.</p>
+  <p>Append-only buffer that grows in fixed-size segments - avoids the array-doubling copy for streams of unknown length.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="navigable-set.md">Navigable set</a></h3>
-  <p>Sorted set over an order-statistic red-black tree — O(log n) floor/ceiling/higher/lower, rank/select (<code>IndexOf</code> / <code>GetAt</code>), <code>CountInRange</code>, and live ascending/descending/range views.</p>
+  <p>Sorted set over an order-statistic red-black tree - O(log n) floor/ceiling/higher/lower, rank/select (<code>IndexOf</code> / <code>GetAt</code>), <code>CountInRange</code>, and live ascending/descending/range views.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="navigable-dictionary.md">Navigable dictionary</a></h3>
-  <p>Key-sorted dictionary over the same order-statistic tree — O(log n) floor/ceiling/higher/lower entry queries, rank/select (<code>IndexOfKey</code> / <code>GetAt</code>), <code>CountInRange</code>, and live ascending/descending/range entry views.</p>
+  <p>Key-sorted dictionary over the same order-statistic tree - O(log n) floor/ceiling/higher/lower entry queries, rank/select (<code>IndexOfKey</code> / <code>GetAt</code>), <code>CountInRange</code>, and live ascending/descending/range entry views.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="layered-and-defaulting-dictionaries.md">Layered and defaulting dictionaries</a></h3>
-  <p>Python-shaped dictionary utilities — <code>LayeredDictionary&lt;TKey,TValue&gt;</code> (a first-wins <code>ChainMap</code> view over ordered layers) and <code>DefaultingDictionary&lt;TKey,TValue&gt;</code> (a <code>defaultdict</code> whose indexer materializes and stores factory defaults).</p>
+  <p>Python-shaped dictionary utilities - <code>LayeredDictionary&lt;TKey,TValue&gt;</code> (a first-wins <code>ChainMap</code> view over ordered layers) and <code>DefaultingDictionary&lt;TKey,TValue&gt;</code> (a <code>defaultdict</code> whose indexer materializes and stores factory defaults).</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="table.md">Table (two-key map)</a></h3>
-  <p>Two-key map (Guava <code>Table</code> shape) whose point is the projections — live <code>Row</code> / <code>Column</code> dictionary views over a row-major store, with an honest O(rows) column-axis cost.</p>
+  <p>Two-key map (Guava <code>Table</code> shape) whose point is the projections - live <code>Row</code> / <code>Column</code> dictionary views over a row-major store, with an honest O(rows) column-axis cost.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="ring-backed-collections.md">Extending RingBackedCollection&lt;T&gt;</a></h3>
-  <p>The abstract ring-buffer base behind <code>CircularBuffer&lt;T&gt;</code> and <code>Deque&lt;T&gt;</code> — its protected primitives, the structural-version counter and fail-fast contract, and a worked sliding-window derivation.</p>
+  <p>The abstract ring-buffer base behind <code>CircularBuffer&lt;T&gt;</code> and <code>Deque&lt;T&gt;</code> - its protected primitives, the structural-version counter and fail-fast contract, and a worked sliding-window derivation.</p>
 </div>
 
 <div class="bodu-card">
@@ -141,7 +141,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="concurrent-collections.md">Concurrent collections</a></h3>
-  <p>Thread-safe peers — lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code> (Vyukov MPMC ring), lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>, and the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache with TTL and single-flight <code>GetOrAdd</code>.</p>
+  <p>Thread-safe peers - lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code> (Vyukov MPMC ring), lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>, and the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache with TTL and single-flight <code>GetOrAdd</code>.</p>
 </div>
 
 </div>
@@ -163,7 +163,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="probabilistic-collections.md">Probabilistic collections (sketches)</a></h3>
-  <p>Approximate sketches in fixed memory — <code>BloomFilter&lt;T&gt;</code> (membership, no false negatives), <code>CountMinSketch&lt;T&gt;</code> (frequencies, never underestimates), and <code>HyperLogLog&lt;T&gt;</code> (distinct counts, ~1.04/√m standard error), each with parameter-compatible merging and version-checked export/import.</p>
+  <p>Approximate sketches in fixed memory - <code>BloomFilter&lt;T&gt;</code> (membership, no false negatives), <code>CountMinSketch&lt;T&gt;</code> (frequencies, never underestimates), and <code>HyperLogLog&lt;T&gt;</code> (distinct counts, ~1.04/√m standard error), each with parameter-compatible merging and version-checked export/import.</p>
 </div>
 
 </div>
@@ -201,7 +201,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="async-primitives.md">Async coordination primitives</a></h3>
-  <p><code>AsyncLock</code>, <code>AsyncSemaphore</code>, <code>AsyncReaderWriterLock</code>, the async reset/countdown events, <code>AsyncLazy&lt;T&gt;</code>, <code>AsyncDebouncer</code>, and the <code>RateGate</code> rate limiter — the async-friendly peers of the BCL synchronization types.</p>
+  <p><code>AsyncLock</code>, <code>AsyncSemaphore</code>, <code>AsyncReaderWriterLock</code>, the async reset/countdown events, <code>AsyncLazy&lt;T&gt;</code>, <code>AsyncDebouncer</code>, and the <code>RateGate</code> rate limiter - the async-friendly peers of the BCL synchronization types.</p>
 </div>
 
 </div>
@@ -212,12 +212,12 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="memoization.md">Memoization</a></h3>
-  <p><code>Memoizer</code> wraps a pure function in a thread-safe caching delegate — single- and multi-argument, with an optional key comparer.</p>
+  <p><code>Memoizer</code> wraps a pure function in a thread-safe caching delegate - single- and multi-argument, with an optional key comparer.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="functional-results.md">Options, results, and eithers</a></h3>
-  <p><code>Option&lt;T&gt;</code>, <code>Result&lt;T&gt;</code>, and <code>Either&lt;TLeft,TRight&gt;</code> — allocation-free railway primitives with Map/Bind/Match combinators and async companions.</p>
+  <p><code>Option&lt;T&gt;</code>, <code>Result&lt;T&gt;</code>, and <code>Either&lt;TLeft,TRight&gt;</code> - allocation-free railway primitives with Map/Bind/Match combinators and async companions.</p>
 </div>
 
 </div>
@@ -228,7 +228,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="pooled-buffer-builder.md">Pooled buffer builder</a></h3>
-  <p><code>ArrayPool&lt;T&gt;</code>-backed accumulation into a single contiguous result — implements <code>IBufferWriter&lt;T&gt;</code> for span-based writers.</p>
+  <p><code>ArrayPool&lt;T&gt;</code>-backed accumulation into a single contiguous result - implements <code>IBufferWriter&lt;T&gt;</code> for span-based writers.</p>
 </div>
 
 </div>
@@ -250,17 +250,17 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="string-extensions.md">String extensions</a></h3>
-  <p>The 77-method <code>StringExtensions</code> surface by task — substring by marker, wrapping, whitespace and lines, ordinal predicates, null coalescing, affixes, filtering, identifier casing with <code>WordCasingOptions</code>, slugs, safe file names, truncation.</p>
+  <p>The 77-method <code>StringExtensions</code> surface by task - substring by marker, wrapping, whitespace and lines, ordinal predicates, null coalescing, affixes, filtering, identifier casing with <code>WordCasingOptions</code>, slugs, safe file names, truncation.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="date-extensions.md">Date and time extensions</a></h3>
-  <p><code>DateTimeExtensions</code> / <code>DateOnlyExtensions</code> — boundaries, day-of-week navigation, ISO and culture weeks, quarters and fiscal years, predicates, age and truncation, conversions — with the culture / working-week / quarter / provider overload matrix.</p>
+  <p><code>DateTimeExtensions</code> / <code>DateOnlyExtensions</code> - boundaries, day-of-week navigation, ISO and culture weeks, quarters and fiscal years, predicates, age and truncation, conversions - with the culture / working-week / quarter / provider overload matrix.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="calendar-shapes-and-providers.md">Fiscal quarters, working weeks, and weekend providers</a></h3>
-  <p><code>CalendarQuarterDefinition</code>, implementing <code>IQuarterDefinitionProvider</code>, the 52/53-week <code>FiscalWeekQuarterProvider</code> and <code>FiscalWeekPattern</code>, <code>WeekOrdinal</code>, a Friday–Saturday <code>IWeekendDefinitionProvider</code>, and the <code>WorkingDaysOfWeek</code> ↔ <code>WeekPattern</code> bridge.</p>
+  <p><code>CalendarQuarterDefinition</code>, implementing <code>IQuarterDefinitionProvider</code>, the 52/53-week <code>FiscalWeekQuarterProvider</code> and <code>FiscalWeekPattern</code>, <code>WeekOrdinal</code>, a Friday-Saturday <code>IWeekendDefinitionProvider</code>, and the <code>WorkingDaysOfWeek</code> ↔ <code>WeekPattern</code> bridge.</p>
 </div>
 
 <div class="bodu-card">
@@ -270,7 +270,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="natural-string-comparer.md">Natural string comparer</a></h3>
-  <p><code>NaturalStringComparer</code> — ordering strings with embedded numbers the way a person would (<code>file2</code> before <code>file10</code>).</p>
+  <p><code>NaturalStringComparer</code> - ordering strings with embedded numbers the way a person would (<code>file2</code> before <code>file10</code>).</p>
 </div>
 
 </div>
@@ -288,11 +288,11 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 ## Where to go next
 
-- [Core Foundations guides](../topics/core-foundations.md) — these guides in the context of the full topic.
-- [Core Foundations topic overview](../../docs/topics/core-foundations.md) — package map and install commands.
-- [Bodu.Core introduction](../../docs/core/index.md) — the foundation package's namespaces, headline types, scenarios.
-- [Bodu.Collections introduction](../../docs/collections/index.md) — the collection catalogue's namespaces and headline types.
-- [Bodu.Collections.Concurrent introduction](../../docs/collections-concurrent/index.md) — the thread-safe collection companion.
-- [Bodu.Core getting started](../../docs/core/getting-started.md) · [Bodu.Collections getting started](../../docs/collections/getting-started.md) — install and minimal samples.
-- [Project introduction](../../docs/introduction.md) — how the Core Foundations packages relate to the hashing, cryptography, calendar, and text libraries.
-- [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.
+- [Core Foundations guides](../topics/core-foundations.md) - these guides in the context of the full topic.
+- [Core Foundations topic overview](../../docs/topics/core-foundations.md) - package map and install commands.
+- [Bodu.Core introduction](../../docs/core/index.md) - the foundation package's namespaces, headline types, scenarios.
+- [Bodu.Collections introduction](../../docs/collections/index.md) - the collection catalogue's namespaces and headline types.
+- [Bodu.Collections.Concurrent introduction](../../docs/collections-concurrent/index.md) - the thread-safe collection companion.
+- [Bodu.Core getting started](../../docs/core/getting-started.md) · [Bodu.Collections getting started](../../docs/collections/getting-started.md) - install and minimal samples.
+- [Project introduction](../../docs/introduction.md) - how the Core Foundations packages relate to the hashing, cryptography, calendar, and text libraries.
+- [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) - full namespace overview.

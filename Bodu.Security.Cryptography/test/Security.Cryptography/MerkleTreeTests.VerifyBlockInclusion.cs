@@ -22,7 +22,7 @@ public partial class MerkleTreeTests
     private const string PathVectorRoot = "faadb23a3a175030069185a8da081ae97c20503e86a5c936e9298ce787c90853";
 
     /// <summary>
-    /// Gets the published authentication paths over one-mebibyte blocks of a 4 198 400-byte preimage — five blocks,
+    /// Gets the published authentication paths over one-mebibyte blocks of a 4 198 400-byte preimage - five blocks,
     /// the last of them 4 096 bytes.
     /// </summary>
     public static IEnumerable<object[]> BlockInclusionPaths =>
@@ -67,7 +67,7 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that a single flipped byte in the block is rejected while the path is left untouched — the path is not
+    /// Verifies that a single flipped byte in the block is rejected while the path is left untouched - the path is not
     /// the proof, so a holder that kept only the path cannot answer with it.
     /// </summary>
     /// <param name="kat">The block index and its published path.</param>

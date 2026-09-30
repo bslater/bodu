@@ -21,7 +21,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </para>
 /// <para>
 /// Use the built-in <see cref="Single" />, <see cref="Yearly" />, <see cref="Monthly" />, and <see cref="Daily" />
-/// strategies, or <see cref="Custom" /> to supply your own keying and ranging — for example fortnightly or
+/// strategies, or <see cref="Custom" /> to supply your own keying and ranging - for example fortnightly or
 /// fiscal-quarter partitions.
 /// </para>
 /// </remarks>
@@ -129,7 +129,7 @@ public sealed class RateCachePartitionStrategy
     /// </summary>
     /// <param name="date">The observation date to map.</param>
     /// <returns>
-    /// The partition key — a path-safe file-name stem, or the empty string for <see cref="Single" />.
+    /// The partition key - a path-safe file-name stem, or the empty string for <see cref="Single" />.
     /// </returns>
     public string GetPartitionKey(DateOnly date) =>
         _keySelector(date);

@@ -25,7 +25,7 @@
     patch and out-of-band releases, while FileVersion, PackageVersion, and InformationalVersion still
     carry the full version. This matters most once assemblies are strong-named (bld/Signing.props),
     where AssemblyVersion is part of the strong identity and a patch bump would otherwise force every
-    consumer to rebind. VersionPrefix holds the effective version at this point — the lock-step
+    consumer to rebind. VersionPrefix holds the effective version at this point - the lock-step
     BoduBaseVersion, or the out-of-band override applied above. A project may opt out by setting
     AssemblyVersion explicitly in its own body.
   -->
@@ -50,7 +50,7 @@
 
   <!--
     Package-validation gate. On by default (the BoduEnablePackageValidation default is set in
-    Directory.Build.props) for every shipping package; the gate is applied here — not in props —
+    Directory.Build.props) for every shipping package; the gate is applied here - not in props -
     because IsTestProject and BoduIsBenchmarkProject are set in the project body, which MSBuild
     evaluates before this targets file but after Directory.Build.props, and the SDK's IsPackable
     default is likewise not resolved at props time. EnablePackageValidation is inert without a
@@ -69,7 +69,7 @@
     Package-validation baseline, applied only to packages that have actually shipped, at a version
     they actually shipped at.
 
-    bld/release-manifest.txt records "<PackageId> <first-shipped-version>" — the lock-step version at
+    bld/release-manifest.txt records "<PackageId> <first-shipped-version>" - the lock-step version at
     which each package first appeared on nuget.org. BoduPackageFirstShippedVersion pulls that value
     for the current project; an empty result means the project is not in the manifest at all (never
     published, nothing to compare against). The baseline then applies only when
@@ -88,7 +88,7 @@
     BoduPackageVersionOverride can pin its own PackageValidationBaselineVersion in its csproj, which
     this block then leaves untouched.
 
-    The baseline also requires BoduSignAssembly — the published packages are strong-named, so a
+    The baseline also requires BoduSignAssembly - the published packages are strong-named, so a
     comparison against them is only meaningful from a build carrying the same assembly identity.
     Without it ApiCompat stops at CP0003 (public key token 'null' vs the published token) before it
     ever reaches the API surface. Signing is on by default (bld/Signing.props), so this condition is
@@ -109,8 +109,8 @@
     compiler that supports extension members. Combined with LangVersion=latest (bld/Bodu.props), this
     lets sources express convenience members as C# 14 extension properties; older SDKs fall back to
     classic this-parameter extension methods. This lives in Directory.Build.targets rather than
-    bld/Bodu.props because NETCoreSdkVersion — the SDK/Roslyn version actually running the build, and
-    the correct signal for language-feature availability — is not yet set when Directory.Build.props
+    bld/Bodu.props because NETCoreSdkVersion - the SDK/Roslyn version actually running the build, and
+    the correct signal for language-feature availability - is not yet set when Directory.Build.props
     imports bld/Bodu.props. VersionGreaterThanOrEquals avoids the lexical trap where "10.0" sorts
     before "8.0".
 
@@ -212,7 +212,7 @@
     micro-performance / modernization family (CA18xx), and the broken-crypto warnings (CA5350/CA5351)
     for the hash and cipher test suites that exercise MD5 and SHA-1 as known-answer vectors.
 
-    Applied here via NoWarn — rather than the .editorconfig [**/*Test*.cs] block — because it must
+    Applied here via NoWarn - rather than the .editorconfig [**/*Test*.cs] block - because it must
     cover *every* file in a test project, including infrastructure and extension-method test files
     whose names do not contain "Test" (e.g. IEnumerableExtensions.Aggregate.cs). A directory-scoped
     editorconfig glob ([**/test/**/*.cs]) is not honoured reliably by the analyzer-config matcher in

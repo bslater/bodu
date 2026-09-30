@@ -80,7 +80,7 @@ public sealed partial class AnchoredIntervalTests
                 new("component digits overflow", "P99999999999999999999D", typeof(FormatException), MessageContains: "too large"),
                 new("total exceeds the representable range", "P10675200D", typeof(FormatException), MessageContains: "too large"),
 
-                // dur-time = "T" (dur-hour / dur-minute / dur-second) — the designator requires a component after it.
+                // dur-time = "T" (dur-hour / dur-minute / dur-second) - the designator requires a component after it.
                 // Accepted by luxon, NodaTime, rickb777, sosodev, python icalendar and isodate; rejected by
                 // java.time, Temporal and XmlConvert.
                 new("trailing time designator", "P1DT", typeof(FormatException), MessageContains: "at least one component"),

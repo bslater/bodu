@@ -11,7 +11,7 @@ title: Using HOTP and TOTP
 
 ## The relationship between the two
 
-TOTP is HOTP with a counter derived from the clock. HOTP advances an explicit counter by one on each use; TOTP uses `counter = (now − epoch) / periodSeconds`, so the code changes every step (30 seconds by default). Everything else — the HMAC, the RFC 4226 §5.3 dynamic truncation, and the modulo-`10^digits` reduction — is identical, and <xref:Bodu.Security.Cryptography.Totp> delegates to <xref:Bodu.Security.Cryptography.Hotp> for it.
+TOTP is HOTP with a counter derived from the clock. HOTP advances an explicit counter by one on each use; TOTP uses `counter = (now − epoch) / periodSeconds`, so the code changes every step (30 seconds by default). Everything else - the HMAC, the RFC 4226 §5.3 dynamic truncation, and the modulo-`10^digits` reduction - is identical, and <xref:Bodu.Security.Cryptography.Totp> delegates to <xref:Bodu.Security.Cryptography.Hotp> for it.
 
 Both types are static and take the secret as raw bytes:
 
@@ -20,7 +20,7 @@ Both types are static and take the secret as raw bytes:
 | `Hotp` | `GenerateCode(secret, counter, digits, algorithm)` | `VerifyCode(secret, code, counter, …)` and a look-ahead resync overload |
 | `Totp` | `GenerateCode(secret, timestamp, digits, periodSeconds, algorithm)` | `VerifyCode(secret, code, timestamp, window, …)` |
 
-`digits` is 6–8 (default 6). A code is returned as a **string**, not an integer, because leading zeros are significant — a computed value of 84204 is the six-digit code `"084204"`.
+`digits` is 6-8 (default 6). A code is returned as a **string**, not an integer, because leading zeros are significant - a computed value of 84204 is the six-digit code `"084204"`.
 
 ## The secret and provisioning
 
@@ -38,7 +38,7 @@ string code = Totp.GenerateCode(secret, DateTimeOffset.UtcNow);
 
 RFC 4226 recommends a secret of at least 128 bits, and 160 bits (the SHA-1 output length) for full strength. Generate one with `RandomNumberGenerator.GetBytes(20)`.
 
-## TOTP — the common case
+## TOTP - the common case
 
 Generate the current code, and verify a user-supplied one allowing for a little clock drift:
 
@@ -52,18 +52,18 @@ string code = Totp.GenerateCode(secret, DateTimeOffset.UtcNow);   // 6 digits, 3
 bool ok = Totp.VerifyCode(secret, userInput, DateTimeOffset.UtcNow);
 ```
 
-The `window` parameter (default `1`) accepts codes from adjacent time steps, tolerating drift between the client and server clocks. A window of `1` accepts the current step and one on each side — roughly ±30 seconds. Keep it small: each extra step is another code that is valid at the same moment. The overload with an `out int matchedStepOffset` reports which step matched (`0` is on time, negative is a slow client clock, positive is fast), which is useful for detecting persistent drift.
+The `window` parameter (default `1`) accepts codes from adjacent time steps, tolerating drift between the client and server clocks. A window of `1` accepts the current step and one on each side - roughly ±30 seconds. Keep it small: each extra step is another code that is valid at the same moment. The overload with an `out int matchedStepOffset` reports which step matched (`0` is on time, negative is a slow client clock, positive is fast), which is useful for detecting persistent drift.
 
 ```csharp
 if (Totp.VerifyCode(secret, userInput, DateTimeOffset.UtcNow, window: 1, out int offset) && offset != 0)
 {
-    // Accepted, but the client's clock is drifting — consider prompting the user to re-sync.
+    // Accepted, but the client's clock is drifting - consider prompting the user to re-sync.
 }
 ```
 
 The 8-digit, SHA-256/SHA-512, and non-default-period configurations are supported through the remaining parameters, and an explicit-epoch overload covers the rare RFC 6238 `T0 ≠ Unix epoch` case.
 
-## HOTP — counters and resynchronization
+## HOTP - counters and resynchronization
 
 HOTP has no clock; the server stores the next expected counter and advances it on each success. Because a client can generate codes the server never sees (a mis-press), verification supports a bounded **look-ahead**:
 
@@ -77,14 +77,14 @@ if (Hotp.VerifyCode(secret, userInput, stored, lookAhead: 3, out long matched))
 }
 ```
 
-The look-ahead scans `[counter, counter + lookAhead]` and reports the matching counter. Keep the window small and throttle failed attempts — a wide look-ahead admits more candidate codes at once. Per RFC 4226 §7.4, resynchronization should be combined with rate limiting.
+The look-ahead scans `[counter, counter + lookAhead]` and reports the matching counter. Keep the window small and throttle failed attempts - a wide look-ahead admits more candidate codes at once. Per RFC 4226 §7.4, resynchronization should be combined with rate limiting.
 
 ## Constant-time verification
 
-`VerifyCode` compares the candidate against the computed code with <xref:System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})>, so a wrong-but-well-formed code is not distinguishable from a correct one by comparison timing. A candidate whose length differs from `digits` is rejected immediately — the length is not secret. The windowed overloads scan the whole window without short-circuiting, so the loop's duration does not reveal which step or counter matched.
+`VerifyCode` compares the candidate against the computed code with <xref:System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})>, so a wrong-but-well-formed code is not distinguishable from a correct one by comparison timing. A candidate whose length differs from `digits` is rejected immediately - the length is not secret. The windowed overloads scan the whole window without short-circuiting, so the loop's duration does not reveal which step or counter matched.
 
 ## Where to go next
 
-- [Using HKDF](hkdf.md) — the HMAC-based KDF that backs higher-level key schedules.
-- [Bodu.Text.Encoding guides](../text-encoding/index.md) — Base32 and the other alphabets for decoding `otpauth://` secrets.
-- [Bodu.Security.Cryptography API reference](xref:Bodu.Security.Cryptography) — full type-by-type docs.
+- [Using HKDF](hkdf.md) - the HMAC-based KDF that backs higher-level key schedules.
+- [Bodu.Text.Encoding guides](../text-encoding/index.md) - Base32 and the other alphabets for decoding `otpauth://` secrets.
+- [Bodu.Security.Cryptography API reference](xref:Bodu.Security.Cryptography) - full type-by-type docs.

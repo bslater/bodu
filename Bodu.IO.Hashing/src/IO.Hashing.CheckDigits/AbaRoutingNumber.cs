@@ -21,8 +21,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// specification; the streaming surface is length-agnostic to permit chunked input.
 /// </para>
 /// <para>
-/// <b>Worked example.</b> For the body <c>"01100001"</c> — the leading 8 digits of the Federal Reserve Bank of Boston's
-/// routing number — the computed check digit is <c>'5'</c>, and the resulting sequence <c>"011000015"</c> is therefore
+/// <b>Worked example.</b> For the body <c>"01100001"</c> - the leading 8 digits of the Federal Reserve Bank of Boston's
+/// routing number - the computed check digit is <c>'5'</c>, and the resulting sequence <c>"011000015"</c> is therefore
 /// valid.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
@@ -98,7 +98,7 @@ public sealed class AbaRoutingNumber
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
     /// <see langword="true" /> if the sequence is exactly <see cref="SequenceLength" /> digits and evaluates as valid
-    /// under the ABA scheme; otherwise, <see langword="false" /> — including the case where
+    /// under the ABA scheme; otherwise, <see langword="false" /> - including the case where
     /// <paramref name="digitsIncludingCheck" /> is empty, the length is wrong, or a non-digit character is present.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck) =>

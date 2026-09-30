@@ -302,8 +302,8 @@ public sealed partial class YamlSerializerOptions
     /// </summary>
     /// <value>The maximum depth used by the serializer.</value>
     /// <remarks>
-    /// A caller-supplied maximum is clamped to <see cref="YamlLimits.AbsoluteMaxDepth" /> — matching the reader and
-    /// writer option types — so a large configured depth cannot defeat the recursion ceiling that guards against a
+    /// A caller-supplied maximum is clamped to <see cref="YamlLimits.AbsoluteMaxDepth" /> - matching the reader and
+    /// writer option types - so a large configured depth cannot defeat the recursion ceiling that guards against a
     /// <see cref="StackOverflowException" /> on deeply nested graphs.
     /// </remarks>
     internal int EffectiveMaxDepth =>

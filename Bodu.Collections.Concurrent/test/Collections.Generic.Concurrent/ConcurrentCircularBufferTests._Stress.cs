@@ -403,7 +403,7 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.IsTrue(
             completed,
-            $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+            $"Tasks did not complete within {deadlockTimeoutMs} ms - possible deadlock, blocked operation, or livelock.");
 
         Assert.AreEqual(
             0,
@@ -607,7 +607,7 @@ public partial class ConcurrentCircularBufferTests
 
             Assert.IsTrue(
                 completed,
-                $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+                $"Tasks did not complete within {deadlockTimeoutMs} ms - possible deadlock, blocked operation, or livelock.");
 
             Assert.AreEqual(
                 0,
@@ -851,7 +851,7 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.IsTrue(
             completed,
-            $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+            $"Tasks did not complete within {deadlockTimeoutMs} ms - possible deadlock, blocked operation, or livelock.");
 
         Assert.AreEqual(
             0,
@@ -992,7 +992,7 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.IsTrue(
             completed,
-            $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+            $"Tasks did not complete within {deadlockTimeoutMs} ms - possible deadlock, blocked operation, or livelock.");
 
         Assert.AreEqual(
             0,
@@ -1147,7 +1147,7 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.IsTrue(
             completed,
-            $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+            $"Tasks did not complete within {deadlockTimeoutMs} ms - possible deadlock, blocked operation, or livelock.");
 
         Assert.AreEqual(
             0,
@@ -1320,7 +1320,7 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.IsTrue(
             completed,
-            $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+            $"Tasks did not complete within {deadlockTimeoutMs} ms - possible deadlock, blocked operation, or livelock.");
 
         Assert.AreEqual(
             0,
@@ -1542,7 +1542,7 @@ public partial class ConcurrentCircularBufferTests
 
             Assert.IsTrue(
                 completed,
-                $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+                $"Tasks did not complete within {deadlockTimeoutMs} ms - possible deadlock, blocked operation, or livelock.");
 
             Assert.AreEqual(
                 0,
@@ -1687,7 +1687,7 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.IsTrue(
             completed,
-            $"Not all tasks completed within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+            $"Not all tasks completed within {deadlockTimeoutMs} ms - possible deadlock, blocked operation, or livelock.");
 
         Assert.AreEqual(
             0,
@@ -1923,7 +1923,7 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.IsTrue(
             completed,
-            $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+            $"Tasks did not complete within {deadlockTimeoutMs} ms - possible deadlock, blocked operation, or livelock.");
 
         Assert.AreEqual(
             0,
@@ -2068,7 +2068,7 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.IsTrue(
             completed,
-            $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+            $"Tasks did not complete within {deadlockTimeoutMs} ms - possible deadlock, blocked operation, or livelock.");
 
         Assert.AreEqual(
             0,
@@ -2251,7 +2251,7 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.IsTrue(
             completed,
-            $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+            $"Tasks did not complete within {deadlockTimeoutMs} ms - possible deadlock, blocked operation, or livelock.");
 
         Assert.AreEqual(
             0,
@@ -2566,12 +2566,12 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(
             0,
             monotonicityViolations,
-            "ToArray returned a snapshot whose generations were not strictly increasing — torn read.");
+            "ToArray returned a snapshot whose generations were not strictly increasing - torn read.");
 
         Assert.AreEqual(
             0,
             windowViolations,
-            "ToArray returned a snapshot spanning more generations than the buffer capacity — torn read.");
+            "ToArray returned a snapshot spanning more generations than the buffer capacity - torn read.");
 
         Assert.IsGreaterThan(
             0, writeAttempts,

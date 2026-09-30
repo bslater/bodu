@@ -37,7 +37,7 @@ public partial class Blake3Tests
 }
 
 /// <summary>
-/// Hosts the linked Argon2 vectors — RFC 9106's, the reference implementation's, and the corpus recorded from 1.0.0 —
+/// Hosts the linked Argon2 vectors - RFC 9106's, the reference implementation's, and the corpus recorded from 1.0.0 -
 /// so the scalar compression kernel is held to them with the SIMD opt-out engaged.
 /// </summary>
 [TestClass]

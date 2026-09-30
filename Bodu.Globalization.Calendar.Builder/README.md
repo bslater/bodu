@@ -1,8 +1,8 @@
 # Bodu.Globalization.Calendar.Builder
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-A fluent authoring API for `Bodu.Globalization.Calendar` notable-date documents. `NotableDateDocumentBuilder` constructs a calendar document in code — concepts, rules, adjustment and resolution policies, imports, and overrides — then serializes it to XML or a JSON subset, or materializes a live `NotableDateResource` for immediate use.
+A fluent authoring API for `Bodu.Globalization.Calendar` notable-date documents. `NotableDateDocumentBuilder` constructs a calendar document in code - concepts, rules, adjustment and resolution policies, imports, and overrides - then serializes it to XML or a JSON subset, or materializes a live `NotableDateResource` for immediate use.
 
 ## Installation
 
@@ -19,14 +19,14 @@ using Bodu.Globalization.Calendar.Builder;
 
 NotableDateResource resource = NotableDateDocumentBuilder
     .Create("au-national", schemaVersion: "1.0")
-    .WithMetadata("Australia — National", description: "Federal public holidays")
+    .WithMetadata("Australia - National", description: "Federal public holidays")
     .WithResolutionPolicy(p => /* duplicate, collision, observed-range rules */)
     .AddImport("christian-western")
     .AddNotableDate("australia-day", "Australia Day", category: "public", b => /* rules */)
     .Build();
 ```
 
-The fluent entry points — `WithResourceId`, `WithSchemaVersion`, `WithMetadata`, `WithResolutionPolicy`, `AddAdjustmentPolicy`, `AddImport`, `AddNotableDate`, and `AddOverride` — are backed by the section builders `NotableDateDefinitionBuilder`, `NotableDateRuleBuilder`, `AdjustmentPolicyBuilder`, `ResolutionPolicyBuilder`, `ImportBuilder`, and `OverrideBuilder`.
+The fluent entry points - `WithResourceId`, `WithSchemaVersion`, `WithMetadata`, `WithResolutionPolicy`, `AddAdjustmentPolicy`, `AddImport`, `AddNotableDate`, and `AddOverride` - are backed by the section builders `NotableDateDefinitionBuilder`, `NotableDateRuleBuilder`, `AdjustmentPolicyBuilder`, `ResolutionPolicyBuilder`, `ImportBuilder`, and `OverrideBuilder`.
 
 ## Serialization and loading
 
@@ -45,7 +45,7 @@ The fluent entry points — `WithResourceId`, `WithSchemaVersion`, `WithMetadata
 dotnet test Bodu.Globalization.Calendar.Builder/test/Bodu.Globalization.Calendar.Builder.Test.csproj --settings bvt.runsettings
 ```
 
-Tests build documents end-to-end, serialize to XML/JSON, and assert against the real `NotableDateResourceLoader` / `NotableDateService` to confirm round-trip fidelity. The precise contract — byte-stable canonical XML, identity within the JSON subset, semantic parity across formats, and the XML → JSON lossiness boundary — is documented in the [builder round-trip guarantees guide](../docs/guides/calendar/round-trip-guarantees.md).
+Tests build documents end-to-end, serialize to XML/JSON, and assert against the real `NotableDateResourceLoader` / `NotableDateService` to confirm round-trip fidelity. The precise contract - byte-stable canonical XML, identity within the JSON subset, semantic parity across formats, and the XML → JSON lossiness boundary - is documented in the [builder round-trip guarantees guide](../docs/guides/calendar/round-trip-guarantees.md).
 
 ## License
 

@@ -7,7 +7,7 @@
 namespace Bodu.Collections.Generic.Extensions;
 
 /// <summary>
-/// Provides retrieval-and-mutation helpers for <see cref="IDictionary{TKey, TValue}" /> — get-or-add and add-or-update
+/// Provides retrieval-and-mutation helpers for <see cref="IDictionary{TKey, TValue}" /> - get-or-add and add-or-update
 /// operations modelled on the <see cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}" /> surface
 /// but available on any dictionary implementation.
 /// </summary>

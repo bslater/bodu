@@ -23,7 +23,7 @@ namespace Bodu.Collections.Generic;
 /// non-overlapping <see cref="RangeSet{T}" /> / <see cref="RangeDictionary{TKey, TValue}" /> range maps.
 /// </para>
 /// <para>
-/// Intervals are closed on both ends and duplicates of the same (low, high) pair are permitted — including with equal
+/// Intervals are closed on both ends and duplicates of the same (low, high) pair are permitted - including with equal
 /// values. Where the unkeyed tree keeps a per-node multiplicity count, this type keeps a per-node value list in
 /// insertion order: <see cref="Add" /> appends, <see cref="Remove(TKey, TKey)" /> removes the first stored entry, and
 /// <see cref="Remove(TKey, TKey, TValue)" /> removes the first entry whose value matches under
@@ -42,7 +42,7 @@ namespace Bodu.Collections.Generic;
 /// var meetings = new IntervalTree<int, string>();
 /// meetings.Add(9, 11, "stand-up");
 /// meetings.Add(10, 12, "design review");   // overlaps are stored, not merged
-/// meetings.Add(10, 12, "1:1");             // same slot, different value — also stored
+/// meetings.Add(10, 12, "1:1");             // same slot, different value - also stored
 ///
 /// foreach ((int low, int high, string name) in meetings.QueryPoint(10))
 ///     Console.WriteLine($"[{low}, {high}] {name}");
@@ -109,7 +109,7 @@ public sealed partial class IntervalTree<TKey, TValue>
     /// <param name="value">The value to associate with the interval.</param>
     /// <remarks>
     /// Overlapping intervals are always accepted, and adding to an interval already stored appends the value to that
-    /// node's entry list — the same (low, high) pair may carry many values, including comparer-equal duplicates. Values
+    /// node's entry list - the same (low, high) pair may carry many values, including comparer-equal duplicates. Values
     /// are retained in insertion order per interval.
     /// </remarks>
     /// <exception cref="ArgumentNullException">
@@ -133,7 +133,7 @@ public sealed partial class IntervalTree<TKey, TValue>
             comparison = CompareToNode(low, high, current);
             if (comparison == 0)
             {
-                // Existing interval: append the value to the lazily allocated overflow list — the first value
+                // Existing interval: append the value to the lazily allocated overflow list - the first value
                 // stays inline, so the list exists only once an interval carries a second value.
                 (current.OverflowValues ??= new List<TValue>(1)).Add(value);
                 _count++;

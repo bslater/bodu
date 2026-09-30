@@ -558,8 +558,8 @@ public abstract class RateCacheContractTests<TCache>
     }
 
     /// <summary>
-    /// Verifies that a row stored with a non-null <see cref="CachedRate.ObservedAtUtc" /> — carrying an offset
-    /// and sub-second precision — is read back with that upstream fetch instant intact, across every backend.
+    /// Verifies that a row stored with a non-null <see cref="CachedRate.ObservedAtUtc" /> - carrying an offset
+    /// and sub-second precision - is read back with that upstream fetch instant intact, across every backend.
     /// </summary>
     [TestMethod]
     public void Store_WhenRowHasObservedAtUtc_ShouldRoundTripObservedAtUtc()

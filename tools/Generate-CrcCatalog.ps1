@@ -5,10 +5,10 @@
 
 .DESCRIPTION
     Emits two files:
-      * `CrcStandards.cs` — a `public enum CrcStandards` with one value per canonical catalogue
+      * `CrcStandards.cs` - a `public enum CrcStandards` with one value per canonical catalogue
         entry, ordered to match the JSON. Published aliases are not exposed as enum values;
         they resolve to their canonical instance through `CrcStandard.FromName`.
-      * `CrcStandard.Catalog.cs` — the packed data table (`CatalogEntry[] s_catalog`) and the
+      * `CrcStandard.Catalog.cs` - the packed data table (`CatalogEntry[] s_catalog`) and the
         lazy lookup plumbing: `Get(CrcStandards)`, `FromName(string)`, `TryFromName`, `All`.
         A per-entry cache publishes the first materialised `CrcStandard` via
         `Interlocked.CompareExchange` so reference equality is stable across threads.
@@ -112,7 +112,7 @@ $enumBuilder = [System.Text.StringBuilder]::new()
 [void]$enumBuilder.AppendLine('    /// </summary>')
 [void]$enumBuilder.AppendLine('    /// <remarks>')
 [void]$enumBuilder.AppendLine('    /// <para>The enum covers only canonical names. Published aliases (for example <c>CRC-32</c> or <c>PKZIP</c>) are not separate')
-[void]$enumBuilder.AppendLine('    /// values — they resolve to their canonical instance through <see cref="CrcStandard.FromName(string)" />. Standards whose width')
+[void]$enumBuilder.AppendLine('    /// values - they resolve to their canonical instance through <see cref="CrcStandard.FromName(string)" />. Standards whose width')
 [void]$enumBuilder.AppendLine('    /// exceeds 64 bits (currently only <c>CRC-82/DARC</c>) are omitted because they cannot be represented in a <see cref="ulong" />.</para>')
 [void]$enumBuilder.AppendLine('    /// </remarks>')
 [void]$enumBuilder.AppendLine('    public enum CrcStandards')
@@ -241,14 +241,14 @@ foreach ($spec in $supported) {
 [void]$catBuilder.AppendLine('   }')
 [void]$catBuilder.AppendLine()
 [void]$catBuilder.AppendLine('    /// <summary>')
-[void]$catBuilder.AppendLine('    /// Materialises — or retrieves from cache — the <see cref="CrcStandard" /> identified by the given enum value.')
+[void]$catBuilder.AppendLine('    /// Materialises - or retrieves from cache - the <see cref="CrcStandard" /> identified by the given enum value.')
 [void]$catBuilder.AppendLine('    /// </summary>')
 [void]$catBuilder.AppendLine('    /// <param name="standard">The catalogue entry to resolve. Must be a defined <see cref="CrcStandards" /> value.</param>')
 [void]$catBuilder.AppendLine('    /// <returns>The shared <see cref="CrcStandard" /> instance for <paramref name="standard" />.</returns>')
 [void]$catBuilder.AppendLine('    /// <exception cref="ArgumentOutOfRangeException"><paramref name="standard" /> is not a defined enum value.</exception>')
 [void]$catBuilder.AppendLine('    /// <remarks>')
 [void]$catBuilder.AppendLine('    /// <para>The first call for a given value constructs a new <see cref="CrcStandard" /> from the packed catalogue data and races')
-[void]$catBuilder.AppendLine('    /// to publish it into the per-entry cache. Subsequent calls — including concurrent calls — return the same instance, so')
+[void]$catBuilder.AppendLine('    /// to publish it into the per-entry cache. Subsequent calls - including concurrent calls - return the same instance, so')
 [void]$catBuilder.AppendLine('    /// reference equality is stable.</para>')
 [void]$catBuilder.AppendLine('    /// </remarks>')
 [void]$catBuilder.AppendLine('    public static CrcStandard Get(CrcStandards standard)')

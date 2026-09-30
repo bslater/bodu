@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 
 /// <summary>
 /// Tests for the synchronous <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm, byte[])" />
-/// family — covering byte-array, offset/range, span, memory, and stream overloads.
+/// family - covering byte-array, offset/range, span, memory, and stream overloads.
 /// </summary>
 public partial class SymmetricAlgorithmExtensionTests
 {
@@ -60,7 +60,7 @@ public partial class SymmetricAlgorithmExtensionTests
         CollectionAssert.AreEqual(plainText, decrypted);
     }
 
-    // ─── Decrypt(byte[], int) — offset-to-end overload ────────────────────────────────────────
+    // ─── Decrypt(byte[], int) - offset-to-end overload ────────────────────────────────────────
 
     /// <summary>
     /// Verifies that the offset overload throws <see cref="ArgumentNullException" /> when the
@@ -119,7 +119,7 @@ public partial class SymmetricAlgorithmExtensionTests
         CollectionAssert.AreEqual(plainText, decrypted);
     }
 
-    // ─── Decrypt(byte[], int, int) — offset+count overload ────────────────────────────────────
+    // ─── Decrypt(byte[], int, int) - offset+count overload ────────────────────────────────────
 
     /// <summary>
     /// Verifies that the range overload throws <see cref="ArgumentNullException" /> when the
@@ -287,7 +287,7 @@ public partial class SymmetricAlgorithmExtensionTests
         CollectionAssert.AreEqual(fromSpan, fromMemory);
     }
 
-    // ─── Decrypt(Stream, Stream) — default buffer size overload ───────────────────────────────
+    // ─── Decrypt(Stream, Stream) - default buffer size overload ───────────────────────────────
 
     /// <summary>
     /// Verifies that the default-buffer stream overload throws <see cref="ArgumentNullException" />
@@ -351,7 +351,7 @@ public partial class SymmetricAlgorithmExtensionTests
         CollectionAssert.AreEqual(plainText, target.ToArray());
     }
 
-    // ─── Decrypt(Stream, Stream, int) — explicit buffer size overload ─────────────────────────
+    // ─── Decrypt(Stream, Stream, int) - explicit buffer size overload ─────────────────────────
 
     /// <summary>
     /// Verifies that the buffer-size stream overload throws <see cref="ArgumentNullException" />
@@ -487,7 +487,7 @@ public partial class SymmetricAlgorithmExtensionTests
 
         byte[] cipherText = algorithm.Encrypt(CryptoTestUtilities.ByteSequence128);
 
-        // Fault after 32 bytes — mid-way through the ciphertext stream.
+        // Fault after 32 bytes - mid-way through the ciphertext stream.
         using var input = new FaultingStream(cipherText, throwAfterBytes: 32);
         using var output = new MemoryStream();
 

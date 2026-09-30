@@ -29,8 +29,8 @@ public partial class ExchangeRateJsonConverterTests
     }
 
     /// <summary>
-    /// Verifies that malformed payloads — a non-object root, a slashless pair, a malformed date or rate, or a missing
-    /// required property — are rejected with a <see cref="JsonException" />.
+    /// Verifies that malformed payloads - a non-object root, a slashless pair, a malformed date or rate, or a missing
+    /// required property - are rejected with a <see cref="JsonException" />.
     /// </summary>
     [TestMethod]
     [DataRow("[1,2]", DisplayName = "Root is not an object")]

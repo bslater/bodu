@@ -26,7 +26,7 @@ public static partial class StringExtensions
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count" /> is negative.</exception>
     /// <remarks>
     /// The inverse of <see cref="Indent(string, int, char)" />. Lines that contain fewer than <paramref name="count" />
-    /// leading <paramref name="indentChar" /> characters are stripped of however many are present — no exception is
+    /// leading <paramref name="indentChar" /> characters are stripped of however many are present - no exception is
     /// raised. Line boundaries follow the same rules as <see cref="Indent(string, int, char)" /> (<c>\r\n</c>,
     /// <c>\n</c>, bare <c>\r</c>).
     /// </remarks>
@@ -66,7 +66,7 @@ public static partial class StringExtensions
     /// <param name="builder">The destination builder.</param>
     /// <param name="value">The source string.</param>
     /// <param name="start">The start of the line (inclusive).</param>
-    /// <param name="end">The end of the line (exclusive — at the line break or end of string).</param>
+    /// <param name="end">The end of the line (exclusive - at the line break or end of string).</param>
     /// <param name="indentChar">The indent character to strip.</param>
     /// <param name="count">The maximum number of indent characters to strip.</param>
     private static void AppendOutdentedLine(

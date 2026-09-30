@@ -9,7 +9,7 @@ using Bodu.Text.Toml.Samples.TomlBasics.Scenarios;
 namespace Bodu.Text.Toml.Samples.TomlBasics;
 
 /// <summary>
-/// Entry point for the TOML-basics sample: the <c>TomlSerializer</c> POCO surface — round trips,
+/// Entry point for the TOML-basics sample: the <c>TomlSerializer</c> POCO surface - round trips,
 /// the four native temporal kinds, naming policies and attributes, and the spec-version and
 /// byte-array knobs. Everything runs offline against the committed <c>Data/app-config.toml</c>.
 /// </summary>

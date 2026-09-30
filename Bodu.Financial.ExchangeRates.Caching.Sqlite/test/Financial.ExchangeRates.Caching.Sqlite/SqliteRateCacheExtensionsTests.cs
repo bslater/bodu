@@ -263,7 +263,7 @@ public sealed class SqliteRateCacheExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that invalid options — here, no database location supplied — fail fast through <c>ValidateOnStart</c>
+    /// Verifies that invalid options - here, no database location supplied - fail fast through <c>ValidateOnStart</c>
     /// when the cache is resolved.
     /// </summary>
     [TestMethod]

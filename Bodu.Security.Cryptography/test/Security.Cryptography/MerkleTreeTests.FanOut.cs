@@ -18,7 +18,7 @@ public partial class MerkleTreeTests
 
     /// <summary>
     /// Reduces leaf hashes level by level in groups of <paramref name="fanOut" />, promoting a lone leftover unchanged
-    /// and hashing a partial group — the reference the fold is held to.
+    /// and hashing a partial group - the reference the fold is held to.
     /// </summary>
     private static byte[] BatchReduce(byte[][] leafHashes, int fanOut)
     {
@@ -92,7 +92,7 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that every block-mode root path — stream, memory, span, root-only, async and the accumulator — agrees
+    /// Verifies that every block-mode root path - stream, memory, span, root-only, async and the accumulator - agrees
     /// at a wide fan-out with the batch reference over the same blocks.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
@@ -119,7 +119,7 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that a wide fan-out produces a different root from the binary tree over the same three leaves — the
+    /// Verifies that a wide fan-out produces a different root from the binary tree over the same three leaves - the
     /// mode is a distinct commitment, not a relabelling.
     /// </summary>
     [TestMethod]

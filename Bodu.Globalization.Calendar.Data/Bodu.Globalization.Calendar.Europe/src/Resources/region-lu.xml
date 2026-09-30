@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Luxembourg (LU) — notable-date resource pack.
+  Luxembourg (LU) - notable-date resource pack.
 
   Authored on the notable-date schema. All rules are scoped to territory "LU"; Luxembourg has
   no subdivision-specific public holidays.
@@ -64,13 +64,13 @@
       ============================================================================================================
     -->
 
-    <!-- Labour Day (International Workers' Day) — 1 May. Fixed date. -->
+    <!-- Labour Day (International Workers' Day) - 1 May. Fixed date. -->
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="lu"><Applicability><Territory code="LU" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Saint Stephen's Day (Second Day of Christmas) — 26 December. Fixed date; the day after Christmas Day. -->
+    <!-- Saint Stephen's Day (Second Day of Christmas) - 26 December. Fixed date; the day after Christmas Day. -->
     <NotableDate id="saint-stephens-day" displayName="Saint Stephen's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="lu"><Applicability><Territory code="LU" /></Applicability>
         <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
@@ -82,13 +82,13 @@
       ============================================================================================================
     -->
 
-    <!-- Europe Day — 9 May, marking the 1950 Schuman Declaration; a Luxembourg public holiday from 2019. fromYear 2019 excludes earlier years. -->
+    <!-- Europe Day - 9 May, marking the 1950 Schuman Declaration; a Luxembourg public holiday from 2019. fromYear 2019 excludes earlier years. -->
     <NotableDate id="europe-day" displayName="Europe Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="lu"><Applicability fromYear="2019"><Territory code="LU" /></Applicability>
         <Strategy><Fixed month="May" day="9" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- National Day (official birthday of the Grand Duke) — 23 June. Fixed date. -->
+    <!-- National Day (official birthday of the Grand Duke) - 23 June. Fixed date. -->
     <NotableDate id="national-day" displayName="National Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="lu"><Applicability><Territory code="LU" /></Applicability>
         <Strategy><Fixed month="June" day="23" /></Strategy></Rule></Rules>

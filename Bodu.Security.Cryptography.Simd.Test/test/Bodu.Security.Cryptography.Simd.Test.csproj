@@ -4,8 +4,8 @@
     Dedicated test assembly that runs the accelerated primitives with the SIMD opt-out engaged. The
     Bodu.Security.Cryptography.DisableSimd feature switch is process-wide and read once at type init
     (see SimdCapabilities), and the main test assembly runs in parallel, so the switch cannot be
-    toggled in-process without a data race. Isolating the switched-off run in its own assembly — with
-    the switch set through runtimeconfig.template.json — is the parallel-safe way to prove the scalar
+    toggled in-process without a data race. Isolating the switched-off run in its own assembly - with
+    the switch set through runtimeconfig.template.json - is the parallel-safe way to prove the scalar
     fallback stays correct when SIMD is forced off.
   -->
   <PropertyGroup>
@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <!--
-    The known-answer suites for the SIMD-accelerated primitives — the ML-KEM and ML-DSA ACVP suites
-    among them, for their vector transforms and four-way Keccak sampling — are compiled into this
+    The known-answer suites for the SIMD-accelerated primitives - the ML-KEM and ML-DSA ACVP suites
+    among them, for their vector transforms and four-way Keccak sampling - are compiled into this
     assembly rather than duplicated, so the scalar fallbacks are held to the same published vectors as the accelerated
     paths. Linking (rather than referencing the main test assembly) keeps the two projects independent:
     nothing in Bodu.Security.Cryptography.Test has to be unsealed or made visible for this to work.

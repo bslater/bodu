@@ -11,7 +11,7 @@ namespace Bodu;
 /// <summary>
 /// Drives <see cref="ValidKat{TInput, TExpected}" /> rows against the <see cref="WeekPattern" />
 /// format and bitwise-operator surfaces. Bespoke per-operator coverage (commutativity, identity,
-/// distinct error modes) remains in <see cref="WeekPatternTests" /> partials — this class layers
+/// distinct error modes) remains in <see cref="WeekPatternTests" /> partials - this class layers
 /// KAT-driven coverage on top.
 /// </summary>
 [TestClass]

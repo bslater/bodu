@@ -40,7 +40,7 @@ public sealed partial class MerkleTree
     }
 
     /// <summary>
-    /// Produces the authentication path for one leaf from hashes already computed — what a party that streamed a large
+    /// Produces the authentication path for one leaf from hashes already computed - what a party that streamed a large
     /// input past itself can answer without re-reading it.
     /// </summary>
     /// <param name="leafHashes">The ordered leaf hashes, each <see cref="HashLength" /> bytes long.</param>
@@ -96,8 +96,8 @@ public sealed partial class MerkleTree
     /// instead, which fails closed on a size the publisher did not commit to.
     /// </para>
     /// <para>
-    /// Every malformed input returns <see langword="false" /> rather than throwing — a wrong index, a path that is too
-    /// long or too short, an element of the wrong width, a zero tree size — because a verifier sits directly behind
+    /// Every malformed input returns <see langword="false" /> rather than throwing - a wrong index, a path that is too
+    /// long or too short, an element of the wrong width, a zero tree size - because a verifier sits directly behind
     /// untrusted input and an exception where a <see langword="false" /> belongs is a denial of service.
     /// </para>
     /// </remarks>
@@ -170,7 +170,7 @@ public sealed partial class MerkleTree
     /// rejected even when the unbound walk would accept it.
     /// </summary>
     /// <param name="boundRoot">The published bound root.</param>
-    /// <param name="boundValue">The value the publisher bound — the entry count, or the input's byte length.</param>
+    /// <param name="boundValue">The value the publisher bound - the entry count, or the input's byte length.</param>
     /// <param name="treeSize">The number of entries the tree is claimed to hold.</param>
     /// <param name="leafIndex">The zero-based index the entry is claimed to occupy.</param>
     /// <param name="entry">The entry's bytes, which are hashed as a leaf.</param>
@@ -233,7 +233,7 @@ public sealed partial class MerkleTree
     /// <para>
     /// This is the possession-check shape: the tree size is <em>derived</em> from the bound length and block size
     /// rather than supplied, so there is no size for a holder to misstate. It additionally requires
-    /// <paramref name="block" /> to be exactly <see cref="BlockLength(long, long, int)" /> bytes — a check the
+    /// <paramref name="block" /> to be exactly <see cref="BlockLength(long, long, int)" /> bytes - a check the
     /// entry-mode overloads cannot make, because a variable-length entry has no expected length.
     /// </para>
     /// <para>

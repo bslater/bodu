@@ -52,7 +52,7 @@ public sealed partial class Base85Tests
 
     /// <summary>
     /// Verifies that <see cref="Base85.Decode(ReadOnlySpan{char}, Base85Variant, BaseFormatStyles)" /> without
-    /// <see cref="BaseFormatStyles.AllowPrefix" /> rejects an input with the delimiter pair — the leading <c>&lt;</c>
+    /// <see cref="BaseFormatStyles.AllowPrefix" /> rejects an input with the delimiter pair - the leading <c>&lt;</c>
     /// is outside the alphabet's value range.
     /// </summary>
     [TestMethod]
@@ -104,7 +104,7 @@ public sealed partial class Base85Tests
 
     /// <summary>
     /// Verifies that <see cref="BaseFormattingOptions.IncludePrefix" /> is ignored for the
-    /// <see cref="Base85Variant.Z85" /> variant — Z85 has no delimiter convention.
+    /// <see cref="Base85Variant.Z85" /> variant - Z85 has no delimiter convention.
     /// </summary>
     [TestMethod]
     public void Encode_WhenZ85AndIncludePrefix_ShouldIgnoreFlag()

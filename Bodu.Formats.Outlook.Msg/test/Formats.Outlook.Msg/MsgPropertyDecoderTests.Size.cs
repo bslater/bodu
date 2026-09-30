@@ -12,7 +12,7 @@ public partial class MsgPropertyDecoderTests
 {
     /// <summary>
     /// Verifies that a variable-length record whose declared size disagrees with its value stream is kept under
-    /// compatible validation — the stream is the payload — but rejected under strict validation, closing the
+    /// compatible validation - the stream is the payload - but rejected under strict validation, closing the
     /// parser-differential a reader that ignores the declared size leaves open.
     /// </summary>
     [TestMethod]
@@ -35,7 +35,7 @@ public partial class MsgPropertyDecoderTests
 
     /// <summary>
     /// Verifies that a record whose declared size matches its stream (plus the string terminator the format
-    /// counts) decodes under strict validation — the cross-check must accept every well-formed writer.
+    /// counts) decodes under strict validation - the cross-check must accept every well-formed writer.
     /// </summary>
     [TestMethod]
     public void Decode_WhenDeclaredSizeMatchesStream_ForStrict_ShouldDecode()

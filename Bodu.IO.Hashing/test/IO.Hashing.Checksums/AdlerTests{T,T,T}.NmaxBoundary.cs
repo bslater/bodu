@@ -16,7 +16,7 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
     /// <summary>
     /// Verifies that a single <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})" />
     /// call carrying an input of exactly <c>NMAX</c> bytes produces the same digest as the per-byte scalar
-    /// recurrence — exercising the scalar-fallback modulo reduction at the precise <c>index == NMAX</c> point.
+    /// recurrence - exercising the scalar-fallback modulo reduction at the precise <c>index == NMAX</c> point.
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
@@ -40,7 +40,7 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
     /// <summary>
     /// Verifies that a single <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})" />
     /// call carrying an input strictly larger than the internal <c>NMAX</c> reduction window produces the same
-    /// digest as the per-byte canonical scalar recurrence — exercising the scalar-fallback modulo reduction at
+    /// digest as the per-byte canonical scalar recurrence - exercising the scalar-fallback modulo reduction at
     /// the <c>index % NMAX == 0</c> boundary on platforms where <see cref="System.Numerics.Vector.IsHardwareAccelerated" />
     /// is <see langword="false" />.
     /// </summary>

@@ -1,6 +1,6 @@
 name: Policy Gate
 
-# Tier-1 DETERMINISTIC coding-policy gate — the blocking, reproducible, zero-AI backbone.
+# Tier-1 DETERMINISTIC coding-policy gate - the blocking, reproducible, zero-AI backbone.
 #
 # Enforces the mechanically checkable rules from CLAUDE.md that the Roslyn analyzers don't
 # already cover. This is a REQUIRED check: it fails the build (and blocks merge under branch
@@ -8,9 +8,9 @@ name: Policy Gate
 # false-positive merges and no per-PR model cost.
 #
 # It runs two checkers:
-#   • bld/check-folder-namespace-alignment.sh — whole-tree (the tree is clean today), the
+#   • bld/check-folder-namespace-alignment.sh - whole-tree (the tree is clean today), the
 #     folder ↔ namespace convention.
-#   • bld/check-policy.sh — DIFF-SCOPED (added files / added lines only) so pre-existing
+#   • bld/check-policy.sh - DIFF-SCOPED (added files / added lines only) so pre-existing
 #     grandfathered stragglers don't block unrelated PRs: copyright banner, file-scoped
 #     namespace, and no string-literal exception messages (resx/ThrowHelper policy).
 #

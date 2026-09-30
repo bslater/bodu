@@ -13,7 +13,7 @@ namespace Bodu.Globalization.Calendar.Samples.WorkingDays.Scenarios;
 /// <summary>
 /// Demonstrates the working-day predicates over a week containing a public holiday: a working day is
 /// a day that is neither a weekend day (per the working-week pattern) nor a non-working notable date
-/// (per the service's rules) — both sources feed one answer.
+/// (per the service's rules) - both sources feed one answer.
 /// </summary>
 public static class WorkingDayChecks
 {

@@ -109,7 +109,7 @@ public static partial class ResultAsyncExtensions
     {
         ThrowHelper.ThrowIfNull(selector);
 
-        // The selector's task already has the exact result type, so it is returned directly — no state machine needed.
+        // The selector's task already has the exact result type, so it is returned directly - no state machine needed.
         return source.TryGetValue(out var value)
             ? selector(value)
             : Task.FromResult(Result.Failure<TResult>(source.Error));

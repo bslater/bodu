@@ -10,15 +10,15 @@ uid: Bodu.Collections.Extensions
 
 ## Key types
 
-- <xref:Bodu.Collections.Extensions.IEnumerableExtensions> — `CountOrDefault`, `RecursiveSelect` for non-generic shapes.
-- <xref:Bodu.Collections.Extensions.RecursiveSelectControl> — `[Flags]` value returned by a recursion-control callback to decide, per element, whether to yield it, descend into its children, and whether to stop: the primitive flags `None`, `Yield`, `Recurse`, `Skip`, `Break`, `Exit`, and the named combinations `YieldOnly`, `RecurseOnly`, `YieldAndRecurse`, `SkipOnly`, `SkipAndRecurse`, `YieldAndBreak`, `SkipAndBreak`, `YieldAndExit`, `SkipAndExit`. Shared with the typed `RecursiveSelect` overloads in <xref:Bodu.Collections.Generic.Extensions>.
+- <xref:Bodu.Collections.Extensions.IEnumerableExtensions> - `CountOrDefault`, `RecursiveSelect` for non-generic shapes.
+- <xref:Bodu.Collections.Extensions.RecursiveSelectControl> - `[Flags]` value returned by a recursion-control callback to decide, per element, whether to yield it, descend into its children, and whether to stop: the primitive flags `None`, `Yield`, `Recurse`, `Skip`, `Break`, `Exit`, and the named combinations `YieldOnly`, `RecurseOnly`, `YieldAndRecurse`, `SkipOnly`, `SkipAndRecurse`, `YieldAndBreak`, `SkipAndBreak`, `YieldAndExit`, `SkipAndExit`. Shared with the typed `RecursiveSelect` overloads in <xref:Bodu.Collections.Generic.Extensions>.
 
 ## Example
 
 ```csharp
 using Bodu.Collections.Extensions;
 
-// Counts a non-generic IEnumerable — O(1) when the source is an ICollection, otherwise it enumerates.
+// Counts a non-generic IEnumerable - O(1) when the source is an ICollection, otherwise it enumerates.
 int n = source.CountOrDefault();
 
 // Recursive-select over a non-generic IEnumerable: the child selector and the result are untyped.
@@ -34,7 +34,7 @@ IEnumerable visible = root.RecursiveSelect(
                                     : RecursiveSelectControl.SkipOnly);
 ```
 
-When the source is already an `IEnumerable<T>`, prefer the typed overloads in <xref:Bodu.Collections.Generic.Extensions> — the same `RecursiveSelectControl` vocabulary with strongly typed selectors and an `IEnumerable<TResult>` result.
+When the source is already an `IEnumerable<T>`, prefer the typed overloads in <xref:Bodu.Collections.Generic.Extensions> - the same `RecursiveSelectControl` vocabulary with strongly typed selectors and an `IEnumerable<TResult>` result.
 
 ## Notes
 

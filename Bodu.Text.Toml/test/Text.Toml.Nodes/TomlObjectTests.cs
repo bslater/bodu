@@ -392,7 +392,7 @@ public class TomlObjectTests
     }
 
     /// <summary>
-    /// Verifies that serialization preserves insertion order — TOML tables are never key-sorted, in contrast to the
+    /// Verifies that serialization preserves insertion order - TOML tables are never key-sorted, in contrast to the
     /// canonical key ordering of Bencode dictionaries.
     /// </summary>
     [TestMethod]

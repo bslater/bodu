@@ -190,7 +190,7 @@ public abstract partial class MLDsaContractTests<TTest, TDsa>
         donor.GenerateKey();
 
         // t₀ occupies the trailing section of the encoded private key; flipping its final byte changes a single
-        // coefficient while leaving rho, K, tr, s1, and s2 — and thus the recomputed public key and its hash — intact.
+        // coefficient while leaving rho, K, tr, s1, and s2 - and thus the recomputed public key and its hash - intact.
         byte[] corrupted = donor.ExportPrivateKey();
         corrupted[^1] ^= 0x01;
 

@@ -7,7 +7,7 @@ umbrella). Everything runs offline against the committed `Data/trades.csv`.
 dotnet run --project samples/Text.Formats/Bodu.Text.Formats.Samples.DelimitedData
 ```
 
-## Scenario 1 — ParseAndTypedGetters
+## Scenario 1 - ParseAndTypedGetters
 
 **Intent.** Show the two read layers and the two traps CSV sets: quoted fields containing the
 delimiter, and culture-dependent scalar parsing.
@@ -41,7 +41,7 @@ whose value contains a comma, then binds the whole file onto a typed `Trade` rec
 **APIs demonstrated.** `DelimitedDocument.Parse` / `Headers` / `RootElement`,
 `DelimitedSerializer.Deserialize<T>`, `DelimitedSerializerOptions.PropertyNamingPolicy`.
 
-## Scenario 2 — PolicyBehaviors
+## Scenario 2 - PolicyBehaviors
 
 **Intent.** Show why reader leniency is a policy rather than a behaviour: the right response to
 a broken row depends on where the file came from.
@@ -83,10 +83,10 @@ stray characters collapse that row to two fields, so the count check fires first
 **APIs demonstrated.** `DelimitedReaderOptions.NoHeader` / `FieldCountBehavior` /
 `MalformedRecordBehavior`, `DelimitedFormatException`.
 
-## Scenario 3 — FormatAndRoundTrip
+## Scenario 3 - FormatAndRoundTrip
 
 **Intent.** Show the write direction, where the interesting decision is which fields need
-quoting — and prove the round trip is safe enough to edit a parsed file in place.
+quoting - and prove the round trip is safe enough to edit a parsed file in place.
 
 **What it does.** Parses into the mutable `DelimitedNode` DOM, writes it back, re-parses to
 compare shape and the quoted value, prints the re-emitted last row, then writes the same tree
@@ -119,7 +119,7 @@ with a tab delimiter.
 **APIs demonstrated.** `DelimitedNode.Parse` / `ToString` / `WriteTo`, `Utf8DelimitedWriter`,
 `DelimitedWriterOptions.Delimiter`.
 
-## Scenario 4 — StreamingReaderWriter
+## Scenario 4 - StreamingReaderWriter
 
 **Intent.** Show the constant-memory shape: a file larger than memory filtered from reader
 straight into writer, with no document in between.
@@ -171,5 +171,5 @@ Bodu.Text.Formats.Samples.DelimitedData/
 
 ## Related
 
-- `Bodu.Text.Formats.Samples.ConfigFiles` — the INI and DotEnv half of the umbrella package.
+- `Bodu.Text.Formats.Samples.ConfigFiles` - the INI and DotEnv half of the umbrella package.
 - Guides: `docs/guides/text-formats/`.

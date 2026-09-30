@@ -125,7 +125,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         using TAlgorithm algorithm = CreateAlgorithm(variant);
         int blockSize = specification.InputBlockSize;
 
-        // Feed partial input — do NOT finalise — then reset
+        // Feed partial input - do NOT finalise - then reset
         byte[] input = Enumerable.Range(0, blockSize + (blockSize / 2))
                                  .Select(i => (byte)((i * 31) + 7))
                                  .ToArray();
@@ -142,7 +142,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         CollectionAssert.AreEqual(
             reference.Hash,
             algorithm.Hash,
-            $"[{variant}] Initialize did not fully reset internal accumulator — residual bytes leaked into the next computation.");
+            $"[{variant}] Initialize did not fully reset internal accumulator - residual bytes leaked into the next computation.");
     }
 
     /// <summary>
@@ -177,7 +177,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         CollectionAssert.AreEqual(
             first,
             second,
-            $"[{variant}] Residual block state was not reset by Initialize — identical inputs produced different digests.");
+            $"[{variant}] Residual block state was not reset by Initialize - identical inputs produced different digests.");
     }
 
     /// <summary>

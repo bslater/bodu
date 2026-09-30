@@ -278,7 +278,7 @@ public sealed partial class NavigableDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Returns the entry at the specified zero-based rank — the entry with the k-th smallest key.
+    /// Returns the entry at the specified zero-based rank - the entry with the k-th smallest key.
     /// </summary>
     /// <param name="rank">The zero-based rank of the entry to select.</param>
     /// <returns>The entry whose key rank is <paramref name="rank" />.</returns>

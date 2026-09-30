@@ -16,32 +16,32 @@ For the auto-generated API reference, see the [Bodu.IO.Hashing namespace page](x
 
 | Namespace | What lives here | Guides |
 |---|---|---|
-| `Bodu.IO.Hashing` | Fingerprints — `Fnv*`, `CityHash*`, `MurmurHash3_32` / `MurmurHash3_128`, `Pearson`, `Bernstein`, `BKDR`, `SDBM`, `JSHash`, `Elf64`, `ApHash`, `Pjw32`, `SuperFastHash`. Plus the streaming contracts `BlockNonCryptographicHashAlgorithm` and `IResumableHashAlgorithm`. | [FNV](fnv.md) · [CityHash](cityhash.md) · [MurmurHash3](murmurhash3.md) · [Pearson](pearson.md) · [Classic string hashes](string-hashes.md) |
-| `Bodu.IO.Hashing.Checksums` | Polynomial-remainder and twin-accumulator checksums — `Crc` + `CrcStandard` + `CrcStandards`, `Fletcher16/32/64`, `Adler32` / `Adler32C` / `Adler64`, plus the `CrcLookupTableBuilder` / `CrcLookupTableCache` table machinery. | [CRC](crc.md) · [CRC catalogue](crc-catalogue.md) · [Fletcher](fletcher.md) · [Adler](adler.md) · [Streaming, async, and resumable hashing](streaming-and-async.md) |
-| `Bodu.IO.Hashing.CheckDigits` | Every check-digit algorithm — decimal single-character (`Luhn`, `Damm`, `Verhoeff`, `Ean8`, `Ean13`, `Gtin14`, `UpcA`, `Isbn13`, `AbaRoutingNumber`), alphanumeric single-character (`Isin`, `Isbn10`, `Sedol`, `Cusip`, `Iso7064Mod11_2`, `Code39Mod43`, `Crockford32`), and multi-character (`Iban`, `Lei`, `Iso7064Mod97_10`). Plus the root `CheckValueAlgorithm` and its abstract bases `CheckDigitAlgorithm`, `AlphanumericCheckDigitAlgorithm`, `MultiCharCheckDigitAlgorithm`. | [Check digits overview](check-digits.md) · [Alphanumeric and encoded check digits](alphanumeric-check-digits.md) |
+| `Bodu.IO.Hashing` | Fingerprints - `Fnv*`, `CityHash*`, `MurmurHash3_32` / `MurmurHash3_128`, `Pearson`, `Bernstein`, `BKDR`, `SDBM`, `JSHash`, `Elf64`, `ApHash`, `Pjw32`, `SuperFastHash`. Plus the streaming contracts `BlockNonCryptographicHashAlgorithm` and `IResumableHashAlgorithm`. | [FNV](fnv.md) · [CityHash](cityhash.md) · [MurmurHash3](murmurhash3.md) · [Pearson](pearson.md) · [Classic string hashes](string-hashes.md) |
+| `Bodu.IO.Hashing.Checksums` | Polynomial-remainder and twin-accumulator checksums - `Crc` + `CrcStandard` + `CrcStandards`, `Fletcher16/32/64`, `Adler32` / `Adler32C` / `Adler64`, plus the `CrcLookupTableBuilder` / `CrcLookupTableCache` table machinery. | [CRC](crc.md) · [CRC catalogue](crc-catalogue.md) · [Fletcher](fletcher.md) · [Adler](adler.md) · [Streaming, async, and resumable hashing](streaming-and-async.md) |
+| `Bodu.IO.Hashing.CheckDigits` | Every check-digit algorithm - decimal single-character (`Luhn`, `Damm`, `Verhoeff`, `Ean8`, `Ean13`, `Gtin14`, `UpcA`, `Isbn13`, `AbaRoutingNumber`), alphanumeric single-character (`Isin`, `Isbn10`, `Sedol`, `Cusip`, `Iso7064Mod11_2`, `Code39Mod43`, `Crockford32`), and multi-character (`Iban`, `Lei`, `Iso7064Mod97_10`). Plus the root `CheckValueAlgorithm` and its abstract bases `CheckDigitAlgorithm`, `AlphanumericCheckDigitAlgorithm`, `MultiCharCheckDigitAlgorithm`. | [Check digits overview](check-digits.md) · [Alphanumeric and encoded check digits](alphanumeric-check-digits.md) |
 | `Bodu.IO.Hashing.Extensions` | One-shot, async, and verify helpers over `NonCryptographicHashAlgorithm`. | [Streaming, async, and resumable hashing](streaming-and-async.md) |
 
-> **BCL note.** `XxHash32`, `XxHash64`, `XxHash3`, and `XxHash128` ship in `System.IO.Hashing` from .NET 6 onwards. Bodu does not duplicate them — use the BCL types directly when you want xxHash.
+> **BCL note.** `XxHash32`, `XxHash64`, `XxHash3`, and `XxHash128` ship in `System.IO.Hashing` from .NET 6 onwards. Bodu does not duplicate them - use the BCL types directly when you want xxHash.
 
 ## Guides
 
-### `Bodu.IO.Hashing` — Fingerprints
+### `Bodu.IO.Hashing` - Fingerprints
 
 <div class="bodu-cards">
 
 <div class="bodu-card">
   <h3><a href="fnv.md">Using FNV</a></h3>
-  <p>FNV-1 and FNV-1a at 32 and 64 bits — simple, fast, textbook fingerprint for in-memory hash tables.</p>
+  <p>FNV-1 and FNV-1a at 32 and 64 bits - simple, fast, textbook fingerprint for in-memory hash tables.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="cityhash.md">Using CityHash</a></h3>
-  <p>32-, 64-, and 128-bit CityHash — Google's SIMD-friendly fingerprint for long inputs.</p>
+  <p>32-, 64-, and 128-bit CityHash - Google's SIMD-friendly fingerprint for long inputs.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="murmurhash3.md">Using MurmurHash3</a></h3>
-  <p>Austin Appleby's MurmurHash3 — <code>MurmurHash3_32</code> and <code>MurmurHash3_128</code>; seeded with excellent avalanche.</p>
+  <p>Austin Appleby's MurmurHash3 - <code>MurmurHash3_32</code> and <code>MurmurHash3_128</code>; seeded with excellent avalanche.</p>
 </div>
 
 <div class="bodu-card">
@@ -67,12 +67,12 @@ For the auto-generated API reference, see the [Bodu.IO.Hashing namespace page](x
 
 <div class="bodu-card">
   <h3><a href="crc-catalogue.md">CRC catalogue</a></h3>
-  <p>The full table of named CRC standards from the RevEng catalogue — name, width, class, enum value, and aliases.</p>
+  <p>The full table of named CRC standards from the RevEng catalogue - name, width, class, enum value, and aliases.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="fletcher.md">Using Fletcher</a></h3>
-  <p>Twin-accumulator checksums in 16, 32, and 64 bits — catches transpositions a simple sum or XOR misses.</p>
+  <p>Twin-accumulator checksums in 16, 32, and 64 bits - catches transpositions a simple sum or XOR misses.</p>
 </div>
 
 <div class="bodu-card">
@@ -93,7 +93,7 @@ For the auto-generated API reference, see the [Bodu.IO.Hashing namespace page](x
 
 <div class="bodu-card">
   <h3><a href="check-digits.md">Check digits overview</a></h3>
-  <p>Luhn, Damm, Verhoeff, EAN, GTIN, UPC, ISIN, ABA routing — single-character validators. Plus IBAN, ISBN, SEDOL, CUSIP, LEI — all in the one <code>Bodu.IO.Hashing.CheckDigits</code> namespace.</p>
+  <p>Luhn, Damm, Verhoeff, EAN, GTIN, UPC, ISIN, ABA routing - single-character validators. Plus IBAN, ISBN, SEDOL, CUSIP, LEI - all in the one <code>Bodu.IO.Hashing.CheckDigits</code> namespace.</p>
 </div>
 
 <div class="bodu-card">
@@ -122,13 +122,13 @@ byte[] full    = hash.GetCurrentHash();
 hash.Reset();                              // back to the initial state
 ```
 
-`Crc`, the FNV family (`Fnv132` / `Fnv164` / `Fnv1a32` / `Fnv1a64`), `Fletcher16` / `Fletcher32` / `Fletcher64`, and `Adler32` / `Adler32C` / `Adler64` implement `IResumableHashAlgorithm` — see [Streaming, async, and resumable hashing](streaming-and-async.md) for the pattern across all four families, and `HashingStream` for checksumming as a side effect of stream I/O.
+`Crc`, the FNV family (`Fnv132` / `Fnv164` / `Fnv1a32` / `Fnv1a64`), `Fletcher16` / `Fletcher32` / `Fletcher64`, and `Adler32` / `Adler32C` / `Adler64` implement `IResumableHashAlgorithm` - see [Streaming, async, and resumable hashing](streaming-and-async.md) for the pattern across all four families, and `HashingStream` for checksumming as a side effect of stream I/O.
 
 ## Where to go next
 
-- [Runnable samples](../../samples/io-hashing.md) — offline sample projects under `samples/IO.Hashing/`: the CRC catalogue, checksum families, streaming/resumable digests, check digits, and a custom scheme with contract tests.
-- [Bodu.IO.Hashing introduction](../../docs/io-hashing/index.md) — namespaces, headline types, scenarios.
-- [Bodu.IO.Hashing getting started](../../docs/io-hashing/getting-started.md) — install and minimal samples.
-- [Bodu.Security.Cryptography hashing guide](../cryptography/hashing.md) — keyed and cryptographic hashes.
-- [Bodu.IO.Hashing API reference](xref:Bodu.IO.Hashing) — namespace overview with key types.
-- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — the topic map across Bodu.IO.Hashing and Bodu.Security.Cryptography. The complete hashing guide list is this page; the cryptography one is [its index](../cryptography/index.md).
+- [Runnable samples](../../samples/io-hashing.md) - offline sample projects under `samples/IO.Hashing/`: the CRC catalogue, checksum families, streaming/resumable digests, check digits, and a custom scheme with contract tests.
+- [Bodu.IO.Hashing introduction](../../docs/io-hashing/index.md) - namespaces, headline types, scenarios.
+- [Bodu.IO.Hashing getting started](../../docs/io-hashing/getting-started.md) - install and minimal samples.
+- [Bodu.Security.Cryptography hashing guide](../cryptography/hashing.md) - keyed and cryptographic hashes.
+- [Bodu.IO.Hashing API reference](xref:Bodu.IO.Hashing) - namespace overview with key types.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - the topic map across Bodu.IO.Hashing and Bodu.Security.Cryptography. The complete hashing guide list is this page; the cryptography one is [its index](../cryptography/index.md).

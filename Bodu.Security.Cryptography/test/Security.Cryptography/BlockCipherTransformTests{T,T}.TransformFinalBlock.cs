@@ -12,7 +12,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 {
     /// <summary>
     /// Verifies that <see cref="ICryptoTransform.TransformFinalBlock(byte[], int, int)" /> accepts an empty
-    /// final input span when encrypting — the contract distinguishes between a zero-length final block
+    /// final input span when encrypting - the contract distinguishes between a zero-length final block
     /// (valid; the padding layer emits whatever the scheme requires) and a non-zero partial block (invalid
     /// only when padding is disabled).
     /// </summary>
@@ -32,7 +32,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     /// <remarks>
     /// Pre-#208 <see cref="BlockCipherTransform.TransformFinalBlock" /> ran an alignment-multiple validator
     /// on the raw input <strong>before</strong> the padding step, so this call surfaced a
-    /// <see cref="CryptographicException" /> with a "block length must be a positive multiple" message —
+    /// <see cref="CryptographicException" /> with a "block length must be a positive multiple" message -
     /// incompatible with the <see cref="System.Security.Cryptography.CryptoStream.FlushFinalBlock" />
     /// contract that hands off whatever residual sits in its buffer (typically <c>1..blockSize-1</c> bytes
     /// after the last aligned chunk has flowed through <c>TransformBlock</c>). #208 moved the alignment
@@ -59,7 +59,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 
     /// <summary>
     /// Verifies that <see cref="ICryptoTransform.TransformFinalBlock(byte[], int, int)" /> reads only the
-    /// selected input range when <c>inputOffset</c> is non-zero — the produced ciphertext matches the result
+    /// selected input range when <c>inputOffset</c> is non-zero - the produced ciphertext matches the result
     /// of finalising the same payload at <c>inputOffset</c> 0.
     /// </summary>
     [TestMethod]

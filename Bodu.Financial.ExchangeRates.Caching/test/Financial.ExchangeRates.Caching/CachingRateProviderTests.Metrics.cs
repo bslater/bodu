@@ -67,7 +67,7 @@ public sealed partial class CachingRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that with no listener attached the instrumented paths still serve correctly — the counters are
+    /// Verifies that with no listener attached the instrumented paths still serve correctly - the counters are
     /// observability only.
     /// </summary>
     [TestMethod]

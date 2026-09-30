@@ -26,8 +26,8 @@ so it drops in transparently wherever the service is consumed.
   computes; concurrent callers join that single flight instead of stampeding the engine.
 - **Storage is pluggable and best-effort.** The decorator works over any
   [`INotableDateCache`](xref:Bodu.Globalization.Calendar.Caching.INotableDateCache);
-  the shipped backends degrade gracefully on storage failure — a failed read is a miss,
-  a failed write is skipped — so a broken disk never breaks date resolution.
+  the shipped backends degrade gracefully on storage failure - a failed read is a miss,
+  a failed write is skipped - so a broken disk never breaks date resolution.
 
 ## Quickstart
 
@@ -69,7 +69,7 @@ The decorator is storage-agnostic; pick the backend at the composition root:
 | [`JsonNotableDateCache`](xref:Bodu.Globalization.Calendar.Caching.JsonNotableDateCache) | one JSON file per territory | yes | same machine | core |
 | `SqliteNotableDateCache` | one SQLite database | yes | same machine | `…Caching.Sqlite` |
 | `DistributedNotableDateCache` | any `IDistributedCache` (e.g. Redis) | yes | yes | `…Caching.Distributed` |
-| [`NullNotableDateCache`](xref:Bodu.Globalization.Calendar.Caching.NullNotableDateCache) | none (always misses) | — | — | core |
+| [`NullNotableDateCache`](xref:Bodu.Globalization.Calendar.Caching.NullNotableDateCache) | none (always misses) | - | - | core |
 
 Construct one by hand, or supply it through the registration's `cacheFactory`:
 
@@ -103,7 +103,7 @@ builder.Services.AddCachedNotableDateService(
 
 Every backend enforces the same ordering contract (occurrences round-trip in the
 service's date-then-identity order) and the same merge policy, so switching backends
-never changes served results — only where they live.
+never changes served results - only where they live.
 
 ## Freshness: time-to-live, version invalidation, jitter, and refresh-ahead
 
@@ -115,7 +115,7 @@ carries the freshness policy:
   coarse safety net; the version trigger below handles data changes.
 - **`ResourceVersion`** keys every cache entry. When the decorator observes an
   [`INotableDateResourceProvider`](xref:Bodu.Globalization.Calendar.INotableDateResourceProvider),
-  the token is derived from the resource identity and a reload generation instead — so
+  the token is derived from the resource identity and a reload generation instead - so
   a reload invalidates every cached year on the next query:
 
 <!-- compile -->
@@ -137,7 +137,7 @@ _ = service.Resolve(new DateOnly(2026, 1, 1), "US");     // version changed: rec
 
 - **`TtlJitter`** (opt-in, default `0`) deterministically shaves up to that fraction off
   each territory's effective time-to-live, keyed by a stable hash of the normalized
-  territory, so territories warmed together do not all expire — and recompute — at the
+  territory, so territories warmed together do not all expire - and recompute - at the
   same instant. Jitter only ever shortens the time-to-live.
 - **`RefreshAheadFraction`** (opt-in, default `0`) turns an aged hit into a
   stale-while-revalidate serve: when a hit's entry is older than this fraction of the
@@ -225,7 +225,7 @@ caching-layer message carries a stable `EventId`:
 | 4607 | Warm-up territory failed and skipped | `Warning` |
 | 4611 | SQLite storage failure swallowed | `Warning` |
 | 4621 | Distributed storage failure swallowed | `Warning` |
-| 4622–4625 | Startup warm-up started / completed / failed / service not caching | `Information` / `Warning` |
+| 4622-4625 | Startup warm-up started / completed / failed / service not caching | `Information` / `Warning` |
 
 Storage-failure warnings are rate-limited to at most one per minute, each carrying the
 count suppressed since the previous warning, so a sustained outage is visible without
@@ -269,7 +269,7 @@ restart; use a file, SQLite, or distributed backend to survive restarts, and reg
 the startup warm-up so the first requests never pay the computation.
 
 **A data update is not being picked up.** With a fixed `ResourceVersion`, bump the
-token after a data change — or register a reloadable resource provider so a
+token after a data change - or register a reloadable resource provider so a
 `Reload` invalidates the cache automatically.
 
 **The warm-up logs "service is not the caching decorator".** Register
@@ -277,13 +277,13 @@ token after a data change — or register a reloadable resource provider so a
 resolves `INotableDateService` and can only warm the caching decorator.
 
 **I can't tell whether the cache is degrading.** Watch `EventId 4603` / `4611` /
-`4621` at `Warning`, or the `storage_failures` counter — it increments on every
+`4621` at `Warning`, or the `storage_failures` counter - it increments on every
 swallow, outside the log rate limiting.
 
 ## See also
 
-- [Working with notable dates](../notable-dates.md) — the service contract the cache wraps.
-- [Dependency injection](../dependency-injection.md) — the wider calendar registration surface.
+- [Working with notable dates](../notable-dates.md) - the service contract the cache wraps.
+- [Dependency injection](../dependency-injection.md) - the wider calendar registration surface.
 - [`CachingNotableDateService` API reference](xref:Bodu.Globalization.Calendar.Caching.CachingNotableDateService)
 - [`NotableDateCachingOptions` API reference](xref:Bodu.Globalization.Calendar.Caching.NotableDateCachingOptions)
 - [`INotableDateCache` API reference](xref:Bodu.Globalization.Calendar.Caching.INotableDateCache)

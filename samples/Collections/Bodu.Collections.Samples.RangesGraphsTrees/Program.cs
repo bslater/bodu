@@ -10,7 +10,7 @@ namespace Bodu.Collections.Samples.RangesGraphsTrees;
 
 /// <summary>
 /// Entry point for the ranges/graphs/trees sample: the interval- and graph-shaped members of
-/// <c>Bodu.Collections.Generic</c> — coalescing range sets and dictionaries, the interval tree's stabbing
+/// <c>Bodu.Collections.Generic</c> - coalescing range sets and dictionaries, the interval tree's stabbing
 /// queries, the graph traversal / shortest-path / topological-sort algorithms, disjoint-set union-find, the
 /// tree and trie families, and the Aho-Corasick multi-pattern scanner. Everything runs offline and
 /// deterministically.

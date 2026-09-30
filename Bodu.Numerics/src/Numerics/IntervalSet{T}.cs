@@ -11,7 +11,7 @@ namespace Bodu.Numerics;
 
 /// <summary>
 /// Represents an immutable set of values as a normalized collection of disjoint, non-adjacent
-/// <see cref="Interval{T}" /> pieces in ascending order — the general result of interval algebra that can produce a
+/// <see cref="Interval{T}" /> pieces in ascending order - the general result of interval algebra that can produce a
 /// disconnected range.
 /// </summary>
 /// <typeparam name="T">The numeric type used for the intervals' endpoints.</typeparam>
@@ -20,7 +20,7 @@ namespace Bodu.Numerics;
 /// Where <see cref="Interval{T}" /> models a single connected range and <see cref="IntervalPair{T}" /> the at-most-two
 /// pieces of a binary difference, <see cref="IntervalSet{T}" /> models an arbitrary union of ranges. Overlapping and
 /// adjacent inputs are coalesced at construction, so the pieces are always disjoint, non-adjacent, sorted, and free of
-/// empty entries — a canonical form in which set equality is piecewise equality.
+/// empty entries - a canonical form in which set equality is piecewise equality.
 /// </para>
 /// <para>
 /// The type is the home for the operations a single interval cannot express as one value: N-ary
@@ -32,7 +32,7 @@ namespace Bodu.Numerics;
 /// <code language="csharp">
 ///<![CDATA[
 /// var set = IntervalSet<int>.Of(Interval<int>.Closed(1, 3), Interval<int>.Closed(2, 5), Interval<int>.Closed(8, 9));
-/// set.Count;                 // 2 — [1, 5] and [8, 9] (the first two coalesced)
+/// set.Count;                 // 2 - [1, 5] and [8, 9] (the first two coalesced)
 /// set.Contains(4);           // True
 /// set.Complement();          // (-∞, 1) ∪ (5, 8) ∪ (9, +∞)
 ///]]>
@@ -57,7 +57,7 @@ public readonly partial struct IntervalSet<T>
     }
 
     /// <summary>
-    /// Gets the empty set — the set containing no values.
+    /// Gets the empty set - the set containing no values.
     /// </summary>
     /// <value>An <see cref="IntervalSet{T}" /> whose <see cref="Count" /> is zero.</value>
     public static IntervalSet<T> Empty =>
@@ -171,7 +171,7 @@ public readonly partial struct IntervalSet<T>
         new(_intervals);
 
     /// <summary>
-    /// Returns a set-notation string representation — the pieces joined by the union symbol, or the empty-set glyph.
+    /// Returns a set-notation string representation - the pieces joined by the union symbol, or the empty-set glyph.
     /// </summary>
     /// <returns>The formatted set.</returns>
     public override string ToString() =>

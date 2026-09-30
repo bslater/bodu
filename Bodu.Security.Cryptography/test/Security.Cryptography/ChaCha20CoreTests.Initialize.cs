@@ -9,8 +9,8 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class ChaCha20CoreTests
 {
     /// <summary>
-    /// Verifies that a key and a nonce seed the state RFC 8439 Section 2.3.2 lays out — the constant, the key words, and
-    /// the nonce words, all little-endian — with a zero counter word.
+    /// Verifies that a key and a nonce seed the state RFC 8439 Section 2.3.2 lays out - the constant, the key words, and
+    /// the nonce words, all little-endian - with a zero counter word.
     /// </summary>
     [TestMethod]
     public void Initialize_WhenKeyAndNonceAreValid_ShouldLayOutTheRfc8439State()

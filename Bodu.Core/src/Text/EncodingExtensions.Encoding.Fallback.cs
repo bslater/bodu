@@ -38,7 +38,7 @@ public static partial class EncodingExtensions
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// The returned encoding is a fresh instance — singleton encodings such as <see cref="System.Text.Encoding.UTF8" />
+    /// The returned encoding is a fresh instance - singleton encodings such as <see cref="System.Text.Encoding.UTF8" />
     /// are not mutated. Use this method to opt a specific call-site into strict validation without altering the global
     /// default.
     /// </remarks>
@@ -64,7 +64,7 @@ public static partial class EncodingExtensions
     /// </param>
     /// <param name="decoderReplacement">
     /// The replacement string used when a decoder cannot interpret a sequence. Defaults to <c>"?"</c> rather than the
-    /// Unicode replacement character (<c>U+FFFD</c>) because non-Unicode encodings — including ASCII — cannot represent
+    /// Unicode replacement character (<c>U+FFFD</c>) because non-Unicode encodings - including ASCII - cannot represent
     /// <c>U+FFFD</c>.
     /// </param>
     /// <returns>

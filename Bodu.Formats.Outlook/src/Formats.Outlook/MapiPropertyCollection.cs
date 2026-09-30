@@ -13,10 +13,10 @@ namespace Bodu.Formats.Outlook;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Lookup is keyed by the full 32-bit <see cref="MapiPropertyTag" /> — identifier and type together. The typed
+/// Lookup is keyed by the full 32-bit <see cref="MapiPropertyTag" /> - identifier and type together. The typed
 /// accessors probe the plausible wire types for an identifier (for example, <see cref="GetString" /> probes
 /// <see cref="MapiPropertyType.Unicode" /> and then <see cref="MapiPropertyType.String8" />) and return
-/// <see langword="null" /> when the property is absent or its stored value is not of the requested CLR type — they
+/// <see langword="null" /> when the property is absent or its stored value is not of the requested CLR type - they
 /// never throw for a missing or mismatched property.
 /// </para>
 /// <para>
@@ -107,7 +107,7 @@ public sealed class MapiPropertyCollection
     }
 
     /// <summary>
-    /// Attempts to retrieve the first property carrying a 16-bit identifier, whatever its type — the lookup for callers
+    /// Attempts to retrieve the first property carrying a 16-bit identifier, whatever its type - the lookup for callers
     /// that know which property they want but not which wire type the writer chose for it.
     /// </summary>
     /// <param name="id">The 16-bit property identifier.</param>
@@ -126,7 +126,7 @@ public sealed class MapiPropertyCollection
     }
 
     /// <summary>
-    /// Enumerates every property carrying a 16-bit identifier, in first-occurrence order — one per distinct type the
+    /// Enumerates every property carrying a 16-bit identifier, in first-occurrence order - one per distinct type the
     /// writer stored it under.
     /// </summary>
     /// <param name="id">The 16-bit property identifier.</param>

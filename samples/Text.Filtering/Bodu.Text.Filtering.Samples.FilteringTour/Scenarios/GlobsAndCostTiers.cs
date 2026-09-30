@@ -9,8 +9,8 @@ using Bodu.Text.Filtering;
 namespace Bodu.Text.Filtering.Samples.FilteringTour.Scenarios;
 
 /// <summary>
-/// Demonstrates the glob grammar — <c>*</c>, <c>?</c>, character classes, <c>{a,b}</c> brace
-/// alternation, and <c>\</c> escapes — and the diagnostic surfaces that reveal which pattern
+/// Demonstrates the glob grammar - <c>*</c>, <c>?</c>, character classes, <c>{a,b}</c> brace
+/// alternation, and <c>\</c> escapes - and the diagnostic surfaces that reveal which pattern
 /// decided an outcome. At build time each glob is classified into the cheapest strategy its shape
 /// permits (literal, prefix, suffix, contains, general, regex), so evaluation runs cheapest-first.
 /// </summary>
@@ -46,7 +46,7 @@ public static class GlobsAndCostTiers
         var filter = TextFilter.Build(
         [
             // "{error,warn}*" uses brace alternation. The braces are expanded AT BUILD TIME into two
-            // separate cheap prefix matchers ("error*" and "warn*") — alternation costs nothing per value.
+            // separate cheap prefix matchers ("error*" and "warn*") - alternation costs nothing per value.
             TextFilterPattern.Include("{error,warn}*"),
 
             // "[0-9]" is a character class matching exactly one character from the range. Classes route the
@@ -79,14 +79,14 @@ public static class GlobsAndCostTiers
         Console.WriteLine();
 
         // GetMatchingPatterns is the deep-diagnostic surface (globset's matches() idea): unlike Evaluate it
-        // does NOT short-circuit — it tests every pattern and reports ALL that match, in declaration order.
+        // does NOT short-circuit - it tests every pattern and reports ALL that match, in declaration order.
         // "error-retry-8" matches both the "{error,warn}*" include and the "*retry*" exclude.
         var overlapping = filter.GetMatchingPatterns("error-retry-8");
         Console.WriteLine($"  error-retry-8 matches {overlapping.Count} pattern(s): {string.Join(", ", overlapping)}"
             + "  (Evaluate named only the deciding pattern - this surface does not short-circuit, so it finds rules shadowed by others)");
 
         // '\' escapes the next metacharacter: this pattern is the LITERAL three characters "a*b".
-        // Escaping demotes it to the literal cost tier — a single whole-string equality check.
+        // Escaping demotes it to the literal cost tier - a single whole-string equality check.
         var escaped = TextFilter.Build([TextFilterPattern.Include(@"a\*b")]);
         Console.WriteLine($"  literal 'a*b' -> {escaped.IsMatch("a*b")}, 'axb' -> {escaped.IsMatch("axb")}"
             + "  (expected True then False - escaping the star also demotes the pattern to the cheapest tier, a single equality check)");

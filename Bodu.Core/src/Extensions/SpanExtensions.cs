@@ -7,7 +7,7 @@
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Provides span-shaping helpers — read-only conversion and copy-and-reverse operations — for code that already
+/// Provides span-shaping helpers - read-only conversion and copy-and-reverse operations - for code that already
 /// operates on <see cref="Span{T}" /> or <see cref="ReadOnlySpan{T}" />.
 /// </summary>
 /// <remarks>
@@ -15,7 +15,7 @@ namespace Bodu.Extensions;
 /// <see cref="Span{T}" /> is the right tool for stack-allocated, zero-copy work, but the BCL only ships a small number
 /// of transformations on it directly. This class adds two operations: a free <see cref="Span{T}" /> -&gt;
 /// <see cref="ReadOnlySpan{T}" /> conversion that makes intent visible to callers, and a family of copy-and-reverse
-/// operators that accept either an index/count pair or a <see cref="Range" /> — matching the surface used by
+/// operators that accept either an index/count pair or a <see cref="Range" /> - matching the surface used by
 /// <c>ArrayExtensions.Reverse</c> so the same call shape works regardless of whether the caller holds a span or an
 /// array.
 /// </para>
@@ -25,12 +25,12 @@ namespace Bodu.Extensions;
 /// windowed reversal. Unlike the in-place <see cref="MemoryExtensions.Reverse{T}(Span{T})" />, every <c>ToReversed</c>
 /// overload copies the full source into a newly heap-allocated array and reverses the nominated window on that copy;
 /// the returned <see cref="Span{T}" /> wraps the fresh allocation, and the source memory is never modified. This is
-/// also why the <see cref="ReadOnlySpan{T}" /> overloads can return a writeable <see cref="Span{T}" /> — it aliases the
+/// also why the <see cref="ReadOnlySpan{T}" /> overloads can return a writeable <see cref="Span{T}" /> - it aliases the
 /// copy, not the read-only source.
 /// </para>
 /// <para>
 /// <c>AsReadOnly</c> is allocation-free; the <c>ToReversed</c> overloads allocate one array per call. Reversing a
-/// partial window copies all elements and reverses only those inside the window. The methods are not thread-safe —
+/// partial window copies all elements and reverses only those inside the window. The methods are not thread-safe -
 /// concurrent access to the underlying buffer must be synchronized externally.
 /// </para>
 /// <example>
@@ -38,13 +38,13 @@ namespace Bodu.Extensions;
 ///<![CDATA[
 /// Span<int> buffer = stackalloc int[] { 1, 2, 3, 4, 5, 6 };
 ///
-/// // Reverse only the trailing window using a Range — returns a new heap-backed span.
+/// // Reverse only the trailing window using a Range - returns a new heap-backed span.
 /// Span<int> reversed = buffer.ToReversed(2..); // => { 1, 2, 6, 5, 4, 3 }; buffer is unchanged
 ///
 /// // Narrow the surface before handing the span to a read-only consumer.
 /// ReadOnlySpan<int> view = buffer.AsReadOnly();
 ///
-/// // Reverse the full span — again into a fresh copy.
+/// // Reverse the full span - again into a fresh copy.
 /// Span<int> full = buffer.ToReversed(); // => { 6, 5, 4, 3, 2, 1 }; buffer is unchanged
 ///]]>
 /// </code>

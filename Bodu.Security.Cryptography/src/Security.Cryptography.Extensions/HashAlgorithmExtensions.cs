@@ -29,14 +29,14 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <item>
 /// <term>Append</term>
 /// <description>
-/// <c>AppendData</c> / <c>AppendDataAsync</c> — feed a span or stream into the algorithm's running state, equivalent to
+/// <c>AppendData</c> / <c>AppendDataAsync</c> - feed a span or stream into the algorithm's running state, equivalent to
 /// a chained <c>TransformBlock</c> sequence but cancellation-aware in the async form.
 /// </description>
 /// </item>
 /// <item>
 /// <term>Throwing verification</term>
 /// <description>
-/// <c>VerifyHash</c> / <c>VerifyHashAsync</c> — hash an input (byte array, span, memory, stream, or
+/// <c>VerifyHash</c> / <c>VerifyHashAsync</c> - hash an input (byte array, span, memory, stream, or
 /// <see cref="string" /> with a chosen <see cref="System.Text.Encoding" />) and compare the digest against an expected
 /// value given as bytes or as a hexadecimal string. Throws on a malformed input or hex.
 /// </description>
@@ -44,7 +44,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <item>
 /// <term>Try-pattern verification</term>
 /// <description>
-/// <c>TryVerifyHash</c> / <c>TryVerifyHashAsync</c> — non-throwing counterparts that return <see langword="false" />
+/// <c>TryVerifyHash</c> / <c>TryVerifyHashAsync</c> - non-throwing counterparts that return <see langword="false" />
 /// for any <see langword="null" /> data parameter (<c>input</c>, <c>expectedHash</c>, <c>expectedHex</c>,
 /// <c>encoding</c>, <c>stream</c>), for malformed expected hashes, and for any internal failure;
 /// <see langword="true" /> is returned only when the inputs round-trip and match. <see cref="ArgumentNullException" />

@@ -80,7 +80,7 @@ public enum CommonNotableDateCatalog
     GlobalBuddhist,
 
     /// <summary>
-    /// The core civil observances catalogue — New Year's Day and similar universal dates (<c>global-core</c>).
+    /// The core civil observances catalogue - New Year's Day and similar universal dates (<c>global-core</c>).
     /// </summary>
     GlobalCore,
 

@@ -38,7 +38,7 @@ namespace Bodu.Security.Cryptography;
 /// <item>
 /// <term>Authenticated modes (AEAD)</term>
 /// <description>
-/// Implement the richer <see cref="IAeadBlockCipherModeTransform" /> contract instead — <see cref="GcmModeTransform" />
+/// Implement the richer <see cref="IAeadBlockCipherModeTransform" /> contract instead - <see cref="GcmModeTransform" />
 /// , <see cref="CcmModeTransform" />, <see cref="EaxModeTransform" />, <see cref="GcmSivModeTransform" />,
 /// <see cref="OcbModeTransform" />, <see cref="SivModeTransform" />.
 /// </description>
@@ -52,7 +52,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Implementations are stateful and not thread-safe; share behind explicit synchronization, or allocate one per
-/// consumer. Most modes reset cleanly when constructed afresh — there is no in-place reset method on this interface.
+/// consumer. Most modes reset cleanly when constructed afresh - there is no in-place reset method on this interface.
 /// </para>
 /// </remarks>
 public interface IBlockCipherModeTransform

@@ -10,7 +10,7 @@ public partial class OutlookMailFolderTests
 {
     /// <summary>
     /// Verifies that a folder view refuses every member once its session is disposed, even after its properties were
-    /// decoded and cached — the documented <see cref="ObjectDisposedException" /> guarantee holds on every access,
+    /// decoded and cached - the documented <see cref="ObjectDisposedException" /> guarantee holds on every access,
     /// not only the first.
     /// </summary>
     [TestMethod]

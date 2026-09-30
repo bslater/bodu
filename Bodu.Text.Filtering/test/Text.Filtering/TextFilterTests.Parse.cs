@@ -7,7 +7,7 @@
 namespace Bodu.Text.Filtering;
 
 /// <content>
-/// Tests for <see cref="TextFilter.Parse(IEnumerable{string}, TextFilterOptions?)" /> — the gitignore line
+/// Tests for <see cref="TextFilter.Parse(IEnumerable{string}, TextFilterOptions?)" /> - the gitignore line
 /// conventions.
 /// </content>
 public partial class TextFilterTests
@@ -57,7 +57,7 @@ public partial class TextFilterTests
     }
 
     /// <summary>
-    /// Verifies that trailing whitespace on a rule line does not become part of the pattern — the gitignore behavior
+    /// Verifies that trailing whitespace on a rule line does not become part of the pattern - the gitignore behavior
     /// (git strips unescaped trailing spaces), whose omission is a classic ignore-file bug.
     /// </summary>
     [TestMethod]
@@ -71,7 +71,7 @@ public partial class TextFilterTests
     }
 
     /// <summary>
-    /// Verifies that every parsed pattern is a wildcard — regular expressions cannot be expressed in line form.
+    /// Verifies that every parsed pattern is a wildcard - regular expressions cannot be expressed in line form.
     /// </summary>
     [TestMethod]
     public void Parse_WhenLinesParsed_ShouldProduceWildcardPatternsOnly()

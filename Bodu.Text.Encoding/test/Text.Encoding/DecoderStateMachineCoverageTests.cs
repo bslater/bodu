@@ -235,7 +235,7 @@ public sealed class DecoderStateMachineCoverageTests
     [TestMethod]
     public void Base64_DecodeFromUtf8_WhenPaddingCountMismatch_ShouldReturnInvalidData()
     {
-        // "Zm9=" has 3 data chars and 1 padding char — but 3 data chars need 1 padding for a total of 4 chars.
+        // "Zm9=" has 3 data chars and 1 padding char - but 3 data chars need 1 padding for a total of 4 chars.
         // That actually decodes successfully ("Zm9" partial = 1 byte). Use a clearer mismatch: 2 data + 1 pad.
         byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("Zg=");
         byte[] destination = new byte[5];

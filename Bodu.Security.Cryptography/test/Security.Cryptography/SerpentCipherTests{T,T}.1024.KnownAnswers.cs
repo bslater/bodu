@@ -15,15 +15,15 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Serpent-1024 is a non-standard tweakable Serpent construction developed for this library — it has no
+/// Serpent-1024 is a non-standard tweakable Serpent construction developed for this library - it has no
 /// externally published reference vectors. The captured ciphertexts were cross-validated against an independent
 /// Python port of the wide-block round function (see <c>tools/cipher-vectors/wide_serpent.py</c>), which is
 /// hand-translated from the C# source and exercises the same Serpent S-boxes, bitsliced linear transform, prekey
 /// recurrence, cross-lane rotation, and five-word tweak schedule. Both implementations agree on the rows below.
 /// </para>
 /// <para>
-/// The two vectors mirror <see cref="TweakableBlockCipherVariant.ZeroedKeyAndTweak" /> — an all-zero
-/// (key, tweak, plaintext) baseline — and <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> — the
+/// The two vectors mirror <see cref="TweakableBlockCipherVariant.ZeroedKeyAndTweak" /> - an all-zero
+/// (key, tweak, plaintext) baseline - and <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> - the
 /// harness's incremental-byte default (key bytes 0x10..0x8F, tweak bytes 0x00..0x0F, descending plaintext
 /// FF..80).
 /// </para>

@@ -20,8 +20,8 @@ namespace Bodu.Text.Ini;
 /// <remarks>
 /// <para>
 /// INI models a two-level object-of-objects, so the serializer maps a root POCO (or string-keyed dictionary) whose
-/// scalar-convertible members become global keys and whose object-shaped members — section POCOs or
-/// <see cref="IDictionary{TKey, TValue}" /> values keyed by <see cref="string" /> — become sections. A member nested
+/// scalar-convertible members become global keys and whose object-shaped members - section POCOs or
+/// <see cref="IDictionary{TKey, TValue}" /> values keyed by <see cref="string" /> - become sections. A member nested
 /// beyond the second level is rejected. Property names honour <see cref="IniSerializerOptions.PropertyNamingPolicy" />
 /// and the <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family; the callback interfaces (<see cref="Bodu.Text.Serialization.IOnSerializing" />
 /// and its siblings) fire around the mapping.

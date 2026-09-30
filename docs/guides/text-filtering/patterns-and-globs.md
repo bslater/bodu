@@ -19,14 +19,14 @@ covers the wildcard grammar in detail and when to reach for a regex instead.
 | `{a,b}` | alternation, expanded at build time | `{error,warn}*` |
 | `\x` | literal `x` | `a\*b` matches only the text `a*b` |
 
-Globs match the **whole value** — there are no path semantics, and `*` crosses every character
+Globs match the **whole value** - there are no path semantics, and `*` crosses every character
 equally. Use `*abc*` for contains-style matching.
 
 ## Case sensitivity
 
 Matching is ordinal and case-insensitive by default. Set
 [`TextFilterOptions.IgnoreCase`](xref:Bodu.Text.Filtering.TextFilterOptions) to `false` for the
-whole filter, or override per pattern via the `ignoreCase` argument — a pattern-level setting wins
+whole filter, or override per pattern via the `ignoreCase` argument - a pattern-level setting wins
 in both directions. Comparison is always ordinal; culture-sensitive comparison is deliberately not
 supported, because the optimized matchers operate on raw character values.
 
@@ -34,7 +34,7 @@ supported, because the optimized matchers operate on raw character values.
 
 Classes support single members, `lo-hi` ranges, and negation with a leading `!` (or `^`). A `-`
 that is the first or last member is a literal; a `]` can only be a member when escaped (`[\]]`).
-An empty class (`[]`) and an unterminated class are build-time errors — grammar problems surface
+An empty class (`[]`) and an unterminated class are build-time errors - grammar problems surface
 from `TextFilter.Build`, never per value.
 
 ## Brace alternation
@@ -48,14 +48,14 @@ and statistics.
 
 ## Escapes
 
-`\` makes the next character literal — `\*`, `\?`, `\[`, `\{`, `\\`. A trailing `\` is a
+`\` makes the next character literal - `\*`, `\?`, `\[`, `\{`, `\\`. A trailing `\` is a
 build-time error. In lines parsed by `TextFilter.Parse`, `\!` and `\#` additionally escape a
 leading `!` or `#` that would otherwise negate or comment the line.
 
 ## When to use a regex instead
 
-Anything the glob grammar cannot express — anchored alternation inside a value, repetition counts,
-digit classes — is a `TextFilterPatternKind.Regex` pattern:
+Anything the glob grammar cannot express - anchored alternation inside a value, repetition counts,
+digit classes - is a `TextFilterPatternKind.Regex` pattern:
 
 ```csharp
 TextFilterPattern.Include(@"^metric\.[a-z]+\.p\d{2}$", TextFilterPatternKind.Regex)
@@ -70,6 +70,6 @@ rule.
 
 ## Where to go next
 
-- **[Evaluation modes](evaluation-modes.md)** — how patterns combine into a decision.
-- **[Telemetry and tuning](telemetry-and-tuning.md)** — cost tiers and observability.
-- **[API reference](xref:Bodu.Text.Filtering.TextFilterPattern)** — the pattern type.
+- **[Evaluation modes](evaluation-modes.md)** - how patterns combine into a decision.
+- **[Telemetry and tuning](telemetry-and-tuning.md)** - cost tiers and observability.
+- **[API reference](xref:Bodu.Text.Filtering.TextFilterPattern)** - the pattern type.

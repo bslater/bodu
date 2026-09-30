@@ -57,7 +57,7 @@ public partial class IntervalSetTests
 
     /// <summary>
     /// Verifies the touching-closed union that <c>portion</c> simplifies: <c>P.closed(1, 2) | P.closed(2, 3) == [1, 3]</c>
-    /// — overlapping at the shared endpoint, the two ranges coalesce into one.
+    /// - overlapping at the shared endpoint, the two ranges coalesce into one.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]

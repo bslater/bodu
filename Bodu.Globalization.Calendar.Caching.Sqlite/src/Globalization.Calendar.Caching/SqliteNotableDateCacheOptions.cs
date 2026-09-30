@@ -13,8 +13,8 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// persisted in and the connection-level concurrency settings applied on open.
 /// </summary>
 /// <remarks>
-/// The database location is supplied either as a <see cref="DatabaseFilePath" /> — a path to a SQLite file created on
-/// first use — or as a fully specified <see cref="ConnectionString" /> for advanced scenarios such as a shared
+/// The database location is supplied either as a <see cref="DatabaseFilePath" /> - a path to a SQLite file created on
+/// first use - or as a fully specified <see cref="ConnectionString" /> for advanced scenarios such as a shared
 /// in-memory database. At least one must be set; <see cref="ConnectionString" /> takes precedence when both are
 /// supplied.
 /// </remarks>
@@ -51,7 +51,7 @@ public class SqliteNotableDateCacheOptions
     /// <see langword="true" />.
     /// </value>
     /// <remarks>
-    /// The setting is applied best-effort: a database that does not support WAL — notably an in-memory database — is
+    /// The setting is applied best-effort: a database that does not support WAL - notably an in-memory database - is
     /// left in its native journal mode rather than failing.
     /// </remarks>
     public bool UseWriteAheadLogging { get; set; } = true;

@@ -58,7 +58,7 @@ public sealed partial class Utf8TomlReaderTests
     }
 
     /// <summary>
-    /// Verifies that a number token exposes its raw text — including underscores — while the typed accessor returns
+    /// Verifies that a number token exposes its raw text - including underscores - while the typed accessor returns
     /// the decoded value.
     /// </summary>
     [TestMethod]

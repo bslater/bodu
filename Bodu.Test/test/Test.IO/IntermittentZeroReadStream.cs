@@ -8,19 +8,19 @@ namespace Bodu.Test.IO;
 
 /// <summary>
 /// A <see cref="MemoryStream" /> wrapper that intermittently introduces an async yield on <see cref="ReadAsync" />
-/// calls to simulate a stream that occasionally stalls before delivering data — for example, a network source waiting
+/// calls to simulate a stream that occasionally stalls before delivering data - for example, a network source waiting
 /// for the next packet.
 /// </summary>
 /// <remarks>
 /// <para>
 /// Every <paramref name="stallEveryN" />-th call awaits <see cref="Task.Yield" /> before performing the read, causing
-/// the caller to briefly relinquish the thread and continue asynchronously. Real bytes are always returned — zero is
+/// the caller to briefly relinquish the thread and continue asynchronously. Real bytes are always returned - zero is
 /// never returned unless the stream has genuinely reached end-of-file.
 /// </para>
 /// <para>
 /// This correctly models bursty I/O without violating the <see cref="Stream" /> contract:
 /// <see cref="Stream.ReadAsync(Memory{byte},CancellationToken)" /> returning zero bytes is the end-of-stream signal,
-/// not a stall signal. Consumers that treat a zero return as EOF — which is correct per the contract — must not receive
+/// not a stall signal. Consumers that treat a zero return as EOF - which is correct per the contract - must not receive
 /// zero bytes mid-stream.
 /// </para>
 /// <para>
@@ -46,7 +46,7 @@ public sealed class IntermittentZeroReadStream
 
     /// <inheritdoc />
     /// <remarks>
-    /// Synchronous reads are not stalled — stalling only applies to <see cref="ReadAsync" />.
+    /// Synchronous reads are not stalled - stalling only applies to <see cref="ReadAsync" />.
     /// </remarks>
     public override int Read(byte[] buffer, int offset, int count)
         => base.Read(buffer, offset, Math.Min(count, MaxBytesPerRead));
@@ -54,7 +54,7 @@ public sealed class IntermittentZeroReadStream
     /// <inheritdoc />
     /// <remarks>
     /// Every <c>stallEveryN</c>-th call yields before reading to simulate a bursty async source. Real bytes are always
-    /// returned — zero is never returned before EOF.
+    /// returned - zero is never returned before EOF.
     /// </remarks>
     public override async ValueTask<int> ReadAsync(
         Memory<byte> buffer,

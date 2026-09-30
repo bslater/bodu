@@ -13,7 +13,7 @@ namespace Bodu.Formats.Outlook.Pst;
 /// <summary>
 /// Authors a complete synthetic mail store by composing the container fixture builders: a store object, a root folder
 /// with a hierarchy table, a user folder with a contents table, and messages carrying recipient and attachment tables,
-/// attachment objects, and an embedded message — the messaging structures the reference corpus cannot pin content
+/// attachment objects, and an embedded message - the messaging structures the reference corpus cannot pin content
 /// assertions on.
 /// </summary>
 /// <remarks>
@@ -442,7 +442,7 @@ internal sealed class PstMessagingFixtureBuilder
     }
 
     /// <summary>
-    /// Adds the full message: its property context, and — per the knobs — the recipient table, attachment table,
+    /// Adds the full message: its property context, and - per the knobs - the recipient table, attachment table,
     /// attachment objects, and embedded message wired as subnodes.
     /// </summary>
     /// <param name="file">The container builder.</param>
@@ -593,7 +593,7 @@ internal sealed class PstMessagingFixtureBuilder
     }
 
     /// <summary>
-    /// Builds the by-value attachment object's property context, including its binary content payload — heap-resident
+    /// Builds the by-value attachment object's property context, including its binary content payload - heap-resident
     /// by default, or a large subnode-resident data tree when <see cref="LargeAttachmentXBlocks" /> is set.
     /// </summary>
     /// <param name="file">The container builder.</param>
@@ -741,7 +741,7 @@ internal sealed class PstMessagingFixtureBuilder
     }
 
     /// <summary>
-    /// Adds a top-level table-context node whose rows only reference other nodes — the shape of hierarchy and
+    /// Adds a top-level table-context node whose rows only reference other nodes - the shape of hierarchy and
     /// contents tables.
     /// </summary>
     /// <param name="file">The container builder.</param>

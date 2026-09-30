@@ -35,8 +35,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// time. The freshness, validity, merge, and coverage rules are delegated to the shared <see cref="RateCacheRules" />
 /// so this backend stays behaviourally identical to the in-memory, file, and distributed caches; this class contributes
 /// only its SQLite storage and locking. The two halves of a pair's state are written independently through
-/// <see cref="Store" /> and <see cref="RecordCoverage" /> — storing rates never drops recorded coverage, and recording
-/// coverage never drops cached rows — while <see cref="StoreFetchedRange" /> writes both halves in one transaction.
+/// <see cref="Store" /> and <see cref="RecordCoverage" /> - storing rates never drops recorded coverage, and recording
+/// coverage never drops cached rows - while <see cref="StoreFetchedRange" /> writes both halves in one transaction.
 /// </para>
 /// <para>
 /// The cache is a single-process best-effort store. Writes for the same pair are serialized under a per-pair lock and
@@ -129,8 +129,8 @@ public sealed class SqliteRateCache
     /// <remarks>
     /// The schema is created if it does not already exist, and a pre-existing <c>rates</c> table is migrated to add the
     /// <c>observed_at</c> column when it is absent, in one transaction, when the instance is constructed. A failure to
-    /// create or migrate the schema is swallowed — and logged at <see cref="LogLevel.Warning" /> through
-    /// <paramref name="logger" /> — so a transiently unwritable database surfaces later as empty reads and skipped
+    /// create or migrate the schema is swallowed - and logged at <see cref="LogLevel.Warning" /> through
+    /// <paramref name="logger" /> - so a transiently unwritable database surfaces later as empty reads and skipped
     /// writes rather than a construction-time exception, unless <see cref="RateCacheOptions.ValidateStorageOnStart" />
     /// or <see cref="RateCacheOptions.ThrowOnStorageFailure" /> is set, in which case the failure propagates from the
     /// constructor.
@@ -724,7 +724,7 @@ public sealed class SqliteRateCache
     }
 
     /// <summary>
-    /// Applies the per-connection concurrency setting — the <c>busy_timeout</c> wait — to a freshly opened connection.
+    /// Applies the per-connection concurrency setting - the <c>busy_timeout</c> wait - to a freshly opened connection.
     /// </summary>
     /// <param name="connection">The open connection to configure.</param>
     /// <remarks>
@@ -733,7 +733,7 @@ public sealed class SqliteRateCache
     /// applied once to the keep-alive connection at construction (see <see cref="ApplyWriteAheadLogging" />) and every
     /// later per-operation connection inherits it, saving a PRAGMA round-trip per open. The one behaviour change is
     /// deliberate: an external process that flips the database's journal mode between operations is no longer corrected
-    /// until the next construction — acceptable for a best-effort cache that always treated WAL as advisory.
+    /// until the next construction - acceptable for a best-effort cache that always treated WAL as advisory.
     /// </remarks>
     private void ConfigureConnection(SqliteConnection connection)
     {
@@ -751,8 +751,8 @@ public sealed class SqliteRateCache
     /// </summary>
     /// <param name="connection">The open keep-alive connection.</param>
     /// <remarks>
-    /// Best-effort: a database that cannot honor the mode — notably an in-memory database, which reports back its
-    /// native mode — is left unchanged rather than failing. Runs outside any transaction so the journal-mode change is
+    /// Best-effort: a database that cannot honor the mode - notably an in-memory database, which reports back its
+    /// native mode - is left unchanged rather than failing. Runs outside any transaction so the journal-mode change is
     /// permitted.
     /// </remarks>
     private static void ApplyWriteAheadLogging(SqliteConnection connection)

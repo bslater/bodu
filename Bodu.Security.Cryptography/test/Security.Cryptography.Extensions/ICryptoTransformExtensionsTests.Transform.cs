@@ -22,38 +22,38 @@ public partial class ICryptoTransformExtensionsTests
     /// <remarks>
     /// All expected outputs are independently derived: reversing a 16-byte block is trivially
     /// verifiable by inspection, so no external reference implementation is required. The
-    /// <c>CipherMode.ECB</c> setting means each block is transformed in isolation — no IV chaining
-    /// — making per-block verification straightforward.
+    /// <c>CipherMode.ECB</c> setting means each block is transformed in isolation - no IV chaining
+    /// - making per-block verification straightforward.
     /// </remarks>
     public static IEnumerable<object[]> GetValidTransformTestData()
     {
         // ── Single-block encrypt ─────────────────────────────────────────────────────────────────
 
-        // Sequential ascending bytes — byte-by-byte reversal is immediately verifiable.
+        // Sequential ascending bytes - byte-by-byte reversal is immediately verifiable.
         yield return KatRow("Sequential ascending / encrypt",
             input: "000102030405060708090A0B0C0D0E0F",
             expected: "0F0E0D0C0B0A09080706050403020100",
             mode: TransformMode.Encrypt);
 
-        // All-zero block — fixed point: reverse(0x00…) == 0x00…
+        // All-zero block - fixed point: reverse(0x00…) == 0x00…
         yield return KatRow("All zeros / encrypt (fixed point)",
             input: "00000000000000000000000000000000",
             expected: "00000000000000000000000000000000",
             mode: TransformMode.Encrypt);
 
-        // All-0xFF block — fixed point: reverse(0xFF…) == 0xFF…
+        // All-0xFF block - fixed point: reverse(0xFF…) == 0xFF…
         yield return KatRow("All 0xFF / encrypt (fixed point)",
             input: "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
             expected: "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
             mode: TransformMode.Encrypt);
 
-        // Alternating 0xAA/0x55 — confirms adjacent byte positions are independently swapped.
+        // Alternating 0xAA/0x55 - confirms adjacent byte positions are independently swapped.
         yield return KatRow("Alternating 0xAA 0x55 / encrypt",
             input: "AA55AA55AA55AA55AA55AA55AA55AA55",
             expected: "55AA55AA55AA55AA55AA55AA55AA55AA",
             mode: TransformMode.Encrypt);
 
-        // Mixed real-world-style pattern — exercises every nibble value.
+        // Mixed real-world-style pattern - exercises every nibble value.
         yield return KatRow("Mixed pattern / encrypt",
             input: "DEADBEEFCAFEBABE0102030405060708",
             expected: "0807060504030201BEBAFECAEFBEADDE",
@@ -61,13 +61,13 @@ public partial class ICryptoTransformExtensionsTests
 
         // ── Multi-block encrypt ──────────────────────────────────────────────────────────────────
 
-        // Two full blocks — verifies each block is reversed independently (ECB isolation).
+        // Two full blocks - verifies each block is reversed independently (ECB isolation).
         yield return KatRow("Two blocks / encrypt",
             input: "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F",
             expected: "0F0E0D0C0B0A090807060504030201001F1E1D1C1B1A19181716151413121110",
             mode: TransformMode.Encrypt);
 
-        // Three full blocks — exercises a third independent reversal and confirms no
+        // Three full blocks - exercises a third independent reversal and confirms no
         // carry-over between blocks in ECB mode.
         yield return KatRow("Three blocks / encrypt",
             input: "000102030405060708090A0B0C0D0E0F" +
@@ -433,7 +433,7 @@ public partial class ICryptoTransformExtensionsTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Transform(Stream, Stream, int) — synchronous stream overload
+    // Transform(Stream, Stream, int) - synchronous stream overload
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -562,14 +562,14 @@ public partial class ICryptoTransformExtensionsTests
         byte[] iv = kat.TryGet("IV", out byte[]? ivVal) ? ivVal! : new byte[blockSizeBits / 8];
         byte[]? tweak = kat.TryGet("Tweak", out byte[]? t) ? t : null;
 
-        // Key has no effect on output — use a deterministic all-zero key of the block size.
+        // Key has no effect on output - use a deterministic all-zero key of the block size.
         byte[] key = new byte[blockSizeBits / 8];
 
         SimpleReversingBlockCipher cipher = tweak is null
             ? new SimpleReversingBlockCipher(key, blockSizeBits / 8)
             : new SimpleReversingBlockCipher(key, blockSizeBits / 8, tweak);
 
-        // Use ECB so each block is transformed independently — expected outputs are simple per-block reversals.
+        // Use ECB so each block is transformed independently - expected outputs are simple per-block reversals.
         return new SimpleReversingCryptoTransform(cipher, CipherModeKind.ECB, paddingMode, iv, encrypt);
     }
 }

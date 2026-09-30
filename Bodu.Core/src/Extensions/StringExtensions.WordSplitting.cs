@@ -28,8 +28,8 @@ public static partial class StringExtensions
     /// </para>
     /// <para>
     /// 2. When <see cref="WordCasingOptions.PreserveMixedCaseWords" /> is set, a chunk shaped as one lowercase letter,
-    /// then an uppercase letter, then anything (for example <c>iPhone</c>, <c>eBay</c>) — and which is not entirely
-    /// uppercase — is emitted verbatim as a single token.
+    /// then an uppercase letter, then anything (for example <c>iPhone</c>, <c>eBay</c>) - and which is not entirely
+    /// uppercase - is emitted verbatim as a single token.
     /// </para>
     /// <para>
     /// 3. Otherwise the chunk is case-split into sub-words at lowercase-to-uppercase and digit-to-letter transitions

@@ -40,7 +40,7 @@ public static class TelemetryAndObserver
                 + "exclude is too broad, the other that an include is too narrow. The observer then names the "
                 + "two vetoed values out of three, which the counts alone would not have told you.");
 
-        // Two includes (the brace expands to "error*" / "warn*") and one exclude — enough pattern shapes to
+        // Two includes (the brace expands to "error*" / "warn*") and one exclude - enough pattern shapes to
         // populate every statistics bucket below.
         var filter = TextFilter.Build(
         [
@@ -49,15 +49,15 @@ public static class TelemetryAndObserver
         ]);
 
         // Build a 200-value corpus from 8 fixed shapes repeated 25 times. Per round of 8:
-        //   4 accepted  (error-1, warn-2, warn-5, error-7 — include hits, no veto),
-        //   2 excluded  (error-debug-3, warn-debug-8 — include hits vetoed by "*debug*"),
-        //   2 not-included (info-4, trace-6 — no include matches).
+        //   4 accepted  (error-1, warn-2, warn-5, error-7 - include hits, no veto),
+        //   2 excluded  (error-debug-3, warn-debug-8 - include hits vetoed by "*debug*"),
+        //   2 not-included (info-4, trace-6 - no include matches).
         string[] stems = ["error-1", "warn-2", "error-debug-3", "info-4", "warn-5", "trace-6", "error-7", "warn-debug-8"];
         var corpus = new List<string>();
         for (var round = 0; round < 25; round++)
             corpus.AddRange(stems);
 
-        // FilterToList is the eager bulk surface — a tight indexed loop that also feeds the counters.
+        // FilterToList is the eager bulk surface - a tight indexed loop that also feeds the counters.
         var kept = filter.FilterToList(corpus);
 
         // GetStatistics returns an immutable snapshot. The buckets always reconcile:
@@ -67,7 +67,7 @@ public static class TelemetryAndObserver
             + $"excluded {stats.ItemsExcluded}, not-included {stats.ItemsNotIncluded} (kept {kept.Count})"
             + "  (the buckets reconcile: 200 == 100 + 50 + 50, and 'excluded' vs 'not-included' distinguishes a veto from no include matching)");
 
-        // Per-pattern hit counts credit the DECIDING pattern only — the include that admitted the value or the
+        // Per-pattern hit counts credit the DECIDING pattern only - the include that admitted the value or the
         // exclude that vetoed it. A pattern with a near-zero hit count over a big corpus is redundant or shadowed,
         // which is exactly the signal needed to tune a filter.
         foreach (var pattern in stats.Patterns)
@@ -80,7 +80,7 @@ public static class TelemetryAndObserver
         // Counters restart from zero so the observer demo below reads cleanly on its own.
         filter.ResetStatistics();
 
-        // An observer sees EVERY decision as it happens — value, decision, and deciding pattern.
+        // An observer sees EVERY decision as it happens - value, decision, and deciding pattern.
         // Attaching costs one null check per evaluation; detaching is just setting the property back to null.
         Console.WriteLine("  (the observer below sees every decision and reports only the vetoes - which values, not just how many)");
         filter.Observer = new VetoLogger();

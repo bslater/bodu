@@ -14,10 +14,10 @@ namespace Bodu.Financial;
 /// </summary>
 internal static class MoneyFormattingHelpers
 {
-    /// <summary>The positional templates corresponding to <see cref="NumberFormatInfo.CurrencyPositivePattern" /> values 0–3.</summary>
+    /// <summary>The positional templates corresponding to <see cref="NumberFormatInfo.CurrencyPositivePattern" /> values 0-3.</summary>
     private static readonly string[] s_currencyPositivePatterns = ["$n", "n$", "$ n", "n $"];
 
-    /// <summary>The positional templates corresponding to <see cref="NumberFormatInfo.CurrencyNegativePattern" /> values 0–15, matching the documented BCL pattern table.</summary>
+    /// <summary>The positional templates corresponding to <see cref="NumberFormatInfo.CurrencyNegativePattern" /> values 0-15, matching the documented BCL pattern table.</summary>
     private static readonly string[] s_currencyNegativePatterns =
     [
         "($n)", "-$n", "$-n", "$n-", "(n$)", "-n$", "n-$", "n$-",
@@ -62,7 +62,7 @@ internal static class MoneyFormattingHelpers
     /// <returns>An unambiguous representation pairing the locale's number formatting with the ISO code.</returns>
     /// <remarks>
     /// The mismatch path keeps the locale's decimal and grouping separators (so 1,234.56 in en-US becomes 1.234,56 in
-    /// de-DE) and uses the locale's positive- and negative-currency patterns — for example, en-US's negative pattern
+    /// de-DE) and uses the locale's positive- and negative-currency patterns - for example, en-US's negative pattern
     /// <c>($n)</c> applies to a mismatched-currency negative as <c>(JPY 1,234)</c>.
     /// </remarks>
     internal static string FormatLocaleMismatch(decimal amount, string isoCode, int decimals, string magnitudeSuffix, IFormatProvider provider)
@@ -118,7 +118,7 @@ internal static class MoneyFormattingHelpers
     /// </returns>
     /// <remarks>
     /// Neutral cultures (<c>"en"</c>, <c>"fr"</c>) and the invariant culture have no region currency and therefore
-    /// never match. A non-<see cref="CultureInfo" /> provider — for example, a bare <see cref="NumberFormatInfo" /> —
+    /// never match. A non-<see cref="CultureInfo" /> provider - for example, a bare <see cref="NumberFormatInfo" /> -
     /// also never matches because it carries no region context.
     /// </remarks>
     internal static bool CultureMatchesIsoCode(IFormatProvider? provider, string isoCode)
@@ -156,7 +156,7 @@ internal static class MoneyFormattingHelpers
             ? s_currencyNegativePatterns[nfi.CurrencyNegativePattern]
             : s_currencyPositivePatterns[nfi.CurrencyPositivePattern];
 
-        // Substitute the number placeholder first (the formatted number never contains an ASCII '$'), then the symbol —
+        // Substitute the number placeholder first (the formatted number never contains an ASCII '$'), then the symbol -
         // if we substituted the symbol first, a symbol containing the literal letter 'n' (rare but possible for
         // user-defined symbols) would be scrambled by the subsequent number substitution.
         return pattern.Replace("n", numberPart, StringComparison.Ordinal).Replace("$", symbol, StringComparison.Ordinal);

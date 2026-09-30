@@ -10,8 +10,8 @@ public partial class MLDsaEngineTests
 {
     /// <summary>
     /// Verifies that expanding the mask vector four XOF streams at a time, through the four-way SHAKE256, yields the
-    /// polynomials expanding one stream at a time does, for every parameter set — ℓ of 4, 5 and 7, so the last batch
-    /// holds four, one or three — and for offsets κ whose nonces carry from the low byte into the high one.
+    /// polynomials expanding one stream at a time does, for every parameter set - ℓ of 4, 5 and 7, so the last batch
+    /// holds four, one or three - and for offsets κ whose nonces carry from the low byte into the high one.
     /// </summary>
     /// <param name="designator">The parameter-set designator: 44, 65 or 87.</param>
     [TestMethod]

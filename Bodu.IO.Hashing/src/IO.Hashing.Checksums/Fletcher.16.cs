@@ -34,7 +34,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </list>
 /// <para>
 /// <strong>When to choose Fletcher16.</strong> Pick <see cref="Fletcher16" /> for embedded protocols and short-frame
-/// links where 16 bits is enough — Modbus ASCII, RPL message integrity, and similar resource-constrained settings. For
+/// links where 16 bits is enough - Modbus ASCII, RPL message integrity, and similar resource-constrained settings. For
 /// general file integrity prefer <see cref="Fletcher32" />; for stronger error-detection guarantees prefer a 16-bit CRC
 /// such as <see cref="Crc" /> with <see cref="CrcStandard.CRC16_MODBUS" />.
 /// </para>

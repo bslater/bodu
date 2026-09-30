@@ -13,11 +13,11 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// Parses Eric Young's published Blowfish reference vectors into <see cref="BlockCipherKnownAnswer" /> rows. The file
 /// carries two ECB sections: a variable-key table of <c>key / clear / cipher</c> hex triples, and a set-key sequence (<c>c=&lt;cipher&gt; k[N]=&lt;key&gt;</c>
 /// lines over the fixed plaintext declared by <c>data[8]=</c>) that grows the key one byte at a time. The trailing
-/// chaining-mode (CBC/CFB/OFB) section is ignored — those are mode-level vectors, not raw single-block ECB.
+/// chaining-mode (CBC/CFB/OFB) section is ignored - those are mode-level vectors, not raw single-block ECB.
 /// </summary>
 /// <remarks>
 /// Set-key rows whose key is shorter than <paramref name="minKeyBytes" /> are skipped: Blowfish's specification fixes
-/// the minimum key length at 32 bits (4 bytes), so Eric Young's <c>k[1]</c>–<c>k[3]</c> rows exercise an out-of-spec
+/// the minimum key length at 32 bits (4 bytes), so Eric Young's <c>k[1]</c>-<c>k[3]</c> rows exercise an out-of-spec
 /// key length that a conforming engine rejects.
 /// </remarks>
 public static class BlowfishEricYoungKatReader

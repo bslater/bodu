@@ -17,7 +17,7 @@ namespace Bodu.Globalization.Calendar.Samples.NotableDatesBasics.Scenarios;
 public static class ExpandedTimeline
 {
     /// <summary>
-    /// Resolves Christmas/Boxing Day 2021 for Australia and expands the observed-only result into the 25–28 December
+    /// Resolves Christmas/Boxing Day 2021 for Australia and expands the observed-only result into the 25-28 December
     /// timeline.
     /// </summary>
     public static void Run()

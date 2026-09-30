@@ -6,23 +6,23 @@ the classic non-cryptographic hash functions in their natural bucket-assignment 
 scenarios run offline against fixed inputs and the committed `Data/pangrams.txt` (199 bytes).
 
 > **Not security.** Everything in this package detects *accidental* corruption and
-> distributes keys — an adversary can forge all of it. For tamper-proof integrity, signatures,
+> distributes keys - an adversary can forge all of it. For tamper-proof integrity, signatures,
 > or passwords, use `Bodu.Security.Cryptography`.
 
 ```bash
 dotnet run --project samples/IO.Hashing/Bodu.IO.Hashing.Samples.ChecksumTour
 ```
 
-## Scenario 1 — CrcCatalogue
+## Scenario 1 - CrcCatalogue
 
 **Intent.** Show the package's core design decision: there is one `Crc` engine, and every CRC
-in the RevEng catalogue — CRC-3 through CRC-64 — is just an immutable `CrcStandard` parameter
+in the RevEng catalogue - CRC-3 through CRC-64 - is just an immutable `CrcStandard` parameter
 bundle (width, polynomial, init, reflection, final XOR). "Which CRC does this protocol use?"
 is answered by picking a catalogue entry, never by writing another implementation.
 
 **What it does.** Reports the catalogue size (112 standards), then runs five well-known
 standards (SMBus CRC-8, Modbus and XMODEM CRC-16, the zip/png CRC-32, and the xz CRC-64) over
-`"123456789"` — the input every RevEng entry publishes its check value for — printing each
+`"123456789"` - the input every RevEng entry publishes its check value for - printing each
 standard's parameters and digest. It notes that digest bytes follow the `System.IO.Hashing`
 little-endian convention (the published CRC-32 check `0xCBF43926` appears as bytes
 `26 39 F4 CB`), and resolves a standard from its catalogue name with `CrcStandard.FromName`.
@@ -57,11 +57,11 @@ little-endian convention (the published CRC-32 check `0xCBF43926` appears as byt
 catalogue properties and `.FromName`, `CrcStandard.Name/Size/Polynomial/ReflectIn/ReflectOut`,
 the `CrcStandards` enum.
 
-## Scenario 2 — ChecksumFamilies
+## Scenario 2 - ChecksumFamilies
 
 **Intent.** Put the three checksum families over the same input so their shared surface is
 visible: CRC, Adler (RFC 1950), and Fletcher all derive from the BCL's
-`NonCryptographicHashAlgorithm`, so one integrity pipeline can swap families with one line —
+`NonCryptographicHashAlgorithm`, so one integrity pipeline can swap families with one line -
 and show the property checksums exist for: a single flipped bit changes the digest.
 
 **What it does.** Checksums the committed `Data/pangrams.txt` with CRC-32/ISO-HDLC, Adler-32,
@@ -95,16 +95,16 @@ flips one bit of the input and shows the CRC digest change.
 **APIs demonstrated.** `Adler32`, `Fletcher32`, `Fletcher64`, the shared
 `NonCryptographicHashAlgorithm` streaming surface, single-bit corruption detection.
 
-## Scenario 3 — StreamingResumable
+## Scenario 3 - StreamingResumable
 
 **Intent.** Show the three incremental surfaces: chunked `Append` equals the one-shot digest
 (split points don't matter); `HashingStream` checksums bytes as a side effect of ordinary
 stream I/O (the copy-while-verifying pattern); and `IResumableHashAlgorithm` extends a
-*stored* digest with new data — the append-only log pattern, where yesterday's log never
+*stored* digest with new data - the append-only log pattern, where yesterday's log never
 needs re-reading.
 
 **What it does.** Computes the file's CRC one-shot, then via three arbitrary `Append` chunks,
-then through a `HashingStream` wrapping the file during a `CopyTo` — all three digests equal.
+then through a `HashingStream` wrapping the file during a `CopyTo` - all three digests equal.
 It then simulates a two-day append-only ledger: day 1's digest is stored, day 2's records are
 folded in with `ComputeHashFrom(storedDigest, day2)`, and the result equals a full replay of
 the whole log.
@@ -134,11 +134,11 @@ the whole log.
 `HashingStream(Stream, NonCryptographicHashAlgorithm)` + `.Algorithm.GetCurrentHash()`,
 `IResumableHashAlgorithm.ComputeHashFrom`.
 
-## Scenario 4 — FnvAndAdlerVariants
+## Scenario 4 - FnvAndAdlerVariants
 
 **Intent.** Two families demonstrated so far each ship in more than one width. Put the FNV-1a
-hash and the Adler checksum side by side across their variants — FNV-1a in 32 and 64 bits, and
-Adler in its RFC 1950 32-bit, SIMD-friendly power-of-two-modulus (`Adler32C`), and 64-bit forms —
+hash and the Adler checksum side by side across their variants - FNV-1a in 32 and 64 bits, and
+Adler in its RFC 1950 32-bit, SIMD-friendly power-of-two-modulus (`Adler32C`), and 64-bit forms -
 so the shared `NonCryptographicHashAlgorithm` surface is visible while only the digest width and
 mixing change.
 
@@ -170,25 +170,25 @@ digest as hex. FNV lives in `Bodu.IO.Hashing`; the Adler variants in `Bodu.IO.Ha
   wider digests spread the same input over more state - fewer accidental collisions.
 ```
 
-The two Adler-32 forms differ only in their combining modulus — `Adler32` uses the RFC 1950
-prime 65521, `Adler32C` the power-of-two 65536 for cheaper vectorized reduction — so their
+The two Adler-32 forms differ only in their combining modulus - `Adler32` uses the RFC 1950
+prime 65521, `Adler32C` the power-of-two 65536 for cheaper vectorized reduction - so their
 digests are close but not interchangeable (`Adler32C` is an internal-only variant; anything
 touching zlib/PNG must use `Adler32`). The wider 64-bit forms of each family spread the same
-input over more state — the trade of a longer digest for fewer accidental collisions.
+input over more state - the trade of a longer digest for fewer accidental collisions.
 
 **APIs demonstrated.** `Fnv1a32`, `Fnv1a64`, `Adler32`, `Adler32C`, `Adler64`, the shared
 `NonCryptographicHashAlgorithm` streaming surface.
 
-## Scenario 5 — NonCryptoHashes
+## Scenario 5 - NonCryptoHashes
 
-**Intent.** Show the classic hash functions doing the job they're built for — fast,
-well-distributed, *deterministic* bucket assignment for sharding and routing — while stating
+**Intent.** Show the classic hash functions doing the job they're built for - fast,
+well-distributed, *deterministic* bucket assignment for sharding and routing - while stating
 plainly what they are not: none of this is cryptographic, and an adversary can craft
 collisions at will.
 
 **What it does.** Routes eight fixed keys onto four shards with FNV-1a/32, MurmurHash3/32,
 and CityHash/32 through the shared algorithm surface, printing each function's assignment.
-The assignments differ between functions but are identical on every run — routing without
+The assignments differ between functions but are identical on every run - routing without
 coordination.
 
 **What to expect.**
@@ -232,6 +232,6 @@ Bodu.IO.Hashing.Samples.ChecksumTour/
 
 ## Related
 
-- `Bodu.IO.Hashing.Samples.CheckDigits` — the identifier-validation half of the package.
-- `Bodu.IO.Hashing.Samples.CustomCheckDigit` — extending the check-digit contract yourself.
+- `Bodu.IO.Hashing.Samples.CheckDigits` - the identifier-validation half of the package.
+- `Bodu.IO.Hashing.Samples.CustomCheckDigit` - extending the check-digit contract yourself.
 - Guides: `docs/guides/io-hashing/`.

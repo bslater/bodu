@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Recurrence;
 /// A cron expression matches instants whose second (in the six-field <see cref="CronFormat.WithSeconds" /> layout),
 /// minute, hour, day-of-month, month, and day-of-week fields are each members of the corresponding field set. Each
 /// field supports <c>*</c>, single values, ranges (<c>a-b</c>), steps (<c>*/n</c>, <c>a-b/n</c>), and comma-separated
-/// lists, with three-letter month (<c>JAN</c>–<c>DEC</c>) and weekday (<c>SUN</c>–<c>SAT</c>) names. The macros
+/// lists, with three-letter month (<c>JAN</c>-<c>DEC</c>) and weekday (<c>SUN</c>-<c>SAT</c>) names. The macros
 /// <c>@yearly</c> / <c>@annually</c>, <c>@monthly</c>, <c>@weekly</c>, <c>@daily</c> / <c>@midnight</c>, and
 /// <c>@hourly</c> are also recognized.
 /// </para>
@@ -26,7 +26,7 @@ namespace Bodu.Globalization.Recurrence;
 /// <para>
 /// Every occurrence answer is a pure function of the arguments: no API reads the wall clock or consults the machine
 /// time zone. The <see cref="DateTimeOffset" /> overloads interpret the wall-clock time in the argument's own offset
-/// and return occurrences carrying that offset; daylight-saving transitions are the caller's concern — a host that
+/// and return occurrences carrying that offset; daylight-saving transitions are the caller's concern - a host that
 /// wants a local-time schedule across a transition re-derives the offset on each evaluation.
 /// </para>
 /// <para>
@@ -38,25 +38,25 @@ namespace Bodu.Globalization.Recurrence;
 /// </remarks>
 public sealed partial class CronExpression : IEquatable<CronExpression>
 {
-    /// <summary>The number of years the occurrence search scans before giving up. The largest gap between two consecutive occurrences of any satisfiable expression is eight years — a February 29th expression crossing a non-leap century year such as 2100 (2096 → 2104) — so twelve years covers every real schedule with margin while still bounding the search for an expression that can never match (for example February 30th).</summary>
+    /// <summary>The number of years the occurrence search scans before giving up. The largest gap between two consecutive occurrences of any satisfiable expression is eight years - a February 29th expression crossing a non-leap century year such as 2100 (2096 → 2104) - so twelve years covers every real schedule with margin while still bounding the search for an expression that can never match (for example February 30th).</summary>
     private const int SearchHorizonYears = 12;
 
-    /// <summary>The set of matching seconds, indexed 0–59 (all set for the five-field layout).</summary>
+    /// <summary>The set of matching seconds, indexed 0-59 (all set for the five-field layout).</summary>
     private readonly bool[] _seconds;
 
-    /// <summary>The set of matching minutes, indexed 0–59.</summary>
+    /// <summary>The set of matching minutes, indexed 0-59.</summary>
     private readonly bool[] _minutes;
 
-    /// <summary>The set of matching hours, indexed 0–23.</summary>
+    /// <summary>The set of matching hours, indexed 0-23.</summary>
     private readonly bool[] _hours;
 
-    /// <summary>The set of matching days of the month, indexed 1–31.</summary>
+    /// <summary>The set of matching days of the month, indexed 1-31.</summary>
     private readonly bool[] _daysOfMonth;
 
-    /// <summary>The set of matching months, indexed 1–12.</summary>
+    /// <summary>The set of matching months, indexed 1-12.</summary>
     private readonly bool[] _months;
 
-    /// <summary>The set of matching days of the week, indexed 0 (Sunday) – 6 (Saturday).</summary>
+    /// <summary>The set of matching days of the week, indexed 0 (Sunday) - 6 (Saturday).</summary>
     private readonly bool[] _daysOfWeek;
 
     /// <summary>Indicates whether the day-of-month field is restricted (not <c>*</c>).</summary>
@@ -307,7 +307,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// <remarks>
     /// Every field mask contributes its contents, matching the fields <see cref="Equals(CronExpression)" /> compares,
     /// as does the day-field combination mode. Mixing only each mask's cardinality would satisfy the equality contract
-    /// but collapse the common case — a schedule selecting one value per field, such as <c>0 2 * * *</c> — onto a
+    /// but collapse the common case - a schedule selecting one value per field, such as <c>0 2 * * *</c> - onto a
     /// single bucket.
     /// </remarks>
     public override int GetHashCode()
@@ -363,7 +363,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// field; otherwise <see langword="false" />, in which case it must satisfy both.
     /// </value>
     /// <remarks>
-    /// This is the only way either restriction flag is observable, so it — rather than the two flags — is what
+    /// This is the only way either restriction flag is observable, so it - rather than the two flags - is what
     /// <see cref="Equals(CronExpression)" /> compares and <see cref="GetHashCode" /> mixes.
     /// </remarks>
     private bool DaysCombineByUnion =>
@@ -381,7 +381,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         bool dowMatch = _daysOfWeek[(int)candidate.DayOfWeek];
 
         // Both field masks always apply; the restriction flags select only how they combine. Vixie takes the union
-        // when neither day field begins with '*', and the intersection otherwise — so a stepped star such as "*/2"
+        // when neither day field begins with '*', and the intersection otherwise - so a stepped star such as "*/2"
         // still narrows the days it matches even though it does not make the field "restricted".
         return DaysCombineByUnion
             ? domMatch || dowMatch

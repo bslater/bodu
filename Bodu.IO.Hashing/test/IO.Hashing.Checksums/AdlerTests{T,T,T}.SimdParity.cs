@@ -49,7 +49,7 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
 /// </summary>
 /// <remarks>
 /// Inputs are <c>(byte)(i &amp; 0xFF)</c> sequences sized to engage the SIMD branch (≥ 512 bytes). The
-/// 1 KiB vector matches the reproduction in issue #127 — it crosses the SIMD threshold but stays inside a
+/// 1 KiB vector matches the reproduction in issue #127 - it crosses the SIMD threshold but stays inside a
 /// single NMAX block. The 8 KiB vector additionally crosses the 5552-byte NMAX boundary so accumulator
 /// reduction at the chunk join is exercised.
 /// </remarks>

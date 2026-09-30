@@ -10,7 +10,7 @@ namespace Bodu.IO.Hashing.Samples.CustomCheckDigit;
 
 /// <summary>
 /// Entry point for the custom check-digit sample: implementing the library's
-/// <c>CheckDigitAlgorithm</c> contract yourself — a weighted mod-10 SKU scheme — and exercising
+/// <c>CheckDigitAlgorithm</c> contract yourself - a weighted mod-10 SKU scheme - and exercising
 /// it through its own surface and beside the built-in algorithms. The companion
 /// <c>*.CustomCheckDigit.Test</c> project derives the shared
 /// <c>CheckDigitContractTests&lt;T&gt;</c> base to prove the implementation.

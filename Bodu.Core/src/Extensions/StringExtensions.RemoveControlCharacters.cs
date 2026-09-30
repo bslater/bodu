@@ -18,7 +18,7 @@ public static partial class StringExtensions
     /// </exception>
     /// <remarks>
     /// Membership is determined via <see cref="char.IsControl(char)" /> which covers ASCII C0 control codes
-    /// (U+0000–U+001F), DEL (U+007F), and the C1 control range (U+0080–U+009F). Tab, CR and LF count as control
+    /// (U+0000-U+001F), DEL (U+007F), and the C1 control range (U+0080-U+009F). Tab, CR and LF count as control
     /// characters and are also removed.
     /// </remarks>
     public static string RemoveControlCharacters(this string value) =>

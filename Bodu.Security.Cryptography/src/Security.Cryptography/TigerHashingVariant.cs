@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Pick <see cref="Tiger" /> when reproducing or interoperating with output from the original Anderson/Biham reference
-/// implementation, and <see cref="Tiger2" /> when matching modern Tiger-based tooling or TigerTree variants — most
+/// implementation, and <see cref="Tiger2" /> when matching modern Tiger-based tooling or TigerTree variants - most
 /// contemporary code paths use <see cref="Tiger2" /> by default. Aside from the final padding byte the two variants are
 /// bit-identical, so the same key material and message produce otherwise indistinguishable internal computation.
 /// </para>

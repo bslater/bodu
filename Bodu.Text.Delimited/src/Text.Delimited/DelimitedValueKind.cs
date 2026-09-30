@@ -12,12 +12,12 @@ namespace Bodu.Text.Delimited;
 public enum DelimitedValueKind
 {
     /// <summary>
-    /// An array — the document of records, or a positional (headerless) record.
+    /// An array - the document of records, or a positional (headerless) record.
     /// </summary>
     Array = 0,
 
     /// <summary>
-    /// An object — a record keyed by header name.
+    /// An object - a record keyed by header name.
     /// </summary>
     Object,
 

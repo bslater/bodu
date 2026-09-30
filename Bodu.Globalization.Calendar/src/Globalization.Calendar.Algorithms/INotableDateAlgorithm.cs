@@ -18,7 +18,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </para>
 /// <para>
 /// <strong>When to implement.</strong> Provide a custom algorithm when a notable date follows a computation the
-/// built-in strategies do not cover — for example an astronomical event or a bespoke ecclesiastical rule. Register the
+/// built-in strategies do not cover - for example an astronomical event or a bespoke ecclesiastical rule. Register the
 /// implementation under a key in an <see cref="INotableDateAlgorithmRegistry" />, pass that registry to the loader and
 /// the <see cref="NotableDateService" />, and reference the key from a rule's algorithm strategy.
 /// </para>

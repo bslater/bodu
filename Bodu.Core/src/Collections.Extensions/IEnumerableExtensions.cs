@@ -7,8 +7,8 @@
 namespace Bodu.Collections.Extensions;
 
 /// <summary>
-/// Provides operations over the non-generic <see cref="System.Collections.IEnumerable" /> surface — counting without
-/// enumerating where the source is already a collection, and walking heterogeneous tree structures recursively — for
+/// Provides operations over the non-generic <see cref="System.Collections.IEnumerable" /> surface - counting without
+/// enumerating where the source is already a collection, and walking heterogeneous tree structures recursively - for
 /// code that has to deal with reflection-shaped or legacy sequences.
 /// </summary>
 /// <remarks>
@@ -23,7 +23,7 @@ namespace Bodu.Collections.Extensions;
 /// The API surface is small and pragmatic: <c>CountOrDefault</c> short-circuits to
 /// <see cref="System.Collections.ICollection.Count" /> when the source already exposes one, falling back to enumeration
 /// only when necessary, and <c>RecursiveSelect</c> walks a node graph where each node may yield further children via a
-/// caller-supplied selector — with overloads that accept depth, index, or a controller delegate to influence traversal.
+/// caller-supplied selector - with overloads that accept depth, index, or a controller delegate to influence traversal.
 /// </para>
 /// <para>
 /// <c>CountOrDefault</c> avoids enumerating known collection types and otherwise performs a single eager pass. The
@@ -33,7 +33,7 @@ namespace Bodu.Collections.Extensions;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Cheap count when the source already exposes ICollection — falls back to enumeration otherwise.
+/// // Cheap count when the source already exposes ICollection - falls back to enumeration otherwise.
 /// System.Collections.IEnumerable boxed = new ArrayList { 1, 2, 3, 4 };
 /// int count = boxed.CountOrDefault(); // => 4
 ///

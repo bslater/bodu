@@ -68,8 +68,8 @@ public partial class ThrowHelperTests
         ThrowHelper.ThrowIfArrayMultidimensional(array);
     }
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayMultidimensional" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for single-dimensional arrays.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayMultidimensional" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for single-dimensional arrays.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="array">The array passed to the guard.</param>

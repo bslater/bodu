@@ -103,7 +103,7 @@ public partial class WebRateProviderExtensionsTests
     /// The override lowers the attempt timeout rather than raising it, because the standard handler validates the
     /// pipeline as a whole: the total-request timeout must exceed the attempt timeout and the circuit breaker's
     /// sampling duration must be at least twice it. Raising only the attempt timeout leaves the aligned total and
-    /// sampling values behind and fails that validation — see
+    /// sampling values behind and fails that validation - see
     /// <see cref="AddWebRateProvider_WhenConfigureResilienceRaisesAttemptTimeoutAlone_ShouldFailPipelineValidation" />.
     /// </remarks>
     [TestMethod]
@@ -119,7 +119,7 @@ public partial class WebRateProviderExtensionsTests
             configureResilience: o => o.AttemptTimeout.Timeout = overridden)
             .BuildServiceProvider();
 
-        // 2s, not the 7s the alignment computed from HttpTimeout — so the delegate ran last.
+        // 2s, not the 7s the alignment computed from HttpTimeout - so the delegate ran last.
         Assert.AreEqual(overridden, GetResilienceOptions(provider).AttemptTimeout.Timeout);
     }
 
@@ -129,8 +129,8 @@ public partial class WebRateProviderExtensionsTests
     /// </summary>
     /// <remarks>
     /// This is the standard handler's own validation, not a Bodu invariant, and it is the reason a provider that wants
-    /// a longer attempt timeout should raise <see cref="WebRateProviderOptions.HttpTimeout" /> — which the alignment
-    /// derives every dependent value from — rather than reach into the resilience options.
+    /// a longer attempt timeout should raise <see cref="WebRateProviderOptions.HttpTimeout" /> - which the alignment
+    /// derives every dependent value from - rather than reach into the resilience options.
     /// </remarks>
     [TestMethod]
     public void AddWebRateProvider_WhenConfigureResilienceRaisesAttemptTimeoutAlone_ShouldFailPipelineValidation()

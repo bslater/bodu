@@ -46,7 +46,7 @@ public sealed partial class RadixTrieGenericTests
     }
 
     /// <summary>
-    /// Verifies that removing an absent key — including one ending inside a compressed edge — returns
+    /// Verifies that removing an absent key - including one ending inside a compressed edge - returns
     /// <see langword="false" /> and leaves values untouched.
     /// </summary>
     [TestMethod]

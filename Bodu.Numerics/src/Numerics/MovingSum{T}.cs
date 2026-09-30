@@ -21,8 +21,8 @@ namespace Bodu.Numerics;
 /// This is the finance / telemetry "rolling window" idiom: the window holds the last <see cref="Capacity" /> samples,
 /// <see cref="Sum" /> and <see cref="Mean" /> always describe exactly those samples, and until the window fills (<see cref="IsFull" />)
 /// they describe the samples received so far. Samples are accepted as <typeparamref name="T" /> and the sum is
-/// maintained in <typeparamref name="T" /> — exact for integer, <see cref="decimal" />, and <see cref="BigInteger" />
-/// samples — while <see cref="Mean" /> is a derived result computed and returned as a finite <see cref="double" />. The
+/// maintained in <typeparamref name="T" /> - exact for integer, <see cref="decimal" />, and <see cref="BigInteger" />
+/// samples - while <see cref="Mean" /> is a derived result computed and returned as a finite <see cref="double" />. The
 /// rolling-sum arithmetic is <b>checked</b>: a fixed-width integer sum that would overflow throws
 /// <see cref="OverflowException" /> from <see cref="Add" /> rather than silently wrapping, and the window state is left
 /// unchanged when that happens. Floating-point sums cannot overflow (they saturate per IEEE 754); a sum that has
@@ -51,7 +51,7 @@ namespace Bodu.Numerics;
 public sealed class MovingSum<T>
     where T : INumber<T>
 {
-    /// <summary>Whether <typeparamref name="T" /> is a binary floating-point type whose subtract-on-evict updates drift and therefore needs the periodic exact rebuild; exact types (integers, <see cref="decimal" />, <see cref="BigInteger" />) skip it — their incremental sum is already exact, and re-summing the ring in array order could transiently overflow a checked prefix that the true window-order sum never reaches. A hardcoded type matrix (the reflection-free pattern <c>Fraction&lt;T&gt;</c> uses for its bounds probe) keeps this NativeAOT-safe.</summary>
+    /// <summary>Whether <typeparamref name="T" /> is a binary floating-point type whose subtract-on-evict updates drift and therefore needs the periodic exact rebuild; exact types (integers, <see cref="decimal" />, <see cref="BigInteger" />) skip it - their incremental sum is already exact, and re-summing the ring in array order could transiently overflow a checked prefix that the true window-order sum never reaches. A hardcoded type matrix (the reflection-free pattern <c>Fraction&lt;T&gt;</c> uses for its bounds probe) keeps this NativeAOT-safe.</summary>
     private static readonly bool s_requiresRebuild =
         typeof(T) == typeof(double) || typeof(T) == typeof(float) || typeof(T) == typeof(Half);
 
@@ -197,8 +197,8 @@ public sealed class MovingSum<T>
     /// </summary>
     public void Reset()
     {
-        // Stale slots are unreachable after a reset — warm-up writes every slot before it is read, and the rebuild
-        // only runs once the window has refilled — so the clear is needed only to release references held by
+        // Stale slots are unreachable after a reset - warm-up writes every slot before it is read, and the rebuild
+        // only runs once the window has refilled - so the clear is needed only to release references held by
         // reference-containing sample types (for example BigDecimal's BigInteger).
         if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
             Array.Clear(_buffer);

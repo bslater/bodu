@@ -44,7 +44,7 @@ public static partial class IEnumerableExtensions
     /// <see cref="ArgumentOutOfRangeException" /> is thrown during enumeration, consistent with the other modes.
     /// </para>
     /// <para>
-    /// To shuffle a fully materialized collection in place — the buffer-everything strategy — use the BCL
+    /// To shuffle a fully materialized collection in place - the buffer-everything strategy - use the BCL
     /// <see cref="Random.Shuffle{T}(Span{T})" /> (or <c>Random.Shared.Shuffle</c>) instead; every
     /// <see cref="RandomizationMode" /> here bounds memory use below the full source length.
     /// </para>

@@ -10,8 +10,8 @@ uid: Bodu.Text.Delimited.Reader
 
 ## Key types
 
-- <xref:Bodu.Text.Delimited.Reader.Utf8DelimitedReader> — the `ref struct` cursor: `Read`, `TokenType` (a <xref:Bodu.Text.Delimited.DelimitedTokenType>), `ValueSpan` / `GetString`, `Headers`, `LineNumber`, and `BytesConsumed`.
-- <xref:Bodu.Text.Delimited.Reader.DelimitedReaderOptions> — `Delimiter`, `Quote`, `NoHeader`, `TrimFields`, `AllowComments` / `CommentChar`, and the policies <xref:Bodu.Text.Delimited.DelimitedFieldCountBehavior>, <xref:Bodu.Text.Delimited.DelimitedMalformedRecordBehavior>, and <xref:Bodu.Text.Delimited.DelimitedDuplicateHeaderBehavior>.
+- <xref:Bodu.Text.Delimited.Reader.Utf8DelimitedReader> - the `ref struct` cursor: `Read`, `TokenType` (a <xref:Bodu.Text.Delimited.DelimitedTokenType>), `ValueSpan` / `GetString`, `Headers`, `LineNumber`, and `BytesConsumed`.
+- <xref:Bodu.Text.Delimited.Reader.DelimitedReaderOptions> - `Delimiter`, `Quote`, `NoHeader`, `TrimFields`, `AllowComments` / `CommentChar`, and the policies <xref:Bodu.Text.Delimited.DelimitedFieldCountBehavior>, <xref:Bodu.Text.Delimited.DelimitedMalformedRecordBehavior>, and <xref:Bodu.Text.Delimited.DelimitedDuplicateHeaderBehavior>.
 
 ## Example
 

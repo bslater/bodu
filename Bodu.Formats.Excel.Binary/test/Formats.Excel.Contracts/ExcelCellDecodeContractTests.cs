@@ -13,7 +13,7 @@ namespace Bodu.Formats.Excel.Contracts;
 /// concrete decode path through <see cref="DecodeCells(ExcelCellDecodeKat)" /> and inherits the known-answer assertions.
 /// </summary>
 /// <remarks>
-/// Two surfaces decode the identical worksheet records — the forward-only <see cref="ExcelWorksheetReader" /> and the
+/// Two surfaces decode the identical worksheet records - the forward-only <see cref="ExcelWorksheetReader" /> and the
 /// materialized <see cref="ExcelWorksheet" /> obtained from <see cref="ExcelBinaryWorkbook" />. Both inherit this base
 /// and run the same <see cref="ExcelCellDecodeVectors" /> rows, proving the streaming and materialized paths agree on
 /// every vector.

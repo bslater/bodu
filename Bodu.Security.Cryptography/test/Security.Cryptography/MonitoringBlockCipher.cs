@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The transform is an XOR with a fixed mask — reversible, so <see cref="Decrypt" /> is a true inverse of
+/// The transform is an XOR with a fixed mask - reversible, so <see cref="Decrypt" /> is a true inverse of
 /// <see cref="Encrypt" /> and round-trip tests work correctly. Be aware, however, that XOR is <b>linear</b>: when a
 /// mode surrounds its cipher call with pre- and post-XOR operations against the same value (OCB's offset, for example),
 /// that value cancels and the ciphertext is reduced to <c>plaintext XOR mask</c>. Tests that need to verify a mode's
@@ -93,7 +93,7 @@ public sealed class MonitoringBlockCipher
     /// independent copy at the moment of each call.
     /// </summary>
     /// <remarks>
-    /// This is the definitive signal that a mode is actively chaining, injecting an IV, or advancing an offset — the
+    /// This is the definitive signal that a mode is actively chaining, injecting an IV, or advancing an offset - the
     /// <i>inputs</i> the underlying cipher received must differ across blocks even when the plaintext blocks are
     /// identical. Asserting on this collection is robust against the XOR transform's linearity, which can otherwise
     /// make distinct cipher inputs produce identical ciphertext.

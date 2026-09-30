@@ -12,7 +12,7 @@ namespace Bodu.IO.Compound.Samples.CompoundBasics.Scenarios;
 /// Demonstrates reading a real-world container: the committed <c>sample1.doc</c> is a Word
 /// 97-2003 file, which is exactly an OLE2 container. The sample walks its storage tree with
 /// <see cref="CompoundStorage" />, shows per-entry metadata from <see cref="CompoundEntryInfo" />,
-/// and opens a named stream — without knowing anything about the Word format itself.
+/// and opens a named stream - without knowing anything about the Word format itself.
 /// </summary>
 public static class StreamsAndEntries
 {

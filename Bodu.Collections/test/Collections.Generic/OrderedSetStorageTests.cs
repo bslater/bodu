@@ -15,7 +15,7 @@ public partial class OrderedSetStorageTests
 {
 
     /// <summary>
-    /// Verifies the happy path for <see cref="OrderedSetStorage{T}.Add(T)" /> on an empty storage —
+    /// Verifies the happy path for <see cref="OrderedSetStorage{T}.Add(T)" /> on an empty storage -
     /// the canonical smoke check for the engine.
     /// </summary>
     [TestMethod]

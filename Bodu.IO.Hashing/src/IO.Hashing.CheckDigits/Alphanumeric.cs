@@ -44,8 +44,8 @@ internal static class Alphanumeric
                             : throw new ArgumentOutOfRangeException(nameof(ch), ch, FormatInvalidCharacterMessage(ch, HashingResourceStrings.CharacterSet_Cusip, HashingResourceStrings.CharacterSet_CusipValidChars));
 
     /// <summary>
-    /// Expands an ASCII uppercase alphanumeric character to its numeric value. <c>'0'</c>–<c>'9'</c> map to 0–9 and
-    /// <c>'A'</c>–<c>'Z'</c> map to 10–35.
+    /// Expands an ASCII uppercase alphanumeric character to its numeric value. <c>'0'</c>-<c>'9'</c> map to 0-9 and
+    /// <c>'A'</c>-<c>'Z'</c> map to 10-35.
     /// </summary>
     /// <param name="ch">The character to expand.</param>
     /// <returns>The integer value in the range 0 to 35.</returns>

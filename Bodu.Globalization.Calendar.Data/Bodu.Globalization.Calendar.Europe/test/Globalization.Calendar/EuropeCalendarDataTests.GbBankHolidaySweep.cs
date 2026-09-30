@@ -24,7 +24,7 @@ public sealed partial class EuropeCalendarDataTests
     /// The sweep covers the rule-derived holidays only; the feed's sixteen royal and proclamation one-offs (jubilees,
     /// the state funeral, the coronation, the Scottish World Cup day, and the proclamation-moved 2020/2022 holidays)
     /// are outside the rule model and are excluded by the vector file, as its provenance header documents. Within the
-    /// rule model the GB pack is expected to be exact — dates and substitute flags both — exercising the weekend
+    /// rule model the GB pack is expected to be exact - dates and substitute flags both - exercising the weekend
     /// roll, the Christmas/Boxing conflict-aware substitution, and the Scottish New Year chained substitution.
     /// </para>
     /// </remarks>

@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 namespace Bodu.Globalization.Calendar.Tool;
 
 /// <summary>
-/// Implements the <c>bodu-calendar</c> command surface — <c>lint</c>, <c>compile</c>, and <c>info</c> — as an
+/// Implements the <c>bodu-calendar</c> command surface - <c>lint</c>, <c>compile</c>, and <c>info</c> - as an
 /// in-process entry point the console host and the tests share.
 /// </summary>
 /// <remarks>

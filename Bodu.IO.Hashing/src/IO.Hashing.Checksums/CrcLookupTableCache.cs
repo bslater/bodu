@@ -9,7 +9,7 @@ using System.Collections.Concurrent;
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection — amortizes the
+/// Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection - amortizes the
 /// per-tuple build cost of <see cref="CrcLookupTableBuilder.BuildLookupTable(int, ulong, bool)" /> across every
 /// <see cref="Crc" /> instance that uses the same <see cref="CrcStandard" />.
 /// </summary>
@@ -22,7 +22,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </para>
 /// <para>
 /// <strong>Default and custom caches.</strong> A process-wide default lives at <see cref="Crc.GlobalCache" /> and is
-/// used implicitly by every <see cref="Crc" /> instance — most callers never need to construct a cache by hand. Reach
+/// used implicitly by every <see cref="Crc" /> instance - most callers never need to construct a cache by hand. Reach
 /// for a custom <see cref="CrcLookupTableCache" /> only when you want a scoped cache (e.g. per AppDomain, per test
 /// fixture) that the global default should not see, or when running diagnostic code that needs deterministic cache
 /// state. Custom caches can be installed by assigning to <see cref="Crc.GlobalCache" />.
@@ -31,7 +31,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <strong>Thread safety and aliasing.</strong> Internally backed by <see cref="ConcurrentDictionary{TKey, TValue}" />;
 /// concurrent <see cref="GetLookupTable(int, ulong, bool)" /> calls are safe and the build delegate runs at most once
 /// per key. The returned array is <strong>shared across all callers</strong> with the same parameters and must be
-/// treated as read-only — mutating it would corrupt every <see cref="Crc" /> instance that uses the same standard.
+/// treated as read-only - mutating it would corrupt every <see cref="Crc" /> instance that uses the same standard.
 /// </para>
 /// </remarks>
 /// <example>
@@ -39,7 +39,7 @@ namespace Bodu.IO.Hashing.Checksums;
 ///<![CDATA[
 /// using Bodu.IO.Hashing.Checksums;
 ///
-/// // Most callers do not interact with the cache directly — Crc resolves it through Crc.GlobalCache.
+/// // Most callers do not interact with the cache directly - Crc resolves it through Crc.GlobalCache.
 /// var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
 ///
 /// // Use a scoped cache for an isolated test, then restore the default.

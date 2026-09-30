@@ -36,12 +36,12 @@
       separate concept because many church calendars observe it liturgically on the preceding or coincident Sunday.
     -->
 
-    <!-- Reformation Day — 31 October; Protestant commemoration of the Reformation. Strategy: Fixed day-of-month. -->
+    <!-- Reformation Day - 31 October; Protestant commemoration of the Reformation. Strategy: Fixed day-of-month. -->
     <NotableDate id="reformation-day" displayName="Reformation Day" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="October" day="31" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Reformation Sunday — Sunday on or before 31 October. Strategy: WeekdayNearDate. -->
+    <!-- Reformation Sunday - Sunday on or before 31 October. Strategy: WeekdayNearDate. -->
     <NotableDate id="reformation-sunday" displayName="Reformation Sunday" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><WeekdayNearDate month="October" day="31" dayOfWeek="Sunday" direction="OnOrBefore" /></Strategy></Rule></Rules>
     </NotableDate>
@@ -54,18 +54,18 @@
       denomination packs can import only the concepts they use.
     -->
 
-    <!-- Transfiguration Sunday — Sunday before Ash Wednesday in many Protestant calendars. Strategy: OffsetFromRule, 49 days before Easter. -->
+    <!-- Transfiguration Sunday - Sunday before Ash Wednesday in many Protestant calendars. Strategy: OffsetFromRule, 49 days before Easter. -->
     <NotableDate id="transfiguration-sunday" displayName="Transfiguration Sunday" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1583" />
         <Strategy><OffsetFromRule notableDateRef="western-easter-sunday" ruleRef="default" offsetDays="-49" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- All Saints' Sunday — first Sunday on or after All Saints' Day. Strategy: WeekdayNearDate. -->
+    <!-- All Saints' Sunday - first Sunday on or after All Saints' Day. Strategy: WeekdayNearDate. -->
     <NotableDate id="all-saints-sunday" displayName="All Saints' Sunday" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><WeekdayNearDate month="November" day="1" dayOfWeek="Sunday" direction="OnOrAfter" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Aldersgate Day — 24 May; Methodist commemoration of John Wesley's Aldersgate experience. Strategy: Fixed day-of-month. -->
+    <!-- Aldersgate Day - 24 May; Methodist commemoration of John Wesley's Aldersgate experience. Strategy: Fixed day-of-month. -->
     <NotableDate id="aldersgate-day" displayName="Aldersgate Day" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="May" day="24" /></Strategy></Rule></Rules>
     </NotableDate>

@@ -46,7 +46,7 @@ public readonly partial struct Complex<T> :
         T.IsZero(value.Imaginary) && T.IsEvenInteger(value.Real);
 
     /// <summary>
-    /// Determines whether the specified complex number is finite — both its real and imaginary components are finite.
+    /// Determines whether the specified complex number is finite - both its real and imaginary components are finite.
     /// </summary>
     /// <param name="value">The complex number to test.</param>
     /// <returns><see langword="true" /> when both components are finite; otherwise <see langword="false" />.</returns>
@@ -58,7 +58,7 @@ public readonly partial struct Complex<T> :
         T.IsZero(value.Real) && T.IsRealNumber(value.Imaginary);
 
     /// <summary>
-    /// Determines whether the specified complex number is infinite — either component is an infinity, regardless of the
+    /// Determines whether the specified complex number is infinite - either component is an infinity, regardless of the
     /// other component's value (including NaN), matching <see cref="System.Numerics.Complex.IsInfinity" />.
     /// </summary>
     /// <param name="value">The complex number to test.</param>
@@ -73,7 +73,7 @@ public readonly partial struct Complex<T> :
         T.IsZero(value.Imaginary) && T.IsInteger(value.Real);
 
     /// <summary>
-    /// Determines whether the specified complex number is NaN — at least one component is NaN and neither component is
+    /// Determines whether the specified complex number is NaN - at least one component is NaN and neither component is
     /// an infinity, matching <see cref="System.Numerics.Complex.IsNaN" /> (an infinite component dominates NaN).
     /// </summary>
     /// <param name="value">The complex number to test.</param>

@@ -8,7 +8,7 @@ namespace Bodu.Text.Yaml;
 
 /// <summary>
 /// Verifies that <see cref="YamlSerializerOptions.MaxDepth" /> bounds the nesting the serializer accepts on both
-/// sides of the round trip — the depth backbone the sibling serializers pin in
+/// sides of the round trip - the depth backbone the sibling serializers pin in
 /// <c>TomlSerializerTests.MaxDepth</c>: a graph deeper than the limit fails when writing, value nesting deeper than
 /// the limit fails when reading, and a graph within the limit succeeds.
 /// </summary>

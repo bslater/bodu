@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A concept groups the rules that express the same notable date across territories or eras — for example a national
+/// A concept groups the rules that express the same notable date across territories or eras - for example a national
 /// rule and a regional variant that calculate the same holiday differently. Set concept-level defaults (category,
 /// duration, non-working) once, then add each variant with
 /// <see cref="AddRule(string, System.Action{NotableDateRuleBuilder})" />; a rule may override the defaults it needs to.

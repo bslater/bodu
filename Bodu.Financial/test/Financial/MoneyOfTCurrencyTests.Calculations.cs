@@ -19,7 +19,7 @@ namespace Bodu.Financial;
 public partial class MoneyOfTCurrencyTests
 {
     // ---------------------------------------------------------------------------------------------------------------
-    // Scalar multiplication — every product rounds to the currency's minor-unit precision with banker's rounding.
+    // Scalar multiplication - every product rounds to the currency's minor-unit precision with banker's rounding.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -42,7 +42,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies scalar multiplication for the zero-minor-unit category — results round to whole units.
+    /// Verifies scalar multiplication for the zero-minor-unit category - results round to whole units.
     /// </summary>
     [TestMethod]
     [DataRow(100.0, 0.05, 5.0)]       // ¥100 × 5% = ¥5
@@ -58,7 +58,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies scalar multiplication for the three-minor-unit category — results round to three decimals.
+    /// Verifies scalar multiplication for the three-minor-unit category - results round to three decimals.
     /// </summary>
     [TestMethod]
     [DataRow(1.000, 0.50, 0.500)]
@@ -73,7 +73,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Banker's rounding — midpoint values round toward the nearest even final digit, in both directions.
+    // Banker's rounding - midpoint values round toward the nearest even final digit, in both directions.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -112,7 +112,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Addition / subtraction — same-currency totals.
+    // Addition / subtraction - same-currency totals.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -160,7 +160,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Tax computation — extract the tax component, then add it back to recover the gross.
+    // Tax computation - extract the tax component, then add it back to recover the gross.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -169,7 +169,7 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     [DataRow(100.00, 0.10, 10.00, 110.00)]    // Net 100 + 10% GST = 110
     [DataRow(99.99, 0.10, 10.00, 109.99)]     // .10 × 99.99 = 9.999 → 10.00 (banker's, up to even)
-    [DataRow(0.01, 0.10, 0.00, 0.01)]         // .10 × 0.01 = 0.001 → 0.00 (rounds to zero — material!)
+    [DataRow(0.01, 0.10, 0.00, 0.01)]         // .10 × 0.01 = 0.001 → 0.00 (rounds to zero - material!)
     [DataRow(1.99, 0.0825, 0.16, 2.15)]       // .0825 × 1.99 = 0.164175 → 0.16 (banker's)
     [DataRow(1234.56, 0.20, 246.91, 1481.47)] // .20 × 1234.56 = 246.912 → 246.91; net + tax = 1481.47
     public void TaxComputation_WhenComputingGstUsd_ShouldRoundAndCompose(double net, double rate, double expectedTax, double expectedGross)
@@ -183,7 +183,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Allocation — minor-unit-stable splitting; sum-preservation is the central invariant.
+    // Allocation - minor-unit-stable splitting; sum-preservation is the central invariant.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -326,7 +326,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Conversion — exchange-rate application across currency pairs spanning all minor-unit categories.
+    // Conversion - exchange-rate application across currency pairs spanning all minor-unit categories.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -381,7 +381,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Fraction escape hatch — exact arithmetic through Fraction<BigInteger> avoids accumulating round-off.
+    // Fraction escape hatch - exact arithmetic through Fraction<BigInteger> avoids accumulating round-off.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -412,10 +412,10 @@ public partial class MoneyOfTCurrencyTests
     {
         var principal = new Money<USD>(100m);
 
-        // Scalar-rounded chain — 100 / 3 = 33.33 (rounded) × 3 = 99.99 (drifts a cent).
+        // Scalar-rounded chain - 100 / 3 = 33.33 (rounded) × 3 = 99.99 (drifts a cent).
         Money<USD> naive = principal / 3m * 3m;
 
-        // Exact chain — one rounding event at the end.
+        // Exact chain - one rounding event at the end.
         Fraction<BigInteger> exact = principal.ToFraction() / Fraction<BigInteger>.Create(3, 1) * Fraction<BigInteger>.Create(3, 1);
         var exactResult = Money<USD>.FromFraction(exact);
 
@@ -425,7 +425,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Compound interest — a real-world chain that highlights why the Fraction escape hatch is worth providing.
+    // Compound interest - a real-world chain that highlights why the Fraction escape hatch is worth providing.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -451,7 +451,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Sign and zero properties — used as guard predicates in real ledger code.
+    // Sign and zero properties - used as guard predicates in real ledger code.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -493,7 +493,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Cumulative-rounding awareness — chains of scalar operations drift unless intentionally guarded.
+    // Cumulative-rounding awareness - chains of scalar operations drift unless intentionally guarded.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>

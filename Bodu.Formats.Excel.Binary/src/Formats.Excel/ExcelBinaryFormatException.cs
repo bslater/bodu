@@ -10,8 +10,8 @@ namespace Bodu.Formats.Excel;
 /// The exception thrown when the content of a workbook stream does not conform to the BIFF record structure.
 /// </summary>
 /// <remarks>
-/// Reports a structural failure of the BIFF record stream — a truncated record, an inconsistent length, trailing bytes,
-/// or a malformed shared string table — as opposed to a missing workbook stream or an unsupported BIFF version.
+/// Reports a structural failure of the BIFF record stream - a truncated record, an inconsistent length, trailing bytes,
+/// or a malformed shared string table - as opposed to a missing workbook stream or an unsupported BIFF version.
 /// </remarks>
 public sealed class ExcelBinaryFormatException
     : FormatException

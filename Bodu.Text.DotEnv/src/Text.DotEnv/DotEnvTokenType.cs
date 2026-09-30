@@ -11,7 +11,7 @@ namespace Bodu.Text.DotEnv;
 /// a DotEnv document.
 /// </summary>
 /// <remarks>
-/// DotEnv has a single flat structure — an ordered object of string-valued keys — so the token vocabulary is
+/// DotEnv has a single flat structure - an ordered object of string-valued keys - so the token vocabulary is
 /// deliberately small: a synthetic document object frames the key/value pairs, and every value is a
 /// <see cref="String" /> scalar. There is no array form.
 /// </remarks>

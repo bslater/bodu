@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Tests for the protected helpers declared on <see cref="TweakableSymmetricAlgorithm" /> —
+/// Tests for the protected helpers declared on <see cref="TweakableSymmetricAlgorithm" /> -
 /// <see cref="TweakableSymmetricAlgorithm.ThrowIfInvalidTweakSize(byte[])" />,
 /// <see cref="TweakableSymmetricAlgorithm.ThrowIfTweakNotSet" />, and the
 /// <see cref="TweakableSymmetricAlgorithm.LegalTweakSizes" /> getter when the backing field is uninitialised.

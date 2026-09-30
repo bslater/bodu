@@ -9,8 +9,8 @@ using Bodu.Globalization.Calendar;
 namespace Bodu.Globalization.Calendar.Samples.ValidationLint.Scenarios;
 
 /// <summary>
-/// Demonstrates linting arbitrary rule-pack text: <c>NotableDateResourceLoader.TryLoad</c> accepts any input —
-/// including malformed XML — and reports everything as diagnostics, which is the shape a build task or editor
+/// Demonstrates linting arbitrary rule-pack text: <c>NotableDateResourceLoader.TryLoad</c> accepts any input -
+/// including malformed XML - and reports everything as diagnostics, which is the shape a build task or editor
 /// integration wants.
 /// </summary>
 public static class LintingRulePackText

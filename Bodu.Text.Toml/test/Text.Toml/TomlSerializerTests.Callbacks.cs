@@ -13,7 +13,7 @@ namespace Bodu.Text.Toml;
 /// <summary>
 /// Verifies the serialization callback contract: <see cref="IOnSerializing" /> and
 /// <see cref="IOnSerialized" /> fire around writing, <see cref="IOnDeserializing" /> and
-/// <see cref="IOnDeserialized" /> fire around reading, and the callbacks observe the documented state — a write
+/// <see cref="IOnDeserialized" /> fire around reading, and the callbacks observe the documented state - a write
 /// callback can influence the emitted text, the deserializing callback runs after construction but before settable
 /// members are assigned, and the deserialized callback observes the fully materialized instance.
 /// </summary>

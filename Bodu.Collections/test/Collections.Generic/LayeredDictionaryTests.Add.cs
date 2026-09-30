@@ -40,7 +40,7 @@ public partial class LayeredDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that adding a key that exists only in deeper layers succeeds and shadows the deeper value — the
+    /// Verifies that adding a key that exists only in deeper layers succeeds and shadows the deeper value - the
     /// duplicate check consults the first layer only.
     /// </summary>
     [TestMethod]

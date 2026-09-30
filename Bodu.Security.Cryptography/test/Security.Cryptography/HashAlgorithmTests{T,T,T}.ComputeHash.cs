@@ -573,7 +573,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
     /// <summary>
     /// Verifies that two consecutive <see cref="HashAlgorithm.ComputeHash(byte[])" /> calls
-    /// against the same instance produce identical digests for identical input — guarding against
+    /// against the same instance produce identical digests for identical input - guarding against
     /// state leakage across reuse. Skipped for one-shot algorithms that report
     /// <see cref="HashAlgorithm.CanReuseTransform" /> as <see langword="false" />.
     /// </summary>

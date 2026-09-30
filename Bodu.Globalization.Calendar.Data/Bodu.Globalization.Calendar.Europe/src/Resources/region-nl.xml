@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ================================================================================================================
-  Netherlands (NL) — notable-date resource pack
+  Netherlands (NL) - notable-date resource pack
   ================================================================================================================
 
   Authored on the notable-date schema. All rules are scoped to territory "NL".
@@ -69,20 +69,20 @@
       ============================================================================================================
     -->
 
-    <!-- Second Day of Christmas (Tweede Kerstdag) — 26 December; a nationwide public holiday. Strategy: Fixed date. -->
+    <!-- Second Day of Christmas (Tweede Kerstdag) - 26 December; a nationwide public holiday. Strategy: Fixed date. -->
     <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="nl"><Applicability><Territory code="NL" /></Applicability>
         <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- King's Day (Koningsdag) — 27 April, the monarch's official birthday and a public holiday, with a weekend roll when it falls on a weekend (statutorily to the preceding Saturday; approximated here). The fromYear="2014" bound reflects the accession of King Willem-Alexander, when the date moved from 30 April (Queen's Day). Strategy: Fixed date. -->
+    <!-- King's Day (Koningsdag) - 27 April, the monarch's official birthday and a public holiday, with a weekend roll when it falls on a weekend (statutorily to the preceding Saturday; approximated here). The fromYear="2014" bound reflects the accession of King Willem-Alexander, when the date moved from 30 April (Queen's Day). Strategy: Fixed date. -->
     <NotableDate id="kings-day" displayName="King's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="nl"><Applicability fromYear="2014"><Territory code="NL" /></Applicability>
         <Strategy><Fixed month="April" day="27" /></Strategy>
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
     </NotableDate>
 
-    <!-- Liberation Day (Bevrijdingsdag) — 5 May, marking the 1945 end of German occupation; an observance (an official day off only every fifth year). The fromYear="1945" bound excludes earlier years. Strategy: Fixed date. -->
+    <!-- Liberation Day (Bevrijdingsdag) - 5 May, marking the 1945 end of German occupation; an observance (an official day off only every fifth year). The fromYear="1945" bound excludes earlier years. Strategy: Fixed date. -->
     <NotableDate id="liberation-day" displayName="Liberation Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="nl"><Applicability fromYear="1945"><Territory code="NL" /></Applicability>
         <Strategy><Fixed month="May" day="5" /></Strategy></Rule></Rules>

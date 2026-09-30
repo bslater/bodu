@@ -20,7 +20,7 @@ public partial class RangeSetTests
         Assert.IsFalse(sut.Contains(5));
     }
     // --------------------------------------------------------
-    // Contains(T) — value membership
+    // Contains(T) - value membership
     // --------------------------------------------------------
 
     /// <summary>
@@ -58,7 +58,7 @@ public partial class RangeSetTests
     }
 
     // --------------------------------------------------------
-    // Contains(T, T) — range containment
+    // Contains(T, T) - range containment
     // --------------------------------------------------------
 
     /// <summary>

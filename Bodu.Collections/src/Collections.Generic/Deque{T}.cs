@@ -26,20 +26,20 @@ namespace Bodu.Collections.Generic;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <c>AllowGrow = true</c> (the default) — the backing array doubles automatically whenever <see cref="AddFirst(T)" />
+/// <c>AllowGrow = true</c> (the default) - the backing array doubles automatically whenever <see cref="AddFirst(T)" />
 /// or <see cref="AddLast(T)" /> would otherwise overflow, capped at <see cref="Array.MaxLength" />.
 /// <see cref="TryAddFirst(T)" /> and <see cref="TryAddLast(T)" /> always return <see langword="true" />.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <c>AllowGrow = false</c> — the deque is fixed at its current capacity and <see cref="OverflowPolicy" /> selects the
+/// <c>AllowGrow = false</c> - the deque is fixed at its current capacity and <see cref="OverflowPolicy" /> selects the
 /// behavior of adds on a full deque. Under <see cref="DequeOverflowPolicy.Reject" /> (the default),
 /// <see cref="AddFirst(T)" /> and <see cref="AddLast(T)" /> throw <see cref="InvalidOperationException" /> when full
 /// while <see cref="TryAddFirst(T)" /> and <see cref="TryAddLast(T)" /> return <see langword="false" /> without
 /// modifying state. Under <see cref="DequeOverflowPolicy.EvictOpposite" />, adds silently discard the element at the
-/// opposite end to make room — the Python <c>deque(maxlen=N)</c> semantics, analogous to
-/// <see cref="CircularBuffer{T}.AllowOverwrite" /> — raising <see cref="ItemEvicting" /> before and
+/// opposite end to make room - the Python <c>deque(maxlen=N)</c> semantics, analogous to
+/// <see cref="CircularBuffer{T}.AllowOverwrite" /> - raising <see cref="ItemEvicting" /> before and
 /// <see cref="ItemEvicted" /> after each eviction.
 /// </description>
 /// </item>
@@ -50,36 +50,36 @@ namespace Bodu.Collections.Generic;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <see cref="AddFirst(T)" /> / <see cref="AddLast(T)" /> — push at either end (with <see cref="TryAddFirst(T)" /> /
+/// <see cref="AddFirst(T)" /> / <see cref="AddLast(T)" /> - push at either end (with <see cref="TryAddFirst(T)" /> /
 /// <see cref="TryAddLast(T)" /> non-throwing variants).
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// Inherited <c>RemoveFirst</c> / <c>RemoveLast</c> — pop and return the head or tail element.
+/// Inherited <c>RemoveFirst</c> / <c>RemoveLast</c> - pop and return the head or tail element.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// Inherited <c>PeekFirst</c> / <c>PeekLast</c> — read the head or tail element without removing it.
+/// Inherited <c>PeekFirst</c> / <c>PeekLast</c> - read the head or tail element without removing it.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="EnsureCapacity(int)" /> — pre-grow the backing array even when <see cref="AllowGrow" /> is
+/// <see cref="EnsureCapacity(int)" /> - pre-grow the backing array even when <see cref="AllowGrow" /> is
 /// <see langword="false" />.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// Inherited <see cref="RingBackedCollection{T}.TrimExcess" /> — shrink the backing array to <c>Count</c> after a burst
+/// Inherited <see cref="RingBackedCollection{T}.TrimExcess" /> - shrink the backing array to <c>Count</c> after a burst
 /// of removes.
 /// </description>
 /// </item>
 /// </list>
 /// <para>
 /// <see cref="AllowGrow" /> can be toggled at runtime to switch the deque between modes. Switching from
-/// <see langword="true" /> to <see langword="false" /> does not shrink the existing capacity — call
+/// <see langword="true" /> to <see langword="false" /> does not shrink the existing capacity - call
 /// <see cref="RingBackedCollection{T}.TrimExcess" /> afterwards if a smaller footprint is wanted.
 /// </para>
 /// <para>
@@ -105,7 +105,7 @@ namespace Bodu.Collections.Generic;
 /// // Fixed-capacity queue: rejects adds when full.
 /// var bounded = new Deque<int>(capacity: 8, allowGrow: false);
 /// for (int i = 0; i < 8; i++) bounded.AddLast(i);
-/// bool added = bounded.TryAddLast(8); // false — bounded is full
+/// bool added = bounded.TryAddLast(8); // false - bounded is full
 ///]]>
 /// </code>
 /// </example>
@@ -263,7 +263,7 @@ public sealed class Deque<T>
     /// <see cref="OverflowPolicy" /> is <see cref="DequeOverflowPolicy.EvictOpposite" />.
     /// </para>
     /// <para>
-    /// <b>Important:</b> Any exception thrown from a handler vetoes the eviction in place — the opposite-end element is
+    /// <b>Important:</b> Any exception thrown from a handler vetoes the eviction in place - the opposite-end element is
     /// not removed, the new element is not stored, the count, head, and tail indices are unchanged, and the exception
     /// propagates to the caller of <see cref="AddFirst(T)" />, <see cref="AddLast(T)" />, <see cref="TryAddFirst(T)" />,
     /// or <see cref="TryAddLast(T)" />. Event handlers should therefore avoid throwing unless the veto is intentional.
@@ -277,7 +277,7 @@ public sealed class Deque<T>
     /// </summary>
     /// <value>
     /// <see langword="true" /> to grow on demand; <see langword="false" /> to apply <see cref="OverflowPolicy" /> once
-    /// full — by default rejecting the add (throw from <see cref="AddFirst(T)" /> and <see cref="AddLast(T)" />,
+    /// full - by default rejecting the add (throw from <see cref="AddFirst(T)" /> and <see cref="AddLast(T)" />,
     /// <see langword="false" /> from their <c>Try*</c> variants).
     /// </value>
     /// <remarks>
@@ -288,7 +288,7 @@ public sealed class Deque<T>
     /// </para>
     /// <para>
     /// While this property is <see langword="true" />, growth always wins and <see cref="OverflowPolicy" /> is never
-    /// consulted — no element is evicted regardless of the configured policy.
+    /// consulted - no element is evicted regardless of the configured policy.
     /// </para>
     /// </remarks>
     public bool AllowGrow { get; set; }
@@ -306,13 +306,13 @@ public sealed class Deque<T>
     /// <remarks>
     /// <para>
     /// The policy is consulted only when <see cref="AllowGrow" /> is <see langword="false" /> and the deque is full.
-    /// When <see cref="AllowGrow" /> is <see langword="true" /> the backing array grows instead — growth always wins,
+    /// When <see cref="AllowGrow" /> is <see langword="true" /> the backing array grows instead - growth always wins,
     /// rendering the policy irrelevant on a growable deque.
     /// </para>
     /// <para>
     /// Under <see cref="DequeOverflowPolicy.EvictOpposite" />, <see cref="AddFirst(T)" /> discards the tail element and
     /// <see cref="AddLast(T)" /> discards the head element before storing the new item, keeping
-    /// <see cref="RingBackedCollection{T}.Count" /> at <see cref="RingBackedCollection{T}.Capacity" /> — the Python
+    /// <see cref="RingBackedCollection{T}.Count" /> at <see cref="RingBackedCollection{T}.Capacity" /> - the Python
     /// <c>deque(maxlen=N)</c> semantics. Each eviction raises <see cref="ItemEvicting" /> beforehand and
     /// <see cref="ItemEvicted" /> afterwards.
     /// </para>
@@ -472,7 +472,7 @@ public sealed class Deque<T>
             else if (_overflowPolicy == DequeOverflowPolicy.EvictOpposite)
             {
                 // Capture the opposite-end victim before raising ItemEvicting so a handler exception vetoes the
-                // eviction in place — nothing is removed, the new element is not stored. Dispatch is latched so a
+                // eviction in place - nothing is removed, the new element is not stored. Dispatch is latched so a
                 // handler attempting to mutate the deque fails fast instead of corrupting mid-eviction state.
                 T evicted = atHead ? PeekTail() : PeekHead();
                 try
@@ -633,7 +633,7 @@ public sealed class Deque<T>
     /// <paramref name="capacity" /> exceeds <see cref="Array.MaxLength" /> and therefore cannot be satisfied.
     /// </exception>
     /// <remarks>
-    /// This method ignores <see cref="AllowGrow" /> — it is the explicit pre-grow hatch even on fixed-capacity deques.
+    /// This method ignores <see cref="AllowGrow" /> - it is the explicit pre-grow hatch even on fixed-capacity deques.
     /// Use it to reserve space ahead of a known burst of inserts.
     /// </remarks>
     public int EnsureCapacity(int capacity)
@@ -663,7 +663,7 @@ public sealed class Deque<T>
     /// </remarks>
     private void Grow(int minCapacity)
     {
-        // minCapacity beyond Array.MaxLength cannot be satisfied by any backing array — fail explicitly rather than
+        // minCapacity beyond Array.MaxLength cannot be satisfied by any backing array - fail explicitly rather than
         // clamping and falling through to an add against a still-full buffer.
         if ((uint)minCapacity > (uint)Array.MaxLength)
             throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CapacityExhausted);

@@ -154,7 +154,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that the async stream overload returns <see langword="false" /> when an already-cancelled token is
-    /// supplied — cancellation is caught and surfaced as a non-match.
+    /// supplied - cancellation is caught and surfaced as a non-match.
     /// </summary>
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenCancellationIsRequested_ShouldReturnFalse()

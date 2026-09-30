@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// <see cref="MerkleTree.ComputeRootOfBlocks(Stream, int, MerkleTreeDiagnostics, CancellationToken)" /> is documented as folding the
-/// tree as it reads, holding one subtree per set bit of the leaf count — so its peak is
+/// tree as it reads, holding one subtree per set bit of the leaf count - so its peak is
 /// <c>O(blockSize + log n · HashLength)</c> and does not grow with the input.
 /// <see cref="MerkleTree.ComputeBlocked(Stream, int, MerkleTreeDiagnostics, CancellationToken)" /> deliberately retains every leaf
 /// hash instead, which is what makes a later authentication path possible. Those are memory claims, and the rest of
@@ -23,8 +23,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// The probe samples the live heap partway through the stream, with the algorithm's own state still reachable, and
-/// compares the growth between a small and a large input. Absolute figures would be meaningless — the measurement
-/// includes the whole test host — so every assertion is about the <em>difference</em> between two runs in the same
+/// compares the growth between a small and a large input. Absolute figures would be meaningless - the measurement
+/// includes the whole test host - so every assertion is about the <em>difference</em> between two runs in the same
 /// process, which cancels that baseline.
 /// </para>
 /// <para>
@@ -59,7 +59,7 @@ public partial class MerkleTreeTests
     /// <summary>The smaller leaf count of the growth comparison.</summary>
     private const int ProbeSmallLeafCount = 4096;
 
-    /// <summary>The larger leaf count of the growth comparison — sixteen times the smaller.</summary>
+    /// <summary>The larger leaf count of the growth comparison - sixteen times the smaller.</summary>
     private const int ProbeLargeLeafCount = 65536;
 
     /// <summary>

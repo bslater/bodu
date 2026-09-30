@@ -10,7 +10,7 @@ namespace Bodu.Formats.Excel.Binary.Samples.ExcelReading.Scenarios;
 
 /// <summary>
 /// Demonstrates the primary surface: <see cref="ExcelWorksheetReader" /> streams cells
-/// forward-only in file order, one at a time — constant memory regardless of sheet size, the
+/// forward-only in file order, one at a time - constant memory regardless of sheet size, the
 /// right shape for import pipelines that transform rows as they arrive.
 /// </summary>
 public static class ForwardOnlyReader

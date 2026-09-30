@@ -6,14 +6,14 @@ multiset / ordered-set family, the bidirectional and sorted-navigable dictionari
 alongside the indexed priority queue, the two dictionary decorators, and the two-key table with the segmented
 buffer. Eight scenarios, one per collection group.
 
-Everything runs offline with fixed inputs — deterministic output every run. The expiration scenario drives the
+Everything runs offline with fixed inputs - deterministic output every run. The expiration scenario drives the
 cache from a `ManualTimeProvider` rather than the wall clock, so it neither sleeps nor varies between runs.
 
 ```bash
 dotnet run --project samples/Collections/Bodu.Collections.Samples.CollectionCatalogue
 ```
 
-## Scenario 1 — RingAndDeque
+## Scenario 1 - RingAndDeque
 
 **Intent.** Show the two fixed-capacity buffers side by side: `CircularBuffer<T>` as an overwrite-on-full
 FIFO ring, and `Deque<T>` as a double-ended queue whose behaviour when full is governed by a
@@ -53,11 +53,11 @@ evictions; the deque, once full at `a, b, c`, drops the opposite end (`a`) when 
 `.ItemEvicted`; `Deque<T>(int, bool)`, `Deque<T>.OverflowPolicy` (`DequeOverflowPolicy.EvictOpposite`),
 `.AddFirst` / `.AddLast` / `.PeekFirst` / `.PeekLast` / `.ItemEvicted`.
 
-## Scenario 2 — EvictingCache
+## Scenario 2 - EvictingCache
 
 **Intent.** Show `EvictingDictionary<TKey, TValue>` as a bounded cache whose eviction victim is chosen by an
 `EvictingDictionaryPolicy`. Under the least-recently-used policy, reading a key protects it from the next
-eviction — the core LRU contract.
+eviction - the core LRU contract.
 
 **What it does.** Fills a capacity-3 LRU cache with `alpha`, `beta`, `gamma`, then reads `alpha` through the
 indexer to promote it to most-recently-used. It asks `PeekEvictionCandidate` who the next victim is, then
@@ -89,12 +89,12 @@ inserting `delta` then evicts `beta`, leaving `alpha`, `delta`, `gamma`:
 **APIs demonstrated.** `EvictingDictionary<TKey, TValue>(int, EvictingDictionaryPolicy)`, the indexer
 (set and get), `.Policy`, `.PeekEvictionCandidate`, `.ItemEvicted`.
 
-## Scenario 3 — ExpiringCache
+## Scenario 3 - ExpiringCache
 
 **Intent.** Show the *time* dimension of `EvictingDictionary<TKey, TValue>`, which is independent of the
 capacity policy from Scenario 2. Supplying an `EvictingDictionaryExpiration` gives entries a time-to-live
-measured either absolutely or on a sliding window, and — because that configuration also carries the
-`TimeProvider` every clock read goes through — the behaviour is demonstrable without sleeping.
+measured either absolutely or on a sliding window, and - because that configuration also carries the
+`TimeProvider` every clock read goes through - the behaviour is demonstrable without sleeping.
 
 **What it does.** Three walkthroughs against a `ManualTimeProvider` stepped forward by exact amounts.
 *Absolute:* adds two entries on a 10-minute TTL, reads one at +8m and again at +12m, then compares `Count`
@@ -103,8 +103,8 @@ against a real enumeration before sweeping with `RemoveExpired`. *Sliding:* read
 *Per-entry:* configures a `null` default TTL and mixes a permanent entry with one added through the
 `Add(key, value, TimeSpan)` overload.
 
-**What to expect.** Under `Absolute` the +8m read buys the entry nothing — the countdown started when it was
-added — so it is gone by +12m. There is no background timer: that failed read removed `session-a` lazily, but
+**What to expect.** Under `Absolute` the +8m read buys the entry nothing - the countdown started when it was
+added - so it is gone by +12m. There is no background timer: that failed read removed `session-a` lazily, but
 `session-b` was never touched, so it still occupies a slot and still counts towards `Count` even though no
 lookup or enumeration can see it. `RemoveExpired()` is what reconciles the two. Under `Sliding` each read
 restarts the countdown, so an actively used session survives 24 minutes on a 10-minute TTL and only dies once
@@ -151,7 +151,7 @@ The `enumerated` line goes through `.Select(...)` on purpose: LINQ's `Count()` w
 `EvictingDictionary<,>(int, EvictingDictionaryExpiration?)`, `.Add(TKey, TValue, TimeSpan)`, `.RemoveExpired`,
 `.Touch`, `.TryGetValue`, `.Count`.
 
-## Scenario 4 — MultiMapsAndSets
+## Scenario 4 - MultiMapsAndSets
 
 **Intent.** Cover the collections that relax the one-key-one-value / no-duplicates rules of a plain
 dictionary and set: `MultiValueDictionary<,>` (many values per key), `Multiset<T>` (elements with counts),
@@ -163,7 +163,7 @@ contrast the two backings; counts six colour words in a multiset and reads back 
 items to an ordered set (rejecting a duplicate) and reads a position by value, then wraps the same elements in
 an `IndexedSet<T>` for O(1) positional access.
 
-**What to expect.** Under the default `List` backing `fruit` keeps its duplicate `apple` — a list multimap.
+**What to expect.** Under the default `List` backing `fruit` keeps its duplicate `apple` - a list multimap.
 Switching the same type to `MultiValueBacking.Set` makes it an order-preserving *set* multimap: the repeat is
 dropped, and each surviving value keeps the position of its first occurrence (the trade-off is a linear scan of
 the key's values on every add). The multiset reports `red` three times; the ordered set preserves
@@ -203,7 +203,7 @@ positionally:
 `Multiset<T>.Count` / `.CountOf` / `.Frequencies`; `OrderedSet<T>.Add` / `.IndexOf`;
 `IndexedSet<T>(IEnumerable<T>)` and the integer indexer.
 
-## Scenario 5 — BiDirectionalAndNavigable
+## Scenario 5 - BiDirectionalAndNavigable
 
 **Intent.** Contrast a bidirectional map with the sorted-navigable containers. `BiDictionary<,>` keeps a
 value→key inverse and enforces a one-to-one invariant via a duplicate-value policy; `NavigableSet<T>` /
@@ -249,11 +249,11 @@ in-window elements:
 `.ContainsKey`; `NavigableSet<T>.TryGetFloor` / `.TryGetCeiling` / `.TryGetLower` / `.TryGetHigher` /
 `.Range`; `NavigableDictionary<,>.TryGetFloorEntry` / `.Range`.
 
-## Scenario 6 — SequencedAndPriority
+## Scenario 6 - SequencedAndPriority
 
 **Intent.** Show two order-aware structures: `SequencedDictionary<,>` preserves *insertion* order (not key
 order) with cheap first/last access, and `IndexedPriorityQueue<TElement, TPriority>` is a min-heap that also
-supports lowering an already-queued element's priority — the decrease-key operation a Dijkstra loop needs.
+supports lowering an already-queued element's priority - the decrease-key operation a Dijkstra loop needs.
 
 **What it does.** Inserts four pipeline steps out of alphabetical order and enumerates them, reads `First` /
 `Last`, and pops the head with `TryRemoveFirst`. It then enqueues four tasks by cost, lowers `parse` from 40
@@ -288,7 +288,7 @@ after the decrease-key, `parse` leads the drain even though it was enqueued last
 **APIs demonstrated.** `SequencedDictionary<,>` collection initializer, `.Keys`, `.First` / `.Last`,
 `.TryRemoveFirst`; `IndexedPriorityQueue<,>.Enqueue`, `.Peek`, `.Update` (decrease-key), `.TryDequeue`.
 
-## Scenario 7 — ChainedAndDefaulting
+## Scenario 7 - ChainedAndDefaulting
 
 **Intent.** Show the two dictionary *decorators*, each the .NET analogue of a Python type that C# has no
 built-in answer for. `LayeredDictionary<,>` is `collections.ChainMap`: a live first-wins view over several
@@ -299,7 +299,7 @@ the check-then-add dance from every grouping and counting loop.
 **What it does.** *Layered:* builds a command-line / config-file / built-in cascade (highest precedence first)
 and resolves three keys with different depths of shadowing. It then edits the underlying file layer directly to
 prove the layers stay live, writes through the view to show the write landing in the first layer only, and runs
-two `Remove` calls — one for a key that exists only deeper, one that unshadows the value beneath it.
+two `Remove` calls - one for a key that exists only deeper, one that unshadows the value beneath it.
 *Defaulting:* groups six words by first letter using nothing but `groups[word[0]].Add(word)`, then probes a
 counter dictionary with `ContainsKey` and `TryGetValue` before reading it through the indexer, and finishes with
 a key-dependent factory.
@@ -309,7 +309,7 @@ keys across 3 layers (note it walks every layer, so it is *not* a cached O(1) pr
 is visible through the view at once; writing `port` through the view puts it in `commandLine` and leaves
 `configFile` untouched. `Remove("host")` returns `false` because `host` lives only in the built-in layer, while
 removing the shadowing `log-level` makes the file layer's `info` visible again. On the defaulting side, only the
-indexer getter invokes the factory — `ContainsKey` and `TryGetValue` leave `Count` at 0 — and because the miss
+indexer getter invokes the factory - `ContainsKey` and `TryGetValue` leave `Count` at 0 - and because the miss
 is *stored* rather than recomputed, `+=` works on a first sighting:
 
 ```text
@@ -354,20 +354,20 @@ is *stored* rather than recomputed, `+=` works on a first sighting:
 (get and set), `.Count`, `.Remove`; `DefaultingDictionary<,>(Func<TKey, TValue>)`, the indexer getter,
 `.ContainsKey`, `.TryGetValue`, `.Count`, `.Keys`.
 
-## Scenario 8 — TableAndSegments
+## Scenario 8 - TableAndSegments
 
 **Intent.** Show two structures that replace a habitually hand-rolled shape. `Table<TRow, TColumn, TValue>` is
 a sparse two-key map, so callers stop writing `Dictionary<string, Dictionary<string, int>>` and stop forgetting
 to create the inner level. `SegmentedBuffer<T>` is an append-only list that grows by adding a fixed-size segment
-instead of doubling and copying — no large contiguous allocations, and existing items never move.
+instead of doubling and copying - no large contiguous allocations, and existing items never move.
 
-**What it does.** *Table:* builds a deliberately sparse (city, month) rainfall table — Perth has no February
-reading — then probes it with `TryAdd`, `TryGetValue`, `Contains`, `ContainsRow`, and `ContainsColumn`, prints
+**What it does.** *Table:* builds a deliberately sparse (city, month) rainfall table - Perth has no February
+reading - then probes it with `TryAdd`, `TryGetValue`, `Contains`, `ContainsRow`, and `ContainsColumn`, prints
 each row view and two column views, and drops a whole column and a whole row in one call each.
 *SegmentedBuffer:* appends ten integers into a buffer with `segmentSize: 4`, reads across a segment boundary,
 enumerates, writes through the indexer, flattens with `ToArray`, and finishes with `Clear` plus `TrimExcess`.
 
-**What to expect.** Six cells over 3 rows × 3 columns — sparse, so the absent Perth/February cell costs nothing
+**What to expect.** Six cells over 3 rows × 3 columns - sparse, so the absent Perth/February cell costs nothing
 and reports `false` from every probe. `Row` and `Column` are read-only *views* over one slice, so a caller can
 hand out one city's series or one month's cross-section without materializing a copy. `RemoveColumn("Mar")`
 drops the month across every row in a single call (6 → 4 cells), which a nested-dictionary layout would make the
@@ -439,10 +439,10 @@ Bodu.Collections.Samples.CollectionCatalogue/
 
 ## Related
 
-- `Bodu.Collections.Samples.RangesGraphsTrees` — coalescing range sets, the interval tree, graph algorithms,
+- `Bodu.Collections.Samples.RangesGraphsTrees` - coalescing range sets, the interval tree, graph algorithms,
   disjoint-set union-find, the tree/trie family, and Aho-Corasick multi-pattern search.
-- `Bodu.Collections.Samples.ProbabilisticSketches` — the Bloom filter, count-min sketch, and HyperLogLog
+- `Bodu.Collections.Samples.ProbabilisticSketches` - the Bloom filter, count-min sketch, and HyperLogLog
   approximate sketches.
-- `Bodu.Collections.Samples.BitSets` — the packed `BitSet` from `Bodu.Collections.Specialized`.
-- `Bodu.Collections.Concurrent.Samples.ThreadSafeCollections` — the thread-safe counterparts of the ring,
+- `Bodu.Collections.Samples.BitSets` - the packed `BitSet` from `Bodu.Collections.Specialized`.
+- `Bodu.Collections.Concurrent.Samples.ThreadSafeCollections` - the thread-safe counterparts of the ring,
   the hash set, and this scenario's evicting cache.

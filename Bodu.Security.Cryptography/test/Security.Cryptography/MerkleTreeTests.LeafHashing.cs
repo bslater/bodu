@@ -10,8 +10,8 @@ using static Bodu.Security.Cryptography.MerkleTestData;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Holds the internal leaf-hashing loops on <see cref="MerkleTree" /> — the sequential, asynchronous and parallel
-/// stream loops and the in-memory parallel hasher — to the sequential loop's leaf sequence.
+/// Holds the internal leaf-hashing loops on <see cref="MerkleTree" /> - the sequential, asynchronous and parallel
+/// stream loops and the in-memory parallel hasher - to the sequential loop's leaf sequence.
 /// </summary>
 public partial class MerkleTreeTests
 {

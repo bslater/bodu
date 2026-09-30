@@ -14,7 +14,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Implements the scrypt sequential memory-hard function defined by RFC 7914 — the PBKDF2-HMAC-SHA256 envelope, the
+/// Implements the scrypt sequential memory-hard function defined by RFC 7914 - the PBKDF2-HMAC-SHA256 envelope, the
 /// <c>scryptROMix</c> and <c>scryptBlockMix</c> mixing functions, and the Salsa20/8 core.
 /// </summary>
 /// <remarks>
@@ -35,7 +35,7 @@ namespace Bodu.Security.Cryptography;
 /// provokes a gen2 collection.
 /// </para>
 /// <para>
-/// Every buffer that holds a password-derived word — <c>B</c>, <c>V</c>, and the ROMix scratch — is cleared before it
+/// Every buffer that holds a password-derived word - <c>B</c>, <c>V</c>, and the ROMix scratch - is cleared before it
 /// is released. Values the JIT keeps in registers or spills to its own stack slots are beyond the library's reach.
 /// </para>
 /// </remarks>
@@ -332,7 +332,7 @@ internal static partial class ScryptCore
         TKernel.BlockMix(ref link, ref x, blockSizeR);
 
         // X = BlockMix(X xor V[j]), with j = Integerify(X) mod N. N is a power of two no greater than 2^30, so the
-        // index is the low word of X's last 64-byte block masked to N — word 0, which every kernel keeps first. The
+        // index is the low word of X's last 64-byte block masked to N - word 0, which every kernel keeps first. The
         // result alternates between the block and the scratch, and N being even leaves it in the block.
         int integerify = unitWords - BlockWords;
         uint mask = (uint)costN - 1;

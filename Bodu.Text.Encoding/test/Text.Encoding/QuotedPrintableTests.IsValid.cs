@@ -35,7 +35,7 @@ public sealed partial class QuotedPrintableTests
     /// Verifies that whenever <see cref="QuotedPrintable.IsValid(ReadOnlySpan{char}, QuotedPrintableDecodingOptions)" />
     /// returns <see langword="true" /> (canonical), the lenient
     /// <see cref="QuotedPrintable.TryDecode(ReadOnlySpan{char}, Span{byte}, out int, QuotedPrintableDecodingOptions)" />
-    /// also succeeds. The converse does not hold — canonical validity is strictly stronger than decodability.
+    /// also succeeds. The converse does not hold - canonical validity is strictly stronger than decodability.
     /// </summary>
     /// <param name="input">The candidate input.</param>
     [TestMethod]

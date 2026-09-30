@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography;
 /// chaining, tweak propagation, and streaming correctness without cryptographic complexity.
 /// </para>
 /// <para>
-/// When no tweak is provided, encryption and decryption are identical operations — reversing a reversed block restores
+/// When no tweak is provided, encryption and decryption are identical operations - reversing a reversed block restores
 /// the original input.
 /// </para>
 /// <para>

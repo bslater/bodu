@@ -13,7 +13,7 @@ public sealed partial class RadixTrieTests
     /// <summary>
     /// Verifies that 10,000 seeded add / remove / contains / prefix operations on random short strings agree
     /// operation-for-operation with the uncompressed <see cref="Trie" /> oracle, with periodic full-content
-    /// checkpoints — exercising every edge split and merge path the compressed representation can take.
+    /// checkpoints - exercising every edge split and merge path the compressed representation can take.
     /// </summary>
     /// <param name="seed">The seed for the deterministic operation generator.</param>
     [TestMethod]

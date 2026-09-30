@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ================================================================================================================
-  europe-common — pan-European common notable-date hub
+  europe-common - pan-European common notable-date hub
   ================================================================================================================
 
   This is the single consolidation point the European region packs import
@@ -16,8 +16,8 @@
       weekend adjustment on its own import <Use> directive. The import resolver resolves europe-common's own
       imports transitively, so a region that imports a concept from here receives the fully resolved catalogue rule.
 
-    * The common Catholic fixed-date feasts the main catalogues do not carry — Assumption of Mary and Immaculate
-      Conception — are DEFINED INLINE here as the single European source of truth, so the Catholic member states
+    * The common Catholic fixed-date feasts the main catalogues do not carry - Assumption of Mary and Immaculate
+      Conception - are DEFINED INLINE here as the single European source of truth, so the Catholic member states
       cherry-pick them uniformly rather than each re-declaring them.
 
   Anchor note: any Easter-derived date a country adopts (Good Friday, Easter Monday, Ascension Day, Whit Sunday,
@@ -59,8 +59,8 @@
       <Use notableDateRef="boxing-day" />
     </Import>
     <!--
-      Family observances (recognition-only working days by default). A country that observes a different date — for
-      example France's last-Sunday-in-May Mother's Day or the United Kingdom's Mothering Sunday — declares its own
+      Family observances (recognition-only working days by default). A country that observes a different date - for
+      example France's last-Sunday-in-May Mother's Day or the United Kingdom's Mothering Sunday - declares its own
       rule instead of importing these.
     -->
     <Import resource="global-family">
@@ -82,12 +82,12 @@
       category="PublicHoliday" nonWorking="true" on its own <Use>.
     -->
 
-    <!-- Assumption of Mary — 15 August, the Assumption of the Blessed Virgin Mary; a public holiday across Catholic Europe (and, as the Dormition of the Theotokos, in Orthodox countries such as Greece and Romania). Strategy: Fixed date. -->
+    <!-- Assumption of Mary - 15 August, the Assumption of the Blessed Virgin Mary; a public holiday across Catholic Europe (and, as the Dormition of the Theotokos, in Orthodox countries such as Greece and Romania). Strategy: Fixed date. -->
     <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Immaculate Conception — 8 December, the Immaculate Conception of the Blessed Virgin Mary; a public holiday in several Catholic member states (Austria, Italy, Malta, Portugal, Spain). Strategy: Fixed date. -->
+    <!-- Immaculate Conception - 8 December, the Immaculate Conception of the Blessed Virgin Mary; a public holiday in several Catholic member states (Austria, Italy, Malta, Portugal, Spain). Strategy: Fixed date. -->
     <NotableDate id="immaculate-conception" displayName="Immaculate Conception" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="December" day="8" /></Strategy></Rule></Rules>
     </NotableDate>

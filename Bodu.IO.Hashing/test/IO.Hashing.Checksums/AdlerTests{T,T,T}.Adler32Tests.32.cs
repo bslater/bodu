@@ -42,7 +42,7 @@ public sealed partial class Adler32Tests
             QuickBrownFox = "5BDC0FDA", // https://md5calc.com/hash/adler32/The+quick+brown+fox+jumps+over+the+lazy+dog
             Zeros16 = "00100001",
 
-            // Long-input regression vectors for issue #127 — the buggy SIMD branch was not
+            // Long-input regression vectors for issue #127 - the buggy SIMD branch was not
             // exercised by any pre-existing KAT (all < 512 bytes). Expected digests are the
             // canonical zlib Adler-32 values for the (byte)(i & 0xFF) sequence at each length.
             Additional =

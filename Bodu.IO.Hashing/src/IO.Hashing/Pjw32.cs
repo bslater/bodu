@@ -21,7 +21,7 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// <para>
 /// <strong>When to choose PJW32.</strong> PJW is the symbol-table hash from Aho/Sethi/Ullman's "Compilers: Principles,
-/// Techniques, and Tools" (the "Dragon Book") and the precursor to the ELF hash family (<see cref="Elf64" />) — pick it
+/// Techniques, and Tools" (the "Dragon Book") and the precursor to the ELF hash family (<see cref="Elf64" />) - pick it
 /// when interoperating with compiler-generated symbol tables or reproducing a digest from an algorithm based on the
 /// Dragon Book formulation. For general-purpose hash-table keying prefer <see cref="Fnv1a32" /> (closely related but
 /// better-distributing) or <see cref="MurmurHash3_32" /> (much better distribution on inputs longer than ~16 bytes).

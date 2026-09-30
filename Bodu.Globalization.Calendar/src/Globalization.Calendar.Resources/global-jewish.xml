@@ -20,14 +20,14 @@
       Gregorian year boundaries, emitting each occurrence that lands in the requested Gregorian year.
     -->
 
-    <!-- Tu BiShvat — 15 Shevat, the New Year of the Trees. Strategy: Fixed Hebrew month/day, swept onto the Gregorian year. -->
+    <!-- Tu BiShvat - 15 Shevat, the New Year of the Trees. Strategy: Fixed Hebrew month/day, swept onto the Gregorian year. -->
     <NotableDate id="tu-bishvat" displayName="Tu BiShvat" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="Hebrew" />
         <Strategy><Fixed month="Shevat" day="15" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!--
-      Purim — 14 Adar. The LastAdar month alias is the leap-month handling: in a Hebrew leap year (which inserts a
+      Purim - 14 Adar. The LastAdar month alias is the leap-month handling: in a Hebrew leap year (which inserts a
       second Adar) it resolves to Adar II, and in a common year to the sole Adar, so Purim always falls in the
       final Adar as tradition requires.
     -->
@@ -36,25 +36,25 @@
         <Strategy><Fixed month="LastAdar" day="14" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Passover (Pesach) — 15 Nisan: start of the week-long festival of unleavened bread; a 7-day span. -->
+    <!-- Passover (Pesach) - 15 Nisan: start of the week-long festival of unleavened bread; a 7-day span. -->
     <NotableDate id="passover" displayName="Passover" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="7"><Applicability calendar="Hebrew" />
         <Strategy><Fixed month="Nisan" day="15" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Tisha B'Av — 9 Av, the principal fast commemorating the destruction of the Temples. Strategy: Fixed Hebrew month/day. -->
+    <!-- Tisha B'Av - 9 Av, the principal fast commemorating the destruction of the Temples. Strategy: Fixed Hebrew month/day. -->
     <NotableDate id="tisha-bav" displayName="Tisha B'Av" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="Hebrew" />
         <Strategy><Fixed month="Av" day="9" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Rosh Hashanah — 1 Tishri: the Jewish New Year; a 2-day span. -->
+    <!-- Rosh Hashanah - 1 Tishri: the Jewish New Year; a 2-day span. -->
     <NotableDate id="rosh-hashanah" displayName="Rosh Hashanah" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="2"><Applicability calendar="Hebrew" />
         <Strategy><Fixed month="Tishri" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Hanukkah — 25 Kislev: start of the eight-day Festival of Lights; an 8-day span. -->
+    <!-- Hanukkah - 25 Kislev: start of the eight-day Festival of Lights; an 8-day span. -->
     <NotableDate id="hanukkah" displayName="Hanukkah" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="8"><Applicability calendar="Hebrew" />
         <Strategy><Fixed month="Kislev" day="25" sweepCalendarYears="true" /></Strategy></Rule></Rules>
@@ -68,38 +68,38 @@
       date tracks the anchor's swept Gregorian occurrence exactly and cannot drift.
     -->
 
-    <!-- Lag BaOmer — 18 Iyar, the thirty-third day of the Omer. Strategy: OffsetFromRule, 33 days after Passover begins. -->
+    <!-- Lag BaOmer - 18 Iyar, the thirty-third day of the Omer. Strategy: OffsetFromRule, 33 days after Passover begins. -->
     <NotableDate id="lag-baomer" displayName="Lag BaOmer" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="passover" ruleRef="default" offsetDays="33" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Shavuot — 6 Sivan, 50 days after the first day of Passover (the conclusion of the Counting of the Omer). -->
+    <!-- Shavuot - 6 Sivan, 50 days after the first day of Passover (the conclusion of the Counting of the Omer). -->
     <NotableDate id="shavuot" displayName="Shavuot" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="passover" ruleRef="default" offsetDays="50" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Yom Kippur — 10 Tishri, the Day of Atonement, nine days after Rosh Hashanah. -->
+    <!-- Yom Kippur - 10 Tishri, the Day of Atonement, nine days after Rosh Hashanah. -->
     <NotableDate id="yom-kippur" displayName="Yom Kippur" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="rosh-hashanah" ruleRef="default" offsetDays="9" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Sukkot — 15 Tishri, the week-long Feast of Tabernacles, fourteen days after Rosh Hashanah; a 7-day span. -->
+    <!-- Sukkot - 15 Tishri, the week-long Feast of Tabernacles, fourteen days after Rosh Hashanah; a 7-day span. -->
     <NotableDate id="sukkot" displayName="Sukkot" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="7">
         <Strategy><OffsetFromRule notableDateRef="rosh-hashanah" ruleRef="default" offsetDays="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Shemini Atzeret — 22 Tishri, the assembly after Sukkot. Strategy: OffsetFromRule, 21 days after Rosh Hashanah. -->
+    <!-- Shemini Atzeret - 22 Tishri, the assembly after Sukkot. Strategy: OffsetFromRule, 21 days after Rosh Hashanah. -->
     <NotableDate id="shemini-atzeret" displayName="Shemini Atzeret" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="rosh-hashanah" ruleRef="default" offsetDays="21" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!--
-      Simchat Torah (diaspora) — 23 Tishri, the rejoicing of the Torah. In Israel it is usually combined with
+      Simchat Torah (diaspora) - 23 Tishri, the rejoicing of the Torah. In Israel it is usually combined with
       Shemini Atzeret on 22 Tishri; the separate diaspora concept lets territory packs choose explicitly.
     -->
     <NotableDate id="simchat-torah-diaspora" displayName="Simchat Torah (diaspora)" category="Religious" defaultNonWorkingDay="false">
@@ -107,7 +107,7 @@
         <Strategy><OffsetFromRule notableDateRef="rosh-hashanah" ruleRef="default" offsetDays="22" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Simchat Torah (Israel) — 22 Tishri, coinciding with Shemini Atzeret in Israel. Strategy: OffsetFromRule, 21 days after Rosh Hashanah. -->
+    <!-- Simchat Torah (Israel) - 22 Tishri, coinciding with Shemini Atzeret in Israel. Strategy: OffsetFromRule, 21 days after Rosh Hashanah. -->
     <NotableDate id="simchat-torah-israel" displayName="Simchat Torah (Israel)" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="rosh-hashanah" ruleRef="default" offsetDays="21" /></Strategy></Rule></Rules>

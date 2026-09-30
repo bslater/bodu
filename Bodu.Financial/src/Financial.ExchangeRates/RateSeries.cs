@@ -17,8 +17,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// The collection is immutable after construction. Internally it stores observations in a shared
-/// <see cref="RateSeriesStorage" /> backed by two parallel sorted arrays — an <see cref="int" /> array of day numbers (<see cref="DateOnly.DayNumber" />)
-/// and a <see cref="decimal" /> array of rates — so that the binary search at lookup time touches only the compact date
+/// <see cref="RateSeriesStorage" /> backed by two parallel sorted arrays - an <see cref="int" /> array of day numbers (<see cref="DateOnly.DayNumber" />)
+/// and a <see cref="decimal" /> array of rates - so that the binary search at lookup time touches only the compact date
 /// array. Compared with <see cref="System.Collections.Generic.SortedDictionary{TKey, TValue}" /> this gives
 /// substantially better cache locality, no per-node allocation, and predictable hot-path performance for the multi-year
 /// daily series typical of FX data.

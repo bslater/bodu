@@ -9,7 +9,7 @@ using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Represents a single known-answer test vector for a message-digest algorithm — a named message paired with the
+/// Represents a single known-answer test vector for a message-digest algorithm - a named message paired with the
 /// expected digest, plus an optional per-row key. Covers plain hashes, keyed hashes and MACs, and the hashing extension
 /// surface in one record.
 /// </summary>

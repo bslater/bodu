@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the ML-DSA expansion and sampling routines (FIPS 204 Algorithms 29–34): matrix expansion by rejection from
+/// Provides the ML-DSA expansion and sampling routines (FIPS 204 Algorithms 29-34): matrix expansion by rejection from
 /// SHAKE128, bounded secret sampling and mask expansion from SHAKE256, and the SampleInBall challenge sampler.
 /// </summary>
 /// <remarks>
@@ -87,8 +87,8 @@ internal static partial class MLDsaEngine
         indices[1] = row;
         sponge.Absorb(indices);
 
-        // FIPS 204 Algorithm 30 reads the XOF three bytes at a time. Squeezing a whole rate block — 56 triples, one
-        // permutation — reads the same byte stream; the bytes left over once the polynomial is full are never used.
+        // FIPS 204 Algorithm 30 reads the XOF three bytes at a time. Squeezing a whole rate block - 56 triples, one
+        // permutation - reads the same byte stream; the bytes left over once the polynomial is full are never used.
         Span<byte> block = stackalloc byte[KeccakSponge.Shake128RateBytes];
         int count = 0;
         while (count < N)
@@ -236,7 +236,7 @@ internal static partial class MLDsaEngine
         nonceBytes[1] = (byte)(nonce >> 8);
         sponge.Absorb(nonceBytes);
 
-        // FIPS 204 Algorithm 31 reads the XOF a byte at a time. Squeezing a whole rate block — one permutation — reads
+        // FIPS 204 Algorithm 31 reads the XOF a byte at a time. Squeezing a whole rate block - one permutation - reads
         // the same byte stream. The stream determines the secret coefficients, so the block is cleared afterwards.
         Span<byte> block = stackalloc byte[KeccakSponge.Shake256RateBytes];
         int count = 0;

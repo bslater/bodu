@@ -73,7 +73,7 @@ api.healthcheck.timeoutseconds = 3
     }
 
     // ------------------------------------------------------------------
-    // AppOptions — root scalar and one level of nesting
+    // AppOptions - root scalar and one level of nesting
     // ------------------------------------------------------------------
 
     /// <summary>
@@ -109,12 +109,12 @@ api.healthcheck.timeoutseconds = 3
     }
 
     // ------------------------------------------------------------------
-    // SiteOptions — public site (url, port, path; ssl with renewal; healthcheck)
+    // SiteOptions - public site (url, port, path; ssl with renewal; healthcheck)
     // ------------------------------------------------------------------
 
     /// <summary>
     /// Verifies that the <c>public</c> section binds the root scalar properties of
-    /// <see cref="SiteOptions" /> — URL, port, and physical path.
+    /// <see cref="SiteOptions" /> - URL, port, and physical path.
     /// </summary>
     [TestMethod]
     public void Bind_WhenPublicSiteBound_ShouldResolveRootSiteProperties()
@@ -148,7 +148,7 @@ api.healthcheck.timeoutseconds = 3
     }
 
     /// <summary>
-    /// Verifies that the <c>public.ssl.renewal</c> sub-section — three levels deep — binds
+    /// Verifies that the <c>public.ssl.renewal</c> sub-section - three levels deep - binds
     /// to <see cref="SslOptions.Renewal" />, including the auto-renew flag and the days-before-
     /// expiry threshold.
     /// </summary>
@@ -182,7 +182,7 @@ api.healthcheck.timeoutseconds = 3
     }
 
     // ------------------------------------------------------------------
-    // SiteOptions — admin site (same POCO type, independent section values)
+    // SiteOptions - admin site (same POCO type, independent section values)
     // ------------------------------------------------------------------
 
     /// <summary>
@@ -212,7 +212,7 @@ api.healthcheck.timeoutseconds = 3
     }
 
     // ------------------------------------------------------------------
-    // SiteOptions — api site (ssl.enabled only; certificate/key/thumbprint/renewal absent)
+    // SiteOptions - api site (ssl.enabled only; certificate/key/thumbprint/renewal absent)
     // ------------------------------------------------------------------
 
     /// <summary>
@@ -243,7 +243,7 @@ api.healthcheck.timeoutseconds = 3
     }
 
     // ------------------------------------------------------------------
-    // DI — named IOptionsMonitor<SiteOptions> for all three sites
+    // DI - named IOptionsMonitor<SiteOptions> for all three sites
     // ------------------------------------------------------------------
 
     /// <summary>
@@ -281,10 +281,10 @@ api.healthcheck.timeoutseconds = 3
     }
 
     /// <summary>
-    /// Verifies that mixed POCO types from the same single <c>.boduconfig</c> source —
+    /// Verifies that mixed POCO types from the same single <c>.boduconfig</c> source -
     /// <see cref="AppOptions" /> via
     /// <see cref="ConfigurationOptionsExtensions.AddConfigurationOptions{TOptions}(IServiceCollection, IConfiguration, string)" />
-    /// and <see cref="SiteOptions" /> via named <see cref="IOptionsMonitor{TOptions}" /> — can
+    /// and <see cref="SiteOptions" /> via named <see cref="IOptionsMonitor{TOptions}" /> - can
     /// all be resolved from one DI service provider.
     /// </summary>
     [TestMethod]
@@ -359,7 +359,7 @@ api.healthcheck.timeoutseconds = 3
     }
 
     /// <summary>
-    /// Represents configuration for a single web site or endpoint — URL, port, physical path,
+    /// Represents configuration for a single web site or endpoint - URL, port, physical path,
     /// TLS settings, and a health-check probe. Reused across multiple sections of the
     /// <c>.boduconfig</c> file for independent site instances.
     /// </summary>

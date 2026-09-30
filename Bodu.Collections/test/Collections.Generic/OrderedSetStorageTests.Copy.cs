@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic;
 public partial class OrderedSetStorageTests
 {
     // --------------------------------------------------------
-    // CopyTo — argument validation
+    // CopyTo - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -73,7 +73,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // CopyTo — successful copy behaviour
+    // CopyTo - successful copy behaviour
     // --------------------------------------------------------
 
     /// <summary>

@@ -33,7 +33,7 @@ public partial class ThrowHelperTests
     }
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull{TValue, TCondition}" />
-    /// does not throw — and on the ParamName-asserting overload reports nothing — when the requirement is
+    /// does not throw - and on the ParamName-asserting overload reports nothing - when the requirement is
     /// not activated or the value is non-null.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

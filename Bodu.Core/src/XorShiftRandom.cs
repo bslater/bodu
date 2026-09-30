@@ -15,7 +15,7 @@ namespace Bodu;
 /// <remarks>
 /// <para>
 /// <see cref="XorShiftRandom" /> derives each output by combining four 32-bit state words through three xor-and-shift
-/// operations — a generator class introduced by George Marsaglia in 2003. The cost per draw is a handful of register
+/// operations - a generator class introduced by George Marsaglia in 2003. The cost per draw is a handful of register
 /// operations with no branching, no division, and no memory allocation, making it materially faster than
 /// <see cref="System.Random" /> in tight inner loops on every supported runtime.
 /// </para>
@@ -26,7 +26,7 @@ namespace Bodu;
 /// preferred choice in tests and reproducible benchmarks.
 /// </para>
 /// <para>
-/// Instances are not thread-safe — state updates are non-atomic and concurrent draws will corrupt the internal state.
+/// Instances are not thread-safe - state updates are non-atomic and concurrent draws will corrupt the internal state.
 /// Use a per-thread instance, an external lock, or a thread-local pool when sharing across threads is required.
 /// </para>
 /// <para>
@@ -160,7 +160,7 @@ public sealed class XorShiftRandom
     /// <paramref name="maxValue" />) raises <see cref="ArgumentException" />.
     /// </para>
     /// <para>
-    /// The full <see cref="int" /> span <c>Next(int.MinValue, int.MaxValue)</c> is supported — the range is computed in
+    /// The full <see cref="int" /> span <c>Next(int.MinValue, int.MaxValue)</c> is supported - the range is computed in
     /// 64-bit space so the subtraction never overflows, and bounded generation uses Lemire-style rejection rather than
     /// modulo to avoid modulo-bias.
     /// </para>
@@ -170,7 +170,7 @@ public sealed class XorShiftRandom
         ThrowHelper.ThrowIfGreaterThanOther(minValue, maxValue);
 
         // Compute range in long-space so the subtraction never overflows, even for the
-        // full-int span Next(int.MinValue, int.MaxValue) — every int range fits in uint.
+        // full-int span Next(int.MinValue, int.MaxValue) - every int range fits in uint.
         uint range = (uint)((long)maxValue - (long)minValue);
         return range == 0
             ? minValue
@@ -215,8 +215,8 @@ public sealed class XorShiftRandom
 
     /// <inheritdoc />
     /// <remarks>
-    /// The result is composed from two consecutive 32-bit draws of the generator stream — the first draw supplies the
-    /// high word, the second the low word — reduced to 63 bits; a draw equal to <see cref="long.MaxValue" /> is
+    /// The result is composed from two consecutive 32-bit draws of the generator stream - the first draw supplies the
+    /// high word, the second the low word - reduced to 63 bits; a draw equal to <see cref="long.MaxValue" /> is
     /// rejected and redrawn so the contractual range <c>[0, long.MaxValue)</c> is preserved without bias.
     /// </remarks>
     public override long NextInt64()
@@ -311,7 +311,7 @@ public sealed class XorShiftRandom
     /// </summary>
     /// <param name="value">The raw 32-bit pseudo-random value to scale.</param>
     /// <returns>
-    /// A double-precision value in the range [0.0, 1.0). The upper bound is excluded — when <paramref name="value" />
+    /// A double-precision value in the range [0.0, 1.0). The upper bound is excluded - when <paramref name="value" />
     /// is <see cref="uint.MaxValue" /> the result is strictly less than 1.0.
     /// </returns>
     /// <remarks>

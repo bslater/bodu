@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Recurrence.Samples.CronExpressions.Scenarios;
 
 /// <summary>
 /// Demonstrates the six-field seconds layout selected by <see cref="CronFormat" />, and the
-/// canonical text that <c>ToString</c> emits — a normalized form that makes equality decidable by
+/// canonical text that <c>ToString</c> emits - a normalized form that makes equality decidable by
 /// meaning rather than by source spelling.
 /// </summary>
 public static class SecondsAndFormats

@@ -31,7 +31,7 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Direct single-block use — most callers should prefer the Threefish512 SymmetricAlgorithm.
+/// // Direct single-block use - most callers should prefer the Threefish512 SymmetricAlgorithm.
 /// byte[] key   = new byte[64];   // 512-bit key
 /// byte[] tweak = new byte[16];   // 128-bit tweak
 /// RandomNumberGenerator.Fill(key);
@@ -49,7 +49,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
+/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives - direct use vs.
 /// SymmetricAlgorithm</seealso> <seealso cref="Threefish512"/>
 public sealed partial class Threefish512Cipher
     : ThreefishBlockCipher
@@ -215,8 +215,8 @@ public sealed partial class Threefish512Cipher
     /// </exception>
     /// <remarks>
     /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a scalar
-    /// register-resident implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512FVL" /> — the
-    /// kernel rotates 256-bit vectors, which needs the VL extensions — combining the hardware intrinsic with the
+    /// register-resident implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512FVL" /> - the
+    /// kernel rotates 256-bit vectors, which needs the VL extensions - combining the hardware intrinsic with the
     /// process-wide SIMD opt-out; on hosts without AVX-512 it still folds to a compile-time constant that removes the
     /// branch, otherwise it reduces to a single cached-boolean load.
     /// </remarks>
@@ -362,8 +362,8 @@ public sealed partial class Threefish512Cipher
     /// </exception>
     /// <remarks>
     /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a scalar
-    /// register-resident implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512FVL" /> — the
-    /// kernel rotates 256-bit vectors, which needs the VL extensions — combining the hardware intrinsic with the
+    /// register-resident implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512FVL" /> - the
+    /// kernel rotates 256-bit vectors, which needs the VL extensions - combining the hardware intrinsic with the
     /// process-wide SIMD opt-out; on hosts without AVX-512 it still folds to a compile-time constant that removes the
     /// branch, otherwise it reduces to a single cached-boolean load.
     /// </remarks>

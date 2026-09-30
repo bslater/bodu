@@ -13,26 +13,26 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// Whirlpool was proposed by Paulo S. L. M. Barreto and Vincent Rijmen in 2000 and revised twice before being
-/// standardized in <c>ISO/IEC 10118-3</c>. The three published revisions use the same overall Merkle–Damgård
+/// standardized in <c>ISO/IEC 10118-3</c>. The three published revisions use the same overall Merkle-Damgård
 /// construction around the internal <c>W</c> block cipher but differ in the non-linear substitution layer and the
 /// linear diffusion matrix:
 /// </para>
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <see cref="WhirlpoolInfo1" /> — the <c>Whirlpool-0</c> function as originally submitted to <c>NESSIE</c> in 2000. It
+/// <see cref="WhirlpoolInfo1" /> - the <c>Whirlpool-0</c> function as originally submitted to <c>NESSIE</c> in 2000. It
 /// uses the original pseudo-random S-box and the original diffusion matrix.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="WhirlpoolInfo2" /> — the <c>Whirlpool-T</c> revision published in 2001. It replaces the S-box with the
+/// <see cref="WhirlpoolInfo2" /> - the <c>Whirlpool-T</c> revision published in 2001. It replaces the S-box with the
 /// structured mini-box construction while retaining the original diffusion matrix.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="WhirlpoolInfo3" /> — the final <c>Whirlpool</c> function adopted by <c>ISO/IEC 10118-3</c> in 2003. It
+/// <see cref="WhirlpoolInfo3" /> - the final <c>Whirlpool</c> function adopted by <c>ISO/IEC 10118-3</c> in 2003. It
 /// retains the mini-box S-box introduced in <c>Whirlpool-T</c> and uses the revised diffusion matrix with branch number
 /// nine.
 /// </description>

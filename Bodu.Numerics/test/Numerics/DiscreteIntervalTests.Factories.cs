@@ -50,8 +50,8 @@ public partial class DiscreteIntervalTests
 
     /// <summary>
     /// Verifies that <see cref="DiscreteInterval{T}.GreaterThan(T)" /> of the domain maximum and
-    /// <see cref="DiscreteInterval{T}.LessThan(T)" /> of the domain minimum are empty — no integer lies beyond the
-    /// domain extremes — rather than wrapping to an interval that contains almost every integer.
+    /// <see cref="DiscreteInterval{T}.LessThan(T)" /> of the domain minimum are empty - no integer lies beyond the
+    /// domain extremes - rather than wrapping to an interval that contains almost every integer.
     /// </summary>
     [TestMethod]
     public void GreaterThanAndLessThan_WhenBoundAtDomainExtreme_ShouldReturnEmpty()

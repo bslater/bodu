@@ -10,8 +10,8 @@ using System.Text;
 namespace Bodu.Security.Cryptography.Samples.HashingMacAndKdf.Scenarios;
 
 /// <summary>
-/// Derives keys from fixed inputs with the library's key-derivation functions — HKDF (extract-then-expand),
-/// the memory-hard password hash Argon2id, and scrypt — all with fixed salts so the derived keys reproduce
+/// Derives keys from fixed inputs with the library's key-derivation functions - HKDF (extract-then-expand),
+/// the memory-hard password hash Argon2id, and scrypt - all with fixed salts so the derived keys reproduce
 /// on every run.
 /// </summary>
 public static class KeyDerivation

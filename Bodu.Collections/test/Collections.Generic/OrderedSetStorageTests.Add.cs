@@ -25,7 +25,7 @@ public partial class OrderedSetStorageTests
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, Snapshot(sut));
     }
     // --------------------------------------------------------
-    // Add — argument validation
+    // Add - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -43,7 +43,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // Add — single-item behaviour
+    // Add - single-item behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -63,7 +63,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // Add — sequential behaviour
+    // Add - sequential behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -120,7 +120,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // Add — reference-type semantics
+    // Add - reference-type semantics
     // --------------------------------------------------------
 
     /// <summary>
@@ -138,7 +138,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // AddRange — counting behaviour
+    // AddRange - counting behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -189,7 +189,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // AddRange — argument validation
+    // AddRange - argument validation
     // --------------------------------------------------------
 
     /// <summary>

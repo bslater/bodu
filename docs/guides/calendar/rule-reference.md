@@ -4,13 +4,13 @@ title: NotableDateRule and adjustment-policy reference
 
 # NotableDateRule and adjustment-policy reference
 
-This page is the authoritative element-by-element reference for the document model on the notable-date schema (`urn:bodu:globalization:calendar`): the `<NotableDate>` concept, the `<Rule>` recipe, the `<Applicability>` filter, the most common `<Strategy>` elements (the [strategy reference](strategy-reference.md) covers all 13 single-date strategies and the four recurrence sources), and the reusable `<AdjustmentPolicy>` shape. For the vocabulary it assumes, start with [Core concepts](../../docs/calendar/concepts.md). For how to assemble a whole document — imports and overrides — see [Authoring notable date rules](rule-authoring.md). For where the service processes these elements, see [The resolution pipeline](resolution-pipeline.md).
+This page is the authoritative element-by-element reference for the document model on the notable-date schema (`urn:bodu:globalization:calendar`): the `<NotableDate>` concept, the `<Rule>` recipe, the `<Applicability>` filter, the most common `<Strategy>` elements (the [strategy reference](strategy-reference.md) covers all 13 single-date strategies and the four recurrence sources), and the reusable `<AdjustmentPolicy>` shape. For the vocabulary it assumes, start with [Core concepts](../../docs/calendar/concepts.md). For how to assemble a whole document - imports and overrides - see [Authoring notable date rules](rule-authoring.md). For where the service processes these elements, see [The resolution pipeline](resolution-pipeline.md).
 
-A rule is authored as XML or JSON and loaded into an immutable <xref:Bodu.Globalization.Calendar.NotableDateResource>; the loaded form is exposed through <xref:Bodu.Globalization.Calendar.NotableDateDefinition> and <xref:Bodu.Globalization.Calendar.NotableDateRule>, which are immutable and constructed by the loader — there is no object-initializer authoring API.
+A rule is authored as XML or JSON and loaded into an immutable <xref:Bodu.Globalization.Calendar.NotableDateResource>; the loaded form is exposed through <xref:Bodu.Globalization.Calendar.NotableDateDefinition> and <xref:Bodu.Globalization.Calendar.NotableDateRule>, which are immutable and constructed by the loader - there is no object-initializer authoring API.
 
 ---
 
-## `<NotableDateResource>` — the document root
+## `<NotableDateResource>` - the document root
 
 The root element declares the schema namespace, version, and id, and contains its child sections **in this order**: `<Metadata>`, `<ResolutionPolicy>`, `<AdjustmentPolicies>`, `<Imports>`, `<NotableDates>`, `<Overrides>` (all optional). The root maps to <xref:Bodu.Globalization.Calendar.NotableDateResource>.
 
@@ -18,13 +18,13 @@ The root element declares the schema namespace, version, and id, and contains it
 |---|---|---|---|
 | `xmlns` | Yes | namespace | Always `urn:bodu:globalization:calendar`. |
 | `schemaVersion` | Yes | string | The document's schema version, e.g. `1.0`. Surfaces as `NotableDateResource.SchemaVersion`. |
-| `resourceId` | Yes | identifier | Stable resource id (lowercase, digits, hyphens, dots — e.g. `data.au`). Surfaces as `NotableDateResource.ResourceId` and as the `ResourceId` part of every <xref:Bodu.Globalization.Calendar.NotableDateRuleIdentity>. |
+| `resourceId` | Yes | identifier | Stable resource id (lowercase, digits, hyphens, dots - e.g. `data.au`). Surfaces as `NotableDateResource.ResourceId` and as the `ResourceId` part of every <xref:Bodu.Globalization.Calendar.NotableDateRuleIdentity>. |
 
-### `<Metadata>` — descriptive provenance
+### `<Metadata>` - descriptive provenance
 
-`<Metadata>` is optional and carries an optional `<Name>`, an optional `<Description>`, and zero or more `<Source>` string entries. It is documentation only — it does not affect resolution.
+`<Metadata>` is optional and carries an optional `<Name>`, an optional `<Description>`, and zero or more `<Source>` string entries. It is documentation only - it does not affect resolution.
 
-### `<ResolutionPolicy>` — resource-level reconciliation
+### `<ResolutionPolicy>` - resource-level reconciliation
 
 `<ResolutionPolicy>` is optional; an absent element means <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy>`.Default`. It maps to the loaded `ResolutionPolicy` and decides how the resource reconciles duplicates and collisions and which date controls range inclusion.
 
@@ -35,7 +35,7 @@ The root element declares the schema namespace, version, and id, and contains it
 | `spanCollisionPolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> | `KeepAll` | Settles overlapping multi-day spans (same value set). |
 | `priorityDirection` | <xref:Bodu.Globalization.Calendar.RangeResolution.PriorityDirection> | `HigherWins` | Whether a larger or smaller `Priority` wins a tie: `HigherWins`, `LowerWins`. |
 | `observedDateRangePolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> | `ObservedOccurrenceControlsInclusion` | Which occurrence date governs range-query inclusion: `ObservedOccurrenceControlsInclusion`, `ActualOccurrenceControlsInclusion`, `BothOccurrencesControlInclusion`. |
-| `workingDays` | week pattern | Mon–Fri | The working week the weekend-related triggers and working-day arithmetic interpret, as a seven-character Sunday-first mask (e.g. `0111110` = Mon–Fri). Maps to `ResolutionPolicy.WorkingWeek` (a `Bodu.Core` `WeekPattern`). |
+| `workingDays` | week pattern | Mon-Fri | The working week the weekend-related triggers and working-day arithmetic interpret, as a seven-character Sunday-first mask (e.g. `0111110` = Mon-Fri). Maps to `ResolutionPolicy.WorkingWeek` (a `Bodu.Core` `WeekPattern`). |
 
 An optional `<CategoryPrecedence>` child orders categories for `CollisionPolicy.CategoryPriority`. See [Rule identity, priority, and observed-date resolution](identity-and-resolution.md) for the settlement semantics.
 
@@ -49,15 +49,15 @@ An optional `<CategoryPrecedence>` child orders categories for `CollisionPolicy.
 
 ---
 
-## `<NotableDate>` — the concept
+## `<NotableDate>` - the concept
 
 `<NotableDate>` declares one notable-date concept. It carries an optional `<Tags>` block and a required `<Rules>` block of one or more `<Rule>` elements.
 
 | Attribute | Required | Type | Default | Description |
 |---|---|---|---|---|
-| `id` | Yes | identifier | — | Stable concept id (lowercase, digits, hyphens), e.g. `easter-sunday`. Unique within the resource. |
-| `displayName` | Yes | string | — | Human-readable name surfaced as `NotableDate.DisplayName`. |
-| `category` | Yes | category | — | Default <xref:Bodu.Globalization.Calendar.NotableDateCategory> for every rule that does not override it. |
+| `id` | Yes | identifier | - | Stable concept id (lowercase, digits, hyphens), e.g. `easter-sunday`. Unique within the resource. |
+| `displayName` | Yes | string | - | Human-readable name surfaced as `NotableDate.DisplayName`. |
+| `category` | Yes | category | - | Default <xref:Bodu.Globalization.Calendar.NotableDateCategory> for every rule that does not override it. |
 | `defaultDurationDays` | No | positive int | `1` | Default span in days for rules that do not set `durationDays`. |
 | `defaultNonWorkingDay` | No | bool | *(unset)* | Default non-working flag inherited by rules that do not set `nonWorking`. |
 
@@ -78,18 +78,18 @@ A `<Tags>` block contains one or more `<Tag value="..."/>` elements. Concept-lev
 
 ---
 
-## `<Rule>` — the recipe
+## `<Rule>` - the recipe
 
 A `<Rule>` is one calculation recipe for its concept. It contains, **in order**, an optional `<Applicability>`, exactly one `<Strategy>`, an optional `<Tags>`, and an optional `<Adjustments>`.
 
 | Attribute | Required | Type | Default | Description |
 |---|---|---|---|---|
-| `id` | Yes | identifier | — | Distinguishes this rule from its siblings under the same concept (e.g. `default`, `nsw`, `wa`). Targeted by `<OffsetFromRule ruleRef>` and `<Overrides>`. |
+| `id` | Yes | identifier | - | Distinguishes this rule from its siblings under the same concept (e.g. `default`, `nsw`, `wa`). Targeted by `<OffsetFromRule ruleRef>` and `<Overrides>`. |
 | `priority` | No | int | `0` | Tie-break weight when several occurrences share a day; how it is applied is governed by the resource's `priorityDirection`. |
 | `category` | No | category | *(concept default)* | Overrides the concept's `category` for this rule. |
 | `nonWorking` | No | bool | *(concept default)* | Overrides `defaultNonWorkingDay` for this rule. |
 | `durationDays` | No | positive int | *(concept default)* | Overrides `defaultDurationDays` for this rule. |
-| `comment` | No | string | — | Authoring annotation; not surfaced to consumers. |
+| `comment` | No | string | - | Authoring annotation; not surfaced to consumers. |
 
 ```xml
 <Rule id="wa" priority="100" comment="Western Australia observes a substitute Monday when 25 April is a weekend.">
@@ -100,21 +100,21 @@ A `<Rule>` is one calculation recipe for its concept. It contains, **in order**,
 </Rule>
 ```
 
-The `<Adjustments>` block holds one or more `<Adjustment policyRef="..."/>` references to policies declared in `<AdjustmentPolicies>`. Adjustments are always referenced by id; see [`<AdjustmentPolicy>`](#adjustmentpolicy--the-reusable-shift) below.
+The `<Adjustments>` block holds one or more `<Adjustment policyRef="..."/>` references to policies declared in `<AdjustmentPolicies>`. Adjustments are always referenced by id; see [`<AdjustmentPolicy>`](#adjustmentpolicy---the-reusable-shift) below.
 
 ---
 
-## `<Applicability>` — calendar, year, and territory filtering
+## `<Applicability>` - calendar, year, and territory filtering
 
 `<Applicability>` constrains when and where a rule applies. All of its attributes and children are optional; an absent `<Applicability>` means the rule applies in the Gregorian calendar, in every year, and in every territory.
 
 | Attribute | Type | Default | Description |
 |---|---|---|---|
 | `calendar` | calendar name | `Gregorian` | The calendar the rule's `<Strategy>` is expressed in: `Gregorian`, `Hijri`, `UmmAlQura`, `Hebrew`, `Persian`, `ChineseLunisolar`. |
-| `fromYear` | year | — | Inclusive first Gregorian year the rule is active. |
-| `toYear` | year | — | Inclusive last Gregorian year the rule is active. |
-| `everyYears` | positive int | — | Periodicity — the rule applies every *n*th year, counted from `anchorYear`. |
-| `anchorYear` | year | — | The reference year for `everyYears`. |
+| `fromYear` | year | - | Inclusive first Gregorian year the rule is active. |
+| `toYear` | year | - | Inclusive last Gregorian year the rule is active. |
+| `everyYears` | positive int | - | Periodicity - the rule applies every *n*th year, counted from `anchorYear`. |
+| `anchorYear` | year | - | The reference year for `everyYears`. |
 
 | Child element | Repeats | Description |
 |---|---|---|
@@ -135,27 +135,27 @@ Territory scoping is **hierarchical**: a rule scoped to `AU` resolves for an `AU
 
 ## Strategy elements
 
-A rule carries exactly one occurrence source: a `<Strategy>` child (one of the elements below) **or** a `<Recurrence>` child ([recurrence elements](#recurrence-elements)). Each `<Strategy>` element maps to a public <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy>. Pick the simplest strategy that matches how the date is defined; reach for `<Algorithm>` only when the date cannot be expressed as calendar arithmetic. The six most common are detailed below; the positional (`<OrdinalDayOfMonth>`, `<DayOfYear>`, `<IsoWeekDate>`), dynamic-reference (`<WeekdayNearRule>`, `<NthWeekdayFromRule>`), and business-day (`<WorkingDayOffsetFromRule>`, `<WorkingDayInMonth>`) strategies — plus a per-attribute treatment of all of them — are catalogued in [Notable-date rule strategies](strategy-reference.md). The strategy kinds are also covered, with the engine's view, in [Date calculation algorithms](algorithms.md).
+A rule carries exactly one occurrence source: a `<Strategy>` child (one of the elements below) **or** a `<Recurrence>` child ([recurrence elements](#recurrence-elements)). Each `<Strategy>` element maps to a public <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy>. Pick the simplest strategy that matches how the date is defined; reach for `<Algorithm>` only when the date cannot be expressed as calendar arithmetic. The six most common are detailed below; the positional (`<OrdinalDayOfMonth>`, `<DayOfYear>`, `<IsoWeekDate>`), dynamic-reference (`<WeekdayNearRule>`, `<NthWeekdayFromRule>`), and business-day (`<WorkingDayOffsetFromRule>`, `<WorkingDayInMonth>`) strategies - plus a per-attribute treatment of all of them - are catalogued in [Notable-date rule strategies](strategy-reference.md). The strategy kinds are also covered, with the engine's view, in [Date calculation algorithms](algorithms.md).
 
-### `<Fixed>` — a fixed month and day
+### `<Fixed>` - a fixed month and day
 
 | Attribute | Required | Type | Description |
 |---|---|---|---|
-| `month` | Yes | string | Month number `1`–`12` or an English month name. |
-| `day` | Yes | day (1–31) | Day of month. |
-| `skipLeapMonth` | No | bool | Chinese lunisolar only — advance an ordinal lunar month past an intercalary leap month. |
-| `sweepCalendarYears` | No | bool | Non-Gregorian only — evaluate both candidate calendar years overlapping the requested Gregorian year. |
+| `month` | Yes | string | Month number `1`-`12` or an English month name. |
+| `day` | Yes | day (1-31) | Day of month. |
+| `skipLeapMonth` | No | bool | Chinese lunisolar only - advance an ordinal lunar month past an intercalary leap month. |
+| `sweepCalendarYears` | No | bool | Non-Gregorian only - evaluate both candidate calendar years overlapping the requested Gregorian year. |
 
 ```xml
-<!-- Christmas Day — 25 December. -->
+<!-- Christmas Day - 25 December. -->
 <Rule id="default">
   <Strategy><Fixed month="December" day="25" /></Strategy>
 </Rule>
 ```
 
-An impossible date (e.g. 29 February in a non-leap year) yields no occurrence for that year. `skipLeapMonth` and `sweepCalendarYears` apply only when the enclosing `<Applicability calendar="...">` is non-Gregorian — see [Working with non-Gregorian calendars](non-gregorian-calendars.md).
+An impossible date (e.g. 29 February in a non-leap year) yields no occurrence for that year. `skipLeapMonth` and `sweepCalendarYears` apply only when the enclosing `<Applicability calendar="...">` is non-Gregorian - see [Working with non-Gregorian calendars](non-gregorian-calendars.md).
 
-### `<DayOfWeekInMonth>` — the *n*th weekday in a month
+### `<DayOfWeekInMonth>` - the *n*th weekday in a month
 
 | Attribute | Required | Type | Description |
 |---|---|---|---|
@@ -164,7 +164,7 @@ An impossible date (e.g. 29 February in a non-leap year) yields no occurrence fo
 | `weekOrdinal` | Yes | ordinal | <xref:Bodu.Extensions.WeekOrdinal>: `First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`. |
 
 ```xml
-<!-- US Thanksgiving — the fourth Thursday in November. -->
+<!-- US Thanksgiving - the fourth Thursday in November. -->
 <Rule id="default">
   <Strategy><DayOfWeekInMonth month="11" dayOfWeek="Thursday" weekOrdinal="Fourth" /></Strategy>
 </Rule>
@@ -172,17 +172,17 @@ An impossible date (e.g. 29 February in a non-leap year) yields no occurrence fo
 
 `Last` resolves to the final occurrence in the month regardless of whether it is the fourth or fifth; a `Fifth` that does not exist yields no occurrence for that year.
 
-### `<WeekdayNearDate>` — a weekday near a fixed date
+### `<WeekdayNearDate>` - a weekday near a fixed date
 
 | Attribute | Required | Type | Description |
 |---|---|---|---|
 | `month` | Yes | string | Reference month (number or name). |
-| `day` | Yes | day (1–31) | Reference day of month. |
+| `day` | Yes | day (1-31) | Reference day of month. |
 | `dayOfWeek` | Yes | day of week | The target weekday. |
 | `direction` | Yes | proximity | <xref:Bodu.Globalization.Calendar.WeekdayProximity>: `Before`, `OnOrBefore`, `Nearest`, `OnOrAfter`, `After`. |
 
 ```xml
-<!-- Victoria Day (CA) — the Monday on or before 24 May. -->
+<!-- Victoria Day (CA) - the Monday on or before 24 May. -->
 <Rule id="default">
   <Strategy><WeekdayNearDate month="5" day="24" dayOfWeek="Monday" direction="OnOrBefore" /></Strategy>
 </Rule>
@@ -190,18 +190,18 @@ An impossible date (e.g. 29 February in a non-leap year) yields no occurrence fo
 
 Because a weekday recurs every seven days, each direction selects a single unambiguous occurrence in the seven-day window anchored at the reference date. `OnOrBefore` / `OnOrAfter` include the reference date itself when it already falls on the target weekday; `Nearest` picks the closest in either direction (the forward and backward distances sum to seven, so the result is never a tie). When the reference (year, month, day) is not a valid date, the rule produces no occurrence.
 
-### `<RelativeWeekdayInMonth>` — a weekday relative to an anchor weekday
+### `<RelativeWeekdayInMonth>` - a weekday relative to an anchor weekday
 
 | Attribute | Required | Type | Description |
 |---|---|---|---|
 | `month` | Yes | string | The anchor month. |
-| `dayOfWeek` | Yes | day of week | The anchor weekday — combined with `weekOrdinal` it identifies the reference occurrence. |
+| `dayOfWeek` | Yes | day of week | The anchor weekday - combined with `weekOrdinal` it identifies the reference occurrence. |
 | `weekOrdinal` | Yes | ordinal | Which occurrence of the anchor weekday. |
 | `relativeDayOfWeek` | Yes | day of week | The target weekday the rule resolves to. |
 | `direction` | Yes | proximity | How the target weekday is positioned relative to the anchor. |
 
 ```xml
-<!-- US Election Day — the Tuesday after the first Monday in November. -->
+<!-- US Election Day - the Tuesday after the first Monday in November. -->
 <Rule id="default">
   <Strategy>
     <RelativeWeekdayInMonth month="11" dayOfWeek="Monday" weekOrdinal="First"
@@ -215,13 +215,13 @@ The strategy first computes the anchor (the `weekOrdinal`-th `dayOfWeek` of `mon
 > [!NOTE]
 > "The next weekday after a known weekday" is always a fixed offset, so `<RelativeWeekdayInMonth>` and `<OffsetFromRule>` can describe the same date. Prefer `<OffsetFromRule>` whenever the anchor already exists as a rule (it tracks that rule); use `<RelativeWeekdayInMonth>` when the ordinal-weekday anchor is not itself a modelled concept (US Election Day has no "first Monday of November" rule to offset from).
 
-### `<OffsetFromRule>` — a signed offset from another rule
+### `<OffsetFromRule>` - a signed offset from another rule
 
 | Attribute | Required | Type | Description |
 |---|---|---|---|
 | `notableDateRef` | Yes | identifier | The `id` of the concept whose occurrence is the reference point. |
 | `ruleRef` | No | identifier | The `id` of a specific rule within that concept (e.g. `default`). |
-| `offsetDays` | Yes | int | Signed day offset — negative moves before the reference, positive after. |
+| `offsetDays` | Yes | int | Signed day offset - negative moves before the reference, positive after. |
 
 ```xml
 <NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious">
@@ -239,9 +239,9 @@ The strategy first computes the anchor (the `weekOrdinal`-th `dayOfWeek` of `mon
 </NotableDate>
 ```
 
-The referenced rule is resolved first and the offset applied — this is how Good Friday and Easter Monday hang off Easter Sunday. References are resolved cycle-safely within the resource; a self- or mutually-referential chain is reported rather than looping. When the referenced rule produces no occurrence for the year, the offset rule produces none in turn.
+The referenced rule is resolved first and the offset applied - this is how Good Friday and Easter Monday hang off Easter Sunday. References are resolved cycle-safely within the resource; a self- or mutually-referential chain is reported rather than looping. When the referenced rule produces no occurrence for the year, the offset rule produces none in turn.
 
-### `<Algorithm>` — dispatch to a named calculator
+### `<Algorithm>` - dispatch to a named calculator
 
 | Attribute | Required | Type | Description |
 |---|---|---|---|
@@ -266,7 +266,7 @@ In place of a `<Strategy>`, a rule may carry a `<Recurrence>` child holding exac
 |---|---|---|
 | `<DailyInterval>` | `anchorDate` (req.), `intervalDays` (≥1, default 1) | An occurrence every *n* days from the anchor. |
 | `<Weekly>` | `<Day dayOfWeek="…" />` (1+), `intervalWeeks` (≥1), `anchorDate` (req. when `intervalWeeks > 1`) | The selected weekdays every *n* weeks. |
-| `<MonthlyDay>` | `dayOfMonth` (1–31), `intervalMonths` (≥1), `anchorDate` (req. when `> 1`), `invalidDayBehavior` (`Skip` \| `UseLastDayOfMonth`) | A calendar day every *n* months. |
+| `<MonthlyDay>` | `dayOfMonth` (1-31), `intervalMonths` (≥1), `anchorDate` (req. when `> 1`), `invalidDayBehavior` (`Skip` \| `UseLastDayOfMonth`) | A calendar day every *n* months. |
 | `<MonthlyWeekday>` | `dayOfWeek`, `weekOrdinal`, `intervalMonths` (≥1), `anchorDate` (req. when `> 1`) | An ordinal weekday every *n* months. |
 
 ```xml
@@ -280,9 +280,9 @@ In place of a `<Strategy>`, a rule may carry a `<Recurrence>` child holding exac
 
 ---
 
-## `<Duration>` — a calculated span
+## `<Duration>` - a calculated span
 
-A rule's span is either the fixed `durationDays` attribute (above) or a calculated `<Duration><UntilDate>` whose end is computed by a second `<Strategy>`. A rule declares one or the other, never both. The end strategy is evaluated for the start anchor's civil year and, when that yields nothing acceptable, the following year — so the span can cross the year boundary and vary in length. Maps to <xref:Bodu.Globalization.Calendar.CalculatedEndDateDurationDefinition>.
+A rule's span is either the fixed `durationDays` attribute (above) or a calculated `<Duration><UntilDate>` whose end is computed by a second `<Strategy>`. A rule declares one or the other, never both. The end strategy is evaluated for the start anchor's civil year and, when that yields nothing acceptable, the following year - so the span can cross the year boundary and vary in length. Maps to <xref:Bodu.Globalization.Calendar.CalculatedEndDateDurationDefinition>.
 
 | `<UntilDate>` attribute | Required | Type | Description |
 |---|---|---|---|
@@ -302,19 +302,19 @@ A rule's span is either the fixed `durationDays` attribute (above) or a calculat
 </Rule>
 ```
 
-See [Notable-date rule strategies — Durations](strategy-reference.md#durations-fixed-or-calculated) for the full treatment.
+See [Notable-date rule strategies - Durations](strategy-reference.md#durations-fixed-or-calculated) for the full treatment.
 
 ---
 
-## `<AdjustmentPolicy>` — the reusable shift
+## `<AdjustmentPolicy>` - the reusable shift
 
 A weekend substitution or "move to next working day" shift is declared once in `<AdjustmentPolicies>` and referenced from rules by id. It models the runtime <xref:Bodu.Globalization.Calendar.AdjustmentPolicy>. A policy contains, **in order**, an optional `<Scope>`, a required `<Trigger>`, a required `<Action>`, a required `<Emission>`, and optional `<Parameters>`.
 
 | `<AdjustmentPolicy>` attribute | Required | Type | Default | Description |
 |---|---|---|---|---|
-| `id` | Yes | identifier | — | Policy id referenced by `<Adjustment policyRef="...">`. |
+| `id` | Yes | identifier | - | Policy id referenced by `<Adjustment policyRef="...">`. |
 | `priority` | No | int | `0` | Evaluation order when a rule references several policies. |
-| `description` | No | string | — | Authoring annotation. |
+| `description` | No | string | - | Authoring annotation. |
 
 ```xml
 <AdjustmentPolicy id="weekend-roll" priority="100"
@@ -325,11 +325,11 @@ A weekend substitution or "move to next working day" shift is declared once in `
 </AdjustmentPolicy>
 ```
 
-### `<Scope>` — where the policy applies
+### `<Scope>` - where the policy applies
 
 `<Scope>` is optional; an absent scope means the policy applies wherever it is referenced. It carries optional `fromYear` / `toYear` attributes and any mix of these children: `<Territory code="..."/>`, `<Calendar name="..."/>`, `<Category value="..."/>`, `<NotableDate ref="..."/>`, `<Rule notableDateRef="..." ruleRef="..."/>`, `<OnlyYear value="..."/>`, `<ExceptYear value="..."/>`. It maps to <xref:Bodu.Globalization.Calendar.AdjustmentScope>.
 
-### `<Trigger>` — when it fires
+### `<Trigger>` - when it fires
 
 `<Trigger>` has a required `type` (an <xref:Bodu.Globalization.Calendar.AdjustmentTrigger> value) and optional `month`, `day`, `weekOrdinal`, and `handlerKey` attributes, plus zero or more `<Weekday value="..."/>` children for day-specific triggers.
 
@@ -346,7 +346,7 @@ A weekend substitution or "move to next working day" shift is declared once in `
 | `IfNthOccurrenceInMonth` | The actual date is the `weekOrdinal`-th `<Weekday>` of its month. |
 | `Custom` | A registered <xref:Bodu.Globalization.Calendar.IAdjustmentTriggerHandler> (named by `handlerKey`) returns true. |
 
-### `<Action>` — what it does
+### `<Action>` - what it does
 
 `<Action>` has a required `type` (an <xref:Bodu.Globalization.Calendar.AdjustmentAction> value) and optional `days`, `dayOfWeek`, `maxSearchDays`, `skipWeekends`, `skipNonWorkingDates`, `notableDateRef`, `ruleRef`, and `handlerKey` attributes.
 
@@ -360,19 +360,19 @@ A weekend substitution or "move to next working day" shift is declared once in `
 | `Suppress` | Drops the occurrence. |
 | `Custom` | Delegates to a registered <xref:Bodu.Globalization.Calendar.IAdjustmentHandler> named by `handlerKey`. |
 
-### `<Emission>` — what is emitted
+### `<Emission>` - what is emitted
 
 `<Emission>` has a required `mode` (a <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> value) and optional `reason` and `nonWorking` attributes. The `reason` is carried into `NotableDate.AdjustmentReason`.
 
 | `mode` | Emits |
 |---|---|
 | `ActualOnly` | Only the nominal (actual) date. |
-| `ObservedOnly` | Only the shifted (observed) date — the single occurrence moves. |
+| `ObservedOnly` | Only the shifted (observed) date - the single occurrence moves. |
 | `ActualAndObserved` | Both the nominal and the observed dates, as two occurrences. |
-| `ObservedAsAdditional` | `[Obsolete]` — behaves identically to `ActualAndObserved` and is normalised to it at load time. Author `ActualAndObserved` for the "keep the actual date **and** add a substitute" pattern. |
-| `Suppress` | Nothing — drops the occurrence. |
+| `ObservedAsAdditional` | `[Obsolete]` - behaves identically to `ActualAndObserved` and is normalised to it at load time. Author `ActualAndObserved` for the "keep the actual date **and** add a substitute" pattern. |
+| `Suppress` | Nothing - drops the occurrence. |
 
-### `<Parameters>` — handler inputs
+### `<Parameters>` - handler inputs
 
 When `type="Custom"` on a trigger or action, an optional `<Parameters>` block of `<Param key="..." value="..."/>` entries is passed to the registered handler. See [Observance adjustment rules](adjustment-rules.md) for custom trigger / action handlers.
 
@@ -380,11 +380,11 @@ When `type="Custom"` on a trigger or action, an optional `<Parameters>` block of
 
 ## Reading the resolved `NotableDate`
 
-`NotableDateService.Resolve(...)` returns <xref:Bodu.Globalization.Calendar.NotableDate> records — one per resolved occurrence. The record is positional and immutable; its key members:
+`NotableDateService.Resolve(...)` returns <xref:Bodu.Globalization.Calendar.NotableDate> records - one per resolved occurrence. The record is positional and immutable; its key members:
 
 | Member | Type | Description |
 |---|---|---|
-| `Date` | `DateOnly` | The emitted (observed) date — the date to display, after any adjustment. |
+| `Date` | `DateOnly` | The emitted (observed) date - the date to display, after any adjustment. |
 | `ActualDate` | `DateOnly?` | The originally calculated (nominal) date. |
 | `IsObserved` | `bool` | Whether `Date` differs from `ActualDate` because an adjustment applied. |
 | `EndDate` | `DateOnly` | The inclusive last day (`Date + DurationDays − 1`). |
@@ -395,7 +395,7 @@ When `type="Custom"` on a trigger or action, an optional `<Parameters>` block of
 | `TerritoryCode` | `string` | The territory the occurrence applies to. |
 | `IsNonWorkingDay` | `bool` | Whether working-day arithmetic should skip this date. |
 | `Tags` | `IReadOnlyList<string>` | Free-form classification tags from the rule. |
-| `AdjustmentPolicyId`, `AdjustmentReason` | `string?` | Which adjustment policy moved the date, and the `reason` text — set when `IsObserved`. |
+| `AdjustmentPolicyId`, `AdjustmentReason` | `string?` | Which adjustment policy moved the date, and the `reason` text - set when `IsObserved`. |
 | `Identity` (`NotableDateId`, `RuleId`) | <xref:Bodu.Globalization.Calendar.NotableDateRuleIdentity> | The originating concept and rule ids. |
 
 ```csharp
@@ -438,9 +438,9 @@ There is no `Name` property (use `DisplayName`) and no `WasAdjusted` property (u
 
 ## Where to go next
 
-- [Authoring notable date rules](rule-authoring.md) — assembling a whole document: imports and ID-targeted overrides.
-- [Date calculation algorithms](algorithms.md) — the strategy kinds in depth, built-in `<Algorithm>` keys, and custom algorithms.
-- [Observance adjustment rules](adjustment-rules.md) — the full `<AdjustmentPolicy>` trigger / action / emission catalogues and custom handlers.
-- [Holiday patterns and examples](holiday-patterns.md) — end-to-end worked examples for common holiday types.
-- [The resolution pipeline](resolution-pipeline.md) — how these elements are processed to produce `NotableDate` results.
-- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- [Authoring notable date rules](rule-authoring.md) - assembling a whole document: imports and ID-targeted overrides.
+- [Date calculation algorithms](algorithms.md) - the strategy kinds in depth, built-in `<Algorithm>` keys, and custom algorithms.
+- [Observance adjustment rules](adjustment-rules.md) - the full `<AdjustmentPolicy>` trigger / action / emission catalogues and custom handlers.
+- [Holiday patterns and examples](holiday-patterns.md) - end-to-end worked examples for common holiday types.
+- [The resolution pipeline](resolution-pipeline.md) - how these elements are processed to produce `NotableDate` results.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

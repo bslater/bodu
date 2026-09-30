@@ -12,8 +12,8 @@ namespace Bodu.Text.Serialization;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The attribute applies only when the enumeration is converted to a string holding its member name — for example
-/// through the by-name enum converter — and has no effect when the enumeration is written as an integer.
+/// The attribute applies only when the enumeration is converted to a string holding its member name - for example
+/// through the by-name enum converter - and has no effect when the enumeration is written as an integer.
 /// </para>
 /// <para>
 /// This attribute derives from <see cref="SerializationAttribute" /> so that it is discoverable alongside the rest of

@@ -9,7 +9,7 @@ using System.Globalization;
 namespace Bodu.IO.Compound.Builders;
 
 /// <summary>
-/// Represents a node in a mutable compound-file object model — either a storage (a named container) or a stream (a
+/// Represents a node in a mutable compound-file object model - either a storage (a named container) or a stream (a
 /// named byte payload).
 /// </summary>
 /// <remarks>
@@ -20,7 +20,7 @@ namespace Bodu.IO.Compound.Builders;
 /// compound file. A node belongs to at most one parent storage at a time.
 /// </para>
 /// <para>
-/// Unlike a JSON document, a compound file has no array or null concept — every entry is a named storage or stream — so
+/// Unlike a JSON document, a compound file has no array or null concept - every entry is a named storage or stream - so
 /// the model has exactly two concrete node kinds.
 /// </para>
 /// </remarks>

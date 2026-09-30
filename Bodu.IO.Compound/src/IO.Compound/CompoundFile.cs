@@ -21,7 +21,7 @@ namespace Bodu.IO.Compound;
 /// <img src="../images/diagrams/io-compound-structure.svg" alt="A compound file is a structured-storage envelope: one physical file that begins with the OLE2 signature D0 CF 11 E0 and holds a header, allocation tables (FAT and mini-FAT), a directory, and sectors. CompoundFile.Open parses that container and exposes a logical hierarchy. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStream leaves; a CompoundStorage is the managed counterpart of the COM IStorage interface and a CompoundStream is the counterpart of IStream."/>
 /// </para>
 /// <para>
-/// A compound file is a structured-storage envelope — effectively a small file system embedded in a single file — used
+/// A compound file is a structured-storage envelope - effectively a small file system embedded in a single file - used
 /// by legacy Microsoft Office formats (<c>.xls</c>, <c>.doc</c>, <c>.ppt</c>, <c>.msg</c>) and other technologies. This
 /// type is the managed counterpart of the COM <c>StgOpenStorage</c> entry point: navigation begins at
 /// <see cref="RootStorage" /> and descends through nested <see cref="CompoundStorage" /> objects to the
@@ -30,7 +30,7 @@ namespace Bodu.IO.Compound;
 /// <para>
 /// By default a read-only file buffers the entire source into memory when opened, so access after opening never touches
 /// the original source and the read-only instance is safe to share across threads. Opening read-only with
-/// <c>buffered: false</c> instead reads sectors on demand from a seekable stream — bounding memory for large files — in
+/// <c>buffered: false</c> instead reads sectors on demand from a seekable stream - bounding memory for large files - in
 /// which case the stream must stay open for the instance's lifetime and reads are serialized rather than parallel.
 /// </para>
 /// <para>
@@ -39,7 +39,7 @@ namespace Bodu.IO.Compound;
 /// <see cref="FileMode" />) starts a new writable file, and <c>Open</c> with <see cref="FileAccess.ReadWrite" /> loads
 /// an existing file for editing. Edits are staged in memory and written to the destination only by
 /// <see cref="Commit" /> (which rewrites the whole container); <see cref="Revert" /> discards them. Mutating an
-/// existing file requires read access — write-only access is supported only for creating modes.
+/// existing file requires read access - write-only access is supported only for creating modes.
 /// </para>
 /// </remarks>
 /// <example>
@@ -312,7 +312,7 @@ public sealed class CompoundFile
     /// Write access loads the existing content (for <see cref="FileMode.Open" /> and a non-empty
     /// <see cref="FileMode.OpenOrCreate" />) or starts empty (for <see cref="FileMode.Create" />,
     /// <see cref="FileMode.CreateNew" />, and an empty <see cref="FileMode.OpenOrCreate" />) into a staging tree. Edits
-    /// are written back to <paramref name="stream" /> — which must be writable and seekable — only by
+    /// are written back to <paramref name="stream" /> - which must be writable and seekable - only by
     /// <see cref="Commit" />, which rewrites the whole container.
     /// </remarks>
     public static CompoundFile Open(Stream stream, FileMode mode, FileAccess access, bool leaveOpen = false, bool buffered = true)
@@ -815,8 +815,8 @@ public sealed class CompoundFile
     /// <remarks>
     /// The asynchronous counterpart of <see cref="Commit" />, sharing the same layout computation. Cancellation is
     /// observed before any destination mutation and again during the write; a cancellation or failure mid-write leaves
-    /// the destination partially written and the file dirty — the same surface a synchronous <see cref="Commit" />
-    /// fault presents — so call <see cref="CommitAsync" /> (or <see cref="Commit" />) again, or <see cref="Revert" />.
+    /// the destination partially written and the file dirty - the same surface a synchronous <see cref="Commit" />
+    /// fault presents - so call <see cref="CommitAsync" /> (or <see cref="Commit" />) again, or <see cref="Revert" />.
     /// </remarks>
     public async Task CommitAsync(CancellationToken cancellationToken = default)
     {

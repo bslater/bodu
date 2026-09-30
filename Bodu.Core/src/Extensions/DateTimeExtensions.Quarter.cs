@@ -12,7 +12,7 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Returns the quarter number (1 – 4) of the year for the specified <see cref="DateTime" />, using the standard
+    /// Returns the quarter number (1 - 4) of the year for the specified <see cref="DateTime" />, using the standard
     /// calendar quarter definition.
     /// </summary>
     /// <param name="dateTime">The date and time value to evaluate.</param>
@@ -22,14 +22,14 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>
     /// This overload uses the standard calendar alignment defined by
-    /// <see cref="CalendarQuarterDefinition.JanuaryToDecember" />: Q1 = Jan – Mar, Q2 = Apr – Jun, Q3 = Jul – Sep, Q4 =
-    /// Oct – Dec.
+    /// <see cref="CalendarQuarterDefinition.JanuaryToDecember" />: Q1 = Jan - Mar, Q2 = Apr - Jun, Q3 = Jul - Sep, Q4 =
+    /// Oct - Dec.
     /// </para>
     /// </remarks>
     public static int Quarter(this DateTime dateTime) => GetQuarterForDate(dateTime, GetQuarterDefinition(CalendarQuarterDefinition.JanuaryToDecember));
 
     /// <summary>
-    /// Returns the quarter number (1 – 4) for the specified <see cref="DateTime" />, using the supplied calendar
+    /// Returns the quarter number (1 - 4) for the specified <see cref="DateTime" />, using the supplied calendar
     /// quarter definition.
     /// </summary>
     /// <param name="dateTime">The date and time value to evaluate.</param>
@@ -65,7 +65,7 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Returns the quarter number (1 – 4) for the specified <see cref="DateTime" />, using a custom
+    /// Returns the quarter number (1 - 4) for the specified <see cref="DateTime" />, using a custom
     /// <see cref="IQuarterDefinitionProvider" />.
     /// </summary>
     /// <param name="dateTime">The date and time value to evaluate.</param>
@@ -79,7 +79,7 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>
     /// This overload supports advanced or domain-specific quarter systems by delegating to
-    /// <see cref="IQuarterDefinitionProvider.GetQuarter(DateTime)" /> — for example, 4-4-5 retail calendars or regional
+    /// <see cref="IQuarterDefinitionProvider.GetQuarter(DateTime)" /> - for example, 4-4-5 retail calendars or regional
     /// fiscal quarters.
     /// </para>
     /// </remarks>
@@ -87,7 +87,7 @@ public static partial class DateTimeExtensions
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if the value returned by <paramref name="provider" /> is not in the range 1 – 4.
+    /// Thrown if the value returned by <paramref name="provider" /> is not in the range 1 - 4.
     /// </exception>
     public static int Quarter(this DateTime dateTime, IQuarterDefinitionProvider provider)
     {
@@ -104,14 +104,14 @@ public static partial class DateTimeExtensions
     /// Computes the tick value for the end of the specified quarter, based on a month-day anchor definition.
     /// </summary>
     /// <param name="year">The year in which the quarter ends.</param>
-    /// <param name="quarter">The 1-based quarter number (1 – 4).</param>
+    /// <param name="quarter">The 1-based quarter number (1 - 4).</param>
     /// <param name="definition">
     /// A tuple representing the anchor month and day that define the start of Q1 (e.g. (4, 6) for April 6).
     /// </param>
     /// <returns>The number of ticks representing midnight on the last day of the quarter.</returns>
     /// <remarks>
-    /// Delegates to <see cref="QuarterCalculator.GetEndDayNumber(int, int, ValueTuple{uint, uint})" /> — the shared
-    /// quarter engine — and scales the resulting day number to ticks.
+    /// Delegates to <see cref="QuarterCalculator.GetEndDayNumber(int, int, ValueTuple{uint, uint})" /> - the shared
+    /// quarter engine - and scales the resulting day number to ticks.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static long ComputeQuarterEndTicks(
@@ -124,14 +124,14 @@ public static partial class DateTimeExtensions
     /// Computes the tick value for the start of the specified quarter, based on a month-day anchor definition.
     /// </summary>
     /// <param name="year">The year in which the quarter begins.</param>
-    /// <param name="quarter">The 1-based quarter number (1 – 4).</param>
+    /// <param name="quarter">The 1-based quarter number (1 - 4).</param>
     /// <param name="definition">
     /// A tuple representing the anchor month and day that define the start of Q1 (e.g. (4, 6) for April 6).
     /// </param>
     /// <returns>The number of ticks representing midnight on the first day of the quarter.</returns>
     /// <remarks>
-    /// Delegates to <see cref="QuarterCalculator.GetStartDayNumber(int, int, ValueTuple{uint, uint})" /> — the shared
-    /// quarter engine — and scales the resulting day number to ticks.
+    /// Delegates to <see cref="QuarterCalculator.GetStartDayNumber(int, int, ValueTuple{uint, uint})" /> - the shared
+    /// quarter engine - and scales the resulting day number to ticks.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static long ComputeQuarterStartTicks(
@@ -148,10 +148,10 @@ public static partial class DateTimeExtensions
     /// The <see cref="CalendarQuarterDefinition" /> that defines quarter anchor points.
     /// </param>
     /// <param name="referenceDate">The date to evaluate.</param>
-    /// <returns>A tuple containing the resolved year and quarter number (1 – 4).</returns>
+    /// <returns>A tuple containing the resolved year and quarter number (1 - 4).</returns>
     /// <remarks>
-    /// Delegates to <see cref="QuarterCalculator.GetYearAndQuarter(CalendarQuarterDefinition, int, int, int, int)" /> —
-    /// the shared quarter engine — passing the date components and day number of <paramref name="referenceDate" />; any
+    /// Delegates to <see cref="QuarterCalculator.GetYearAndQuarter(CalendarQuarterDefinition, int, int, int, int)" /> -
+    /// the shared quarter engine - passing the date components and day number of <paramref name="referenceDate" />; any
     /// time-of-day component is discarded by the day-number conversion.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -168,7 +168,7 @@ public static partial class DateTimeExtensions
     /// A tuple <c>(Month, Day)</c> representing the anchor month and day that define the start of Q1.
     /// </returns>
     /// <remarks>
-    /// Delegates to <see cref="QuarterCalculator.GetDefinition(CalendarQuarterDefinition)" /> — the shared quarter
+    /// Delegates to <see cref="QuarterCalculator.GetDefinition(CalendarQuarterDefinition)" /> - the shared quarter
     /// engine.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -176,15 +176,15 @@ public static partial class DateTimeExtensions
         QuarterCalculator.GetDefinition(definition);
 
     /// <summary>
-    /// Determines the quarter number (1 – 4) that includes the specified <see cref="DateTime" />, based on a month-day
+    /// Determines the quarter number (1 - 4) that includes the specified <see cref="DateTime" />, based on a month-day
     /// anchor definition.
     /// </summary>
     /// <param name="dateTime">The date and time value to evaluate.</param>
     /// <param name="definition">A tuple representing the start of Q1, encoded as (month, day).</param>
     /// <returns>An integer between 1 and 4 representing the resolved quarter number.</returns>
     /// <remarks>
-    /// Delegates to <see cref="QuarterCalculator.GetQuarter(int, int, ValueTuple{uint, uint})" /> — the shared quarter
-    /// engine — passing the month and day components of <paramref name="dateTime" />.
+    /// Delegates to <see cref="QuarterCalculator.GetQuarter(int, int, ValueTuple{uint, uint})" /> - the shared quarter
+    /// engine - passing the month and day components of <paramref name="dateTime" />.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int GetQuarterForDate(this DateTime dateTime, (uint Month, uint Day) definition) =>

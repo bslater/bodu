@@ -2,7 +2,7 @@
 
 Demonstrates the collect-mode validation lint: `NotableDateDocumentBuilder.Validate()` /
 `TryBuild(...)` for fluently authored documents, and `NotableDateResourceLoader.TryLoad` for
-arbitrary rule-pack text — every problem surfaces as a `NotableDateValidationDiagnostic` with a
+arbitrary rule-pack text - every problem surfaces as a `NotableDateValidationDiagnostic` with a
 stable `BODU-CAL-*` code instead of an exception, the shape build tasks and editor integrations
 want. The complete code catalogue lives in the
 [validation diagnostics guide](../../../docs/guides/calendar/validation-diagnostics.md).
@@ -11,10 +11,10 @@ want. The complete code catalogue lives in the
 dotnet run --project samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.ValidationLint
 ```
 
-## Scenario 1 — LintingAuthoredDocuments
+## Scenario 1 - LintingAuthoredDocuments
 
 **Intent.** Show the linting surface for a document you are building in code, where the likely
-mistakes are semantic rather than syntactic — a misspelled algorithm key is perfectly
+mistakes are semantic rather than syntactic - a misspelled algorithm key is perfectly
 well-formed.
 
 **What it does.** Validates a clean document, one whose rule names an algorithm that does not
@@ -35,16 +35,16 @@ non-throwing `TryBuild`.
 `Validate()` runs the loader's own pipeline, which is what makes an empty result a guarantee
 that `Build()` will succeed rather than a weaker check. The structurally incomplete document is
 the interesting row: `Build()` would have thrown an `InvalidOperationException` on it, and the
-linter still reports it as a diagnostic — a linter has to survive input worse than the loader
+linter still reports it as a diagnostic - a linter has to survive input worse than the loader
 accepts.
 
 **APIs demonstrated.** `NotableDateDocumentBuilder.Validate` / `TryBuild`,
 `NotableDateValidationDiagnostic` (severity, `BODU-CAL-*` code, message).
 
-## Scenario 2 — LintingRulePackText
+## Scenario 2 - LintingRulePackText
 
 **Intent.** Show the surface a build task or editor integration needs, where the input is
-arbitrary text — including text that is not well-formed XML.
+arbitrary text - including text that is not well-formed XML.
 
 **What it does.** Lints three inputs through `TryLoad`: text that is not XML, a well-formed pack
 naming an algorithm that does not exist, and a valid pack.
@@ -59,7 +59,7 @@ naming an algorithm that does not exist, and a valid pack.
   valid pack: loaded=True, resource=pack.valid
 ```
 
-Nothing throws, including the input that is not XML — which matters because a file being edited
+Nothing throws, including the input that is not XML - which matters because a file being edited
 is malformed for most of the time it is being edited, so a loader that throws on bad XML cannot
 drive a linter at all. Syntax errors carry codes in the same scheme as semantic ones, so a
 consumer renders one kind of thing rather than two, and the codes match those the throwing

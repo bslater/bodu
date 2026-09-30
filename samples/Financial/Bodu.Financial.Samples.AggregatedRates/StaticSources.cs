@@ -12,8 +12,8 @@ namespace Bodu.Financial.Samples.AggregatedRates;
 
 /// <summary>
 /// Loads the two committed static rate files that stand in for two live central-bank feeds. Their
-/// coverage is deliberately complementary — Bank A quotes AUD/USD and AUD/EUR, Bank B quotes AUD/USD
-/// (a visibly different fix) and AUD/JPY — so fallback, averaging, and routing all have something to do.
+/// coverage is deliberately complementary - Bank A quotes AUD/USD and AUD/EUR, Bank B quotes AUD/USD
+/// (a visibly different fix) and AUD/JPY - so fallback, averaging, and routing all have something to do.
 /// </summary>
 public static class StaticSources
 {

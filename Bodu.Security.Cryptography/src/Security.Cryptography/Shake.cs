@@ -29,7 +29,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// Unlike the fixed-length SHA-3 variants, SHAKE is an XOF — the output length is independent of the security parameter
+/// Unlike the fixed-length SHA-3 variants, SHAKE is an XOF - the output length is independent of the security parameter
 /// and may be any positive multiple of 8 bits. The domain separation byte <c>0x1F</c> distinguishes SHAKE from SHA-3 (
 /// <c>0x06</c>) and from raw Keccak. Multi-rate padding (pad10*1) appends the domain byte, zero or more zero bytes, and
 /// a <c>0x80</c> byte at the last position of the final rate block.
@@ -60,7 +60,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose SHAKE.</strong> Pick SHAKE when an extendable-output function is genuinely required — KMAC
+/// <strong>When to choose SHAKE.</strong> Pick SHAKE when an extendable-output function is genuinely required - KMAC
 /// inputs, post-quantum signature schemes, hash-based DRBGs, and any protocol that needs more than the fixed-length
 /// output of SHA-3 / SHA-256. For ordinary fixed-length hashing prefer SHA-3 (FIPS 202) or <see cref="Blake3" />
 /// (faster on commodity hardware). Use SHAKE128 when 128-bit security is sufficient and throughput matters; use

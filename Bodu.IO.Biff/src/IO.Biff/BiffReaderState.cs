@@ -12,8 +12,8 @@ namespace Bodu.IO.Biff;
 /// </summary>
 /// <remarks>
 /// <see cref="BiffReader" /> is a <see langword="ref struct" /> and cannot be stored in a field. A consumer that reads
-/// incrementally — a class that walks a substream one record per call, or a loop feeding chunks of a
-/// <see cref="Stream" /> — captures <see cref="BiffReader.CurrentState" /> after each pass, slices its buffer at
+/// incrementally - a class that walks a substream one record per call, or a loop feeding chunks of a
+/// <see cref="Stream" /> - captures <see cref="BiffReader.CurrentState" /> after each pass, slices its buffer at
 /// <see cref="BiffReader.BytesConsumed" />, and constructs the next reader from the remaining bytes and the captured
 /// state. The record position itself is not part of the state: it is expressed by where the caller slices the buffer.
 /// </remarks>

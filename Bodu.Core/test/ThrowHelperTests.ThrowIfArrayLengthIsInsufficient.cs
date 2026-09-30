@@ -10,8 +10,8 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsInsufficient" /> does not throw — and on
-    /// the ParamName-asserting overload reports nothing — when the array length is at least the required
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsInsufficient" /> does not throw - and on
+    /// the ParamName-asserting overload reports nothing - when the array length is at least the required
     /// minimum.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

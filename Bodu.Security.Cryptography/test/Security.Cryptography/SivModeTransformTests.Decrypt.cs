@@ -22,8 +22,8 @@ public sealed partial class SivModeTransformTests
 
     /// <summary>
     /// Verifies that <see cref="SivModeTransform.Decrypt" /> zeroes the plaintext region of the output buffer before
-    /// propagating an exception thrown by the S2V (CMAC) cipher mid-transform. SIV is write-then-clear — the S2V
-    /// recomputation runs over plaintext already written into the caller's buffer — so a fault inside S2V is the
+    /// propagating an exception thrown by the S2V (CMAC) cipher mid-transform. SIV is write-then-clear - the S2V
+    /// recomputation runs over plaintext already written into the caller's buffer - so a fault inside S2V is the
     /// widest unverified-plaintext window this transform has.
     /// </summary>
     [TestMethod]
@@ -81,11 +81,11 @@ public sealed partial class SivModeTransformTests
             }
             catch (InvalidOperationException)
             {
-                continue; // the fault landed in construction-time key derivation — Decrypt never ran
+                continue; // the fault landed in construction-time key derivation - Decrypt never ran
             }
 
             byte[] output = new byte[plaintext.Length];
-            Array.Fill(output, (byte)0xCC); // sentinel — any non-zero value
+            Array.Fill(output, (byte)0xCC); // sentinel - any non-zero value
 
             try
             {

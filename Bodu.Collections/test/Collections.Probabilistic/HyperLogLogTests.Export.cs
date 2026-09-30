@@ -90,7 +90,7 @@ public partial class HyperLogLogTests
     }
 
     /// <summary>
-    /// Verifies that an export/import round trip preserves the estimate exactly — the registers are copied verbatim —
+    /// Verifies that an export/import round trip preserves the estimate exactly - the registers are copied verbatim -
     /// along with the precision, register count, and standard error. Int keys are used because their hash codes are
     /// process-stable.
     /// </summary>
@@ -230,7 +230,7 @@ public partial class HyperLogLogTests
 
     /// <summary>
     /// Verifies that <see cref="HyperLogLog{T}.Import" /> throws <see cref="ArgumentException" /> when a register
-    /// value exceeds the maximum attainable rank for the declared precision — 64 − b + 1 — indicating corruption that
+    /// value exceeds the maximum attainable rank for the declared precision - 64 − b + 1 - indicating corruption that
     /// would silently skew subsequent estimates.
     /// </summary>
     [TestMethod]

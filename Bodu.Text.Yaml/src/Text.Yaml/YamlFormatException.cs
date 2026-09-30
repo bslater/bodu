@@ -11,7 +11,7 @@ namespace Bodu.Text.Yaml;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Raised by the YAML reader — and therefore surfaced by <c>YamlSerializer</c> while deserializing — when the source
+/// Raised by the YAML reader - and therefore surfaced by <c>YamlSerializer</c> while deserializing - when the source
 /// text cannot be interpreted as a valid YAML stream: for example, inconsistent indentation, a tab used for
 /// indentation, an unterminated quoted scalar, an invalid escape sequence, a duplicate mapping key, or an alias that
 /// refers to no anchor. The error is signalled through the <see cref="FormatException" /> hierarchy so callers can

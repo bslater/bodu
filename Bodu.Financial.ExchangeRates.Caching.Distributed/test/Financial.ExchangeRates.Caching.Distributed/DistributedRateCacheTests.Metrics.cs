@@ -11,8 +11,8 @@ namespace Bodu.Financial.ExchangeRates.Caching.Distributed;
 public sealed partial class DistributedRateCacheTests
 {
     /// <summary>
-    /// Verifies that every swallowed storage failure increments the storage-failure counter — even the ones whose
-    /// warning log is suppressed by the rate-limiting gate — so sustained degradation is quantifiable.
+    /// Verifies that every swallowed storage failure increments the storage-failure counter - even the ones whose
+    /// warning log is suppressed by the rate-limiting gate - so sustained degradation is quantifiable.
     /// </summary>
     [TestMethod]
     public void Store_WhenBackingStoreThrowsRepeatedly_ShouldCountEverySwallowedFailure()

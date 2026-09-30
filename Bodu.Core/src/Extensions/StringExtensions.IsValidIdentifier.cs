@@ -24,7 +24,7 @@ public static partial class StringExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// The rules follow the C# 5 ECMA-334 identifier grammar at a character level — the first character must be a
+    /// The rules follow the C# 5 ECMA-334 identifier grammar at a character level - the first character must be a
     /// letter (any <see cref="UnicodeCategory" /> in the letter family) or an underscore, and subsequent characters
     /// must additionally permit decimal digits, connector punctuation, and combining or formatting marks. Reserved
     /// keywords (<c>if</c>, <c>class</c>, etc.) are not rejected because the keyword set changes with the C# language

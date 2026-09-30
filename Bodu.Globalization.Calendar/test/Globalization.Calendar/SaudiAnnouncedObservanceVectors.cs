@@ -10,8 +10,8 @@ using Bodu.Test.Kat;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Loads the embedded Saudi announced (gazetted) observance table — the dates the High Judiciary Council of Saudi
-/// Arabia actually announced for the sighting-sensitive month starts of Hijri 1422–1448 — as KAT rows for
+/// Loads the embedded Saudi announced (gazetted) observance table - the dates the High Judiciary Council of Saudi
+/// Arabia actually announced for the sighting-sensitive month starts of Hijri 1422-1448 - as KAT rows for
 /// <c>[DynamicData]</c> binding.
 /// </summary>
 /// <remarks>

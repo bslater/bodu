@@ -1,7 +1,7 @@
 # Bodu.Text.Bencode.Samples.TorrentFile
 
 The flagship `Bodu.Text.Bencode` sample: reading, verifying, and re-authoring a real
-BitTorrent metainfo file (BEP 3) — the format Bencode was invented for. Four scenarios climb
+BitTorrent metainfo file (BEP 3) - the format Bencode was invented for. Four scenarios climb
 the library's layers over one committed 278-byte `Data/sample.torrent`: DOM inspection,
 canonical byte-exact round trips, the raw-slice surface that makes info-hashing safe, and
 typed POCO mapping. The info-hash scenario also crosses packages, using `Bodu.Text.Encoding`'s
@@ -13,16 +13,16 @@ Everything runs offline and deterministically.
 dotnet run --project samples/Text.Bencode/Bodu.Text.Bencode.Samples.TorrentFile
 ```
 
-## Scenario 1 — ParseTorrent
+## Scenario 1 - ParseTorrent
 
 **Intent.** Show the `JsonDocument`-style entry point for a format you inspect rather than
-map: one parse over the raw bytes, then cheap `BencodeElement` cursors — the right layer when
+map: one parse over the raw bytes, then cheap `BencodeElement` cursors - the right layer when
 a torrent's exact shape (single-file vs multi-file, optional keys) is discovered as you go.
 
 **What it does.** Parses `Data/sample.torrent` with `BencodeDocument.Parse` and walks the
 metainfo dictionary: string keys via `GetString`, the `creation date` unix timestamp via
 `GetInt64` (converted to `DateTimeOffset`), and the nested `info` dictionary's payload
-fields. Crucially it reads `pieces` — a run of 20-byte SHA-1 hashes — with `GetBytes`, since
+fields. Crucially it reads `pieces` - a run of 20-byte SHA-1 hashes - with `GetBytes`, since
 Bencode strings are *byte* strings and this one is not text. It finishes by probing the
 absent optional `announce-list` with `TryGetProperty`.
 
@@ -59,7 +59,7 @@ absent optional `announce-list` with `TryGetProperty`.
 `GetProperty` / `TryGetProperty`, `GetString` vs `GetBytes` (text vs binary byte strings),
 `GetInt64`.
 
-## Scenario 2 — CanonicalRoundTrip
+## Scenario 2 - CanonicalRoundTrip
 
 **Intent.** Demonstrate Bencode's defining property: the encoding is *canonical*. Dictionary
 keys must appear in ascending raw-byte order, so every value has exactly one valid encoding.
@@ -68,7 +68,7 @@ pipeline.
 
 **What it does.** Re-emits the parsed torrent through `BencodeElement.WriteTo` +
 `Utf8BencodeWriter` and compares against the original file with `SequenceEqual`. It then
-shows the writer's side of the contract — entries written out of order (`name` before
+shows the writer's side of the contract - entries written out of order (`name` before
 `length`) still emit sorted, because each dictionary is re-ordered as it closes, while a
 duplicate key throws `BencodeSerializationException` since no valid encoding can contain it.
 Finally the reader's side: strict parsing rejects a non-canonical document (`name` key before
@@ -107,17 +107,17 @@ parse succeeding:
 `BencodeSerializationException` (duplicate key), `Utf8BencodeReader` strict vs
 `BencodeReaderOptions.AllowUnsortedKeys`, `BencodeFormatException`.
 
-## Scenario 3 — InfoHashRawSlice
+## Scenario 3 - InfoHashRawSlice
 
-**Intent.** Solve BitTorrent's most famous requirement — the info-hash is the SHA-1 of the
-`info` dictionary's *exact encoded bytes* — and show why the raw-slice surface exists.
+**Intent.** Solve BitTorrent's most famous requirement - the info-hash is the SHA-1 of the
+`info` dictionary's *exact encoded bytes* - and show why the raw-slice surface exists.
 Re-serializing a parsed tree risks producing different bytes in a non-canonical format;
 because Bencode is canonical and `GetRawBytes` returns the element's original slice, the
 hash is computed with zero drift risk.
 
 **What it does.** Pulls the `info` element's complete encoded form with `GetRawBytes` (109 of
 the file's 278 bytes), hashes it with `SHA1.HashData`, and renders the digest with
-`Base16.Encode` from `Bodu.Text.Encoding` — the lowercase hex form trackers display. It then
+`Base16.Encode` from `Bodu.Text.Encoding` - the lowercase hex form trackers display. It then
 re-authors the torrent for a new tracker by writing a fresh document that splices the
 untouched slice in verbatim via `WritePropertyName("info")` + `WriteRawValue`, re-parses it,
 and proves the info-hash is unchanged.
@@ -151,17 +151,17 @@ and confirmation the hash survived re-authoring:
 `WritePropertyName`, cross-package `Base16.Encode(bytes, Base16Variant.Lower)`,
 `SHA1.HashData`.
 
-## Scenario 4 — PocoTorrent
+## Scenario 4 - PocoTorrent
 
 **Intent.** Show the typed layer for when the shape *is* known: `BencodeSerializer` maps the
 metainfo dictionary onto a POCO graph in one call. Torrent keys include spaces
-(`creation date`, `piece length`) — precisely what `[BencodePropertyName]` exists for — and
+(`creation date`, `piece length`) - precisely what `[BencodePropertyName]` exists for - and
 binary values bind to `byte[]`.
 
 **What it does.** Defines `TorrentMeta` / `TorrentInfo` POCOs whose properties carry explicit
 wire names, deserializes the file with `BencodeSerializer.Deserialize<TorrentMeta>`, and
 prints the typed values. It then serializes the graph back and compares against the original
-file — canonical encoding makes even the POCO round trip byte-exact.
+file - canonical encoding makes even the POCO round trip byte-exact.
 
 **What to expect.** The typed fields, and a byte-identical 278-byte re-encoding:
 
@@ -204,8 +204,8 @@ Bodu.Text.Bencode.Samples.TorrentFile/
 
 ## Related
 
-- `Bodu.Text.Toml` samples (`samples/Text.Toml/`) — the same System.Text.Json-shaped stack
+- `Bodu.Text.Toml` samples (`samples/Text.Toml/`) - the same System.Text.Json-shaped stack
   (serializer / mutable DOM / read-only DOM / token layer) for TOML.
-- `Bodu.Text.Encoding` samples (`samples/Text.Encoding/`) — the `Base16` surface used here,
+- `Bodu.Text.Encoding` samples (`samples/Text.Encoding/`) - the `Base16` surface used here,
   and the rest of the binary-encoding catalogue.
 - Guides: `docs/guides/serialization/bencode/`.

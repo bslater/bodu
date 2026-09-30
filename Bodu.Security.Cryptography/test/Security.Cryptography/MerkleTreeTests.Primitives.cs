@@ -9,8 +9,8 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Holds the internal RFC 6962 primitives on <see cref="MerkleTree" /> — the prefixes, the split point, the recursive
-/// <c>Mth</c> and the proof walks — to the published vectors.
+/// Holds the internal RFC 6962 primitives on <see cref="MerkleTree" /> - the prefixes, the split point, the recursive
+/// <c>Mth</c> and the proof walks - to the published vectors.
 /// </summary>
 /// <remarks>
 /// The public members validate arguments and read resources; the primitives are the stateless arithmetic underneath

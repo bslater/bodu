@@ -14,7 +14,7 @@ namespace Bodu.Financial.Samples.CurrencyServices.Scenarios;
 /// (<see cref="CurrencyRegistry" />), the <see cref="CurrencyInfo" /> record it stores, the
 /// <see cref="CurrencyCode" /> enum bridge, and the indexed <see cref="CurrencyLookupService" />
 /// (<see cref="ICurrencyLookup" />). The headline fact: minor units are per-currency data, not a
-/// universal "2 decimal places" — JPY has 0, BHD has 3.
+/// universal "2 decimal places" - JPY has 0, BHD has 3.
 /// </summary>
 public static class CurrencyCatalogue
 {

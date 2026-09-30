@@ -27,19 +27,19 @@ public static partial class DateTimeExtensions
     /// <list type="bullet">
     /// <item>
     /// <term>Q1</term>
-    /// <description>January – March</description>
+    /// <description>January - March</description>
     /// </item>
     /// <item>
     /// <term>Q2</term>
-    /// <description>April – June</description>
+    /// <description>April - June</description>
     /// </item>
     /// <item>
     /// <term>Q3</term>
-    /// <description>July – September</description>
+    /// <description>July - September</description>
     /// </item>
     /// <item>
     /// <term>Q4</term>
-    /// <description>October – December</description>
+    /// <description>October - December</description>
     /// </item>
     /// </list>
     /// <para>
@@ -64,7 +64,7 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>
     /// The <paramref name="definition" /> controls whether quarters are aligned to the first day of a month (e.g.
-    /// January – March) or anchored to a custom day-of-month boundary.
+    /// January - March) or anchored to a custom day-of-month boundary.
     /// </para>
     /// <para>
     /// For provider-driven (e.g. 4-4-5 fiscal) quarters, use the
@@ -109,7 +109,7 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>
     /// This overload supports advanced or domain-specific quarter systems by delegating boundary logic to the supplied
-    /// <paramref name="provider" /> — for example, 4-4-5 retail calendars or regional fiscal quarters.
+    /// <paramref name="provider" /> - for example, 4-4-5 retail calendars or regional fiscal quarters.
     /// </para>
     /// <para>
     /// The returned value has its time component normalized to midnight (00:00:00), and the original
@@ -138,7 +138,7 @@ public static partial class DateTimeExtensions
     /// The calendar year of the result. Must be between the <c>Year</c> property values of
     /// <see cref="DateTime.MinValue" /> and <see cref="DateTime.MaxValue" />, inclusive.
     /// </param>
-    /// <param name="quarter">The quarter number, from 1 (Jan – Mar) through 4 (Oct – Dec).</param>
+    /// <param name="quarter">The quarter number, from 1 (Jan - Mar) through 4 (Oct - Dec).</param>
     /// <returns>
     /// An object whose value is set to midnight (00:00:00) on the last day of the specified quarter and year, using
     /// <see cref="DateTimeKind.Unspecified" />.

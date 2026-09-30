@@ -44,7 +44,7 @@ public partial class CrcStandardTests
 
     /// <summary>
     /// Verifies that two <see cref="CrcStandard" /> instances whose CRC parameters all match but whose
-    /// <see cref="CrcStandard.Name" /> differs compare equal — the class remarks document <see cref="CrcStandard.Name" />
+    /// <see cref="CrcStandard.Name" /> differs compare equal - the class remarks document <see cref="CrcStandard.Name" />
     /// as informational only.
     /// </summary>
     [TestMethod]
@@ -72,7 +72,7 @@ public partial class CrcStandardTests
 
     /// <summary>
     /// Verifies that inserting two <see cref="CrcStandard" /> instances whose CRC parameters all match but whose
-    /// <see cref="CrcStandard.Name" /> differs into a <see cref="HashSet{T}" /> yields a single entry — the standard
+    /// <see cref="CrcStandard.Name" /> differs into a <see cref="HashSet{T}" /> yields a single entry - the standard
     /// consumer-visible consequence of the equality contract.
     /// </summary>
     [TestMethod]

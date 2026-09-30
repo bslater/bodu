@@ -12,7 +12,7 @@ namespace Bodu.Formats.Outlook.Msg.Samples.MessageReading;
 
 /// <summary>
 /// Writes a small, well-formed <c>.msg</c> file so the sample has something to read without shipping a binary
-/// fixture — and, in doing so, shows what a <c>.msg</c> actually is.
+/// fixture - and, in doing so, shows what a <c>.msg</c> actually is.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -22,27 +22,27 @@ namespace Bodu.Formats.Outlook.Msg.Samples.MessageReading;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <c>__properties_version1.0</c> — a kind-specific header (32 bytes at the root, 8 inside a recipient or
+/// <c>__properties_version1.0</c> - a kind-specific header (32 bytes at the root, 8 inside a recipient or
 /// attachment storage) followed by one 16-byte record per property: the 32-bit tag, 32 bits of flags, and either an
 /// inline value or, for a variable-length type, the byte length of its value stream.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <c>__substg1.0_XXXXXXXX</c> — the value stream for one variable-length property, named for its tag in
+/// <c>__substg1.0_XXXXXXXX</c> - the value stream for one variable-length property, named for its tag in
 /// eight uppercase hex digits. The size recorded above counts the string terminator that is not stored here.
 /// </description>
 /// </item>
 /// <item>
-/// <description><c>__recip_version1.0_#00000000</c> — one storage per recipient, numbered from zero.</description>
+/// <description><c>__recip_version1.0_#00000000</c> - one storage per recipient, numbered from zero.</description>
 /// </item>
 /// <item>
-/// <description><c>__attach_version1.0_#00000000</c> — likewise for attachments.</description>
+/// <description><c>__attach_version1.0_#00000000</c> - likewise for attachments.</description>
 /// </item>
 /// </list>
 /// <para>
 /// The reader is the thing being demonstrated; this writer exists only to produce its input. The library is
-/// read-only by design, so there is no supported authoring API to use here — these are the raw layouts.
+/// read-only by design, so there is no supported authoring API to use here - these are the raw layouts.
 /// </para>
 /// </remarks>
 internal static class MsgAuthor

@@ -16,7 +16,7 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="T">The comparable endpoint type.</typeparam>
 /// <remarks>
 /// <para>
-/// Ranges are stored in two compact parallel arrays — one for the inclusive start of each range and one for the
+/// Ranges are stored in two compact parallel arrays - one for the inclusive start of each range and one for the
 /// exclusive end. The arrays are kept sorted by start endpoint, and adjacent or overlapping ranges are merged on
 /// insertion.
 /// </para>

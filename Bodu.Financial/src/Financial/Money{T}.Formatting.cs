@@ -118,13 +118,13 @@ public readonly partial struct Money<TCurrency> :
     /// <list type="bullet">
     /// <item>
     /// <description>
-    /// <c>null</c>, <c>""</c>, or <c>"G"</c> — the ISO 4217 code followed by the amount with minor-unit precision and
+    /// <c>null</c>, <c>""</c>, or <c>"G"</c> - the ISO 4217 code followed by the amount with minor-unit precision and
     /// culture-aware grouping (e.g. <c>"USD 1,234.56"</c>).
     /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// <c>"C"</c> — the culture's native currency format when its region currency matches
+    /// <c>"C"</c> - the culture's native currency format when its region currency matches
     /// <typeparamref name="TCurrency" /> (e.g. <c>"$1,234.56"</c> in en-US for USD, <c>"19,99 €"</c> in fr-FR for EUR),
     /// or the ISO code substituted into the culture's currency-position slot when they differ (e.g. <c>"JPY 1,234"</c>
     /// in en-US for JPY).
@@ -132,14 +132,14 @@ public readonly partial struct Money<TCurrency> :
     /// </item>
     /// <item>
     /// <description>
-    /// <c>"L"</c> — the amount followed by the currency's English-language name (e.g.
+    /// <c>"L"</c> - the amount followed by the currency's English-language name (e.g.
     /// <c>"1,234.56 Australian Dollar"</c>). Falls back to the ISO-code form when the currency has no English name
     /// supplied.
     /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// <c>"R"</c> — invariant round-trip form: the ISO code followed by the amount under
+    /// <c>"R"</c> - invariant round-trip form: the ISO code followed by the amount under
     /// <see cref="CultureInfo.InvariantCulture" /> with no grouping (e.g. <c>"USD 1234.56"</c>). The supplied
     /// <paramref name="provider" /> is ignored so the output round-trips through
     /// <see cref="Money{TCurrency}.Parse(string, IFormatProvider?)" /> when invariant culture is supplied to the
@@ -148,13 +148,13 @@ public readonly partial struct Money<TCurrency> :
     /// </item>
     /// <item>
     /// <description>
-    /// <c>"N"</c>, <c>"F"</c>, or <c>"D"</c> — bare numeric form with no currency designator. <c>"N"</c> includes
+    /// <c>"N"</c>, <c>"F"</c>, or <c>"D"</c> - bare numeric form with no currency designator. <c>"N"</c> includes
     /// culture-aware grouping; <c>"F"</c> and <c>"D"</c> do not. <c>"D"</c> is a Bodu-specific alias for <c>"F"</c>.
     /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// Prefix <c>"~"</c> on <c>"C"</c>, <c>"G"</c>, or <c>"L"</c> — elide the currency designator entirely when the
+    /// Prefix <c>"~"</c> on <c>"C"</c>, <c>"G"</c>, or <c>"L"</c> - elide the currency designator entirely when the
     /// culture's region currency matches <typeparamref name="TCurrency" />, while keeping the designator when the
     /// currencies differ. For example, <c>"~C"</c> renders <c>Money&lt;USD&gt;(19.99m)</c> as <c>"19.99"</c> in en-US
     /// but as <c>"JPY 1,234"</c> for a <c>Money&lt;JPY&gt;</c> value in the same culture.
@@ -162,7 +162,7 @@ public readonly partial struct Money<TCurrency> :
     /// </item>
     /// <item>
     /// <description>
-    /// Any specifier other than <c>"R"</c> with a numeric suffix (<c>"C4"</c>, <c>"L0"</c>, <c>"~C2"</c>) — explicit
+    /// Any specifier other than <c>"R"</c> with a numeric suffix (<c>"C4"</c>, <c>"L0"</c>, <c>"~C2"</c>) - explicit
     /// fractional-digit count overriding the currency's natural precision.
     /// </description>
     /// </item>
@@ -266,7 +266,7 @@ public readonly partial struct Money<TCurrency> :
     /// </summary>
     /// <param name="format">The format span to parse.</param>
     /// <param name="defaultDecimals">
-    /// The decimal-place count to use when no explicit precision suffix is supplied — typically the currency's natural
+    /// The decimal-place count to use when no explicit precision suffix is supplied - typically the currency's natural
     /// <see cref="ICurrency.MinorUnits" /> precision.
     /// </param>
     /// <param name="specifier">The upper-cased specifier letter ('G', 'C', 'L', 'R', 'N', 'F', 'D').</param>

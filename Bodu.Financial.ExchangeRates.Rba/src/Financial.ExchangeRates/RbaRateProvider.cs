@@ -178,7 +178,7 @@ public sealed class RbaRateProvider
     /// <inheritdoc />
     /// <remarks>
     /// Computed from the configured <see cref="RbaRateProviderOptions.Eras" />: the earliest era start bounds how far
-    /// back the historical workbook catalogue reaches — 1 January 1983 for the default
+    /// back the historical workbook catalogue reaches - 1 January 1983 for the default
     /// <see cref="RbaEraWorkbook.Default" /> catalogue.
     /// </remarks>
     public override RateHistoryAvailability HistoryAvailability
@@ -386,8 +386,8 @@ public sealed class RbaRateProvider
         }
         catch (Exception ex) when (ex is HttpRequestException or IOException or FormatException)
         {
-            // Only the failures a fetch is expected to produce — transport, stream, and malformed-feed errors
-            // (ExchangeRateFormatException derives from FormatException) — are logged as era-load failures.
+            // Only the failures a fetch is expected to produce - transport, stream, and malformed-feed errors
+            // (ExchangeRateFormatException derives from FormatException) - are logged as era-load failures.
             Log.EraLoadFailed(_logger, _options.DownloadFailedLogLevel, era.Label, ex);
             throw;
         }

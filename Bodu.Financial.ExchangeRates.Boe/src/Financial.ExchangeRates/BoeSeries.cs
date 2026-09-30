@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// daily spot rate against the pound sterling.
 /// </summary>
 /// <remarks>
-/// The Bank of England publishes each currency's daily spot rate as a separate IADB series — for example,
+/// The Bank of England publishes each currency's daily spot rate as a separate IADB series - for example,
 /// <c>XUDLUSS</c> is the US dollar into Sterling rate. Each series value is the number of units of the quote currency
 /// per one pound, so the provider treats it as a <c>GBP</c>-based rate. The default catalogue is exposed through
 /// <see cref="Default" /> and can be overridden or extended through the provider options.

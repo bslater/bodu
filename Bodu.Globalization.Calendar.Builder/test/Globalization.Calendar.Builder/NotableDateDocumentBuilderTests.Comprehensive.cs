@@ -271,8 +271,8 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
-    /// Verifies that an override patch carrying applicability and a strategy — a shape the XML override can represent but
-    /// the flat JSON override cannot — round-trips through XML.
+    /// Verifies that an override patch carrying applicability and a strategy - a shape the XML override can represent but
+    /// the flat JSON override cannot - round-trips through XML.
     /// </summary>
     [TestMethod]
     public void OverridePatchWithApplicabilityAndStrategy_ShouldRoundTripThroughXml()

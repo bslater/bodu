@@ -39,7 +39,7 @@ public partial class BigDecimalTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BigDecimal.FromDouble" /> uses the shortest round-trip text — so <c>0.1d</c> becomes
+    /// Verifies that <see cref="BigDecimal.FromDouble" /> uses the shortest round-trip text - so <c>0.1d</c> becomes
     /// exactly <c>0.1</c>, not its binary expansion.
     /// </summary>
     [TestMethod]
@@ -85,7 +85,7 @@ public partial class BigDecimalTests
 
     /// <summary>
     /// Verifies that <see cref="BigDecimal.TryToDecimal(out decimal)" /> converts representable values and reports
-    /// failure for values beyond the <see cref="decimal" /> range instead of throwing — the non-throwing counterpart
+    /// failure for values beyond the <see cref="decimal" /> range instead of throwing - the non-throwing counterpart
     /// <see cref="Fraction{T}" /> already offers.
     /// </summary>
     [TestMethod]

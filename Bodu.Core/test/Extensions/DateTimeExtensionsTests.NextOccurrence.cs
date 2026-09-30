@@ -21,7 +21,7 @@ public partial class DateTimeExtensionsTests
         {
             // Format: start, interval, after, expected actual
 
-            // Exact boundary: 'after' lands on an occurrence, which is excluded — the following occurrence is returned
+            // Exact boundary: 'after' lands on an occurrence, which is excluded - the following occurrence is returned
             yield return new object[] { new DateTime(2024, 1, 1, 0, 0, 0), TimeSpan.FromDays(1), new DateTime(2024, 1, 2, 0, 0, 0), new DateTime(2024, 1, 3, 0, 0, 0) };
             // Just before interval boundary
             yield return new object[] { new DateTime(2024, 1, 1), TimeSpan.FromDays(1), new DateTime(2024, 1, 1, 23, 59, 59), new DateTime(2024, 1, 2) };

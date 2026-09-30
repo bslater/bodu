@@ -1,5 +1,5 @@
 ---
-title: Bodu.Text.Configuration — Introduction
+title: Bodu.Text.Configuration - Introduction
 ---
 
 # Bodu.Text.Configuration
@@ -8,7 +8,7 @@ title: Bodu.Text.Configuration — Introduction
 
 **Bodu.Text.Configuration** is the configuration-layering package of the Bodu suite, and one half of the
 **[Configuration](../topics/configuration.md)** topic. It reads a single text file in the
-familiar **INI / EditorConfig** shape — preamble, named sections, `key = value` properties — and projects it into a
+familiar **INI / EditorConfig** shape - preamble, named sections, `key = value` properties - and projects it into a
 flattened, target-aware **view** keyed by colon-delimited configuration keys. The result drops directly into the same
 shape `Microsoft.Extensions.Configuration` expects, without taking a dependency on that package: the bridge lives in
 the sibling [`Bodu.Extensions.Configuration.Text`](../extensions-configuration-text/index.md) library.
@@ -18,17 +18,17 @@ and read typed values back out. No reflection, no `dynamic`, no schema, no globa
 
 ## Core mental model
 
-![Configuration pipeline — source text to resolved view](../../images/diagrams/text-configuration-pipeline.svg)
+![Configuration pipeline - source text to resolved view](../../images/diagrams/text-configuration-pipeline.svg)
 
 Configuration runs as a four-stage pipeline: the **reader** tokenises the source text and produces a
-<xref:Bodu.Text.Configuration.ConfigurationDocument> — a `sealed` type that inherits the read-only
+<xref:Bodu.Text.Configuration.ConfigurationDocument> - a `sealed` type that inherits the read-only
 <xref:Bodu.Text.Configuration.IniDocumentBase> model; the **resolver** layers the document's preamble
 and matching glob-anchored sections in source order to produce a `ConfigurationView` for one target path; the **getter
 API** on the view returns typed values (`GetString`, `GetInt32`, `GetInt64`, `GetBoolean`, `GetEnum<T>`, and
 `GetValue<T>` for any `ISpanParsable<T>`). Every stage is opt-in: parse without resolving when you just want the
 document, resolve without typed accessors when you only need raw strings.
 
-A configuration file is *not* a snapshot of a single object graph — it is a layered description of how
+A configuration file is *not* a snapshot of a single object graph - it is a layered description of how
 properties change as a target path moves through a directory tree. The library's job is to collapse those layers down
 to the right answer for a specific target.
 
@@ -44,9 +44,9 @@ The package contains five concept groups, all in the `Bodu.Text.Configuration` n
 |---|---|
 | <xref:Bodu.Text.Configuration.ConfigurationDocument> | First-class document type returned by `Parse`, `ParseWithDiagnostics`, `Load`; also hosts `Save` over strings, streams, paths, and text readers. Inherits the read-only <xref:Bodu.Text.Configuration.IniDocumentBase> model. |
 | <xref:Bodu.Text.Configuration.ConfigurationView> | Resolved, flattened snapshot for one target path; implements `IEnumerable<KeyValuePair<string, string?>>`. |
-| <xref:Bodu.Text.Configuration.ConfigurationExtensions> | Extension methods on `IniDocumentBase` and `IniEntry` — including the `Resolve(targetPath)` projection and `ConfigurationPath`. |
+| <xref:Bodu.Text.Configuration.ConfigurationExtensions> | Extension methods on `IniDocumentBase` and `IniEntry` - including the `Resolve(targetPath)` projection and `ConfigurationPath`. |
 | <xref:Bodu.Text.Configuration.ConfigurationResolvedEntry> | Per-key provenance in a resolved view: winning `SectionPattern`, `SourceLocation`, canonical `Key` and `Value`. |
-| <xref:Bodu.Text.Configuration.ConfigurationParseResult> | The output of `ParseWithDiagnostics` — carries both the document and any diagnostics collected during the parse. |
+| <xref:Bodu.Text.Configuration.ConfigurationParseResult> | The output of `ParseWithDiagnostics` - carries both the document and any diagnostics collected during the parse. |
 
 ### Profiles and options
 
@@ -77,7 +77,7 @@ The package contains five concept groups, all in the `Bodu.Text.Configuration` n
 |---|---|
 | <xref:Bodu.Text.Configuration.ConfigurationDiagnostic> | Immutable diagnostic (`sealed class`): severity, code, message, source location. |
 | <xref:Bodu.Text.Configuration.ConfigurationDiagnosticSeverity> | Enum: `Info`, `Warning`, `Error`. |
-| <xref:Bodu.Text.Configuration.ConfigurationDiagnosticCode> | Enum identifying the diagnostic category — 16 stable codes plus `None` (duplicate key, unterminated section, unbalanced brace, …). |
+| <xref:Bodu.Text.Configuration.ConfigurationDiagnosticCode> | Enum identifying the diagnostic category - 16 stable codes plus `None` (duplicate key, unterminated section, unbalanced brace, …). |
 | <xref:Bodu.Text.Configuration.ConfigurationDiagnosticMode> | Enum: `Throw` (default), `Collect`, `Ignore`. |
 | <xref:Bodu.Text.Configuration.ConfigurationParseException> | Thrown on a fatal parse; carries `Diagnostic` (primary) and the full `Diagnostics` array. |
 | <xref:Bodu.Text.Configuration.ConfigurationSourceLocation> | 1-based line / column metadata pointing into the source text; `None` is the unknown location. |
@@ -87,7 +87,7 @@ The package contains five concept groups, all in the `Bodu.Text.Configuration` n
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Text.Configuration.ConfigurationInlineCommentMode> | Enum: `Disabled` (EditorConfig), `WhitespaceIntroduced` (default), `Always`. |
-| <xref:Bodu.Text.Configuration.ConfigurationSectionHeaderMode> | Enum: `Lenient` (default), `Strict`, `AllowTrailingInlineComment` — trailing content after `]`. |
+| <xref:Bodu.Text.Configuration.ConfigurationSectionHeaderMode> | Enum: `Lenient` (default), `Strict`, `AllowTrailingInlineComment` - trailing content after `]`. |
 | <xref:Bodu.Text.Configuration.ConfigurationUnsetValueMode> | Enum: `TreatAsLiteral` (default), `RemoveEffectiveValue` (EditorConfig). |
 | <xref:Bodu.Text.Configuration.ConfigurationMissingPathRootMode> | Enum: `UseEmptyRoot` (default), `Throw`. |
 
@@ -103,7 +103,7 @@ The package contains five concept groups, all in the `Bodu.Text.Configuration` n
 Profiles split across two option types: the *parse* columns (inline comments, section headers, duplicate keys,
 diagnostics) come from <xref:Bodu.Text.Configuration.ConfigurationParseOptions>; the *resolve* columns (preamble, missing
 path root, unset) come from <xref:Bodu.Text.Configuration.ConfigurationResolveOptions>. Both bags are
-`init`-only-property classes, so the presets are starting points, not contracts — compose a custom bag and override only
+`init`-only-property classes, so the presets are starting points, not contracts - compose a custom bag and override only
 what needs to differ.
 
 > [!NOTE]
@@ -122,7 +122,7 @@ what needs to differ.
 | Read any `ISpanParsable<T>` | `view.GetValue<double>("limits:cpu:threshold")` |
 | EditorConfig-strict parsing | `ConfigurationDocument.Parse(text, ConfigurationParseOptions.EditorConfigCompatible)` |
 | Reject any input the parser cannot prove canonical | `ConfigurationParseOptions.Strict` |
-| Use dots in keys but project to colon-delimited form | (default — `ConfigurationKeyMapping.DotToColon`) |
+| Use dots in keys but project to colon-delimited form | (default - `ConfigurationKeyMapping.DotToColon`) |
 | Round-trip a document through save | `ConfigurationDocument.Save(doc, path)` |
 | Pick the profile from configuration at runtime | `ConfigurationParseOptions.For(profile)` |
 | Plug into <xref:Microsoft.Extensions.Configuration.IConfigurationBuilder> | See [Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md). |
@@ -130,7 +130,7 @@ what needs to differ.
 ## File grammar at a glance
 
 ```ini
-# A preamble property — applies before any section opens.
+# A preamble property - applies before any section opens.
 root = true
 
 # A section: the header is a glob pattern matched against the resolver's target path.
@@ -153,10 +153,10 @@ The grammar matches **EditorConfig** verbatim with two Bodu-specific extensions:
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — vocabulary: document vs view, profile, parse/resolve/write options, key mapping, glob pattern, preamble, target path, diagnostic mode, unset.
-- **[Getting started](getting-started.md)** — install + minimal samples for parse-resolve-read, profile presets, diagnostics, round-trip save.
-- **[Bodu.Text.Configuration guides](../../guides/text-configuration/index.md)** — worked patterns: [parsing and profiles](../../guides/text-configuration/parsing-and-profiles.md), [views and resolution](../../guides/text-configuration/views-and-resolution.md), and [diagnostics](../../guides/text-configuration/diagnostics.md).
-- **[Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md)** — `IConfigurationBuilder` integration, options binding, file probing.
-- **[Bodu.Text.Configuration API reference](xref:Bodu.Text.Configuration)** — full type-by-type docs.
-- **[Bodu.Text.Ini](../formats/index.md)** — the standalone INI library, for codec-only INI reading and editing.
-- **[Configuration topic](../topics/configuration.md)** — this package and its sibling Bodu.Extensions.Configuration.Text side by side.
+- **[Core concepts](concepts.md)** - vocabulary: document vs view, profile, parse/resolve/write options, key mapping, glob pattern, preamble, target path, diagnostic mode, unset.
+- **[Getting started](getting-started.md)** - install + minimal samples for parse-resolve-read, profile presets, diagnostics, round-trip save.
+- **[Bodu.Text.Configuration guides](../../guides/text-configuration/index.md)** - worked patterns: [parsing and profiles](../../guides/text-configuration/parsing-and-profiles.md), [views and resolution](../../guides/text-configuration/views-and-resolution.md), and [diagnostics](../../guides/text-configuration/diagnostics.md).
+- **[Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md)** - `IConfigurationBuilder` integration, options binding, file probing.
+- **[Bodu.Text.Configuration API reference](xref:Bodu.Text.Configuration)** - full type-by-type docs.
+- **[Bodu.Text.Ini](../formats/index.md)** - the standalone INI library, for codec-only INI reading and editing.
+- **[Configuration topic](../topics/configuration.md)** - this package and its sibling Bodu.Extensions.Configuration.Text side by side.

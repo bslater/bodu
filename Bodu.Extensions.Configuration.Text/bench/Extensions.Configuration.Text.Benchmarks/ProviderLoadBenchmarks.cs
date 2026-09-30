@@ -83,7 +83,7 @@ public class ProviderLoadBenchmarks
     }
 
     /// <summary>
-    /// Benchmarks building a configuration with <c>targetPath: null</c>, which yields only the preamble — a useful
+    /// Benchmarks building a configuration with <c>targetPath: null</c>, which yields only the preamble - a useful
     /// baseline for how much of the build cost is glob resolution versus everything else.
     /// </summary>
     /// <returns>The built configuration root.</returns>

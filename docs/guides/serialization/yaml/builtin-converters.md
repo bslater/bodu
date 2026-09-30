@@ -4,9 +4,9 @@ title: Built-in converter catalog
 
 # Built-in converter catalog
 
-Every type that <xref:Bodu.Text.Yaml.YamlSerializer> handles without a user converter is served by a **built-in converter**. This page catalogs that set — which .NET types are provisioned, how each appears in YAML on write, and what the read path accepts. Resolution order and the rules for overriding a built-in with your own converter are in [Writing converters](converters.md).
+Every type that <xref:Bodu.Text.Yaml.YamlSerializer> handles without a user converter is served by a **built-in converter**. This page catalogs that set - which .NET types are provisioned, how each appears in YAML on write, and what the read path accepts. Resolution order and the rules for overriding a built-in with your own converter are in [Writing converters](converters.md).
 
-YAML carries the JSON-compatible core scalar kinds — string, integer, float, Boolean, and null — so most everyday .NET types map without any converter at all. The writer emits **block-style** collections (an empty container falls back to flow `[]` / `{}`), and mappings preserve insertion order.
+YAML carries the JSON-compatible core scalar kinds - string, integer, float, Boolean, and null - so most everyday .NET types map without any converter at all. The writer emits **block-style** collections (an empty container falls back to flow `[]` / `{}`), and mappings preserve insertion order.
 
 ## Scalars
 
@@ -29,21 +29,21 @@ YAML carries the JSON-compatible core scalar kinds — string, integer, float, B
 | `enum` (any) | string, the member name | string (case-insensitive) or integer | Integers instead of names when `WriteEnumsAsStrings = false`. |
 
 > [!NOTE]
-> `decimal`, `DateTime`, `DateTimeOffset`, and `TimeSpan` are not YAML core-schema kinds — there is no native timestamp or high-precision decimal scalar. The serializer carries each as a string (a `decimal` is additionally quoted so plain resolution does not turn it back into a `double`), and the read path parses that string with `CultureInfo.InvariantCulture`. They therefore round-trip exactly through `Serialize` / `Deserialize`, but a value typed `object` reads back as the underlying string, not as the original CLR type.
+> `decimal`, `DateTime`, `DateTimeOffset`, and `TimeSpan` are not YAML core-schema kinds - there is no native timestamp or high-precision decimal scalar. The serializer carries each as a string (a `decimal` is additionally quoted so plain resolution does not turn it back into a `double`), and the read path parses that string with `CultureInfo.InvariantCulture`. They therefore round-trip exactly through `Serialize` / `Deserialize`, but a value typed `object` reads back as the underlying string, not as the original CLR type.
 
-The <xref:Bodu.Text.Yaml.YamlNumberHandling> option governs the integer/float boundary on read: `Strict` (the default) rejects a non-integral or out-of-range float bound to an integer target, while `AllowFloatToInteger` truncates an integer-valued float toward zero. A plain integer scalar binds to a floating-point target under either policy. Integer scalars are resolved across the YAML radix forms — decimal, hexadecimal (`0x`), and the `0o` octal prefix (plus YAML 1.1's leading-zero octal under `SpecVersion = V1_1`) — so `0xFF`, `0o17`, and `255` all bind to the same `int`.
+The <xref:Bodu.Text.Yaml.YamlNumberHandling> option governs the integer/float boundary on read: `Strict` (the default) rejects a non-integral or out-of-range float bound to an integer target, while `AllowFloatToInteger` truncates an integer-valued float toward zero. A plain integer scalar binds to a floating-point target under either policy. Integer scalars are resolved across the YAML radix forms - decimal, hexadecimal (`0x`), and the `0o` octal prefix (plus YAML 1.1's leading-zero octal under `SpecVersion = V1_1`) - so `0xFF`, `0o17`, and `255` all bind to the same `int`.
 
 ## Structural and document-model types
 
 | .NET type | YAML representation | Notes |
 |---|---|---|
 | arrays, `List<T>`, `IEnumerable<T>` and its interfaces, sets, and concrete collections with a parameterless constructor and `Add` | sequence | Block-style on write; an empty collection writes as flow `[]`. On read the elements are bound into a `List<T>` and copied into the requested concrete type. |
-| `IDictionary<TKey,TValue>` / `IReadOnlyDictionary<TKey,TValue>` and concrete dictionaries | mapping | Written in insertion order. Keys are stringified through `Convert.ToString`; on read a non-`string` key type is parsed back (enums by name, other keys via `Convert.ChangeType`). Mapping keys resolve to unique scalar strings (the Bodu YAML Core Tree Profile) — a duplicate stringified key on write raises <xref:Bodu.Text.Yaml.YamlSerializationException>. |
+| `IDictionary<TKey,TValue>` / `IReadOnlyDictionary<TKey,TValue>` and concrete dictionaries | mapping | Written in insertion order. Keys are stringified through `Convert.ToString`; on read a non-`string` key type is parsed back (enums by name, other keys via `Convert.ChangeType`). Mapping keys resolve to unique scalar strings (the Bodu YAML Core Tree Profile) - a duplicate stringified key on write raises <xref:Bodu.Text.Yaml.YamlSerializationException>. |
 | plain classes and structs | mapping | The catch-all object converter, consulted last; properties first (reflection order), then public fields when `IncludeFields` is set. Read requires a public parameterless constructor and sets each writable member. |
-| `object`-typed members | the runtime type's form on write | On **read**, an `object` target binds to a loosely-typed graph: a `Dictionary<string, object?>` for a mapping, a `List<object?>` for a sequence, and `bool` / `long` / `double` / `string` / `null` for scalars — **not** a <xref:Bodu.Text.Yaml.Document.YamlElement>. |
+| `object`-typed members | the runtime type's form on write | On **read**, an `object` target binds to a loosely-typed graph: a `Dictionary<string, object?>` for a mapping, a `List<object?>` for a sequence, and `bool` / `long` / `double` / `string` / `null` for scalars - **not** a <xref:Bodu.Text.Yaml.Document.YamlElement>. |
 | `Nullable<T>` | the underlying value, or the null scalar | A null scalar binds to `null`; otherwise the value binds as `T`. |
-| <xref:Bodu.Text.Yaml.Nodes.YamlNode> (and `YamlObject` / `YamlArray` / `YamlValue`) | the node's own kind | Mutable DOM bridge: `Deserialize<YamlNode>` materializes the value as a node tree (aliases and merge keys already resolved), and a node — standalone or as a member — writes its own kind. |
-| <xref:Bodu.Text.Yaml.Document.YamlElement> | the element's own kind | Read produces an element view backed by an internal document that shares the reader's row store — no disposal needed. |
+| <xref:Bodu.Text.Yaml.Nodes.YamlNode> (and `YamlObject` / `YamlArray` / `YamlValue`) | the node's own kind | Mutable DOM bridge: `Deserialize<YamlNode>` materializes the value as a node tree (aliases and merge keys already resolved), and a node - standalone or as a member - writes its own kind. |
+| <xref:Bodu.Text.Yaml.Document.YamlElement> | the element's own kind | Read produces an element view backed by an internal document that shares the reader's row store - no disposal needed. |
 | <xref:Bodu.Text.Yaml.Document.YamlDocument> | the document's root | A deserialized document shares the reader's immutable row store; disposal is optional. |
 
 ## Fields
@@ -81,10 +81,10 @@ string asInteger = YamlSerializer.Serialize(new { State = Status.OnHold }, asInt
 // State: 1
 ```
 
-On read an enum binds from a wire name (case-insensitively), or from an integer scalar (through `Enum.ToObject`), regardless of `WriteEnumsAsStrings` — the flag affects only the write side. Individual members rename on the wire with the shared <xref:Bodu.Text.Serialization.StringEnumMemberNameAttribute>, honored by the default handling and by the public enum converters:
+On read an enum binds from a wire name (case-insensitively), or from an integer scalar (through `Enum.ToObject`), regardless of `WriteEnumsAsStrings` - the flag affects only the write side. Individual members rename on the wire with the shared <xref:Bodu.Text.Serialization.StringEnumMemberNameAttribute>, honored by the default handling and by the public enum converters:
 
-- <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> / `YamlStringEnumConverter<TEnum>` — member-name strings with an optional naming policy and an integers-on-read flag; register on the options for every enum, or reference the generic form from a `[Converter(...)]` attribute.
-- `YamlNumberEnumConverter<TEnum>` — the underlying numeric value as a YAML integer, regardless of `WriteEnumsAsStrings`.
+- <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> / `YamlStringEnumConverter<TEnum>` - member-name strings with an optional naming policy and an integers-on-read flag; register on the options for every enum, or reference the generic form from a `[Converter(...)]` attribute.
+- `YamlNumberEnumConverter<TEnum>` - the underlying numeric value as a YAML integer, regardless of `WriteEnumsAsStrings`.
 
 <!-- compile -->
 ```csharp
@@ -96,13 +96,13 @@ options.Converters.Add(new YamlStringEnumConverter(NamingPolicy.SnakeCaseLower, 
 
 ## What YAML does not need a decision for
 
-Unlike TOML, YAML has no `decimal`-handling or `byte[]`-handling option: `decimal` always travels as quoted exact text (above), and a `byte[]` is treated as an ordinary sequence of `byte` elements rather than a single encoded scalar. Anything outside the provisioned set — a value type rendered as one scalar, a type with a bespoke mapping shape, or a base64 `byte[]` — is the job of a [custom converter](converters.md).
+Unlike TOML, YAML has no `decimal`-handling or `byte[]`-handling option: `decimal` always travels as quoted exact text (above), and a `byte[]` is treated as an ordinary sequence of `byte` elements rather than a single encoded scalar. Anything outside the provisioned set - a value type rendered as one scalar, a type with a bespoke mapping shape, or a base64 `byte[]` - is the job of a [custom converter](converters.md).
 
 ## Where to go next
 
-- [Writing converters](converters.md) — overriding a built-in and the resolution order.
-- [Mapping attributes](attributes.md) — the declarative layer over the converters.
-- [Using YAML](using.md) — the walk-through the tables above back up.
-- [Bodu.Text.Yaml core concepts](../../../docs/serialization/yaml/concepts.md) — the value-mapping summary in the family vocabulary.
+- [Writing converters](converters.md) - overriding a built-in and the resolution order.
+- [Mapping attributes](attributes.md) - the declarative layer over the converters.
+- [Using YAML](using.md) - the walk-through the tables above back up.
+- [Bodu.Text.Yaml core concepts](../../../docs/serialization/yaml/concepts.md) - the value-mapping summary in the family vocabulary.
 - [Bodu serializer guides](../index.md) and the [Text & Serialization guides](../../topics/text-and-serialization.md).
-- API reference — <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1>, <xref:Bodu.Text.Yaml.YamlSerializerOptions>, <xref:Bodu.Text.Yaml.YamlNumberHandling>.
+- API reference - <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1>, <xref:Bodu.Text.Yaml.YamlSerializerOptions>, <xref:Bodu.Text.Yaml.YamlNumberHandling>.

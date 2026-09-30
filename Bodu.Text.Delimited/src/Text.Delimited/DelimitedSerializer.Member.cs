@@ -13,7 +13,7 @@ namespace Bodu.Text.Delimited;
 public static partial class DelimitedSerializer
 {
     /// <summary>
-    /// Describes a single mapped record member — its serialized column name, type, accessors, and ordering.
+    /// Describes a single mapped record member - its serialized column name, type, accessors, and ordering.
     /// </summary>
     private sealed class Member
     {

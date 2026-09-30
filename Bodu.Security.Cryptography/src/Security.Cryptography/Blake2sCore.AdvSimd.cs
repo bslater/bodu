@@ -13,8 +13,8 @@ namespace Bodu.Security.Cryptography;
 internal static partial class Blake2sCore
 {
     /// <summary>
-    /// Supplies the rotations on ARM64 — by 16 bits a <c>REV32</c>, by 8 bits a <c>TBL</c>, by 12 and 7 bits a shift
-    /// and a shift-and-insert — the lane rotations with <c>EXT</c>, and the transpose with <c>ZIP1</c> and <c>ZIP2</c>.
+    /// Supplies the rotations on ARM64 - by 16 bits a <c>REV32</c>, by 8 bits a <c>TBL</c>, by 12 and 7 bits a shift
+    /// and a shift-and-insert - the lane rotations with <c>EXT</c>, and the transpose with <c>ZIP1</c> and <c>ZIP2</c>.
     /// </summary>
     internal readonly struct AdvSimdIsa
         : IVector128Isa

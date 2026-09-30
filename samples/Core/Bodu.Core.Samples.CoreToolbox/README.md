@@ -5,16 +5,16 @@ catalogue, the pooled `PooledBufferBuilder<T>`, the LINQ-style enumerable operat
 comparable / numeric extension surfaces, `WeekPattern`, and the `Bodu.Threading` async primitives.
 Six scenarios, each over fixed inputs.
 
-Everything runs offline with fixed inputs — deterministic output every run.
+Everything runs offline with fixed inputs - deterministic output every run.
 
 ```bash
 dotnet run --project samples/Core/Bodu.Core.Samples.CoreToolbox
 ```
 
-## Scenario 1 — SequenceGenerators
+## Scenario 1 - SequenceGenerators
 
 **Intent.** Show the `SequenceGenerator` catalogue as a set of lazily evaluated, deterministic
-number/string sequences, and — crucially — how to keep them *bounded* so enumeration terminates.
+number/string sequences, and - crucially - how to keep them *bounded* so enumeration terminates.
 
 **What it does.** Materializes six sequences: an inclusive `Range`, a descending `Range` with an
 explicit step, the Fibonacci numbers inside a value window, a fixed-length Thue-Morse prefix, the
@@ -47,9 +47,9 @@ identical run to run:
 **APIs demonstrated.** `SequenceGenerator.Range` (two- and three-argument), `SequenceGenerator.Fibonacci`,
 `SequenceGenerator.ThueMorse`, `SequenceGenerator.LookAndSay`, `SequenceGenerator.Farey`.
 
-## Scenario 2 — PooledBuffers
+## Scenario 2 - PooledBuffers
 
-**Intent.** Show `PooledBufferBuilder<T>` assembling a variable-length buffer from pooled storage —
+**Intent.** Show `PooledBufferBuilder<T>` assembling a variable-length buffer from pooled storage -
 the allocation-light alternative to a `List<T>` plus repeated `Array.Resize`.
 
 **What it does.** Starts with a deliberately small capacity (4) so a later span append forces an
@@ -81,10 +81,10 @@ snapshot is the exact written region including the two trailing zero fills:
 **APIs demonstrated.** `PooledBufferBuilder<T>` constructor, `Append`, `AppendRange(ReadOnlySpan<T>)`,
 `AddMany`, `WrittenCount`, `IsEmpty`, `WrittenSpan`, `ToArrayAndDispose`.
 
-## Scenario 3 — EnumerableOperators
+## Scenario 3 - EnumerableOperators
 
-**Intent.** Show the sequence-shaping combinators `IEnumerableExtensions` adds on top of LINQ —
-grouping, sliding, pairing, folding, encoding, merging — that the BCL does not ship.
+**Intent.** Show the sequence-shaping combinators `IEnumerableExtensions` adds on top of LINQ -
+grouping, sliding, pairing, folding, encoding, merging - that the BCL does not ship.
 
 **What it does.** Runs seven operators over a fixed `1..7` source (plus a small character run and a
 second sequence): `Batch`, `Windowed`, `Pairwise`, `Scan`, `RunLengthEncode`, `Interleave`, and
@@ -119,10 +119,10 @@ default):
 **APIs demonstrated.** `IEnumerableExtensions.Batch`, `.Windowed`, `.Pairwise`, `.Scan`,
 `.RunLengthEncode`, `.Interleave`, `.ZipLongest`.
 
-## Scenario 4 — StringTransforms
+## Scenario 4 - StringTransforms
 
-**Intent.** Show three extension surfaces at once — `StringExtensions` casing/slug/fold/truncate,
-`ComparableExtensions` range helpers, and `NumericExtensions` number-theory helpers — so a reader
+**Intent.** Show three extension surfaces at once - `StringExtensions` casing/slug/fold/truncate,
+`ComparableExtensions` range helpers, and `NumericExtensions` number-theory helpers - so a reader
 sees the breadth of the `Bodu.Extensions` namespace.
 
 **What it does.** Converts one phrase into slug, kebab, snake, Pascal, and constant casing; folds
@@ -167,7 +167,7 @@ computes primality, GCD, LCM, and a significant-figure round.
 `.ToConstantCase` / `.RemoveDiacritics` / `.Truncate`; `ComparableExtensions.Clamp` / `.IsBetween`;
 `NumericExtensions.IsPrime` / `.GreatestCommonDivisor` / `.LeastCommonMultiple` / `.RoundToSignificantDigits`.
 
-## Scenario 5 — WeekPatterns
+## Scenario 5 - WeekPatterns
 
 **Intent.** Show `WeekPattern` as a compact seven-bit day-of-week set: presets, the text formats it
 round-trips through, the set-style bitwise operators, and driving a working-day query from a date
@@ -180,7 +180,7 @@ each day whether it is selected.
 
 **What to expect.** The preset has `Count=5`; the formats agree on which five days are set; the
 round-trip is `True`; the complement of `Weekdays` is the two weekend days; and the date walk marks
-Mon–Fri as `work` and Sat/Sun as `off`:
+Mon-Fri as `work` and Sat/Sun as `off`:
 
 ```text
 --- WeekPattern - seven-day selection sets ---
@@ -214,7 +214,7 @@ Mon–Fri as `work` and Sat/Sun as `off`:
 `WeekPattern.ToString(string)`, `WeekPattern.Count`, `WeekPattern.Contains`, the `|` and `~`
 operators, and the `==` equality operator.
 
-## Scenario 6 — AsyncPrimitives
+## Scenario 6 - AsyncPrimitives
 
 **Intent.** Show three `Bodu.Threading` coordination primitives in one deterministic, single-threaded
 flow: an at-most-once initializer, an awaitable latch, and an async mutex.
@@ -265,7 +265,7 @@ Bodu.Core.Samples.CoreToolbox/
 
 ## Related
 
-- `Bodu.Core.Samples.FunctionalRailway` — the `Bodu.Functional` seam: `Option<T>`, `Result`/`Result<T>`,
+- `Bodu.Core.Samples.FunctionalRailway` - the `Bodu.Functional` seam: `Option<T>`, `Result`/`Result<T>`,
   `Either<,>`, `Memoizer`, and the async companions.
-- `Bodu.Core.Samples.TextEncoding` — BOM detection, transcoding with fallbacks, and pooled string encoding.
+- `Bodu.Core.Samples.TextEncoding` - BOM detection, transcoding with fallbacks, and pooled string encoding.
 ```

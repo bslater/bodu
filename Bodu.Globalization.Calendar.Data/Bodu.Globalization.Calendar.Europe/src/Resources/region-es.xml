@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ================================================================================================================
-  Spain (ES) — notable-date resource pack
+  Spain (ES) - notable-date resource pack
   ================================================================================================================
 
   Authored on the notable-date schema. All rules are scoped to territory "ES"; the
-  holidays that vary by autonomous community (comunidad autónoma) are not modelled — only the nationwide set.
+  holidays that vary by autonomous community (comunidad autónoma) are not modelled - only the nationwide set.
 
   How this resource is built:
 
-    * Shared European observances — including the common Catholic feasts (the Assumption and the Immaculate
-      Conception) — are IMPORTED from the europe-common hub and given an ES territory scope through the import
+    * Shared European observances - including the common Catholic feasts (the Assumption and the Immaculate
+      Conception) - are IMPORTED from the europe-common hub and given an ES territory scope through the import
       <Use> directive. The hub carries the resolved calculation strategy; the territory supplies the local
       observance.
 
@@ -70,25 +70,25 @@
       ============================================================================================================
     -->
 
-    <!-- Epiphany (Día de Reyes) — 6 January; a public holiday. Strategy: Fixed date. -->
+    <!-- Epiphany (Día de Reyes) - 6 January; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="epiphany" displayName="Epiphany" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="es"><Applicability><Territory code="ES" /></Applicability>
         <Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Labour Day (Día del Trabajador) — 1 May; a public holiday. Strategy: Fixed date. -->
+    <!-- Labour Day (Día del Trabajador) - 1 May; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="es"><Applicability><Territory code="ES" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- National Day of Spain (Fiesta Nacional / Día de la Hispanidad) — 12 October; the national day and a public holiday. Strategy: Fixed date. -->
+    <!-- National Day of Spain (Fiesta Nacional / Día de la Hispanidad) - 12 October; the national day and a public holiday. Strategy: Fixed date. -->
     <NotableDate id="national-day-of-spain" displayName="National Day of Spain" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="es"><Applicability><Territory code="ES" /></Applicability>
         <Strategy><Fixed month="October" day="12" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Constitution Day (Día de la Constitución) — 6 December, marking the 1978 constitution; a public holiday. Strategy: Fixed date. -->
+    <!-- Constitution Day (Día de la Constitución) - 6 December, marking the 1978 constitution; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="constitution-day" displayName="Constitution Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="es"><Applicability><Territory code="ES" /></Applicability>
         <Strategy><Fixed month="December" day="6" /></Strategy></Rule></Rules>

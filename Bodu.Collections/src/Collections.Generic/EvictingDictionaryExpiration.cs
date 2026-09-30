@@ -27,9 +27,9 @@ namespace Bodu.Collections.Generic;
 /// <para>
 /// <see cref="Kind" /> selects how lifetimes are measured. Under
 /// <see cref="EvictingDictionaryExpirationKind.Absolute" /> an entry expires <see cref="TimeToLive" /> after it was
-/// added or last updated. Under <see cref="EvictingDictionaryExpirationKind.Sliding" /> every successful read access —
+/// added or last updated. Under <see cref="EvictingDictionaryExpirationKind.Sliding" /> every successful read access -
 /// <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" />, the indexer getter, and
-/// <see cref="EvictingDictionary{TKey, TValue}.ContainsKey" /> — restarts the countdown; enumeration and
+/// <see cref="EvictingDictionary{TKey, TValue}.ContainsKey" /> - restarts the countdown; enumeration and
 /// <see cref="EvictingDictionary{TKey, TValue}.Touch" /> do not.
 /// </para>
 /// <para>

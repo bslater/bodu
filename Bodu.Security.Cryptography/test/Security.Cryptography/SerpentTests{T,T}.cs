@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 /// Shared base for the wide-block tweakable Serpent algorithm-tier tests
 /// (<see cref="Serpent256Tests" />, <see cref="Serpent512Tests" />, <see cref="Serpent1024Tests" />).
 /// Inherits the full <see cref="TweakableSymmetricAlgorithmTests{TTest, TAlgorithm}" /> contract surface and
-/// hoists wiring that is identical across every Serpent block size — currently the
+/// hoists wiring that is identical across every Serpent block size - currently the
 /// <see cref="Serpent.BlockMode" /> setter for <see cref="SymmetricAlgorithmTests{TTest, TAlgorithm}.SetBlockMode" />.
 /// </summary>
 /// <typeparam name="TTest">The concrete test class, used to resolve specification data for

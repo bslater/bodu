@@ -10,7 +10,7 @@ using Bodu.Text.Yaml.Reader;
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Verifies that <see cref="Utf8YamlReader" /> rejects malformed documents with <see cref="YamlFormatException" /> —
+/// Verifies that <see cref="Utf8YamlReader" /> rejects malformed documents with <see cref="YamlFormatException" /> -
 /// the malformed-input sweep every sibling reader carries (<c>Utf8TomlReaderTests.Malformed</c>,
 /// <c>Utf8BencodeReaderTests.Malformed</c>). Each row names the grammar or profile rule it violates.
 /// </summary>

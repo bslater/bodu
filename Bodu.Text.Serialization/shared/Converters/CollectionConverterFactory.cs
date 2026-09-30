@@ -109,7 +109,7 @@ internal sealed class CollectionConverterFactory
     /// <see langword="true" /> when the type is <see cref="Queue{T}" />, <see cref="Stack{T}" />,
     /// <see cref="System.Collections.Concurrent.ConcurrentQueue{T}" />,
     /// <see cref="System.Collections.Concurrent.ConcurrentStack{T}" />, or
-    /// <see cref="System.Collections.Concurrent.ConcurrentBag{T}" /> — or a subclass of one of them — with a public
+    /// <see cref="System.Collections.Concurrent.ConcurrentBag{T}" /> - or a subclass of one of them - with a public
     /// parameterless constructor; otherwise <see langword="false" />.
     /// </returns>
     private static bool TryGetQueueLikeInfo(Type type, out Type? elementType, out CollectionStrategy strategy)

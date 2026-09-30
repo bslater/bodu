@@ -19,8 +19,8 @@ namespace Bodu.Text.Delimited;
 public partial class DelimitedSerializerTests
 {
     /// <summary>
-    /// Verifies that a document delivered in tiny stream chunks — splitting quoted fields, embedded newlines, and
-    /// doubled quotes across segment boundaries — still yields every record with correct field values.
+    /// Verifies that a document delivered in tiny stream chunks - splitting quoted fields, embedded newlines, and
+    /// doubled quotes across segment boundaries - still yields every record with correct field values.
     /// </summary>
     /// <param name="chunkSize">The maximum bytes served per read.</param>
     [TestMethod]

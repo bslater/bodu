@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar.Samples.CustomCalendar;
 /// <summary>
 /// Entry point for the custom-calendar sample: authoring a company-holiday calendar with the fluent
 /// <c>NotableDateDocumentBuilder</c>, layering adjustment policies, importing the shared catalogues,
-/// and round-tripping the document through XML — the calendar analog of "bring your own data".
+/// and round-tripping the document through XML - the calendar analog of "bring your own data".
 /// </summary>
 public static class Program
 {

@@ -404,7 +404,7 @@ def release_manifest() -> tuple[dict[str, str], dict[str, str]]:
     shipped at, withheld maps a package id to the reason it is kept off nuget.org.
 
     The grammar is the manifest's own, and is shared with the ``Select shipping packages`` step
-    in ``.github/workflows/release.yml`` — a data line is ``<PackageId> <first-shipped-version>``,
+    in ``.github/workflows/release.yml`` - a data line is ``<PackageId> <first-shipped-version>``,
     while a comment line that is *only* a package id opens a withheld entry whose reason is the
     wrapped comment lines beneath it. Parsing the same file both workflows already trust keeps
     "is this package published?" a single answer rather than a second list to maintain.
@@ -433,7 +433,7 @@ def release_manifest() -> tuple[dict[str, str], dict[str, str]]:
 
 
 # A withheld package is not on nuget.org, so the only install command that can work names a feed
-# built from a local pack. Requiring that marker — rather than banning the command outright — keeps
+# built from a local pack. Requiring that marker - rather than banning the command outright - keeps
 # the one honest instruction (install the CLI from a clone) sayable, and rejects the plain form that
 # silently fails for the reader.
 LOCAL_SOURCE = re.compile(r"--add-source|--source\s+[.\w/\\]")
@@ -455,7 +455,7 @@ def check_publication() -> list[str]:
 
     Three failures are worth catching, and only the first was caught before:
 
-    * a packable package the manifest does not account for at all — neither shipped nor
+    * a packable package the manifest does not account for at all - neither shipped nor
       recorded as deliberately withheld, so nobody decided either way;
     * a published package with no install command anywhere under ``docs/``, which leaves a
       reader with no way in;
@@ -463,7 +463,7 @@ def check_publication() -> list[str]:
       that reached the live site: ``dotnet add package Bodu.Financial.ExchangeRates.Oanda``
       names a package that has never been pushed, so the command simply fails.
 
-    Withheld packages are documented — they are real code with real API pages — they just may not
+    Withheld packages are documented - they are real code with real API pages - they just may not
     claim to be installable from nuget.org.
     """
     published, withheld = release_manifest()

@@ -110,7 +110,7 @@ public partial class NavigableSetTests
     }
 
     /// <summary>
-    /// Verifies that draining the set element by element — ascending, descending, and middle-out — always keeps the
+    /// Verifies that draining the set element by element - ascending, descending, and middle-out - always keeps the
     /// remainder sorted and rank-consistent, exercising every red-black deletion path.
     /// </summary>
     [TestMethod]

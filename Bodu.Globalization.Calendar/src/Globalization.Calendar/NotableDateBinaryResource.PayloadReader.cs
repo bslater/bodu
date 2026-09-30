@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar;
 public static partial class NotableDateBinaryResource
 {
     /// <summary>
-    /// Parses the pack payload — string table then body — with every read bounds-checked, so truncated or corrupted
+    /// Parses the pack payload - string table then body - with every read bounds-checked, so truncated or corrupted
     /// input surfaces as <see cref="NotableDateBinaryFormatException" /> rather than an out-of-range access.
     /// </summary>
     private sealed class PayloadReader

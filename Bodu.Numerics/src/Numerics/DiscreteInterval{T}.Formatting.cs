@@ -14,7 +14,7 @@ public readonly partial struct DiscreteInterval<T> :
     IUtf8SpanFormattable
 {
     /// <summary>
-    /// Returns the canonical bracket-notation string representation — always closed on a finite side, using the
+    /// Returns the canonical bracket-notation string representation - always closed on a finite side, using the
     /// infinity glyphs on an unbounded side, and the empty-set glyph for the empty interval.
     /// </summary>
     /// <returns>

@@ -367,7 +367,7 @@ public sealed partial class RecurrenceRule :
             }
             else
             {
-                // Unknown rule part (including RFC 7529 RSCALE/SKIP and X-* extensions) — outside the supported grammar.
+                // Unknown rule part (including RFC 7529 RSCALE/SKIP and X-* extensions) - outside the supported grammar.
                 failureMessage = FormatDefect(RecurrenceResourceStrings.Format_Invalid_RecurrenceRuleUnknownPart, name);
                 return false;
             }

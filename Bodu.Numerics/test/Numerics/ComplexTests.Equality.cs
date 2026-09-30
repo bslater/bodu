@@ -77,7 +77,7 @@ public partial class ComplexTests
 
     /// <summary>
     /// Verifies that a value can be located in a <see cref="HashSet{T}" /> by an <see cref="Complex{T}.Equals(Complex{T})" />
-    /// -equal key even when the components are NaN or differ only in the sign of zero — the practical consequence of the
+    /// -equal key even when the components are NaN or differ only in the sign of zero - the practical consequence of the
     /// reflexive <see cref="Complex{T}.Equals(Complex{T})" /> / <see cref="Complex{T}.GetHashCode" /> contract.
     /// </summary>
     [TestMethod]

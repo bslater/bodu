@@ -140,7 +140,7 @@ public sealed class BinaryEncodingsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BinaryEncodings.Z85" /> requires a 4-byte-aligned input — characterising the
+    /// Verifies that <see cref="BinaryEncodings.Z85" /> requires a 4-byte-aligned input - characterising the
     /// difference from <see cref="BinaryEncodings.Ascii85" />.
     /// </summary>
     [TestMethod]

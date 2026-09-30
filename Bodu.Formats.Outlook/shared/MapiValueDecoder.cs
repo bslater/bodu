@@ -20,12 +20,12 @@ namespace Bodu.Formats.Outlook.Pst;
 /// <remarks>
 /// <para>
 /// Every method is a pure <c>Try*</c>: bytes in, <see cref="object" /> out, <see langword="false" /> for anything the
-/// decoder cannot represent — an unsupported type, a malformed payload, or an out-of-range FILETIME. The decoder never
+/// decoder cannot represent - an unsupported type, a malformed payload, or an out-of-range FILETIME. The decoder never
 /// throws; each consuming format decides at its own call site whether a <see langword="false" /> result skips the
 /// property or raises that format's exception, so validation-level policy and resource strings stay format-local.
 /// </para>
 /// <para>
-/// This file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader — the
+/// This file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader - the
 /// fixed-scalar layouts, the packed fixed-width multi-value layout, and FILETIME conversion are identical in a
 /// <c>.msg</c> property stream and a PST property/table context. Container-specific layouts (the <c>.msg</c>
 /// per-element multi-value streams, the PST count-plus-offset-table multi-value form) stay in their format packages.
@@ -129,7 +129,7 @@ internal static class MapiValueDecoder
     /// <param name="value">When this method returns <see langword="true" />, the decoded value.</param>
     /// <returns>
     /// <see langword="true" /> when the payload decodes; <see langword="false" /> for an unsupported type, a
-    /// wrong-length GUID, a <see langword="null" /> payload or encoding, or — under <paramref name="strict" /> — an
+    /// wrong-length GUID, a <see langword="null" /> payload or encoding, or - under <paramref name="strict" /> - an
     /// odd-length Unicode payload.
     /// </returns>
     internal static bool TryDecodeVariableValue(MapiPropertyType type, byte[] bytes, Encoding encoding, bool strict, out object? value)
@@ -162,7 +162,7 @@ internal static class MapiValueDecoder
     /// <param name="value">When this method returns <see langword="true" />, the decoded value.</param>
     /// <returns>
     /// <see langword="true" /> when the payload decodes; <see langword="false" /> for an unsupported type, a
-    /// wrong-length GUID, a <see langword="null" /> encoding, or — under <paramref name="strict" /> — an odd-length
+    /// wrong-length GUID, a <see langword="null" /> encoding, or - under <paramref name="strict" /> - an odd-length
     /// Unicode payload.
     /// </returns>
     /// <remarks>

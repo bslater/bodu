@@ -16,10 +16,10 @@ namespace Bodu.Security.Cryptography;
 /// fixed-size records or when another framing layer already handles length information.
 /// </para>
 /// <para>
-/// <strong>When to choose no padding.</strong> The right pick under modes that handle alignment themselves — CTR (
+/// <strong>When to choose no padding.</strong> The right pick under modes that handle alignment themselves - CTR (
 /// <see cref="CtrModeTransform" />), CTS (<see cref="CtsModeTransform" />), and every AEAD mode (
 /// <see cref="GcmModeTransform" />, <see cref="CcmModeTransform" />, <see cref="EaxModeTransform" />,
-/// <see cref="GcmSivModeTransform" />, <see cref="OcbModeTransform" />, <see cref="SivModeTransform" />) — none of
+/// <see cref="GcmSivModeTransform" />, <see cref="OcbModeTransform" />, <see cref="SivModeTransform" />) - none of
 /// which require the caller to align input to the cipher block size. Also the right pick when encrypting fixed-size
 /// on-disk records under XTS. For length-recoverable padding under CBC or ECB use <see cref="Pkcs7Padding" />.
 /// </para>

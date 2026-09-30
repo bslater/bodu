@@ -33,7 +33,7 @@ public sealed partial class Utf8TomlWriterTests
     }
 
     /// <summary>
-    /// Verifies that string values escape the reserved characters — quote, backslash, and the named control codes — in
+    /// Verifies that string values escape the reserved characters - quote, backslash, and the named control codes - in
     /// their basic-string form.
     /// </summary>
     /// <param name="value">The string value to write.</param>

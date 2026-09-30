@@ -183,7 +183,7 @@ public ref struct Utf8YamlReader
     /// value is consumed and the enclosing loop resumes on the next token.
     /// </summary>
     /// <remarks>
-    /// On a scalar token this is a no-op — the scalar is already fully consumed and the caller's next
+    /// On a scalar token this is a no-op - the scalar is already fully consumed and the caller's next
     /// <see cref="Read" /> moves past it. On a container start token the reader advances to the matching end token,
     /// balancing nested containers along the way.
     /// </remarks>

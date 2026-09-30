@@ -3,7 +3,7 @@
 Per-package line and branch coverage for every packable Bodu package, computed from a merged
 Cobertura report. Regenerate with `pwsh tools/New-CoverageMatrix.ps1`; do not hand-edit.
 
-Legend: `—` = not part of this collection · `n/a` = excluded by design (see [Code coverage strategy](code-coverage.md)).
+Legend: `-` = not part of this collection · `n/a` = excluded by design (see [Code coverage strategy](code-coverage.md)).
 
 | Package | Status | Line % | Branch % | Covered / total lines |
 |---|---|--:|--:|--:|
@@ -71,8 +71,8 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 
 ### Excluded by design
 
-- `Bodu.Globalization.Calendar.Build` — MSBuild task package. The task runs only inside a child dotnet build process, so the collector attached to the test host never sees it; the package ships to tasks/netstandard2.0 and is never referenced at runtime. Its integration tests cover what actually breaks - targets wiring, incrementality and diagnostic propagation - which no in-process unit test can reach.
-- `Bodu.Text.Formats` — Umbrella meta-package: references the three format libraries and ships no source of its own.
+- `Bodu.Globalization.Calendar.Build` - MSBuild task package. The task runs only inside a child dotnet build process, so the collector attached to the test host never sees it; the package ships to tasks/netstandard2.0 and is never referenced at runtime. Its integration tests cover what actually breaks - targets wiring, incrementality and diagnostic propagation - which no in-process unit test can reach.
+- `Bodu.Text.Formats` - Umbrella meta-package: references the three format libraries and ships no source of its own.
 
 **Overall:** 96.1% (66879 / 69560 lines across 59 collected package(s)).
 

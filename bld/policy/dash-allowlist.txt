@@ -1,0 +1,16 @@
+# Files exempt from BODU-P014 (no em-dash U+2014 or en-dash U+2013), enforced by bld/check-policy.sh.
+#
+# Every other tracked text file uses a plain hyphen: " - " for an aside, "-" in a range. A file is listed here
+# only when a dash in it is data rather than prose, and the reason says which. Each line is
+# "<path relative to the repository root>  # reason".
+
+# Test inputs that exercise non-ASCII text, where the dash is one of the multi-byte characters under test.
+Bodu.Core/test/Extensions/StringExtensionsTests.Base64.cs  # "hello - world" round-trips through Base64 as multi-byte UTF-8
+Bodu.Core/test/Text/EncodingExtensionsTests.cs  # MultiByteText mixes the dash with Cyrillic, CJK and an emoji
+Bodu.Core/test/Text/StringEncodingExtensionsTests.cs  # MultiByteText, as above
+Bodu.Core/test/Text/StringEncodingExtensionsTests.GetUtf8ByteCount.cs  # counts the dash's three UTF-8 bytes
+Bodu.Core/test/Text/StringEncodingExtensionsTests.ToUtf8Bytes.cs  # encodes the dash's three UTF-8 bytes
+Bodu.CodeStyle/Bodu.CodeStyle.XmlDocumentation.Core/test/CodeStyle.XmlDocumentation.Test.Formatting/XmlDocFormatterTests.Unicode.cs  # the formatter must measure and keep non-ASCII prose
+
+# Verbatim third-party text.
+Bodu.Security.Cryptography/test/Security.Cryptography/Fixtures/Hc128/Spec/hc128-spec-appendix-a.txt  # transcription of the HC-128 specification's Appendix A

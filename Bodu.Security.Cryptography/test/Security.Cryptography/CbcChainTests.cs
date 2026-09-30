@@ -8,7 +8,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Tests for <see cref="CbcChain" />, the CBC chaining behind CBC encryption, CMAC, and CCM, grouped into member-named
-/// partial files. Each path — a cipher's own chained implementation, and single blocks — is held to the platform's CBC.
+/// partial files. Each path - a cipher's own chained implementation, and single blocks - is held to the platform's CBC.
 /// </summary>
 [TestClass]
 public sealed partial class CbcChainTests

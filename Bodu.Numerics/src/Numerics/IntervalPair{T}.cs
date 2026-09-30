@@ -9,8 +9,8 @@ using System.Numerics;
 namespace Bodu.Numerics;
 
 /// <summary>
-/// Represents the result of a binary interval set operation as zero, one, or two disjoint intervals in ascending order
-/// — the maximum number of pieces that subtracting or symmetric-differencing two intervals can produce.
+/// Represents the result of a binary interval set operation as zero, one, or two disjoint intervals in ascending
+/// order - the maximum number of pieces that subtracting or symmetric-differencing two intervals can produce.
 /// </summary>
 /// <typeparam name="T">The numeric type used for the intervals' endpoints.</typeparam>
 /// <remarks>
@@ -62,7 +62,7 @@ public readonly struct IntervalPair<T>
     }
 
     /// <summary>
-    /// Gets the empty result — zero pieces.
+    /// Gets the empty result - zero pieces.
     /// </summary>
     /// <value>An <see cref="IntervalPair{T}" /> whose <see cref="Count" /> is zero.</value>
     public static IntervalPair<T> Empty =>
@@ -132,7 +132,7 @@ public readonly struct IntervalPair<T>
     /// <summary>
     /// Returns an <see cref="IntervalSet{T}" /> containing the pieces of this result.
     /// </summary>
-    /// <returns>The equivalent normalized set — empty, or the one or two disjoint pieces this pair holds.</returns>
+    /// <returns>The equivalent normalized set - empty, or the one or two disjoint pieces this pair holds.</returns>
     /// <remarks>
     /// <see cref="IntervalPair{T}" /> is the allocation-free result of a binary <see cref="Interval{T}.Difference" />
     /// or <see cref="Interval{T}.SymmetricDifference" /> and holds at most two pieces; <see cref="IntervalSet{T}" /> is
@@ -150,7 +150,7 @@ public readonly struct IntervalPair<T>
         new(this);
 
     /// <summary>
-    /// Returns a set-notation string representation of the result — the empty-set glyph when empty, otherwise the
+    /// Returns a set-notation string representation of the result - the empty-set glyph when empty, otherwise the
     /// pieces joined by the union symbol.
     /// </summary>
     /// <returns>The formatted result.</returns>

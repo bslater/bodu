@@ -32,7 +32,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// <para>
 /// Calling <see cref="EvictingDictionary{TKey, TValue}.Add(TKey, TValue)" /> (or assigning via the indexer) with a key
-/// that already exists replaces the existing entry's value rather than throwing — this differs from
+/// that already exists replaces the existing entry's value rather than throwing - this differs from
 /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" />'s strict <c>Add</c> semantics. The replacement
 /// counts as a touch against the eviction policy: recency-based policies move the entry to the most-recently-used
 /// position, LeastFrequentlyUsed increments its accumulated frequency, and SecondChance marks it recently referenced.
@@ -41,7 +41,7 @@ namespace Bodu.Collections.Generic;
 /// <para>
 /// Supplying an <see cref="EvictingDictionaryExpiration" /> at construction adds time-based expiry orthogonal to the
 /// capacity policy: entries carry a time-to-live (a per-dictionary default and/or per-entry overrides), expired entries
-/// are invisible to lookups and enumeration even before they are physically removed, and removal happens lazily — when
+/// are invisible to lookups and enumeration even before they are physically removed, and removal happens lazily - when
 /// an access touches an expired key, when capacity pressure purges expired entries ahead of a policy eviction, or when
 /// <see cref="EvictingDictionary{TKey, TValue}.RemoveExpired" /> is called explicitly. Note that
 /// <see cref="EvictingDictionary{TKey, TValue}.Count" /> reports the raw stored count <em>including</em>
@@ -573,7 +573,7 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <remarks>
     /// When time-based expiration is configured, an expired entry counts as absent: it is lazily removed (raising the
     /// eviction events) and <see langword="false" /> is returned. <see cref="Touch" /> affects only the capacity-policy
-    /// metadata — it does not refresh a sliding expiration deadline; use a read access ( <see cref="TryGetValue" /> or
+    /// metadata - it does not refresh a sliding expiration deadline; use a read access ( <see cref="TryGetValue" /> or
     /// the indexer getter) to slide. Like <see cref="ContainsKey" />, it is a pure read with respect to the deadline.
     /// </remarks>
     public bool Touch(TKey key)
@@ -671,8 +671,8 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <param name="item">The associated cache item for the key.</param>
     /// <remarks>
     /// Touches that structurally reposition the entry (LeastRecentlyUsed, MostRecentlyUsed, LeastFrequentlyUsed)
-    /// increment <see cref="_version" /> so in-flight enumerators fail fast instead of silently observing a reordered —
-    /// or, for the backwards-walked MostRecentlyUsed order, truncated — sequence. SecondChance only flips the reference
+    /// increment <see cref="_version" /> so in-flight enumerators fail fast instead of silently observing a reordered -
+    /// or, for the backwards-walked MostRecentlyUsed order, truncated - sequence. SecondChance only flips the reference
     /// flag, which does not disturb enumeration order.
     /// </remarks>
     private void TouchInternal(TKey key, EvictionEntry<TKey, TValue> item)

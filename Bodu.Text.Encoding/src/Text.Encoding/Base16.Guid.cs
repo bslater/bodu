@@ -33,7 +33,7 @@ public static partial class Base16
     /// <see cref="Guid.TryWriteBytes(Span{byte})" />).
     /// </returns>
     /// <remarks>
-    /// The encoding uses the GUID's native byte layout — the first three fields are little-endian, the fourth is
+    /// The encoding uses the GUID's native byte layout - the first three fields are little-endian, the fourth is
     /// big-endian. This matches <see cref="Guid.ToByteArray()" /> and <see cref="Guid.TryWriteBytes(Span{byte})" />, so
     /// the result of <see cref="DecodeGuid(ReadOnlySpan{char}, BaseFormatStyles)" /> reconstructs the original
     /// <see cref="Guid" /> exactly.

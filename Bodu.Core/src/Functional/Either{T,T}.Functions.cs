@@ -19,7 +19,7 @@ public readonly partial struct Either<TLeft, TRight>
     /// <returns><see langword="true" /> if the left side is active; otherwise, <see langword="false" />.</returns>
     /// <remarks>
     /// <para>
-    /// Returns <see langword="false" /> — and never throws — for a right-carrying either and for
+    /// Returns <see langword="false" /> - and never throws - for a right-carrying either and for
     /// <c>default(Either&lt;TLeft, TRight&gt;)</c>.
     /// </para>
     /// </remarks>
@@ -38,7 +38,7 @@ public readonly partial struct Either<TLeft, TRight>
     /// <returns><see langword="true" /> if the right side is active; otherwise, <see langword="false" />.</returns>
     /// <remarks>
     /// <para>
-    /// Returns <see langword="false" /> — and never throws — for a left-carrying either and for
+    /// Returns <see langword="false" /> - and never throws - for a left-carrying either and for
     /// <c>default(Either&lt;TLeft, TRight&gt;)</c>.
     /// </para>
     /// </remarks>
@@ -124,7 +124,7 @@ public readonly partial struct Either<TLeft, TRight>
     /// <code language="csharp">
     ///<![CDATA[
     /// var doubled = Either<int, string>.Left(21).MapLeft(l => l * 2);   // Left(42)
-    /// var same = Either<int, string>.Right("text").MapLeft(l => l * 2); // Right(text) — selector not invoked
+    /// var same = Either<int, string>.Right("text").MapLeft(l => l * 2); // Right(text) - selector not invoked
     ///]]>
     /// </code>
     /// </example>

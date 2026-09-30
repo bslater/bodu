@@ -79,7 +79,7 @@ public partial class FixedDatedRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that two rates for the same pair on the same date — even with the same provider — cause the
+    /// Verifies that two rates for the same pair on the same date - even with the same provider - cause the
     /// constructor to throw via the underlying series duplicate check.
     /// </summary>
     [TestMethod]

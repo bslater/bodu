@@ -10,10 +10,10 @@ uid: Bodu.Text.Delimited.Nodes
 
 ## Key types
 
-- <xref:Bodu.Text.Delimited.Nodes.DelimitedNode> — abstract base: `Parse` (returning the record array), `AsArray` / `AsObject` / `AsValue`, `ValueKind`, `DeepClone`, `WriteTo`, and `ToUtf8Bytes`.
-- <xref:Bodu.Text.Delimited.Nodes.DelimitedArray> — the record set (and a positional record): `Add`, `RemoveAt`, `Count`, and an integer indexer.
-- <xref:Bodu.Text.Delimited.Nodes.DelimitedObject> — a header-keyed record: `Keys`, `ContainsKey` / `TryGetValue` / `Remove`, and a string indexer that adds or replaces.
-- <xref:Bodu.Text.Delimited.Nodes.DelimitedValue> — a single field with a settable `Value`.
+- <xref:Bodu.Text.Delimited.Nodes.DelimitedNode> - abstract base: `Parse` (returning the record array), `AsArray` / `AsObject` / `AsValue`, `ValueKind`, `DeepClone`, `WriteTo`, and `ToUtf8Bytes`.
+- <xref:Bodu.Text.Delimited.Nodes.DelimitedArray> - the record set (and a positional record): `Add`, `RemoveAt`, `Count`, and an integer indexer.
+- <xref:Bodu.Text.Delimited.Nodes.DelimitedObject> - a header-keyed record: `Keys`, `ContainsKey` / `TryGetValue` / `Remove`, and a string indexer that adds or replaces.
+- <xref:Bodu.Text.Delimited.Nodes.DelimitedValue> - a single field with a settable `Value`.
 
 ## Example
 
@@ -34,5 +34,5 @@ byte[] csv = records.ToUtf8Bytes();
 ## Notes
 
 - **Trivia-free.** Comments and original quoting are not preserved; the writer re-quotes minimally on output.
-- **Consistent shape.** Every record in the array should share the first record's keys — the header is derived from the first object when writing.
+- **Consistent shape.** Every record in the array should share the first record's keys - the header is derived from the first object when writing.
 - **See also:** the [line-formats introduction](~/docs/formats/index.md) and the [delimited guide](~/guides/formats/delimited.md).

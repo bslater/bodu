@@ -9,7 +9,7 @@ using System.Buffers.Binary;
 namespace Bodu.IO.Pst.Internal;
 
 /// <summary>
-/// Authors LTP payload bytes — heap-on-node blocks with their page maps, and the BTree-on-heap, property-context, and
+/// Authors LTP payload bytes - heap-on-node blocks with their page maps, and the BTree-on-heap, property-context, and
 /// table-context structures built over them. Composed with <see cref="PstFixtureBuilder" />, which wraps the produced
 /// blocks in a structurally valid container, so each test controls the exact heap shape it asserts.
 /// </summary>

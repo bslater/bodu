@@ -6,9 +6,9 @@ title: Segmented buffer
 
 <xref:Bodu.Collections.Generic.SegmentedBuffer`1> is an append-only collection whose backing store grows in fixed-size **segments** instead of one contiguous array. When a `List<T>` fills up it allocates a new array of double the size and copies every existing element across; `SegmentedBuffer<T>` instead allocates one more segment and leaves the existing elements where they are. That avoids the array-doubling copy and the large-object-heap pressure that comes with very large contiguous buffers, while still offering O(1) indexed access.
 
-Reach for it when you are accumulating a stream of unknown length — caching enumerator results, buffering streamed data, or logging events without knowing the upper bound — and the per-doubling copy of `List<T>` would be costly.
+Reach for it when you are accumulating a stream of unknown length - caching enumerator results, buffering streamed data, or logging events without knowing the upper bound - and the per-doubling copy of `List<T>` would be costly.
 
-## Pattern 1 — append a stream of unknown length
+## Pattern 1 - append a stream of unknown length
 
 ```csharp
 using Bodu.Collections.Generic;
@@ -21,7 +21,7 @@ foreach (int value in ReadFromNetwork())
 Console.WriteLine(buffer.Count);   // total elements appended
 ```
 
-## Pattern 2 — choose a segment size
+## Pattern 2 - choose a segment size
 
 The segment size is the number of elements per chunk. Pick a larger size for fewer, bigger allocations or a smaller size to bound the per-segment footprint:
 
@@ -33,7 +33,7 @@ var buffer = new SegmentedBuffer<byte>(segmentSize: 512);
 
 The constructor throws <xref:System.ArgumentOutOfRangeException> when `segmentSize` is less than 1.
 
-## Pattern 3 — O(1) indexed access
+## Pattern 3 - O(1) indexed access
 
 Even though storage is segmented, element access is O(1): the buffer maps a flat index onto `(segment, offset)` arithmetically. The indexer supports both read and write of any already-populated position:
 
@@ -47,9 +47,9 @@ string first = buffer[0];   // → "a"
 buffer[1] = "B";            // overwrite in place
 ```
 
-Indexing outside `[0, Count)` throws <xref:System.ArgumentOutOfRangeException> — the indexer never extends the buffer; use `Add` to append.
+Indexing outside `[0, Count)` throws <xref:System.ArgumentOutOfRangeException> - the indexer never extends the buffer; use `Add` to append.
 
-## Pattern 4 — enumerate in order
+## Pattern 4 - enumerate in order
 
 ```csharp
 var buffer = new SegmentedBuffer<int>();
@@ -59,11 +59,11 @@ foreach (int value in buffer)
     Process(value);   // yields elements in insertion order
 ```
 
-The enumerator is fail-fast: modifying the buffer after enumeration begins — by `Add` or by assignment through the indexer — throws `InvalidOperationException` on the next iteration step.
+The enumerator is fail-fast: modifying the buffer after enumeration begins - by `Add` or by assignment through the indexer - throws `InvalidOperationException` on the next iteration step.
 
-## Worked example — buffer a stream once, read it many times
+## Worked example - buffer a stream once, read it many times
 
-A common shape: data arrives in chunks of unpredictable size, and the consumer needs both random access and a second full pass — without re-reading the source. Buffering into a `SegmentedBuffer<T>` pays no resize-copy as the total grows:
+A common shape: data arrives in chunks of unpredictable size, and the consumer needs both random access and a second full pass - without re-reading the source. Buffering into a `SegmentedBuffer<T>` pays no resize-copy as the total grows:
 
 <!-- compile -->
 ```csharp
@@ -88,7 +88,7 @@ Console.WriteLine(samples.Count);    // → 10
 
 // Random access without a copy.
 Console.WriteLine(samples[0]);       // → 3
-Console.WriteLine(samples[4]);       // → 5  — first element of the second segment
+Console.WriteLine(samples[4]);       // → 5  - first element of the second segment
 Console.WriteLine(samples[9]);       // → 3
 
 // Second full pass over the buffered data.
@@ -110,18 +110,18 @@ Ten appends into a `segmentSize: 4` buffer triggered exactly three segment alloc
 
 ## How it compares
 
-**Versus `List<T>`.** A `List<T>` keeps one contiguous array, so growth past capacity costs an O(n) copy, and element arrays beyond ~85 KB land on the large object heap. `SegmentedBuffer<T>` allocates fixed-size segments and copies nothing on growth. `List<T>` remains the better choice when the final length is known up front (a pre-sized list never re-copies either), or when you need search, removal, insertion, sorting, or a contiguous `Span<T>` view — `SegmentedBuffer<T>` deliberately offers none of those.
+**Versus `List<T>`.** A `List<T>` keeps one contiguous array, so growth past capacity costs an O(n) copy, and element arrays beyond ~85 KB land on the large object heap. `SegmentedBuffer<T>` allocates fixed-size segments and copies nothing on growth. `List<T>` remains the better choice when the final length is known up front (a pre-sized list never re-copies either), or when you need search, removal, insertion, sorting, or a contiguous `Span<T>` view - `SegmentedBuffer<T>` deliberately offers none of those.
 
-**Versus <xref:Bodu.Buffers.PooledBufferBuilder`1>.** The [pooled buffer builder](pooled-buffer-builder.md) rents its storage from `ArrayPool<T>.Shared`, implements `IBufferWriter<T>`, and ends with a single contiguous result (`WrittenSpan`, `ToArrayAndDispose()`) — the right tool when a downstream API needs a `ReadOnlySpan<T>` or a `byte[]`, at the cost of mandatory disposal. `SegmentedBuffer<T>` never materializes a contiguous view and needs no disposal; prefer it when consumers only index into and enumerate the buffered data.
+**Versus <xref:Bodu.Buffers.PooledBufferBuilder`1>.** The [pooled buffer builder](pooled-buffer-builder.md) rents its storage from `ArrayPool<T>.Shared`, implements `IBufferWriter<T>`, and ends with a single contiguous result (`WrittenSpan`, `ToArrayAndDispose()`) - the right tool when a downstream API needs a `ReadOnlySpan<T>` or a `byte[]`, at the cost of mandatory disposal. `SegmentedBuffer<T>` never materializes a contiguous view and needs no disposal; prefer it when consumers only index into and enumerate the buffered data.
 
-**Versus `MemoryStream`.** For bytes that downstream code consumes as a `Stream`, `MemoryStream` is the natural fit. It is, however, a single doubling array underneath, with the same copy and large-object-heap characteristics as `List<byte>` — buffering large byte streams that are only indexed or enumerated is cheaper in a `SegmentedBuffer<byte>`.
+**Versus `MemoryStream`.** For bytes that downstream code consumes as a `Stream`, `MemoryStream` is the natural fit. It is, however, a single doubling array underneath, with the same copy and large-object-heap characteristics as `List<byte>` - buffering large byte streams that are only indexed or enumerated is cheaper in a `SegmentedBuffer<byte>`.
 
 ## When *not* to use it
 
 - If you know the final length up front, a pre-sized `List<T>` or array is simpler and equally fast.
-- If you need removal, insertion at arbitrary positions, search, or set semantics, choose a different type — `SegmentedBuffer<T>` only appends and overwrites by index.
+- If you need removal, insertion at arbitrary positions, search, or set semantics, choose a different type - `SegmentedBuffer<T>` only appends and overwrites by index.
 - For `ArrayPool<T>`-backed building of a single contiguous result (for example, to hand a `byte[]` to an API), prefer <xref:Bodu.Buffers.PooledBufferBuilder`1>.
-- For concurrent producers, add external synchronization — the type is not thread-safe, and the fail-fast enumerator throws if elements are added while it is iterating.
+- For concurrent producers, add external synchronization - the type is not thread-safe, and the fail-fast enumerator throws if elements are added while it is iterating.
 
 ## API summary
 
@@ -136,11 +136,11 @@ Ten appends into a `segmentSize: 4` buffer triggered exactly three segment alloc
 
 ## See also
 
-- [Pooled buffer builder](pooled-buffer-builder.md) — `ArrayPool<T>`-backed building of a single contiguous result.
-- [Choosing a collection](choosing-a-collection.md) — the full decision guide.
-- [Core Foundations guides](../topics/core-foundations.md) — every guide in this topic.
-- [Core Foundations topic overview](../../docs/topics/core-foundations.md) — package map and install command.
-- [Bodu.Collections introduction](../../docs/collections/index.md) — namespaces, headline types, scenarios.
+- [Pooled buffer builder](pooled-buffer-builder.md) - `ArrayPool<T>`-backed building of a single contiguous result.
+- [Choosing a collection](choosing-a-collection.md) - the full decision guide.
+- [Core Foundations guides](../topics/core-foundations.md) - every guide in this topic.
+- [Core Foundations topic overview](../../docs/topics/core-foundations.md) - package map and install command.
+- [Bodu.Collections introduction](../../docs/collections/index.md) - namespaces, headline types, scenarios.
 - [`SegmentedBuffer<T>` API reference](xref:Bodu.Collections.Generic.SegmentedBuffer`1)
 - [`PooledBufferBuilder<T>` API reference](xref:Bodu.Buffers.PooledBufferBuilder`1)
 - [`Bodu.Collections.Generic` namespace landing](xref:Bodu.Collections.Generic)

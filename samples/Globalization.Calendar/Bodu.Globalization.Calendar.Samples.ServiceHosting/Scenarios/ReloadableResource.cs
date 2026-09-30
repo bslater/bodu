@@ -11,8 +11,8 @@ namespace Bodu.Globalization.Calendar.Samples.ServiceHosting.Scenarios;
 
 /// <summary>
 /// Demonstrates the reloadable registration: <c>AddReloadableNotableDateService</c> serves queries
-/// through a swappable resource provider, so rule data can be replaced at run time — a rules refresh,
-/// a tenant switch, a hot configuration reload — without restarting the host or re-resolving the
+/// through a swappable resource provider, so rule data can be replaced at run time - a rules refresh,
+/// a tenant switch, a hot configuration reload - without restarting the host or re-resolving the
 /// service. Consumers keep their <see cref="INotableDateService" /> reference; only the data moves.
 /// </summary>
 public static class ReloadableResource

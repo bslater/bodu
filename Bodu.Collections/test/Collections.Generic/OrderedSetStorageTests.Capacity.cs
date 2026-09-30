@@ -41,7 +41,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // EnsureCapacity — argument validation
+    // EnsureCapacity - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -90,7 +90,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // EnsureCapacity — growth behaviour
+    // EnsureCapacity - growth behaviour
     // --------------------------------------------------------
 
     /// <summary>

@@ -4,7 +4,7 @@
 #
 # Whole-tree gate on bld/release-manifest.txt and the release preconditions it implies. The manifest
 # decides what reaches nuget.org and, through its first-shipped-version column, which packages get an
-# ApiCompat baseline — so a malformed or incomplete entry is not a style problem, it is a bad release.
+# ApiCompat baseline - so a malformed or incomplete entry is not a style problem, it is a bad release.
 # A nuget.org version cannot be withdrawn afterwards, only delisted, which is why these are checked
 # before a tag rather than discovered by a red release run after one.
 #
@@ -12,23 +12,23 @@
 # every line of it is load-bearing, so there is nothing to grandfather.
 #
 # Checks:
-#   1. Format     — every entry is "<PackageId> <first-shipped-version>", version as MAJOR.MINOR.PATCH.
-#   2. Unique     — no package id appears twice (a duplicate would publish twice and confuse the
+#   1. Format     - every entry is "<PackageId> <first-shipped-version>", version as MAJOR.MINOR.PATCH.
+#   2. Unique     - no package id appears twice (a duplicate would publish twice and confuse the
 #                   baseline lookup, which takes the first match).
-#   3. Project    — every id resolves to a packable project (<Id>.csproj under a src/ directory).
+#   3. Project    - every id resolves to a packable project (<Id>.csproj under a src/ directory).
 #                   Note the id is NOT always the directory name: the regional calendar data packs
 #                   live under Bodu.Globalization.Calendar.Data/, so this searches rather than assumes.
-#   4. NotAhead   — no package claims a first-shipped version later than BoduBaseVersion. Such an entry
+#   4. NotAhead   - no package claims a first-shipped version later than BoduBaseVersion. Such an entry
 #                   would silently never receive a baseline, because the comparison in
 #                   Directory.Build.targets would never be satisfied.
-#   5. Readme     — every manifest package has a project-root README.md (bld/RELEASING.md
+#   5. Readme     - every manifest package has a project-root README.md (bld/RELEASING.md
 #                   precondition 4); it is packed as the NuGet readme and is a consumer's first page.
-#   6. Tier       — that README carries an API-stability tier banner. A published package with no tier
+#   6. Tier       - that README carries an API-stability tier banner. A published package with no tier
 #                   leaves a consumer unable to tell whether its surface is committed.
-#   7. Icon       — bld/icons/<PackageId>.png exists. The docfx workflow checks the other direction
+#   7. Icon       - bld/icons/<PackageId>.png exists. The docfx workflow checks the other direction
 #                   (every .svg has a rasterized sibling); this checks that every SHIPPING package has
 #                   an icon, which is the direction a release cares about.
-#   8. Stream     — the package's tier agrees with the version stream it ships on. Bodu runs two:
+#   8. Stream     - the package's tier agrees with the version stream it ships on. Bodu runs two:
 #                   Stable-tier packages ship at BoduBaseVersion, and the Preview/Experimental tier
 #                   ships at BoduPreviewVersion via <BoduPackageVersionOverride> in its own csproj.
 #                   Nothing else reconciles those, so a package promoted to Stable but left on the
@@ -39,7 +39,7 @@
 #                   override cannot outlive the release it was made for.
 #
 # Withheld packages (named in the manifest's comment block) are deliberately absent and are not
-# checked — they do not ship, so they owe consumers nothing.
+# checked - they do not ship, so they owe consumers nothing.
 #
 # Usage:  bld/check-release-manifest.sh
 # Exit code: 0 when the manifest is clean, 1 when one or more violations are found.
@@ -112,7 +112,7 @@ check_tier_and_stream() {
         fail "$id: no README.md at $(realpath --relative-to="$repo_root" "$project_root") (bld/RELEASING.md precondition 4)"
     else
         tier="$(head -c 2000 "$readme" \
-            | grep -oE 'API stability[[:space:]]*[—-]+[[:space:]]*\*{0,2}(Stable|Preview|Experimental)' \
+            | grep -oE 'API stability[[:space:]]*-+[[:space:]]*\*{0,2}(Stable|Preview|Experimental)' \
             | grep -oE '(Stable|Preview|Experimental)' | head -1)"
         if [ -z "$tier" ]; then
             fail "$id: README.md carries no API-stability tier banner (Stable / Preview / Experimental)"
@@ -180,17 +180,17 @@ while IFS= read -r raw; do
         *) seen_ids="$seen_ids$id " ;;
     esac
 
-    # 3. Project — resolved by search, because the id is not always the directory name.
+    # 3. Project - resolved by search, because the id is not always the directory name.
     project="$(find "$repo_root" -name "$id.csproj" -path '*/src/*' -not -path '*/obj/*' -not -path '*/bin/*' 2>/dev/null | head -1)"
     if [ -z "$project" ]; then
-        fail "$id: no <Id>.csproj found under any src/ directory — is the id spelled correctly?"
+        fail "$id: no <Id>.csproj found under any src/ directory - is the id spelled correctly?"
         continue
     fi
     project_root="$(dirname "$(dirname "$project")")"
 
     # 4. NotAhead.
     if [ "$(version_gt "$version" "$base_version")" = "1" ]; then
-        fail "$id: first-shipped version $version is ahead of BoduBaseVersion $base_version — it would never receive a package-validation baseline"
+        fail "$id: first-shipped version $version is ahead of BoduBaseVersion $base_version - it would never receive a package-validation baseline"
     fi
 
     # 5/6/8. README, its tier banner, and the version stream that tier implies.
@@ -206,7 +206,7 @@ done < "$manifest"
 #
 # The manifest also records the packages deliberately kept off nuget.org, as comment lines that are
 # nothing but a package id followed by the reasoning. Those packages pack with everything else, so
-# they can drift from their declared tier exactly as a shipping one can — and nothing noticed,
+# they can drift from their declared tier exactly as a shipping one can - and nothing noticed,
 # because every check above iterates manifest DATA lines only. The day one of them is released is
 # the day nobody re-reads its csproj, so it is checked now instead.
 #
@@ -230,7 +230,7 @@ while IFS= read -r raw; do
 
     project="$(find "$repo_root" -name "$id.csproj" -path '*/src/*' -not -path '*/obj/*' -not -path '*/bin/*' 2>/dev/null | head -1)"
     if [ -z "$project" ]; then
-        fail "$id: recorded as withheld but no $id.csproj exists under any src/ directory — is the id spelled correctly?"
+        fail "$id: recorded as withheld but no $id.csproj exists under any src/ directory - is the id spelled correctly?"
         continue
     fi
 
@@ -242,7 +242,7 @@ printf 'Manifest entries checked: %d\n' "$entries"
 printf 'Withheld packages checked: %d\n' "$withheld"
 
 if [ "$entries" -eq 0 ]; then
-    printf '::error file=bld/release-manifest.txt::The manifest has no entries — a release would publish nothing\n'
+    printf '::error file=bld/release-manifest.txt::The manifest has no entries - a release would publish nothing\n'
     exit 1
 fi
 

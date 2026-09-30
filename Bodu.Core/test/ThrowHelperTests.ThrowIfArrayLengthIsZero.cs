@@ -37,8 +37,8 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsZero" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for non-empty arrays.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsZero" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for non-empty arrays.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="array">The array passed to the guard.</param>

@@ -123,8 +123,8 @@ public partial class NavigableSetTests
     }
 
     /// <summary>
-    /// Verifies that a set built from every size 0 through 64 remains fully consistent — sorted enumeration, count,
-    /// and rank round-trips — and continues to accept mutations, exercising every bulk-build coloring shape.
+    /// Verifies that a set built from every size 0 through 64 remains fully consistent - sorted enumeration, count,
+    /// and rank round-trips - and continues to accept mutations, exercising every bulk-build coloring shape.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenBulkLoadingEverySmallSize_ShouldRemainConsistentAndMutable()

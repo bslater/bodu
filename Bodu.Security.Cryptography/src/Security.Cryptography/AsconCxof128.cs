@@ -68,7 +68,7 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// <para>
 /// <strong>When to choose Ascon-CXOF128.</strong> Pick the customizable XOF when you need multiple independent output
-/// streams from one primitive — KMAC-style domain separation per protocol layer, per-purpose KDFs (signing-key vs.
+/// streams from one primitive - KMAC-style domain separation per protocol layer, per-purpose KDFs (signing-key vs.
 /// encryption-key vs. binding-tag), or hash-based DRBGs that must not collide across applications. For uncustomized XOF
 /// output use <see cref="AsconXof128" />; for fixed-length 256-bit hashes use <see cref="AsconHash256" />; for the AEAD
 /// member of the suite use <see cref="AsconAead128" />.
@@ -91,7 +91,7 @@ public sealed class AsconCxof128
 {
     /// <summary>The pre-computed initial state word 0 for Ascon-CXOF128.</summary>
     /// <remarks>
-    /// The five IV words are the result of applying Ascon-p12 to <c>[0x0000080000cc0004, 0, 0, 0, 0]</c> — the raw
+    /// The five IV words are the result of applying Ascon-p12 to <c>[0x0000080000cc0004, 0, 0, 0, 0]</c> - the raw
     /// Ascon-CXOF128 IV defined in NIST SP 800-232. The values are verified against the ascon-c
     /// <c>LWC_CXOF_KAT_128_512</c> reference vectors (all 1089 rows).
     /// </remarks>

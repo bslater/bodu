@@ -149,7 +149,7 @@
     <value>Input length is not a multiple of 8 and AllowMissingPadding is not set.</value>
   </data>
   <data name="Format_Invalid_Base32NonCanonical" xml:space="preserve">
-    <value>Base32 input is not in canonical form — unused trailing bits are non-zero.</value>
+    <value>Base32 input is not in canonical form - unused trailing bits are non-zero.</value>
   </data>
   <data name="Format_Invalid_Base32PaddingCount" xml:space="preserve">
     <value>Expected {0} padding character(s) but found {1}.</value>
@@ -194,7 +194,7 @@
     <value>Input contains characters outside the Base64 alphabet.</value>
   </data>
   <data name="Format_Invalid_Base64NonCanonical" xml:space="preserve">
-    <value>Base64 input is not in canonical form — unused trailing bits are non-zero.</value>
+    <value>Base64 input is not in canonical form - unused trailing bits are non-zero.</value>
   </data>
   <data name="Format_Invalid_Base64VariantAlphabet" xml:space="preserve">
     <value>Input contains characters outside the Base64 variant alphabet.</value>

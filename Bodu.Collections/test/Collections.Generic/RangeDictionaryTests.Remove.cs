@@ -56,7 +56,7 @@ public partial class RangeDictionaryTests
     }
 
     // --------------------------------------------------------
-    // Remove — behaviour
+    // Remove - behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -159,7 +159,7 @@ public partial class RangeDictionaryTests
         });
     }
     // --------------------------------------------------------
-    // Remove — argument validation
+    // Remove - argument validation
     // --------------------------------------------------------
 
     /// <summary>

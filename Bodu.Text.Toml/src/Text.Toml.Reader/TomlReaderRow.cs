@@ -16,7 +16,7 @@ namespace Bodu.Text.Toml.Reader;
 /// <remarks>
 /// No scalar holds a reference. A numeric, Boolean, or date/time scalar packs its value into <see cref="ScalarBits" />
 /// (with <see cref="ScalarOffsetMinutes" /> for an offset date-time), and a string scalar packs its content's source
-/// span into <see cref="ScalarBits" /> instead — decoded on demand from the retained source rather than at parse. The
+/// span into <see cref="ScalarBits" /> instead - decoded on demand from the retained source rather than at parse. The
 /// <c>As…</c> value accessors and the <c>StringContent…</c> span accessors are the single counterpart to the packing
 /// the builder performs, so the two cannot drift.
 /// </remarks>

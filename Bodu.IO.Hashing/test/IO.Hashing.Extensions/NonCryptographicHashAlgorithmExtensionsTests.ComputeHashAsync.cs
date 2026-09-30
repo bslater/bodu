@@ -73,7 +73,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a small <paramref name="bufferSize" /> — forcing multiple read iterations — produces the
+    /// Verifies that a small <paramref name="bufferSize" /> - forcing multiple read iterations - produces the
     /// expected digest.
     /// </summary>
     [TestMethod]

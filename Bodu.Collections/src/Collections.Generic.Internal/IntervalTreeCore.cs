@@ -136,7 +136,7 @@ internal static class IntervalTreeCore
         promoted.Left = pivot;
         pivot.Parent = promoted;
 
-        // Recompute the demoted node first — its children are final — then the promoted node, which reads the
+        // Recompute the demoted node first - its children are final - then the promoted node, which reads the
         // demoted node's fresh value. With exact children, the rotation preserves Max exactness.
         RecomputeMax(pivot, comparer);
         RecomputeMax(promoted, comparer);

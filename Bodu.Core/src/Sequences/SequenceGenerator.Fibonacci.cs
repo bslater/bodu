@@ -30,7 +30,7 @@ public static partial class SequenceGenerator
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Use this generator when only the Fibonacci numbers within a known numeric window are required — building the
+    /// Use this generator when only the Fibonacci numbers within a known numeric window are required - building the
     /// full sequence up to <see cref="long.MaxValue" /> and filtering after the fact wastes iterations. The half-open
     /// interval matches the convention used elsewhere in <see cref="SequenceGenerator" />, so two consecutive ranges
     /// can be stitched together without overlap or gaps.

@@ -1,6 +1,6 @@
 # Globalization.Recurrence Samples
 
-Console applications demonstrating the `Bodu.Globalization.Recurrence` package — the four schedule
+Console applications demonstrating the `Bodu.Globalization.Recurrence` package - the four schedule
 forms it models and the uniform query surface they share. Each sample is a standalone project; run
 one with:
 
@@ -10,7 +10,7 @@ dotnet run --project samples/Globalization.Recurrence/<SampleName>
 
 Every sample is offline and deterministic: fixed instants formatted with the invariant culture, so
 output does not vary by machine, locale, or the time of day the sample runs. That last point is not
-incidental — the package reads no wall clock and resolves no time zone, which is exactly what lets
+incidental - the package reads no wall clock and resolves no time zone, which is exactly what lets
 its samples double as CI smoke tests.
 
 ## Sample → pattern → package matrix
@@ -34,8 +34,8 @@ the four form-specific samples first if you already know which form you need.
 ## Conformance
 
 The semantics these samples demonstrate are not asserted by the samples alone. They are reconciled
-row by row against three committed corpora — the RFC's own worked examples, libical's occurrence
-counts, and a cron vector table derived from Cronos's test suite — currently 830 in-scope rows with
+row by row against three committed corpora - the RFC's own worked examples, libical's occurrence
+counts, and a cron vector table derived from Cronos's test suite - currently 830 in-scope rows with
 zero differences. `corpus/recurrence/README.md` records each table's provenance and every deliberate
 divergence, including the ones these samples call out (the Vixie day-field union rule and
 oversized-step handling).
@@ -45,10 +45,10 @@ oversized-step handling).
 The samples exercise every public type and, with two deliberate exceptions, every member that has
 observable behaviour worth showing. Not demonstrated, on purpose:
 
-- **`RecurrenceFrequency.Hourly` / `.Minutely` / `.Secondly`** — these parse and round-trip but do
+- **`RecurrenceFrequency.Hourly` / `.Minutely` / `.Secondly`** - these parse and round-trip but do
   not enumerate, because this library expands dates rather than intra-day times. The
   `RecurrenceRules` sample states that scope limit rather than exercising the values.
-- **The `IParsable<T>` / `ISpanParsable<T>` / `IFormattable` overloads** — `Parse`/`TryParse` taking
+- **The `IParsable<T>` / `ISpanParsable<T>` / `IFormattable` overloads** - `Parse`/`TryParse` taking
   an `IFormatProvider` or a `ReadOnlySpan<char>`, `ToString(format[, provider])`, and
   `Equals(object)`. They exist to satisfy the BCL interface contracts; cron and `RRULE` text is
   culture-invariant by definition, which is precisely why the provider is ignored, so a sample
@@ -58,7 +58,7 @@ observable behaviour worth showing. Not demonstrated, on purpose:
 
 `WeekDayNum.ToString()` currently emits the compiler-generated record form
 (`WeekDayNum { Ordinal = 1, Day = Friday, … }`) rather than its iCalendar token (`1FR`), which is
-inconsistent with `RecurrenceRule`, `RecurrenceSet`, `CronExpression`, and `AnchoredInterval` — all
+inconsistent with `RecurrenceRule`, `RecurrenceSet`, `CronExpression`, and `AnchoredInterval` - all
 of which render canonical text. The samples therefore read the ordinal and day as properties, and
 show the canonical token via the rule that carries it. This is recorded rather than worked around
 silently.

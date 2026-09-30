@@ -55,7 +55,7 @@ public partial class BencodeSerializerTests
     /// <summary>
     /// Verifies that serializing a graph nested far beyond the ceiling throws a catchable
     /// <see cref="BencodeSerializationException" /> rather than overflowing the call stack, even on a thread whose stack
-    /// is deliberately constrained — pinning the requirement that the ceiling stays reachable before the physical stack
+    /// is deliberately constrained - pinning the requirement that the ceiling stays reachable before the physical stack
     /// is exhausted on a modest stack budget.
     /// </summary>
     [TestMethod]
@@ -146,8 +146,8 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that serializing a genuinely cyclic object graph — an instance whose <c>Child</c> refers back to itself
-    /// — surfaces as a depth-exceeded <see cref="BencodeSerializationException" /> rather than a cycle diagnostic,
+    /// Verifies that serializing a genuinely cyclic object graph - an instance whose <c>Child</c> refers back to itself
+    /// - surfaces as a depth-exceeded <see cref="BencodeSerializationException" /> rather than a cycle diagnostic,
     /// pinning the intended design that the Bencode write path performs no reference-cycle detection (unlike the TOML
     /// serializer, whose write stack reports cycles explicitly).
     /// </summary>

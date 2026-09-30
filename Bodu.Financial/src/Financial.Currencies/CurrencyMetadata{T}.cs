@@ -16,8 +16,8 @@ namespace Bodu.Financial.Currencies;
 /// <remarks>
 /// Every <see cref="Money{TCurrency}" /> code path that needs <see cref="ICurrency.MinorUnits" />,
 /// <see cref="ICurrency.IsoCode" />, or <see cref="ICurrency.CashRoundingIncrement" /> reads it from
-/// <see cref="Value" /> rather than the raw interface members. That keeps validation centralised — a single
-/// failing-fast boundary — and prevents the type from half-existing with broken metadata.
+/// <see cref="Value" /> rather than the raw interface members. That keeps validation centralised - a single
+/// failing-fast boundary - and prevents the type from half-existing with broken metadata.
 /// </remarks>
 internal static class CurrencyMetadata<TCurrency>
     where TCurrency : ICurrency

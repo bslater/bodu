@@ -11,7 +11,7 @@ using Bodu.Financial.Samples.LiveRates.Scenarios;
 namespace Bodu.Financial.Samples.LiveRates;
 
 /// <summary>
-/// Entry point for the live-rates sample — the one sample in this tree that goes online. It fetches
+/// Entry point for the live-rates sample - the one sample in this tree that goes online. It fetches
 /// real published rates from a web provider for a computed historical date ("last Wednesday", with a
 /// safety buffer) and its trailing week, so the requested data is virtually certain to exist.
 /// Requires internet access; it is deliberately excluded from the CI samples run.

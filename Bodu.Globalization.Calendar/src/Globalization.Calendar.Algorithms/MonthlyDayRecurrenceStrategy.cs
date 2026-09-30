@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <para>
 /// Month iteration uses a stable month anchor and re-applies the day each month, so no month-to-month clamp drift
 /// occurs: a day-31 recurrence still evaluates March as the 31st even though February has no 31st. A month that does
-/// not contain the requested day is handled by <see cref="InvalidDayOfMonthBehavior" /> — either skipped or emitted as
+/// not contain the requested day is handled by <see cref="InvalidDayOfMonthBehavior" /> - either skipped or emitted as
 /// its last calendar day. For a monthly interval an anchor is optional; a multi-month interval requires an anchor whose
 /// year and month define month zero.
 /// </para>

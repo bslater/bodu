@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Serpent is a 32-round substitution–permutation network designed by Ross Anderson, Eli Biham, and Lars Knudsen as an
+/// Serpent is a 32-round substitution-permutation network designed by Ross Anderson, Eli Biham, and Lars Knudsen as an
 /// Advanced Encryption Standard (AES) candidate. Each round applies a round-key XOR, one of the eight 4-bit S-boxes
 /// <c>S0..S7</c>, and the bitsliced linear transformation <c>L</c>. The final round replaces <c>L</c> with a post-round
 /// key XOR. Shorter keys are padded to 256 bits by appending a <c>1</c> bit followed by zeros, per the Serpent
@@ -40,7 +40,7 @@ namespace Bodu.Security.Cryptography;
 /// <code language="csharp">
 ///<![CDATA[
 /// // Direct single-block use. For most workloads prefer the Serpent128 SymmetricAlgorithm wrapper.
-/// byte[] key = new byte[32];   // 128, 192, or 256 bits — Serpent pads shorter keys to 256
+/// byte[] key = new byte[32];   // 128, 192, or 256 bits - Serpent pads shorter keys to 256
 /// RandomNumberGenerator.Fill(key);
 ///
 /// using var cipher = new Serpent128Cipher(key);

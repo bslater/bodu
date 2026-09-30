@@ -42,7 +42,7 @@ public static class SqliteNotableDateCacheExtensions
     /// </exception>
     /// <remarks>
     /// The cache is registered as a singleton so its keep-alive connection is shared and the container disposes it on
-    /// shutdown. Compose it with the caching service by resolving the registered cache — for example
+    /// shutdown. Compose it with the caching service by resolving the registered cache - for example
     /// <c>AddCachedNotableDateService(cacheFactory: sp =&gt; sp.GetRequiredService&lt;INotableDateCache&gt;())</c>.
     /// </remarks>
     /// <example>

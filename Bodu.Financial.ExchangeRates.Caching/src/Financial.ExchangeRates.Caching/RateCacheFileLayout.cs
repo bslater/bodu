@@ -8,7 +8,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// Describes where a file-backed exchange-rate cache stores a currency pair's rows: the folder that holds the pair's
-/// file or files, the name of each file, and — through its <see cref="PartitionStrategy" /> — whether the rows are
+/// file or files, the name of each file, and - through its <see cref="PartitionStrategy" /> - whether the rows are
 /// split across files by date.
 /// </summary>
 /// <remarks>

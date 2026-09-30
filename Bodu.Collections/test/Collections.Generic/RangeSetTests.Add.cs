@@ -95,7 +95,7 @@ public partial class RangeSetTests
     }
 
     // --------------------------------------------------------
-    // Add(T, T) — merge behaviour
+    // Add(T, T) - merge behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -192,7 +192,7 @@ public partial class RangeSetTests
     }
 
     // --------------------------------------------------------
-    // Add(T, T) — non-overlapping ranges keep order
+    // Add(T, T) - non-overlapping ranges keep order
     // --------------------------------------------------------
 
     /// <summary>
@@ -242,7 +242,7 @@ public partial class RangeSetTests
     }
 
     // --------------------------------------------------------
-    // Add — data-driven merge matrix
+    // Add - data-driven merge matrix
     // --------------------------------------------------------
 
     /// <summary>
@@ -276,7 +276,7 @@ public partial class RangeSetTests
     }
 
     // --------------------------------------------------------
-    // Add(T, T) — empty set
+    // Add(T, T) - empty set
     // --------------------------------------------------------
 
     /// <summary>
@@ -309,7 +309,7 @@ public partial class RangeSetTests
         });
     }
     // --------------------------------------------------------
-    // Add(T, T) — argument validation
+    // Add(T, T) - argument validation
     // --------------------------------------------------------
 
     /// <summary>

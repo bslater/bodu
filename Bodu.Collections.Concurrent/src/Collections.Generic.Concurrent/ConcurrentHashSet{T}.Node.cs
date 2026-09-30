@@ -14,7 +14,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The list is a Harris–Michael lock-free ordered linked list. <see cref="_next" /> is the only mutable field and
+    /// The list is a Harris-Michael lock-free ordered linked list. <see cref="_next" /> is the only mutable field and
     /// is accessed exclusively through <see cref="Volatile" /> reads and
     /// <see cref="Interlocked.CompareExchange{T}(ref T, T, T)" />.
     /// </para>
@@ -23,7 +23,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// <see langword="true" />) into its <see cref="_next" /> field via CAS. The marker's own <see cref="_next" />
     /// holds the deleted node's real successor, fixed at marking time and never mutated afterwards. Folding the mark
     /// into <see cref="_next" /> makes the (mark, successor) pair change atomically: once a node is marked, any
-    /// competing CAS on its <see cref="_next" /> — an insert-after or a second delete — necessarily fails. This is the
+    /// competing CAS on its <see cref="_next" /> - an insert-after or a second delete - necessarily fails. This is the
     /// managed-runtime port of Harris's pointer tag bit (the same scheme used by Java's <c>ConcurrentSkipListMap</c>).
     /// </para>
     /// <para>
@@ -36,7 +36,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// <para>
     /// Bucket <b>sentinels</b> carry an even split-order key and no element; they are never marked or removed, which is
     /// what keeps the bucket shortcut array permanently valid. Markers carry no key of their own (their
-    /// <see cref="_key" /> is unused) and never appear as list members in their own right — they are only ever
+    /// <see cref="_key" /> is unused) and never appear as list members in their own right - they are only ever
     /// reachable through the <see cref="_next" /> field of the node they mark.
     /// </para>
     /// </remarks>

@@ -19,7 +19,7 @@ public sealed partial class NoPaddingTests
 {
     /// <summary>
     /// Verifies that an empty plaintext under <see cref="PaddingMode.None" /> produces an
-    /// empty ciphertext through a <see cref="CryptoStream" /> — no padding adds nothing, and
+    /// empty ciphertext through a <see cref="CryptoStream" /> - no padding adds nothing, and
     /// zero bytes is trivially block-aligned.
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
@@ -42,7 +42,7 @@ public sealed partial class NoPaddingTests
 
     /// <summary>
     /// Verifies that a block-aligned plaintext round-trips through <see cref="CryptoStream" />
-    /// under <see cref="PaddingMode.None" /> — already-aligned input requires no padding, so the
+    /// under <see cref="PaddingMode.None" /> - already-aligned input requires no padding, so the
     /// ciphertext keeps the original length and the recovered plaintext matches byte-for-byte.
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>

@@ -72,7 +72,7 @@ public class IntervalSetJsonConverterTests
     }
 
     /// <summary>
-    /// Verifies that a set containing unbounded pieces — produced by <see cref="IntervalSet{T}.Complement" /> — round-trips.
+    /// Verifies that a set containing unbounded pieces - produced by <see cref="IntervalSet{T}.Complement" /> - round-trips.
     /// </summary>
     [TestMethod]
     [DataRow(NumericsJsonPolicy.Strict)]

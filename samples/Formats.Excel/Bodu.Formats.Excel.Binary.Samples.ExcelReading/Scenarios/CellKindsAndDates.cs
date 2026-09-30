@@ -10,7 +10,7 @@ namespace Bodu.Formats.Excel.Binary.Samples.ExcelReading.Scenarios;
 
 /// <summary>
 /// Demonstrates cell-value decoding: the five <see cref="ExcelCellKind" />s, and the trap BIFF8
-/// sets for every importer — dates are not a cell kind, they are numbers whose <em>format</em>
+/// sets for every importer - dates are not a cell kind, they are numbers whose <em>format</em>
 /// is a date format. <see cref="ExcelCell.IsDateFormatted" /> surfaces that classification, and
 /// <see cref="ExcelSerialDate" /> plus the workbook's <see cref="ExcelDateSystem" /> turn the
 /// serial number into a real <see cref="DateTime" />.

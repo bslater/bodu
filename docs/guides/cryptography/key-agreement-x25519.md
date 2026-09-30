@@ -6,7 +6,7 @@ title: Key agreement with X25519
 
 <xref:Bodu.Security.Cryptography.X25519> is the elliptic-curve Diffie-Hellman (ECDH) key-agreement function of RFC 7748, performing scalar multiplication on the Montgomery form of Curve25519. Two parties each generate a key pair, exchange public keys, and independently arrive at the **same** 32-byte shared secret without ever transmitting it. This guide is for developers establishing a shared secret to bootstrap a symmetric session.
 
-X25519 is **key agreement only** — it produces no ciphertext and no signature. To sign messages, see [Ed25519](signatures-ed25519.md); for a quantum-resistant alternative to this exchange, see [ML-KEM](ml-kem.md).
+X25519 is **key agreement only** - it produces no ciphertext and no signature. To sign messages, see [Ed25519](signatures-ed25519.md); for a quantum-resistant alternative to this exchange, see [ML-KEM](ml-kem.md).
 
 ## Fixed sizes at a glance
 
@@ -15,13 +15,13 @@ X25519 is **key agreement only** — it produces no ciphertext and no signature.
 | Private key | 32 bytes | `X25519.KeySizeInBytes` |
 | Public key | 32 bytes | `X25519.KeySizeInBytes` |
 | Shared secret | 32 bytes | `X25519.SharedSecretSizeInBytes` |
-| Security level | 128 bits | — |
+| Security level | 128 bits | - |
 
 Both key halves are 32 bytes; the public key is the little-endian u-coordinate of the scalar multiple of the base point.
 
 ## The two-party exchange
 
-Each party calls <xref:Bodu.Security.Cryptography.X25519.GenerateKey>, sends its public key over the (untrusted) wire, and calls <xref:Bodu.Security.Cryptography.X25519.DeriveSharedSecret(System.ReadOnlySpan{System.Byte})> with the *peer's* public key. The two derivations produce identical bytes. A span overload, `DeriveSharedSecret(peerPublicKey, destination)`, writes the 32-byte secret into a caller-supplied buffer without allocating — and zeroes that buffer if the peer point is rejected (below).
+Each party calls <xref:Bodu.Security.Cryptography.X25519.GenerateKey>, sends its public key over the (untrusted) wire, and calls <xref:Bodu.Security.Cryptography.X25519.DeriveSharedSecret(System.ReadOnlySpan{System.Byte})> with the *peer's* public key. The two derivations produce identical bytes. A span overload, `DeriveSharedSecret(peerPublicKey, destination)`, writes the 32-byte secret into a caller-supplied buffer without allocating - and zeroes that buffer if the peer point is rejected (below).
 
 ```csharp
 using Bodu.Security.Cryptography;
@@ -57,7 +57,7 @@ local.GenerateKey();
 byte[] shared = local.DeriveSharedSecret(peerPublic);
 ```
 
-If you do hold the peer key as a separate instance — for example to keep it pinned — import it with <xref:Bodu.Security.Cryptography.X25519.ImportPublicKey(System.ReadOnlySpan{System.Byte})>. Importing a public key onto an instance discards any private key it held, leaving a public-only instance (`HasPublicKey` true, `HasPrivateKey` false) that can export but cannot derive — calling `DeriveSharedSecret` on it throws <xref:System.Security.Cryptography.CryptographicException>.
+If you do hold the peer key as a separate instance - for example to keep it pinned - import it with <xref:Bodu.Security.Cryptography.X25519.ImportPublicKey(System.ReadOnlySpan{System.Byte})>. Importing a public key onto an instance discards any private key it held, leaving a public-only instance (`HasPublicKey` true, `HasPrivateKey` false) that can export but cannot derive - calling `DeriveSharedSecret` on it throws <xref:System.Security.Cryptography.CryptographicException>.
 
 ```csharp
 using var peer = X25519.Create();
@@ -74,9 +74,9 @@ using var restored = X25519.Create();
 restored.ImportPrivateKey(storedPrivate);          // public key is re-derived
 ```
 
-## Derive the secret, then run a KDF — do not use it directly
+## Derive the secret, then run a KDF - do not use it directly
 
-The shared secret is a **raw curve point coordinate**, not uniform key material. Never use it directly as an AES or ChaCha20 key. Pass it through a key derivation function (KDF) — such as [HKDF](hkdf.md), or <xref:Bodu.Security.Cryptography.Blake2b> in keyed mode, or a memory-hard KDF like [Argon2](argon2.md) — to produce a uniformly random, context-bound symmetric key.
+The shared secret is a **raw curve point coordinate**, not uniform key material. Never use it directly as an AES or ChaCha20 key. Pass it through a key derivation function (KDF) - such as [HKDF](hkdf.md), or <xref:Bodu.Security.Cryptography.Blake2b> in keyed mode, or a memory-hard KDF like [Argon2](argon2.md) - to produce a uniformly random, context-bound symmetric key.
 
 A salt and an application-specific `info` / context string bind the derived key to its purpose and prevent the same secret from yielding the same key in two unrelated contexts.
 
@@ -116,8 +116,8 @@ A small set of low-order peer public keys force the shared secret to an all-zero
 
 ## See also
 
-- [Asymmetric algorithms overview](asymmetric-overview.md) — where X25519 sits in the family.
-- [Signatures with Ed25519](signatures-ed25519.md) — authenticate the exchange.
-- [ML-KEM post-quantum key encapsulation](ml-kem.md) — the post-quantum replacement and the hybrid pattern.
-- [Using HKDF](hkdf.md) — the extract-and-expand KDF that turns the raw secret into usable key material.
-- <xref:Bodu.Security.Cryptography.X25519>, <xref:Bodu.Security.Cryptography.Hkdf> — API reference.
+- [Asymmetric algorithms overview](asymmetric-overview.md) - where X25519 sits in the family.
+- [Signatures with Ed25519](signatures-ed25519.md) - authenticate the exchange.
+- [ML-KEM post-quantum key encapsulation](ml-kem.md) - the post-quantum replacement and the hybrid pattern.
+- [Using HKDF](hkdf.md) - the extract-and-expand KDF that turns the raw secret into usable key material.
+- <xref:Bodu.Security.Cryptography.X25519>, <xref:Bodu.Security.Cryptography.Hkdf> - API reference.

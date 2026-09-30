@@ -13,7 +13,7 @@ public partial class XmlDocFormatterTests
 {
     /// <summary>
     /// Verifies that with <see cref="XmlDocFormatOptions.PreserveXmlTagAttributes" /> enabled a tag authored
-    /// across multiple lines is preserved verbatim — its line breaks and alignment whitespace are kept, with
+    /// across multiple lines is preserved verbatim - its line breaks and alignment whitespace are kept, with
     /// surrounding prose still flowing into the tag's first line and continuing from its last line.
     /// </summary>
     [TestMethod]
@@ -35,7 +35,7 @@ public partial class XmlDocFormatterTests
 
     /// <summary>
     /// Verifies that with the default <see cref="XmlDocFormatOptions.PreserveXmlTagAttributes" /> (disabled) a
-    /// multi-line tag is reflowed onto a single line — the contrast case.
+    /// multi-line tag is reflowed onto a single line - the contrast case.
     /// </summary>
     [TestMethod]
     public void Format_WhenPreserveXmlTagAttributesFalse_ShouldReflowMultiLineTagToSingleLine()
@@ -79,7 +79,7 @@ public partial class XmlDocFormatterTests
 
     /// <summary>
     /// Verifies that with <see cref="XmlDocFormatOptions.PreserveCrefText" /> disabled the whitespace inside an
-    /// attribute value collapses to a single space when the tag is reflowed — the contrast case.
+    /// attribute value collapses to a single space when the tag is reflowed - the contrast case.
     /// </summary>
     [TestMethod]
     public void Format_WhenPreserveCrefTextFalse_ShouldCollapseWhitespaceInsideCref()

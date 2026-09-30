@@ -1,12 +1,12 @@
 ---
-title: Bodu.Text.Toml — Getting started
+title: Bodu.Text.Toml - Getting started
 ---
 
 # Getting started
 
 ## Install
 
-Add the package. Its one library dependency, the shared **Bodu.Text.Serialization** package (the attribute family, naming policies, and callback interfaces), is restored transitively — there is nothing else to add.
+Add the package. Its one library dependency, the shared **Bodu.Text.Serialization** package (the attribute family, naming policies, and callback interfaces), is restored transitively - there is nothing else to add.
 
 ```shell
 dotnet add package Bodu.Text.Toml
@@ -69,7 +69,7 @@ string text = TomlSerializer.Serialize(telemetry);
 // Samples = 4096
 ```
 
-`DateTimeOffset`, `DateTime` (`Unspecified`), `DateOnly`, and `TimeOnly` map one-to-one onto offset date-time, local date-time, local date, and local time. The full per-type catalogue, including the `decimal` and `byte[]` representation choices, is in the [type-mapping table](../../../guides/serialization/toml/using.md#pattern-2--know-the-type-mapping) and the [built-in converter catalog](../../../guides/serialization/toml/builtin-converters.md).
+`DateTimeOffset`, `DateTime` (`Unspecified`), `DateOnly`, and `TimeOnly` map one-to-one onto offset date-time, local date-time, local date, and local time. The full per-type catalogue, including the `decimal` and `byte[]` representation choices, is in the [type-mapping table](../../../guides/serialization/toml/using.md#pattern-2---know-the-type-mapping) and the [built-in converter catalog](../../../guides/serialization/toml/builtin-converters.md).
 
 ## Rename members
 
@@ -102,7 +102,7 @@ byte[] back = node.ToUtf8Bytes();
 
 ## Read a document without a model
 
-For inspection only, the **read-only DOM** is the lighter choice — a low-allocation view over the parsed buffer, walked through `RootElement`:
+For inspection only, the **read-only DOM** is the lighter choice - a low-allocation view over the parsed buffer, walked through `RootElement`:
 
 ```csharp
 using Bodu.Text.Toml.Document;
@@ -120,7 +120,7 @@ string host = server.GetProperty("host").GetString();   // "localhost"
 long   port = server.GetProperty("port").GetInt64();    // 8080
 ```
 
-`TomlDocument` is disposable — wrap it in `using` and copy out any values that must outlive it.
+`TomlDocument` is disposable - wrap it in `using` and copy out any values that must outlive it.
 
 ## Round-trip through a Stream
 
@@ -146,8 +146,8 @@ Synchronous `Stream` overloads are also provided.
 
 Failures split into two exception types, so you can tell *bad input* apart from *wrong type*:
 
-- A **malformed document** — input the grammar rejects — raises <xref:Bodu.Text.Toml.TomlFormatException>. Because TOML files are edited by hand, the exception carries the **line, column, and offset** of the failure.
-- A document that **parses but cannot bind** to your type — a type mismatch, a missing required member, a value the format cannot represent — raises <xref:Bodu.Text.Toml.TomlSerializationException>.
+- A **malformed document** - input the grammar rejects - raises <xref:Bodu.Text.Toml.TomlFormatException>. Because TOML files are edited by hand, the exception carries the **line, column, and offset** of the failure.
+- A document that **parses but cannot bind** to your type - a type mismatch, a missing required member, a value the format cannot represent - raises <xref:Bodu.Text.Toml.TomlSerializationException>.
 
 ```csharp
 try
@@ -166,8 +166,8 @@ catch (TomlSerializationException ex)
 
 ## Where to go next
 
-- **[Bodu.Text.Toml introduction](index.md)** — what is specific to TOML: the rich value model, spec versions, positioned diagnostics.
-- **[Core concepts](concepts.md)** — the TOML vocabulary, including the full value-mapping table.
-- **[Using TOML](../../../guides/serialization/toml/using.md)** — type mapping, spec versions, the DOMs, and streams.
-- **[Writing converters](../../../guides/serialization/toml/converters.md)** — custom shapes with `TomlConverter<T>`.
-- **[Text & Serialization topic overview](../../topics/text-and-serialization.md)** — where the serializers sit among the codecs and document formats.
+- **[Bodu.Text.Toml introduction](index.md)** - what is specific to TOML: the rich value model, spec versions, positioned diagnostics.
+- **[Core concepts](concepts.md)** - the TOML vocabulary, including the full value-mapping table.
+- **[Using TOML](../../../guides/serialization/toml/using.md)** - type mapping, spec versions, the DOMs, and streams.
+- **[Writing converters](../../../guides/serialization/toml/converters.md)** - custom shapes with `TomlConverter<T>`.
+- **[Text & Serialization topic overview](../../topics/text-and-serialization.md)** - where the serializers sit among the codecs and document formats.

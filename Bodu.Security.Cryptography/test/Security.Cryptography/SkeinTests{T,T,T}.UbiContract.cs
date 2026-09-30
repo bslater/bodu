@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 /// <c>GetInitialChainingValueWords</c> entry point. The existing
 /// <c>SkeinTests.InitialChainingValues.cs</c> verifies that the IV matches the Skein 1.3
 /// Appendix B constants for the unkeyed configurations; this file pins down the surrounding
-/// contract — caching, defensive copies, key-driven invalidation, and disposed-state
+/// contract - caching, defensive copies, key-driven invalidation, and disposed-state
 /// behaviour. Together they give the UBI compression path direct, parallel-pipeline-independent
 /// regression coverage.
 /// </summary>
@@ -19,7 +19,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
 {
     /// <summary>
     /// Verifies that two consecutive calls to <c>GetInitialChainingValueWords</c> return arrays of
-    /// identical content — the IV is cached so repeated reads do not re-execute the CFG UBI phase
+    /// identical content - the IV is cached so repeated reads do not re-execute the CFG UBI phase
     /// and do not drift across calls.
     /// </summary>
     [TestMethod]
@@ -35,7 +35,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     }
 
     /// <summary>
-    /// Verifies that <c>GetInitialChainingValueWords</c> returns a defensive copy — mutating the
+    /// Verifies that <c>GetInitialChainingValueWords</c> returns a defensive copy - mutating the
     /// returned array does not corrupt the cached state observed by a later read.
     /// </summary>
     [TestMethod]
@@ -54,7 +54,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     }
 
     /// <summary>
-    /// Verifies that the chaining-value word count matches one of the Skein state sizes — 4 ulongs
+    /// Verifies that the chaining-value word count matches one of the Skein state sizes - 4 ulongs
     /// for Skein-256 (32-byte state), 8 for Skein-512 (64-byte state), or 16 for Skein-1024
     /// (128-byte state). The framework's <see cref="HashAlgorithm.InputBlockSize" /> is not
     /// overridden by Skein, so the size is asserted as membership in the Skein-permitted set
@@ -75,7 +75,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
 
     /// <summary>
     /// Verifies that switching from the empty-key (plain hash) profile to a non-empty key produces
-    /// a different initial chaining value — the KEY UBI phase folds the key into the state before
+    /// a different initial chaining value - the KEY UBI phase folds the key into the state before
     /// the CFG phase, so the resulting IV must diverge from the unkeyed default.
     /// </summary>
     [TestMethod]
@@ -94,7 +94,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     }
 
     /// <summary>
-    /// Verifies that re-assigning the same key value yields the same chaining value words — the
+    /// Verifies that re-assigning the same key value yields the same chaining value words - the
     /// KEY UBI phase is deterministic and the cache invalidation on Key set re-runs the same
     /// derivation rather than introducing entropy.
     /// </summary>

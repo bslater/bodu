@@ -4,7 +4,7 @@ title: TOML guides
 
 # TOML guides
 
-Recipe-style walk-throughs for **Bodu.Text.Toml** (<xref:Bodu.Text.Toml.TomlSerializer>). Each guide is written against the real TOML surface. The sibling libraries [Bodu.Text.Bencode](../bencode/index.md) and [Bodu.Text.Yaml](../yaml/index.md) share the same architecture, so a pattern learned here transfers by swapping the prefix — see the [serializer guides hub](../index.md).
+Recipe-style walk-throughs for **Bodu.Text.Toml** (<xref:Bodu.Text.Toml.TomlSerializer>). Each guide is written against the real TOML surface. The sibling libraries [Bodu.Text.Bencode](../bencode/index.md) and [Bodu.Text.Yaml](../yaml/index.md) share the same architecture, so a pattern learned here transfers by swapping the prefix - see the [serializer guides hub](../index.md).
 
 New to the library? Start with the [introduction](../../../docs/serialization/toml/index.md) for what is specific to TOML, then work through the guides below.
 
@@ -17,7 +17,7 @@ New to the library? Start with the [introduction](../../../docs/serialization/to
 
 <div class="bodu-card">
   <h3><a href="attributes.md">Mapping attributes</a></h3>
-  <p>The full shared <code>Bodu.Text.Serialization</code> attribute family — rename, ignore, include, order, require, extension data, constructor selection, and the precedence ladder.</p>
+  <p>The full shared <code>Bodu.Text.Serialization</code> attribute family - rename, ignore, include, order, require, extension data, constructor selection, and the precedence ladder.</p>
 </div>
 
 <div class="bodu-card">
@@ -27,25 +27,25 @@ New to the library? Start with the [introduction](../../../docs/serialization/to
 
 <div class="bodu-card">
   <h3><a href="polymorphic-converters.md">Polymorphic converters</a></h3>
-  <p><code>TomlConverterFactory</code> for open-generic families and tagged (discriminated) hierarchies — reading and writing a discriminator.</p>
+  <p><code>TomlConverterFactory</code> for open-generic families and tagged (discriminated) hierarchies - reading and writing a discriminator.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="callbacks.md">Serialization callbacks</a></h3>
-  <p>The four shared <code>IOnSerializing</code> / <code>IOnSerialized</code> / <code>IOnDeserializing</code> / <code>IOnDeserialized</code> lifecycle hooks — defaults that survive omitted keys, post-deserialization validation, and derived state on write.</p>
+  <p>The four shared <code>IOnSerializing</code> / <code>IOnSerialized</code> / <code>IOnDeserializing</code> / <code>IOnDeserialized</code> lifecycle hooks - defaults that survive omitted keys, post-deserialization validation, and derived state on write.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="builtin-converters.md">Built-in converter catalog</a></h3>
-  <p>Every type the serializer handles without a user converter — its wire form and what the read path accepts.</p>
+  <p>Every type the serializer handles without a user converter - its wire form and what the read path accepts.</p>
 </div>
 
 </div>
 
 ## Where to go next
 
-- [Runnable samples](../../../samples/toml.md) — offline sample projects under `samples/Text.Toml/` covering the serializer surface, both DOMs, the token layer, and streaming reads.
-- [Bodu serializer guides](../index.md) — the family guide hub across all three libraries.
-- [Bodu.Text.Toml introduction](../../../docs/serialization/toml/index.md) and [core concepts](../../../docs/serialization/toml/concepts.md) — the format-specific shape and vocabulary.
-- [Text & Serialization guides](../../topics/text-and-serialization.md) — how these guides sit alongside the encoding and format guides.
-- API reference — <xref:Bodu.Text.Toml>.
+- [Runnable samples](../../../samples/toml.md) - offline sample projects under `samples/Text.Toml/` covering the serializer surface, both DOMs, the token layer, and streaming reads.
+- [Bodu serializer guides](../index.md) - the family guide hub across all three libraries.
+- [Bodu.Text.Toml introduction](../../../docs/serialization/toml/index.md) and [core concepts](../../../docs/serialization/toml/concepts.md) - the format-specific shape and vocabulary.
+- [Text & Serialization guides](../../topics/text-and-serialization.md) - how these guides sit alongside the encoding and format guides.
+- API reference - <xref:Bodu.Text.Toml>.

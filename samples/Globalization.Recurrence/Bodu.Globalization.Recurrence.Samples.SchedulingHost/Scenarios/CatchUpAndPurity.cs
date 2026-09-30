@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Recurrence.Samples.SchedulingHost.Scenarios;
 
 /// <summary>
 /// Demonstrates the consequence of the package's purity contract: because nothing here reads a wall
-/// clock or resolves a time zone, the host owns time — which is what makes a missed-run catch-up
+/// clock or resolves a time zone, the host owns time - which is what makes a missed-run catch-up
 /// loop testable, and what fixes the meaning of an occurrence across a daylight-saving transition.
 /// </summary>
 public static class CatchUpAndPurity

@@ -4,7 +4,7 @@ title: Formatting and parsing Fraction<T>
 
 # Formatting and parsing `Fraction<T>`
 
-Exact rational values only round-trip when their textual form preserves every bit of the canonical representation. `Fraction<T>` ships three first-class text forms — the improper ratio `7/3`, the mixed number `2 1/3`, and the single-codepoint Unicode glyph `2⅓` — plus a percentage form. Every output form is also an accepted input form, so any `ToString` result feeds back through `Parse` to the same value.
+Exact rational values only round-trip when their textual form preserves every bit of the canonical representation. `Fraction<T>` ships three first-class text forms - the improper ratio `7/3`, the mixed number `2 1/3`, and the single-codepoint Unicode glyph `2⅓` - plus a percentage form. Every output form is also an accepted input form, so any `ToString` result feeds back through `Parse` to the same value.
 
 This guide covers what each specifier renders, what the parser accepts, and how culture and span surfaces interact with both. For the rest of the type, start with [Working with `Fraction<T>`](fraction.md).
 
@@ -17,7 +17,7 @@ This guide covers what each specifier renders, what the parser accepts, and how 
 | `U` | Unicode vulgar fraction with mixed-number fallback | `2⅓` |
 | `P` | percentage (ratio form) | `700/3%` |
 
-Specifiers are case-insensitive — `Format` uppercases the first character — and the format string `null`, `""`, or `"G"` all select the general form. Any other specifier throws <xref:System.FormatException>.
+Specifiers are case-insensitive - `Format` uppercases the first character - and the format string `null`, `""`, or `"G"` all select the general form. Any other specifier throws <xref:System.FormatException>.
 
 ## Improper-ratio form (default)
 
@@ -26,8 +26,8 @@ Specifiers are case-insensitive — `Format` uppercases the first character — 
 <!-- compile -->
 ```csharp
 Fraction<int>.Create(3, 4).ToString();    // "3/4"
-Fraction<int>.Create(-7, 4).ToString();   // "-7/4"  — sign rides on the numerator
-Fraction<int>.Create(6, 2).ToString();    // "3"     — canonical denominator is one
+Fraction<int>.Create(-7, 4).ToString();   // "-7/4"  - sign rides on the numerator
+Fraction<int>.Create(6, 2).ToString();    // "3"     - canonical denominator is one
 Fraction<int>.Zero.ToString();            // "0"
 ```
 
@@ -40,10 +40,10 @@ The general form is the round-trip wire shape: `JsonSerializer.Serialize` (see b
 <!-- compile -->
 ```csharp
 Fraction<int>.Create(7, 4).ToString("M");    // "1 3/4"
-Fraction<int>.Create(-7, 4).ToString("M");   // "-1 3/4"  — sign on the whole part
+Fraction<int>.Create(-7, 4).ToString("M");   // "-1 3/4"  - sign on the whole part
 Fraction<int>.Create(11, 4).ToString("M");   // "2 3/4"
-Fraction<int>.Create(3, 4).ToString("M");    // "3/4"     — proper fraction: no whole part
-Fraction<int>.Create(4, 1).ToString("M");    // "4"       — whole number: no fractional part
+Fraction<int>.Create(3, 4).ToString("M");    // "3/4"     - proper fraction: no whole part
+Fraction<int>.Create(4, 1).ToString("M");    // "4"       - whole number: no fractional part
 Fraction<int>.Zero.ToString("M");            // "0"
 ```
 
@@ -68,17 +68,17 @@ When the canonical proper-fraction remainder matches one of these pairs, the res
 ```csharp
 Fraction<int>.Create(1, 2).ToString("U");    // "½"
 Fraction<int>.Create(3, 4).ToString("U");    // "¾"
-Fraction<int>.Create(7, 4).ToString("U");    // "1¾"     — whole part + glyph, no separator
+Fraction<int>.Create(7, 4).ToString("U");    // "1¾"     - whole part + glyph, no separator
 Fraction<int>.Create(-3, 4).ToString("U");   // "-¾"
 Fraction<int>.Create(5, 2).ToString("U");    // "2½"
-Fraction<int>.Create(3, 1).ToString("U");    // "3"      — whole number
-Fraction<int>.Create(5, 9).ToString("U");    // "5/9"    — no 5/9 glyph: falls back to mixed
+Fraction<int>.Create(3, 1).ToString("U");    // "3"      - whole number
+Fraction<int>.Create(5, 9).ToString("U");    // "5/9"    - no 5/9 glyph: falls back to mixed
 ```
 
 The convenience method <xref:Bodu.Numerics.Fraction`1>.`ToUnicodeString(provider)` is an alias for `ToString("U", provider)`.
 
 > [!NOTE]
-> A glyph is emitted only when the proper-fraction remainder has denominator at most 16 *and* matches one of the 18 shipped pairs. `5/9` has no glyph and falls back to mixed form even though its denominator is under 16; the table — not the denominator alone — is the gate.
+> A glyph is emitted only when the proper-fraction remainder has denominator at most 16 *and* matches one of the 18 shipped pairs. `5/9` has no glyph and falls back to mixed form even though its denominator is under 16; the table - not the denominator alone - is the gate.
 
 ## Percentage form
 
@@ -86,14 +86,14 @@ The convenience method <xref:Bodu.Numerics.Fraction`1>.`ToUnicodeString(provider
 
 <!-- compile -->
 ```csharp
-Fraction<int>.Create(3, 4).ToString("P");    // "75%"     — 300/4 reduces to 75/1
-Fraction<int>.Create(7, 4).ToString("P");    // "175%"    — 700/4 reduces to 175/1
-Fraction<int>.Create(7, 3).ToString("P");    // "700/3%"  — 700/3 already in lowest terms
+Fraction<int>.Create(3, 4).ToString("P");    // "75%"     - 300/4 reduces to 75/1
+Fraction<int>.Create(7, 4).ToString("P");    // "175%"    - 700/4 reduces to 175/1
+Fraction<int>.Create(7, 3).ToString("P");    // "700/3%"  - 700/3 already in lowest terms
 Fraction<int>.Create(1, 3).ToString("P");    // "100/3%"
 Fraction<int>.Zero.ToString("P");            // "0%"
 ```
 
-The convenience method <xref:Bodu.Numerics.Fraction`1>.`ToPercentString(provider)` is an alias for `ToString("P", provider)`. The parser accepts the same form on input — a trailing `%` divides the parsed denominator by 100 — so `"75%"` round-trips to `3/4` and `"100/3%"` to `1/3`.
+The convenience method <xref:Bodu.Numerics.Fraction`1>.`ToPercentString(provider)` is an alias for `ToString("P", provider)`. The parser accepts the same form on input - a trailing `%` divides the parsed denominator by 100 - so `"75%"` round-trips to `3/4` and `"100/3%"` to `1/3`.
 
 ## Parsing
 
@@ -108,26 +108,26 @@ The convenience method <xref:Bodu.Numerics.Fraction`1>.`ToPercentString(provider
 | Whole + glyph | `"2⅜"`, `"-1¾"` | `19/8`, `-7/4` |
 | Percentage | `"75%"`, `"100/3%"` | `3/4`, `1/3` |
 
-Parsing is lenient about whitespace — leading and trailing whitespace is trimmed, and the whole / fractional parts of a mixed number are trimmed individually. A `+` or `-` sign at the start applies to the entire result; for mixed numbers the sign therefore rides on the whole + fraction sum, not the whole part alone. The trailing `%` divides the parsed denominator by 100 in lowest terms.
+Parsing is lenient about whitespace - leading and trailing whitespace is trimmed, and the whole / fractional parts of a mixed number are trimmed individually. A `+` or `-` sign at the start applies to the entire result; for mixed numbers the sign therefore rides on the whole + fraction sum, not the whole part alone. The trailing `%` divides the parsed denominator by 100 in lowest terms.
 
 <!-- compile -->
 ```csharp
 Fraction<int>.Parse("3/4");          // 3/4
-Fraction<int>.Parse("  2 1/3  ");    // 7/3       — whitespace trimmed
-Fraction<int>.Parse("-2 1/3");       // -7/3      — sign covers whole + fraction
+Fraction<int>.Parse("  2 1/3  ");    // 7/3       - whitespace trimmed
+Fraction<int>.Parse("-2 1/3");       // -7/3      - sign covers whole + fraction
 Fraction<int>.Parse("⅗");            // 3/5
 Fraction<int>.Parse("2⅜");           // 19/8
 Fraction<int>.Parse("75%");          // 3/4
 Fraction<int>.TryParse("nope", out var _);   // false
 ```
 
-The numeric components are read with `NumberStyles.None`, so scientific notation and group separators are rejected; the parser is intentionally strict about the shape so the wire format remains unambiguous. A `0` denominator is rejected (`TryParse` returns `false`; `Parse` throws <xref:System.FormatException>), as is any input whose canonical form does not fit in the backing type `T` — overflow is reported through `false` from `TryParse` and through <xref:System.FormatException> from `Parse`.
+The numeric components are read with `NumberStyles.None`, so scientific notation and group separators are rejected; the parser is intentionally strict about the shape so the wire format remains unambiguous. A `0` denominator is rejected (`TryParse` returns `false`; `Parse` throws <xref:System.FormatException>), as is any input whose canonical form does not fit in the backing type `T` - overflow is reported through `false` from `TryParse` and through <xref:System.FormatException> from `Parse`.
 
 `Fraction<T>` implements <xref:System.IParsable`1> and <xref:System.ISpanParsable`1>, so the same call sites work for `string` and `ReadOnlySpan<char>` inputs.
 
 ## Culture handling
 
-`Fraction<T>` text is digit-slash-digit by construction, so most cultures behave identically — there is no decimal separator, group separator, or percent sign placement to vary. The `IFormatProvider` argument is forwarded to `BigInteger.ToString(provider)` and `BigInteger.TryParse(text, NumberStyles.None, provider, ...)` for the numeric components, so culture-specific digit shapes are respected (e.g. Arabic-Indic digits when the culture's `NumberFormatInfo` calls for them), but the structural characters — `/`, the mixed-number space, glyph codepoints, and the trailing `%` — are invariant.
+`Fraction<T>` text is digit-slash-digit by construction, so most cultures behave identically - there is no decimal separator, group separator, or percent sign placement to vary. The `IFormatProvider` argument is forwarded to `BigInteger.ToString(provider)` and `BigInteger.TryParse(text, NumberStyles.None, provider, ...)` for the numeric components, so culture-specific digit shapes are respected (e.g. Arabic-Indic digits when the culture's `NumberFormatInfo` calls for them), but the structural characters - `/`, the mixed-number space, glyph codepoints, and the trailing `%` - are invariant.
 
 The JSON converter passes <xref:System.Globalization.CultureInfo>.`InvariantCulture` to both `ToString` and `Parse` so the wire form remains stable regardless of the ambient culture. For application-level formatting where you want the structural form to be the same on every machine, prefer passing `CultureInfo.InvariantCulture` explicitly:
 
@@ -136,16 +136,16 @@ var text = value.ToString("M", CultureInfo.InvariantCulture);
 var back = Fraction<int>.Parse(text, CultureInfo.InvariantCulture);
 ```
 
-`Parse(string)` without a provider is equivalent to `Parse(string, null)`, which delegates to `BigInteger.TryParse` with a `null` provider — that uses the current culture, matching the BCL convention.
+`Parse(string)` without a provider is equivalent to `Parse(string, null)`, which delegates to `BigInteger.TryParse` with a `null` provider - that uses the current culture, matching the BCL convention.
 
 ## Span and UTF-8 surfaces
 
 `Fraction<T>` implements the span and UTF-8 formatting / parsing interfaces so it slots into low-allocation pipelines:
 
-- <xref:System.ISpanFormattable>.`TryFormat(Span<char>, out int, ReadOnlySpan<char>, IFormatProvider?)` — writes the formatted text into a char buffer; returns `false` when the destination is too small.
-- <xref:System.IUtf8SpanFormattable>.`TryFormat(Span<byte>, out int, ReadOnlySpan<char>, IFormatProvider?)` — writes the same text UTF-8 encoded into a byte buffer.
-- <xref:System.ISpanParsable`1>.`TryParse(ReadOnlySpan<char>, IFormatProvider?, out Fraction<T>)` — parses without allocating a `string`.
-- <xref:System.IUtf8SpanParsable`1>.`Parse(ReadOnlySpan<byte>, IFormatProvider?)` and `TryParse(...)` — accept UTF-8 input.
+- <xref:System.ISpanFormattable>.`TryFormat(Span<char>, out int, ReadOnlySpan<char>, IFormatProvider?)` - writes the formatted text into a char buffer; returns `false` when the destination is too small.
+- <xref:System.IUtf8SpanFormattable>.`TryFormat(Span<byte>, out int, ReadOnlySpan<char>, IFormatProvider?)` - writes the same text UTF-8 encoded into a byte buffer.
+- <xref:System.ISpanParsable`1>.`TryParse(ReadOnlySpan<char>, IFormatProvider?, out Fraction<T>)` - parses without allocating a `string`.
+- <xref:System.IUtf8SpanParsable`1>.`Parse(ReadOnlySpan<byte>, IFormatProvider?)` and `TryParse(...)` - accept UTF-8 input.
 
 ```csharp
 Span<char> buffer = stackalloc char[16];
@@ -178,8 +178,8 @@ The compact single-string form documented above (`"3/4"`) is the wire shape of t
 
 ## See also
 
-- [Working with `Fraction<T>`](fraction.md) — construction, arithmetic, continued fractions, approximation.
-- [Bodu.Numerics core concepts](../../docs/numerics/concepts.md) — canonical form, mixed-number, Unicode vulgar fraction.
-- <xref:Bodu.Numerics.Fraction`1> — API reference.
-- <xref:Bodu.Numerics.Serialization.Json.FractionJsonConverter`1> — JSON converter reference.
-- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.
+- [Working with `Fraction<T>`](fraction.md) - construction, arithmetic, continued fractions, approximation.
+- [Bodu.Numerics core concepts](../../docs/numerics/concepts.md) - canonical form, mixed-number, Unicode vulgar fraction.
+- <xref:Bodu.Numerics.Fraction`1> - API reference.
+- <xref:Bodu.Numerics.Serialization.Json.FractionJsonConverter`1> - JSON converter reference.
+- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** - every guide in this topic, across Bodu.Numerics and Bodu.Financial.

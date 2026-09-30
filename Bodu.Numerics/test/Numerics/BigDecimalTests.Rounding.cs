@@ -45,7 +45,7 @@ public partial class BigDecimalTests
 
     /// <summary>
     /// Verifies that an undefined <see cref="MidpointRounding" /> value throws
-    /// <see cref="ArgumentOutOfRangeException" /> for every input — including a value whose scale already satisfies
+    /// <see cref="ArgumentOutOfRangeException" /> for every input - including a value whose scale already satisfies
     /// the target, where the previous early return skipped mode validation entirely.
     /// </summary>
     [TestMethod]

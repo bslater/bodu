@@ -12,7 +12,7 @@ namespace Bodu.Collections.Concurrent.Samples.ThreadSafeCollections.Scenarios;
 
 /// <summary>
 /// Demonstrates <see cref="ConcurrentCircularBuffer{T}" />: a lock-free, fixed-capacity FIFO ring, and the single
-/// decision that separates its two personalities — what a write does when the ring is already full.
+/// decision that separates its two personalities - what a write does when the ring is already full.
 /// </summary>
 /// <remarks>
 /// Both personalities run on one thread here. The overflow rule is a property of the buffer, not of the threading,

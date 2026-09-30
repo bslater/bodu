@@ -84,7 +84,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
             yield return new object[] { variant, "Alternating 0xAA / 0x55", Enumerable.Range(0, blockSize).Select(i => (byte)(i % 2 == 0 ? 0xAA : 0x55)).ToArray() };
             yield return new object[] { variant, "Alternating 0xFF / 0x00", Enumerable.Range(0, blockSize).Select(i => (byte)(i % 2 == 0 ? 0xFF : 0x00)).ToArray() };
             yield return new object[] { variant, "Alternating 0xF0 / 0x0F", Enumerable.Range(0, blockSize).Select(i => (byte)(i % 2 == 0 ? 0xF0 : 0x0F)).ToArray() };
-            yield return new object[] { variant, "Sawtooth 0x00–0x0F", Enumerable.Range(0, blockSize).Select(i => (byte)(i % 16)).ToArray() };
+            yield return new object[] { variant, "Sawtooth 0x00-0x0F", Enumerable.Range(0, blockSize).Select(i => (byte)(i % 16)).ToArray() };
             yield return new object[] { variant, "Mirrored Half Asc/Desc", Enumerable.Range(0, blockSize).Select(i => (byte)(i < blockSize / 2 ? i : blockSize - i - 1)).ToArray() };
         }
     }

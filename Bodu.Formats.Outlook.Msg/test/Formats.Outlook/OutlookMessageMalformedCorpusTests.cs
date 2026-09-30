@@ -12,13 +12,13 @@ namespace Bodu.Formats.Outlook;
 /// <summary>
 /// Corruption sweeps over copies of the real reference corpus, driven through the full message surface: whatever
 /// bytes are flipped or truncated, the reader must either decode clean or fail with the
-/// <see cref="OutlookFormatException" /> family — never another exception type — at every validation level.
+/// <see cref="OutlookFormatException" /> family - never another exception type - at every validation level.
 /// </summary>
 /// <remarks>
 /// This is the <c>.msg</c> counterpart of the PST reader's <c>OutlookMailStoreMalformedCorpusTests</c>. The
 /// container beneath the reader has its own hardening suite; this sweep proves that container failures surfacing
-/// after <see cref="OutlookMessage.Open(Stream, OutlookMessageReaderOptions, bool)" /> returns — a broken sector
-/// chain met while reading a recipient, an attachment payload, or a named-property stream — are translated into the
+/// after <see cref="OutlookMessage.Open(Stream, OutlookMessageReaderOptions, bool)" /> returns - a broken sector
+/// chain met while reading a recipient, an attachment payload, or a named-property stream - are translated into the
 /// reader's documented exception contract rather than escaping as the container's own types.
 /// </remarks>
 [TestClass]

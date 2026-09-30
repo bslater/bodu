@@ -1,6 +1,6 @@
 # Bodu.Text.Formats.Samples.ConfigFiles
 
-The two config-file formats — **`Bodu.Text.Ini`** and **`Bodu.Text.DotEnv`** (referenced
+The two config-file formats - **`Bodu.Text.Ini`** and **`Bodu.Text.DotEnv`** (referenced
 through the `Bodu.Text.Formats` umbrella). Everything runs offline against the committed
 `Data/app.ini` and `Data/env.sample`.
 
@@ -8,7 +8,7 @@ through the `Bodu.Text.Formats` umbrella). Everything runs offline against the c
 dotnet run --project samples/Text.Formats/Bodu.Text.Formats.Samples.ConfigFiles
 ```
 
-## Scenario 1 — IniReadTypedValues
+## Scenario 1 - IniReadTypedValues
 
 **Intent.** Show both INI read layers and the dialect decisions between them: the read-only
 `IniDocument` for walking a file whose shape you discover, and `IniSerializer` for binding a
@@ -16,7 +16,7 @@ file whose shape you know.
 
 **What it does.** Reads a key declared before any `[section]` header (hoisted onto the root),
 lists the named sections, reaches into `[server]` by element access, then binds the whole file
-onto a typed `AppConfig` — a POCO for `[server]` with `int` conversion, and a
+onto a typed `AppConfig` - a POCO for `[server]` with `int` conversion, and a
 `Dictionary<string, string>` for `[logging]`.
 
 **What to expect.**
@@ -47,9 +47,9 @@ onto a typed `AppConfig` — a POCO for `[server]` with `int` conversion, and a
 **APIs demonstrated.** `IniDocument.Parse`, `IniElement.GetProperty` / `EnumerateObject` /
 `ValueKind`, `IniSerializer.Deserialize<T>`, `IniSerializerOptions.PropertyNamingPolicy`.
 
-## Scenario 2 — IniMutateAndFormat
+## Scenario 2 - IniMutateAndFormat
 
-**Intent.** Show the edit loop on the mutable, trivia-bearing `IniNode` DOM — the workflow for
+**Intent.** Show the edit loop on the mutable, trivia-bearing `IniNode` DOM - the workflow for
 tooling that rewrites a config file a human still owns.
 
 **What it does.** Changes `port` in place, adds `retention_days` to an existing section,
@@ -98,13 +98,13 @@ counts the comment lines that survived.
 **APIs demonstrated.** `IniNode.Parse`, `AsObject` / `AsValue`, `IniValue.LeadingComments`,
 `IniNode.ToUtf8Bytes`.
 
-## Scenario 3 — DotEnvBasics
+## Scenario 3 - DotEnvBasics
 
 **Intent.** Show what a `.env` reader must decide, given that the format looks like shell but
 is not shell.
 
 **What it does.** Reads an exported key, a double-quoted value, a single-quoted one, a value
-followed by an inline comment, and an empty value — then binds the file onto a typed settings
+followed by an inline comment, and an empty value - then binds the file onto a typed settings
 class with the `Web` (SCREAMING_SNAKE_CASE) defaults.
 
 **What to expect.**
@@ -139,14 +139,14 @@ class with the `Web` (SCREAMING_SNAKE_CASE) defaults.
 `TryGetProperty` / `EnumerateObject`, `DotEnvSerializer.Deserialize<T>`,
 `DotEnvSerializerDefaults.Web`.
 
-## Scenario 4 — DotEnvStreamingReader
+## Scenario 4 - DotEnvStreamingReader
 
 **Intent.** Show the forward-only reader in its natural role: saying something *about* a file
 rather than reading values *out of* it.
 
 **What it does.** Streams the file one token at a time, holding each key until its value token
 arrives, and runs a miniature lint pass flagging keys whose names suggest embedded
-credentials — reporting the source line for each entry.
+credentials - reporting the source line for each entry.
 
 **What to expect.**
 
@@ -192,5 +192,5 @@ Bodu.Text.Formats.Samples.ConfigFiles/
 
 ## Related
 
-- `Bodu.Text.Formats.Samples.DelimitedData` — the delimited half of the umbrella package.
+- `Bodu.Text.Formats.Samples.DelimitedData` - the delimited half of the umbrella package.
 - Guides: `docs/guides/text-formats/`.

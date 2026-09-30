@@ -12,7 +12,7 @@
   <NotableDates>
 
     <!--
-      NAIDOC Week — Australia's week celebrating the history, culture, and achievements of Aboriginal and Torres
+      NAIDOC Week - Australia's week celebrating the history, culture, and achievements of Aboriginal and Torres
       Strait Islander peoples. Strategy: DayOfWeekInMonth (the first Sunday in July) with durationDays="7" spanning
       the start Sunday through the following Saturday. Scoped to territory AU; carried here under rule id "default"
       as a shared multi-day definition for the AU pack to import and re-scope.
@@ -22,7 +22,7 @@
     </NotableDate>
 
     <!--
-      World Space Week — the UN-declared week marking the contributions of space science and technology. Strategy:
+      World Space Week - the UN-declared week marking the contributions of space science and technology. Strategy:
       Fixed start date (4 October, the 1957 launch of Sputnik 1) with durationDays="7" spanning 4-10 October.
       Bounded fromYear="1999", the year the observance was proclaimed.
     -->

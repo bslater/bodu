@@ -16,8 +16,8 @@ namespace Bodu.CodeStyle.XmlDocumentation.Configuration;
 /// </summary>
 /// <remarks>
 /// This is a minimal, allocation-light recursive-descent parser that supports the JSON grammar (objects, arrays,
-/// strings with escapes, numbers, <c>true</c>/<c>false</c>/<c>null</c>). It exists so the configuration reader — and
-/// therefore the analyzer package — does not depend on <c>System.Text.Json</c>, which is not guaranteed to be present
+/// strings with escapes, numbers, <c>true</c>/<c>false</c>/<c>null</c>). It exists so the configuration reader - and
+/// therefore the analyzer package - does not depend on <c>System.Text.Json</c>, which is not guaranteed to be present
 /// in every analyzer host. Malformed input throws <see cref="FormatException" />.
 /// </remarks>
 internal static class ConfigJsonParser

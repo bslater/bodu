@@ -1,7 +1,7 @@
 # Reference PST fixtures (seed corpus)
 
 These binary fixtures are third-party PST files acquired ahead of the
-`Bodu.IO.Pst` implementation — they resolve the fixture-acquisition risk
+`Bodu.IO.Pst` implementation - they resolve the fixture-acquisition risk
 (R2) recorded in
 [`../../../docs/pst-container-exploration.md`](../../../docs/pst-container-exploration.md)
 and anchor the future P0 spike. They are redistributed here under their
@@ -13,7 +13,7 @@ consumes them yet; the P0 spike wires them.
 
 | Folder / files | Source | License |
 |---|---|---|
-| `unicode/sample1.pst`, `unicode/test_unicode.pst`, `ansi/sample2.pst`, `ansi/test_ansi.pst` | Microsoft **pstsdk** (PST File Format SDK) test corpus — retrieved 2026-07-31 from the [`emk/pstsdk`](https://github.com/emk/pstsdk) mirror of the original `pstsdk.codeplex.com` SVN, `test/` | Apache-2.0 — Copyright Microsoft / Terry Mahaffey. The mirror carries no license file; pstsdk was distributed under the Apache License 2.0 on CodePlex, which is the basis for redistribution here. |
+| `unicode/sample1.pst`, `unicode/test_unicode.pst`, `ansi/sample2.pst`, `ansi/test_ansi.pst` | Microsoft **pstsdk** (PST File Format SDK) test corpus - retrieved 2026-07-31 from the [`emk/pstsdk`](https://github.com/emk/pstsdk) mirror of the original `pstsdk.codeplex.com` SVN, `test/` | Apache-2.0 - Copyright Microsoft / Terry Mahaffey. The mirror carries no license file; pstsdk was distributed under the Apache License 2.0 on CodePlex, which is the basis for redistribution here. |
 
 ## File facts (verified on acquisition)
 
@@ -32,7 +32,7 @@ malformed-input sweeps) now that both formats are read.
 
 [`manifest.seed.json`](manifest.seed.json) records, per file, the header
 facts above plus a content listing produced by an **independent
-implementation** — `lspst` from libpst (`pst-utils`) — giving the P0
+implementation** - `lspst` from libpst (`pst-utils`) - giving the P0
 spike ready-made cross-implementation expectations (folder names,
 message counts, sender, subject).
 

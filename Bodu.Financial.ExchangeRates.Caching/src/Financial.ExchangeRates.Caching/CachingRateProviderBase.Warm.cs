@@ -37,13 +37,13 @@ public abstract partial class CachingRateProviderBase
     /// <para>
     /// Up to four pairs are fetched concurrently; the shipped origin providers already single-flight their downloads,
     /// so the bounded parallelism only overlaps fetches of <em>different</em> pairs. A pair whose fetch fails is logged
-    /// at <see cref="Microsoft.Extensions.Logging.LogLevel.Warning" /> and skipped — the remaining pairs still warm —
+    /// at <see cref="Microsoft.Extensions.Logging.LogLevel.Warning" /> and skipped - the remaining pairs still warm -
     /// and is excluded from the returned count. Cancellation is the one failure that is not swallowed: a cancelled
     /// <paramref name="cancellationToken" /> aborts the warm-up and propagates.
     /// </para>
     /// <para>
     /// Each pair goes through <see cref="GetRatesAsync" />, so a warmed window is recorded as covered exactly as a
-    /// user-triggered range fetch would be — including for windows the source returns no rows for — and later range
+    /// user-triggered range fetch would be - including for windows the source returns no rows for - and later range
     /// lookups of the window are cache hits until normal expiry.
     /// </para>
     /// </remarks>

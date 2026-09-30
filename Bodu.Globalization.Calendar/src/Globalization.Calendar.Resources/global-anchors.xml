@@ -17,7 +17,7 @@
     -->
 
     <!--
-      Lunar New Year — the first day of the first month of the Chinese lunisolar calendar (Spring Festival), the
+      Lunar New Year - the first day of the first month of the Chinese lunisolar calendar (Spring Festival), the
       anchor for East and Southeast Asian new-year observances. The Applicability calendar is ChineseLunisolar, so
       the Fixed month="1" day="1" denotes that calendar's first day projected onto the requested Gregorian year (it
       lands in late January or February). durationDays="15" spans the fifteen-day festival from the start date
@@ -29,7 +29,7 @@
     </NotableDate>
 
     <!--
-      Ramadan Start — the first day of Ramadan, the ninth month of the Islamic year and the anchor for the fasting
+      Ramadan Start - the first day of Ramadan, the ninth month of the Islamic year and the anchor for the fasting
       month. The Applicability calendar is Hijri (the tabular Islamic calendar), so Fixed month="9" day="1" is that
       calendar's date projected onto the Gregorian year. sweepCalendarYears="true" accounts for the ~354-day Hijri
       year drifting against the Gregorian one: in years where Ramadan falls near a Gregorian boundary the start can
@@ -41,7 +41,7 @@
     </NotableDate>
 
     <!--
-      Orthodox Easter — Pascha, supplied here as a stand-alone anchor for catalogues that offset from the Eastern
+      Orthodox Easter - Pascha, supplied here as a stand-alone anchor for catalogues that offset from the Eastern
       Easter. Strategy: Algorithm "orthodox-easter" (the Julian paschalion, computed on the Julian calendar and
       projected onto the civil Gregorian year). Bounded fromYear="1583" because the projection is defined only from
       the Gregorian reform onward.

@@ -13,7 +13,7 @@ namespace Bodu.Text.Filtering;
 public partial class TextFilterTests
 {
     /// <summary>
-    /// Verifies that a typical include/exclude set accepts the matching values and rejects the rest — the library's
+    /// Verifies that a typical include/exclude set accepts the matching values and rejects the rest - the library's
     /// primary happy path.
     /// </summary>
     [TestMethod]

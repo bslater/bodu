@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
-/// Behavioural tests for the read-only Bencode configuration source — flattening into the colon-delimited key
+/// Behavioural tests for the read-only Bencode configuration source - flattening into the colon-delimited key
 /// model, file and stream loading, and the read-only contract.
 /// </summary>
 [TestClass]

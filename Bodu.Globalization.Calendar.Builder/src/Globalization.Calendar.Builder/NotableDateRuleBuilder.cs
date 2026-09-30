@@ -16,7 +16,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A rule must declare exactly one calculation strategy — for example <see cref="Fixed(int, int, bool, bool)" />,
+/// A rule must declare exactly one calculation strategy - for example <see cref="Fixed(int, int, bool, bool)" />,
 /// <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOrdinal)" />,
 /// <see cref="WeekdayNearDate(int, int, DayOfWeek, WeekdayProximity)" />,
 /// <see cref="OffsetFromRule(string, int, string)" />, or <see cref="Algorithm(string)" />. Scope the rule to a

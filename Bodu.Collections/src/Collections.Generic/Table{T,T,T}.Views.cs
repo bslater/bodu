@@ -26,7 +26,7 @@ public sealed partial class Table<TRow, TColumn, TValue>
     /// </summary>
     /// <value>A snapshot of the distinct column keys, deduplicated by <see cref="ColumnComparer" />.</value>
     /// <remarks>
-    /// The backing store is row-major with no column index, so each access recomputes the set by walking every cell —
+    /// The backing store is row-major with no column index, so each access recomputes the set by walking every cell -
     /// an O(cells) operation returning a snapshot, unlike the live <see cref="RowKeys" />. Columns appear in row-major
     /// encounter order.
     /// </remarks>
@@ -231,7 +231,7 @@ public sealed partial class Table<TRow, TColumn, TValue>
 
         /// <inheritdoc />
         /// <remarks>
-        /// Counts the rows holding the column by scanning every row — an O(rows) operation per access.
+        /// Counts the rows holding the column by scanning every row - an O(rows) operation per access.
         /// </remarks>
         public int Count
         {
@@ -290,7 +290,7 @@ public sealed partial class Table<TRow, TColumn, TValue>
 
         /// <inheritdoc />
         /// <remarks>
-        /// Scans every row for the column — an O(rows) operation per full enumeration.
+        /// Scans every row for the column - an O(rows) operation per full enumeration.
         /// </remarks>
         public IEnumerator<KeyValuePair<TRow, TValue>> GetEnumerator()
         {

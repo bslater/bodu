@@ -13,11 +13,11 @@ namespace Bodu.Security.Cryptography;
 /// known-answer harness, the boundary-length and round-trip tests, and the disposal-state assertions
 /// shared by every cipher family in the suite.
 /// </summary>
-/// <typeparam name="TTest">The concrete test class — used to <c>new TTest()</c> from
+/// <typeparam name="TTest">The concrete test class - used to <c>new TTest()</c> from
 /// <see cref="DynamicDataAttribute" /> sources so static data-row generators can dispatch to instance
 /// overrides.</typeparam>
 /// <typeparam name="TCipher">The concrete <see cref="IBlockCipher" /> engine under test.</typeparam>
-/// <typeparam name="TVariant">The cipher's configuration enum — typically <c>SingleTestVariant</c>,
+/// <typeparam name="TVariant">The cipher's configuration enum - typically <c>SingleTestVariant</c>,
 /// <see cref="BlockCipherKeyVariant" />, or <see cref="TweakableBlockCipherVariant" />.</typeparam>
 /// <remarks>
 /// <para>
@@ -33,10 +33,10 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="GetKnownAnswers" /> returning the curated KAT vector list, and
 /// <see cref="CreateBlockCipherForAnswer" /> constructing a per-vector engine bound to that row's key and
 /// tweak. The base class supplies <see cref="GetBlockCipherVariants" /> from <see cref="Enum.GetValues(Type)" />
-/// — override only to deliberately exclude an enumeration member — and the default
+/// - override only to deliberately exclude an enumeration member - and the default
 /// <see cref="GetKnownAnswerTests" /> wires the two KAT hooks together via <see cref="AdaptKnownAnswers" />.
 /// Override <see cref="GetKnownAnswerTests" /> directly only when vectors are runtime-generated rather than
-/// sourced from a static <c>&lt;Cipher&gt;KnownAnswers</c> class — see <see cref="BlockCipherKnownAnswer" />
+/// sourced from a static <c>&lt;Cipher&gt;KnownAnswers</c> class - see <see cref="BlockCipherKnownAnswer" />
 /// for the full architecture overview.
 /// </para>
 /// </remarks>
@@ -77,7 +77,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// <remarks>
     /// This method drives variant-specific tests. Each variant may represent a change in output size, internal round configuration, or
     /// other block cipher-specific mode flags. The default implementation returns every member of <typeparamref name="TVariant" /> via
-    /// <see cref="Enum.GetValues(Type)" />, which is the right behaviour for every cipher family in the suite — override only when a
+    /// <see cref="Enum.GetValues(Type)" />, which is the right behaviour for every cipher family in the suite - override only when a
     /// cipher needs to deliberately exclude an enumeration member from its test matrix.
     /// </remarks>
     public virtual IEnumerable<TVariant> GetBlockCipherVariants() =>
@@ -188,7 +188,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// <returns>The KAT vectors for <paramref name="variant" />, or an empty list if none are published.</returns>
     /// <remarks>
     /// The default reads the vectors carried on the variant's <see cref="BlockCipherSpecification" /> via the inherited
-    /// <see cref="AlgorithmSpecification{TKat}.KnownAnswers" /> slot — the canonical source for cipher families with
+    /// <see cref="AlgorithmSpecification{TKat}.KnownAnswers" /> slot - the canonical source for cipher families with
     /// static published vectors (Skipjack, Blowfish, Camellia, Twofish, Threefish 256/512/1024, Serpent-128, AES, and
     /// so on). Override <see cref="GetKnownAnswerTests" /> directly only when the vectors are runtime-generated (for
     /// example the wide-block Serpent self-referential regression rows).
@@ -197,7 +197,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         GetSpecification(variant).KnownAnswers;
 
     /// <summary>
-    /// Constructs an <see cref="IBlockCipher" /> instance configured for a single KAT vector — applying its
+    /// Constructs an <see cref="IBlockCipher" /> instance configured for a single KAT vector - applying its
     /// <see cref="BlockCipherKnownAnswer.Key" /> and, for tweakable ciphers, its
     /// <see cref="BlockCipherKnownAnswer.Tweak" />. The default implementation throws and must be overridden when
     /// <see cref="GetKnownAnswers" /> returns a non-empty list.
@@ -213,7 +213,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// <summary>
     /// Generates the runnable <see cref="KnownAnswerTest" /> rows for <paramref name="variant" />. The default
     /// implementation bridges <see cref="GetKnownAnswers" /> through <see cref="AdaptKnownAnswers" /> and
-    /// <see cref="CreateBlockCipherForAnswer" /> — the canonical shape for every cipher with static vectors.
+    /// <see cref="CreateBlockCipherForAnswer" /> - the canonical shape for every cipher with static vectors.
     /// Override directly when the vectors are runtime-generated.
     /// </summary>
     /// <param name="variant">The variant to generate test vectors for.</param>

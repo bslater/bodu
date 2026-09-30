@@ -41,19 +41,19 @@ internal readonly struct Curve25519FieldElement
     /// <summary>The number of bytes in the canonical little-endian encoding of a field element.</summary>
     internal const int EncodedSizeInBytes = 32;
 
-    /// <summary>Limb 0 of the radix-2^51 representation (bits 0–50 of the element value).</summary>
+    /// <summary>Limb 0 of the radix-2^51 representation (bits 0-50 of the element value).</summary>
     internal readonly ulong _l0;
 
-    /// <summary>Limb 1 of the radix-2^51 representation (bits 51–101 of the element value).</summary>
+    /// <summary>Limb 1 of the radix-2^51 representation (bits 51-101 of the element value).</summary>
     internal readonly ulong _l1;
 
-    /// <summary>Limb 2 of the radix-2^51 representation (bits 102–152 of the element value).</summary>
+    /// <summary>Limb 2 of the radix-2^51 representation (bits 102-152 of the element value).</summary>
     internal readonly ulong _l2;
 
-    /// <summary>Limb 3 of the radix-2^51 representation (bits 153–203 of the element value).</summary>
+    /// <summary>Limb 3 of the radix-2^51 representation (bits 153-203 of the element value).</summary>
     internal readonly ulong _l3;
 
-    /// <summary>Limb 4 of the radix-2^51 representation (bits 204–254 of the element value).</summary>
+    /// <summary>Limb 4 of the radix-2^51 representation (bits 204-254 of the element value).</summary>
     internal readonly ulong _l4;
 
     /// <summary>Mask isolating the low 51 bits of a limb.</summary>
@@ -62,11 +62,11 @@ internal readonly struct Curve25519FieldElement
     /// <summary>
     /// Initializes a new instance of the <see cref="Curve25519FieldElement" /> struct from explicit limb values.
     /// </summary>
-    /// <param name="l0">Limb 0 (bits 0–50).</param>
-    /// <param name="l1">Limb 1 (bits 51–101).</param>
-    /// <param name="l2">Limb 2 (bits 102–152).</param>
-    /// <param name="l3">Limb 3 (bits 153–203).</param>
-    /// <param name="l4">Limb 4 (bits 204–254).</param>
+    /// <param name="l0">Limb 0 (bits 0-50).</param>
+    /// <param name="l1">Limb 1 (bits 51-101).</param>
+    /// <param name="l2">Limb 2 (bits 102-152).</param>
+    /// <param name="l3">Limb 3 (bits 153-203).</param>
+    /// <param name="l4">Limb 4 (bits 204-254).</param>
     internal Curve25519FieldElement(ulong l0, ulong l1, ulong l2, ulong l3, ulong l4)
     {
         _l0 = l0;

@@ -98,8 +98,8 @@ public sealed partial class SqliteRateCacheTests
     }
 
     /// <summary>
-    /// Verifies that opening a cache over a database created by a pre-C build — whose <c>rates</c> table lacks the
-    /// <c>observed_at</c> column — migrates the schema in place, then serves the legacy row with a <see langword="null" />
+    /// Verifies that opening a cache over a database created by a pre-C build - whose <c>rates</c> table lacks the
+    /// <c>observed_at</c> column - migrates the schema in place, then serves the legacy row with a <see langword="null" />
     /// <see cref="CachedRate.ObservedAtUtc" /> and without throwing.
     /// </summary>
     [TestMethod]

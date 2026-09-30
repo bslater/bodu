@@ -6,7 +6,7 @@
 
 namespace Bodu.Security.Cryptography;
 
-// Known-answer vectors — NIST SP 800-38A, Appendix F.3.13 (CFB128 mode, AES-128)
+// Known-answer vectors - NIST SP 800-38A, Appendix F.3.13 (CFB128 mode, AES-128)
 // Source: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf
 //
 // Note: NIST CFB128 uses the full block as the feedback unit (segment size s = 128), which
@@ -30,7 +30,7 @@ public sealed partial class CfbModeTransformTests
     {
         yield return new object[]
         {
-            "NIST SP 800-38A F.3.13 — CFB128-AES128",
+            "NIST SP 800-38A F.3.13 - CFB128-AES128",
             CfbNistKey128,
             CfbNistIv,
             CfbNistPlaintext,

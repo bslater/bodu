@@ -1,6 +1,6 @@
 # Bodu.Financial.ExchangeRates.Oanda
 
-> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
 
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by **OANDA's**
 Historical Currency Converter, queried from its anonymous JSON endpoint.
@@ -8,7 +8,7 @@ Historical Currency Converter, queried from its anonymous JSON endpoint.
 `OandaRateProvider` derives from the arbitrary-pair `PairWebRateProvider`
 base: it fetches a pair's history over a date range on demand and serves the results as
 `Bodu.Financial.ExchangeRates.ExchangeRate` values through the standard `IDatedRateProvider`
-and `IRateProvider` contracts — so it composes with `Money.ConvertTo`, the
+and `IRateProvider` contracts - so it composes with `Money.ConvertTo`, the
 caching and aggregating providers, and the rest of the Bodu.Financial FX stack.
 
 ```csharp
@@ -24,10 +24,10 @@ RateRangeResult series =
 
 - **Arbitrary pairs.** Any ISO 4217 pair OANDA publishes is resolvable directly; the reverse
   direction is inverted from the fetched series.
-- **Rolling history window.** The anonymous endpoint serves only a rolling recent window —
+- **Rolling history window.** The anonymous endpoint serves only a rolling recent window -
   roughly the last **180 days**. The provider advertises this through
   `WebRateProvider.HistoryAvailability` (`RateHistoryAvailability.RollingDays(180)`),
-  so a caller — or the caching / aggregation layer — can resolve the earliest date worth
+  so a caller - or the caching / aggregation layer - can resolve the earliest date worth
   requesting rather than fetching a window that returns nothing. A request for an older date
   resolves against what the window can supply.
 - **Configuration.** `OandaRateProviderOptions` carries working defaults (the Historical
@@ -38,8 +38,8 @@ RateRangeResult series =
 ## HTTP client and lifetime
 
 The provider is `IDisposable` and offers two construction styles: `new
-OandaRateProvider(options, ...)` — the provider builds, owns, and disposes its own
-`HttpClient` — and `new OandaRateProvider(httpClient, options, ...)` — you supply
+OandaRateProvider(options, ...)` - the provider builds, owns, and disposes its own
+`HttpClient` - and `new OandaRateProvider(httpClient, options, ...)` - you supply
 the client and own its lifetime. The second form is what the DI registration uses, backed
 by `IHttpClientFactory`.
 

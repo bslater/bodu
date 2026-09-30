@@ -47,7 +47,7 @@ public partial class RangeTests
     }
 
     // --------------------------------------------------------
-    // Constructor — happy path
+    // Constructor - happy path
     // --------------------------------------------------------
 
     /// <summary>
@@ -93,7 +93,7 @@ public partial class RangeTests
         });
     }
     // --------------------------------------------------------
-    // Constructor — argument validation
+    // Constructor - argument validation
     // --------------------------------------------------------
 
     /// <summary>

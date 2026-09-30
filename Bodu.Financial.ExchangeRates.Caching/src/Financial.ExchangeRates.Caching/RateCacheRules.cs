@@ -22,7 +22,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// supplied instant, and return new collections, leaving all persistence and locking to the caller.
 /// </para>
 /// <para>
-/// Freshness is a strict less-than comparison — a row or window exactly one duration old is stale — and validity allows
+/// Freshness is a strict less-than comparison - a row or window exactly one duration old is stale - and validity allows
 /// a one-minute clock-skew tolerance so a row stamped marginally ahead of the evaluating clock is not discarded. These
 /// are the same thresholds the cache surface has always applied; centralising them here keeps every backend identical,
 /// which the shared cache contract tests assert.
@@ -65,7 +65,7 @@ public static class RateCacheRules
     {
         ThrowHelper.ThrowIfNull(rows);
 
-        // Track ordering while filtering so the sort — an O(n log n) pass — runs only for an unsorted source. Every
+        // Track ordering while filtering so the sort - an O(n log n) pass - runs only for an unsorted source. Every
         // backend persists rows already date-ordered by MergeRows, so on the hot read path the surviving rows arrive
         // sorted and the scan below is the only cost.
         List<CachedRate> fresh = new();
@@ -90,7 +90,7 @@ public static class RateCacheRules
     }
 
     /// <summary>
-    /// Reports whether every row is valid, fresh at <paramref name="asOf" />, and already ordered ascending by date —
+    /// Reports whether every row is valid, fresh at <paramref name="asOf" />, and already ordered ascending by date -
     /// the condition under which a read can serve the stored list as-is instead of building the filtered copy
     /// <see cref="SelectFresh" /> would produce.
     /// </summary>
@@ -102,7 +102,7 @@ public static class RateCacheRules
     /// <see cref="SelectFresh" />'s output; otherwise <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// Every backend persists <see cref="MergeRows" /> output — valid, fresh-at-write, date-ordered — so on the hot
+    /// Every backend persists <see cref="MergeRows" /> output - valid, fresh-at-write, date-ordered - so on the hot
     /// read path this check passes and the read is allocation-free. An empty list trivially qualifies.
     /// </remarks>
     internal static bool IsAllFreshOrdered(IReadOnlyList<CachedRate> rows, TimeSpan duration, DateTimeOffset asOf)

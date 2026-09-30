@@ -8,7 +8,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Exercises the <see cref="TweakableSymmetricAlgorithmTests{TTest, TAlgorithm}" /> base test suite against
-/// <see cref="Threefish256" /> — validating tweak property behaviour, defensive copies, invalid-size handling,
+/// <see cref="Threefish256" /> - validating tweak property behaviour, defensive copies, invalid-size handling,
 /// disposal semantics, and the curated <see cref="Threefish256CipherTests" /> data set at the algorithm tier.
 /// </summary>
 [TestClass]

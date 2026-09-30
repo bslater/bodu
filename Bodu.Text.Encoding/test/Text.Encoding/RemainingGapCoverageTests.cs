@@ -9,7 +9,7 @@ using System.Buffers;
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Coverage tests for the long tail of small gaps flagged in the coverage report — length helpers with
+/// Coverage tests for the long tail of small gaps flagged in the coverage report - length helpers with
 /// zero / negative / boundary inputs, IsXxxDigit alphabet boundary cases, span-encode destination-too-small
 /// branches, and UTF-8 destination-too-small branches that the existing tests do not exercise.
 /// </summary>
@@ -285,7 +285,7 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base58Check_TryDecode_WhenDecodedTooShortForChecksum_ShouldReturnFalse()
     {
-        // "1" decodes to a single zero byte under Base58 — shorter than the 4-byte checksum suffix.
+        // "1" decodes to a single zero byte under Base58 - shorter than the 4-byte checksum suffix.
         byte[] destination = new byte[16];
 
         bool ok = Base58Check.TryDecode("1".AsSpan(), destination, out int bytesWritten);

@@ -45,7 +45,7 @@ public partial class ConcurrentCircularBufferTests
 
     /// <summary>
     /// Verifies that the private <c>BestEffortSnapshot</c> fallback writes <see langword="null" /> for any slot whose sequence number
-    /// disagrees with the expected publication mark — the failure mode the fallback exists to handle — rather than reading a
+    /// disagrees with the expected publication mark - the failure mode the fallback exists to handle - rather than reading a
     /// torn or stale-generation value.
     /// </summary>
     [TestMethod]
@@ -73,7 +73,7 @@ public partial class ConcurrentCircularBufferTests
 
     /// <summary>
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> returns <see langword="false" /> via the fallback snapshot
-    /// scan when every slot is forced into an unstable state — exercising the post-outer-retry-budget fallback path
+    /// scan when every slot is forced into an unstable state - exercising the post-outer-retry-budget fallback path
     /// (<c>foreach (T? x in ToArray()) ...</c>) at the end of <c>Contains</c>.
     /// </summary>
     [TestMethod]

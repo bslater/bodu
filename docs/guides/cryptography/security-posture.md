@@ -16,8 +16,8 @@ The source distinguishes three postures. Only the first is a positive claim.
 
 | Posture | Primitives | What the source says |
 |---|---|---|
-| **Constant-time with respect to secrets** | `X25519` / Curve25519 field arithmetic (key generation runs through Ed25519's precomputed-table selection), `Ed25519` (signing, precomputed-table selection, ladder), `MLKem` (decapsulation compare and implicit-rejection key selection), GHASH / POLYVAL (`GcmModeTransform`, `GcmSivModeTransform` — both the PCLMULQDQ and scalar paths), every AEAD tag comparison, `Hotp` / `Totp` code comparison, the value types' equality, `Pkcs7Padding` / `Ansix923Padding` / `Iso7816_4Padding` unpad validation, the ARX designs (BLAKE2, BLAKE3, Threefish) and Serpent's bitsliced S-box circuits (`Serpent128`, `Serpent256/512/1024`) by construction | "runs in constant time with respect to the private key"; "the tag is compared in constant time before any plaintext byte is written"; "no secret-dependent branches or table lookups". |
-| **Constant-time control flow, data-dependent table reads — explicitly *not* hardened** | `Blowfish`, `Skipjack`, `Camellia`, `Twofish`, `Tiger`, `Whirlpool`, `Snefru` | "control flow is constant-time, but the S-box lookup tables are read at data-dependent indices … **not** hardened against timing or cache-based side-channel attacks." |
+| **Constant-time with respect to secrets** | `X25519` / Curve25519 field arithmetic (key generation runs through Ed25519's precomputed-table selection), `Ed25519` (signing, precomputed-table selection, ladder), `MLKem` (decapsulation compare and implicit-rejection key selection), GHASH / POLYVAL (`GcmModeTransform`, `GcmSivModeTransform` - both the PCLMULQDQ and scalar paths), every AEAD tag comparison, `Hotp` / `Totp` code comparison, the value types' equality, `Pkcs7Padding` / `Ansix923Padding` / `Iso7816_4Padding` unpad validation, the ARX designs (BLAKE2, BLAKE3, Threefish) and Serpent's bitsliced S-box circuits (`Serpent128`, `Serpent256/512/1024`) by construction | "runs in constant time with respect to the private key"; "the tag is compared in constant time before any plaintext byte is written"; "no secret-dependent branches or table lookups". |
+| **Constant-time control flow, data-dependent table reads - explicitly *not* hardened** | `Blowfish`, `Skipjack`, `Camellia`, `Twofish`, `Tiger`, `Whirlpool`, `Snefru` | "control flow is constant-time, but the S-box lookup tables are read at data-dependent indices … **not** hardened against timing or cache-based side-channel attacks." |
 | **Deliberately not constant-time** | `Iso10126Padding` unpad (random-filled interior; validation is "deliberately not masked"), `MLDsa` rejection sampling (public values only; "the values involved carry no secrets") | Documented as safe because no secret drives the timing. |
 | **Best-effort, unqualified** | `Hkdf`, `Argon2*`, `Scrypt`, `Hpke`, `Hotp`, `Totp`, `MLDsa` | "best-effort, not guaranteed, side-channel resistance". |
 
@@ -38,13 +38,13 @@ What is cleared, per the source and observed behaviour:
 | Asymmetric (`RawKeyAsymmetricAlgorithm`: `X25519`, `Ed25519`, `MLKem*`, `MLDsa*`) | private key material zeroed exactly once; replacing a key (`GenerateKey`, `Import*`) zeroes the previous private key first. |
 | `SecretBytes` | pinned buffer zeroed and the instance latched; `Clear()` zeroes without disposing. |
 | Pooled buffers (`AppendData`, `TransformAsync`, `HashAlgorithmHelper`, `MerkleTree`) | returned to `ArrayPool<byte>.Shared` with `clearArray: true` on every exit path. |
-| `Nonce`, `Salt`, `HashValue`, `AuthenticationTag`, `SignatureValue` | nothing — they are public values by design. |
+| `Nonce`, `Salt`, `HashValue`, `AuthenticationTag`, `SignatureValue` | nothing - they are public values by design. |
 
 What is **not** covered: arrays you allocate and hand to the library (`byte[] key = …`) are copied, not adopted; clear your own copies with `CryptographicOperations.ZeroMemory`. Managed memory can still be copied by the GC before `Dispose` runs; only `SecretBytes` pins.
 
 ## SIMD determinism and the `DisableSimd` switch
 
-BLAKE2b, BLAKE2s, BLAKE3, ChaCha20, Salsa20, Serpent-128, Threefish-256/512/1024, and CubeHash carry AVX-512 kernels; BLAKE2, BLAKE3, ChaCha20, Salsa20, Serpent-128, Argon2, and scrypt also carry AVX2, SSSE3 or SSE2, and ARM64 AdvSimd kernels; GHASH and POLYVAL in GCM / GCM-SIV have PCLMULQDQ and PMULL paths. All of them produce **bit-identical output** to their scalar reference — the switch exists for reproducibility and audit, not safety. The feature switch `Bodu.Security.Cryptography.DisableSimd` forces the scalar path for the whole process:
+BLAKE2b, BLAKE2s, BLAKE3, ChaCha20, Salsa20, Serpent-128, Threefish-256/512/1024, and CubeHash carry AVX-512 kernels; BLAKE2, BLAKE3, ChaCha20, Salsa20, Serpent-128, Argon2, and scrypt also carry AVX2, SSSE3 or SSE2, and ARM64 AdvSimd kernels; GHASH and POLYVAL in GCM / GCM-SIV have PCLMULQDQ and PMULL paths. All of them produce **bit-identical output** to their scalar reference - the switch exists for reproducibility and audit, not safety. The feature switch `Bodu.Security.Cryptography.DisableSimd` forces the scalar path for the whole process:
 
 ```xml
 <ItemGroup>
@@ -65,11 +65,11 @@ byte[] digest = blake.ComputeHash("abc"u8.ToArray());     // BA80A53F981C4D0D…
 
 ## The exception contract
 
-The library uses four exception families with consistent meaning. The table lists the boundary, the type you will see, and a representative trigger — each row was produced by running the library.
+The library uses four exception families with consistent meaning. The table lists the boundary, the type you will see, and a representative trigger - each row was produced by running the library.
 
 | Situation | Exception | Examples |
 |---|---|---|
-| Argument is structurally wrong for a **raw engine, transform, or value type** | `ArgumentException` (`ParamName` set) / `ArgumentOutOfRangeException` / `ArgumentNullException` | `new CamelliaBlockCipher(10-byte key)`, `new Serpent256Cipher(key, 8-byte tweak)`, `new GcmModeTransform(cipher, 16-byte nonce)`, `new XChaCha20Poly1305(key, 16-byte nonce)`, a ciphertext shorter than the tag, a detached tag of the wrong length, secretbox given AAD, partial buffer overlap, `BlockCipherModeFactory` without an IV, `Blake2b(100)`, `Nonce.Random(0)`, `Hkdf` with MD5, Argon2 memory below `8 × parallelism`, scrypt `N` not a power of two, HKDF output over `255 × HashLen`, OTP `digits` outside 6–8, `SignatureValue.FromBytes` with an undefined format, `Ed25519.ImportPublicKey(31 bytes)`, ML-KEM ciphertext of the wrong length |
+| Argument is structurally wrong for a **raw engine, transform, or value type** | `ArgumentException` (`ParamName` set) / `ArgumentOutOfRangeException` / `ArgumentNullException` | `new CamelliaBlockCipher(10-byte key)`, `new Serpent256Cipher(key, 8-byte tweak)`, `new GcmModeTransform(cipher, 16-byte nonce)`, `new XChaCha20Poly1305(key, 16-byte nonce)`, a ciphertext shorter than the tag, a detached tag of the wrong length, secretbox given AAD, partial buffer overlap, `BlockCipherModeFactory` without an IV, `Blake2b(100)`, `Nonce.Random(0)`, `Hkdf` with MD5, Argon2 memory below `8 × parallelism`, scrypt `N` not a power of two, HKDF output over `255 × HashLen`, OTP `digits` outside 6-8, `SignatureValue.FromBytes` with an undefined format, `Ed25519.ImportPublicKey(31 bytes)`, ML-KEM ciphertext of the wrong length |
 | Key material or configuration is invalid on a **`SymmetricAlgorithm` / stream-algorithm wrapper**, or a cryptographic check fails | `CryptographicException` | `camellia.Key = 10 bytes`, `CreateEncryptor` with a mis-sized or missing IV, `chacha.Key = 8 bytes`, `Blake2b.Key` over 64 bytes, `AesBlockCipher(10-byte key)` (from the BCL `Aes`), an unknown `PaddingMode`, invalid PKCS7 padding on decrypt, an XTS input that is not whole blocks, CFB/OFB input not block-aligned, **any AEAD tag mismatch**, `Ed25519.SignData` without a private key, `X25519` given a low-order peer point, a second stream-cipher transform for the same nonce, a second Poly1305 message under one key |
 | A `HashAlgorithm` is reconfigured after hashing has started | `CryptographicUnexpectedOperationException` | setting `Tiger.Variant` after `TransformBlock` |
 | The object's **lifecycle** forbids the call | `InvalidOperationException` | a second `Encrypt` / `Decrypt` on any AEAD transform (including after a failed decrypt), `TransformFinalBlock` twice on a `BlockCipherTransform` |
@@ -77,7 +77,7 @@ The library uses four exception families with consistent meaning. The table list
 | Use after `Dispose` | `ObjectDisposedException` | any member of a disposed hash, cipher, transform, asymmetric algorithm, or `SecretBytes` |
 | Text that is not hex | `FormatException` | `HashValue.ParseHex("zz")`; PHC-string parsing in `Argon2.Verify` / `Scrypt.Verify` |
 
-Two rules follow. First, **a failed authentication is `CryptographicException`** everywhere — AEAD tags, Poly1305, signature verification does *not* throw but returns `false` (`Ed25519.VerifyData`, `MLDsa.VerifyData`, `Hotp.VerifyCode` return `false` for a wrong or wrongly sized input). Second, the *same* mistake surfaces differently by layer: a bad key length is `ArgumentException` on an engine and `CryptographicException` on its wrapper, because the wrapper follows the BCL `SymmetricAlgorithm` convention. Catch `CryptographicException` on the wrapper path and `ArgumentException` when you compose engines yourself.
+Two rules follow. First, **a failed authentication is `CryptographicException`** everywhere - AEAD tags, Poly1305, signature verification does *not* throw but returns `false` (`Ed25519.VerifyData`, `MLDsa.VerifyData`, `Hotp.VerifyCode` return `false` for a wrong or wrongly sized input). Second, the *same* mistake surfaces differently by layer: a bad key length is `ArgumentException` on an engine and `CryptographicException` on its wrapper, because the wrapper follows the BCL `SymmetricAlgorithm` convention. Catch `CryptographicException` on the wrapper path and `ArgumentException` when you compose engines yourself.
 
 ## Single-use rules
 
@@ -87,14 +87,14 @@ Two rules follow. First, **a failed authentication is `CryptographicException`**
 | `Poly1305` | one message per key; `Initialize()` does not reset the one-time latch | `CryptographicException` |
 | `SymmetricStreamAlgorithm` (`ChaCha20` …) | one transform per nonce through the parameterless `CreateEncryptor()` / `CreateDecryptor()`; use `GenerateNonce()` or the `(key, nonce)` overloads for another | `CryptographicException` |
 | `BlockCipherTransform` and the stream-cipher transforms | `CanReuseTransform == false`; nothing after `TransformFinalBlock` | `InvalidOperationException` |
-| `HashAlgorithm` subclasses | reusable: `ComputeHash` resets; `Initialize()` resets a streaming computation | — |
-| Nonces and IVs | never reuse a `(key, nonce)` pair for GCM, CTR, CCM, OCB, EAX, or any stream cipher; SIV and GCM-SIV degrade gracefully; XChaCha20 / XSalsa20 nonces are safe to draw at random | not detected — a protocol responsibility |
+| `HashAlgorithm` subclasses | reusable: `ComputeHash` resets; `Initialize()` resets a streaming computation | - |
+| Nonces and IVs | never reuse a `(key, nonce)` pair for GCM, CTR, CCM, OCB, EAX, or any stream cipher; SIV and GCM-SIV degrade gracefully; XChaCha20 / XSalsa20 nonces are safe to draw at random | not detected - a protocol responsibility |
 
 ## Thread safety
 
 No instance in the library is thread-safe, with one deliberate exception. The source states the single-caller rule for the mode transforms, the AEAD transforms, and `SecretBytes`; the `HashAlgorithm` and `SymmetricAlgorithm` bases inherit the BCL's per-instance model. Static entry points (`Hkdf`, `Hotp`, `Totp`, `Hpke`, `Argon2id.DeriveKey`, `Scrypt.DeriveKey`, `HashAlgorithmHelper`, `BlockCipherModeFactory`, `PaddingFactory`) hold no shared mutable state and may be called concurrently.
 
-The exception is <xref:Bodu.Security.Cryptography.MerkleTree>: it is immutable, holds no per-computation state, and every operation is safe for concurrent use — a single instance may be registered as a singleton and used from many handlers at once. That guarantee rests entirely on the `Func<HashAlgorithm>` it is given returning a **fresh** algorithm on each call, as `SHA256.Create` does. A factory handing back one shared instance is unsafe, will corrupt concurrent computations, and cannot serve a parallel tree at all. A parallel instance spreads leaf hashing across workers inside one call, one algorithm per worker, and folds the results in order on the calling thread. Share a factory (`IHashAlgorithmFactory<T>`, or a plain delegate), not an algorithm.
+The exception is <xref:Bodu.Security.Cryptography.MerkleTree>: it is immutable, holds no per-computation state, and every operation is safe for concurrent use - a single instance may be registered as a singleton and used from many handlers at once. That guarantee rests entirely on the `Func<HashAlgorithm>` it is given returning a **fresh** algorithm on each call, as `SHA256.Create` does. A factory handing back one shared instance is unsafe, will corrupt concurrent computations, and cannot serve a parallel tree at all. A parallel instance spreads leaf hashing across workers inside one call, one algorithm per worker, and folds the results in order on the calling thread. Share a factory (`IHashAlgorithmFactory<T>`, or a plain delegate), not an algorithm.
 
 ## Trimming and AOT
 
@@ -102,8 +102,8 @@ The library's public API is reflection-free (`Enum.TryParse` is used only for mo
 
 ## Where to go next
 
-- [Choosing a primitive](choosing-a-primitive.md) — when to prefer the BCL.
-- [Hardware acceleration and the SIMD opt-out](hardware-acceleration.md) — the accelerated kernels and the switch in depth.
-- [Nonces, salts, tags, and secrets](value-types.md) — the constant-time value types and `SecretBytes`.
-- [Authenticated stream ciphers](stream-aead.md) and [AEAD modes](aead-modes.md) — the single-use contract in practice.
-- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
+- [Choosing a primitive](choosing-a-primitive.md) - when to prefer the BCL.
+- [Hardware acceleration and the SIMD opt-out](hardware-acceleration.md) - the accelerated kernels and the switch in depth.
+- [Nonces, salts, tags, and secrets](value-types.md) - the constant-time value types and `SecretBytes`.
+- [Authenticated stream ciphers](stream-aead.md) and [AEAD modes](aead-modes.md) - the single-use contract in practice.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

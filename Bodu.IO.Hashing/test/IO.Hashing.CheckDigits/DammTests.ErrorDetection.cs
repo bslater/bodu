@@ -12,7 +12,7 @@ public sealed partial class DammTests
     private const string SingleDigitSeedBody = "572";
 
     /// <summary>
-    /// Verifies that Damm detects <i>every</i> adjacent-digit transposition — without exception — in the
+    /// Verifies that Damm detects <i>every</i> adjacent-digit transposition - without exception - in the
     /// canonical seed sequence. Unlike Luhn, Damm has no known transposition blind spot.
     /// </summary>
     [TestMethod]

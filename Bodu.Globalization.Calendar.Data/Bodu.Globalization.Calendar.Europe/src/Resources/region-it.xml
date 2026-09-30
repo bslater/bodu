@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ================================================================================================================
-  Italy (IT) — notable-date resource pack
+  Italy (IT) - notable-date resource pack
   ================================================================================================================
 
   Authored on the notable-date schema. All rules are scoped to territory "IT"; the
@@ -9,7 +9,7 @@
 
   How this resource is built:
 
-    * Shared European observances — including the common Catholic feast of the Immaculate Conception — are
+    * Shared European observances - including the common Catholic feast of the Immaculate Conception - are
       IMPORTED from the europe-common hub and given an IT territory scope through the import <Use> directive. The
       hub carries the resolved calculation strategy; the territory supplies the local observance.
 
@@ -69,37 +69,37 @@
       ============================================================================================================
     -->
 
-    <!-- Epiphany (Epifania) — 6 January; a public holiday. Strategy: Fixed date. -->
+    <!-- Epiphany (Epifania) - 6 January; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="epiphany" displayName="Epiphany" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="it"><Applicability><Territory code="IT" /></Applicability>
         <Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Liberation Day (Festa della Liberazione) — 25 April, marking the 1945 end of Nazi occupation. The fromYear="1946" bound excludes earlier years. Strategy: Fixed date. -->
+    <!-- Liberation Day (Festa della Liberazione) - 25 April, marking the 1945 end of Nazi occupation. The fromYear="1946" bound excludes earlier years. Strategy: Fixed date. -->
     <NotableDate id="liberation-day" displayName="Liberation Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="it"><Applicability fromYear="1946"><Territory code="IT" /></Applicability>
         <Strategy><Fixed month="April" day="25" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Labour Day (Festa del Lavoro) — 1 May; a public holiday. Strategy: Fixed date. -->
+    <!-- Labour Day (Festa del Lavoro) - 1 May; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="it"><Applicability><Territory code="IT" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Republic Day (Festa della Repubblica) — 2 June, the national day, marking the 1946 referendum that founded the republic. The fromYear="1946" bound excludes earlier years. Strategy: Fixed date. -->
+    <!-- Republic Day (Festa della Repubblica) - 2 June, the national day, marking the 1946 referendum that founded the republic. The fromYear="1946" bound excludes earlier years. Strategy: Fixed date. -->
     <NotableDate id="republic-day" displayName="Republic Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="it"><Applicability fromYear="1946"><Territory code="IT" /></Applicability>
         <Strategy><Fixed month="June" day="2" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Assumption of Mary (Ferragosto) — 15 August, a Marian feast and Italy's principal summer public holiday. Strategy: Fixed date. -->
+    <!-- Assumption of Mary (Ferragosto) - 15 August, a Marian feast and Italy's principal summer public holiday. Strategy: Fixed date. -->
     <NotableDate id="assumption-of-mary-ferragosto" displayName="Assumption of Mary (Ferragosto)" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="it"><Applicability><Territory code="IT" /></Applicability>
         <Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Saint Stephen's Day (Santo Stefano) — 26 December; a public holiday. Strategy: Fixed date. -->
+    <!-- Saint Stephen's Day (Santo Stefano) - 26 December; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="saint-stephens-day" displayName="Saint Stephen's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="it"><Applicability><Territory code="IT" /></Applicability>
         <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>

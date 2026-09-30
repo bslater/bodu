@@ -137,8 +137,8 @@ public sealed partial class CtrModeTransformTests
     }
 
     /// <summary>
-    /// Verifies that the keystream matches a block-at-a-time reference — one counter block encrypted per whole or
-    /// partial block of each call, the rest of a partial block's keystream discarded — for messages that fit in one
+    /// Verifies that the keystream matches a block-at-a-time reference - one counter block encrypted per whole or
+    /// partial block of each call, the rest of a partial block's keystream discarded - for messages that fit in one
     /// run of counters, straddle one, and span several, and for calls split both on and off block boundaries.
     /// </summary>
     /// <param name="name">The cipher's name, for the test's display.</param>

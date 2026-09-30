@@ -9,7 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Bodu.IO.Compound.PropertySets;
 
 /// <summary>
-/// Represents a single section of an OLE property set — a format-identified group of properties keyed by property
+/// Represents a single section of an OLE property set - a format-identified group of properties keyed by property
 /// identifier (PID).
 /// </summary>
 /// <remarks>

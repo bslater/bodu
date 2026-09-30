@@ -11,7 +11,7 @@ namespace Bodu.Samples.Text.Configuration.ConfigCascade.Scenarios;
 /// <summary>
 /// Demonstrates the write phase: the parsed document is the INI document model underneath, so
 /// existing sections mutate in place, a rebuilt <see cref="IniDocument" /> can append new ones,
-/// and <c>ConfigurationDocument.Save</c> writes the result — comments preserved, the file still
+/// and <c>ConfigurationDocument.Save</c> writes the result - comments preserved, the file still
 /// owned by the human who wrote it.
 /// </summary>
 public static class SaveRoundTrip

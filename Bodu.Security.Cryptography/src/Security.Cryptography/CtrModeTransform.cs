@@ -16,24 +16,24 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/classic-modes.svg" alt="CTR panel — independent counter blocks are encrypted to form a keystream, then XORed with plaintext."/>
+/// <img src="../images/diagrams/classic-modes.svg" alt="CTR panel - independent counter blocks are encrypted to form a keystream, then XORed with plaintext."/>
 /// </para>
 /// <para>
 /// CTR is self-inverse: the same <see cref="Transform" /> operation is applied for both encryption and decryption. The
 /// cipher's <em>encrypt</em> primitive is always used; the decrypt primitive is never called. See <b>panel 5</b> of the
-/// diagram above: each cell has its own counter block <c>CTRᵢ</c> and no arrows connect one cell to the next — meaning
+/// diagram above: each cell has its own counter block <c>CTRᵢ</c> and no arrows connect one cell to the next - meaning
 /// the keystream is trivially parallelisable and supports random-access seeking into the middle of a message.
 /// </para>
 /// <para>
 /// That independence is also where the sharpest pitfall lives. To protect against keystream reuse, the transform tracks
 /// counter wrap-around: once the block-width counter rolls over its full 2^n value space back to zero, the next call to
 /// <see cref="Transform" /> throws <see cref="CryptographicException" />. Reusing a <c>(key, nonce)</c> pair across
-/// messages is catastrophic — the XOR of two ciphertexts recovers the XOR of the two plaintexts — so callers must
+/// messages is catastrophic - the XOR of two ciphertexts recovers the XOR of the two plaintexts - so callers must
 /// ensure each counter value is used at most once per key.
 /// </para>
 /// <para>
 /// <strong>When to use CTR.</strong> The right confidentiality-only mode for new code that needs random access,
-/// parallelisable encryption, or a stream-cipher shape — disk encryption layers without authentication, network
+/// parallelisable encryption, or a stream-cipher shape - disk encryption layers without authentication, network
 /// protocols where authentication is provided separately, and anywhere a precomputed keystream is useful. CTR is also
 /// the keystream layer of the major AEAD modes; if you need authentication as well, reach for
 /// <see cref="GcmModeTransform" /> (CTR + GHASH) or <see cref="EaxModeTransform" /> (CTR + OMAC) directly rather than
@@ -63,7 +63,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/cipher-modes.html#ctr--parallel-seekable-stream-shaped">CTR walk-through in
+/// <seealso href="../guides/cryptography/cipher-modes.html#ctr---parallel-seekable-stream-shaped">CTR walk-through in
 /// the cipher-modes guide</seealso>
 public sealed class CtrModeTransform
     : IBlockCipherModeTransform
@@ -130,7 +130,7 @@ public sealed class CtrModeTransform
             int offset = 0;
             while (offset < input.Length)
             {
-                // Lay out counter blocks until the run is full, the input is covered, or the counter has wrapped — the
+                // Lay out counter blocks until the run is full, the input is covered, or the counter has wrapped - the
                 // block after a wrap is the one the per-block formulation refuses to produce.
                 int limit = Math.Min(batchLength, input.Length - offset);
                 int filled = blockSize == 16 ? LayOutCounters16(counters, limit) : LayOutCounters(counters, limit, blockSize);
@@ -160,7 +160,7 @@ public sealed class CtrModeTransform
     /// <summary>
     /// Releases the resources used by this instance and zeroes the retained counter state so that key-equivalent
     /// counter values do not linger in memory after disposal. The underlying <see cref="IBlockCipher" /> is not
-    /// disposed by this type — ownership remains with the caller.
+    /// disposed by this type - ownership remains with the caller.
     /// </summary>
     /// <remarks>
     /// Idempotent.

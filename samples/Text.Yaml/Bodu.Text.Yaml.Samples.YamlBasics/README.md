@@ -6,17 +6,17 @@ typing, how sequences and mappings bind to .NET collections, how wire names are 
 policies vs the attribute family), and the parse/emit knobs (`SpecVersion`, scalar styles,
 `DuplicateKeyBehavior`, `MergeKeyBehavior`).
 
-Everything runs offline against the committed `Data/app-config.yaml` — no network, no
+Everything runs offline against the committed `Data/app-config.yaml` - no network, no
 machine-specific state, deterministic output.
 
 ```bash
 dotnet run --project samples/Text.Yaml/Bodu.Text.Yaml.Samples.YamlBasics
 ```
 
-## Scenario 1 — SerializerRoundTrip
+## Scenario 1 - SerializerRoundTrip
 
 **Intent.** Show the core workflow every consumer starts with: a YAML file on disk becomes a
-typed object graph in one call, and the graph becomes YAML again in one call — the
+typed object graph in one call, and the graph becomes YAML again in one call - the
 `System.Text.Json` workflow (`Deserialize<T>` / `Serialize<T>`), for YAML.
 
 **What it does.** Reads `Data/app-config.yaml` (a scalar section, a nested `database` mapping,
@@ -25,8 +25,8 @@ using the `SnakeCaseLower` naming policy, so `service_name` binds to `ServiceNam
 attributes. It then mutates `MaxRetries`, serializes the graph back to YAML text, and
 deserializes that text again to prove the round trip loses nothing.
 
-**What to expect.** The banner lines echo the typed values that arrived from the file —
-service name `orders`, database `localhost:5432`, and both endpoints with their URLs —
+**What to expect.** The banner lines echo the typed values that arrived from the file -
+service name `orders`, database `localhost:5432`, and both endpoints with their URLs -
 followed by a round-trip line confirming the mutated retry count (`5`) and both endpoints
 survived the re-parse:
 
@@ -55,7 +55,7 @@ survived the re-parse:
 `NamingPolicy.SnakeCaseLower`, nested mappings and block sequences binding to POCOs and
 `List<T>`.
 
-## Scenario 2 — ScalarKinds
+## Scenario 2 - ScalarKinds
 
 **Intent.** Demonstrate YAML's defining scalar feature over JSON: *implicit typing*. An
 unquoted (plain) scalar is resolved to null, boolean, integer, float, or string by the active
@@ -63,7 +63,7 @@ unquoted (plain) scalar is resolved to null, boolean, integer, float, or string 
 forces the string interpretation.
 
 **What it does.** Binds a document of plain and quoted scalars into a loose
-`Dictionary<string, object?>` and prints the resolved runtime type of each value — showing
+`Dictionary<string, object?>` and prints the resolved runtime type of each value - showing
 that the quoted `"42"` stays a `String` while the plain `42` resolves to `Int64`. It then
 demonstrates the `YamlNumberHandling` knob: binding the non-integral float `3.7` to an `int`
 member is rejected under `Strict` (the default) and truncated toward zero under
@@ -104,7 +104,7 @@ member is rejected under `Strict` (the default) and truncated toward zero under
 `null`), quoted-scalar string preservation, `YamlSerializerOptions.NumberHandling`,
 `YamlNumberHandling.Strict` / `.AllowFloatToInteger`, `YamlSerializationException`.
 
-## Scenario 3 — CollectionsAndDictionaries
+## Scenario 3 - CollectionsAndDictionaries
 
 **Intent.** Show how YAML's two container shapes bind to .NET collections: a sequence maps to
 `List<T>` and arrays, a mapping maps to `Dictionary<TKey, TValue>`, and the two nest freely.
@@ -144,11 +144,11 @@ array, and a round-trip line confirming the counts survived:
 to `Dictionary<,>`, nested generic collections, `YamlSerializer.Serialize` / `Deserialize`
 round-trip.
 
-## Scenario 4 — NamingAndAttributes
+## Scenario 4 - NamingAndAttributes
 
 **Intent.** Explain the precedence rules for wire names: a naming policy maps every property
 by convention; the attribute family overrides it per member. Consumers should reach for the
-policy first and attributes only for the exceptions — this scenario shows both layers and where
+policy first and attributes only for the exceptions - this scenario shows both layers and where
 each wins.
 
 **What it does.** Serializes one small POCO under three policies (`CamelCase`,
@@ -196,7 +196,7 @@ enum emitted as `Wednesday` by default vs `3` in numeric mode:
 `[PropertyName]`, `[Ignore]`, `[Required]`, `YamlSerializationException`,
 `YamlSerializerOptions.WriteEnumsAsStrings`.
 
-## Scenario 5 — SpecAndStyles
+## Scenario 5 - SpecAndStyles
 
 **Intent.** Surface the parse- and emit-level knobs a consumer eventually needs: `SpecVersion`
 gates how plain scalars are typed (the YAML 1.1 "Norway problem"), the writer selects a safe
@@ -268,7 +268,7 @@ Bodu.Text.Yaml.Samples.YamlBasics/
 
 ## Related
 
-- `Bodu.Text.Yaml.Samples.YamlDocuments` — the layers beneath the serializer: the mutable
+- `Bodu.Text.Yaml.Samples.YamlDocuments` - the layers beneath the serializer: the mutable
   `YamlNode` DOM, the read-only `YamlDocument` DOM, and the `Utf8YamlReader`/`Utf8YamlWriter`
   token surface.
 - Guides: `docs/guides/serialization/yaml/`.

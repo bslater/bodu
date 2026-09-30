@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <see cref="RateCacheOptions" /> together with the directory its cache files are written under.
 /// </summary>
 /// <remarks>
-/// Expiry is not a storage concern — it is supplied per call by the caching provider — so this type carries only the
+/// Expiry is not a storage concern - it is supplied per call by the caching provider - so this type carries only the
 /// storage location in addition to the bound provider.
 /// </remarks>
 public class FileRateCacheOptions
@@ -35,8 +35,8 @@ public class FileRateCacheOptions
     /// in one file under a per-provider folder.
     /// </value>
     /// <remarks>
-    /// Use a built-in partitioned layout — <see cref="RateCacheFileLayout.Yearly" />,
-    /// <see cref="RateCacheFileLayout.Monthly" />, or <see cref="RateCacheFileLayout.Daily" /> — to split a pair's rows
+    /// Use a built-in partitioned layout - <see cref="RateCacheFileLayout.Yearly" />,
+    /// <see cref="RateCacheFileLayout.Monthly" />, or <see cref="RateCacheFileLayout.Daily" /> - to split a pair's rows
     /// into per-period files, or <see cref="RateCacheFileLayout.Create" /> to supply custom folder and file-name rules
     /// and a custom <see cref="RateCachePartitionStrategy" />.
     /// </remarks>

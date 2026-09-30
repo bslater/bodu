@@ -18,24 +18,24 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// The complete C.1 and C.2 vector sets (24 vectors each) and both C.3 vectors are pinned, covering empty, block-aligned, and non-block-aligned
 /// plaintext/AAD lengths and multiple key/nonce pairs. These verify the exact ciphertext and tag against the
-/// published values — which a symmetric encrypt/decrypt round-trip cannot — and guard the POLYVAL (reflected-key
+/// published values - which a symmetric encrypt/decrypt round-trip cannot - and guard the POLYVAL (reflected-key
 /// <c>mulX</c>) and CTR (first-32-bit little-endian counter) behaviour required by RFC 8452 Sections 3 and 4. The
 /// AES-256 vectors also pin Section 4's key derivation for a 32-byte key-generating key, whose message-encryption key is
 /// 32 bytes from six cipher calls rather than 16 bytes from four.
 /// </remarks>
 public sealed partial class GcmSivModeTransformTests
 {
-    // RFC 8452 Appendix C.1 — AES-128-GCM-SIV. The full vector set exercises empty, block-aligned, and
+    // RFC 8452 Appendix C.1 - AES-128-GCM-SIV. The full vector set exercises empty, block-aligned, and
     // non-block-aligned plaintext/AAD lengths, verifying the partial-final-block POLYVAL padding against the
     // published ciphertext+tag (a symmetric round-trip cannot).
     private static AeadKnownAnswer C1(string name, string key, string nonce, string aad, string pt, string ct, string tag) =>
         Rfc8452Vector("C.1", name, key, nonce, aad, pt, ct, tag);
 
-    // RFC 8452 Appendix C.2 — AES-256-GCM-SIV, the same plaintext/AAD shapes as C.1 under 32-byte keys.
+    // RFC 8452 Appendix C.2 - AES-256-GCM-SIV, the same plaintext/AAD shapes as C.1 under 32-byte keys.
     private static AeadKnownAnswer C2(string name, string key, string nonce, string aad, string pt, string ct, string tag) =>
         Rfc8452Vector("C.2", name, key, nonce, aad, pt, ct, tag);
 
-    // RFC 8452 Appendix C.3 — AES-256-GCM-SIV vectors crafted so the 32-bit block counter wraps.
+    // RFC 8452 Appendix C.3 - AES-256-GCM-SIV vectors crafted so the 32-bit block counter wraps.
     private static AeadKnownAnswer C3(string name, string key, string nonce, string aad, string pt, string ct, string tag) =>
         Rfc8452Vector("C.3", name, key, nonce, aad, pt, ct, tag);
 
@@ -307,7 +307,7 @@ public sealed partial class GcmSivModeTransformTests
 
     /// <summary>
     /// Verifies that GCM-SIV encrypt/decrypt round-trips and authenticates for plaintext lengths that straddle the
-    /// 16-byte POLYVAL block boundary — exercising the partial-final-block padding path — and that a single-bit tag
+    /// 16-byte POLYVAL block boundary - exercising the partial-final-block padding path - and that a single-bit tag
     /// tamper is rejected at each length. Deterministic (no RNG) so the boundary coverage is stable.
     /// </summary>
     /// <param name="plaintextLength">The plaintext length in bytes.</param>

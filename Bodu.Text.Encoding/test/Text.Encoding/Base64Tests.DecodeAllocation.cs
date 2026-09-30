@@ -32,7 +32,7 @@ public sealed partial class Base64Tests
 
     /// <summary>
     /// Verifies that <see cref="Base64.Decode(ReadOnlySpan{char}, Base64Variant, BaseFormatStyles)" /> returns a
-    /// byte array of the exact decoded length for an unpadded URL-safe input — the normalizer re-pads internally,
+    /// byte array of the exact decoded length for an unpadded URL-safe input - the normalizer re-pads internally,
     /// so the trim must still produce the right length.
     /// </summary>
     [TestMethod]

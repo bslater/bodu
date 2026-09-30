@@ -103,7 +103,7 @@ public sealed class HashAlgorithmHelperTests
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithmHelper.HashData{T}(IHashAlgorithmFactory{T}, System.ReadOnlySpan{byte})" />
-    /// produces the same digest as a directly-constructed algorithm for the same input — guards
+    /// produces the same digest as a directly-constructed algorithm for the same input - guards
     /// against the helper accidentally truncating, mis-copying, or zeroing the result.
     /// </summary>
     [TestMethod]
@@ -122,7 +122,7 @@ public sealed class HashAlgorithmHelperTests
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithmHelper.HashData{T}(IHashAlgorithmFactory{T}, Stream)" />
-    /// produces the same digest as the span overload for the same content — confirms that the
+    /// produces the same digest as the span overload for the same content - confirms that the
     /// internal stream pump uses the buffer pool correctly and finalises with an empty
     /// <c>TransformFinalBlock</c>.
     /// </summary>
@@ -168,7 +168,7 @@ public sealed class HashAlgorithmHelperTests
     private sealed class DisposalProbe
         : HashAlgorithm
     {
-        // HashSizeValue is in bits and must match the byte length returned by HashFinal —
+        // HashSizeValue is in bits and must match the byte length returned by HashFinal -
         // the framework's TryHashFinal validates this and throws InvalidOperationException
         // ("The algorithm's implementation is incorrect.") on mismatch.
         private const int HashSizeBits = 256;

@@ -51,7 +51,7 @@ public sealed partial class TextFilter
                 };
         }
 
-        /// <summary>The cost tier assigned to regular-expression entries — always the most expensive.</summary>
+        /// <summary>The cost tier assigned to regular-expression entries - always the most expensive.</summary>
         private const int RegexCostTier = 5;
 
         /// <summary>
@@ -80,7 +80,7 @@ public sealed partial class TextFilter
         public bool IsExclude { get; }
 
         /// <summary>
-        /// Gets the declaration index of the pattern this entry was compiled from — the slot it addresses in the
+        /// Gets the declaration index of the pattern this entry was compiled from - the slot it addresses in the
         /// declared-pattern array and the hit-count array.
         /// </summary>
         public int SourceIndex { get; }
@@ -114,7 +114,7 @@ public sealed partial class TextFilter
                 timeoutCount++;
 
                 // Fail safe by action, folded into one expression: an include reports false (a timeout must not
-                // admit the value) while an exclude reports true (a timeout must still veto it) — the filter can
+                // admit the value) while an exclude reports true (a timeout must still veto it) - the filter can
                 // never leak a value through because its exclude timed out.
                 return IsExclude;
             }

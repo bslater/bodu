@@ -1,6 +1,6 @@
 # Bodu.Financial.ExchangeRates.Rba
 
-> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
 
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **Reserve
 Bank of Australia's** published historical daily exchange-rate files.
@@ -9,7 +9,7 @@ It downloads the RBA `.xls` files, parses them (via
 [`Bodu.Formats.Excel.Binary`](../Bodu.Formats.Excel.Binary) →
 [`Bodu.IO.Compound`](../Bodu.IO.Compound)), and serves the results as
 `Bodu.Financial.ExchangeRates.ExchangeRate` values through the standard `IDatedRateProvider`
-and `IRateProvider` contracts — so it composes with `Money.ConvertTo`,
+and `IRateProvider` contracts - so it composes with `Money.ConvertTo`,
 the caching and aggregating providers, and the rest of the Bodu.Financial FX stack.
 
 ```csharp
@@ -53,10 +53,10 @@ foreach (RbaSeriesInfo info in provider.GetAvailablePairs())
 
 The provider is `IDisposable` and offers two construction styles:
 
-- `new RbaRateProvider(options, ...)` — the provider builds, owns, and disposes its own
+- `new RbaRateProvider(options, ...)` - the provider builds, owns, and disposes its own
   `HttpClient`, created via `RateProviderHttpClientFactory.Create` from the configured user agent
   and timeout. Dispose the provider (for example with `using`) to release the client.
-- `new RbaRateProvider(httpClient, options, ...)` — you supply the client and own its
+- `new RbaRateProvider(httpClient, options, ...)` - you supply the client and own its
   lifetime; the provider never disposes a client it did not create. This is the form the
   `*.DependencyInjection` package uses, backed by `IHttpClientFactory`.
 
@@ -68,7 +68,7 @@ constructor, or let the `*.DependencyInjection` package wire one for you (catego
 defaults to `NullLogger.Instance`, so logging is entirely opt-in and free when unused.
 
 The levels follow the conventions used by `Microsoft.Extensions.Http`, EF Core, and the
-Azure SDK — the completed download is the one `Information` line per fetch, payload detail
+Azure SDK - the completed download is the one `Information` line per fetch, payload detail
 is `Trace`, and degraded paths are `Warning`. Every level is individually configurable on
 `RbaRateProviderOptions`:
 
@@ -90,7 +90,7 @@ var options = new RbaRateProviderOptions
 
 The default verbosity is deliberately low: at `Information` you see one line per era
 loaded; at `Debug` you additionally see when downloads start; only at `Trace` do you get a
-line per rate observation (which can be thousands per era — keep it for targeted
+line per rate observation (which can be thousands per era - keep it for targeted
 debugging).
 
 Part of the [Bodu](https://github.com/bslater/bodu) utility library.

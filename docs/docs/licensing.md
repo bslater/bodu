@@ -4,7 +4,7 @@ title: Bodu licensing
 
 # Bodu licensing
 
-The Bodu suite — every primary library, every companion package, every data pack — is released under the **MIT License**.
+The Bodu suite - every primary library, every companion package, every data pack - is released under the **MIT License**.
 
 ## Summary
 
@@ -49,7 +49,7 @@ The Bodu libraries are intentionally light on external runtime dependencies. The
 | `Bodu.Globalization.Calendar.Caching.Sqlite`, `Bodu.Financial.ExchangeRates.Caching.Sqlite` | `Microsoft.Data.Sqlite` (which brings in the `SQLitePCLRaw` bundle and the native SQLite engine) | MIT; SQLitePCLRaw Apache 2.0; SQLite public domain |
 | `Bodu.Globalization.Calendar.Caching.Distributed`, `Bodu.Financial.ExchangeRates.Caching.Distributed` | `Microsoft.Extensions.Caching.Abstractions`, `Microsoft.Extensions.Caching.StackExchangeRedis` (which brings in `StackExchange.Redis`) | MIT |
 
-Every other package depends only on other Bodu packages and the .NET 8 BCL — several layer on a sibling (`Bodu.Financial` on `Bodu.Numerics`, `Bodu.Formats.Excel.Binary` on `Bodu.IO.Compound`, `Bodu.IO.Pst` on `Bodu.Collections`, the serializers on `Bodu.Text.Serialization`), but those are all MIT-licensed Bodu code. The [package matrix](package-matrix.md) lists each package's dependencies.
+Every other package depends only on other Bodu packages and the .NET 8 BCL - several layer on a sibling (`Bodu.Financial` on `Bodu.Numerics`, `Bodu.Formats.Excel.Binary` on `Bodu.IO.Compound`, `Bodu.IO.Pst` on `Bodu.Collections`, the serializers on `Bodu.Text.Serialization`), but those are all MIT-licensed Bodu code. The [package matrix](package-matrix.md) lists each package's dependencies.
 
 ## Contributing
 

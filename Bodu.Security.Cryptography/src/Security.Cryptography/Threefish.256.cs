@@ -42,7 +42,7 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// <para>
 /// <strong>When to choose Threefish-256.</strong> Pick the 256-bit variant when you want a tweakable block cipher at a
-/// comparable security margin to AES-256 with a smaller block than the wider Threefish variants — useful for per-record
+/// comparable security margin to AES-256 with a smaller block than the wider Threefish variants - useful for per-record
 /// encryption or short-tweak-driven schemes. Reach for <see cref="Threefish512" /> when a wider block reduces
 /// birthday-bound exposure on long messages, or for <see cref="Threefish1024" /> when the surrounding construction
 /// (e.g. a custom Skein-based AEAD) demands the widest block. For general-purpose encryption without a tweak

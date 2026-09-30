@@ -373,7 +373,7 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that read APIs — <see cref="ConcurrentCircularBuffer{T}.TryPeek" />, <see cref="ConcurrentCircularBuffer{T}.Peek" />, <see cref="ConcurrentCircularBuffer{T}.Contains" />, and the indexer — only surface documented exceptions (empty/out-of-range race conditions) while <see cref="ConcurrentCircularBuffer{T}.Clear" /> fires concurrently.
+    /// Verifies that read APIs - <see cref="ConcurrentCircularBuffer{T}.TryPeek" />, <see cref="ConcurrentCircularBuffer{T}.Peek" />, <see cref="ConcurrentCircularBuffer{T}.Contains" />, and the indexer - only surface documented exceptions (empty/out-of-range race conditions) while <see cref="ConcurrentCircularBuffer{T}.Clear" /> fires concurrently.
     /// </summary>
     [TestMethod]
     [DataRow(true)]

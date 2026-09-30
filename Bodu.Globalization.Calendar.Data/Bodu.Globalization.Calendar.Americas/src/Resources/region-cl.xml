@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ================================================================================================================
-  Chile (CL) — notable-date resource pack
+  Chile (CL) - notable-date resource pack
   ================================================================================================================
 
   National rules are scoped to territory "CL". Chile's public holidays are national, so there are no
@@ -46,43 +46,43 @@
 
   <NotableDates>
 
-    <!-- Navy Day (Día de las Glorias Navales) — 21 May, commemorating the 1879 Battle of Iquique. Strategy: Fixed day-of-month. -->
+    <!-- Navy Day (Día de las Glorias Navales) - 21 May, commemorating the 1879 Battle of Iquique. Strategy: Fixed day-of-month. -->
     <NotableDate id="navy-day" displayName="Navy Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="cl"><Applicability><Territory code="CL" /></Applicability>
         <Strategy><Fixed month="May" day="21" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Saints Peter and Paul (San Pedro y San Pablo) — 29 June (statutory base date; movable under Ley 19.668). Strategy: Fixed day-of-month. -->
+    <!-- Saints Peter and Paul (San Pedro y San Pablo) - 29 June (statutory base date; movable under Ley 19.668). Strategy: Fixed day-of-month. -->
     <NotableDate id="saints-peter-and-paul" displayName="Saints Peter and Paul" category="Religious" defaultNonWorkingDay="true">
       <Rules><Rule id="cl"><Applicability><Territory code="CL" /></Applicability>
         <Strategy><Fixed month="June" day="29" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Our Lady of Mount Carmel (Virgen del Carmen) — 16 July; the feast of Chile's patroness. Strategy: Fixed day-of-month. -->
+    <!-- Our Lady of Mount Carmel (Virgen del Carmen) - 16 July; the feast of Chile's patroness. Strategy: Fixed day-of-month. -->
     <NotableDate id="our-lady-of-mount-carmel" displayName="Our Lady of Mount Carmel" category="Religious" defaultNonWorkingDay="true">
       <Rules><Rule id="cl"><Applicability fromYear="2007"><Territory code="CL" /></Applicability>
         <Strategy><Fixed month="July" day="16" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Independence Day (Fiestas Patrias) — 18 September, marking the 1810 first government junta. Strategy: Fixed day-of-month. -->
+    <!-- Independence Day (Fiestas Patrias) - 18 September, marking the 1810 first government junta. Strategy: Fixed day-of-month. -->
     <NotableDate id="independence-day-cl" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="cl"><Applicability><Territory code="CL" /></Applicability>
         <Strategy><Fixed month="September" day="18" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Army Day (Día de las Glorias del Ejército) — 19 September. Strategy: Fixed day-of-month. -->
+    <!-- Army Day (Día de las Glorias del Ejército) - 19 September. Strategy: Fixed day-of-month. -->
     <NotableDate id="army-day-cl" displayName="Army Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="cl"><Applicability><Territory code="CL" /></Applicability>
         <Strategy><Fixed month="September" day="19" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Meeting of Two Worlds (Día del Encuentro de Dos Mundos) — 12 October (statutory base date; movable under Ley 19.668). Strategy: Fixed day-of-month. -->
+    <!-- Meeting of Two Worlds (Día del Encuentro de Dos Mundos) - 12 October (statutory base date; movable under Ley 19.668). Strategy: Fixed day-of-month. -->
     <NotableDate id="meeting-of-two-worlds" displayName="Meeting of Two Worlds" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="cl"><Applicability><Territory code="CL" /></Applicability>
         <Strategy><Fixed month="October" day="12" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Day of the Evangelical Churches (Día de las Iglesias Evangélicas) — 31 October (statutory base date; movable under Ley 19.668). Strategy: Fixed day-of-month. -->
+    <!-- Day of the Evangelical Churches (Día de las Iglesias Evangélicas) - 31 October (statutory base date; movable under Ley 19.668). Strategy: Fixed day-of-month. -->
     <NotableDate id="evangelical-churches-day" displayName="Day of the Evangelical and Protestant Churches" category="Religious" defaultNonWorkingDay="true">
       <Rules><Rule id="cl"><Applicability fromYear="2008"><Territory code="CL" /></Applicability>
         <Strategy><Fixed month="October" day="31" /></Strategy></Rule></Rules>

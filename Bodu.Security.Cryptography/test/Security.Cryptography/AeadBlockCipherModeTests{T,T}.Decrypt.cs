@@ -14,7 +14,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
     /// <summary>
     /// Verifies that <see cref="IAeadBlockCipherModeTransform.Decrypt" /> throws
-    /// <see cref="ArgumentException" /> when the input is shorter than the tag alone —
+    /// <see cref="ArgumentException" /> when the input is shorter than the tag alone -
     /// there is no ciphertext and no complete tag to verify.
     /// </summary>
     [TestMethod]
@@ -319,7 +319,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         buf[0] ^= 0xFF; // tamper the ciphertext
 
         byte[] output = new byte[plaintext.Length];
-        Array.Fill(output, (byte)0xCC); // sentinel — any non-zero value
+        Array.Fill(output, (byte)0xCC); // sentinel - any non-zero value
 
         TTransform decTransform = CreateTransform(cipher, (byte[])iv.Clone());
         Assert.ThrowsExactly<CryptographicException>(() =>
@@ -339,7 +339,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// <remarks>
     /// The sweep first counts how many block operations a clean decrypt performs (transform construction included),
     /// then re-runs the decrypt once per call index with a fault injected at exactly that call. A fault that lands in
-    /// construction-time key derivation is skipped — no decrypt ran and the output was never handed over. For every
+    /// construction-time key derivation is skipped - no decrypt ran and the output was never handed over. For every
     /// fault that escapes <see cref="IAeadBlockCipherModeTransform.Decrypt" /> itself, the sentinel-filled output must
     /// come back all-zero, mirroring the tag-mismatch clearing contract of
     /// <see cref="Decrypt_OnAuthenticationFailure_ShouldZeroOutputBuffer" />.
@@ -379,11 +379,11 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
             }
             catch (InvalidOperationException)
             {
-                continue; // the fault landed in construction-time key derivation — Decrypt never ran
+                continue; // the fault landed in construction-time key derivation - Decrypt never ran
             }
 
             byte[] output = new byte[plaintext.Length];
-            Array.Fill(output, (byte)0xCC); // sentinel — any non-zero value
+            Array.Fill(output, (byte)0xCC); // sentinel - any non-zero value
 
             try
             {

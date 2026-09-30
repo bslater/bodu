@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-labelledby="ad-title ad-desc">
-  <title id="ad-title">Adler-32 — twin running sums A and B</title>
+  <title id="ad-title">Adler-32 - twin running sums A and B</title>
   <desc id="ad-desc">The Adler-32 checksum maintains two running sums. A starts at 1 and accumulates each input byte modulo 65521. B starts at 0 and accumulates the running value of A, also modulo 65521. Because B depends on the running A, the checksum is position-dependent and catches transpositions. The final 32-bit output is B shifted left by 16 bits combined with A.</desc>
 
   <defs>
@@ -44,7 +44,7 @@
     <rect class="panel" width="800" height="280" rx="8"/>
     <rect class="header" width="800" height="46" rx="8"/>
     <rect class="header" y="38" width="800" height="8"/>
-    <text class="title" x="16" y="20">Adler-32 — twin sums A, B (mod 65521)</text>
+    <text class="title" x="16" y="20">Adler-32 - twin sums A, B (mod 65521)</text>
     <text class="formula" x="784" y="38" text-anchor="end">A ← (A + byte) mod 65521;   B ← (B + A) mod 65521;   output = (B « 16) | A</text>
 
     <!-- incoming byte -->
@@ -95,9 +95,9 @@
     <!-- variant legend -->
     <g transform="translate(636 60)">
       <text class="sub" x="0" y="0">Variants:</text>
-      <text class="sub-muted" x="0" y="18">Adler-32 — mod 65521 (zlib)</text>
-      <text class="sub-muted" x="0" y="34">Adler-32C — mod 65536 (SIMD)</text>
-      <text class="sub-muted" x="0" y="50">Adler-64 — mod 4294967291</text>
+      <text class="sub-muted" x="0" y="18">Adler-32 - mod 65521 (zlib)</text>
+      <text class="sub-muted" x="0" y="34">Adler-32C - mod 65536 (SIMD)</text>
+      <text class="sub-muted" x="0" y="50">Adler-64 - mod 4294967291</text>
     </g>
 
     <!-- footer note -->

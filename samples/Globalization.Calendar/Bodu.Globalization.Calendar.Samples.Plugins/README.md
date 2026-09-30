@@ -6,7 +6,7 @@ allowed to run at all.
 
 The plugin lives in the sibling `Bodu.Globalization.Calendar.Samples.Plugin.Contoso` project. This
 host references it with `ReferenceOutputAssembly="false"`, so the DLL is built and copied into a
-`plugins/` folder beside the host while its **types stay unavailable at compile time** — the host can
+`plugins/` folder beside the host while its **types stay unavailable at compile time** - the host can
 only reach it through the loader, which is the arrangement a real plugin host has.
 
 ```bash
@@ -27,14 +27,14 @@ its algorithms into a `NotableDateAlgorithmRegistry`, and resolves a year agains
 that references one of them by the key `contoso.founding-day`.
 
 **Expected output.** `Contoso Calendar 1.0.0`, one algorithm registered, and Founding Day resolving
-to Friday 13 March 2026 — the algorithm rolls 12 March to the Friday of its week. New Year's Day
+to Friday 13 March 2026 - the algorithm rolls 12 March to the Friday of its week. New Year's Day
 resolves from an ordinary fixed rule beside it, so plugin-fed and built-in rules coexist in one
 document.
 
 **APIs.** `NotableDatePluginLoader.LoadFromFile` / `RegisterAlgorithms`, `NotableDatePluginHandle`
 (`Plugin`, `IsUnloadable`, `Dispose`), `INotableDateAlgorithmPlugin`, `AllowAllPluginTrustPolicy`.
 
-### The trust gate — why loading a plugin takes a policy
+### The trust gate - why loading a plugin takes a policy
 
 **Intent.** Show that the policy is not optional, and what the useful policies are.
 
@@ -44,7 +44,7 @@ wrong hash; then shows a `DelegatingPluginTrustPolicy` expressing a host's own r
 
 **Expected output.** The matching hash loads. The wrong hash raises `PluginNotTrustedException`
 carrying the reason, **before any plugin code runs**. The composite refuses because one member
-refuses — composition can only narrow trust.
+refuses - composition can only narrow trust.
 
 **APIs.** `FileHashPluginTrustPolicy`, `DelegatingPluginTrustPolicy`, `CompositePluginTrustPolicy`,
 `PluginTrustResult`, `PluginTrustContext`, `PluginNotTrustedException`.
@@ -68,6 +68,6 @@ dotnet add package Bodu.Globalization.Calendar.Builder
 
 ## Related
 
-- `Bodu.Globalization.Calendar.Samples.CustomAlgorithm` — the same extension point reached by
+- `Bodu.Globalization.Calendar.Samples.CustomAlgorithm` - the same extension point reached by
   registering an algorithm in-process, when you control the host and do not need an external
   assembly.

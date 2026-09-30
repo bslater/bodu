@@ -177,7 +177,7 @@ public partial class BitSetTests
     }
 
     /// <summary>
-    /// Verifies that a within-capacity <see cref="BitSet.Clear(int)" /> — a real mutation — still invalidates an
+    /// Verifies that a within-capacity <see cref="BitSet.Clear(int)" /> - a real mutation - still invalidates an
     /// active enumerator, causing <c>MoveNext</c> to throw <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]

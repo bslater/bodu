@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic;
 public partial class OrderedSetStorageTests
 {
     // --------------------------------------------------------
-    // Constructor — argument validation
+    // Constructor - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -44,7 +44,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // Constructor — capacity handling
+    // Constructor - capacity handling
     // --------------------------------------------------------
 
     /// <summary>
@@ -60,7 +60,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // Constructor — comparer handling
+    // Constructor - comparer handling
     // --------------------------------------------------------
 
     /// <summary>

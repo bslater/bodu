@@ -1,13 +1,13 @@
 # Bodu.Financial.ExchangeRates.Yahoo
 
-> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
 
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **Yahoo
 Finance** chart REST service.
 
 It fetches the Yahoo Finance `v8/finance/chart/{symbol}` endpoint, parses the JSON
 response, and serves the results as `Bodu.Financial.ExchangeRates.ExchangeRate` values through the
-standard `IDatedRateProvider` and `IRateProvider` contracts — so it
+standard `IDatedRateProvider` and `IRateProvider` contracts - so it
 composes with `Money.ConvertTo`, the caching and aggregating providers, and the rest of
 the Bodu.Financial FX stack. It is a logical sister to
 [`Bodu.Financial.ExchangeRates.Rba`](../Bodu.Financial.ExchangeRates.Rba): the same
@@ -49,18 +49,18 @@ decimal latest = provider.GetRate("EUR", "GBP");
 - **No provider-local disk cache.** The Yahoo provider fetches over HTTP and keeps only an
   in-memory store of the pairs and windows it has fetched this session; it does not persist
   anything to disk. For durable caching across processes, compose it with the generic
-  caching provider — `AddCachedRateProvider<…>` from the
-  [`Bodu.Financial.ExchangeRates.Caching`](../Bodu.Financial.ExchangeRates.Caching) package
-  — rather than a provider-local cache.
+  caching provider - `AddCachedRateProvider<…>` from the
+  [`Bodu.Financial.ExchangeRates.Caching`](../Bodu.Financial.ExchangeRates.Caching) package -
+  rather than a provider-local cache.
 
 ## HTTP client and lifetime
 
 The provider is `IDisposable` and offers two construction styles:
 
-- `new YahooRateProvider(options, ...)` — the provider builds, owns, and disposes its
+- `new YahooRateProvider(options, ...)` - the provider builds, owns, and disposes its
   own `HttpClient`, created via `RateProviderHttpClientFactory.Create` from the configured user
   agent and timeout. Dispose the provider (for example with `using`) to release the client.
-- `new YahooRateProvider(httpClient, options, ...)` — you supply the client and own its
+- `new YahooRateProvider(httpClient, options, ...)` - you supply the client and own its
   lifetime; the provider never disposes a client it did not create. This is the form the
   `*.DependencyInjection` package uses, backed by `IHttpClientFactory`.
 
@@ -87,7 +87,7 @@ fetches over HTTP with no provider-local disk cache. Use the generic
 ## Dependency injection
 
 The package ships its own `AddYahooExchangeRates` registration in the
-`Bodu.Financial.ExchangeRates` namespace — there is no separate `*.DependencyInjection`
+`Bodu.Financial.ExchangeRates` namespace - there is no separate `*.DependencyInjection`
 package.
 
 ## Logging
@@ -98,7 +98,7 @@ constructor, or let the `*.DependencyInjection` package wire one for you (catego
 it defaults to `NullLogger.Instance`, so logging is entirely opt-in and free when unused.
 
 The levels follow the conventions used by `Microsoft.Extensions.Http`, EF Core, and the
-Azure SDK — the completed download is the one `Information` line per fetch, payload detail
+Azure SDK - the completed download is the one `Information` line per fetch, payload detail
 is `Trace`, and degraded paths are `Warning`. Every level is individually configurable on
 `YahooRateProviderOptions`:
 
@@ -121,7 +121,7 @@ var options = new YahooRateProviderOptions
 
 The default verbosity is deliberately low: at `Information` you see one line per pair/chart
 loaded; at `Debug` you additionally see when downloads start; only at `Trace` do you get a
-line per rate observation (which can be hundreds per chart — keep it for targeted
+line per rate observation (which can be hundreds per chart - keep it for targeted
 debugging).
 
 Part of the [Bodu](https://github.com/bslater/bodu) utility library.

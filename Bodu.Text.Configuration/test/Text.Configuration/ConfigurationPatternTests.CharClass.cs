@@ -29,7 +29,7 @@ public partial class ConfigurationPatternTests
 
     /// <summary>
     /// Verifies that an empty negated set rejects every character, matching the EditorConfig 0.17.2 behaviour
-    /// of treating <c>[!]</c> as "not in the empty set" — every character matches.
+    /// of treating <c>[!]</c> as "not in the empty set" - every character matches.
     /// </summary>
     [TestMethod]
     public void IsMatch_WhenCharacterClassIsExplicitAndContains_ShouldMatchOnlyListed()

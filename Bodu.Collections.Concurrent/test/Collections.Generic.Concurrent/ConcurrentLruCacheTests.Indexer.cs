@@ -53,7 +53,7 @@ public partial class ConcurrentLruCacheTests
 
     /// <summary>
     /// Verifies that the indexer getter records telemetry like
-    /// <see cref="ConcurrentLruCache{TKey, TValue}.TryGetValue" /> — a hit on success and a miss before throwing.
+    /// <see cref="ConcurrentLruCache{TKey, TValue}.TryGetValue" /> - a hit on success and a miss before throwing.
     /// </summary>
     [TestMethod]
     public void Indexer_WhenRead_ShouldRecordTelemetry()

@@ -10,8 +10,8 @@ using System.Text;
 namespace Bodu.IO.Biff;
 
 /// <summary>
-/// Provides a span-backed view over a text value embedded in a BIFF record — a BIFF8 Unicode string (16-bit or
-/// compressed 8-bit characters with option flags, rich-text runs, and extended data) or a BIFF5 code-page byte string —
+/// Provides a span-backed view over a text value embedded in a BIFF record - a BIFF8 Unicode string (16-bit or
+/// compressed 8-bit characters with option flags, rich-text runs, and extended data) or a BIFF5 code-page byte string -
 /// without materializing a <see cref="string" /> until the caller asks for one.
 /// </summary>
 /// <remarks>

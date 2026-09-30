@@ -1,14 +1,14 @@
 ---
-title: Bodu.Text.DotEnv — Introduction
+title: Bodu.Text.DotEnv - Introduction
 ---
 
 ![Bodu.Text.DotEnv](../../../images/hero-dotenv.svg)
 
 # Bodu.Text.DotEnv
 
-**Bodu.Text.DotEnv** reads and writes `.env` files — a flat object of `KEY=value` entries with optional `export` prefixes, single- and double-quoted values, and `#` comments — as a standalone `System.Text.Json`-shaped library: a forward-only `ref struct` reader/writer pair over UTF-8 bytes, a typed settings serializer, an `export`-flag-preserving mutable DOM, and a read-only document DOM. It is one of the three [Bodu line formats](../index.md) and shares the [Bodu.Text.Serialization](../../serialization/core/index.md) attribute, naming-policy, and callback vocabulary with every other Bodu serializer.
+**Bodu.Text.DotEnv** reads and writes `.env` files - a flat object of `KEY=value` entries with optional `export` prefixes, single- and double-quoted values, and `#` comments - as a standalone `System.Text.Json`-shaped library: a forward-only `ref struct` reader/writer pair over UTF-8 bytes, a typed settings serializer, an `export`-flag-preserving mutable DOM, and a read-only document DOM. It is one of the three [Bodu line formats](../index.md) and shares the [Bodu.Text.Serialization](../../serialization/core/index.md) attribute, naming-policy, and callback vocabulary with every other Bodu serializer.
 
-Values are deliberately **literal** — no `${VAR}` interpolation happens at parse time — and the wire is string-only, so the serializer converts scalars with `InvariantCulture` at the binding layer. The `Web` preset applies the SCREAMING_SNAKE_CASE naming policy with case-insensitive matching, so conventional `APP_PORT`-style keys bind onto PascalCase members without a single `[PropertyName]`.
+Values are deliberately **literal** - no `${VAR}` interpolation happens at parse time - and the wire is string-only, so the serializer converts scalars with `InvariantCulture` at the binding layer. The `Web` preset applies the SCREAMING_SNAKE_CASE naming policy with case-insensitive matching, so conventional `APP_PORT`-style keys bind onto PascalCase members without a single `[PropertyName]`.
 
 Part of the **[Text & Serialization](../../topics/text-and-serialization.md)** topic.
 
@@ -58,8 +58,8 @@ Settings settings = DotEnvSerializer.Deserialize<Settings>(env, new DotEnvSerial
 
 ## Where to go next
 
-- **[Line formats introduction](../index.md)**, **[Core concepts](../concepts.md)**, and **[Getting started](../getting-started.md)** — the umbrella trio shared by all three formats.
-- **[Using DotEnv](../../../guides/formats/dotenv.md)** — literal values, quoting rules, export prefixes, typed settings, the mutable DOM.
-- **[Parser policies](../parser-policies.md)** — the `DisallowExportPrefix` / `DisallowInlineComments` knobs.
-- **[Runnable samples](../../../samples/formats.md)** — the `ConfigFiles` sample project.
-- **API reference** — <xref:Bodu.Text.DotEnv>.
+- **[Line formats introduction](../index.md)**, **[Core concepts](../concepts.md)**, and **[Getting started](../getting-started.md)** - the umbrella trio shared by all three formats.
+- **[Using DotEnv](../../../guides/formats/dotenv.md)** - literal values, quoting rules, export prefixes, typed settings, the mutable DOM.
+- **[Parser policies](../parser-policies.md)** - the `DisallowExportPrefix` / `DisallowInlineComments` knobs.
+- **[Runnable samples](../../../samples/formats.md)** - the `ConfigFiles` sample project.
+- **API reference** - <xref:Bodu.Text.DotEnv>.

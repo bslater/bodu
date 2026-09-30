@@ -58,7 +58,7 @@ public partial class NumericExtensionsTests
         });
 
     // --------------------------------------------------
-    // byte / sbyte — single-byte types are endianness-neutral
+    // byte / sbyte - single-byte types are endianness-neutral
     // --------------------------------------------------
 
     /// <summary>
@@ -174,7 +174,7 @@ public partial class NumericExtensionsTests
     }
 
     // --------------------------------------------------
-    // float / double — IEEE 754, compared against BitConverter
+    // float / double - IEEE 754, compared against BitConverter
     // --------------------------------------------------
 
     /// <summary>
@@ -230,7 +230,7 @@ public partial class NumericExtensionsTests
         CollectionAssert.AreEqual(expected, value.GetBytes(asBigEndian: true));
 
     // --------------------------------------------------
-    // int / uint — little-endian
+    // int / uint - little-endian
     // --------------------------------------------------
 
     /// <summary>
@@ -263,7 +263,7 @@ public partial class NumericExtensionsTests
         CollectionAssert.AreEqual(expected, value.GetBytes(asBigEndian: true));
 
     // --------------------------------------------------
-    // long / ulong — little-endian
+    // long / ulong - little-endian
     // --------------------------------------------------
 
     /// <summary>
@@ -323,7 +323,7 @@ public partial class NumericExtensionsTests
         CollectionAssert.AreEqual(expected, value.GetBytes(asBigEndian: true));
 
     // --------------------------------------------------
-    // short / ushort — little-endian
+    // short / ushort - little-endian
     // --------------------------------------------------
 
     /// <summary>

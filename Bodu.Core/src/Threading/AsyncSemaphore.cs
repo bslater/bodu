@@ -243,8 +243,8 @@ public sealed partial class AsyncSemaphore
         lock (_gate)
         {
             // Validate the entire release against the bound before granting anything, so a rejected Release has no
-            // partial effect. Under the gate every queued waiter can still accept a permit — cancellation completes a
-            // waiter's task only after removing it from the queue under this same gate — so the stored remainder is
+            // partial effect. Under the gate every queued waiter can still accept a permit - cancellation completes a
+            // waiter's task only after removing it from the queue under this same gate - so the stored remainder is
             // exactly the release count minus the queued waiters it will satisfy. The maximum applies only to that
             // stored count, per the documented rule.
             int toStore = releaseCount - Math.Min(releaseCount, _waiters.Count);

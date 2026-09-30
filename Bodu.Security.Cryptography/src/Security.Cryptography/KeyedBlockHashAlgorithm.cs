@@ -30,16 +30,16 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>When to derive from this class.</strong> Pick <see cref="KeyedBlockHashAlgorithm" /> for keyed hashes that
-/// follow the Merkle–Damgård pad-and-finalize pattern and require a fixed-length key — <see cref="Poly1305" /> (32-byte
+/// follow the Merkle-Damgård pad-and-finalize pattern and require a fixed-length key - <see cref="Poly1305" /> (32-byte
 /// key) and <see cref="SipHash" /> (16-byte key) are the canonical users. For BLAKE-family hashes that accept an <em>optional</em>
 /// variable-length key derive from <see cref="KeyedDeferredFinalBlockHashAlgorithm" /> instead. For unkeyed
-/// Merkle–Damgård hashes use <see cref="BlockHashAlgorithm" /> directly.
+/// Merkle-Damgård hashes use <see cref="BlockHashAlgorithm" /> directly.
 /// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Consume through a concrete keyed derivative — Poly1305 needs a 32-byte one-time key.
+/// // Consume through a concrete keyed derivative - Poly1305 needs a 32-byte one-time key.
 /// byte[] key = new byte[32];
 /// RandomNumberGenerator.Fill(key);
 ///
@@ -171,7 +171,7 @@ public abstract class KeyedBlockHashAlgorithm
 
     /// <summary>
     /// Resets the algorithm to its initial state, ready to accept fresh input. Derived classes should override
-    /// <see cref="OnKeyChanged" /> — invoked automatically from here — to rebuild any key-dependent internal state.
+    /// <see cref="OnKeyChanged" /> - invoked automatically from here - to rebuild any key-dependent internal state.
     /// </summary>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
     /// <exception cref="CryptographicException">

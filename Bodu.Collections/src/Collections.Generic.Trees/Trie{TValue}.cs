@@ -23,8 +23,8 @@ namespace Bodu.Collections.Generic.Trees;
 /// <see cref="IEqualityComparer{Char}" /> supplied at construction, allowing ordinal or case-insensitive matching.
 /// </para>
 /// <para>
-/// The empty string is a valid key. Enumeration order — whether through <see cref="GetEnumerator" />,
-/// <see cref="KeysWithPrefix(string)" />, or <see cref="ItemsWithPrefix(string)" /> — is unspecified in this version.
+/// The empty string is a valid key. Enumeration order - whether through <see cref="GetEnumerator" />,
+/// <see cref="KeysWithPrefix(string)" />, or <see cref="ItemsWithPrefix(string)" /> - is unspecified in this version.
 /// The trie is not thread-safe for concurrent mutation.
 /// </para>
 /// </remarks>

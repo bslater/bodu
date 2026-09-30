@@ -16,7 +16,7 @@ namespace Bodu.IO.Biff;
 /// <param name="FontIndex">The index of the cell's font in the <c>FONT</c> record sequence.</param>
 /// <param name="FormatIndex">The index of the cell's number format.</param>
 /// <param name="TypeField">
-/// The raw type-and-protection word: locked (bit 0), hidden (bit 1), style (bit 2), parent style index (bits 4–15).
+/// The raw type-and-protection word: locked (bit 0), hidden (bit 1), style (bit 2), parent style index (bits 4-15).
 /// </param>
 /// <seealso cref="BiffReader.GetXf" /> <seealso cref="BiffWriter.WriteXf(in BiffXfRecord)" />
 /// <seealso cref="BiffFormatRecord" /> <seealso cref="BiffFontRecord" />
@@ -52,7 +52,7 @@ public readonly record struct BiffXfRecord(ushort FontIndex, ushort FormatIndex,
     /// <summary>
     /// Gets the index of the parent style format.
     /// </summary>
-    /// <value>Bits 4–15 of <see cref="TypeField" />; <c>0xFFF</c> for a style record with no parent.</value>
+    /// <value>Bits 4-15 of <see cref="TypeField" />; <c>0xFFF</c> for a style record with no parent.</value>
     public int ParentStyleIndex => TypeField >> 4;
 
     /// <summary>

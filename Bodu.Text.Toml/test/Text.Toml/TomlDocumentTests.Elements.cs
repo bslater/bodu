@@ -329,7 +329,7 @@ public partial class TomlDocumentTests
 
     /// <summary>
     /// Verifies that property lookups over a table large enough to be hash-indexed by the structural parser resolve
-    /// through the inherited index — every key is found with its pinned value, and a missing key reports absent.
+    /// through the inherited index - every key is found with its pinned value, and a missing key reports absent.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]

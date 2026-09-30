@@ -9,8 +9,8 @@ using Bodu.IO.Biff;
 namespace Bodu.Formats.Excel.Biff;
 
 /// <summary>
-/// Reads a single BIFF substream — the records from a beginning-of-file marker up to and including the matching
-/// end-of-file marker — from a workbook stream into a contiguous buffer.
+/// Reads a single BIFF substream - the records from a beginning-of-file marker up to and including the matching
+/// end-of-file marker - from a workbook stream into a contiguous buffer.
 /// </summary>
 /// <remarks>
 /// Reading a bounded substream keeps memory proportional to one sheet (or the workbook globals) rather than the whole

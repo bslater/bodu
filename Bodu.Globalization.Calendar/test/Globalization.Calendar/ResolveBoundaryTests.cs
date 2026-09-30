@@ -223,7 +223,7 @@ public sealed class ResolveBoundaryTests
     }
 
     /// <summary>
-    /// Verifies that an offset rule whose projection lands exactly on <see cref="DateOnly.MaxValue" /> emits — the
+    /// Verifies that an offset rule whose projection lands exactly on <see cref="DateOnly.MaxValue" /> emits - the
     /// boundary value itself is supported. Anchor 25 Dec 9999 + 6 days = 31 Dec 9999.
     /// </summary>
     [TestMethod]

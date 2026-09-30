@@ -65,7 +65,7 @@ public partial class CrcStandardTests
     }
 
     /// <summary>
-    /// Verifies that the private deserialization constructor validates its parameters — an out-of-range
+    /// Verifies that the private deserialization constructor validates its parameters - an out-of-range
     /// <see cref="CrcStandard.Size" /> is rejected with <see cref="ArgumentOutOfRangeException" /> rather than
     /// smuggled into a supposedly immutable, validated parameter set.
     /// </summary>

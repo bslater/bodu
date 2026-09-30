@@ -8,7 +8,7 @@ namespace Bodu.Globalization.Calendar.Samples.Caching;
 
 /// <summary>
 /// A pass-through <see cref="INotableDateService" /> decorator that counts how many range resolutions reach the
-/// inner service, so the scenarios can prove — deterministically, without timing — when the cache absorbed a query.
+/// inner service, so the scenarios can prove - deterministically, without timing - when the cache absorbed a query.
 /// </summary>
 public sealed class CountingNotableDateService : INotableDateService
 {

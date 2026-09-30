@@ -505,13 +505,13 @@ $sb = [System.Text.StringBuilder]::new()
 [void]$sb.AppendLine('Per-package line and branch coverage for every packable Bodu package, computed from a merged')
 [void]$sb.AppendLine('Cobertura report. Regenerate with `pwsh tools/New-CoverageMatrix.ps1`; do not hand-edit.')
 [void]$sb.AppendLine()
-[void]$sb.AppendLine('Legend: `—` = not part of this collection · `n/a` = excluded by design (see [Code coverage strategy](code-coverage.md)).')
+[void]$sb.AppendLine('Legend: `-` = not part of this collection · `n/a` = excluded by design (see [Code coverage strategy](code-coverage.md)).')
 [void]$sb.AppendLine()
 [void]$sb.AppendLine('| Package | Status | Line % | Branch % | Covered / total lines |')
 [void]$sb.AppendLine('|---|---|--:|--:|--:|')
 
 foreach ($row in $rows) {
-    $absent = if ($row.Excluded) { 'n/a' } else { '—' }
+    $absent = if ($row.Excluded) { 'n/a' } else { '-' }
     $line = if ($null -ne $row.LineRate) { "$($row.LineRate)%" } else { $absent }
     $branch = if ($null -ne $row.BranchRate) { "$($row.BranchRate)%" } else { $absent }
     $lines = if ($row.Collected) { "$($row.CoveredLines) / $($row.TotalLines)" } else { $absent }
@@ -524,7 +524,7 @@ if ($rows | Where-Object Excluded) {
     [void]$sb.AppendLine()
 
     foreach ($row in $rows | Where-Object Excluded) {
-        [void]$sb.AppendLine("- ``$($row.Package)`` — $($notMeasurable[$row.Package])")
+        [void]$sb.AppendLine("- ``$($row.Package)`` - $($notMeasurable[$row.Package])")
     }
 }
 

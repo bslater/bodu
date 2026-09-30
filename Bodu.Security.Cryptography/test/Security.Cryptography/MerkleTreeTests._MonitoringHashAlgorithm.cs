@@ -78,8 +78,8 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that exactly one prefixed payload is hashed per leaf and per hashed node — a promoted node is never
-    /// re-hashed, and the tail is hashed at its actual length — on both instances.
+    /// Verifies that exactly one prefixed payload is hashed per leaf and per hashed node - a promoted node is never
+    /// re-hashed, and the tail is hashed at its actual length - on both instances.
     /// </summary>
     /// <param name="dataLength">The input length in bytes.</param>
     /// <param name="fanOut">The fan-out.</param>
@@ -87,7 +87,7 @@ public partial class MerkleTreeTests
     [TestMethod]
     [DataRow(8, 2, 19)]    // 2 leaves × (1 + 4) + root (1 + 2×4)
     [DataRow(12, 2, 33)]   // 3 leaves × 5 + pair 9 + root 9; the promoted third leaf is not hashed again
-    [DataRow(5, 2, 16)]    // leaves (1 + 4) + (1 + 1) — the tail at its actual length — and the root 9
+    [DataRow(5, 2, 16)]    // leaves (1 + 4) + (1 + 1) - the tail at its actual length - and the root 9
     [DataRow(12, 3, 28)]   // 3 leaves × 5 + one root of three children (1 + 3×4)
     [DataRow(16, 3, 42)]   // 4 leaves × 5 + a group of three 13; the fourth leaf is promoted and joins it in the root 9
     public void MonitoringAlgorithm_WhenHashing_ShouldProcessExactlyOnePrefixedPayloadPerLeafAndHashedNode(int dataLength, int fanOut, int expectedBytes)
@@ -112,7 +112,7 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that leaves hashed in parallel are folded in input order — the additive oracle is order-insensitive
+    /// Verifies that leaves hashed in parallel are folded in input order - the additive oracle is order-insensitive
     /// per group but the tree shape over 1,000 leaves is not.
     /// </summary>
     [TestMethod]

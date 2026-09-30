@@ -4,9 +4,9 @@ title: Using DotEnv
 
 # Using DotEnv
 
-`Bodu.Text.DotEnv` reads and writes `.env` files — a flat object of `KEY=value` entries with `export` prefixes, quoting, and comments. Values are deliberately **literal**: no `${VAR}` interpolation happens at parse time.
+`Bodu.Text.DotEnv` reads and writes `.env` files - a flat object of `KEY=value` entries with `export` prefixes, quoting, and comments. Values are deliberately **literal**: no `${VAR}` interpolation happens at parse time.
 
-## Pattern 1 — query a document
+## Pattern 1 - query a document
 
 <!-- compile -->
 ```csharp
@@ -24,7 +24,7 @@ foreach (DotEnvProperty property in root.EnumerateObject())
 }
 ```
 
-## Pattern 2 — typed settings via the serializer
+## Pattern 2 - typed settings via the serializer
 
 The `Web` defaults apply the SCREAMING_SNAKE_CASE naming policy with case-insensitive matching, so conventional env keys bind onto PascalCase members:
 
@@ -44,7 +44,7 @@ Settings settings = DotEnvSerializer.Deserialize<Settings>(
 
 `Deserialize<Dictionary<string, string>>` binds the whole file as a dictionary. The write direction (`Serialize`) emits `KEY=value` lines; `DotEnvSerializerOptions.WriteExportPrefix` adds the `export` keyword.
 
-## Pattern 3 — author and round-trip with the mutable DOM
+## Pattern 3 - author and round-trip with the mutable DOM
 
 <!-- compile -->
 ```csharp

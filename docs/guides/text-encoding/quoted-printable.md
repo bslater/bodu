@@ -5,7 +5,7 @@ title: Using Quoted-Printable (MIME bodies)
 # Using Quoted-Printable (MIME bodies)
 
 `QuotedPrintable` implements the MIME Quoted-Printable body content-transfer encoding of
-**RFC 2045 §6.7** — the sibling of MIME Base64 for *mostly-readable*, 7-bit-safe text. Printable ASCII passes through
+**RFC 2045 §6.7** - the sibling of MIME Base64 for *mostly-readable*, 7-bit-safe text. Printable ASCII passes through
 literally; every other octet becomes an `=HH` escape with uppercase hexadecimal digits. Lines are kept within a
 configurable limit by inserting **soft line breaks** (a trailing `=` followed by the newline) that the decoder removes.
 
@@ -26,7 +26,7 @@ using Bodu.Text.Encoding;
 
 byte[] data = "café = møney"u8.ToArray();
 
-// Binary mode (default) — arbitrary octets, 76-column soft wrapping, CRLF.
+// Binary mode (default) - arbitrary octets, 76-column soft wrapping, CRLF.
 string encoded = QuotedPrintable.Encode(data);
 
 // Round-trip.
@@ -35,7 +35,7 @@ byte[] back = QuotedPrintable.Decode(encoded);
 
 ## Binary vs text mode
 
-`QuotedPrintable` does not fit the flat-byte `Base{N}` shape — its output length depends on the content — so it is a
+`QuotedPrintable` does not fit the flat-byte `Base{N}` shape - its output length depends on the content - so it is a
 **static type, not an [`IBinaryEncoding`](binary-encodings-interface.md)**. The only structural choice is how line
 breaks in the *source* are treated:
 
@@ -62,7 +62,7 @@ QuotedPrintable.Encode(crlf, new(QuotedPrintableEncodingMode.Text));       // "l
 
 | Octet | Output |
 |---|---|
-| Printable ASCII `0x21`–`0x3C`, `0x3E`–`0x7E` (except `=`) | Literal |
+| Printable ASCII `0x21`-`0x3C`, `0x3E`-`0x7E` (except `=`) | Literal |
 | `=` (`0x3D`) | Always `=3D` |
 | Space / tab in the middle of a line | Literal |
 | Space / tab at the end of a line | `=20` / `=09` (a decoder may delete trailing whitespace) |
@@ -104,14 +104,14 @@ characters, and stray control characters.
 ```csharp
 QuotedPrintable.IsValid("abc=\r\ndef");                  // true (soft break)
 QuotedPrintable.IsValid("=GG");                          // false
-QuotedPrintable.IsValid(new string('A', 77));            // false — exceeds the 76-char line limit
+QuotedPrintable.IsValid(new string('A', 77));            // false - exceeds the 76-char line limit
 
 QuotedPrintable.GetEncodedLength(data);                  // exact encoded length (scans the data)
 QuotedPrintable.GetMaxEncodedLength(data.Length);        // worst-case upper bound
 QuotedPrintable.TryGetDecodedLength(text, out int n);    // exact decoded length, false if malformed
 ```
 
-`IsValid` checks **canonical** RFC 2045 conformance — including the 76-character encoded-line limit (the soft-break
+`IsValid` checks **canonical** RFC 2045 conformance - including the 76-character encoded-line limit (the soft-break
 `=` counted, the CRLF not). `Decode` is more lenient: it recovers overlong lines that `IsValid` rejects, so
 `IsValid(x) == true` implies `Decode(x)` succeeds but not the reverse. `TryGetDecodedLength` mirrors `Decode` (it
 ignores the line limit), so it can always size a decode buffer.
@@ -123,11 +123,11 @@ char[] buffer = new char[QuotedPrintable.GetMaxEncodedLength(data.Length)];
 bool ok = QuotedPrintable.TryEncode(data, buffer, out int written);
 ```
 
-`TryEncode` / `TryDecode` never throw for malformed input, invalid options, or an undersized destination — they return
+`TryEncode` / `TryDecode` never throw for malformed input, invalid options, or an undersized destination - they return
 `false` and write `0`.
 
 ## Where to go next
 
-- **[Base64 guide](base64.md)** — the other MIME content-transfer encoding, including the 76-column MIME variant.
-- **[Percent-encoding guide](percent-encoding.md)** — the URI / form escape encoding, also `=HH`-style but for URLs.
-- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic.
+- **[Base64 guide](base64.md)** - the other MIME content-transfer encoding, including the 76-column MIME variant.
+- **[Percent-encoding guide](percent-encoding.md)** - the URI / form escape encoding, also `=HH`-style but for URLs.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** - every guide in this topic.

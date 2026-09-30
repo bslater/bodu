@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Represents a known-answer test vector for a stream cipher — a keystream or an encryption vector keyed by a nonce and
+/// Represents a known-answer test vector for a stream cipher - a keystream or an encryption vector keyed by a nonce and
 /// an optional initial block counter.
 /// </summary>
 /// <remarks>

@@ -7,8 +7,8 @@
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Approximates the Gregorian date of Tibetan New Year (Gyalpo Losar) — the first day of the first month of the Tibetan
-/// lunisolar calendar — by selecting the new moon that sits closest to a fixed point in the solar year.
+/// Approximates the Gregorian date of Tibetan New Year (Gyalpo Losar) - the first day of the first month of the Tibetan
+/// lunisolar calendar - by selecting the new moon that sits closest to a fixed point in the solar year.
 /// </summary>
 /// <remarks>
 /// <para>

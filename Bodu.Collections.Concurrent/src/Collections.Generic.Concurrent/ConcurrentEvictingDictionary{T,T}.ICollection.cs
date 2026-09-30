@@ -26,7 +26,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue> :
     bool ICollection.IsSynchronized => false;
 
     /// <summary>
-    /// Gets an object that can be used to synchronize access to the collection. Not supported on this type —
+    /// Gets an object that can be used to synchronize access to the collection. Not supported on this type -
     /// <see cref="ConcurrentEvictingDictionary{TKey, TValue}" /> manages its own internal synchronization.
     /// </summary>
     /// <exception cref="NotSupportedException">

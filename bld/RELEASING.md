@@ -14,13 +14,13 @@ manifest at [`release-manifest.txt`](release-manifest.txt).
 
   | Tier | Ships at | How |
   |---|---|---|
-  | Stable | `BoduBaseVersion` | the default — no per-project setting |
+  | Stable | `BoduBaseVersion` | the default - no per-project setting |
   | Preview / Experimental | `BoduPreviewVersion` | `<BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>` in its own csproj |
 
   The split exists so a 1.0 compatibility promise is made only by packages
   that can keep it: the preview tier stays below 1.0 until its API settles.
   Reference the `$(BoduPreviewVersion)` property rather than pinning a literal,
-  so moving the preview stream stays a one-line edit — `check-release-manifest.sh`
+  so moving the preview stream stays a one-line edit - `check-release-manifest.sh`
   enforces both that and the tier↔stream agreement, because nothing else
   reconciles a package's README tier with the version it actually publishes at.
 
@@ -30,7 +30,7 @@ manifest at [`release-manifest.txt`](release-manifest.txt).
   The stream check accepts that override only while it is ahead of
   `BoduBaseVersion`.
 - **The tag is a label, not a version.** Nothing passes a version to
-  `dotnet pack` — each package's version comes from the properties above. A run
+  `dotnet pack` - each package's version comes from the properties above. A run
   tagged `v1.0.0` therefore publishes the Stable tier at 1.0.0 and the preview
   tier at `BoduPreviewVersion`. Name the tag after `BoduBaseVersion`.
 - **One tag releases the manifest.** Pushing a `v<version>` tag (e.g.
@@ -47,7 +47,7 @@ manifest at [`release-manifest.txt`](release-manifest.txt).
   [Versions already on nuget.org](#versions-already-on-nugetorg).
 - **The manifest records first-shipped versions.** Each line is
   `<PackageId> <first-shipped-version>`. That version is *not* what the run
-  publishes (`BoduBaseVersion` is) — it is a permanent note of when the
+  publishes (`BoduBaseVersion` is) - it is a permanent note of when the
   package first reached nuget.org, written once and never edited. The
   package-validation baseline uses it to decide whether a package has a
   published predecessor to compare against: without it, appending a wave
@@ -58,14 +58,14 @@ manifest at [`release-manifest.txt`](release-manifest.txt).
 ## Preconditions
 
 1. Repository secrets:
-   - `BODU_SNK` (**required**) — base64 of the full private strong-name key.
+   - `BODU_SNK` (**required**) - base64 of the full private strong-name key.
      The workflow verifies it against the committed `bld/Bodu.public.snk`
      and fails fast on any mismatch.
    - There is **no push key**. Publishing uses nuget.org **trusted
      publishing** (OIDC): the job exchanges this run's GitHub OIDC token for a
      short-lived (~1 hour) key via `NuGet/login`. nuget.org issues it only when
-     the request's claims match the trusted-publishing policy — this
-     repository, `release.yml`, and the `production` environment — which is why
+     the request's claims match the trusted-publishing policy - this
+     repository, `release.yml`, and the `production` environment - which is why
      the workflow declares `id-token: write` and the job sets
      `environment: production`. Change either and the exchange is refused.
      A run that does not opt in to publishing never performs the exchange, so
@@ -79,7 +79,7 @@ manifest at [`release-manifest.txt`](release-manifest.txt).
    `bld/icons/<PackageId>.png`.
 
 `bld/check-release-manifest.sh` enforces preconditions 2 and 4 mechanically,
-and runs in `build-test.yml` on every pull request — so a malformed manifest
+and runs in `build-test.yml` on every pull request - so a malformed manifest
 entry, or a shipping package missing its README, tier banner or icon, fails
 there rather than in a release run after a tag has been pushed. Run it locally
 before cutting a release:
@@ -98,7 +98,7 @@ Every requested id must appear in `release-manifest.txt`; an unknown id (a typo,
 or a package that packs but has not been approved to ship) **fails the run**
 rather than being skipped. Publishing a different set than the operator asked
 for is the failure worth spending a build on, because a nuget.org version cannot
-be withdrawn afterwards — only delisted.
+be withdrawn afterwards - only delisted.
 
 An entry may also be a wildcard pattern (`*`, `?`, `[...]`). A pattern is
 matched against the ids in `release-manifest.txt` only, so it never selects a
@@ -117,8 +117,8 @@ Actions → **Release** → *Run workflow* with `publish` unchecked. The run
 real-signs and packs all packable projects, stages the manifest set, and
 uploads two artifacts without pushing anything:
 
-- `nuget-packages` — everything that packed (debugging aid).
-- `nuget-packages-publish` — exactly what a tag would publish. Inspect this.
+- `nuget-packages` - everything that packed (debugging aid).
+- `nuget-packages-publish` - exactly what a tag would publish. Inspect this.
 
 It also looks up every staged package on nuget.org and reports which versions a
 publish would push and which it would skip, with a warning when it would publish
@@ -144,7 +144,7 @@ its `.snupkg`) to nuget.org.
 
 **The `v` must be lowercase.** `release.yml` triggers on `tags: ['v*']`, and
 GitHub Actions tag filters are case-sensitive, so a tag pushed as `V1.0.0`
-matches nothing and starts **no run at all** — no failure, no annotation, and a
+matches nothing and starts **no run at all** - no failure, no annotation, and a
 tag plus a GitHub Release that both look correct. Nothing can report the miss,
 because nothing runs. This happened on 1.0.0, and the only symptom was an absent
 release run. After pushing a tag, confirm the Release workflow actually started
@@ -194,7 +194,7 @@ unable to confirm that anything is new.
    No extra properties: signing is on by default (`bld/Signing.props`), so an
    ordinary build already carries the published strong-name identity that
    ApiCompat compares against. That matters because ApiCompat checks identity
-   *before* API surface — against an unsigned build it stops at CP0003
+   *before* API surface - against an unsigned build it stops at CP0003
    (public key token `null` vs the published token) and never reaches the
    comparison. A build that deliberately turns signing off
    (`-p:BoduSignAssembly=false`) therefore skips the baseline rather than
@@ -215,7 +215,7 @@ A tag run therefore publishes the docs as well as the packages, with no extra
 step. Every API page names the package it ships in and that package's version, as MSBuild resolves
 it for the commit being documented (a `BoduPackageVersionOverride` included), so the root and
 `/<series>/` show the released versions and `/dev/` the versions master would pack. Nothing about
-a version needs editing in the docs when a package moves. Only a plain `vMAJOR.MINOR.PATCH` tag does so — a prerelease is skipped
+a version needs editing in the docs when a package moves. Only a plain `vMAJOR.MINOR.PATCH` tag does so - a prerelease is skipped
 rather than allowed to replace the root, since it is not the latest release.
 
 Seeding or repairing a slot out of band is a manual run: Actions → *Build and
@@ -235,7 +235,7 @@ The site is served from the `gh-pages` branch (Settings → Pages → *Deploy fr
 branch*, `/ (root)`). Should that ever need changing, order the steps so no run
 goes red and the site never goes dark:
 
-1. Seed or verify the branch content first — flipping to a branch whose root is
+1. Seed or verify the branch content first - flipping to a branch whose root is
    empty serves a 404.
 2. Change the workflow **before** the setting, never after. A job that deploys to
    Pages from Actions fails once Pages is branch-sourced, so flipping first turns

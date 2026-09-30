@@ -29,12 +29,12 @@ public abstract partial class CachingRateProviderBase
     /// <param name="options">The lookup rules the serving lookup applied, reused by the refresh.</param>
     /// <param name="now">The serving lookup's instant.</param>
     /// <param name="servedCachedAtUtc">
-    /// The cache instant of the served data, or <see langword="null" /> when no cached row backs the serve — in which
+    /// The cache instant of the served data, or <see langword="null" /> when no cached row backs the serve - in which
     /// case there is no age to evaluate and nothing is scheduled.
     /// </param>
     /// <remarks>
     /// The threshold is evaluated against the requested pair's effective (post-jitter) expiry even when the serve was
-    /// resolved from the inverse pair's rows — a deliberate approximation that keeps the trigger cheap; the refresh
+    /// resolved from the inverse pair's rows - a deliberate approximation that keeps the trigger cheap; the refresh
     /// itself fetches and stores the requested orientation, exactly as a miss would.
     /// </remarks>
     private void MaybeScheduleRefreshAhead(TimeSpan duration, string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options, DateTimeOffset now, DateTimeOffset? servedCachedAtUtc)
@@ -65,7 +65,7 @@ public abstract partial class CachingRateProviderBase
     /// <param name="endDate">The inclusive end of the served window.</param>
     /// <param name="now">The serving lookup's instant.</param>
     /// <param name="oldestCachedAtUtc">
-    /// The oldest cache instant among the served rows, or <see langword="null" /> for a covered-but-empty window —
+    /// The oldest cache instant among the served rows, or <see langword="null" /> for a covered-but-empty window -
     /// which carries no age and schedules nothing.
     /// </param>
     private void MaybeScheduleRangeRefreshAhead(TimeSpan duration, CurrencyPair pair, string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, DateTimeOffset now, DateTimeOffset? oldestCachedAtUtc)
@@ -111,8 +111,8 @@ public abstract partial class CachingRateProviderBase
     /// <param name="toIsoCode">The destination-currency ISO code, for diagnostics.</param>
     /// <param name="refresh">The refresh body to run in the background.</param>
     /// <remarks>
-    /// The pending registration is published <em>before</em> the task starts — a completion source's task is added
-    /// under the key first, and only a successful add spawns the worker — so a concurrent aged hit can never slip in
+    /// The pending registration is published <em>before</em> the task starts - a completion source's task is added
+    /// under the key first, and only a successful add spawns the worker - so a concurrent aged hit can never slip in
     /// between a worker finishing and its registration appearing, and the finally-removal can never race a fresh add of
     /// the same attempt. Failures are swallowed after logging: the hit that triggered the refresh was already served,
     /// and the next aged hit schedules a fresh attempt. Disposal is re-checked when the worker starts; pending

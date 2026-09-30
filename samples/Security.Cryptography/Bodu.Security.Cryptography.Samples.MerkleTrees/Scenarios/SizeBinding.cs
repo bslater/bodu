@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography.Samples.MerkleTrees.Scenarios;
 
 /// <summary>
-/// Demonstrates RFC 6962's tree-size ambiguity and the length-bound root that closes it —
+/// Demonstrates RFC 6962's tree-size ambiguity and the length-bound root that closes it -
 /// <see cref="MerkleTree.BindRoot" /> paired with <see cref="MerkleTree.VerifyInclusionBound" />.
 /// </summary>
 public static class SizeBinding

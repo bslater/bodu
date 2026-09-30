@@ -22,7 +22,7 @@ namespace Bodu.Financial;
 /// <para>
 /// Randomness is drawn from an injected sampler returning a value in <c>[0, 1)</c>; the parameterless constructor uses
 /// <see cref="Random.Shared" />. Because the result depends on the sampler, this strategy is inherently
-/// non-deterministic and two roundings of the same input may differ — supply a fixed-sequence sampler to make a test
+/// non-deterministic and two roundings of the same input may differ - supply a fixed-sequence sampler to make a test
 /// deterministic. Unlike <see cref="MidpointRoundingStrategy" />, this convention cannot be expressed as a
 /// <see cref="MidpointRounding" /> mode, which is why it is a distinct implementation of the
 /// <see cref="IRoundingStrategy" /> seam rather than another mode of the midpoint strategy.

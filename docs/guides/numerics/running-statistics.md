@@ -5,7 +5,7 @@ title: Running and moving statistics
 # Running and moving statistics
 
 The statistics aggregates summarize a sample stream in a single
-forward pass and constant space — the samples themselves are never
+forward pass and constant space - the samples themselves are never
 stored. Four types cover the two common shapes:
 
 | Type | Window | Reports |
@@ -16,21 +16,21 @@ stored. Four types cover the two common shapes:
 | `MovingMinMax<T>` | last N samples | minimum and maximum |
 
 All four are generic over `INumber<T>`, so they accept any numeric
-sample type — but the contract deliberately splits by result:
+sample type - but the contract deliberately splits by result:
 
 - **Exact, in `T`:** extrema (`Minimum` / `Maximum`) and the rolling
   window `Sum`.
 - **Approximate, as finite `double`:** every derived statistical
-  moment — mean, variance, standard deviation, and the quantile
+  moment - mean, variance, standard deviation, and the quantile
   estimate. Each sample is widened with `double.CreateChecked`, so
   `decimal` samples take on binary floating-point precision in these
-  results, and a value that cannot survive the widening — an unbounded
-  `BigInteger` beyond `double`'s range — throws `OverflowException`
+  results, and a value that cannot survive the widening - an unbounded
+  `BigInteger` beyond `double`'s range - throws `OverflowException`
   (at `Add` for the running accumulators, at `Mean` for a
   `MovingSum<T>` whose exact sum has outgrown `double`).
 
 For exact decimal or arbitrary-precision statistical moments, compute
-them from your own retained samples — these types never store the
+them from your own retained samples - these types never store the
 stream.
 
 ## Samples must be finite
@@ -45,14 +45,14 @@ types are always finite, so the guard costs nothing there.
 
 `RunningStatistics<T>` and `RunningQuantile<T>` are **mutable
 structs** (the same design as `System.HashCode`). Value semantics are
-deliberate — copying an accumulator snapshots it — but they carry the
+deliberate - copying an accumulator snapshots it - but they carry the
 usual mutable-struct rules:
 
 - Store the accumulator in a mutable field or local, never a
   `readonly` field you intend to keep adding to.
 - Pass it by `ref` when a callee should observe the additions.
 - Do not capture it in a lambda or iterator and expect reference
-  semantics — the capture is an independent copy from that point.
+  semantics - the capture is an independent copy from that point.
 - To checkpoint, assign to another variable: the copy freezes at that
   point while the original keeps accumulating.
 
@@ -100,7 +100,7 @@ var combined = RunningStatistics<double>.Combine(partA, partB);
 
 `Combine` uses the Chan et al. parallel-variance merge, so a stream
 can be partitioned across workers, accumulated independently, and
-recombined — the result equals accumulating the concatenated stream
+recombined - the result equals accumulating the concatenated stream
 (up to ordinary floating-point rounding). Floating-point addition is
 not associative, so different partitionings or merge orders can
 differ in the last bits; when bitwise-reproducible results matter,
@@ -131,7 +131,7 @@ Behavioural notes:
 - The estimate is an approximation that improves with stream length.
   For exact quantiles over small data, sort and index instead.
 - `Reset()` clears the samples but preserves the probability.
-- P² estimators **cannot be merged** — the marker states of two
+- P² estimators **cannot be merged** - the marker states of two
   partitions do not compose. Keep the mergeable moments in
   `RunningStatistics<T>` for partition-and-combine workloads.
 
@@ -158,7 +158,7 @@ foreach (var price in prices)
 - Until the window fills (`IsFull`), the aggregates describe the
   samples received so far; `Count` reports how many the window
   currently covers.
-- `MovingSum<T>.Sum` is maintained in `T` — exact for integer,
+- `MovingSum<T>.Sum` is maintained in `T` - exact for integer,
   `decimal`, and `BigInteger` samples. The empty window sums to
   `T.Zero` (`Mean` throws instead, like the other empty reads).
 - The rolling-sum arithmetic is **checked**: a fixed-width integer
@@ -182,7 +182,7 @@ contract. Persist the *results* (mean, variance, quantile) instead.
 
 ## See also
 
-- [Generic math constraints](generic-math-constraints.md) — how the
+- [Generic math constraints](generic-math-constraints.md) - how the
   `INumber<T>` constraint drives the API shapes in this package.
-- [Working with BigDecimal](bigdecimal.md) — exact decimal samples
+- [Working with BigDecimal](bigdecimal.md) - exact decimal samples
   compose with the aggregates like any other `INumber<T>`.

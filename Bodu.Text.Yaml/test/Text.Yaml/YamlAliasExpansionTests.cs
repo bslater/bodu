@@ -59,7 +59,7 @@ public class YamlAliasExpansionTests
 
     /// <summary>
     /// Verifies that a serializer <see cref="YamlSerializerOptions.MaxDepth" /> larger than the absolute ceiling is
-    /// clamped to <see cref="YamlLimits.AbsoluteMaxDepth" /> — matching the reader and writer option types — so a
+    /// clamped to <see cref="YamlLimits.AbsoluteMaxDepth" /> - matching the reader and writer option types - so a
     /// large configured depth cannot defeat the recursion guard that protects against a stack overflow.
     /// </summary>
     [TestMethod]
@@ -72,7 +72,7 @@ public class YamlAliasExpansionTests
     }
 
     /// <summary>
-    /// Verifies that a long linear alias chain — whose resolved depth far exceeds the physical nesting clamp — is
+    /// Verifies that a long linear alias chain - whose resolved depth far exceeds the physical nesting clamp - is
     /// rejected with a catchable <see cref="YamlFormatException" /> from the expansion budget rather than crashing
     /// the process with a <see cref="StackOverflowException" /> inside cycle detection.
     /// </summary>
@@ -86,7 +86,7 @@ public class YamlAliasExpansionTests
     }
 
     /// <summary>
-    /// Verifies that a deep — but within-budget — linear alias chain parses successfully, so the explicit-stack cycle
+    /// Verifies that a deep - but within-budget - linear alias chain parses successfully, so the explicit-stack cycle
     /// and budget walks preserve the recursive traversal's accepting behaviour at depths native recursion also
     /// handles.
     /// </summary>
@@ -140,7 +140,7 @@ public class YamlAliasExpansionTests
     }
 
     /// <summary>
-    /// Builds a document of chained anchors — <c>k1: &amp;a1 [*a0]</c>, <c>k2: &amp;a2 [*a1]</c>, … — whose resolved
+    /// Builds a document of chained anchors - <c>k1: &amp;a1 [*a0]</c>, <c>k2: &amp;a2 [*a1]</c>, … - whose resolved
     /// alias depth equals the chain length while its physical nesting stays constant.
     /// </summary>
     /// <param name="length">The number of chained links.</param>

@@ -57,7 +57,7 @@ public partial class IntervalTests
     }
 
     /// <summary>
-    /// Verifies that inclusivity flags propagate correctly through intersection — the stricter (open) flag wins when
+    /// Verifies that inclusivity flags propagate correctly through intersection - the stricter (open) flag wins when
     /// endpoints tie.
     /// </summary>
     [TestMethod]

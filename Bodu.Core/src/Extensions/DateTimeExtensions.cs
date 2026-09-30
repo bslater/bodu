@@ -11,16 +11,16 @@ namespace Bodu.Extensions;
 
 /// <summary>
 /// Provides calendar-arithmetic, period-anchoring, ISO-aware, and tick-level operations over <see cref="DateTime" />
-/// for code that outgrows the BCL surface — fiscal calendars, ISO 8601 week numbering, weekend rules, and
+/// for code that outgrows the BCL surface - fiscal calendars, ISO 8601 week numbering, weekend rules, and
 /// high-throughput tick math.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="DateTime" /> exposes raw fields and a handful of arithmetic operators but leaves the harder calendar work
-/// — locating the first Monday of a quarter, snapping to the start or end of a day, computing ISO weeks, or converting
-/// between time zones and epochs — to the caller. This class concentrates that work in a single, allocation-aware
-/// extension surface so that scheduling, reporting, and calendar-driven code does not need to drop down to
-/// <see cref="System.Globalization.Calendar" /> or hand-rolled tick math.
+/// <see cref="DateTime" /> exposes raw fields and a handful of arithmetic operators but leaves the harder calendar
+/// work - locating the first Monday of a quarter, snapping to the start or end of a day, computing ISO weeks, or
+/// converting between time zones and epochs - to the caller. This class concentrates that work in a single,
+/// allocation-aware extension surface so that scheduling, reporting, and calendar-driven code does not need to drop
+/// down to <see cref="System.Globalization.Calendar" /> or hand-rolled tick math.
 /// </para>
 /// <para>
 /// The API surface groups into: period anchors (<c>FirstDateOfMonth</c>, <c>FirstDateOfQuarter</c>,
@@ -235,15 +235,15 @@ public static partial class DateTimeExtensions
     /// (Gregorian calendar).
     /// </param>
     /// <param name="year">
-    /// When this method returns, contains the year component (1–9999) corresponding to the specified
+    /// When this method returns, contains the year component (1-9999) corresponding to the specified
     /// <paramref name="ticks" />.
     /// </param>
     /// <param name="month">
-    /// When this method returns, contains the month component (1–12) corresponding to the specified
+    /// When this method returns, contains the month component (1-12) corresponding to the specified
     /// <paramref name="ticks" />.
     /// </param>
     /// <param name="day">
-    /// When this method returns, contains the day component (1–31) corresponding to the specified
+    /// When this method returns, contains the day component (1-31) corresponding to the specified
     /// <paramref name="ticks" />.
     /// </param>
     /// <remarks>
@@ -327,10 +327,10 @@ public static partial class DateTimeExtensions
     /// When this method returns, contains the year component of the specified <paramref name="dateTime" />.
     /// </param>
     /// <param name="month">
-    /// When this method returns, contains the month component (1–12) of the specified <paramref name="dateTime" />.
+    /// When this method returns, contains the month component (1-12) of the specified <paramref name="dateTime" />.
     /// </param>
     /// <param name="day">
-    /// When this method returns, contains the day component (1–31) of the specified <paramref name="dateTime" />.
+    /// When this method returns, contains the day component (1-31) of the specified <paramref name="dateTime" />.
     /// </param>
     /// <remarks>
     /// <para>
@@ -551,7 +551,7 @@ public static partial class DateTimeExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// If <paramref name="dateTime" /> already falls on <paramref name="dayOfWeek" />, this method returns <c>0</c> —
+    /// If <paramref name="dateTime" /> already falls on <paramref name="dayOfWeek" />, this method returns <c>0</c> -
     /// the current day is treated as the previous occurrence. Callers that require a strictly earlier day must
     /// substitute a 7-day negative interval when <c>0</c> is returned. This deliberately diverges from the
     /// <see cref="DateOnlyExtensions.GetPreviousDayOfWeekFromDayNumber" /> twin, which is strictly-previous and returns
@@ -802,7 +802,7 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dayOfYear">Zero-based day index within the year (e.g., Jan 1 = 0).</param>
     /// <param name="dayOfWeek">The day of the week of the specified date.</param>
-    /// <param name="firstDayOfWeek">The starting day of the week as an integer (0–6).</param>
+    /// <param name="firstDayOfWeek">The starting day of the week as an integer (0-6).</param>
     /// <returns>The 1-based week number that contains the specified date.</returns>
     private static int GetFirstDayWeekOfYear(int dayOfYear, DayOfWeek dayOfWeek, int firstDayOfWeek)
     {
@@ -924,7 +924,7 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="ticks">The tick count representing the target date.</param>
     /// <param name="dayOfYear">Zero-based day-of-year index of the target date.</param>
-    /// <param name="firstDayOfWeek">The starting day of the week as an integer (0–6).</param>
+    /// <param name="firstDayOfWeek">The starting day of the week as an integer (0-6).</param>
     /// <param name="fullDays">
     /// The minimum number of days required in the first week (7 for FirstFullWeek, 4 for FirstFourDayWeek).
     /// </param>
@@ -952,7 +952,7 @@ public static partial class DateTimeExtensions
             return daysInNextYear >= fullDays ? 1 : weekNum;
         }
 
-        // Date falls in the last week of the previous year — recurse backward.
+        // Date falls in the last week of the previous year - recurse backward.
         long previousTicks = ticks - ((dayOfYear + 1L) * DateTimeExtensions.TicksPerDay);
 
         if (previousTicks < DateTimeExtensions.MinTicks)

@@ -14,8 +14,8 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// validation, correctness, stream-shape behaviours, cancellation, and error propagation.
 /// </summary>
 /// <remarks>
-/// <c>EncryptAsync</c> propagates all exceptions — <see cref="IOException" />,
-/// <see cref="OperationCanceledException" />, and null-argument errors — to the caller rather
+/// <c>EncryptAsync</c> propagates all exceptions - <see cref="IOException" />,
+/// <see cref="OperationCanceledException" />, and null-argument errors - to the caller rather
 /// than swallowing them.
 /// </remarks>
 public partial class SymmetricAlgorithmExtensionTests
@@ -53,7 +53,7 @@ public partial class SymmetricAlgorithmExtensionTests
             algorithm.EncryptAsync(input, null!));
     }
 
-    // ─── Correctness — round-trip ────────────────────────────────────────────────────────────
+    // ─── Correctness - round-trip ────────────────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that an empty input stream combined with <see cref="PaddingMode.None" />
@@ -120,7 +120,7 @@ public partial class SymmetricAlgorithmExtensionTests
     }
 
     /// <summary>
-    /// Verifies a full round trip through throttled input and output streams — the slow-I/O
+    /// Verifies a full round trip through throttled input and output streams - the slow-I/O
     /// equivalent of the happy path.
     /// </summary>
     [TestMethod]
@@ -184,7 +184,7 @@ public partial class SymmetricAlgorithmExtensionTests
 
         byte[] plainText = CryptoTestUtilities.ByteSequence128;
 
-        // chunkSize=5 is not a multiple of the 16-byte block — exercises accumulation across chunk boundaries.
+        // chunkSize=5 is not a multiple of the 16-byte block - exercises accumulation across chunk boundaries.
         using var input = new FixedChunkStream(plainText, chunkSize: 5);
         using var output = new MemoryStream();
 
@@ -249,7 +249,7 @@ public partial class SymmetricAlgorithmExtensionTests
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        // Fault after 32 bytes — mid-way through the third block of a 128-byte input.
+        // Fault after 32 bytes - mid-way through the third block of a 128-byte input.
         using var input = new FaultingStream(CryptoTestUtilities.ByteSequence128, throwAfterBytes: 32);
         using var output = new MemoryStream();
 
@@ -302,7 +302,7 @@ public partial class SymmetricAlgorithmExtensionTests
         }
         catch (OperationCanceledException)
         {
-            // Expected — accept either the base type or TaskCanceledException.
+            // Expected - accept either the base type or TaskCanceledException.
         }
     }
 }

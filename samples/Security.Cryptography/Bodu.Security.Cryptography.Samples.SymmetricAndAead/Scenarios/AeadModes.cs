@@ -11,7 +11,7 @@ using Bodu.Security.Cryptography.Extensions;
 namespace Bodu.Security.Cryptography.Samples.SymmetricAndAead.Scenarios;
 
 /// <summary>
-/// Runs AES through three authenticated-encryption modes — GCM, EAX, and OCB — over a fixed key, nonce, and
+/// Runs AES through three authenticated-encryption modes - GCM, EAX, and OCB - over a fixed key, nonce, and
 /// associated data. Each mode seals the plaintext (ciphertext plus tag), opens it back, and rejects a
 /// tampered ciphertext, demonstrating the shared <c>IAeadBlockCipherModeTransform</c> surface.
 /// </summary>
@@ -32,9 +32,9 @@ public static class AeadModes
             why: "These are three ways to build one guarantee on top of a block cipher, and they differ in shape rather than in what they promise: GCM is the ubiquitous standard, EAX a conservative two-pass construction, OCB a single-pass design that is now freely licensed. The choice is normally made on interoperability and speed.",
             expect: "Each mode prints round-trips=True and tamper-rejected=True, and each sealed output is the plaintext plus a 16-byte tag. The three ciphertexts differ from each other despite sharing a key and nonce, because the constructions differ - that is expected, not a mismatch.");
 
-        // Nonce sizing differs per mode: this GCM implementation — like the BCL's AesGcm and every TLS/IPsec
-        // deployment — accepts only the 96-bit (12-byte) nonce; EAX authenticates the full block-sized 16-byte
-        // nonce; OCB takes a block-sized IV but uses only its first 12 bytes as the nonce (the tail is padding —
+        // Nonce sizing differs per mode: this GCM implementation - like the BCL's AesGcm and every TLS/IPsec
+        // deployment - accepts only the 96-bit (12-byte) nonce; EAX authenticates the full block-sized 16-byte
+        // nonce; OCB takes a block-sized IV but uses only its first 12 bytes as the nonce (the tail is padding -
         // vary the leading bytes, never a trailing counter). The values are fixed only for reproducibility:
         // reusing a nonce under one key breaks these modes.
         RunMode("AES-GCM", Hex.Fill(12, 0x50), nonce => new GcmModeTransform(new AesBlockCipher(Key), nonce));

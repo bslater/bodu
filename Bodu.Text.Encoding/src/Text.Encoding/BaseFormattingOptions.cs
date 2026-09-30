@@ -34,7 +34,7 @@ namespace Bodu.Text.Encoding;
 ///     | BaseFormattingOptions.IncludePrefix
 ///     | BaseFormattingOptions.InsertSpacing);
 ///
-/// // Padding-free Base64 — produces the same output as Base64Url.Encode.
+/// // Padding-free Base64 - produces the same output as Base64Url.Encode.
 /// string unpadded = Base64.Encode(data, BaseFormattingOptions.OmitPadding);
 ///]]>
 /// </code>

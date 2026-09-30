@@ -66,7 +66,7 @@ public partial class OutlookAttachmentTests
     }
 
     /// <summary>
-    /// Verifies that content access on a by-reference attachment throws <see cref="NotSupportedException" /> — the
+    /// Verifies that content access on a by-reference attachment throws <see cref="NotSupportedException" /> - the
     /// method carries no by-value payload, so the absence of a content stream is not a format error.
     /// </summary>
     /// <param name="method">The declared <c>PidTagAttachMethod</c> value.</param>
@@ -132,7 +132,7 @@ public partial class OutlookAttachmentTests
             }
 
             Assert.AreEqual((long)LargePayloadLength, total);
-            Assert.IsTrue(maxDelta < CeilingBytes, $"Streaming the attachment peaked {maxDelta / 1024} KB above baseline — the payload is being materialized.");
+            Assert.IsTrue(maxDelta < CeilingBytes, $"Streaming the attachment peaked {maxDelta / 1024} KB above baseline - the payload is being materialized.");
         }
     }
 }

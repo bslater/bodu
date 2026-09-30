@@ -22,8 +22,8 @@ internal static partial class SerpentCore
     /// <see cref="VectorRotation.Avx512" /> for its rotate instruction.
     /// </typeparam>
     /// <remarks>
-    /// Eight blocks load as four vectors of two consecutive blocks each. A 4×4 transpose within each 128-bit lane — the
-    /// one <see cref="ChaCha20Core.Vector256Kernel{TIsa}" /> uses — turns them into four vectors that each hold one
+    /// Eight blocks load as four vectors of two consecutive blocks each. A 4×4 transpose within each 128-bit lane - the
+    /// one <see cref="ChaCha20Core.Vector256Kernel{TIsa}" /> uses - turns them into four vectors that each hold one
     /// word of all eight blocks, the even-numbered blocks in the low lane and the odd-numbered in the high lane; the
     /// same transpose returns the blocks for storing. The rounds and circuits repeat the scalar ones in
     /// <see cref="SerpentCore" /> over vectors.

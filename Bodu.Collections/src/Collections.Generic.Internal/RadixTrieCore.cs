@@ -12,7 +12,7 @@ namespace Bodu.Collections.Generic.Internal;
 /// reuse a single implementation.
 /// </summary>
 /// <remarks>
-/// Structural invariant: no non-root, non-terminal node has exactly one child — insertion splits edges only at genuine
+/// Structural invariant: no non-root, non-terminal node has exactly one child - insertion splits edges only at genuine
 /// divergence points and removal re-fuses any pass-through node it leaves behind, so node count stays proportional to
 /// the number of stored keys.
 /// </remarks>
@@ -128,7 +128,7 @@ internal static class RadixTrieCore
                 continue;
             }
 
-            // Divergence inside the edge: split it — an intermediate node takes the shared label prefix and the
+            // Divergence inside the edge: split it - an intermediate node takes the shared label prefix and the
             // existing child keeps the remainder.
             var intermediate = new RadixTrieNode<TValue> { Label = label[..shared] };
             child.Label = label[shared..];

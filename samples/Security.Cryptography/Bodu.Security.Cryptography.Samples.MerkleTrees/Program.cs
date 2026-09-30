@@ -9,7 +9,7 @@ using Bodu.Security.Cryptography.Samples.MerkleTrees.Scenarios;
 namespace Bodu.Security.Cryptography.Samples.MerkleTrees;
 
 /// <summary>
-/// Entry point for the Merkle-tree sample: the RFC 6962 commitment surface — roots and inclusion proofs, the
+/// Entry point for the Merkle-tree sample: the RFC 6962 commitment surface - roots and inclusion proofs, the
 /// length-bound root that closes the tree-size ambiguity, append-only consistency proofs, the blocked and streaming
 /// surface with its async overloads, the write-time block accumulator, the fan-out and parallelism knobs, and the
 /// optional diagnostics trace. Every input is fixed, so all output is deterministic.

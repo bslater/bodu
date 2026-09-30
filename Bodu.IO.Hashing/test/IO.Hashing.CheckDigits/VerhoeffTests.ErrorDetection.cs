@@ -12,7 +12,7 @@ public sealed partial class VerhoeffTests
     private const string SingleDigitSeedBody = "1428570";
 
     /// <summary>
-    /// Verifies that Verhoeff detects <i>every</i> adjacent-digit transposition — without exception — in the
+    /// Verifies that Verhoeff detects <i>every</i> adjacent-digit transposition - without exception - in the
     /// canonical seed sequence.
     /// </summary>
     [TestMethod]
@@ -35,7 +35,7 @@ public sealed partial class VerhoeffTests
     }
 
     /// <summary>
-    /// Verifies that Verhoeff detects the <i>twin</i> error class — pairs of equal adjacent digits substituted
+    /// Verifies that Verhoeff detects the <i>twin</i> error class - pairs of equal adjacent digits substituted
     /// by a pair of different equal digits, for example <c>"aa"</c> to <c>"bb"</c>.
     /// </summary>
     [TestMethod]

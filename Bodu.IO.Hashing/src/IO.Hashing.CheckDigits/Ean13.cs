@@ -12,8 +12,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </summary>
 /// <remarks>
 /// <para>
-/// EAN-13 and ISBN-13 share the same weight pattern — alternating 1 and 3 over the twelve body digits with the
-/// rightmost data digit carrying weight 3 — so a 13-digit ISBN is also a valid EAN-13. The static helpers on this type
+/// EAN-13 and ISBN-13 share the same weight pattern - alternating 1 and 3 over the twelve body digits with the
+/// rightmost data digit carrying weight 3 - so a 13-digit ISBN is also a valid EAN-13. The static helpers on this type
 /// enforce a strict 12-digit body length (13-digit full sequence) to make downstream callers' intent explicit; the
 /// streaming surface is length-agnostic.
 /// </para>
@@ -91,7 +91,7 @@ public sealed class Ean13
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
     /// <see langword="true" /> if the sequence is exactly <see cref="SequenceLength" /> digits and evaluates as valid
-    /// under EAN-13; otherwise, <see langword="false" /> — including the case where
+    /// under EAN-13; otherwise, <see langword="false" /> - including the case where
     /// <paramref name="digitsIncludingCheck" /> is empty, has the wrong length, or contains a non-digit character.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck) =>

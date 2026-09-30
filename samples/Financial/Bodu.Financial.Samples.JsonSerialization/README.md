@@ -2,7 +2,7 @@
 
 `System.Text.Json` integration for `Bodu.Financial`: the `Bodu.Financial.Serialization.Json`
 companion package registers converters on a `JsonSerializerOptions` so the serialization-agnostic
-core types — `Money`, `Money<TCurrency>`, `MoneyBag`, `ExchangeRate`, `CurrencyPair` — round-trip
+core types - `Money`, `Money<TCurrency>`, `MoneyBag`, `ExchangeRate`, `CurrencyPair` - round-trip
 through a coherent wire shape chosen by a single `FinancialJsonPolicy`, including the keyed
 dependency-injection registration.
 
@@ -14,8 +14,8 @@ dotnet run --project samples/Financial/Bodu.Financial.Samples.JsonSerialization
 
 ### RegisterConverters (`Scenarios/RegisterConverters.cs`)
 
-**Intent.** The core `Bodu.Financial` types carry no `[JsonConverter]` attribute — the library is
-serialization-agnostic — so nothing round-trips until the converters are registered. This scenario
+**Intent.** The core `Bodu.Financial` types carry no `[JsonConverter]` attribute - the library is
+serialization-agnostic - so nothing round-trips until the converters are registered. This scenario
 shows the one call that wires them all up and proves each monetary type re-reads to an equal value.
 
 **What it does.** Calls `new JsonSerializerOptions().AddFinancialJsonConverters()` once (defaulting
@@ -74,7 +74,7 @@ The Strict `ExchangeRate` shape is the full canonical object (`from`/`to`/`date`
 converter at once. This scenario serializes one set of fixed values under all three policies so the
 shapes sit side by side, and shows the `Lenient` read normalising a dirty ISO code.
 
-**What it does.** Registers three separate options instances — `Strict`, `Compact`, `Lenient` —
+**What it does.** Registers three separate options instances - `Strict`, `Compact`, `Lenient` -
 and serializes the same `Money<USD>`, `MoneyBag`, and `ExchangeRate` under Strict and Compact.
 Finally it deserializes `{"amount":12.34,"currency":"  usd  "}` under the Lenient policy.
 
@@ -98,7 +98,7 @@ Finally it deserializes `{"amount":12.34,"currency":"  usd  "}` under the Lenien
 `Strict` is the canonical object form for ledgers and audit data. `Compact` collapses money to a
 single `"amount ISO"` string, the bag to a flat `{ "ISO": amount }` map, and the rate to a `"pair"`
 property (dropping `isInverted` when false). `Lenient` shares the Strict shape on the wire but reads
-forgivingly — the padded lowercase `"  usd  "` is trimmed and upcased to `USD` rather than rejected.
+forgivingly - the padded lowercase `"  usd  "` is trimmed and upcased to `USD` rather than rejected.
 
 **APIs demonstrated.** `FinancialJsonPolicy.Strict` / `Lenient` / `Compact`,
 `AddFinancialJsonConverters(FinancialJsonPolicy)`, `Money.Of<TCurrency>`, `MoneyBag.Of`,
@@ -128,7 +128,7 @@ the same singleton comes back.
 ```
 
 The serialized output is the Compact shape because the *keyed options* carry the policy passed at
-registration — consumers ask for `JsonSerializerOptions` by key rather than configuring their own.
+registration - consumers ask for `JsonSerializerOptions` by key rather than configuring their own.
 `Same instance: True` confirms `AddFinancialJson` registers a keyed singleton. This entry point
 lives in the serialization companion and does not require the core `AddFinancialService`.
 
@@ -151,10 +151,10 @@ Bodu.Financial.Samples.JsonSerialization/
 
 ## Related
 
-- `Bodu.Financial.Samples.MoneyBasics` — money arithmetic, allocation, rounding tiers, formatting
+- `Bodu.Financial.Samples.MoneyBasics` - money arithmetic, allocation, rounding tiers, formatting
   and parsing; its `JsonPolicies` scenario is the lighter, single-scenario tour of the policies this
   sample covers in depth.
-- `Bodu.Financial.Samples.CurrencyServices` — the ambient currency-resolution seam, named monetary
+- `Bodu.Financial.Samples.CurrencyServices` - the ambient currency-resolution seam, named monetary
   contexts, and the `AddFinancialService` composition root that also registers financial JSON.
 
 ## NuGet equivalent

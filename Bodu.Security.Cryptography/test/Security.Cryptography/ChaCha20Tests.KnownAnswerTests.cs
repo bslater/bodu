@@ -28,7 +28,7 @@ public sealed partial class ChaCha20Tests
             KnownAnswers = KnownAnswerTests,
         };
 
-    // ── RFC 8439 — ChaCha20 cipher known-answer tests ────────────────────────────────────────
+    // ── RFC 8439 - ChaCha20 cipher known-answer tests ────────────────────────────────────────
     //
     // Loaded dynamically from the embedded RFC 8439 source text (Appendix A.2, "ChaCha20 Encryption"): the three
     // published encryption test vectors, each carrying its own key, nonce, initial block counter, plaintext, and

@@ -76,7 +76,7 @@ public partial class Argon2Blake2bTests
     }
 
     /// <summary>
-    /// Verifies that an output length outside the 1–64-byte range is rejected.
+    /// Verifies that an output length outside the 1-64-byte range is rejected.
     /// </summary>
     [TestMethod]
     public void Hash_WhenOutputLengthExceedsMaximum_ShouldThrowArgumentOutOfRangeException()

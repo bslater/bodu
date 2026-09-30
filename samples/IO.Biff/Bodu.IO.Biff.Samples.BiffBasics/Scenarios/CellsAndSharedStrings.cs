@@ -9,7 +9,7 @@ namespace Bodu.IO.Biff.Samples.BiffBasics.Scenarios;
 /// <summary>
 /// Demonstrates the typed accessors: the sheet directory from <c>BOUNDSHEET</c>, the shared string table read one
 /// string at a time through <see cref="BiffSstReader" /> across its <c>CONTINUE</c> records, and the cell records
-/// of the first sheet decoded into values — the raw material the Excel reader turns into <c>ExcelCell</c>s.
+/// of the first sheet decoded into values - the raw material the Excel reader turns into <c>ExcelCell</c>s.
 /// </summary>
 public static class CellsAndSharedStrings
 {

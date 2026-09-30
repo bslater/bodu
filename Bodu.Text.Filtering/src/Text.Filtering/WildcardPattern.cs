@@ -15,7 +15,7 @@ namespace Bodu.Text.Filtering;
 /// The supported grammar is the shell-glob core shared by Java's <c>PathMatcher</c> and minimatch, matched against the
 /// whole value: <c>*</c> (zero or more characters), <c>?</c> (exactly one character), <c>[abc]</c> / <c>[a-z]</c> /
 /// <c>[!abc]</c> character classes, <c>{a,b}</c> alternation, and <c>\</c> escaping the following character. There are
-/// no path semantics — <c>*</c> crosses every character equally.
+/// no path semantics - <c>*</c> crosses every character equally.
 /// </para>
 /// <para>
 /// Expansion limits (<see cref="MaxBraceNestingDepth" />, <see cref="MaxBraceExpansion" />) mirror the caps used by

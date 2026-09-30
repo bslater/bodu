@@ -52,7 +52,7 @@ internal static partial class Argon2Core
         internal int LaneLength { get; }
 
         /// <summary>
-        /// Gets the number of blocks in each segment — one lane's share of one slice.
+        /// Gets the number of blocks in each segment - one lane's share of one slice.
         /// </summary>
         internal int SegmentLength { get; }
 

@@ -25,8 +25,8 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     }
 
     /// <summary>
-    /// Verifies that disposing a freshly-constructed cipher — one that has never had any property accessed or
-    /// transform created — completes without throwing.
+    /// Verifies that disposing a freshly-constructed cipher - one that has never had any property accessed or
+    /// transform created - completes without throwing.
     /// </summary>
     [TestMethod]
     public void Dispose_WhenInstanceUntouched_ShouldNotThrow()

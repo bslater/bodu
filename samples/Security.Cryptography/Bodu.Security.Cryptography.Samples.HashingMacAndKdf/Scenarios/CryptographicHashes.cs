@@ -10,8 +10,8 @@ using System.Text;
 namespace Bodu.Security.Cryptography.Samples.HashingMacAndKdf.Scenarios;
 
 /// <summary>
-/// Hashes one fixed message through a spread of the library's unkeyed cryptographic hashes — BLAKE2b,
-/// BLAKE3, Tiger, the three Skein sizes, and Whirlpool — each consumed through the standard
+/// Hashes one fixed message through a spread of the library's unkeyed cryptographic hashes - BLAKE2b,
+/// BLAKE3, Tiger, the three Skein sizes, and Whirlpool - each consumed through the standard
 /// <see cref="HashAlgorithm.ComputeHash(byte[])" /> surface and printed as lowercase hex.
 /// </summary>
 public static class CryptographicHashes

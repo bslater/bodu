@@ -11,7 +11,7 @@ namespace Bodu.Numerics.Samples.Fractions.Scenarios;
 
 /// <summary>
 /// Demonstrates <see cref="Fraction{T}" /> as an exact rational number: every value is held in
-/// canonical (fully reduced) form on creation, and the four arithmetic operators stay exact — no
+/// canonical (fully reduced) form on creation, and the four arithmetic operators stay exact - no
 /// floating-point drift, no manual reduction.
 /// </summary>
 public static class ExactArithmetic

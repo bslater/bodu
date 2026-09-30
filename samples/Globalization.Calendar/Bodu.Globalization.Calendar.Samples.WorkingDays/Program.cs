@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar.Samples.WorkingDays;
 
 /// <summary>
 /// Entry point for the working-days sample: the <c>Bodu.Extensions</c> date arithmetic that turns a
-/// notable-date service into business-day answers — payroll, settlement, SLA, and fiscal questions.
+/// notable-date service into business-day answers - payroll, settlement, SLA, and fiscal questions.
 /// One service instance is shared by every scenario; the extensions take it as a parameter.
 /// </summary>
 public static class Program

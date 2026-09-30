@@ -10,7 +10,7 @@ using System.Globalization;
 namespace Bodu.IO.Pst.Internal;
 
 /// <summary>
-/// Represents the decoded PST file header (MS-PST §2.2.2.6, Unicode layout) — the format discriminator, the
+/// Represents the decoded PST file header (MS-PST §2.2.2.6, Unicode layout) - the format discriminator, the
 /// content-encoding method, and the root references of the two B-trees.
 /// </summary>
 internal sealed class PstHeader

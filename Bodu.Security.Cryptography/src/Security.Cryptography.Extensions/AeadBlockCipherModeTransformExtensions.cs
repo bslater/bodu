@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// </summary>
 /// <remarks>
 /// <para>
-/// AEAD ("authenticated encryption with associated data") modes — GCM, CCM, EAX, GCM-SIV, AES-SIV, Ascon — encrypt
+/// AEAD ("authenticated encryption with associated data") modes - GCM, CCM, EAX, GCM-SIV, AES-SIV, Ascon - encrypt
 /// confidential plaintext while simultaneously authenticating the ciphertext together with a separate stream of
 /// associated data that travels in the clear (packet headers, message metadata, …). The
 /// <see cref="IAeadBlockCipherModeTransform" /> contract gives callers maximum control: invoke
@@ -34,7 +34,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <item>
 /// <term><c>Encrypt(transform, plaintext)</c></term>
 /// <description>
-/// One-shot encrypt with no associated data — equivalent to passing <see cref="System.ReadOnlySpan{T}.Empty" />.
+/// One-shot encrypt with no associated data - equivalent to passing <see cref="System.ReadOnlySpan{T}.Empty" />.
 /// </description>
 /// </item>
 /// <item>
@@ -59,7 +59,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <para>
 /// AEAD transforms are <strong>stateful and single-use within a message</strong>: instantiate a new transform per
 /// message, call exactly one of these helpers, and dispose. The associated-data argument must match byte-for-byte
-/// between the encrypt and decrypt calls — even a single-bit difference will cause the tag check to fail. Tag
+/// between the encrypt and decrypt calls - even a single-bit difference will cause the tag check to fail. Tag
 /// verification is constant-time inside the transform implementation, so timing leaks are not a concern. Output arrays
 /// are always sized exactly: <c>plaintext.Length + (TagSize / 8)</c> on encrypt,
 /// <c>ciphertextWithTag.Length - (TagSize / 8)</c> on decrypt.
@@ -84,7 +84,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// using IAeadBlockCipherModeTransform dec = new GcmModeTransform(key, nonce);
 /// byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
 ///
-/// // 3. Same shape with a different mode — Ascon, EAX, GCM-SIV all interchange behind IAeadBlockCipherModeTransform.
+/// // 3. Same shape with a different mode - Ascon, EAX, GCM-SIV all interchange behind IAeadBlockCipherModeTransform.
 /// using IAeadBlockCipherModeTransform enc2 = new AsconAead128(key, nonce);
 /// byte[] sealedAscon = enc2.Encrypt(plaintext);
 ///]]>
@@ -139,7 +139,7 @@ public static partial class AeadBlockCipherModeTransformExtensions
     /// <returns>A newly allocated byte array of length <c>plaintext.Length + (transform.TagSize / 8)</c>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="transform" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">
-    /// The transform has already encrypted or decrypted a message. AEAD transforms are single-use per message —
+    /// The transform has already encrypted or decrypted a message. AEAD transforms are single-use per message -
     /// construct a fresh instance.
     /// </exception>
     public static byte[] Encrypt(
@@ -172,7 +172,7 @@ public static partial class AeadBlockCipherModeTransformExtensions
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The transform has already encrypted or decrypted a message, including after a previous tag-mismatch failure.
-    /// AEAD transforms are single-use per message — construct a fresh instance.
+    /// AEAD transforms are single-use per message - construct a fresh instance.
     /// </exception>
     public static byte[] Decrypt(
         this IAeadBlockCipherModeTransform transform,
@@ -213,7 +213,7 @@ public static partial class AeadBlockCipherModeTransformExtensions
     /// <exception cref="CryptographicException">The authentication tag did not verify.</exception>
     /// <exception cref="InvalidOperationException">
     /// The transform has already encrypted or decrypted a message, including after a previous tag-mismatch failure.
-    /// AEAD transforms are single-use per message — construct a fresh instance.
+    /// AEAD transforms are single-use per message - construct a fresh instance.
     /// </exception>
     public static byte[] Decrypt(
         this IAeadBlockCipherModeTransform transform,

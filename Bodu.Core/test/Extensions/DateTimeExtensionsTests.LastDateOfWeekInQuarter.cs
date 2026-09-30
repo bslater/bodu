@@ -13,7 +13,7 @@ public partial class DateTimeExtensionsTests
     // the quarter start, returning the FIRST occurrence; these tests pin the corrected behaviour.)
 
     // =========================================================================
-    // Instance: LastDateOfWeekInQuarter(this DateTime, DayOfWeek) — calendar default
+    // Instance: LastDateOfWeekInQuarter(this DateTime, DayOfWeek) - calendar default
     // =========================================================================
 
     public static IEnumerable<object[]> LastDateOfWeekInQuarterCalendarTestData()

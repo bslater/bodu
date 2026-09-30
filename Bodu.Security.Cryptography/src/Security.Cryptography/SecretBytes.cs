@@ -23,7 +23,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Managed .NET cannot guarantee perfect secrecy: the source data existed in unprotected memory before it was copied
 /// in, the runtime or a debugger may copy memory for diagnostics, and the operating system may page memory to disk.
-/// Treat this type as defensive hygiene that narrows the exposure window — not as a secure enclave.
+/// Treat this type as defensive hygiene that narrows the exposure window - not as a secure enclave.
 /// </para>
 /// <para>
 /// This type is not thread-safe; callers coordinate concurrent access and disposal.

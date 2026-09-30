@@ -12,7 +12,7 @@ using Bodu.Text.DotEnv.Reader;
 namespace Bodu.Text.DotEnv.Reader;
 
 /// <summary>
-/// Contains the DotEnv conformance corpus for <see cref="Utf8DotEnvReader" /> — a curated sweep of the quoting,
+/// Contains the DotEnv conformance corpus for <see cref="Utf8DotEnvReader" /> - a curated sweep of the quoting,
 /// escape, inline-comment, export, and line-ending cases exercised by the mainstream <c>python-dotenv</c> and
 /// <c>godotenv</c> fixture suites, adapted to this reader's documented dialect and run in the Regression tier.
 /// </summary>

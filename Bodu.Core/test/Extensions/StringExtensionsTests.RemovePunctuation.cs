@@ -13,7 +13,7 @@ public partial class StringExtensionsTests
     /// punctuation while preserving letters, digits, and whitespace.
     /// </summary>
     [TestMethod]
-    public void RemovePunctuation_WhenInputContainsPunctuation_ShouldStripIt() => Assert.AreEqual("Hello World  its", "Hello, World — it's!?".RemovePunctuation());
+    public void RemovePunctuation_WhenInputContainsPunctuation_ShouldStripIt() => Assert.AreEqual("Hello World  its", "Hello, World - it's!?".RemovePunctuation());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.RemovePunctuation(string)" /> throws

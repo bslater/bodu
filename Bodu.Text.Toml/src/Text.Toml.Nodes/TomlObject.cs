@@ -14,7 +14,7 @@ namespace Bodu.Text.Toml.Nodes;
 /// Represents a mutable TOML table as a string-keyed collection of child nodes.
 /// </summary>
 /// <remarks>
-/// Entries are kept in insertion order — including across removals — which is also the order in which they are
+/// Entries are kept in insertion order - including across removals - which is also the order in which they are
 /// serialized: the TOML writer emits a table's members in document order rather than re-sorting them. A value may be
 /// <see langword="null" /> in memory, but a table containing a <see langword="null" /> value cannot be written because
 /// TOML has no null token. Adding a node that already belongs to another container throws an

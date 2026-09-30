@@ -261,13 +261,13 @@ internal static class DocLayout
         XmlDocToken openToken = tokens[openIndex];
         XmlDocToken closeToken = tokens[closeIndex];
 
-        // A single-line candidate cannot represent any content token that spans multiple lines — a multi-line
+        // A single-line candidate cannot represent any content token that spans multiple lines - a multi-line
         // CDATA section, or a tag preserved verbatim under PreserveXmlTagAttributes. When the body carries one,
         // skip the candidate stage and fall through to the expanded form so the multi-line content is emitted
         // across its own lines.
         for (var k = openIndex + 1; k < closeIndex; k++)
         {
-            // Structural line breaks do not count — only a content token that itself spans lines (a multi-line
+            // Structural line breaks do not count - only a content token that itself spans lines (a multi-line
             // CDATA section or a verbatim-preserved tag) forces the expanded form.
             if (tokens[k].Kind != XmlDocTokenKind.LineBreak &&
                 tokens[k].Kind != XmlDocTokenKind.Whitespace &&

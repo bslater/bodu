@@ -7,7 +7,7 @@
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Provides whole-payload read and write helpers for <see cref="System.IO.Stream" /> — synchronous and asynchronous
+/// Provides whole-payload read and write helpers for <see cref="System.IO.Stream" /> - synchronous and asynchronous
 /// operations that consume or emit an entire byte buffer in a single call.
 /// </summary>
 /// <remarks>

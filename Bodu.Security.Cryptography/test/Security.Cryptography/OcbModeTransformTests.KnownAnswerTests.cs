@@ -50,15 +50,15 @@ public sealed partial class OcbModeTransformTests
         };
     }
 
-    // ── RFC 7253 Appendix A — AES-128-OCB-128 known-answer tests ─────────────────────────────
+    // ── RFC 7253 Appendix A - AES-128-OCB-128 known-answer tests ─────────────────────────────
     //
-    // Tests 01–16: K = 000102030405060708090A0B0C0D0E0F, TAGLEN = 128 bits (tag = 16 bytes).
+    // Tests 01-16: K = 000102030405060708090A0B0C0D0E0F, TAGLEN = 128 bits (tag = 16 bytes).
     // Test 17:     K = 0F0E0D0C0B0A09080706050403020100, TAGLEN = 96 bits  (tag = 12 bytes).
     //
     // IV format: nonce (12 bytes) || 0x00000000 (4-byte padding) = 16-byte IV.
     // Output:    CT || Tag  where |CT| = |PT| and |Tag| = TagLength.
     //
-    // Source: RFC 7253 Appendix A — https://www.rfc-editor.org/rfc/rfc7253
+    // Source: RFC 7253 Appendix A - https://www.rfc-editor.org/rfc/rfc7253
 
     private static readonly AeadKnownAnswer[] KnownAnswerTests =
     [
@@ -211,7 +211,7 @@ public sealed partial class OcbModeTransformTests
     /// length configurations.
     /// </summary>
     /// <remarks>
-    /// Tests 01–16 use key <c>000102030405060708090A0B0C0D0E0F</c> with TAGLEN=128, covering
+    /// Tests 01-16 use key <c>000102030405060708090A0B0C0D0E0F</c> with TAGLEN=128, covering
     /// every combination of empty and non-empty plaintext and associated data up to two full
     /// 128-bit blocks. Test 17 uses key <c>0F0E0D0C0B0A09080706050403020100</c> with
     /// TAGLEN=96, exercising the different nonce-word byte-0 encoding (<c>0xC0</c>) required

@@ -185,7 +185,7 @@ slnx.sqlite
 # -----------------------------
 # Strong-name signing keys
 # -----------------------------
-# Commit only the public key (bld/Bodu.public.snk). The PRIVATE key must never be committed —
+# Commit only the public key (bld/Bodu.public.snk). The PRIVATE key must never be committed -
 # supply it from a secret at release time, ideally to a path outside the working tree.
 *.snk
 !bld/Bodu.public.snk

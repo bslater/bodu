@@ -21,12 +21,12 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// This is ideal for use cases that require stateless or ephemeral hashing operations without incremental updates or
-/// state reuse. Each call constructs a fresh algorithm instance, runs the hash, and disposes deterministically —
+/// state reuse. Each call constructs a fresh algorithm instance, runs the hash, and disposes deterministically -
 /// callers do not need to track <see cref="System.IDisposable" /> lifetimes themselves.
 /// </para>
 /// <para>
 /// <strong>When to choose this over the BCL.</strong> Pick <see cref="HashAlgorithmHelper" /> when the algorithm
-/// requires per-call configuration (a key, round counts, a variant flag) — the factory consistently applies it to every
+/// requires per-call configuration (a key, round counts, a variant flag) - the factory consistently applies it to every
 /// fresh instance. For stateless one-shot hashing of unconfigured algorithms (SHA-256, SHA-512) the BCL's static
 /// <c>HashData</c> on each algorithm class is simpler and faster. For tree-hashing workloads pass the factory's
 /// <see cref="IHashAlgorithmFactory{T}.Create" /> to <see cref="MerkleTree" />.

@@ -11,7 +11,7 @@ namespace Bodu.Financial.Samples.OfflineRates;
 
 /// <summary>
 /// Entry point for the offline-rates sample: builds a dated rate provider from a committed static data
-/// file and exercises the lookup and money-conversion surfaces against it — no network required.
+/// file and exercises the lookup and money-conversion surfaces against it - no network required.
 /// </summary>
 public static class Program
 {

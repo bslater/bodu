@@ -21,12 +21,12 @@ public partial class MoneyOfTCurrencyJsonConverterTests
         Assert.ThrowsExactly<JsonException>(() => JsonSerializer.Deserialize<Money<USD>>("{\"amount\":1,\"currency\":\"EUR\"}", OptionsFor(FinancialJsonPolicy.Strict)));
 
     /// <summary>
-    /// Verifies that malformed payloads — a non-numeric amount or a missing property — are rejected with a
+    /// Verifies that malformed payloads - a non-numeric amount or a missing property - are rejected with a
     /// <see cref="JsonException" />.
     /// </summary>
     [TestMethod]
     [DataRow("null", DisplayName = "Top-level null")]
-    [DataRow("[]", DisplayName = "Wrong root shape — array")]
+    [DataRow("[]", DisplayName = "Wrong root shape - array")]
     [DataRow("{}", DisplayName = "Empty object")]
     [DataRow("{\"amount\":19.99}", DisplayName = "Missing currency")]
     [DataRow("{\"currency\":\"USD\"}", DisplayName = "Missing amount")]
@@ -43,7 +43,7 @@ public partial class MoneyOfTCurrencyJsonConverterTests
         Assert.ThrowsExactly<JsonException>(() => JsonSerializer.Deserialize<Money<USD>>(json, OptionsFor(FinancialJsonPolicy.Strict)));
 
     /// <summary>
-    /// Verifies that a JSON payload with duplicate <c>"amount"</c> or <c>"currency"</c> properties is rejected —
+    /// Verifies that a JSON payload with duplicate <c>"amount"</c> or <c>"currency"</c> properties is rejected -
     /// last-write-wins on financial payloads is a silent data-integrity hazard.
     /// </summary>
     [TestMethod]
@@ -53,7 +53,7 @@ public partial class MoneyOfTCurrencyJsonConverterTests
         Assert.ThrowsExactly<JsonException>(() => JsonSerializer.Deserialize<Money<USD>>(json, OptionsFor(FinancialJsonPolicy.Strict)));
 
     /// <summary>
-    /// Verifies that the reader accepts a numeric <c>"amount"</c> emitted as a JSON string — documented lenient
+    /// Verifies that the reader accepts a numeric <c>"amount"</c> emitted as a JSON string - documented lenient
     /// behaviour for systems lacking arbitrary-precision number support.
     /// </summary>
     [TestMethod]
@@ -90,7 +90,7 @@ public partial class MoneyOfTCurrencyJsonConverterTests
     }
 
     /// <summary>
-    /// A custom currency tag that reports a null ISO code — invalid metadata for the write path.
+    /// A custom currency tag that reports a null ISO code - invalid metadata for the write path.
     /// </summary>
     private sealed class NullIsoCurrency
         : ICurrency

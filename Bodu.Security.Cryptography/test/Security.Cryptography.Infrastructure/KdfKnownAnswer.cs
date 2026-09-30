@@ -7,8 +7,8 @@
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Represents a single password-hashing KDF known-answer test (KAT) vector — the password, salt, and cost parameters,
-/// together with the expected derived bytes — for the Argon2 and scrypt families.
+/// Represents a single password-hashing KDF known-answer test (KAT) vector - the password, salt, and cost parameters,
+/// together with the expected derived bytes - for the Argon2 and scrypt families.
 /// </summary>
 /// <remarks>
 /// Argon2 vectors populate <see cref="Variant" />, <see cref="Memory" />, <see cref="Iterations" />,

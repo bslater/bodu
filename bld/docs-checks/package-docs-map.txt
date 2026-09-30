@@ -9,8 +9,8 @@
 #   docs/guides/<guides>/               (or docs/guides/<guides>.md)
 #   docs/samples/<samples page>.md
 #
-# Several packages share a family page on purpose — the regional calendar data packs all land on
-# calendar-data, the exchange-rate providers on exchange-rates — so the same target may appear on
+# Several packages share a family page on purpose - the regional calendar data packs all land on
+# calendar-data, the exchange-rate providers on exchange-rates - so the same target may appear on
 # many rows. A '-' records a deliberate absence, reviewed rather than overlooked:
 #
 #   Bodu.IO.Biff                 no guide folder; the codec is documented through its landing page and

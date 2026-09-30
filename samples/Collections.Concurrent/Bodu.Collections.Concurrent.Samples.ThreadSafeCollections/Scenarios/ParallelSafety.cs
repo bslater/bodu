@@ -17,7 +17,7 @@ namespace Bodu.Collections.Concurrent.Samples.ThreadSafeCollections.Scenarios;
 /// <remarks>
 /// Every other scenario in this sample runs single-threaded so its transcript is exact. This one does the opposite
 /// and keeps the output deterministic a different way: it prints no per-item result, because those genuinely do
-/// arrive in an unpredictable order. What it prints instead are invariants — a count, a sum, and a call tally —
+/// arrive in an unpredictable order. What it prints instead are invariants - a count, a sum, and a call tally -
 /// each of which has exactly one correct value no matter how the threads interleave. A sample that printed items
 /// here would either be non-deterministic or be quietly serializing the work it claims to parallelize.
 /// </remarks>

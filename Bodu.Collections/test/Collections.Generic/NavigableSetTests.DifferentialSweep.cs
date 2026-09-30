@@ -19,8 +19,8 @@ public partial class NavigableSetTests
 
     /// <summary>
     /// Verifies that 20,000 seeded mixed add/remove/contains operations mirrored against a <see cref="SortedSet{T}" />
-    /// leave the <see cref="NavigableSet{T}" /> in exactly the mirrored state at every checkpoint — full ordered
-    /// content, count, and min/max — and that a floor/ceiling/higher/lower/rank/select/count-in-range probe battery
+    /// leave the <see cref="NavigableSet{T}" /> in exactly the mirrored state at every checkpoint - full ordered
+    /// content, count, and min/max - and that a floor/ceiling/higher/lower/rank/select/count-in-range probe battery
     /// agrees with a sorted-array binary-search oracle. This sweep is the correctness gate for the size-augmented
     /// red-black tree.
     /// </summary>

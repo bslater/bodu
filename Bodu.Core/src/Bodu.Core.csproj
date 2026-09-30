@@ -6,13 +6,13 @@
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
-    <Title>Bodu — Core</Title>
+    <Title>Bodu - Core</Title>
     <Description>Foundational building blocks for .NET 8: ArrayPool-backed buffer builders, a broad extension-method surface over strings, dates, numerics, spans, and enumerables, async threading primitives, text-encoding utilities, the WeekPattern value type, and the ThrowHelper argument-validation catalogue the rest of the solution validates against. The specialized generic collection catalogue (circular buffer, deque, evicting dictionary, graphs, tries, and more) ships separately as Bodu.Collections.</Description>
     <PackageTags>$(PackageTags);buffers;extensions;threading;async;throwhelper;week-pattern</PackageTags>
   </PropertyGroup>
 
   <!--
-    InternalsVisibleTo grants — every entry below was audited and is currently in use:
+    InternalsVisibleTo grants - every entry below was audited and is currently in use:
       - Bodu.Core.Test               : test project (ConcurrentHashSet internal ctor, ClampDefaultConcurrencyLevel,
                                        XorShiftRandom ScaleToUnitInterval / BoundedNextUInt32 helpers, etc.).
       - Bodu.Globalization.Calendar  : DateTimeExtensions.TicksPerDay.

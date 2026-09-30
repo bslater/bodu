@@ -10,7 +10,7 @@ namespace Bodu.Collections.Generic;
 /// Tests for the time-based expiration surface of <see cref="EvictingDictionary{TKey, TValue}" />: absolute and
 /// sliding lifetimes, per-entry time-to-live overrides, lazy purge on access, <c>RemoveExpired</c>, the raw
 /// <c>Count</c> contract, and the interaction between expiry and every capacity policy. All time is driven through a
-/// manually advanced <see cref="TimeProvider" /> — no real sleeps.
+/// manually advanced <see cref="TimeProvider" /> - no real sleeps.
 /// </summary>
 public partial class EvictingDictionaryTests
 {
@@ -232,7 +232,7 @@ public partial class EvictingDictionaryTests
 
     /// <summary>
     /// Verifies that under sliding expiration <see cref="EvictingDictionary{TKey, TValue}.ContainsKey" /> is a pure
-    /// read that does not refresh the entry's deadline, so the entry still expires on its original schedule — whereas a
+    /// read that does not refresh the entry's deadline, so the entry still expires on its original schedule - whereas a
     /// <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> read at the same point does slide it.
     /// </summary>
     [TestMethod]

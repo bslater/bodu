@@ -155,8 +155,8 @@ internal sealed class Salsa20StreamCipher
     /// <param name="nonce">The first 16 bytes (128 bits) of the 24-byte XSalsa20 nonce.</param>
     /// <param name="subkey">A span of at least 32 bytes that receives the derived subkey.</param>
     /// <remarks>
-    /// HSalsa20 runs the Salsa20 round function over a state seeded with the constant, key, and 128-bit nonce, but —
-    /// unlike the keystream core — does <em>not</em> add the original state back in. The subkey is taken from the
+    /// HSalsa20 runs the Salsa20 round function over a state seeded with the constant, key, and 128-bit nonce, but -
+    /// unlike the keystream core - does <em>not</em> add the original state back in. The subkey is taken from the
     /// diagonal words of the transformed state (positions 0, 5, 10, 15, 6, 7, 8, 9).
     /// </remarks>
     internal static void HSalsa20(ReadOnlySpan<byte> key, ReadOnlySpan<byte> nonce, Span<byte> subkey)

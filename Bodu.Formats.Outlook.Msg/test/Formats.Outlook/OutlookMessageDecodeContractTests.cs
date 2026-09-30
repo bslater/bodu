@@ -12,7 +12,7 @@ namespace Bodu.Formats.Outlook;
 
 /// <summary>
 /// Verifies, over one comprehensive synthetic message exercising every feature the reader ships, that the full decode
-/// contract holds — and holds identically under strict validation, since a well-formed message must never trip the
+/// contract holds - and holds identically under strict validation, since a well-formed message must never trip the
 /// strict checks.
 /// </summary>
 /// <remarks>

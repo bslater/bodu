@@ -14,7 +14,7 @@ namespace Bodu.Text.Configuration;
 /// <para>
 /// Two questions need consistent answers for a configuration host: how are the dotted, colon-delimited, or mixed key
 /// forms in a source document split into segments, and under which comparer are the resulting keys looked up.
-/// <see cref="ConfigurationKeyOptions" /> answers both — <see cref="SegmentSeparators" /> drives splitting,
+/// <see cref="ConfigurationKeyOptions" /> answers both - <see cref="SegmentSeparators" /> drives splitting,
 /// <see cref="Mapping" /> drives the canonical join, and <see cref="CaseSensitive" /> drives the comparer exposed via
 /// <see cref="KeyComparer" /> and used for equality on every <see cref="ConfigurationKey" /> it produces.
 /// </para>
@@ -22,7 +22,7 @@ namespace Bodu.Text.Configuration;
 /// The same instance is consumed by <see cref="ConfigurationParseOptions.KeyOptions" /> and
 /// <see cref="ConfigurationResolveOptions.KeyOptions" />; sharing one configured value across both keeps the parsed
 /// model and the resolved view's lookups consistent. The default <see cref="Default" /> mirrors
-/// <c>Microsoft.Extensions.Configuration</c> — case-insensitive ordinal comparison, dot-to-colon mapping, and
+/// <c>Microsoft.Extensions.Configuration</c> - case-insensitive ordinal comparison, dot-to-colon mapping, and
 /// <c>{ '.', ':' }</c> as recognised separators.
 /// </para>
 /// <para>

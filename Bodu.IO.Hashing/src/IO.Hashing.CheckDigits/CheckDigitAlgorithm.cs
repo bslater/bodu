@@ -12,7 +12,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <remarks>
 /// <para>
 /// A check-digit algorithm consumes a sequence of decimal digits (<c>'0'</c> to <c>'9'</c>) and yields a single
-/// trailing digit that, when appended to the body, allows the concatenated sequence to be validated — matching the
+/// trailing digit that, when appended to the body, allows the concatenated sequence to be validated - matching the
 /// domain of card numbers, national identifiers, and serial codes on which these algorithms are typically applied.
 /// </para>
 /// <para>
@@ -24,8 +24,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// character to an encoding artifact, so the families are kept distinct by design.
 /// </para>
 /// <para>
-/// The streaming surface — <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" />,
-/// <see cref="CheckValueAlgorithm.Reset" />, and <see cref="GetCurrentCheckDigit" /> — will nonetheless feel familiar
+/// The streaming surface - <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" />,
+/// <see cref="CheckValueAlgorithm.Reset" />, and <see cref="GetCurrentCheckDigit" /> - will nonetheless feel familiar
 /// to anyone who has used a hash algorithm: <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" /> accumulates
 /// input, <see cref="CheckValueAlgorithm.Reset" /> restarts the computation, and reading the current check digit is
 /// non-destructive and idempotent. That resemblance is incidental convenience for the reader's intuition, not a shared

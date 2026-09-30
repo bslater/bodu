@@ -18,27 +18,27 @@ namespace Bodu.Text.Configuration;
 /// Patterns support the EditorConfig glob grammar:
 /// <list type="bullet">
 /// <item>
-/// <description><c>*</c> — matches any character except <c>/</c>.</description>
+/// <description><c>*</c> - matches any character except <c>/</c>.</description>
 /// </item>
 /// <item>
-/// <description><c>**</c> — matches any sequence of characters including <c>/</c>.</description>
+/// <description><c>**</c> - matches any sequence of characters including <c>/</c>.</description>
 /// </item>
 /// <item>
-/// <description><c>?</c> — matches a single character except <c>/</c>.</description>
+/// <description><c>?</c> - matches a single character except <c>/</c>.</description>
 /// </item>
 /// <item>
-/// <description><c>{a,b,c}</c> — matches any of the comma-separated alternatives (nesting permitted).</description>
+/// <description><c>{a,b,c}</c> - matches any of the comma-separated alternatives (nesting permitted).</description>
 /// </item>
 /// <item>
-/// <description><c>{n1..n2}</c> — matches any decimal integer in the inclusive range.</description>
+/// <description><c>{n1..n2}</c> - matches any decimal integer in the inclusive range.</description>
 /// </item>
 /// <item>
 /// <description>
-/// <c>[seq]</c> — matches a single character in the set; <c>[!seq]</c> matches any character not in the set.
+/// <c>[seq]</c> - matches a single character in the set; <c>[!seq]</c> matches any character not in the set.
 /// </description>
 /// </item>
 /// <item>
-/// <description><c>\</c> — escapes the next character so it is matched literally.</description>
+/// <description><c>\</c> - escapes the next character so it is matched literally.</description>
 /// </item>
 /// </list>
 /// </para>
@@ -68,7 +68,7 @@ namespace Bodu.Text.Configuration;
 /// </example>
 public sealed partial class ConfigurationPattern
 {
-    /// <summary>Maximum number of distinct (pattern, comparison) pairs retained in the shared compile cache before the cache is cleared. The cache exists to amortize regex compilation across repeated resolve calls; the crude eviction strategy is deliberate — patterns are typically tens, not thousands, and clearing the cache on overflow keeps memory bounded without an explicit LRU.</summary>
+    /// <summary>Maximum number of distinct (pattern, comparison) pairs retained in the shared compile cache before the cache is cleared. The cache exists to amortize regex compilation across repeated resolve calls; the crude eviction strategy is deliberate - patterns are typically tens, not thousands, and clearing the cache on overflow keeps memory bounded without an explicit LRU.</summary>
     private const int CompileCacheCapacity = 512;
 
     /// <summary>The process-wide cache of compiled patterns keyed by source pattern and comparison mode, used to amortize regular-expression compilation across repeated resolve calls.</summary>

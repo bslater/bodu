@@ -1,8 +1,8 @@
 ---
-title: Bodu.Security.Cryptography — Getting started
+title: Bodu.Security.Cryptography - Getting started
 ---
 
-# Bodu.Security.Cryptography — Getting started
+# Bodu.Security.Cryptography - Getting started
 
 ## Install
 
@@ -12,9 +12,9 @@ dotnet add package Bodu.Security.Cryptography
 
 Targets `net8.0`. Depends on `Bodu.Core` and the BCL `System.Security.Cryptography`.
 
-## Minimal samples — one per subfamily
+## Minimal samples - one per subfamily
 
-### Standard block cipher — Camellia in CBC mode
+### Standard block cipher - Camellia in CBC mode
 
 ```csharp
 using System.Security.Cryptography;
@@ -34,9 +34,9 @@ byte[] ciphertext = cipher.Encrypt(plaintext);
 byte[] roundtrip  = cipher.Decrypt(ciphertext);
 ```
 
-Swap `Camellia` for `Twofish`, `Serpent128`, `Blowfish`, or `Skipjack` — the lifecycle is identical.
+Swap `Camellia` for `Twofish`, `Serpent128`, `Blowfish`, or `Skipjack` - the lifecycle is identical.
 
-### Tweakable block cipher — Threefish-512 with a per-record tweak
+### Tweakable block cipher - Threefish-512 with a per-record tweak
 
 ```csharp
 using System.Security.Cryptography;
@@ -54,9 +54,9 @@ byte[] ciphertext = cipher.Encrypt(plaintext);
 byte[] roundtrip  = cipher.Decrypt(ciphertext);
 ```
 
-Encrypting the same plaintext under the same key with a *different* tweak yields an entirely independent ciphertext — useful for disk encryption (sector number as tweak) or per-record encryption.
+Encrypting the same plaintext under the same key with a *different* tweak yields an entirely independent ciphertext - useful for disk encryption (sector number as tweak) or per-record encryption.
 
-### Stream cipher — ChaCha20
+### Stream cipher - ChaCha20
 
 ```csharp
 using Bodu.Security.Cryptography;
@@ -64,15 +64,15 @@ using Bodu.Security.Cryptography.Extensions;
 
 using var cipher = new ChaCha20();
 cipher.GenerateKey();               // 32-byte key
-cipher.GenerateNonce();                // 12-byte nonce — unique per message
+cipher.GenerateNonce();                // 12-byte nonce - unique per message
 
 byte[] ciphertext = cipher.Encrypt(plaintext);
 byte[] roundtrip  = cipher.Decrypt(ciphertext);   // self-inverse
 ```
 
-Swap `ChaCha20` for `XChaCha20`, `Salsa20`, `XSalsa20`, `Rabbit`, or `Hc128` — the lifecycle is identical (no block mode or padding). These are **raw, confidentiality-only** ciphers: never reuse a `(key, nonce)` pair, and pair with a MAC such as `Poly1305` or prefer an AEAD construction when you need integrity.
+Swap `ChaCha20` for `XChaCha20`, `Salsa20`, `XSalsa20`, `Rabbit`, or `Hc128` - the lifecycle is identical (no block mode or padding). These are **raw, confidentiality-only** ciphers: never reuse a `(key, nonce)` pair, and pair with a MAC such as `Poly1305` or prefer an AEAD construction when you need integrity.
 
-### AEAD — AES-GCM via `AesBlockCipher` + `GcmModeTransform`
+### AEAD - AES-GCM via `AesBlockCipher` + `GcmModeTransform`
 
 ```csharp
 using System.Security.Cryptography;
@@ -93,9 +93,9 @@ using var verify = new GcmModeTransform(aes, nonce);   // fresh transform per me
 byte[] recovered = verify.Decrypt(ciphertextWithTag, associatedData: aad);
 ```
 
-Swap `GcmModeTransform` for `CcmModeTransform`, `OcbModeTransform`, `EaxModeTransform`, `SivModeTransform`, or `GcmSivModeTransform`. AEAD transforms are **single-use per message** — construct a fresh transform on the encrypt side and another on the decrypt side.
+Swap `GcmModeTransform` for `CcmModeTransform`, `OcbModeTransform`, `EaxModeTransform`, `SivModeTransform`, or `GcmSivModeTransform`. AEAD transforms are **single-use per message** - construct a fresh transform on the encrypt side and another on the decrypt side.
 
-### AEAD — ASCON-AEAD128 (no separate cipher)
+### AEAD - ASCON-AEAD128 (no separate cipher)
 
 ```csharp
 using System.Security.Cryptography;
@@ -113,7 +113,7 @@ using var verify = new AsconAead128(key, nonce);
 byte[] recovered = verify.Decrypt(ciphertextWithTag, associatedData: aad);
 ```
 
-### Keyed hash (MAC) — SipHash-64
+### Keyed hash (MAC) - SipHash-64
 
 ```csharp
 using System.Security.Cryptography;
@@ -127,7 +127,7 @@ using var sip = new SipHash64 { Key = key };
 ulong digest  = BitConverter.ToUInt64(sip.ComputeHash(data));
 ```
 
-### Cryptographic digest — Tiger-192
+### Cryptographic digest - Tiger-192
 
 ```csharp
 using System.Text;
@@ -141,7 +141,7 @@ byte[] digest   = tiger.ComputeHash(data);
 
 Swap `Tiger` for `CubeHash`, `Blake2b`, `Whirlpool`, `Skein512`, or `AsconHash256`.
 
-### Cryptographic digest — variable length (XOF) ASCON-XOF-128
+### Cryptographic digest - variable length (XOF) ASCON-XOF-128
 
 ```csharp
 using Bodu.Security.Cryptography;
@@ -157,7 +157,7 @@ byte[] same = AsconXof128.HashData(data, outputLength: 64);
 
 `Squeeze(Span<byte>)` writes directly into a caller buffer, and `Initialize()` resets the sponge for the next message.
 
-### Merkle tree — an RFC 6962 root over fixed-size blocks, with a proof
+### Merkle tree - an RFC 6962 root over fixed-size blocks, with a proof
 
 ```csharp
 using System.Security.Cryptography;
@@ -180,7 +180,7 @@ bool included = tree.VerifyInclusionOfLeafHash(
 
 The root is RFC 6962's Merkle Tree Hash over the blocks, whichever way the bytes arrive: `ComputeRootOfBlocks` folds as it reads, `CreateBlockAccumulator` builds the same root from incremental `Append` calls, and `new MerkleTree(SHA256.Create, maxDegreeOfParallelism: -1)` hashes leaves across cores without changing the tree.
 
-### Digital signature — Ed25519
+### Digital signature - Ed25519
 
 ```csharp
 using System.Text;
@@ -195,9 +195,9 @@ byte[] signature = signer.SignData(message);          // 64 bytes
 bool valid       = signer.VerifyData(message, signature);   // true
 ```
 
-Swap `Ed25519` for `MLDsa65` for a post-quantum (FIPS 204) signature — the lifecycle is identical, only the key and signature sizes differ.
+Swap `Ed25519` for `MLDsa65` for a post-quantum (FIPS 204) signature - the lifecycle is identical, only the key and signature sizes differ.
 
-### Key agreement — X25519
+### Key agreement - X25519
 
 ```csharp
 using Bodu.Security.Cryptography;
@@ -214,9 +214,9 @@ byte[] bobShared   = bob.DeriveSharedSecret(alice.ExportPublicKey());
 // aliceShared and bobShared are identical (32 bytes each).
 ```
 
-Swap `X25519` for `MLKem768` when you need post-quantum (FIPS 203) key establishment — the receiver publishes an encapsulation key and the sender calls `Encapsulate()`.
+Swap `X25519` for `MLKem768` when you need post-quantum (FIPS 203) key establishment - the receiver publishes an encapsulation key and the sender calls `Encapsulate()`.
 
-### Hybrid public-key encryption — HPKE
+### Hybrid public-key encryption - HPKE
 
 ```csharp
 using Bodu.Security.Cryptography;
@@ -229,14 +229,14 @@ HpkeSuite suite = HpkeSuite.X25519_HkdfSha256_Aes128Gcm;
 byte[] info = "myapp v1"u8.ToArray();   // binds the exchange to a context
 byte[] aad  = "headers"u8.ToArray();    // authenticated, not encrypted
 
-// Sender — needs only the recipient's public key.
+// Sender - needs only the recipient's public key.
 var (enc, ciphertext) = Hpke.Seal(suite, recipientPublicKey, info, aad, "secret message"u8);
 
-// Recipient — needs its private key, the encapsulated key, and the same info / aad.
+// Recipient - needs its private key, the encapsulated key, and the same info / aad.
 byte[] plaintext = Hpke.Open(suite, recipient, enc, info, aad, ciphertext);
 ```
 
-### Password hashing — Argon2id
+### Password hashing - Argon2id
 
 ```csharp
 using System.Security.Cryptography;
@@ -259,7 +259,7 @@ byte[] key = Argon2id.DeriveKey(password, salt, parameters);   // 32 bytes
 
 Swap `Argon2id` for `Scrypt` (`Scrypt.DeriveKey(password, salt, costN: 16384, blockSizeR: 8, parallelization: 1, length: 32)`) for RFC 7914 interoperability.
 
-### Key derivation — HKDF
+### Key derivation - HKDF
 
 ```csharp
 using System.Security.Cryptography;
@@ -277,12 +277,12 @@ byte[] sessionKey = Hkdf.DeriveKey(
 CryptographicOperations.ZeroMemory(sharedSecret);   // wipe the raw secret once stretched
 ```
 
-HKDF is for *high-entropy* inputs only — for passwords reach for Argon2id or scrypt above.
+HKDF is for *high-entropy* inputs only - for passwords reach for Argon2id or scrypt above.
 
 ## Where to go next
 
-- **[Bodu.Security.Cryptography introduction](index.md)** — namespaces, headline types, scenarios.
-- **[Bodu.IO.Hashing](../io-hashing/index.md)** — the sibling library, for non-cryptographic checksums and fingerprints (no adversary model).
-- **[Bodu.Security.Cryptography guides](../../guides/cryptography/index.md)** — encryption basics, modes, padding, AEAD, hashing.
-- **[Bodu.Security.Cryptography API reference](xref:Bodu.Security.Cryptography)** — full type-by-type docs.
+- **[Bodu.Security.Cryptography introduction](index.md)** - namespaces, headline types, scenarios.
+- **[Bodu.IO.Hashing](../io-hashing/index.md)** - the sibling library, for non-cryptographic checksums and fingerprints (no adversary model).
+- **[Bodu.Security.Cryptography guides](../../guides/cryptography/index.md)** - encryption basics, modes, padding, AEAD, hashing.
+- **[Bodu.Security.Cryptography API reference](xref:Bodu.Security.Cryptography)** - full type-by-type docs.
 - **For non-cryptographic checksums and fingerprints** (CRC, Fletcher, Adler, FNV, CityHash), see [Bodu.IO.Hashing](../io-hashing/index.md).

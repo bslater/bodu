@@ -41,7 +41,7 @@ public readonly partial struct Money
     /// <param name="ratios">The non-negative weights.</param>
     /// <returns>
     /// The per-ratio allocation, whose sum equals this instance. Residual minor units are distributed by the <i>
-    /// largest-remainder method</i> — each slot receives one extra unit in descending order of its fractional
+    /// largest-remainder method</i> - each slot receives one extra unit in descending order of its fractional
     /// remainder, with ties broken by stable input order. Zero-ratio slots never receive residual.
     /// </returns>
     /// <exception cref="InvalidOperationException">

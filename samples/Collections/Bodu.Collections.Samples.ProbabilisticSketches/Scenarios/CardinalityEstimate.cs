@@ -18,7 +18,7 @@ namespace Bodu.Collections.Samples.ProbabilisticSketches.Scenarios;
 /// <remarks>
 /// The register array is a fixed 16 KB here whether it summarizes ten items or ten billion, which is the whole
 /// point: an exact distinct count needs memory proportional to the cardinality, and a hash set of ten million user
-/// identifiers is not something you keep per dimension, per hour. The accuracy is also fixed in advance — the
+/// identifiers is not something you keep per dimension, per hour. The accuracy is also fixed in advance - the
 /// standard error depends only on the register count, not on how much data arrives.
 /// </remarks>
 public static class CardinalityEstimate

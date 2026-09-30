@@ -37,7 +37,7 @@ public partial class IntervalTreeTests
     }
 
     /// <summary>
-    /// Verifies that removal requires an exact (low, high) match — an interval overlapping the arguments but not
+    /// Verifies that removal requires an exact (low, high) match - an interval overlapping the arguments but not
     /// equal to them is not removed.
     /// </summary>
     [TestMethod]
@@ -87,8 +87,8 @@ public partial class IntervalTreeTests
     }
 
     /// <summary>
-    /// Verifies the targeted node-delete shapes — leaf, node with one child, and interior node with two children
-    /// (reduced via its in-order successor) — by removing from a tree covering all shapes and checking the
+    /// Verifies the targeted node-delete shapes - leaf, node with one child, and interior node with two children
+    /// (reduced via its in-order successor) - by removing from a tree covering all shapes and checking the
     /// survivors' order and query behaviour.
     /// </summary>
     [TestMethod]

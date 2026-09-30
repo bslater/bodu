@@ -5,9 +5,9 @@ title: Working with BigDecimal
 # Working with `BigDecimal`
 
 `BigDecimal` is an immutable, value-equatable arbitrary-precision
-decimal number. Unlike `System.Decimal` — which is a fixed 128-bit
-type capped at 28–29 significant digits and an exponent range of
-10<sup>0</sup> to 10<sup>-28</sup> — `BigDecimal` grows to whatever
+decimal number. Unlike `System.Decimal` - which is a fixed 128-bit
+type capped at 28-29 significant digits and an exponent range of
+10<sup>0</sup> to 10<sup>-28</sup> - `BigDecimal` grows to whatever
 precision a value requires. It stores an arbitrary-magnitude
 `BigInteger` *unscaled value* together with a non-negative `int`
 *scale*, so the represented number is:
@@ -78,11 +78,11 @@ BigDecimal v = BigDecimal.Parse("12.340", CultureInfo.InvariantCulture);
 
 BigInteger unscaled = v.UnscaledValue;   // 12340
 int scale           = v.Scale;           // 3
-int precision       = v.Precision;       // 5  — total significant digits
+int precision       = v.Precision;       // 5  - total significant digits
 int sign            = v.Sign;            // 1  (-1, 0, or 1)
 
 bool isZero     = v.IsZero;
-bool isInteger  = v.IsInteger;           // false — has a fractional part
+bool isInteger  = v.IsInteger;           // false - has a fractional part
 bool isNegative = v.IsNegative;
 bool isPositive = v.IsPositive;
 
@@ -92,7 +92,7 @@ var (mantissa, s) = v;
 
 ## Arithmetic
 
-Addition, subtraction, and multiplication are **exact** — the result
+Addition, subtraction, and multiplication are **exact** - the result
 carries whatever scale is needed to represent it with no loss:
 
 <!-- compile -->
@@ -153,7 +153,7 @@ BigDecimal a = BigDecimal.Parse("1.0", CultureInfo.InvariantCulture);
 BigDecimal b = BigDecimal.Parse("1.00", CultureInfo.InvariantCulture);
 
 bool equal = a == b;                       // true
-bool sameMin = BigDecimal.Min(a, b) == a;  // true — the values are equal, so Min returns either
+bool sameMin = BigDecimal.Min(a, b) == a;  // true - the values are equal, so Min returns either
 
 // GetHashCode() is consistent with value equality: a and b hash equal.
 ```
@@ -183,7 +183,7 @@ v.TryFormat(buffer, out int written, "G", CultureInfo.InvariantCulture);
 Because `BigDecimal` satisfies `INumber<BigDecimal>`, it flows through
 generic-math algorithms and the `CreateChecked` / `CreateTruncating`
 conversion factories. Those factories are static virtual members of
-`INumberBase<TSelf>`, so — as with `Fraction<T>` — they are reached
+`INumberBase<TSelf>`, so - as with `Fraction<T>` - they are reached
 through a constrained type parameter rather than called as
 `BigDecimal.CreateChecked(...)` on the concrete type:
 
@@ -202,7 +202,7 @@ static T FromInt32<T>(int value) where T : INumber<T> =>
 
 BigDecimal exact = Sum<BigDecimal>(0.1m, 0.2m, 0.3m);  // 0.6 exactly
 BigDecimal five  = FromInt32<BigDecimal>(5);           // T.CreateChecked via the constraint
-int back         = int.CreateTruncating(five);         // 5 — the BCL primitives expose the factories publicly
+int back         = int.CreateTruncating(five);         // 5 - the BCL primitives expose the factories publicly
 ```
 
 The classification predicates (`IsInteger`, `IsEvenInteger`,
@@ -216,14 +216,14 @@ types. `Radix` is `10`.
 |---|---|---|
 | `BigInteger` | `(BigInteger)value` / `value.ToBigInteger()` | Truncates toward zero. |
 | `decimal` | `(decimal)value` / `value.ToDecimal()` | Throws `OverflowException` when the value exceeds `decimal`'s range; `value.TryToDecimal(out var d)` reports `false` instead of throwing. |
-| `double` | `(double)value` / `value.ToDouble()` | Nearest `double`; may lose precision, and saturates to `±Infinity` outside the finite range — `value.TryToDouble(out var d)` reports `false` in that case. |
+| `double` | `(double)value` / `value.ToDouble()` | Nearest `double`; may lose precision, and saturates to `±Infinity` outside the finite range - `value.TryToDouble(out var d)` reports `false` in that case. |
 | from `double` | `(BigDecimal)d` / `BigDecimal.FromDouble(d)` | Non-finite input throws. |
 | from `decimal` | implicit / `BigDecimal.FromDecimal(d)` | Exact. |
 
 ## JSON serialization
 
 Like the rest of `Bodu.Numerics`, the core type carries **no**
-`[JsonConverter]` attribute — JSON support ships in the companion
+`[JsonConverter]` attribute - JSON support ships in the companion
 [`Bodu.Numerics.Serialization.Json`](json-serialization.md) package.
 Register the converters with a single call and pick a wire shape:
 
@@ -233,9 +233,9 @@ using Bodu.Numerics.Serialization.Json;
 var options = new JsonSerializerOptions()
     .AddNumericsJsonConverters(NumericsJsonPolicy.Strict);
 
-// Strict — canonical object form:
+// Strict - canonical object form:
 //   { "unscaledValue": 12340, "scale": 3 }
-// Compact — the plain decimal string:
+// Compact - the plain decimal string:
 //   "12.340"
 string json = JsonSerializer.Serialize(
     BigDecimal.Parse("12.340", CultureInfo.InvariantCulture), options);
@@ -249,9 +249,9 @@ because many JSON consumers silently narrow long numbers to IEEE-754
 
 ## See also
 
-- [JSON serialization](json-serialization.md) — the `Strict`,
+- [JSON serialization](json-serialization.md) - the `Strict`,
   `Lenient`, and `Compact` wire shapes and how to register them.
-- [Working with `Fraction<T>`](fraction.md) — the exact-rational type;
+- [Working with `Fraction<T>`](fraction.md) - the exact-rational type;
   reach for it when you need `1/3` exactly rather than to a fixed
   number of decimal places.
 - [`BigDecimal` API reference](xref:Bodu.Numerics.BigDecimal)

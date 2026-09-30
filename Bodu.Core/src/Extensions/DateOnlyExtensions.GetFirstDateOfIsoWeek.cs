@@ -40,7 +40,7 @@ public static partial class DateOnlyExtensions
     /// </item>
     /// </list>
     /// <para>
-    /// This member delegates to <see cref="DateTimeExtensions.GetFirstDateOfIsoWeek(int, int)" /> — the twins share one
+    /// This member delegates to <see cref="DateTimeExtensions.GetFirstDateOfIsoWeek(int, int)" /> - the twins share one
     /// implementation, so both surfaces always agree.
     /// </para>
     /// </remarks>

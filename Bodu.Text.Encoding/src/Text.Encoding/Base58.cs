@@ -30,11 +30,11 @@ namespace Bodu.Text.Encoding;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Bitcoin/Flickr Base58 (default) — leading zero bytes encode as leading '1' characters.
+/// // Bitcoin/Flickr Base58 (default) - leading zero bytes encode as leading '1' characters.
 /// byte[] data = { 0x00, 0xDE, 0xAD, 0xBE, 0xEF };
 /// string encoded = Base58.Encode(data);
 ///
-/// // Ripple alphabet — a permutation used by the XRP ledger.
+/// // Ripple alphabet - a permutation used by the XRP ledger.
 /// string ripple = Base58.Encode(data, Base58Variant.Ripple);
 ///
 /// // Round-trip.

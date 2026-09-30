@@ -78,7 +78,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that trimming never changes the numeric amount — the trimmed value remains equal to the original
+    /// Verifies that trimming never changes the numeric amount - the trimmed value remains equal to the original
     /// under the type's numeric equality.
     /// </summary>
     [TestMethod]

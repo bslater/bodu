@@ -10,7 +10,7 @@ namespace Bodu.Numerics.Serialization.Json;
 
 /// <summary>
 /// Verifies that <see cref="IntervalJsonConverter{T}" /> round-trips unbounded and half-bounded intervals under every
-/// <see cref="NumericsJsonPolicy" /> — the object form uses the <c>lowerUnbounded</c> / <c>upperUnbounded</c> markers and
+/// <see cref="NumericsJsonPolicy" /> - the object form uses the <c>lowerUnbounded</c> / <c>upperUnbounded</c> markers and
 /// the compact form uses the infinity glyphs.
 /// </summary>
 [TestClass]

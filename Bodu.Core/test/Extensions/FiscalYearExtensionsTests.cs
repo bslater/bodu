@@ -78,7 +78,7 @@ public class FiscalYearExtensionsTests
     public void FiscalYear_WhenWithinKnownFiscalYear_ShouldReturnFiscalYear()
     {
         FiscalWeekQuarterProvider provider = BuildProvider();
-        // Probe with the Q1 start of fiscal year 2026 — by definition, that date's fiscal year is 2026.
+        // Probe with the Q1 start of fiscal year 2026 - by definition, that date's fiscal year is 2026.
         DateOnly q1Start = DateOnlyExtensions.FirstDateOfFiscalYear(2026, provider);
 
         int fy = q1Start.FiscalYear(provider);

@@ -10,7 +10,7 @@ using Bodu.Financial.ExchangeRates;
 namespace Bodu.Financial;
 
 /// <summary>
-/// Verifies <see cref="MoneyExchangeRateExtensions" /> — the dated-conversion bridge for runtime-tagged money.
+/// Verifies <see cref="MoneyExchangeRateExtensions" /> - the dated-conversion bridge for runtime-tagged money.
 /// </summary>
 [TestClass]
 public partial class MoneyExchangeRateExtensionsTests

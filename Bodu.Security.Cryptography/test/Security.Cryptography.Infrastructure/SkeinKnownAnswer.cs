@@ -21,7 +21,7 @@ public sealed record SkeinKnownAnswer
     public required string Name { get; init; }
 
     /// <summary>
-    /// Gets the Skein state (Threefish block) size in bits — 256, 512, or 1024.
+    /// Gets the Skein state (Threefish block) size in bits - 256, 512, or 1024.
     /// </summary>
     public required int StateSizeBits { get; init; }
 

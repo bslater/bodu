@@ -36,7 +36,7 @@ public partial class IntervalTreeGenericTests
     }
 
     /// <summary>
-    /// Verifies that an interval carrying multiple values — including equal ones — yields one entry per stored
+    /// Verifies that an interval carrying multiple values - including equal ones - yields one entry per stored
     /// value in insertion order.
     /// </summary>
     [TestMethod]
@@ -50,7 +50,7 @@ public partial class IntervalTreeGenericTests
     }
 
     /// <summary>
-    /// Verifies that the lazy overlap sequence is fail-fast — mutating the tree mid-iteration throws
+    /// Verifies that the lazy overlap sequence is fail-fast - mutating the tree mid-iteration throws
     /// <see cref="InvalidOperationException" /> on the next advance.
     /// </summary>
     [TestMethod]

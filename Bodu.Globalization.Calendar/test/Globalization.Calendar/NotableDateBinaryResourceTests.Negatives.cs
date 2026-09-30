@@ -69,7 +69,7 @@ public sealed partial class NotableDateBinaryResourceTests
     }
 
     /// <summary>
-    /// Verifies that truncating the pack at every possible length is rejected with the format exception — never an
+    /// Verifies that truncating the pack at every possible length is rejected with the format exception - never an
     /// out-of-range access or any other exception type.
     /// </summary>
     [TestMethod]
@@ -94,8 +94,8 @@ public sealed partial class NotableDateBinaryResourceTests
     }
 
     /// <summary>
-    /// Verifies that mutating any single payload byte — with the digest recomputed so structural validation is
-    /// reached — either decodes successfully or fails with the format exception; no other exception type may escape.
+    /// Verifies that mutating any single payload byte - with the digest recomputed so structural validation is
+    /// reached - either decodes successfully or fails with the format exception; no other exception type may escape.
     /// The sweep covers undefined enum bytes, bad discriminators, out-of-range string references, and corrupted
     /// variable-length integers wherever they occur in the payload.
     /// </summary>

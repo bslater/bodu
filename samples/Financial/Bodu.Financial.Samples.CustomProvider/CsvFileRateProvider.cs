@@ -11,11 +11,11 @@ using Bodu.Financial.ExchangeRates;
 namespace Bodu.Financial.Samples.CustomProvider;
 
 /// <summary>
-/// A custom <see cref="IDatedRateProvider" /> over a CSV rate file — the recommended shape for
+/// A custom <see cref="IDatedRateProvider" /> over a CSV rate file - the recommended shape for
 /// bringing your own rate source into the financial stack. Parse your data into a
 /// <see cref="RateTableBuilder" />, freeze it into a <see cref="RateBook" />, and delegate the whole
 /// lookup surface to a <see cref="FixedDatedRateProvider" /> so date resolution, inverse fallback,
-/// identity rates, and provenance behave exactly like every shipped provider — for free.
+/// identity rates, and provenance behave exactly like every shipped provider - for free.
 /// </summary>
 /// <remarks>
 /// Because the type implements <see cref="IDatedRateProvider" />, it composes with everything built

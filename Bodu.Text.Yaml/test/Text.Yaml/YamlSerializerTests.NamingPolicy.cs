@@ -10,7 +10,7 @@ using Bodu.Text.Serialization;
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Verifies the property-naming-policy surface of <see cref="YamlSerializer" /> — the backbone the sibling
+/// Verifies the property-naming-policy surface of <see cref="YamlSerializer" /> - the backbone the sibling
 /// serializers pin in <c>TomlSerializerTests.NamingPolicy</c>: each built-in <see cref="NamingPolicy" /> singleton
 /// rewrites mapping keys on write, and a value serialized under a policy round-trips because the read path matches
 /// the same rewritten keys.

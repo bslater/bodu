@@ -59,7 +59,7 @@ public sealed partial class RecurrenceCorpusTests
     /// <param name="kat">The corpus row under test.</param>
     /// <remarks>
     /// Cronos states its vectors as a US Eastern wall clock on both sides of the assertion, so a zone-free engine
-    /// reproduces them verbatim. The rows where that reasoning fails — those within a day of a DST transition — are
+    /// reproduces them verbatim. The rows where that reasoning fails - those within a day of a DST transition - are
     /// flagged <c>dst</c> in the corpus and excluded here.
     /// </remarks>
     [TestMethod]
@@ -78,7 +78,7 @@ public sealed partial class RecurrenceCorpusTests
     }
 
     /// <summary>
-    /// Verifies that an expression selecting a date that never occurs — February 30th and its kin — reports no next
+    /// Verifies that an expression selecting a date that never occurs - February 30th and its kin - reports no next
     /// occurrence rather than searching without end.
     /// </summary>
     /// <param name="kat">The corpus row under test.</param>
@@ -101,8 +101,8 @@ public sealed partial class RecurrenceCorpusTests
     /// <param name="kat">The corpus row under test.</param>
     /// <remarks>
     /// Bodu rejects a superset of what Cronos rejects, having no Quartz extensions to accept, so these rows are
-    /// reconciled whatever syntax they use. The one place the superset does not hold — a step wider than its range,
-    /// which cronie warns about and accepts — is flagged <c>oversized-step</c> and excluded.
+    /// reconciled whatever syntax they use. The one place the superset does not hold - a step wider than its range,
+    /// which cronie warns about and accepts - is flagged <c>oversized-step</c> and excluded.
     /// </remarks>
     [TestMethod]
     [TestCategory("Regression")]

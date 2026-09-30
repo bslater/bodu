@@ -18,8 +18,8 @@ namespace Bodu.Financial.Serialization.Json;
 /// converters on a <see cref="System.Text.Json.JsonSerializerOptions" />.
 /// </para>
 /// <para>
-/// The core <c>Bodu.Financial</c> types carry no <c>[JsonConverter]</c> attribute — the library is
-/// serialization-agnostic — so registration through
+/// The core <c>Bodu.Financial</c> types carry no <c>[JsonConverter]</c> attribute - the library is
+/// serialization-agnostic - so registration through
 /// <see cref="FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters" /> is required; converters
 /// constructed without an explicit policy default to <see cref="Strict" />.
 /// </para>

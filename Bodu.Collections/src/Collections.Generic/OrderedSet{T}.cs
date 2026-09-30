@@ -9,7 +9,7 @@ using System.Diagnostics;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Represents an insertion-ordered set — a <see cref="ISet{T}" /> that preserves the order in which elements were first
+/// Represents an insertion-ordered set - a <see cref="ISet{T}" /> that preserves the order in which elements were first
 /// added and exposes that order through <see cref="IReadOnlyList{T}" />.
 /// </summary>
 /// <typeparam name="T">The type of elements in the set. Elements must not be <see langword="null" />.</typeparam>
@@ -22,7 +22,7 @@ namespace Bodu.Collections.Generic;
 /// <para>
 /// The contract is strictly set-shaped: <see cref="ISet{T}" /> for mutation and set algebra,
 /// <see cref="IReadOnlyList{T}" /> for ordered iteration and positional read access. Positional mutation (<c>Insert</c>
-/// , <c>RemoveAt</c>, <c>Move</c>, indexer setter) is intentionally not exposed — use <see cref="IndexedSet{T}" /> when
+/// , <c>RemoveAt</c>, <c>Move</c>, indexer setter) is intentionally not exposed - use <see cref="IndexedSet{T}" /> when
 /// those operations are required.
 /// </para>
 /// <para>
@@ -36,11 +36,11 @@ namespace Bodu.Collections.Generic;
 /// var tags = new OrderedSet<string>(StringComparer.OrdinalIgnoreCase);
 /// tags.Add("alpha");
 /// tags.Add("beta");
-/// tags.Add("ALPHA"); // ignored — already present under the case-insensitive comparer
+/// tags.Add("ALPHA"); // ignored - already present under the case-insensitive comparer
 /// tags.Add("gamma");
 ///
 /// Console.WriteLine(string.Join(", ", tags)); // alpha, beta, gamma
-/// Console.WriteLine(tags[0]);                 // "alpha" — positional read via IReadOnlyList<T>
+/// Console.WriteLine(tags[0]);                 // "alpha" - positional read via IReadOnlyList<T>
 ///
 /// // Set algebra returns a new OrderedSet preserving the left operand's order.
 /// var diff = new OrderedSet<string>(tags);

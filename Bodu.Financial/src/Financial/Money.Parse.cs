@@ -22,8 +22,8 @@ public readonly partial struct Money
     /// <exception cref="ArgumentNullException"><paramref name="s" /> is <see langword="null" />.</exception>
     /// <exception cref="FormatException">The input is not a valid <see cref="Money" /> representation.</exception>
     /// <remarks>
-    /// Text carrying more fractional digits than the currency's registered minor units — a unit price such as
-    /// <c>"USD 12.345678"</c> — parses to a value reporting that finer scale from <see cref="MinorUnits" />, making
+    /// Text carrying more fractional digits than the currency's registered minor units - a unit price such as
+    /// <c>"USD 12.345678"</c> - parses to a value reporting that finer scale from <see cref="MinorUnits" />, making
     /// this method the inverse of the round-trip (<c>"R"</c>) format. Text at or below the registered precision parses
     /// at the registry precision, unchanged from earlier behaviour.
     /// </remarks>
@@ -98,7 +98,7 @@ public readonly partial struct Money
         if (trimmed.IsEmpty)
             return false;
 
-        // ISO prefix: "USD 19.99" — three-letter code, whitespace, amount. Any Unicode whitespace separates the code
+        // ISO prefix: "USD 19.99" - three-letter code, whitespace, amount. Any Unicode whitespace separates the code
         // from the amount, so localized output using a non-breaking space (as many number formatters emit) parses.
         if (trimmed.Length >= 5 && char.IsWhiteSpace(trimmed[3])
             && IsUppercaseAscii(trimmed[0]) && IsUppercaseAscii(trimmed[1]) && IsUppercaseAscii(trimmed[2]))
@@ -117,7 +117,7 @@ public readonly partial struct Money
             return TryComposeWithCulture(numericPart, iso, provider, out result);
         }
 
-        // Bare decimal with no currency — cannot construct without an ISO code.
+        // Bare decimal with no currency - cannot construct without an ISO code.
         return false;
     }
 

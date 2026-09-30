@@ -9,7 +9,7 @@ using Bodu.Text.Filtering;
 namespace Bodu.Text.Filtering.Samples.FilteringTour.Scenarios;
 
 /// <summary>
-/// Demonstrates the default <c>AnyMatch</c> semantics — the Ant / MSBuild include-exclude set model:
+/// Demonstrates the default <c>AnyMatch</c> semantics - the Ant / MSBuild include-exclude set model:
 /// a value passes when at least one include matches (or there are no includes at all) and no
 /// exclude vetoes it. Patterns compile once into a <c>TextFilter</c> and are then applied to any
 /// number of values.
@@ -43,7 +43,7 @@ public static class IncludeExcludeBasics
 
         // TextFilter.Build is the compile step: it takes the declared patterns, classifies every glob into the
         // cheapest matching strategy its shape allows ("error*" and "warn*" become prefix comparisons, "*debug*"
-        // becomes a substring search), and returns an immutable filter. Build once, reuse for every value —
+        // becomes a substring search), and returns an immutable filter. Build once, reuse for every value -
         // recompiling per value would repeat all of that analysis.
         var filter = TextFilter.Build(
         [
@@ -77,7 +77,7 @@ public static class IncludeExcludeBasics
         Console.WriteLine();
 
         // The include-all default: a filter with NO include patterns accepts everything an exclude does not
-        // veto — the way .gitignore and MSBuild Remove items behave. Declaring even one include would flip
+        // veto - the way .gitignore and MSBuild Remove items behave. Declaring even one include would flip
         // the filter into the allowlist behavior shown above.
         var excludeOnly = TextFilter.Build([TextFilterPattern.Exclude("*.tmp")]);
 

@@ -34,7 +34,7 @@ public partial class FiscalWeekQuarterProviderTests
 
     /// <summary>
     /// Verifies that the constructor throws <see cref="ArgumentOutOfRangeException" /> when
-    /// <c>month</c> is above the valid range (1–12).
+    /// <c>month</c> is above the valid range (1-12).
     /// </summary>
     [TestMethod]
     [DataRow(13)]
@@ -46,7 +46,7 @@ public partial class FiscalWeekQuarterProviderTests
     }
     /// <summary>
     /// Verifies that the constructor throws <see cref="ArgumentOutOfRangeException" /> when
-    /// <c>month</c> is below the valid range (1–12).
+    /// <c>month</c> is below the valid range (1-12).
     /// </summary>
     [TestMethod]
     [DataRow(0)]

@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography;
 [TestClass]
 public partial class Poly1305AeadCoreTests
 {
-    // RFC 8439 Section 2.8.2 — AEAD_CHACHA20_POLY1305 example and test vector.
+    // RFC 8439 Section 2.8.2 - AEAD_CHACHA20_POLY1305 example and test vector.
     private static readonly byte[] s_key =
         Convert.FromHexString("808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f");
 

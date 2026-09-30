@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 public partial class ICryptoTransformExtensionsTests
 {
     // ---------------------------------------------------------------------------------------------------------------
-    // TransformBlock(byte[]) — in-place overload
+    // TransformBlock(byte[]) - in-place overload
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -92,14 +92,14 @@ public partial class ICryptoTransformExtensionsTests
     /// <summary>
     /// Verifies that consecutive calls to
     /// <see cref="ICryptoTransformExtensions.TransformBlock(ICryptoTransform,byte[])" /> each independently
-    /// transform the supplied block, confirming that ECB mode produces no cross-call state leakage —
+    /// transform the supplied block, confirming that ECB mode produces no cross-call state leakage -
     /// the same input always yields the same output regardless of previous calls.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetValidTransformTestData))]
     public void TransformBlock_WhenCalledRepeatedly_ShouldTransformEachBlockIndependently(KnownAnswerTest kat)
     {
-        // Two independent copies of the same input — the transform must produce identical
+        // Two independent copies of the same input - the transform must produce identical
         // output for each, confirming there is no state leakage between consecutive calls.
         byte[] blockA = (byte[])kat.Input.Clone();
         byte[] blockB = (byte[])kat.Input.Clone();
@@ -111,6 +111,6 @@ public partial class ICryptoTransformExtensionsTests
         CollectionAssert.AreEqual(kat.ExpectedOutput, blockA,
             $"[{kat.Name}] First TransformBlock call produced wrong output.");
         CollectionAssert.AreEqual(kat.ExpectedOutput, blockB,
-            $"[{kat.Name}] Second TransformBlock call produced wrong output — possible state leakage from first call.");
+            $"[{kat.Name}] Second TransformBlock call produced wrong output - possible state leakage from first call.");
     }
 }

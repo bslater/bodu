@@ -186,7 +186,7 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProviderTests
 
     /// <summary>
     /// Verifies that the fix wraps a multi-line <c>&lt;code&gt;</c> body in a <c>&lt;![CDATA[…]]&gt;</c>
-    /// section while preserving each physical body line verbatim — the existing <c>///</c> doc-comment
+    /// section while preserving each physical body line verbatim - the existing <c>///</c> doc-comment
     /// prefixes must not be embedded into the CDATA content or duplicated by a second prefix.
     /// </summary>
     [TestMethod]

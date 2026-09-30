@@ -66,7 +66,7 @@ namespace Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography.Extensions;
 ///
-/// // Legacy interop only — do not use Skipjack to protect new data.
+/// // Legacy interop only - do not use Skipjack to protect new data.
 /// using var skipjack = new Skipjack();
 /// skipjack.Key = legacyKeyMaterial; // exactly 10 bytes
 /// skipjack.IV = RandomNumberGenerator.GetBytes(8); // matches the 64-bit block
@@ -75,7 +75,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso href="https://csrc.nist.gov/csrc/media/publications/fips/185/archive/1994-02-09/documents/fips185.pdf">FIPS
-/// PUB 185 — Escrowed Encryption Standard (Skipjack)</seealso> <seealso href="../guides/cryptography/skipjack.html">
+/// PUB 185 - Escrowed Encryption Standard (Skipjack)</seealso> <seealso href="../guides/cryptography/skipjack.html">
 /// Using Skipjack (guide with full encrypt / decrypt examples)</seealso>
 /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
@@ -112,7 +112,7 @@ public sealed class Skipjack
     /// </remarks>
     public Skipjack()
     {
-        // Skipjack defines a single fixed key length and block size — neither is configurable.
+        // Skipjack defines a single fixed key length and block size - neither is configurable.
         LegalKeySizesValue = s_skipjackKeySizes;
         LegalBlockSizesValue = s_skipjackBlockSizes;
 

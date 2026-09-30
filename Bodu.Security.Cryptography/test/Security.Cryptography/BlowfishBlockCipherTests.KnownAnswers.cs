@@ -15,10 +15,10 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// All vectors target standard 16-round Blowfish in raw single-block ECB mode. The variable-key table uses 64-bit
 /// keys; the set-key sequence grows the key one byte at a time from the fixed <c>FEDCBA9876543210</c> plaintext. Eric
-/// Young's <c>k[1]</c>–<c>k[3]</c> rows use 1–3 byte keys, which are below Blowfish's 32-bit specification minimum that
+/// Young's <c>k[1]</c>-<c>k[3]</c> rows use 1-3 byte keys, which are below Blowfish's 32-bit specification minimum that
 /// <see cref="BlowfishBlockCipher" /> enforces, so those three rows are skipped by the reader.
 /// </remarks>
-/// <seealso href="https://www.schneier.com/wp-content/uploads/2015/12/vectors-2.txt">vectors-2.txt — Eric Young Blowfish vectors</seealso>
+/// <seealso href="https://www.schneier.com/wp-content/uploads/2015/12/vectors-2.txt">vectors-2.txt - Eric Young Blowfish vectors</seealso>
 internal sealed partial class BlowfishBlockCipherTests
 {
     private static readonly KatProvenance ProfileSchneierVectors = KatProvenance.ReferenceImplementation("Eric Young / Schneier Blowfish vectors");

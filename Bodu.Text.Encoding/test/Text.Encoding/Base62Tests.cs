@@ -15,7 +15,7 @@ namespace Bodu.Text.Encoding;
 public sealed partial class Base62Tests
 {
     /// <summary>
-    /// Verifies that the alphabet orders digits, then upper-case, then lower-case letters — distinguishing the GMP
+    /// Verifies that the alphabet orders digits, then upper-case, then lower-case letters - distinguishing the GMP
     /// convention from the alternative <c>A-Z a-z 0-9</c> ordering.
     /// </summary>
     /// <param name="value">The single-byte value.</param>

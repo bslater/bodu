@@ -1,14 +1,14 @@
 # Bodu.Financial.ExchangeRates.Caching
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 A caching and composition layer for `Bodu.Financial` exchange-rate providers.
 
-> For the full walkthrough — quickstart, stacking (tiered read-through), aggregation,
-> "when to use which", observability, and troubleshooting — see the
+> For the full walkthrough - quickstart, stacking (tiered read-through), aggregation,
+> "when to use which", observability, and troubleshooting - see the
 > [Caching and aggregating exchange rates guide](../docs/guides/financial/exchange-rate-caching.md).
 
-The provider classes (Yahoo, RBA, ECB, BoE) are pure fetchers — they know nothing
+The provider classes (Yahoo, RBA, ECB, BoE) are pure fetchers - they know nothing
 of caching. This package adds two orthogonal pieces that each implement the same
 `IDatedRateProvider` contract (and the timeless `IRateProvider`), so
 they compose anywhere a provider is expected:
@@ -42,8 +42,8 @@ The cache is bound to a single provider, so its surface carries no provider argu
 | `RateCacheBase<TOptions>` | Storage-agnostic core: freshness filtering + merge/prune. No physical layout. |
 | `IFileRateCache` | File-storage seam (`CacheDirectory`, `ResolveFilePath`, `ResolveDirectory`, `ResolvePartitionPath`). |
 | `FileRateCacheBase<TOptions>` | File plumbing: layout-driven directory + file-name resolution, date partitioning, best-effort IO. |
-| `TomlFileRateCache` | Sealed TOML leaf — `<dir>/<provider>/<from><to>.toml`, decimals quoted for lossless round-trips, self-describing `Provider`/`From`/`To` header. |
-| `JsonFileRateCache` | Sealed JSON leaf — `<dir>/<provider>/<from><to>.json`, decimals as JSON numbers, the same self-describing header. |
+| `TomlFileRateCache` | Sealed TOML leaf - `<dir>/<provider>/<from><to>.toml`, decimals quoted for lossless round-trips, self-describing `Provider`/`From`/`To` header. |
+| `JsonFileRateCache` | Sealed JSON leaf - `<dir>/<provider>/<from><to>.json`, decimals as JSON numbers, the same self-describing header. |
 | `RateCacheFileLayout` | Where a pair's files live and whether they split by date: `SingleFile` (default), `Yearly`, `Monthly`, `Daily`, or `Create(strategy, directoryFunc?, fileNameFunc?)`. |
 | `RateCachePartitionStrategy` | The date split a layout applies: `Single`, `Yearly`, `Monthly`, `Daily`, or `Custom(...)`. |
 | `InMemoryRateCache` | In-memory cache reusing the same expiry mechanism; nothing persisted. |
@@ -62,7 +62,7 @@ Both file caches store one file per pair by default
 `Provider`/`From`/`To` header into each file, so a file no longer depends on its
 name or folder for identity. Set `FileRateCacheOptions.Layout` to control
 the folder hierarchy, file name, and whether a pair's rows split across files by
-date — `RateCacheFileLayout.Yearly` / `.Monthly` / `.Daily` write one file
+date - `RateCacheFileLayout.Yearly` / `.Monthly` / `.Daily` write one file
 per calendar period under a per-pair folder (for example
 `<dir>/RBA/AUDUSD/2023-01.toml`), and `RateCacheFileLayout.Create(...)`
 builds a custom layout from a partition strategy and optional directory/file-name
@@ -89,8 +89,8 @@ var json = new JsonFileRateCache(new FileRateCacheOptions
 `AggregatingRateProvider` groups several named children and resolves each request
 through a pluggable `IRateAggregationStrategy`, with optional **per-FX-pair routing**.
 
-- `PriorityFallbackStrategy` — first child that resolves wins (the default).
-- `AverageStrategy` — arithmetic mean of every child that resolves, tagged `Average`.
+- `PriorityFallbackStrategy` - first child that resolves wins (the default).
+- `AverageStrategy` - arithmetic mean of every child that resolves, tagged `Average`.
 - Implement `IRateAggregationStrategy` for your own (weighted, median, …).
 - `RateAggregationOptions.Routes` maps a pair to an ordered child list and an
   optional per-pair strategy, so `AUD/USD` can prefer `[RBA, ECB]` while `USD/GBP`
@@ -98,7 +98,7 @@ through a pluggable `IRateAggregationStrategy`, with optional **per-FX-pair rout
 - `TryGetProvider(name, out provider)` resolves a specific child directly.
 
 ```csharp
-// The caching provider is storage-agnostic — you supply the IRateCache.
+// The caching provider is storage-agnostic - you supply the IRateCache.
 var rba = new CachingRateProvider(
     rbaSource, new TomlFileRateCache(new FileRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" }), options);
 var ecb = new CachingRateProvider(
@@ -143,7 +143,7 @@ The aggregator's route-selected, aggregated, and unresolved diagnostics are conf
 
 Persistent backends may add their own diagnostics. The SQLite cache logs best-effort **storage
 degradation** at `Warning` under **`EventId 4520`** (first failure immediately, then rate-limited
-to one per minute) so a silently-degrading cache is visible — see the
+to one per minute) so a silently-degrading cache is visible - see the
 [`Bodu.Financial.ExchangeRates.Caching.Sqlite`](../Bodu.Financial.ExchangeRates.Caching.Sqlite/README.md)
 package and the observability section of the
 [caching guide](../docs/guides/financial/exchange-rate-caching.md#observability-seeing-hits-misses-and-degradation).
@@ -152,21 +152,21 @@ package and the observability section of the
 
 Every `RateLookupResult` carries a `RateProvenance` describing where the rate came from:
 
-- `Origin == Live` — the value was resolved directly by a provider (for a cache-fronted provider, a miss the inner
+- `Origin == Live` - the value was resolved directly by a provider (for a cache-fronted provider, a miss the inner
   provider satisfied). `Backend`, `CachedAtUtc`, and `Age` are all `null`.
-- `Origin == Cache` — the value was served from a cache without consulting the provider. `Backend` is the cache's
+- `Origin == Cache` - the value was served from a cache without consulting the provider. `Backend` is the cache's
   runtime identity, `CachedAtUtc` is the instant the served data was written to the cache, and `Age` is the elapsed
   time since then, clamped to be never negative (`Age >= 0`, since a row may be written marginally ahead of the lookup
   clock).
 
-`Backend` is a **diagnostic** runtime identity (the cache type's name), not a stable key — do not parse it or branch on
+`Backend` is a **diagnostic** runtime identity (the cache type's name), not a stable key - do not parse it or branch on
 it as if it were part of the contract.
 
 Two ages travel with a cache-served rate and are deliberately distinct:
 
-- **Cache-write age** — `Provenance.Age` (and `Provenance.CachedAtUtc`) is anchored to when the row was written to the
+- **Cache-write age** - `Provenance.Age` (and `Provenance.CachedAtUtc`) is anchored to when the row was written to the
   cache.
-- **Data age** — `ExchangeRate.FetchedAtUtc` carries the *upstream* fetch instant end to end. A provider stamps it when
+- **Data age** - `ExchangeRate.FetchedAtUtc` carries the *upstream* fetch instant end to end. A provider stamps it when
   it loads a rate; the cache persists it (as `CachedRate.ObservedAtUtc`) and restores it onto the rate it
   serves, so a cache-served rate reports the **original** fetch instant. Data age is `now - ExchangeRate.FetchedAtUtc`,
   independent of how recently the row happened to be (re)written to the cache.

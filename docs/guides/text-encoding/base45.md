@@ -4,7 +4,7 @@ title: Using Base45
 
 # Using Base45
 
-`Base45` implements the encoding defined by [RFC 9285](https://www.rfc-editor.org/rfc/rfc9285) — the compact
+`Base45` implements the encoding defined by [RFC 9285](https://www.rfc-editor.org/rfc/rfc9285) - the compact
 alphanumeric format designed to carry binary data inside a QR code's **Alphanumeric mode**. Its best-known deployment
 is the EU Digital COVID Certificate (the HCERT payload), but it suits any scenario where bytes must travel through a
 QR code's restricted 45-character symbol set with the smallest possible footprint.
@@ -45,11 +45,11 @@ encoding it unlocks.
 
 ## Space is a data character
 
-The space character is part of the Base45 alphabet, so it carries data — it is **not** ignorable whitespace. The
+The space character is part of the Base45 alphabet, so it carries data - it is **not** ignorable whitespace. The
 `IgnoreWhitespace` style strips only tab, carriage return, and line feed; it never strips spaces:
 
 ```csharp
-Base45.Decode("%69 VD92EX0");                               // valid — the space is data
+Base45.Decode("%69 VD92EX0");                               // valid - the space is data
 Base45.Decode("%69 VD9\n2EX0", BaseFormatStyles.IgnoreWhitespace);  // newline stripped, then decoded
 ```
 
@@ -58,13 +58,13 @@ Base45.Decode("%69 VD9\n2EX0", BaseFormatStyles.IgnoreWhitespace);  // newline s
 Base45 is **strict** per RFC 9285. The decoder rejects:
 
 - characters outside the 45-symbol alphabet;
-- a final group of a single character (1, 4, 7, … characters — only 2-character and 3-character terminal groups are legal);
+- a final group of a single character (1, 4, 7, … characters - only 2-character and 3-character terminal groups are legal);
 - a three-character group whose value exceeds `0xFFFF` (would not fit in two bytes);
 - a two-character group whose value exceeds `0xFF`.
 
 ```csharp
-Base45.Decode("GGW");   // FormatException — 0x10000, out of 16-bit range
-Base45.Decode("0");     // FormatException — illegal single-character terminal group
+Base45.Decode("GGW");   // FormatException - 0x10000, out of 16-bit range
+Base45.Decode("0");     // FormatException - illegal single-character terminal group
 ```
 
 `Decode` throws `FormatException` on any of these; `TryDecode` returns `false` instead.
@@ -81,15 +81,15 @@ int written = Base45.Encode(payload, destination);
 int maxBytes = Base45.GetMaxDecodedLength(text.Length);  // decode upper bound
 ```
 
-Base45 is **not streamable** — it has no `OperationStatus` path. Each call needs the entire input: pass the whole
+Base45 is **not streamable** - it has no `OperationStatus` path. Each call needs the entire input: pass the whole
 payload (encode) or the whole string (decode) as a single span.
 
 ## Validation
 
 ```csharp
 Base45.IsValid("BB8");        // true
-Base45.IsValid("bb8");        // false — lower case is not in the alphabet
-Base45.IsBase45Digit(' ');    // true  — space is a data symbol
+Base45.IsValid("bb8");        // false - lower case is not in the alphabet
+Base45.IsBase45Digit(' ');    // true  - space is a data symbol
 Base45.IsBase45Digit('a');    // false
 ```
 
@@ -97,7 +97,7 @@ Base45.IsBase45Digit('a');    // false
 
 ## Where to go next
 
-- **[Base62 guide](base62.md)** — compact identifiers without QR-specific constraints.
-- **[Base64 guide](base64.md)** — when density matters less than ubiquity.
-- **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — Base45 is registered as `BinaryEncodings.Base45` for runtime selection.
-- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.
+- **[Base62 guide](base62.md)** - compact identifiers without QR-specific constraints.
+- **[Base64 guide](base64.md)** - when density matters less than ubiquity.
+- **[`IBinaryEncoding` interface](binary-encodings-interface.md)** - Base45 is registered as `BinaryEncodings.Base45` for runtime selection.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** - every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

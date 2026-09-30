@@ -12,12 +12,12 @@ namespace Bodu.IO.Pst;
 public enum PstFileFormat
 {
     /// <summary>
-    /// The Unicode format (<c>wVer</c> 23) — 64-bit structures, the default since Outlook 2003.
+    /// The Unicode format (<c>wVer</c> 23) - 64-bit structures, the default since Outlook 2003.
     /// </summary>
     Unicode = 0,
 
     /// <summary>
-    /// The legacy ANSI format (<c>wVer</c> 14 or 15) — 32-bit structures. Read with 32-bit block identifiers and
+    /// The legacy ANSI format (<c>wVer</c> 14 or 15) - 32-bit structures. Read with 32-bit block identifiers and
     /// offsets; strings are typically code-page (<c>PT_STRING8</c>) values.
     /// </summary>
     Ansi = 1,

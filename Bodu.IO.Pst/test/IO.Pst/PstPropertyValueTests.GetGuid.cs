@@ -20,8 +20,8 @@ public partial class PstPropertyValueTests
     }
 
     /// <summary>
-    /// Verifies that a GUID payload longer than sixteen bytes — reachable through a table cell that resolves an
-    /// over-long heap item — decodes from its leading sixteen bytes rather than escaping as an argument exception.
+    /// Verifies that a GUID payload longer than sixteen bytes - reachable through a table cell that resolves an
+    /// over-long heap item - decodes from its leading sixteen bytes rather than escaping as an argument exception.
     /// </summary>
     [TestMethod]
     public void GetGuid_WhenPayloadExceedsSixteenBytes_ShouldDecodeLeadingBytes()

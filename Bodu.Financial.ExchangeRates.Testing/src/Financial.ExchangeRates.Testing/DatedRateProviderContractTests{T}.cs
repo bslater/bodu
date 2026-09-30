@@ -22,7 +22,7 @@ namespace Bodu.Financial.ExchangeRates.Testing;
 /// capability flag.
 /// </para>
 /// <para>
-/// "The same contract" means the same shape and invariants on every path — synchronous results equal their asynchronous
+/// "The same contract" means the same shape and invariants on every path - synchronous results equal their asynchronous
 /// counterparts, <see cref="IDatedRateProvider.GetRate(string, string, DateOnly, RateLookupOptions)" />
 /// throws exactly where the <c>TryGet</c> form returns <see langword="false" />, and every result carries a
 /// self-consistent <see cref="RateProvenance" />. It does not mean identical provenance values: a cache serve

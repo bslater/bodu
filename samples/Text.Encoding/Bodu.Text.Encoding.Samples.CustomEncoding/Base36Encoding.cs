@@ -11,7 +11,7 @@ namespace Bodu.Samples.Text.Encoding.CustomEncoding;
 
 /// <summary>
 /// A Base36 binary encoding (digits <c>0-9</c> then <c>A-Z</c>) implementing
-/// <see cref="IBinaryEncoding" /> — the alphabet used by license keys, short URLs, and other
+/// <see cref="IBinaryEncoding" /> - the alphabet used by license keys, short URLs, and other
 /// identifiers meant to be read aloud. Like Base58, the payload is treated as one big-endian
 /// integer, so the encoding has no padding and no alignment requirement; each leading zero byte
 /// is preserved as a leading <c>'0'</c> character.
@@ -19,7 +19,7 @@ namespace Bodu.Samples.Text.Encoding.CustomEncoding;
 /// <remarks>
 /// The implementation favours clarity over throughput (it round-trips through
 /// <see cref="BigInteger" />). A production codec would divide in place over the byte buffer the
-/// way the library's own Base58 does — the contract it must satisfy is the same either way,
+/// way the library's own Base58 does - the contract it must satisfy is the same either way,
 /// which is what the accompanying contract-test project verifies.
 /// </remarks>
 public sealed class Base36Encoding

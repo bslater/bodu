@@ -5,18 +5,18 @@ title: Interval algebra
 # Interval algebra
 
 This guide works through the set algebra on
-[`Interval<T>`](xref:Bodu.Numerics.Interval`1) — chained `Intersect`,
+[`Interval<T>`](xref:Bodu.Numerics.Interval`1) - chained `Intersect`,
 `TryUnion` over adjacent and disjoint operands, containment, gap and
 adjacency detection, and a complete "merge overlapping windows"
-walk-through. For the single-operation basics — constructing intervals,
-membership, formatting, parsing — see
+walk-through. For the single-operation basics - constructing intervals,
+membership, formatting, parsing - see
 [Working with `Interval<T>`](interval.md); this page builds on those and
 goes deeper.
 
 Two conventions thread through everything below.
 
-- **The canonical empty interval.** Every interval that admits no value —
-  inverted bounds, or equal bounds with at least one open endpoint —
+- **The canonical empty interval.** Every interval that admits no value -
+  inverted bounds, or equal bounds with at least one open endpoint -
   compares equal to [`Interval<T>.Empty`](xref:Bodu.Numerics.Interval`1.Empty),
   and `default(Interval<T>)` reads as empty. `Intersect` returns it for
   disjoint operands; `TryUnion` treats it as the identity element.
@@ -33,7 +33,7 @@ Two conventions thread through everything below.
 folds cleanly. It is also idempotent (`a.Intersect(a) == a`) and has
 `Empty` as its absorbing element (`a.Intersect(Empty) == Empty`), which
 together make any fold order valid. The intersection narrows
-monotonically — each operand can only shrink the running result — and
+monotonically - each operand can only shrink the running result - and
 collapses to `Empty` the moment two constraints disagree:
 
 <!-- compile -->
@@ -60,7 +60,7 @@ var conflict = atLeastTen
     .Intersect(Interval<int>.Closed(200, 300));  // disjoint with [10, 100]
 
 Console.WriteLine(conflict.IsEmpty);             // True
-Console.WriteLine(conflict.Intersect(evenDecade).IsEmpty);  // True — stays empty
+Console.WriteLine(conflict.Intersect(evenDecade).IsEmpty);  // True - stays empty
 ```
 
 To fold an arbitrary list of constraints, seed the accumulator with a
@@ -73,7 +73,7 @@ static Interval<int> IntersectAll(IEnumerable<Interval<int>> constraints)
 {
     using var e = constraints.GetEnumerator();
     if (!e.MoveNext())
-        return Interval<int>.Empty;   // no constraints — nothing to intersect
+        return Interval<int>.Empty;   // no constraints - nothing to intersect
 
     Interval<int> result = e.Current;
     while (e.MoveNext())
@@ -86,23 +86,23 @@ static Interval<int> IntersectAll(IEnumerable<Interval<int>> constraints)
 ## Union of adjacent versus disjoint intervals
 
 `TryUnion` returns `true` only when the union of the two operands is itself
-a single contiguous interval — that is, when they overlap *or* are
+a single contiguous interval - that is, when they overlap *or* are
 adjacent. It never synthesizes a two-piece result; a true gap returns
 `false` and leaves `result` as `Empty`.
 
 <!-- compile -->
 ```csharp
-// Adjacent — the half-open seam at 5 belongs to the second interval.
+// Adjacent - the half-open seam at 5 belongs to the second interval.
 bool a = Interval<int>.ClosedOpen(1, 5)
     .TryUnion(Interval<int>.Closed(5, 10), out var merged);
 // a == true, merged == [1, 10]
 
-// Overlapping — shared interior.
+// Overlapping - shared interior.
 bool b = Interval<int>.Closed(1, 6)
     .TryUnion(Interval<int>.Closed(4, 10), out var overlap);
 // b == true, overlap == [1, 10]
 
-// Disjoint with a gap — no contiguous representation exists.
+// Disjoint with a gap - no contiguous representation exists.
 bool c = Interval<int>.Closed(1, 5)
     .TryUnion(Interval<int>.Closed(8, 10), out var gapped);
 // c == false, gapped == Interval<int>.Empty
@@ -116,10 +116,10 @@ intervals that both *exclude* the meeting point do not:
 
 <!-- compile -->
 ```csharp
-// [1, 5) and [5, 10] — 5 is owned by the second interval → contiguous.
+// [1, 5) and [5, 10] - 5 is owned by the second interval → contiguous.
 Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.Closed(5, 10), out _);   // true
 
-// (1, 5) and (5, 10] — 5 is in neither interval → a one-point gap.
+// (1, 5) and (5, 10] - 5 is in neither interval → a one-point gap.
 Interval<int>.Open(1, 5).TryUnion(Interval<int>.OpenClosed(5, 10), out _);     // false
 ```
 
@@ -129,14 +129,14 @@ an open interval over the same bounds yields the closed result:
 <!-- compile -->
 ```csharp
 Interval<int>.Closed(1, 5).TryUnion(Interval<int>.Open(1, 5), out var u);
-// u == [1, 5] — inclusive wins on both ends
+// u == [1, 5] - inclusive wins on both ends
 ```
 
 Unlike `Intersect`, `TryUnion` is *partial*: it is defined only when the
 result is a single contiguous interval. `Empty` is its identity (a union
 with `Empty` returns the other operand and `true`), but because the
 operation can fail on a gap, folding a list of intervals into a minimal
-cover requires sorting first — see the worked example below. This is the
+cover requires sorting first - see the worked example below. This is the
 structural reason `TryUnion` returns `bool` rather than an
 `Interval<T>`: there is no contiguous value to return for a disjoint
 pair.
@@ -153,18 +153,18 @@ var outer = Interval<int>.Closed(0, 10);
 var inner = Interval<int>.Closed(2, 8);
 var straddle = Interval<int>.Closed(8, 20);
 
-outer.Contains(inner);    // True  — every value of inner is in outer
-outer.Overlaps(inner);    // True  — they obviously share values
+outer.Contains(inner);    // True  - every value of inner is in outer
+outer.Overlaps(inner);    // True  - they obviously share values
 
-outer.Contains(straddle); // False — straddle reaches 20, outside outer
-outer.Overlaps(straddle); // True  — they share [8, 10]
+outer.Contains(straddle); // False - straddle reaches 20, outside outer
+outer.Overlaps(straddle); // True  - they share [8, 10]
 
-outer.Contains(Interval<int>.Empty);  // True — ∅ ⊆ every set
-outer.Overlaps(Interval<int>.Empty);  // False — ∅ shares no value
+outer.Contains(Interval<int>.Empty);  // True - ∅ ⊆ every set
+outer.Overlaps(Interval<int>.Empty);  // False - ∅ shares no value
 ```
 
 Note that touching at a boundary is *not* overlap. `[1, 5)` and `[5, 10]`
-are adjacent — they union — but they share no value, so `Overlaps` returns
+are adjacent - they union - but they share no value, so `Overlaps` returns
 `false`. Use `Overlaps` to detect double-booking and `TryUnion` (or the
 adjacency test below) to detect mergeable neighbours.
 
@@ -207,7 +207,7 @@ GapBetween(Interval<int>.Closed(1, 5), Interval<int>.Closed(8, 10));
 // [5, 8] excluded on the claimed ends → (5, 8) → "(5, 8)"
 ```
 
-## Worked example — merging overlapping windows
+## Worked example - merging overlapping windows
 
 The canonical interval-set task is *normalising* an unsorted list of
 ranges into the smallest set of disjoint intervals that covers the same
@@ -243,11 +243,11 @@ static List<Interval<int>> Merge(IEnumerable<Interval<int>> windows)
     {
         if (current.TryUnion(sorted[i], out Interval<int> union))
         {
-            current = union;          // overlaps or abuts — extend the run
+            current = union;          // overlaps or abuts - extend the run
         }
         else
         {
-            merged.Add(current);      // a real gap — close the run
+            merged.Add(current);      // a real gap - close the run
             current = sorted[i];
         }
     }
@@ -257,8 +257,8 @@ static List<Interval<int>> Merge(IEnumerable<Interval<int>> windows)
 }
 ```
 
-Running it over a deliberately messy input — out of order, overlapping,
-adjacent, and disjoint — produces the normalised cover:
+Running it over a deliberately messy input - out of order, overlapping,
+adjacent, and disjoint - produces the normalised cover:
 
 ```csharp
 var input = new[]
@@ -280,7 +280,7 @@ foreach (var window in Merge(input))
 
 The first three inputs collapse into `[1, 8]`: `[1, 5)` and `[3, 6]`
 overlap into `[1, 6]`, which abuts `[5, 8]` into `[1, 8]`. `[10, 14]` and
-`[20, 22]` survive as separate runs because a genuine gap separates them —
+`[20, 22]` survive as separate runs because a genuine gap separates them -
 exactly the `false` return from `TryUnion` that closes a run.
 
 Sorting by lower endpoint is what guarantees a single forward pass is
@@ -296,8 +296,8 @@ An interval need not have two finite endpoints. The factories
 <xref:Bodu.Numerics.Interval`1.AtMost(`0)> (`(-∞, b]`),
 <xref:Bodu.Numerics.Interval`1.LessThan(`0)> (`(-∞, b)`), and
 <xref:Bodu.Numerics.Interval`1.All> (`(-∞, +∞)`) build the half-bounded and
-unbounded shapes. The unbounded side is carried as explicit metadata — read
-it with `LowerUnbounded` / `UpperUnbounded` / `IsBounded` — **not** as a
+unbounded shapes. The unbounded side is carried as explicit metadata - read
+it with `LowerUnbounded` / `UpperUnbounded` / `IsBounded` - **not** as a
 floating-point infinity, so the same model works for `int`, `decimal`, and
 `BigInteger`, none of which have an infinity value.
 
@@ -320,7 +320,7 @@ same text.
 Subtracting one interval from another can leave two pieces, so
 <xref:Bodu.Numerics.Interval`1.Difference(Bodu.Numerics.Interval{`0})> and
 <xref:Bodu.Numerics.Interval`1.SymmetricDifference(Bodu.Numerics.Interval{`0})>
-return an <xref:Bodu.Numerics.IntervalPair`1> — an allocation-free value
+return an <xref:Bodu.Numerics.IntervalPair`1> - an allocation-free value
 holding zero, one, or two disjoint intervals, lowest-first.
 
 ```csharp
@@ -337,7 +337,7 @@ Interval<double>.All.Difference(Interval<double>.Closed(3, 5));   // (-∞, 3) �
 
 `IntervalPair<T>` covers the at-most-two pieces of a *binary* operation. When a
 union or complement can produce arbitrarily many disjoint ranges, use
-<xref:Bodu.Numerics.IntervalSet`1> — an immutable, normalized collection of
+<xref:Bodu.Numerics.IntervalSet`1> - an immutable, normalized collection of
 disjoint, non-adjacent intervals. Overlapping and adjacent inputs coalesce on
 construction, so equal sets share a canonical form.
 
@@ -346,7 +346,7 @@ var set = IntervalSet<int>.Of(
     Interval<int>.Closed(1, 3),
     Interval<int>.Closed(2, 5),
     Interval<int>.Closed(8, 9));
-set.Count;                 // 2 — [1, 5] and [8, 9]
+set.Count;                 // 2 - [1, 5] and [8, 9]
 set.Contains(4);           // True
 
 // N-ary algebra a single interval cannot express as one value:
@@ -371,13 +371,13 @@ var merged = Interval<int>.ClosedOpen(1, 5) | Interval<int>.Closed(5, 10);   // 
 ```
 
 `|` throws <xref:System.InvalidOperationException> when the operands are
-disjoint with a gap, since their union is not a single interval — reach for
+disjoint with a gap, since their union is not a single interval - reach for
 `Difference` or accumulate the pieces when a multi-interval result is
 possible.
 
 ## Continuous versus discrete
 
-`Interval<T>` is a **continuous** interval over ordered numeric coordinates —
+`Interval<T>` is a **continuous** interval over ordered numeric coordinates -
 `Interval<int>.Open(1, 2)` is a non-empty continuous range even though it
 contains no integer. When you need the *discrete* integer semantics (an open
 interval over consecutive integers is empty; `[1, 2]` and `[3, 4]` are
@@ -386,8 +386,8 @@ instead.
 
 ## See also
 
-- [Working with `Interval<T>`](interval.md) — single-operation basics: construction, membership, formatting, parsing.
-- [Discrete integer intervals](discrete-intervals.md) — `DiscreteInterval<T>` and successor-aware emptiness and adjacency.
-- [Generic math with `Fraction<T>` and `Interval<T>`](generic-math-constraints.md) — writing range and ratio code against the `INumber<T>` abstractions.
+- [Working with `Interval<T>`](interval.md) - single-operation basics: construction, membership, formatting, parsing.
+- [Discrete integer intervals](discrete-intervals.md) - `DiscreteInterval<T>` and successor-aware emptiness and adjacency.
+- [Generic math with `Fraction<T>` and `Interval<T>`](generic-math-constraints.md) - writing range and ratio code against the `INumber<T>` abstractions.
 - [`Interval<T>` API reference](xref:Bodu.Numerics.Interval`1) and the [`Interval` static factory helpers](xref:Bodu.Numerics.Interval).
-- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.
+- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** - every guide in this topic, across Bodu.Numerics and Bodu.Financial.

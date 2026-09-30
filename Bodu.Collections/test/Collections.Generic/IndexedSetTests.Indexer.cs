@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic;
 public partial class IndexedSetTests
 {
     // --------------------------------------------------------
-    // Indexer get — argument validation
+    // Indexer get - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -44,7 +44,7 @@ public partial class IndexedSetTests
     }
 
     // --------------------------------------------------------
-    // Indexer set — argument validation
+    // Indexer set - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -94,7 +94,7 @@ public partial class IndexedSetTests
     }
 
     // --------------------------------------------------------
-    // Indexer set — behaviour
+    // Indexer set - behaviour
     // --------------------------------------------------------
 
     /// <summary>

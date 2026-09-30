@@ -133,13 +133,13 @@ internal static partial class ChaCha20Core
         }
 
         /// <summary>
-        /// Combines four blocks with the input by XOR — the first and the blocks four, eight and twelve after it —
-        /// gathering each from the same 128-bit lane of the vectors of its words 0–3, 4–7, 8–11 and 12–15.
+        /// Combines four blocks with the input by XOR - the first and the blocks four, eight and twelve after it -
+        /// gathering each from the same 128-bit lane of the vectors of its words 0-3, 4-7, 8-11 and 12-15.
         /// </summary>
-        /// <param name="quarter0">Words 0–3 of the four blocks, one block per 128-bit lane.</param>
-        /// <param name="quarter1">Words 4–7 of the four blocks.</param>
-        /// <param name="quarter2">Words 8–11 of the four blocks.</param>
-        /// <param name="quarter3">Words 12–15 of the four blocks.</param>
+        /// <param name="quarter0">Words 0-3 of the four blocks, one block per 128-bit lane.</param>
+        /// <param name="quarter1">Words 4-7 of the four blocks.</param>
+        /// <param name="quarter2">Words 8-11 of the four blocks.</param>
+        /// <param name="quarter3">Words 12-15 of the four blocks.</param>
         /// <param name="input">The first byte of the input.</param>
         /// <param name="output">The first byte of the destination.</param>
         /// <param name="offset">The offset of the first of the four blocks.</param>

@@ -46,7 +46,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Camellia.</strong> Pick Camellia when standards-body approval matters — Japanese CRYPTREC,
+/// <strong>When to choose Camellia.</strong> Pick Camellia when standards-body approval matters - Japanese CRYPTREC,
 /// European NESSIE, and ISO/IEC all list Camellia. It is the standard alternative to AES in many non-US jurisdictions
 /// and TLS implementations. Performance characteristics are comparable to AES in software; for new general-purpose work
 /// without a procurement constraint <see cref="System.Security.Cryptography.Aes" /> is the more widely accelerated
@@ -73,7 +73,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/camellia.html">Using Camellia</seealso>
+/// <seealso href="../guides/cryptography/aes-family.html#camellia">Using Camellia</seealso>
 /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
 /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
@@ -201,7 +201,7 @@ public sealed class Camellia
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The generated IV is 16 bytes (128 bits) — matching the Camellia block size — and is assigned directly to
+    /// The generated IV is 16 bytes (128 bits) - matching the Camellia block size - and is assigned directly to
     /// <see cref="SymmetricAlgorithm.IV" />.
     /// </para>
     /// <para>

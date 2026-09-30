@@ -58,7 +58,7 @@ public readonly partial struct DiscreteInterval<T>
     /// <value>The inclusive count <c>Last - First + 1</c>, or zero when empty.</value>
     /// <exception cref="InvalidOperationException">The interval is unbounded, so its count is infinite.</exception>
     /// <exception cref="OverflowException">
-    /// The count does not fit in <typeparamref name="T" /> — a full-domain interval has one more member than the type
+    /// The count does not fit in <typeparamref name="T" /> - a full-domain interval has one more member than the type
     /// can represent.
     /// </exception>
     public T Count

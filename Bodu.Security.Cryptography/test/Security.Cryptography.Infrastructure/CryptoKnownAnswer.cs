@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
 /// Serves as the common root for every cryptographic known-answer test vector in the suite. Carries the two concerns
-/// shared by all KAT families — the human-readable <see cref="Name" /> that labels the row in test output and the
+/// shared by all KAT families - the human-readable <see cref="Name" /> that labels the row in test output and the
 /// optional <see cref="Provenance" /> that records where the vector came from.
 /// </summary>
 /// <remarks>

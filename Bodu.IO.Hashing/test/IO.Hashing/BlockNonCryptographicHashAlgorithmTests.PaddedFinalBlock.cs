@@ -13,7 +13,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     /// Verifies that <see cref="BlockNonCryptographicHashAlgorithm{T}.GetCurrentHashCore(System.Span{byte})" />
     /// surfaces a clear <see cref="InvalidOperationException" /> when a derived implementation returns a padded
     /// final block whose length is not a multiple of <see cref="BlockNonCryptographicHashAlgorithm{T}.BlockSizeBytes" />
-    /// while <c>AllowUnalignedFinalBlock</c> is <see langword="false" /> — rather than letting a downstream
+    /// while <c>AllowUnalignedFinalBlock</c> is <see langword="false" /> - rather than letting a downstream
     /// span-out-of-range surface and obscure the root cause.
     /// </summary>
     [TestMethod]
@@ -46,7 +46,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     /// <summary>
     /// A test-only block hasher that returns a padded final block whose length is deliberately not aligned to
     /// <see cref="BlockNonCryptographicHashAlgorithm{T}.BlockSizeBytes" /> and leaves <c>AllowUnalignedFinalBlock</c>
-    /// at its default of <see langword="false" /> — exercising the guard added by D4.
+    /// at its default of <see langword="false" /> - exercising the guard added by D4.
     /// </summary>
     private sealed class UnalignedPadBlockHasher
         : BlockNonCryptographicHashAlgorithm
@@ -78,7 +78,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     /// <summary>
     /// A test-only block hasher that returns a padded final block whose length is deliberately not aligned to
     /// <see cref="BlockNonCryptographicHashAlgorithm{T}.BlockSizeBytes" /> and opts in via
-    /// <c>AllowUnalignedFinalBlock</c> — exercising the accept path of the same guard.
+    /// <c>AllowUnalignedFinalBlock</c> - exercising the accept path of the same guard.
     /// </summary>
     private sealed class AllowedUnalignedPadBlockHasher
         : BlockNonCryptographicHashAlgorithm

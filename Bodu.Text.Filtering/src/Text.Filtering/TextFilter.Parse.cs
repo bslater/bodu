@@ -25,7 +25,7 @@ public sealed partial class TextFilter
     /// <remarks>
     /// Each line is trimmed and parsed as a wildcard pattern: blank lines and lines starting with <c>#</c> are skipped,
     /// a leading <c>!</c> makes the pattern an exclude, and <c>\!</c> / <c>\#</c> escape a literal leading <c>!</c> or
-    /// <c>#</c>. Regular-expression patterns cannot be expressed in line form — declare them via
+    /// <c>#</c>. Regular-expression patterns cannot be expressed in line form - declare them via
     /// <see cref="TextFilterPattern" /> or <see cref="TextFilterBuilder" />.
     /// </remarks>
     public static TextFilter Parse(IEnumerable<string> lines) =>

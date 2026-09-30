@@ -7,7 +7,7 @@
 namespace Bodu.Text.Bencode;
 
 /// <summary>
-/// The exception thrown when a value cannot be bound to or from a Bencode document during serialization — for example a
+/// The exception thrown when a value cannot be bound to or from a Bencode document during serialization - for example a
 /// type mismatch, a missing required member, or a value Bencode cannot represent.
 /// </summary>
 /// <remarks>

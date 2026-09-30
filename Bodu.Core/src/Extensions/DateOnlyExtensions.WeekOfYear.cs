@@ -17,7 +17,7 @@ public static partial class DateOnlyExtensions
     /// </summary>
     /// <param name="date">The date value to evaluate.</param>
     /// <returns>
-    /// An integer in the range 1 – 53 representing the week of the year that contains <paramref name="date" />.
+    /// An integer in the range 1 - 53 representing the week of the year that contains <paramref name="date" />.
     /// </returns>
     /// <remarks>
     /// <para>
@@ -46,7 +46,7 @@ public static partial class DateOnlyExtensions
     /// used.
     /// </param>
     /// <returns>
-    /// An integer in the range 1 – 53 representing the week of the year that contains <paramref name="date" />.
+    /// An integer in the range 1 - 53 representing the week of the year that contains <paramref name="date" />.
     /// </returns>
     /// <remarks>
     /// <para>
@@ -69,7 +69,7 @@ public static partial class DateOnlyExtensions
     /// </param>
     /// <param name="weekStart">The <see cref="DayOfWeek" /> on which each week begins.</param>
     /// <returns>
-    /// An integer in the range 1 – 53 representing the week of the year that contains <paramref name="date" />.
+    /// An integer in the range 1 - 53 representing the week of the year that contains <paramref name="date" />.
     /// </returns>
     /// <remarks>
     /// <para>

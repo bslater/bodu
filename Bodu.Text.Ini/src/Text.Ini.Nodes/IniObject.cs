@@ -23,7 +23,7 @@ namespace Bodu.Text.Ini.Nodes;
 /// </para>
 /// <para>
 /// When the root is written, its <see cref="IniValue" /> entries are emitted before its section objects regardless of
-/// insertion interleave — a key emitted after a section header would be re-read as belonging to that section, so the
+/// insertion interleave - a key emitted after a section header would be re-read as belonging to that section, so the
 /// global entries must precede the first header.
 /// </para>
 /// </remarks>
@@ -52,8 +52,8 @@ public sealed class IniObject
     /// </summary>
     /// <value>The mutable trailing-comment list; empty when the scope ends without a comment block.</value>
     /// <remarks>
-    /// When parsing, comment lines that are not followed by another section or entry — the block at the end of the
-    /// document — attach here on the innermost object being read. When writing, the block is emitted after the object's
+    /// When parsing, comment lines that are not followed by another section or entry - the block at the end of the
+    /// document - attach here on the innermost object being read. When writing, the block is emitted after the object's
     /// entries.
     /// </remarks>
     public IList<string> TrailingComments { get; }

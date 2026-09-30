@@ -6,17 +6,17 @@ uid: Bodu.Collections.Generic.Extensions
 
 ## Purpose
 
-**Bodu.Collections.Generic.Extensions** holds the sequence-shaping helpers for `IEnumerable<T>`, `IList<T>`, and `IDictionary<TKey, TValue>` — recursive selection, batched enumeration, sliding windows, and pluggable randomness-driven shuffles.
+**Bodu.Collections.Generic.Extensions** holds the sequence-shaping helpers for `IEnumerable<T>`, `IList<T>`, and `IDictionary<TKey, TValue>` - recursive selection, batched enumeration, sliding windows, and pluggable randomness-driven shuffles.
 
 ## Key types
 
-- <xref:Bodu.Collections.Generic.Extensions.IEnumerableExtensions> — generic enumerable utilities: `Aggregate`, `Batch`, `Cache`, `ContainsAll`, `ContainsAny`, `ForEach`, `Index`, `IsNullOrEmpty`, `Randomize`, `RecursiveSelect`, `WhereNotNull`, and more.
-- <xref:Bodu.Collections.Generic.Extensions.IListExtensions> — list-specific utilities: `IndexOf`, `LastIndexOf`, `ReplaceAll`, `TryMove`, `TrySwap`.
-- <xref:Bodu.Collections.Generic.Extensions.IDictionaryExtensions> — dictionary utilities: `AddOrUpdate`, `GetOrAdd`.
-- <xref:Bodu.Collections.Generic.ShuffleHelpers>, <xref:Bodu.Collections.Generic.Extensions.SystemRandomAdapter>, <xref:Bodu.Collections.Generic.Extensions.RandomizationMode> — pluggable randomness-driven shuffles backed by <xref:Bodu.IRandomGenerator>.
+- <xref:Bodu.Collections.Generic.Extensions.IEnumerableExtensions> - generic enumerable utilities: `Aggregate`, `Batch`, `Cache`, `ContainsAll`, `ContainsAny`, `ForEach`, `Index`, `IsNullOrEmpty`, `Randomize`, `RecursiveSelect`, `WhereNotNull`, and more.
+- <xref:Bodu.Collections.Generic.Extensions.IListExtensions> - list-specific utilities: `IndexOf`, `LastIndexOf`, `ReplaceAll`, `TryMove`, `TrySwap`.
+- <xref:Bodu.Collections.Generic.Extensions.IDictionaryExtensions> - dictionary utilities: `AddOrUpdate`, `GetOrAdd`.
+- <xref:Bodu.Collections.Generic.ShuffleHelpers>, <xref:Bodu.Collections.Generic.Extensions.SystemRandomAdapter>, <xref:Bodu.Collections.Generic.Extensions.RandomizationMode> - pluggable randomness-driven shuffles backed by <xref:Bodu.IRandomGenerator>.
 
 > [!TIP]
-> Looking for sequence *producers* — `Range`, `NextWhile`, or named series such as `Fibonacci`? Those live on `SequenceGenerator` in the dedicated <xref:Bodu.Sequences> namespace.
+> Looking for sequence *producers* - `Range`, `NextWhile`, or named series such as `Fibonacci`? Those live on `SequenceGenerator` in the dedicated <xref:Bodu.Sequences> namespace.
 
 ## Example
 

@@ -1,4 +1,4 @@
-# LastMatchWins ordered-rule semantics — the gitignore model: the last matching rule decides,
+# LastMatchWins ordered-rule semantics - the gitignore model: the last matching rule decides,
 # unmatched values are included, later rules override earlier ones.
 
 scenario: Later include re-admits an earlier exclusion

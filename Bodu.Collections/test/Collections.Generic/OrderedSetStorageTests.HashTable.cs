@@ -103,7 +103,7 @@ public partial class OrderedSetStorageTests
         Assert.AreEqual(1, sut.Count);
     }
     /// <summary>
-    /// Verifies that removing a single element by index performs O(1) hash-table maintenance — it must not rehash
+    /// Verifies that removing a single element by index performs O(1) hash-table maintenance - it must not rehash
     /// every stored element through <see cref="IEqualityComparer{T}.GetHashCode" />.
     /// </summary>
     [TestMethod]
@@ -126,7 +126,7 @@ public partial class OrderedSetStorageTests
     }
 
     /// <summary>
-    /// Verifies that replacing a single element performs a two-node bucket fix-up — it must not rehash every stored
+    /// Verifies that replacing a single element performs a two-node bucket fix-up - it must not rehash every stored
     /// element through <see cref="IEqualityComparer{T}.GetHashCode" />.
     /// </summary>
     [TestMethod]
@@ -148,7 +148,7 @@ public partial class OrderedSetStorageTests
     }
 
     /// <summary>
-    /// Verifies that moving and inserting single elements perform O(1) hash-table maintenance — neither operation
+    /// Verifies that moving and inserting single elements perform O(1) hash-table maintenance - neither operation
     /// may rehash every stored element through <see cref="IEqualityComparer{T}.GetHashCode" />.
     /// </summary>
     [TestMethod]

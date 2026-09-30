@@ -13,7 +13,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <see cref="IConfigurationBuilder" />, mirroring the <c>AddJsonFile</c> / <c>AddJsonStream</c> shape.
 /// </summary>
 /// <remarks>
-/// The resulting provider is read-once and read-only — it attaches no reload-on-change machinery and rejects mutation
+/// The resulting provider is read-once and read-only - it attaches no reload-on-change machinery and rejects mutation
 /// through <see cref="IConfigurationProvider" />, because <see cref="TomlConfigurationProvider" /> exposes no mutation
 /// surface.
 /// </remarks>

@@ -28,22 +28,22 @@
       override where required.
     -->
 
-    <!-- Guru Gobind Singh Jayanti — 5 January by modern fixed-date convention in some Nanakshahi calendars. Strategy: Fixed day-of-month. -->
+    <!-- Guru Gobind Singh Jayanti - 5 January by modern fixed-date convention in some Nanakshahi calendars. Strategy: Fixed day-of-month. -->
     <NotableDate id="guru-gobind-singh-jayanti" displayName="Guru Gobind Singh Jayanti" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="January" day="5" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Vaisakhi — 14 April; Khalsa foundation and major Sikh festival. Strategy: Fixed day-of-month. -->
+    <!-- Vaisakhi - 14 April; Khalsa foundation and major Sikh festival. Strategy: Fixed day-of-month. -->
     <NotableDate id="vaisakhi" displayName="Vaisakhi" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="April" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Martyrdom of Guru Arjan Dev — 16 June by common modern fixed-date convention. Strategy: Fixed day-of-month. -->
+    <!-- Martyrdom of Guru Arjan Dev - 16 June by common modern fixed-date convention. Strategy: Fixed day-of-month. -->
     <NotableDate id="martyrdom-of-guru-arjan-dev" displayName="Martyrdom of Guru Arjan Dev" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="June" day="16" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Martyrdom of Guru Tegh Bahadur — 24 November by common modern fixed-date convention. Strategy: Fixed day-of-month. -->
+    <!-- Martyrdom of Guru Tegh Bahadur - 24 November by common modern fixed-date convention. Strategy: Fixed day-of-month. -->
     <NotableDate id="martyrdom-of-guru-tegh-bahadur" displayName="Martyrdom of Guru Tegh Bahadur" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="November" day="24" /></Strategy></Rule></Rules>
     </NotableDate>
@@ -56,25 +56,25 @@
       calendrical only: territory packs remain free to override the published Sikh community date.
     -->
 
-    <!-- Hola Mohalla — Sikh martial festival beginning the day after Holi. Strategy: OffsetFromRule from the Holi lunar calculation. -->
+    <!-- Hola Mohalla - Sikh martial festival beginning the day after Holi. Strategy: OffsetFromRule from the Holi lunar calculation. -->
     <NotableDate id="hola-mohalla" displayName="Hola Mohalla" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="3">
         <Strategy><OffsetFromRule notableDateRef="holi-anchor" ruleRef="default" offsetDays="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Bandi Chhor Divas — Sikh observance that coincides with Diwali. Strategy: Algorithm "diwali". -->
+    <!-- Bandi Chhor Divas - Sikh observance that coincides with Diwali. Strategy: Algorithm "diwali". -->
     <NotableDate id="bandi-chhor-divas" displayName="Bandi Chhor Divas" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Algorithm key="diwali" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Guru Nanak Gurpurab — commonly observed at Kartik Purnima. Strategy: OffsetFromRule, 15 days after the Diwali/Kartik new-moon calculation. -->
+    <!-- Guru Nanak Gurpurab - commonly observed at Kartik Purnima. Strategy: OffsetFromRule, 15 days after the Diwali/Kartik new-moon calculation. -->
     <NotableDate id="guru-nanak-gurpurab" displayName="Guru Nanak Gurpurab" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="bandi-chhor-divas" ruleRef="default" offsetDays="15" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!--
-      Holi anchor — calculation anchor for Hola Mohalla only. Territory packs should import hola-mohalla rather than
+      Holi anchor - calculation anchor for Hola Mohalla only. Territory packs should import hola-mohalla rather than
       this helper concept unless they need the underlying Holi-aligned date for Sikh-specific rules.
     -->
     <NotableDate id="holi-anchor" displayName="Holi Anchor" category="Religious" defaultNonWorkingDay="false">

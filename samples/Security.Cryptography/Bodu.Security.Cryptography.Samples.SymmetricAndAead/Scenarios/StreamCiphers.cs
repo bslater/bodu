@@ -10,7 +10,7 @@ using Bodu.Security.Cryptography.Extensions;
 namespace Bodu.Security.Cryptography.Samples.SymmetricAndAead.Scenarios;
 
 /// <summary>
-/// Demonstrates additive stream ciphers — ChaCha20, XChaCha20, and Salsa20 — each encrypting a fixed
+/// Demonstrates additive stream ciphers - ChaCha20, XChaCha20, and Salsa20 - each encrypting a fixed
 /// message under a fixed key and nonce, then decrypting it back. Because these ciphers are self-inverse,
 /// the same operation recovers the plaintext, and each cipher declares its own nonce width.
 /// </summary>

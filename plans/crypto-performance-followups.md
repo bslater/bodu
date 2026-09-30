@@ -1,6 +1,6 @@
 # Implementation plan: the cryptography speed-ups left for later
 
-**Status:** Done — F1 to F8 (§9), F8 added after F7 · **Source:** the "Left for
+**Status:** Done - F1 to F8 (§9), F8 added after F7 · **Source:** the "Left for
 later" items in [`crypto-performance.md`](crypto-performance.md) §10 and the open items in
 [`argon2-performance.md`](argon2-performance.md) §10.3, after `Bodu.Security.Cryptography` 1.1.0,
 and F7's (§9) · **Target:** `Bodu.Security.Cryptography`, next lock-step release
@@ -20,20 +20,20 @@ sums measured 8% slower than the split products that replaced them.
 
 All figures are 1.1.0's, from `crypto-performance.md` §10, on the same machine: a 4-vCPU
 Xeon VM at 2.8 GHz with AVX-512, .NET 10, 1 MiB inputs unless noted. Run-to-run noise on
-this machine is about ±5–10%.
+this machine is about ±5-10%.
 
 | Primitive | 1.1.0 | Where the time goes |
 |---|---|---|
-| Poly1305 | 1,110–1,131 MiB/s | One block at a time through the scalar 44/44/42-bit core |
-| XChaCha20-Poly1305 | 761 MiB/s; 561–585 MiB/s on AVX2 | Per MiB, about 0.33 ms of keystream and 0.9 ms of MAC |
-| XChaCha20-Poly1305, 64-byte message | 0.82–0.86 µs | Three scalar block computations: HChaCha20, the Poly1305 key block, the message block |
-| ML-DSA-65 sign | 0.79–0.85 ms | 29 scalar transforms per attempt, about 60% of the time |
-| ML-DSA-65 key generation | 302–328 µs | Expanding Â and the secret vectors, one SHAKE stream at a time |
-| ML-KEM-768 encapsulate / decapsulate | 41–51 / 60–80 µs | Scalar transforms and products, one SHAKE stream at a time |
-| Ed25519 sign / X25519 key generation | 51–56 / 49–51 µs | 64 windows, each a constant-time scan of 16 entries (about 220 ns) and a unified addition (about 390 ns) |
-| Ed25519 verify | 136–150 µs | 256 doublings, about half the time, and about 120 additions; a 136-byte `IncrementalHash` per call |
+| Poly1305 | 1,110-1,131 MiB/s | One block at a time through the scalar 44/44/42-bit core |
+| XChaCha20-Poly1305 | 761 MiB/s; 561-585 MiB/s on AVX2 | Per MiB, about 0.33 ms of keystream and 0.9 ms of MAC |
+| XChaCha20-Poly1305, 64-byte message | 0.82-0.86 µs | Three scalar block computations: HChaCha20, the Poly1305 key block, the message block |
+| ML-DSA-65 sign | 0.79-0.85 ms | 29 scalar transforms per attempt, about 60% of the time |
+| ML-DSA-65 key generation | 302-328 µs | Expanding Â and the secret vectors, one SHAKE stream at a time |
+| ML-KEM-768 encapsulate / decapsulate | 41-51 / 60-80 µs | Scalar transforms and products, one SHAKE stream at a time |
+| Ed25519 sign / X25519 key generation | 51-56 / 49-51 µs | 64 windows, each a constant-time scan of 16 entries (about 220 ns) and a unified addition (about 390 ns) |
+| Ed25519 verify | 136-150 µs | 256 doublings, about half the time, and about 120 additions; a 136-byte `IncrementalHash` per call |
 | Serpent-256 / 512 / 1024 `Encrypt`, one block per call | 17 / 12.5 / 10.5 MiB/s | Every four-word group goes through the S-box dispatch as a call, and the state makes round trips through a span |
-| Serpent-128-CTR, AVX-512VL | 563–579 MiB/s, against 730 MiB/s through `EncryptBlocks` | Writing the counter run, and a separate XOR pass |
+| Serpent-128-CTR, AVX-512VL | 563-579 MiB/s, against 730 MiB/s through `EncryptBlocks` | Writing the counter run, and a separate XOR pass |
 | Every AdvSimd kernel on ARM64 | not measured | CI and emulation check the output, not the speed |
 
 ---
@@ -70,7 +70,7 @@ What that plan taught adds three rules:
 
 Ranked by value against effort. The targets are indicative until each item's spike has run.
 
-### F1 — Poly1305 several blocks at a time
+### F1 - Poly1305 several blocks at a time
 
 Done: see §9 for the results and where the build departs from this design.
 
@@ -108,15 +108,15 @@ Done: see §9 for the results and where the build departs from this design.
   - The RFC 8439 vectors, through every kernel and with SIMD off.
 - **Constant time:** the only branch is on the message length, which is public.
 
-### F2 — the short AEAD message
+### F2 - the short AEAD message
 
 Done: see §9 for the results and where the build departs from this design.
 
-- **Problem:** a 64-byte XChaCha20-Poly1305 message costs 0.82–0.86 µs. Three scalar
+- **Problem:** a 64-byte XChaCha20-Poly1305 message costs 0.82-0.86 µs. Three scalar
   ChaCha20 block computations are most of that.
 - **Design:**
   - Produce the Poly1305 key block (counter 0) and the first three message blocks
-    (counters 1–3) in one four-way kernel call. The `ChaCha20Core.Keystream` value on the
+    (counters 1-3) in one four-way kernel call. The `ChaCha20Core.Keystream` value on the
     stack then serves messages up to 192 bytes from that call.
   - HChaCha20 stays scalar, because it derives the key the other blocks use.
   - XSalsa20-Poly1305's framing takes its Poly1305 key from the first 32 bytes of block 0,
@@ -127,7 +127,7 @@ Done: see §9 for the results and where the build departs from this design.
     to 299 bytes, plus 1,024, 1,029 and 4,099.
   - New rows sit at 192 bytes and at each block boundary around it.
 
-### F3 — ML-DSA and ML-KEM vector transforms, and a four-way SHAKE
+### F3 - ML-DSA and ML-KEM vector transforms, and a four-way SHAKE
 
 Done: see §9 for the results and where the build departs from this design.
 
@@ -166,7 +166,7 @@ Done: see §9 for the results and where the build departs from this design.
   - The NIST ACVP and Wycheproof vectors pass through the vector paths, and again with
     SIMD off.
 
-### F4 — Ed25519's fixed-base table and verification
+### F4 - Ed25519's fixed-base table and verification
 
 Done: see §9 for the results and where the build departs from this design.
 
@@ -201,7 +201,7 @@ Done: see §9 for the results and where the build departs from this design.
   - The RFC 8032, RFC 7748 and Wycheproof vectors still pass.
   - The table selection is held to a plain lookup for every signed digit of every window.
 
-### F5 — Serpent's wide-block variants
+### F5 - Serpent's wide-block variants
 
 Done: see §9 for the results and where the build departs from this design.
 
@@ -221,7 +221,7 @@ Done: see §9 for the results and where the build departs from this design.
   - A differential test against the 1.1.0 implementation, kept as the oracle, over seeded
     keys, tweaks and blocks of every variant.
 
-### F6 — counter mode without the counter run
+### F6 - counter mode without the counter run
 
 Done: see §9 for the results and where the build departs from this design.
 
@@ -240,7 +240,7 @@ Done: see §9 for the results and where the build departs from this design.
   - CTR is held to the existing block-at-a-time reference at every split point.
   - A counter wrap must leave exactly the output the old loop left.
 
-### F7 — ARM64 on real hardware, and a small-L3 desktop
+### F7 - ARM64 on real hardware, and a small-L3 desktop
 
 Done: see §9 for the results and where the build departs from this design.
 
@@ -261,7 +261,7 @@ Done: see §9 for the results and where the build departs from this design.
   A kernel that is not is gated off through `SimdCapabilities` until it is tuned.
 - **Tests:** none new. The results are recorded here, with the machine and runtime.
 
-### F8 — Poly1305 on ARM64
+### F8 - Poly1305 on ARM64
 
 Added after F7, from the items it left for later (§9). Of those, this is the one with a measured
 gain in reach: the gated kernels lose to their layout, so tuning them means redesigning them, and
@@ -271,8 +271,8 @@ the other two items are checks rather than speed-ups.
   - ARM64 runs Poly1305 one block at a time through the scalar loop. F1's design had a two-lane
     AdvSimd kernel, which waited for F7, since on ARM64 the scalar loop's products come from
     `umulh` and might hold their own.
-  - F7 settled it. On the Neoverse N2 the scalar loop took 1 MiB at 1,610–1,653 MiB/s, and
-    OpenSSL's NEON code, on the same machine, at 3,156–3,174 MiB/s.
+  - F7 settled it. On the Neoverse N2 the scalar loop took 1 MiB at 1,610-1,653 MiB/s, and
+    OpenSSL's NEON code, on the same machine, at 3,156-3,174 MiB/s.
   - Poly1305 is about a third of XChaCha20-Poly1305's time there: 0.61 ms of 1.73 ms per MiB.
 - **Design:**
   - A `Vector128Kernel` in `Poly1305Core`, in the AVX2 kernel's shape at 128 bits: a block
@@ -378,7 +378,7 @@ GitHub's hosted runners, as F7's section describes. Each is the range over
 two runs of the median of five rounds. The baselines were measured the same day on this
 branch before the item's code, with the harness change that added the case in place.
 
-### F1 — Poly1305 several blocks at a time (done)
+### F1 - Poly1305 several blocks at a time (done)
 
 Before and after, on both runtimes, in the harness's five processor configurations.
 *Change* is the ratio of the two ranges' midpoints, above 1 where F1 is faster. The
@@ -387,41 +387,41 @@ their own.
 
 | Measure (net10.0) | Before F1 | After F1 | Change |
 |---|---|---|---|
-| Poly1305 1 MiB, this host's default: the paired AVX2 loop | 1,016–1,054 MiB/s | 4,697–4,877 MiB/s | 4.6× |
-| Poly1305 1 MiB, AVX-512 eight lanes (`DOTNET_PreferredVectorBitWidth=512`) | 924–942 MiB/s | 6,264–6,881 MiB/s | 7.0× |
-| Poly1305 1 MiB, AVX2 alone (`DOTNET_EnableAVX512=0`): the one-group loop | 1,030–1,052 MiB/s | 3,188–3,193 MiB/s | 3.1× |
-| Poly1305 16 KiB, default / 512-bit | 1,038–1,069 MiB/s / 849–918 MiB/s | 4,432–4,604 MiB/s / 5,374–5,497 MiB/s | 4.3× / 6.2× |
-| Poly1305 1 KiB, default | 801–818 MiB/s | 1,400–1,458 MiB/s | 1.77× |
-| Poly1305 256 B / 64 B, default | 0.53–0.55 µs / 0.34–0.38 µs | 0.53–0.54 µs / 0.36–0.41 µs | 1.01× / 0.94× |
-| Poly1305 1 MiB, without AVX2 / without vector code: the scalar loop | 688–709 MiB/s / 641–642 MiB/s | 608–685 MiB/s / 570–699 MiB/s | 0.92× / 0.99× |
-| XChaCha20-Poly1305 1 MiB, default / 512-bit | 751–781 MiB/s / 735–743 MiB/s | 1,696–1,726 MiB/s / 2,142–2,164 MiB/s | 2.2× / 2.9× |
-| XChaCha20-Poly1305 1 MiB, AVX2 alone | 562–588 MiB/s | 784–827 MiB/s | 1.40× |
-| XChaCha20-Poly1305 16 KiB / 1 KiB, default | 745–764 MiB/s / 485–574 MiB/s | 1,621–1,624 MiB/s / 735–760 MiB/s | 2.2× / 1.41× |
-| XChaCha20-Poly1305 256 B / 64 B, default | 0.91–0.95 µs / 0.86–0.92 µs | 0.94–0.95 µs / 0.86–0.96 µs | 0.98× / 0.98× |
-| XSalsa20-Poly1305 1 MiB, default / 512-bit | 763–764 MiB/s / 688–739 MiB/s | 1,641–1,803 MiB/s / 2,165–2,250 MiB/s | 2.3× / 3.1× |
-| XSalsa20-Poly1305 256 B / 64 B, default | 1.31–1.36 µs / 0.66–0.68 µs | 1.38–1.51 µs / 0.68–0.69 µs | 0.92× / 0.98× |
-| XChaCha20-Poly1305 256 B, without AVX2 / without vector code | 1.27–1.34 µs / 1.68–1.80 µs | 1.27–1.29 µs / 1.77–1.82 µs | 1.02× / 0.97× |
-| OpenSSL Poly1305 1 MiB, for reference | 4,291–4,554 MiB/s / 4,480–4,556 MiB/s | 4,163–4,480 MiB/s / 4,312–4,426 MiB/s | 0.98× / 0.97× |
-| BCL ChaCha20-Poly1305 1 MiB (OpenSSL), for reference | 1,779–1,811 MiB/s / 1,697–1,802 MiB/s | 1,617–1,737 MiB/s / 1,664–1,795 MiB/s | 0.93× / 0.99× |
+| Poly1305 1 MiB, this host's default: the paired AVX2 loop | 1,016-1,054 MiB/s | 4,697-4,877 MiB/s | 4.6× |
+| Poly1305 1 MiB, AVX-512 eight lanes (`DOTNET_PreferredVectorBitWidth=512`) | 924-942 MiB/s | 6,264-6,881 MiB/s | 7.0× |
+| Poly1305 1 MiB, AVX2 alone (`DOTNET_EnableAVX512=0`): the one-group loop | 1,030-1,052 MiB/s | 3,188-3,193 MiB/s | 3.1× |
+| Poly1305 16 KiB, default / 512-bit | 1,038-1,069 MiB/s / 849-918 MiB/s | 4,432-4,604 MiB/s / 5,374-5,497 MiB/s | 4.3× / 6.2× |
+| Poly1305 1 KiB, default | 801-818 MiB/s | 1,400-1,458 MiB/s | 1.77× |
+| Poly1305 256 B / 64 B, default | 0.53-0.55 µs / 0.34-0.38 µs | 0.53-0.54 µs / 0.36-0.41 µs | 1.01× / 0.94× |
+| Poly1305 1 MiB, without AVX2 / without vector code: the scalar loop | 688-709 MiB/s / 641-642 MiB/s | 608-685 MiB/s / 570-699 MiB/s | 0.92× / 0.99× |
+| XChaCha20-Poly1305 1 MiB, default / 512-bit | 751-781 MiB/s / 735-743 MiB/s | 1,696-1,726 MiB/s / 2,142-2,164 MiB/s | 2.2× / 2.9× |
+| XChaCha20-Poly1305 1 MiB, AVX2 alone | 562-588 MiB/s | 784-827 MiB/s | 1.40× |
+| XChaCha20-Poly1305 16 KiB / 1 KiB, default | 745-764 MiB/s / 485-574 MiB/s | 1,621-1,624 MiB/s / 735-760 MiB/s | 2.2× / 1.41× |
+| XChaCha20-Poly1305 256 B / 64 B, default | 0.91-0.95 µs / 0.86-0.92 µs | 0.94-0.95 µs / 0.86-0.96 µs | 0.98× / 0.98× |
+| XSalsa20-Poly1305 1 MiB, default / 512-bit | 763-764 MiB/s / 688-739 MiB/s | 1,641-1,803 MiB/s / 2,165-2,250 MiB/s | 2.3× / 3.1× |
+| XSalsa20-Poly1305 256 B / 64 B, default | 1.31-1.36 µs / 0.66-0.68 µs | 1.38-1.51 µs / 0.68-0.69 µs | 0.92× / 0.98× |
+| XChaCha20-Poly1305 256 B, without AVX2 / without vector code | 1.27-1.34 µs / 1.68-1.80 µs | 1.27-1.29 µs / 1.77-1.82 µs | 1.02× / 0.97× |
+| OpenSSL Poly1305 1 MiB, for reference | 4,291-4,554 MiB/s / 4,480-4,556 MiB/s | 4,163-4,480 MiB/s / 4,312-4,426 MiB/s | 0.98× / 0.97× |
+| BCL ChaCha20-Poly1305 1 MiB (OpenSSL), for reference | 1,779-1,811 MiB/s / 1,697-1,802 MiB/s | 1,617-1,737 MiB/s / 1,664-1,795 MiB/s | 0.93× / 0.99× |
 
 | Measure (net8.0) | Before F1 | After F1 | Change |
 |---|---|---|---|
-| Poly1305 1 MiB, this host's default: the paired AVX2 loop | 1,046–1,104 MiB/s | 4,915–4,929 MiB/s | 4.6× |
-| Poly1305 1 MiB, AVX-512 eight lanes (`DOTNET_PreferredVectorBitWidth=512`) | 1,123–1,166 MiB/s | 6,133–6,719 MiB/s | 5.6× |
-| Poly1305 1 MiB, AVX2 alone (`DOTNET_EnableAVX512=0`): the one-group loop | 1,068–1,168 MiB/s | 2,918–2,999 MiB/s | 2.6× |
-| Poly1305 16 KiB, default / 512-bit | 1,082–1,127 MiB/s / 1,088–1,120 MiB/s | 4,567–4,681 MiB/s / 5,216–5,315 MiB/s | 4.2× / 4.8× |
-| Poly1305 1 KiB, default | 716–807 MiB/s | 1,112–1,453 MiB/s | 1.68× |
-| Poly1305 256 B / 64 B, default | 0.55–0.57 µs / 0.37–0.40 µs | 0.55–0.57 µs / 0.36–0.37 µs | 1.00× / 1.05× |
-| Poly1305 1 MiB, without AVX2 / without vector code: the scalar loop | 1,109–1,152 MiB/s / 679–712 MiB/s | 1,005–1,101 MiB/s / 705–713 MiB/s | 0.93× / 1.02× |
-| XChaCha20-Poly1305 1 MiB, default / 512-bit | 736–772 MiB/s / 721–760 MiB/s | 1,666–1,699 MiB/s / 2,240 MiB/s | 2.2× / 3.0× |
-| XChaCha20-Poly1305 1 MiB, AVX2 alone | 567–620 MiB/s | 801–834 MiB/s | 1.38× |
-| XChaCha20-Poly1305 16 KiB / 1 KiB, default | 784–809 MiB/s / 542–545 MiB/s | 1,558–1,623 MiB/s / 637–677 MiB/s | 2.00× / 1.21× |
-| XChaCha20-Poly1305 256 B / 64 B, default | 0.96–0.99 µs / 0.84–0.91 µs | 0.97–0.98 µs / 0.85–0.86 µs | 1.00× / 1.02× |
-| XSalsa20-Poly1305 1 MiB, default / 512-bit | 762–804 MiB/s / 698–752 MiB/s | 1,726–1,811 MiB/s / 2,223–2,238 MiB/s | 2.3× / 3.1× |
-| XSalsa20-Poly1305 256 B / 64 B, default | 1.41–1.46 µs / 0.73–0.75 µs | 1.42–1.50 µs / 0.75–0.79 µs | 0.98× / 0.96× |
-| XChaCha20-Poly1305 256 B, without AVX2 / without vector code | 1.22–1.24 µs / 1.76–1.83 µs | 1.19–1.23 µs / 1.76–1.87 µs | 1.02× / 0.99× |
-| OpenSSL Poly1305 1 MiB, for reference | 4,369–4,722 MiB/s / 4,488–4,800 MiB/s | 4,286–4,546 MiB/s / 4,205–4,638 MiB/s | 0.97× / 0.95× |
-| BCL ChaCha20-Poly1305 1 MiB (OpenSSL), for reference | 1,740–1,840 MiB/s / 1,833–1,906 MiB/s | 1,734–1,793 MiB/s / 1,700–1,726 MiB/s | 0.99× / 0.92× |
+| Poly1305 1 MiB, this host's default: the paired AVX2 loop | 1,046-1,104 MiB/s | 4,915-4,929 MiB/s | 4.6× |
+| Poly1305 1 MiB, AVX-512 eight lanes (`DOTNET_PreferredVectorBitWidth=512`) | 1,123-1,166 MiB/s | 6,133-6,719 MiB/s | 5.6× |
+| Poly1305 1 MiB, AVX2 alone (`DOTNET_EnableAVX512=0`): the one-group loop | 1,068-1,168 MiB/s | 2,918-2,999 MiB/s | 2.6× |
+| Poly1305 16 KiB, default / 512-bit | 1,082-1,127 MiB/s / 1,088-1,120 MiB/s | 4,567-4,681 MiB/s / 5,216-5,315 MiB/s | 4.2× / 4.8× |
+| Poly1305 1 KiB, default | 716-807 MiB/s | 1,112-1,453 MiB/s | 1.68× |
+| Poly1305 256 B / 64 B, default | 0.55-0.57 µs / 0.37-0.40 µs | 0.55-0.57 µs / 0.36-0.37 µs | 1.00× / 1.05× |
+| Poly1305 1 MiB, without AVX2 / without vector code: the scalar loop | 1,109-1,152 MiB/s / 679-712 MiB/s | 1,005-1,101 MiB/s / 705-713 MiB/s | 0.93× / 1.02× |
+| XChaCha20-Poly1305 1 MiB, default / 512-bit | 736-772 MiB/s / 721-760 MiB/s | 1,666-1,699 MiB/s / 2,240 MiB/s | 2.2× / 3.0× |
+| XChaCha20-Poly1305 1 MiB, AVX2 alone | 567-620 MiB/s | 801-834 MiB/s | 1.38× |
+| XChaCha20-Poly1305 16 KiB / 1 KiB, default | 784-809 MiB/s / 542-545 MiB/s | 1,558-1,623 MiB/s / 637-677 MiB/s | 2.00× / 1.21× |
+| XChaCha20-Poly1305 256 B / 64 B, default | 0.96-0.99 µs / 0.84-0.91 µs | 0.97-0.98 µs / 0.85-0.86 µs | 1.00× / 1.02× |
+| XSalsa20-Poly1305 1 MiB, default / 512-bit | 762-804 MiB/s / 698-752 MiB/s | 1,726-1,811 MiB/s / 2,223-2,238 MiB/s | 2.3× / 3.1× |
+| XSalsa20-Poly1305 256 B / 64 B, default | 1.41-1.46 µs / 0.73-0.75 µs | 1.42-1.50 µs / 0.75-0.79 µs | 0.98× / 0.96× |
+| XChaCha20-Poly1305 256 B, without AVX2 / without vector code | 1.22-1.24 µs / 1.76-1.83 µs | 1.19-1.23 µs / 1.76-1.87 µs | 1.02× / 0.99× |
+| OpenSSL Poly1305 1 MiB, for reference | 4,369-4,722 MiB/s / 4,488-4,800 MiB/s | 4,286-4,546 MiB/s / 4,205-4,638 MiB/s | 0.97× / 0.95× |
+| BCL ChaCha20-Poly1305 1 MiB (OpenSSL), for reference | 1,740-1,840 MiB/s / 1,833-1,906 MiB/s | 1,734-1,793 MiB/s / 1,700-1,726 MiB/s | 0.99× / 0.92× |
 
 The scalar rows, and the messages of 256 bytes and less, move by no more than the
 reference rows drift, so they were also compared in alternating A/B runs of the two
@@ -443,18 +443,18 @@ How it was done, and where it departs from the design above:
     fill the multiplier while the first group's carries run, and the two share one round
     of carries.
   - `Vector512Kernel`, eight lanes on AVX-512F, paired the same way with r¹⁶ and r⁸.
-  - After the last group each lane multiplies by the power of r its last block needs —
-    r⁴, r², r³ and r in the AVX2 lane order b1, b3, b2, b4 that `vpunpcklqdq` leaves —
+  - After the last group each lane multiplies by the power of r its last block needs -
+    r⁴, r², r³ and r in the AVX2 lane order b1, b3, b2, b4 that `vpunpcklqdq` leaves -
     and the lanes are summed back into the 44/44/42-bit accumulator, so the tag is
     unchanged. The blocks after the last whole group take the scalar loop.
 - **The paired loop is a finding, not the design.** The first version took one group at a
   time, and its loop was bound by the chain from one group's carries to the next group's
   products. In the per-kernel sweep of `Poly1305Core` below, at 1 MiB, that gave
-  3,347–3,454 MiB/s with AVX2 and 5,579 MiB/s with AVX-512; pairing the groups raised
-  them to 4,993–5,280 and 7,171–7,229 MiB/s. But the paired loop holds about twice as
+  3,347-3,454 MiB/s with AVX2 and 5,579 MiB/s with AVX-512; pairing the groups raised
+  them to 4,993-5,280 and 7,171-7,229 MiB/s. But the paired loop holds about twice as
   many live vectors, which fit in the 32 registers AVX-512VL gives 256-bit code and
-  spill from AVX2's 16. With AVX-512 disabled it measured 2,323–2,784 MiB/s on .NET 8,
-  below the one-group loop's 2,712–3,389. So dispatch takes the paired AVX2 loop only
+  spill from AVX2's 16. With AVX-512 disabled it measured 2,323-2,784 MiB/s on .NET 8,
+  below the one-group loop's 2,712-3,389. So dispatch takes the paired AVX2 loop only
   where AVX-512VL is available, and the kinds are `Avx2`, `Avx2Paired` and `Avx512`.
 - **Powers of r.** Computed per run rather than once per key, since the core is a struct
   kept on the stack and every AEAD message has a fresh key. They come from the scalar
@@ -468,9 +468,9 @@ How it was done, and where it departs from the design above:
 
   | Kernel | From | Crossover measured (.NET 8 / .NET 10) |
   |---|---|---|
-  | `Avx2` over the scalar loop | 512 bytes | 192–256 / 192–256 bytes for the MAC alone; about 512 bytes inside an AEAD |
-  | `Avx2Paired` over `Avx2`, with AVX-512VL | 1 KiB | 512 bytes–1 KiB / 1 KiB |
-  | `Avx512` over `Avx2Paired`, where the runtime prefers 512-bit vectors | 4 KiB | 4 KiB / 2–3 KiB |
+  | `Avx2` over the scalar loop | 512 bytes | 192-256 / 192-256 bytes for the MAC alone; about 512 bytes inside an AEAD |
+  | `Avx2Paired` over `Avx2`, with AVX-512VL | 1 KiB | 512 bytes-1 KiB / 1 KiB |
+  | `Avx512` over `Avx2Paired`, where the runtime prefers 512-bit vectors | 4 KiB | 4 KiB / 2-3 KiB |
 
   This host does not prefer 512-bit vectors by default, so the eight-lane kernel needs
   `DOTNET_PreferredVectorBitWidth=512` here, as ChaCha20's sixteen-block kernel does.
@@ -500,13 +500,13 @@ How it was done, and where it departs from the design above:
 
   | Bytes | XChaCha20-Poly1305: before / 256 / 512 | XSalsa20-Poly1305: before / 256 / 512 | Poly1305 alone: before / 256 |
   |---|---|---|---|
-  | 256 | 903–962 / 972–977 / 933–934 | 1,302–1,308 / 1,429–1,454 / 1,272–1,296 | 511–513 / 512–523 |
-  | 320 | 1,162–1,175 / 1,267–1,272 / 1,200–1,211 | 1,023–1,035 / 1,053–1,075 / 1,016–1,023 | 552–567 / 498–502 |
-  | 512 | 1,133–1,160 / 1,030–1,032 / 1,050–1,070 | 1,676–1,689 / 1,631–1,641 / 1,656–1,714 | 735–736 / 549–564 |
-  | 768 | 1,470–1,482 / 1,279–1,294 / 1,291–1,302 | 1,857–1,907 / 1,701–1,738 / 1,704–1,706 | 941–951 / 592–620 |
+  | 256 | 903-962 / 972-977 / 933-934 | 1,302-1,308 / 1,429-1,454 / 1,272-1,296 | 511-513 / 512-523 |
+  | 320 | 1,162-1,175 / 1,267-1,272 / 1,200-1,211 | 1,023-1,035 / 1,053-1,075 / 1,016-1,023 | 552-567 / 498-502 |
+  | 512 | 1,133-1,160 / 1,030-1,032 / 1,050-1,070 | 1,676-1,689 / 1,631-1,641 / 1,656-1,714 | 735-736 / 549-564 |
+  | 768 | 1,470-1,482 / 1,279-1,294 / 1,291-1,302 | 1,857-1,907 / 1,701-1,738 / 1,704-1,706 | 941-951 / 592-620 |
 
   Below 512 bytes the kernel saves the MAC too little to cover what it costs the rest of
-  the message — most likely the lower clock this Xeon runs at once 256-bit multiplies
+  the message - most likely the lower clock this Xeon runs at once 256-bit multiplies
   are in flight, which the keystream then runs at too. So the AVX2 kernel starts at
   512 bytes, and the 256- and 320-byte messages are back to their old cost.
 - **Generated code, on both runtimes.**
@@ -514,29 +514,29 @@ How it was done, and where it departs from the design above:
     its loop, on .NET 8 and .NET 10.
   - With AVX2 alone, .NET 8 did not expand `>>` on `Vector256<ulong>`: it treats the
     operator as a signed shift, which has no 64-bit form before AVX-512, and called the
-    software fallback — which also used up the inlining budget, so `Multiply`,
+    software fallback - which also used up the inlining budget, so `Multiply`,
     `AddGroup` and `Times5` became calls in the loop. The kernels now write their right
     shifts `>>>`, which .NET 8 expands to `vpsrlq` on AVX2. .NET 10 expanded both.
   - The scalar block loop, now calling `Multiply`, compiles to the same machine code as
     before on .NET 10 in every configuration. On .NET 8 the register allocator keeps the
     loop bound in a 32-bit stack slot, two instructions more per block; A/B runs of the
-    scalar path measured 1,056–1,141 MiB/s before and 1,006–1,158 after, so no framework
+    scalar path measured 1,056-1,141 MiB/s before and 1,006-1,158 after, so no framework
     switch is warranted.
   - Compiled whole, as `DOTNET_TieredCompilation=0` does, none of that shows what dynamic
     PGO does on .NET 10. The first full measurement did: Poly1305 at 1 MiB without AVX2
-    ran at 614–616 MiB/s against 688–709 before. The tiered code showed why. Through the
+    ran at 614-616 MiB/s against 688-709 before. The tiered code showed why. Through the
     new `FullBlocks` call site, PGO inlined the scalar loop into `Poly1305.HashCore` and
     `Poly1305Core.Update`, ran out of budget part-way, and left `AddProduct`,
     `SplitProduct` and `Multiply` as calls in the loop. The loop had only
     `AggressiveOptimization`; it now has `NoInlining` as well, as §2's first rule requires
     of every kernel entry point, and alternating A/B runs of the final build measured
-    649–730 MiB/s against 625–699 before.
+    649-730 MiB/s against 625-699 before.
   - The dispatch did the same to the AEADs. `Poly1305AeadCore.SealRfc8439`, which
     inlines `Update` for the associated data, the ciphertext and the lengths block, grew
     from 3,545 to 4,449 bytes of Tier1 code with the three kernels' calls inlined in it.
     That exhausted its budget, so `WriteUInt64LittleEndian`, `Poly1305Core.Clear` and
     `ThrowIfLessThan` became calls on every message, and XChaCha20-Poly1305 at 64 bytes
-    took 807–834 ns against 785–796 before. `FullBlocks` now sends runs shorter than
+    took 807-834 ns against 785-796 before. `FullBlocks` now sends runs shorter than
     512 bytes straight to the scalar loop and dispatches longer ones out of line in
     `KernelBlocks`. The framing method is back to 3,692 bytes, making the same calls as
     before plus the out-of-line one. In three alternating runs, the medians for
@@ -544,7 +544,7 @@ How it was done, and where it departs from the design above:
     faster and 2.8% slower than before.
 - **Tests.**
   - `Update(KernelKind, data)` drives each loop explicitly, whatever dispatch would pick.
-    Every loop — scalar, `Avx2`, `Avx2Paired` and `Avx512` — is held to
+    Every loop - scalar, `Avx2`, `Avx2Paired` and `Avx512` - is held to
     `Poly1305Reference` at every length from 0 to 1,100 bytes, over 300 seeded messages
     fed in pieces of up to 300 bytes, with r at its largest clamped value and s and the
     message at all ones or all zeros, entered after one to eight scalar blocks of all
@@ -574,7 +574,7 @@ How it was done, and where it departs from the design above:
   - Poly1305 no longer bounds the AEADs: at 1 MiB with AVX-512 the MAC takes about 0.15 ms
     of XChaCha20-Poly1305's 0.45 ms, and the keystream the rest.
 
-### F2 — the short AEAD message (done)
+### F2 - the short AEAD message (done)
 
 Before and after, on both runtimes, in the harness's five processor configurations.
 *Change* is the ratio of the two ranges' midpoints, above 1 where F2 is faster. The BCL
@@ -585,57 +585,57 @@ groups, and every message without vector code are drawn as before.
 
 | Measure (net10.0) | Before F2 | After F2 | Change |
 |---|---|---|---|
-| XChaCha20-Poly1305 64 B / 128 B, this host's default (AVX-512VL) | 0.79–0.82 µs / 1.09–1.17 µs | 0.57–0.70 µs / 0.67–0.68 µs | 1.27× / 1.67× |
-| XChaCha20-Poly1305 192 B / 256 B, this host's default (AVX-512VL) | 1.28–1.51 µs / 0.92–1.06 µs | 0.70 µs / 0.77–0.80 µs | 1.99× / 1.26× |
-| XChaCha20-Poly1305 448 B / 960 B, this host's default (AVX-512VL) | 1.66–1.79 µs / 2.02–2.26 µs | 0.97–1.12 µs / 1.24–1.27 µs | 1.65× / 1.71× |
-| XChaCha20-Poly1305 0 B / 512 B, this host's default (AVX-512VL) | 0.53–0.56 µs / 1.05–1.07 µs | 0.54–0.55 µs / 1.10–1.18 µs | 1.00× / 0.93× |
-| XSalsa20-Poly1305 64 B / 256 B, this host's default (AVX-512VL) | 0.63–0.73 µs / 1.33–1.38 µs | 0.55–0.64 µs / 0.76–0.81 µs | 1.14× / 1.73× |
-| XSalsa20-Poly1305 512 B / 960 B, this host's default (AVX-512VL) | 1.73–1.74 µs / 2.05–2.08 µs | 1.04–1.09 µs / 1.20–1.32 µs | 1.63× / 1.64× |
-| XChaCha20-Poly1305 64 B / 448 B, 512-bit vectors (`DOTNET_PreferredVectorBitWidth=512`) | 1.01–1.06 µs / 1.94–2.14 µs | 0.72–0.79 µs / 1.14–1.37 µs | 1.37× / 1.63× |
-| XChaCha20-Poly1305 128 B / 448 B, AVX2 alone | 1.03–1.18 µs / 1.84–1.91 µs | 0.96–1.00 µs / 1.16–1.33 µs | 1.13× / 1.51× |
-| XSalsa20-Poly1305 128 B / 448 B, AVX2 alone | 0.97–1.04 µs / 1.83–2.02 µs | 0.90–0.91 µs / 1.25–1.41 µs | 1.11× / 1.45× |
-| XChaCha20-Poly1305 64 B / 448 B, SSSE3 (AVX2 disabled) | 0.89 µs / 2.06–2.18 µs | 0.87–0.92 µs / 1.66–1.68 µs | 0.99× / 1.27× |
-| XChaCha20-Poly1305 64 B / 448 B, without vector code | 0.95–1.04 µs / 2.59–2.69 µs | 0.88–0.90 µs / 2.51–2.60 µs | 1.12× / 1.03× |
-| XChaCha20-Poly1305 1 KiB / 16 KiB, this host's default (AVX-512VL) | 622–782 MiB/s / 1,500–1,573 MiB/s | 680–724 MiB/s / 1,641–1,653 MiB/s | 1.00× / 1.07× |
-| BCL ChaCha20-Poly1305 (OpenSSL) 64 B / 1 KiB, this host's default (AVX-512VL), for reference | 1.31–1.50 µs / 2.12 µs | 1.30–1.42 µs / 1.91–1.99 µs | 1.03× / 1.09× |
+| XChaCha20-Poly1305 64 B / 128 B, this host's default (AVX-512VL) | 0.79-0.82 µs / 1.09-1.17 µs | 0.57-0.70 µs / 0.67-0.68 µs | 1.27× / 1.67× |
+| XChaCha20-Poly1305 192 B / 256 B, this host's default (AVX-512VL) | 1.28-1.51 µs / 0.92-1.06 µs | 0.70 µs / 0.77-0.80 µs | 1.99× / 1.26× |
+| XChaCha20-Poly1305 448 B / 960 B, this host's default (AVX-512VL) | 1.66-1.79 µs / 2.02-2.26 µs | 0.97-1.12 µs / 1.24-1.27 µs | 1.65× / 1.71× |
+| XChaCha20-Poly1305 0 B / 512 B, this host's default (AVX-512VL) | 0.53-0.56 µs / 1.05-1.07 µs | 0.54-0.55 µs / 1.10-1.18 µs | 1.00× / 0.93× |
+| XSalsa20-Poly1305 64 B / 256 B, this host's default (AVX-512VL) | 0.63-0.73 µs / 1.33-1.38 µs | 0.55-0.64 µs / 0.76-0.81 µs | 1.14× / 1.73× |
+| XSalsa20-Poly1305 512 B / 960 B, this host's default (AVX-512VL) | 1.73-1.74 µs / 2.05-2.08 µs | 1.04-1.09 µs / 1.20-1.32 µs | 1.63× / 1.64× |
+| XChaCha20-Poly1305 64 B / 448 B, 512-bit vectors (`DOTNET_PreferredVectorBitWidth=512`) | 1.01-1.06 µs / 1.94-2.14 µs | 0.72-0.79 µs / 1.14-1.37 µs | 1.37× / 1.63× |
+| XChaCha20-Poly1305 128 B / 448 B, AVX2 alone | 1.03-1.18 µs / 1.84-1.91 µs | 0.96-1.00 µs / 1.16-1.33 µs | 1.13× / 1.51× |
+| XSalsa20-Poly1305 128 B / 448 B, AVX2 alone | 0.97-1.04 µs / 1.83-2.02 µs | 0.90-0.91 µs / 1.25-1.41 µs | 1.11× / 1.45× |
+| XChaCha20-Poly1305 64 B / 448 B, SSSE3 (AVX2 disabled) | 0.89 µs / 2.06-2.18 µs | 0.87-0.92 µs / 1.66-1.68 µs | 0.99× / 1.27× |
+| XChaCha20-Poly1305 64 B / 448 B, without vector code | 0.95-1.04 µs / 2.59-2.69 µs | 0.88-0.90 µs / 2.51-2.60 µs | 1.12× / 1.03× |
+| XChaCha20-Poly1305 1 KiB / 16 KiB, this host's default (AVX-512VL) | 622-782 MiB/s / 1,500-1,573 MiB/s | 680-724 MiB/s / 1,641-1,653 MiB/s | 1.00× / 1.07× |
+| BCL ChaCha20-Poly1305 (OpenSSL) 64 B / 1 KiB, this host's default (AVX-512VL), for reference | 1.31-1.50 µs / 2.12 µs | 1.30-1.42 µs / 1.91-1.99 µs | 1.03× / 1.09× |
 
 | Measure (net8.0) | Before F2 | After F2 | Change |
 |---|---|---|---|
-| XChaCha20-Poly1305 64 B / 128 B, this host's default (AVX-512VL) | 0.86–0.90 µs / 1.12–1.25 µs | 0.63–0.70 µs / 0.69–0.75 µs | 1.32× / 1.65× |
-| XChaCha20-Poly1305 192 B / 256 B, this host's default (AVX-512VL) | 1.40–1.42 µs / 0.99 µs | 0.73–0.94 µs / 0.82–0.85 µs | 1.69× / 1.19× |
-| XChaCha20-Poly1305 448 B / 960 B, this host's default (AVX-512VL) | 1.70–1.77 µs / 2.26–2.33 µs | 1.00–1.06 µs / 1.35–1.37 µs | 1.68× / 1.69× |
-| XChaCha20-Poly1305 0 B / 512 B, this host's default (AVX-512VL) | 0.58–0.60 µs / 1.11–1.19 µs | 0.58–0.59 µs / 1.15–1.17 µs | 1.01× / 0.99× |
-| XSalsa20-Poly1305 64 B / 256 B, this host's default (AVX-512VL) | 0.74–0.87 µs / 1.36–1.54 µs | 0.59–0.64 µs / 0.74–0.78 µs | 1.31× / 1.91× |
-| XSalsa20-Poly1305 512 B / 960 B, this host's default (AVX-512VL) | 1.84–2.02 µs / 1.80–2.03 µs | 1.15 µs / 1.33–1.42 µs | 1.68× / 1.39× |
-| XChaCha20-Poly1305 64 B / 448 B, 512-bit vectors (`DOTNET_PreferredVectorBitWidth=512`) | 0.99–1.00 µs / 2.04–2.19 µs | 0.72–0.78 µs / 1.21–1.27 µs | 1.33× / 1.71× |
-| XChaCha20-Poly1305 128 B / 448 B, AVX2 alone | 1.13–1.19 µs / 1.83–1.94 µs | 0.85–1.09 µs / 1.22–1.23 µs | 1.20× / 1.54× |
-| XSalsa20-Poly1305 128 B / 448 B, AVX2 alone | 1.02–1.05 µs / 1.94–1.98 µs | 1.05–1.08 µs / 1.38–1.47 µs | 0.97× / 1.38× |
-| XChaCha20-Poly1305 64 B / 448 B, SSSE3 (AVX2 disabled) | 0.85–0.90 µs / 1.96–2.08 µs | 0.87–1.09 µs / 1.58 µs | 0.89× / 1.28× |
-| XChaCha20-Poly1305 64 B / 448 B, without vector code | 0.89 µs / 2.47–2.67 µs | 0.91–0.95 µs / 2.46–2.65 µs | 0.96× / 1.01× |
-| XChaCha20-Poly1305 1 KiB / 16 KiB, this host's default (AVX-512VL) | 679–692 MiB/s / 1,476–1,643 MiB/s | 616–693 MiB/s / 1,525–1,559 MiB/s | 0.95× / 0.99× |
-| BCL ChaCha20-Poly1305 (OpenSSL) 64 B / 1 KiB, this host's default (AVX-512VL), for reference | 1.42–1.44 µs / 2.23–2.28 µs | 1.33–1.41 µs / 1.98–2.02 µs | 1.04× / 1.13× |
+| XChaCha20-Poly1305 64 B / 128 B, this host's default (AVX-512VL) | 0.86-0.90 µs / 1.12-1.25 µs | 0.63-0.70 µs / 0.69-0.75 µs | 1.32× / 1.65× |
+| XChaCha20-Poly1305 192 B / 256 B, this host's default (AVX-512VL) | 1.40-1.42 µs / 0.99 µs | 0.73-0.94 µs / 0.82-0.85 µs | 1.69× / 1.19× |
+| XChaCha20-Poly1305 448 B / 960 B, this host's default (AVX-512VL) | 1.70-1.77 µs / 2.26-2.33 µs | 1.00-1.06 µs / 1.35-1.37 µs | 1.68× / 1.69× |
+| XChaCha20-Poly1305 0 B / 512 B, this host's default (AVX-512VL) | 0.58-0.60 µs / 1.11-1.19 µs | 0.58-0.59 µs / 1.15-1.17 µs | 1.01× / 0.99× |
+| XSalsa20-Poly1305 64 B / 256 B, this host's default (AVX-512VL) | 0.74-0.87 µs / 1.36-1.54 µs | 0.59-0.64 µs / 0.74-0.78 µs | 1.31× / 1.91× |
+| XSalsa20-Poly1305 512 B / 960 B, this host's default (AVX-512VL) | 1.84-2.02 µs / 1.80-2.03 µs | 1.15 µs / 1.33-1.42 µs | 1.68× / 1.39× |
+| XChaCha20-Poly1305 64 B / 448 B, 512-bit vectors (`DOTNET_PreferredVectorBitWidth=512`) | 0.99-1.00 µs / 2.04-2.19 µs | 0.72-0.78 µs / 1.21-1.27 µs | 1.33× / 1.71× |
+| XChaCha20-Poly1305 128 B / 448 B, AVX2 alone | 1.13-1.19 µs / 1.83-1.94 µs | 0.85-1.09 µs / 1.22-1.23 µs | 1.20× / 1.54× |
+| XSalsa20-Poly1305 128 B / 448 B, AVX2 alone | 1.02-1.05 µs / 1.94-1.98 µs | 1.05-1.08 µs / 1.38-1.47 µs | 0.97× / 1.38× |
+| XChaCha20-Poly1305 64 B / 448 B, SSSE3 (AVX2 disabled) | 0.85-0.90 µs / 1.96-2.08 µs | 0.87-1.09 µs / 1.58 µs | 0.89× / 1.28× |
+| XChaCha20-Poly1305 64 B / 448 B, without vector code | 0.89 µs / 2.47-2.67 µs | 0.91-0.95 µs / 2.46-2.65 µs | 0.96× / 1.01× |
+| XChaCha20-Poly1305 1 KiB / 16 KiB, this host's default (AVX-512VL) | 679-692 MiB/s / 1,476-1,643 MiB/s | 616-693 MiB/s / 1,525-1,559 MiB/s | 0.95× / 0.99× |
+| BCL ChaCha20-Poly1305 (OpenSSL) 64 B / 1 KiB, this host's default (AVX-512VL), for reference | 1.42-1.44 µs / 2.23-2.28 µs | 1.33-1.41 µs / 1.98-2.02 µs | 1.04× / 1.13× |
 
 The harness measures 64 bytes first in each process, before tiering has always settled,
 so that row was also taken from alternating A/B runs of the two builds in separate
-processes. XChaCha20-Poly1305 seals a 64-byte message in 546–577 ns on .NET 10, over
-eleven rounds, against 746–810 before, which meets the target of 0.6 µs; on .NET 8 it
-takes 597–630 ns, over six rounds, against 805–900, just above it. The same runs hold the
+processes. XChaCha20-Poly1305 seals a 64-byte message in 546-577 ns on .NET 10, over
+eleven rounds, against 746-810 before, which meets the target of 0.6 µs; on .NET 8 it
+takes 597-630 ns, over six rounds, against 805-900, just above it. The same runs hold the
 lengths whose draws F2 leaves as they were to their old cost: with AVX-512VL, 0 bytes at
-0.95–1.02× and the 512-byte messages that tie at 0.98–1.03×; without it, 64, 512 and
-1,100 bytes at 0.95–1.02× over five rounds, except one secretbox row at 1.09× on .NET 8
+0.95-1.02× and the 512-byte messages that tie at 0.98-1.03×; without it, 64, 512 and
+1,100 bytes at 0.95-1.02× over five rounds, except one secretbox row at 1.09× on .NET 8
 that measured 0.94× when 1,100 bytes was the only length its process ran. That, and the
 0.93× the harness shows at 512 bytes, is dynamic PGO. The framing is compiled once for
 both of its paths and laid out for the one the process has run most, so a message drawn
 as it comes costs a little more in a process that has mostly drawn in one pass:
 XChaCha20-Poly1305 at 512 bytes on .NET 10 measured 0.99× alone, 1.03× after 64-byte
-messages, and 0.93–1.02× in the harness, which runs most one-pass lengths first. Giving
-each path a method of its own was tried; it cost one-pass messages 1–5% and did not
+messages, and 0.93-1.02× in the harness, which runs most one-pass lengths first. Giving
+each path a method of its own was tried; it cost one-pass messages 1-5% and did not
 remove the effect, so the paths share one method. The .NET 8 row with AVX2 disabled at
 64 bytes is one run with a gen-2 collection in it (1.09 µs); the other ran 0.87 µs.
 
 These figures were taken with F2 on ef973018. Master has since routed the keystream
 functions' guards through `ThrowHelper` (0e73d4b0); alternating runs of both builds, with
-and without F2, measured that change at 0.96–1.02× at 0, 64, 512 and 1,100 bytes on both
+and without F2, measured that change at 0.96-1.02× at 0, 64, 512 and 1,100 bytes on both
 runtimes, and F2 on the new master within the same rounds' spread of F2 on ef973018.
 
 How it was done, and where it departs from the design above:
@@ -656,17 +656,17 @@ How it was done, and where it departs from the design above:
 - **Why the plan is estimated rather than fixed.** The first version rounded every run
   up to a group of four and took the one pass whenever a message fit. Alternating A/B
   runs measured it 3% slower for an empty XChaCha20-Poly1305 message, 9% for an empty
-  XSalsa20-Poly1305 one, and 5–7% slower for XChaCha20-Poly1305 at exactly 512 bytes.
+  XSalsa20-Poly1305 one, and 5-7% slower for XChaCha20-Poly1305 at exactly 512 bytes.
   In each case the one pass takes as many kernel steps as drawing as it comes, and adds
   the copies through the buffer. Nor is a kernel step always worth one block. Measured
   against the block function over one block:
 
   | Step, against the block function over one block (ChaCha20 / Salsa20) | .NET 10 | .NET 8 |
   |---|---|---|
-  | 4 or 8 blocks, AVX-512VL | 0.95–0.97 / 1.11–1.14 | 0.93–0.95 / 1.09–1.16 |
-  | 4 or 8 blocks, 512-bit vectors | 0.95–0.98 / 1.02–1.06 | 0.96–0.98 / 1.07–1.10 |
+  | 4 or 8 blocks, AVX-512VL | 0.95-0.97 / 1.11-1.14 | 0.93-0.95 / 1.09-1.16 |
+  | 4 or 8 blocks, 512-bit vectors | 0.95-0.98 / 1.02-1.06 | 0.96-0.98 / 1.07-1.10 |
   | 16 blocks, 512-bit vectors | 1.43 / 1.49 | 1.40 / 1.56 |
-  | 4 or 8 blocks, AVX2 alone | 1.77–2.04 / 2.33–2.73 | 1.88–1.95 / 3.15–3.47 |
+  | 4 or 8 blocks, AVX2 alone | 1.77-2.04 / 2.33-2.73 | 1.88-1.95 / 3.15-3.47 |
   | 4 blocks, SSSE3 (`DOTNET_EnableAVX=0`) | 1.69 / 1.96 | 1.97 / 2.45 |
 
   `ChaCha20Core.StepCost` rounds these to halves of a block: 2 for the block function,
@@ -676,7 +676,7 @@ How it was done, and where it departs from the design above:
   its estimate is strictly lower than drawing as it comes, which copies nothing. On the
   block function every way costs the same, so a keystream there, and an engine, which
   reports the scalar kernel, is always drawn exactly as before.
-- **The plan is kept per kernel.** Planning a message afresh took 75–140 ns, about half
+- **The plan is kept per kernel.** Planning a message afresh took 75-140 ns, about half
   a block, so `OnePassBlocks` computes the plan for every length up to 1 KiB of
   keystream on a kernel's first message and keeps it, published with
   `Interlocked.CompareExchange`. A lookup takes a few instructions.
@@ -687,7 +687,7 @@ How it was done, and where it departs from the design above:
     nothing that was inlined stopped being inlined.
   - Without AVX-512, .NET 10 did not inline `LanesFor` into `XorKeystream`, so every
     message drawn as it comes called it twice and divided by the group's width, and
-    XChaCha20-Poly1305 ran 6–8% slower at 64 bytes, where its draws had not changed.
+    XChaCha20-Poly1305 ran 6-8% slower at 64 bytes, where its draws had not changed.
     `LanesFor`, `StepCost` and the plan's per-message helpers are now
     `AggressiveInlining`, and for each keystream's kernel, a constant when the framing
     is compiled, the decisions fold away. .NET 8 inlined `LanesFor` but still divided,
@@ -707,8 +707,8 @@ How it was done, and where it departs from the design above:
     1,299 bytes, and 4,099, it holds the output to the engine's, the draws to the cost
     the plan estimated for them, and every departure from drawing as it comes to a lower
     estimate; on the block function that leaves the draws exactly as they were. Three
-    mutations of the planner — one pass on a tie, the rest's step left out of the
-    estimate, the rest never rounded — each fail those tests.
+    mutations of the planner - one pass on a tie, the rest's step left out of the
+    estimate, the rest never rounded - each fail those tests.
   - `StepCost`, `CostFor`, `CheapestRunBlocks`, `KeystreamCost` and `PlanOnePass` are
     pinned at chosen values; `CheapestRunBlocks` is held to every longer run up to
     sixteen blocks, and the plan kept for each kernel to planning afresh. The SIMD-off
@@ -726,8 +726,8 @@ How it was done, and where it departs from the design above:
     170 ns of the 575 a 64-byte XChaCha20-Poly1305 message takes on .NET 10, computed one
     block at a time because they derive the key the other blocks use. A one-block vector
     kernel, as BLAKE2s has, could shorten that.
-  - Salsa20's AVX2 and SSSE3 kernels take 3.1–3.5 blocks' time per step on .NET 8,
-    against 2.3–2.7 on .NET 10. The estimates follow ChaCha20, so on .NET 8 without
+  - Salsa20's AVX2 and SSSE3 kernels take 3.1-3.5 blocks' time per step on .NET 8,
+    against 2.3-2.7 on .NET 10. The estimates follow ChaCha20, so on .NET 8 without
     AVX-512 a three-block XSalsa20-Poly1305 message takes one step where three calls of
     the block function would be about 3% faster (0.97× at 128 bytes). Finding why .NET 8
     compiles those kernels slower would remove that and speed up long XSalsa20 messages
@@ -735,7 +735,7 @@ How it was done, and where it departs from the design above:
   - The ARM64 estimate is assumed, not measured: F7 should time the AdvSimd kernel's
     steps against the block function and correct `StepCost` if they differ.
 
-### F3 — ML-DSA and ML-KEM vector transforms, and a four-way SHAKE (done)
+### F3 - ML-DSA and ML-KEM vector transforms, and a four-way SHAKE (done)
 
 F3's figures come from a second machine. Part-way through F3 the work moved from §1's VM to a
 4-vCPU Xeon VM at 2.1 GHz (family 6, model 207) with AVX-512F/VL/BW/DQ, IFMA, VBMI and FP16,
@@ -749,100 +749,100 @@ ranges' midpoints, above 1 where F3 is faster.
 
 | Operation (net10.0, this host's default) | Before F3 (µs) | After F3 (µs) | Change |
 |---|---|---|---|
-| ML-KEM-512 key generation | 31.7–32.1 | 17.4–17.9 | 1.81× |
-| ML-KEM-512 encapsulate | 20.6–21.3 | 10.0–10.6 | 2.04× |
-| ML-KEM-512 decapsulate | 29.1–30.3 | 15.4–15.6 | 1.91× |
-| ML-KEM-512 encapsulate to an imported key | 34.3–35.9 | 17.9–18.2 | 1.94× |
-| ML-KEM-768 key generation | 50.5–50.6 | 28.3–29.4 | 1.75× |
-| ML-KEM-768 encapsulate | 27.4–29.4 | 13.5 | 2.10× |
-| ML-KEM-768 decapsulate | 43.1–44.5 | 19.5–20.2 | 2.21× |
-| ML-KEM-768 encapsulate to an imported key | 54.2–67.8 | 27.9–28.6 | 2.16× |
-| ML-KEM-1024 key generation | 84.8–86.6 | 41.7 | 2.05× |
-| ML-KEM-1024 encapsulate | 39.3–44.0 | 18.5–19.3 | 2.21× |
-| ML-KEM-1024 decapsulate | 57.0–58.7 | 27.3–27.7 | 2.10× |
-| ML-KEM-1024 encapsulate to an imported key | 83.0–87.2 | 39.1–41.6 | 2.11× |
-| ML-DSA-44 key generation | 109–120 | 51.9–53.4 | 2.17× |
-| ML-DSA-44 sign | 339–369 | 98–113 | 3.36× |
-| ML-DSA-44 verify | 32.3–32.6 | 16.7–16.9 | 1.93× |
-| ML-DSA-44 verify with an imported key | 106–111 | 43.0–46.4 | 2.43× |
-| ML-DSA-65 key generation | 243–434 | 105 | 3.23× |
-| ML-DSA-65 sign | 579–581 | 156–168 | 3.58× |
-| ML-DSA-65 verify | 45.9–55.3 | 20.7–22.8 | 2.32× |
-| ML-DSA-65 verify with an imported key | 164–174 | 72.6–80.0 | 2.22× |
-| ML-DSA-87 key generation | 331–346 | 125–126 | 2.70× |
-| ML-DSA-87 sign | 718–812 | 160–173 | 4.60× |
-| ML-DSA-87 verify | 58.7–72.1 | 30.4–32.6 | 2.08× |
-| ML-DSA-87 verify with an imported key | 271–274 | 115–124 | 2.28× |
+| ML-KEM-512 key generation | 31.7-32.1 | 17.4-17.9 | 1.81× |
+| ML-KEM-512 encapsulate | 20.6-21.3 | 10.0-10.6 | 2.04× |
+| ML-KEM-512 decapsulate | 29.1-30.3 | 15.4-15.6 | 1.91× |
+| ML-KEM-512 encapsulate to an imported key | 34.3-35.9 | 17.9-18.2 | 1.94× |
+| ML-KEM-768 key generation | 50.5-50.6 | 28.3-29.4 | 1.75× |
+| ML-KEM-768 encapsulate | 27.4-29.4 | 13.5 | 2.10× |
+| ML-KEM-768 decapsulate | 43.1-44.5 | 19.5-20.2 | 2.21× |
+| ML-KEM-768 encapsulate to an imported key | 54.2-67.8 | 27.9-28.6 | 2.16× |
+| ML-KEM-1024 key generation | 84.8-86.6 | 41.7 | 2.05× |
+| ML-KEM-1024 encapsulate | 39.3-44.0 | 18.5-19.3 | 2.21× |
+| ML-KEM-1024 decapsulate | 57.0-58.7 | 27.3-27.7 | 2.10× |
+| ML-KEM-1024 encapsulate to an imported key | 83.0-87.2 | 39.1-41.6 | 2.11× |
+| ML-DSA-44 key generation | 109-120 | 51.9-53.4 | 2.17× |
+| ML-DSA-44 sign | 339-369 | 98-113 | 3.36× |
+| ML-DSA-44 verify | 32.3-32.6 | 16.7-16.9 | 1.93× |
+| ML-DSA-44 verify with an imported key | 106-111 | 43.0-46.4 | 2.43× |
+| ML-DSA-65 key generation | 243-434 | 105 | 3.23× |
+| ML-DSA-65 sign | 579-581 | 156-168 | 3.58× |
+| ML-DSA-65 verify | 45.9-55.3 | 20.7-22.8 | 2.32× |
+| ML-DSA-65 verify with an imported key | 164-174 | 72.6-80.0 | 2.22× |
+| ML-DSA-87 key generation | 331-346 | 125-126 | 2.70× |
+| ML-DSA-87 sign | 718-812 | 160-173 | 4.60× |
+| ML-DSA-87 verify | 58.7-72.1 | 30.4-32.6 | 2.08× |
+| ML-DSA-87 verify with an imported key | 271-274 | 115-124 | 2.28× |
 
 | Operation (net8.0, this host's default) | Before F3 (µs) | After F3 (µs) | Change |
 |---|---|---|---|
-| ML-KEM-512 key generation | 32.6–36.5 | 19.6–20.1 | 1.74× |
-| ML-KEM-512 encapsulate | 24.5–24.7 | 11.1–11.2 | 2.21× |
-| ML-KEM-512 decapsulate | 33.9–34.1 | 16.8–19.3 | 1.88× |
-| ML-KEM-512 encapsulate to an imported key | 38.9–40.6 | 19.5–21.1 | 1.96× |
-| ML-KEM-768 key generation | 54.0–57.5 | 32.2–35.0 | 1.66× |
-| ML-KEM-768 encapsulate | 31.7–32.4 | 13.2–15.6 | 2.22× |
-| ML-KEM-768 decapsulate | 46.9–48.1 | 22.0–24.4 | 2.05× |
-| ML-KEM-768 encapsulate to an imported key | 61.9–62.0 | 31.0–31.5 | 1.98× |
-| ML-KEM-1024 key generation | 90.3–91.7 | 43.4–46.4 | 2.03× |
-| ML-KEM-1024 encapsulate | 46.2–46.4 | 19.4–20.4 | 2.32× |
-| ML-KEM-1024 decapsulate | 63.5–66.1 | 28.8–30.0 | 2.20× |
-| ML-KEM-1024 encapsulate to an imported key | 90.2–90.3 | 41.2–41.3 | 2.19× |
-| ML-DSA-44 key generation | 133–139 | 57.9–58.9 | 2.32× |
-| ML-DSA-44 sign | 395–404 | 102–110 | 3.78× |
-| ML-DSA-44 verify | 39.9–45.0 | 18.4–19.6 | 2.24× |
-| ML-DSA-44 verify with an imported key | 115–132 | 46.3–47.7 | 2.62× |
-| ML-DSA-65 key generation | 243–253 | 108–110 | 2.27× |
-| ML-DSA-65 sign | 607–650 | 168–172 | 3.69× |
-| ML-DSA-65 verify | 50.8–54.3 | 24.2–25.1 | 2.13× |
-| ML-DSA-65 verify with an imported key | 174–197 | 78.9–86.6 | 2.24× |
-| ML-DSA-87 key generation | 336–360 | 134–139 | 2.55× |
-| ML-DSA-87 sign | 674–697 | 155–167 | 4.25× |
-| ML-DSA-87 verify | 72.0–78.6 | 31.7 | 2.38× |
-| ML-DSA-87 verify with an imported key | 281–297 | 131–132 | 2.20× |
+| ML-KEM-512 key generation | 32.6-36.5 | 19.6-20.1 | 1.74× |
+| ML-KEM-512 encapsulate | 24.5-24.7 | 11.1-11.2 | 2.21× |
+| ML-KEM-512 decapsulate | 33.9-34.1 | 16.8-19.3 | 1.88× |
+| ML-KEM-512 encapsulate to an imported key | 38.9-40.6 | 19.5-21.1 | 1.96× |
+| ML-KEM-768 key generation | 54.0-57.5 | 32.2-35.0 | 1.66× |
+| ML-KEM-768 encapsulate | 31.7-32.4 | 13.2-15.6 | 2.22× |
+| ML-KEM-768 decapsulate | 46.9-48.1 | 22.0-24.4 | 2.05× |
+| ML-KEM-768 encapsulate to an imported key | 61.9-62.0 | 31.0-31.5 | 1.98× |
+| ML-KEM-1024 key generation | 90.3-91.7 | 43.4-46.4 | 2.03× |
+| ML-KEM-1024 encapsulate | 46.2-46.4 | 19.4-20.4 | 2.32× |
+| ML-KEM-1024 decapsulate | 63.5-66.1 | 28.8-30.0 | 2.20× |
+| ML-KEM-1024 encapsulate to an imported key | 90.2-90.3 | 41.2-41.3 | 2.19× |
+| ML-DSA-44 key generation | 133-139 | 57.9-58.9 | 2.32× |
+| ML-DSA-44 sign | 395-404 | 102-110 | 3.78× |
+| ML-DSA-44 verify | 39.9-45.0 | 18.4-19.6 | 2.24× |
+| ML-DSA-44 verify with an imported key | 115-132 | 46.3-47.7 | 2.62× |
+| ML-DSA-65 key generation | 243-253 | 108-110 | 2.27× |
+| ML-DSA-65 sign | 607-650 | 168-172 | 3.69× |
+| ML-DSA-65 verify | 50.8-54.3 | 24.2-25.1 | 2.13× |
+| ML-DSA-65 verify with an imported key | 174-197 | 78.9-86.6 | 2.24× |
+| ML-DSA-87 key generation | 336-360 | 134-139 | 2.55× |
+| ML-DSA-87 sign | 674-697 | 155-167 | 4.25× |
+| ML-DSA-87 verify | 72.0-78.6 | 31.7 | 2.38× |
+| ML-DSA-87 verify with an imported key | 281-297 | 131-132 | 2.20× |
 
-The ML-DSA-65 key generation range before F3 on .NET 10, 243–434 µs, holds one outlying run.
+The ML-DSA-65 key generation range before F3 on .NET 10, 243-434 µs, holds one outlying run.
 Alternating A/B runs of the three target rows, five rounds of each build in separate
-processes, put it at 238–266 µs:
+processes, put it at 238-266 µs:
 
 | Operation | Configuration | Runtime | Before F3 (µs) | After F3 (µs) | Change (medians) |
 |---|---|---|---|---|---|
-| ML-DSA-65 key generation | this host's default | net10.0 | 238–266 | 95–115 | 2.49× |
-| ML-DSA-65 key generation | this host's default | net8.0 | 242–311 | 107–120 | 2.26× |
-| ML-DSA-65 key generation | no vector instructions | net10.0 | 235–270 | 227–260 | 1.08× |
-| ML-DSA-65 key generation | no vector instructions | net8.0 | 250–292 | 231–242 | 1.12× |
-| ML-DSA-65 sign | this host's default | net10.0 | 593–690 | 151–167 | 3.91× |
-| ML-DSA-65 sign | this host's default | net8.0 | 660–718 | 155–175 | 4.38× |
-| ML-DSA-65 sign | no vector instructions | net10.0 | 566–794 | 509–621 | 1.15× |
-| ML-DSA-65 sign | no vector instructions | net8.0 | 624–712 | 503–720 | 1.26× |
-| ML-KEM-768 decapsulate | this host's default | net10.0 | 41.7–48.0 | 21.9–31.4 | 1.87× |
-| ML-KEM-768 decapsulate | this host's default | net8.0 | 44.3–54.1 | 22.6–27.0 | 2.09× |
-| ML-KEM-768 decapsulate | no vector instructions | net10.0 | 43.0–52.7 | 45.4–48.5 | 0.98× |
-| ML-KEM-768 decapsulate | no vector instructions | net8.0 | 46.6–57.6 | 46.3–56.3 | 1.00× |
+| ML-DSA-65 key generation | this host's default | net10.0 | 238-266 | 95-115 | 2.49× |
+| ML-DSA-65 key generation | this host's default | net8.0 | 242-311 | 107-120 | 2.26× |
+| ML-DSA-65 key generation | no vector instructions | net10.0 | 235-270 | 227-260 | 1.08× |
+| ML-DSA-65 key generation | no vector instructions | net8.0 | 250-292 | 231-242 | 1.12× |
+| ML-DSA-65 sign | this host's default | net10.0 | 593-690 | 151-167 | 3.91× |
+| ML-DSA-65 sign | this host's default | net8.0 | 660-718 | 155-175 | 4.38× |
+| ML-DSA-65 sign | no vector instructions | net10.0 | 566-794 | 509-621 | 1.15× |
+| ML-DSA-65 sign | no vector instructions | net8.0 | 624-712 | 503-720 | 1.26× |
+| ML-KEM-768 decapsulate | this host's default | net10.0 | 41.7-48.0 | 21.9-31.4 | 1.87× |
+| ML-KEM-768 decapsulate | this host's default | net8.0 | 44.3-54.1 | 22.6-27.0 | 2.09× |
+| ML-KEM-768 decapsulate | no vector instructions | net10.0 | 43.0-52.7 | 45.4-48.5 | 0.98× |
+| ML-KEM-768 decapsulate | no vector instructions | net8.0 | 46.6-57.6 | 46.3-56.3 | 1.00× |
 
 The plan's targets are met with a wide margin. They were set on the first machine: 0.45 ms,
-200 µs and 45 µs against 1.1.0's 0.79–0.85 ms, 302–328 µs and 60–80 µs. On that machine, during
-development, the F3 build signed with ML-DSA-65 in 258–281 µs, generated an ML-DSA-65 key in
-172–186 µs and decapsulated with ML-KEM-768 in 38–41 µs. Scaled to the before figures here,
-the targets come to about 350 µs, 160 µs and 29 µs, against 151–175 µs, 95–120 µs and 19.5–24.4 µs.
+200 µs and 45 µs against 1.1.0's 0.79-0.85 ms, 302-328 µs and 60-80 µs. On that machine, during
+development, the F3 build signed with ML-DSA-65 in 258-281 µs, generated an ML-DSA-65 key in
+172-186 µs and decapsulated with ML-KEM-768 in 38-41 µs. Scaled to the before figures here,
+the targets come to about 350 µs, 160 µs and 29 µs, against 151-175 µs, 95-120 µs and 19.5-24.4 µs.
 
 The three targets in each configuration:
 
 | net10.0 | ML-DSA-65 sign | ML-DSA-65 key generation | ML-KEM-768 decapsulate |
 |---|---|---|---|
-| this host's default | 579–581 → 156–168 (3.58×) | 243–434 → 105 (3.23×) | 43.1–44.5 → 19.5–20.2 (2.21×) |
-| `DOTNET_PreferredVectorBitWidth=512` | 593–602 → 150–163 (3.82×) | 247–250 → 100 (2.48×) | 41.7–42.4 → 19.2–20.7 (2.11×) |
-| AVX-512 off | 577–596 → 183–208 (3.00×) | 235–256 → 132–144 (1.78×) | 41.3–42.8 → 21.5–22.6 (1.91×) |
-| AVX2 off | 626–637 → 479–546 (1.23×) | 228–238 → 221–227 (1.04×) | 43.7–50.7 → 43.5–44.5 (1.07×) |
-| no vector instructions | 621–707 → 536–545 (1.23×) | 238–268 → 231 (1.09×) | 45.8–46.0 → 44.2–48.7 (0.99×) |
+| this host's default | 579-581 → 156-168 (3.58×) | 243-434 → 105 (3.23×) | 43.1-44.5 → 19.5-20.2 (2.21×) |
+| `DOTNET_PreferredVectorBitWidth=512` | 593-602 → 150-163 (3.82×) | 247-250 → 100 (2.48×) | 41.7-42.4 → 19.2-20.7 (2.11×) |
+| AVX-512 off | 577-596 → 183-208 (3.00×) | 235-256 → 132-144 (1.78×) | 41.3-42.8 → 21.5-22.6 (1.91×) |
+| AVX2 off | 626-637 → 479-546 (1.23×) | 228-238 → 221-227 (1.04×) | 43.7-50.7 → 43.5-44.5 (1.07×) |
+| no vector instructions | 621-707 → 536-545 (1.23×) | 238-268 → 231 (1.09×) | 45.8-46.0 → 44.2-48.7 (0.99×) |
 
 | net8.0 | ML-DSA-65 sign | ML-DSA-65 key generation | ML-KEM-768 decapsulate |
 |---|---|---|---|
-| this host's default | 607–650 → 168–172 (3.69×) | 243–253 → 108–110 (2.27×) | 46.9–48.1 → 22.0–24.4 (2.05×) |
-| `DOTNET_PreferredVectorBitWidth=512` | 626–665 → 162–163 (3.97×) | 246 → 107–135 (2.03×) | 45.2–54.3 → 21.9–22.2 (2.26×) |
-| AVX-512 off | 634–717 → 204–207 (3.28×) | 239–251 → 138–163 (1.62×) | 46.0–49.6 → 23.8–26.4 (1.90×) |
-| AVX2 off | 679–739 → 526–599 (1.26×) | 246–256 → 216–249 (1.08×) | 47.2–55.7 → 47.6–48.4 (1.07×) |
-| no vector instructions | 670–742 → 517–637 (1.22×) | 244–256 → 221–231 (1.11×) | 46.5–50.9 → 49.0–50.6 (0.98×) |
+| this host's default | 607-650 → 168-172 (3.69×) | 243-253 → 108-110 (2.27×) | 46.9-48.1 → 22.0-24.4 (2.05×) |
+| `DOTNET_PreferredVectorBitWidth=512` | 626-665 → 162-163 (3.97×) | 246 → 107-135 (2.03×) | 45.2-54.3 → 21.9-22.2 (2.26×) |
+| AVX-512 off | 634-717 → 204-207 (3.28×) | 239-251 → 138-163 (1.62×) | 46.0-49.6 → 23.8-26.4 (1.90×) |
+| AVX2 off | 679-739 → 526-599 (1.26×) | 246-256 → 216-249 (1.08×) | 47.2-55.7 → 47.6-48.4 (1.07×) |
+| no vector instructions | 670-742 → 517-637 (1.22×) | 244-256 → 221-231 (1.11×) | 46.5-50.9 → 49.0-50.6 (0.98×) |
 
 Every row's change, in every configuration:
 
@@ -900,12 +900,12 @@ Every row's change, in every configuration:
 | ML-DSA-87 verify | 2.38× | 1.98× | 2.43× | 1.08× | 1.14× |
 | ML-DSA-87 verify with an imported key | 2.20× | 2.64× | 1.76× | 1.05× | 1.01× |
 
-Without AVX2, dispatch selects the scalar code. ML-DSA signing still runs 1.15–1.34× faster
-there, and key generation 0.94–1.14×, from the scalar twins of the polynomial passes described
+Without AVX2, dispatch selects the scalar code. ML-DSA signing still runs 1.15-1.34× faster
+there, and key generation 0.94-1.14×, from the scalar twins of the polynomial passes described
 below. The ML-KEM rows scatter from 0.88× to 1.23× between the two runs. Alternating runs, three
 rounds of each build, of ML-KEM-768 key generation and its parts through the engine measured the
-whole operation at 0.99–1.03× on both runtimes, and the A/B runs above put decapsulation at
-0.98–1.00×. Of the parts, only the scalar base-case product measured slower, on .NET 10 with AVX2
+whole operation at 0.99-1.03× on both runtimes, and the A/B runs above put decapsulation at
+0.98-1.00×. Of the parts, only the scalar base-case product measured slower, on .NET 10 with AVX2
 disabled: 379 ns against 284, about 2% of a key generation.
 
 How it was done, and where it departs from the design above:
@@ -921,14 +921,14 @@ How it was done, and where it departs from the design above:
     twiddle tables. The inverse runs the same passes in the opposite order.
   - Every layer adds, subtracts and reduces in the scalar code's order, so the output equals
     the scalar code's exactly, not only modulo q.
-  - In the spike, on the second machine, a forward transform took 346–374 ns against
-    1,226–1,461 scalar, an inverse 325–328 against 1,331–1,384, and a pointwise product
-    53–74 ns against 231–249.
+  - In the spike, on the second machine, a forward transform took 346-374 ns against
+    1,226-1,461 scalar, an inverse 325-328 against 1,331-1,384, and a pointwise product
+    53-74 ns against 231-249.
 - **ML-KEM's kernel: sixteen 16-bit lanes over a copy.** The design left open whether to keep
   eight `int` lanes, and the layout, or take the reference's sixteen 16-bit lanes, which it
   expected to need 16-bit storage throughout. The spike measured the forward transform at
-  376–402 ns with eight `int` lanes and 149–162 ns with sixteen 16-bit ones, against
-  1,285–1,323 ns scalar. Every value the scalar code forms fits in 16 bits: its transforms
+  376-402 ns with eight `int` lanes and 149-162 ns with sixteen 16-bit ones, against
+  1,285-1,323 ns scalar. Every value the scalar code forms fits in 16 bits: its transforms
   keep each coefficient below 8q = 26,632 in magnitude. So `MLKemEngine.Vector256Kernel` packs
   the `int` coefficients into a 16-bit copy on the stack as it loads them (`vpackssdw`, then
   `vpermq` to restore the order), and sign-extends them as it stores them (`vpmovsxwd`).
@@ -937,7 +937,7 @@ How it was done, and where it departs from the design above:
   from `vpmulhw` by 20,159, rounded and shifted exactly as `BarrettReduce` does. Four layers run
   over the whole copy and the last three on each block of 32, after the in-register
   rearrangement; the base-case products take sixteen pairs per vector. The inverse transform
-  took 152–161 ns against 1,675–1,777, and a product 91–93 ns against 346–410.
+  took 152-161 ns against 1,675-1,777, and a product 91-93 ns against 346-410.
 - **The four-way Keccak.** `KeccakPermutation.Permute4` advances four independent states, one
   per 64-bit lane of 25 `Vector256<ulong>`s, through `Vector256Kernel<TIsa>` over
   `VectorRotation.Avx512` or `.Avx2`, or as four scalar permutations.
@@ -948,16 +948,16 @@ How it was done, and where it departs from the design above:
   - `KeccakSponge4` runs four SHAKE128 or SHAKE256 sponges over it. Each absorbs one message
     shorter than the rate, which every lattice stream's seed and index is, and squeezes whole
     blocks.
-  - In the library the kernel permutes four states in 0.26–0.27 µs with AVX-512VL on both
+  - In the library the kernel permutes four states in 0.26-0.27 µs with AVX-512VL on both
     runtimes, and, with AVX-512 disabled, in 0.62 µs over AVX2 on .NET 10 and 0.77 on .NET 8,
-    against 0.38–0.40 µs for one scalar permutation.
+    against 0.38-0.40 µs for one scalar permutation.
 - **No eight-way Keccak, and no AVX-512 kernels.** The spike's eight-way permutation over
-  `Vector512<ulong>` took 374–395 ns for eight states on the second machine, 47–49 ns each
+  `Vector512<ulong>` took 374-395 ns for eight states on the second machine, 47-49 ns each
   against the four-way kernel's 64. But it needs eight streams at once, which only matrix
   expansion supplies: ExpandMask draws four, five or seven per signing attempt, and ML-KEM's
   noise four to nine per operation. And on the first machine, which does not prefer 512-bit
   vectors, it gained only 20% per state. The ML-DSA pointwise product over 512-bit vectors
-  took 42–56 ns against AVX2's 53–74, on a product that is a small share of signing, and the
+  took 42-56 ns against AVX2's 53-74, on a product that is a small share of signing, and the
   transforms would need a fourth in-register layer. Every kernel is 256-bit.
 - **Where the four-way sponge serves.**
   - ML-DSA: `SampleMatrix` (ExpandA) when a key is set, `SampleSecretVector` (ExpandS) at key
@@ -970,7 +970,7 @@ How it was done, and where it departs from the design above:
   - The four-way sponge runs only where `KeccakPermutation.IsFourWayAccelerated`, that is,
     with AVX2: four scalar permutations cost what one stream at a time does.
 - **The per-coefficient signing passes are a finding, not the design.** With the transforms,
-  products and expansions vectorized, ML-DSA-65 signing still took 511–581 µs on the first
+  products and expansions vectorized, ML-DSA-65 signing still took 511-581 µs on the first
   machine, above the target. `Sign` compiles differently from the methods it calls: its
   `stackalloc` buffers rule out on-stack replacement, so the JIT compiles it once, fully
   optimized but without the profile dynamic PGO collects (its disassembly reads
@@ -981,8 +981,8 @@ How it was done, and where it departs from the design above:
   polynomials, with an AVX2 kernel and a scalar twin: `HighBits`, `LowBitsNorm`, `MakeHints`,
   `InfinityNorm`, `AddModQ` and `SubtractModQ` for signing, and `ToMontgomery` and `Reduce32`
   for setting a key. They compile, and tier up, on their own, whatever `Sign` does. Signing
-  then took 258–281 µs on the first machine. On the second, one attempt takes about 25 µs on
-  both runtimes, of which ExpandMask is 5.7–6.7 µs and w1Encode with its SHAKE256 4.2.
+  then took 258-281 µs on the first machine. On the second, one attempt takes about 25 µs on
+  both runtimes, of which ExpandMask is 5.7-6.7 µs and w1Encode with its SHAKE256 4.2.
 - **Generated code, on both runtimes.**
   - **.NET 10 kept the AVX-512 Keccak kernel's state on the stack**, with 52 stack references
     in its round loop against .NET 8's 2. Two things caused it:
@@ -990,7 +990,7 @@ How it was done, and where it departs from the design above:
       Inlined, each left a join temporary that the register allocator would not keep in a
       register while 25 state vectors were live. In a scratch copy of the kernel on the
       second machine, .NET 10 ran that form in 449 ns and the same helpers written with
-      `if` / `return` in 268; .NET 8 ran both in 210–264.
+      `if` / `return` in 268; .NET 8 ran both in 210-264.
     - The kernel loaded the state and then, before its round loop, checked that
       `KeccakPermutation`'s static fields were initialized, calling the runtime's
       static-base helper if not: it read the round constants from a `static readonly` array.
@@ -1076,12 +1076,12 @@ How it was done, and where it departs from the design above:
   AdvSimd waits for F7, as F1's AdvSimd kernel does: nothing here can measure it on ARM64.
 - **Left for later.**
   - Key generation now spends most of its time outside the transforms. Of ML-DSA-65's
-    76–93 µs in the profiler on the second machine, the matrix's rejection sampling takes
-    about 25, encoding the keys and hashing the public key 18–21, and keeping the key's
-    values 8–10. Vectorized rejection parsing and bit packing are the next steps.
+    76-93 µs in the profiler on the second machine, the matrix's rejection sampling takes
+    about 25, encoding the keys and hashing the public key 18-21, and keeping the key's
+    values 8-10. Vectorized rejection parsing and bit packing are the next steps.
   - The eight-way Keccak would serve matrix expansion where 512-bit vectors are preferred,
-    as they are on the second machine, at 47–49 ns per state against 64.
-  - Verification gained 1.9–2.6×, less than signing: its `UseHint` pass is still per
+    as they are on the second machine, at 47-49 ns per state against 64.
+  - Verification gained 1.9-2.6×, less than signing: its `UseHint` pass is still per
     coefficient.
   - ML-KEM's 16-bit copy is zeroed when the JIT allocates it, as every stack buffer is, and
     cleared again after use; the kernel writes every element before reading any, so
@@ -1092,7 +1092,7 @@ How it was done, and where it departs from the design above:
   - ML-KEM's scalar base-case product runs 0.75× on .NET 10 with AVX2 disabled, now that it
     shares a method with the dispatch to its kernel.
 
-### F4 — Ed25519's fixed-base table and verification (done)
+### F4 - Ed25519's fixed-base table and verification (done)
 
 F4's figures come from the second machine, F3's. The before build is this branch at 95dc3aef, which
 adds F4's harness rows to master at 6b341cd3 (#728) and the rotation change F3's section describes;
@@ -1103,70 +1103,70 @@ managed bytes per operation.
 
 | Operation (net10.0, this host's default) | Before F4 (µs) | After F4 (µs) | Change | Allocated before → after (B/op) |
 |---|---|---|---|---|
-| X25519 shared secret | 67.8–70.9 | 67.2–68.3 | 1.02× | 56 → 56 |
-| X25519 key generation | 36.8–37.1 | 24.4–26.6 | 1.45× | 144 → 144 |
-| Ed25519 sign | 36.3 | 29.8–31.0 | 1.19× | 224 → 88 |
-| Ed25519 verify | 98.8–98.9 | 79.3–79.6 | 1.24× | 136 → 0 |
-| Ed25519 sign into a span | 35.1–35.6 | 28.6–29.3 | 1.22× | 136 → 0 |
-| Ed25519 sign 1 KiB into a span | 40.7–41.8 | 31.6–33.4 | 1.27× | 136 → 0 |
-| Ed25519 verify 1 KiB | 108 | 77.2–78.9 | 1.38× | 136 → 0 |
-| Ed25519 sign 16 KiB into a span | 87.5–89.2 | 80.0–83.7 | 1.08× | 136 → 136 |
-| Ed25519 verify 16 KiB | 122–125 | 106–116 | 1.11× | 136 → 136 |
+| X25519 shared secret | 67.8-70.9 | 67.2-68.3 | 1.02× | 56 → 56 |
+| X25519 key generation | 36.8-37.1 | 24.4-26.6 | 1.45× | 144 → 144 |
+| Ed25519 sign | 36.3 | 29.8-31.0 | 1.19× | 224 → 88 |
+| Ed25519 verify | 98.8-98.9 | 79.3-79.6 | 1.24× | 136 → 0 |
+| Ed25519 sign into a span | 35.1-35.6 | 28.6-29.3 | 1.22× | 136 → 0 |
+| Ed25519 sign 1 KiB into a span | 40.7-41.8 | 31.6-33.4 | 1.27× | 136 → 0 |
+| Ed25519 verify 1 KiB | 108 | 77.2-78.9 | 1.38× | 136 → 0 |
+| Ed25519 sign 16 KiB into a span | 87.5-89.2 | 80.0-83.7 | 1.08× | 136 → 136 |
+| Ed25519 verify 16 KiB | 122-125 | 106-116 | 1.11× | 136 → 136 |
 
 | Operation (net8.0, this host's default) | Before F4 (µs) | After F4 (µs) | Change | Allocated before → after (B/op) |
 |---|---|---|---|---|
-| X25519 shared secret | 68.2–71.0 | 64.9–71.5 | 1.02× | 56 → 56 |
-| X25519 key generation | 33.1–36.1 | 26.6–28.6 | 1.25× | 144 → 144 |
-| Ed25519 sign | 38.0–40.6 | 30.5–31.7 | 1.26× | 224 → 88 |
-| Ed25519 verify | 97.9–98.1 | 76.9–82.5 | 1.23× | 136 → 0 |
-| Ed25519 sign into a span | 37.1–40.3 | 30.4–31.4 | 1.25× | 136 → 0 |
-| Ed25519 sign 1 KiB into a span | 43.0–48.8 | 32.9–34.7 | 1.36× | 136 → 0 |
-| Ed25519 verify 1 KiB | 99–110 | 79.8–87.0 | 1.25× | 136 → 0 |
-| Ed25519 sign 16 KiB into a span | 88.3–90.9 | 82.7–86.1 | 1.06× | 136 → 136 |
-| Ed25519 verify 16 KiB | 122–132 | 104–107 | 1.21× | 136 → 136 |
+| X25519 shared secret | 68.2-71.0 | 64.9-71.5 | 1.02× | 56 → 56 |
+| X25519 key generation | 33.1-36.1 | 26.6-28.6 | 1.25× | 144 → 144 |
+| Ed25519 sign | 38.0-40.6 | 30.5-31.7 | 1.26× | 224 → 88 |
+| Ed25519 verify | 97.9-98.1 | 76.9-82.5 | 1.23× | 136 → 0 |
+| Ed25519 sign into a span | 37.1-40.3 | 30.4-31.4 | 1.25× | 136 → 0 |
+| Ed25519 sign 1 KiB into a span | 43.0-48.8 | 32.9-34.7 | 1.36× | 136 → 0 |
+| Ed25519 verify 1 KiB | 99-110 | 79.8-87.0 | 1.25× | 136 → 0 |
+| Ed25519 sign 16 KiB into a span | 88.3-90.9 | 82.7-86.1 | 1.06× | 136 → 136 |
+| Ed25519 verify 16 KiB | 122-132 | 104-107 | 1.21× | 136 → 136 |
 
-This machine's runs vary by 10–15% between processes, so alternating A/B runs of the three target
+This machine's runs vary by 10-15% between processes, so alternating A/B runs of the three target
 rows, five rounds of each build in separate processes, give a steadier reading:
 
 | Operation | Configuration | Runtime | Before F4 (µs) | After F4 (µs) | Change (medians) |
 |---|---|---|---|---|---|
-| X25519 key generation | this host's default | net10.0 | 34.4–37.7 | 25.0–28.2 | 1.33× |
-| X25519 key generation | this host's default | net8.0 | 34.5–38.7 | 25.5–27.5 | 1.37× |
-| X25519 key generation | no vector instructions | net10.0 | 56.4–62.0 | 46.4–51.6 | 1.21× |
-| X25519 key generation | no vector instructions | net8.0 | 60.7–66.7 | 45.8–56.6 | 1.33× |
-| Ed25519 sign | this host's default | net10.0 | 34.8–38.3 | 28.4–29.8 | 1.24× |
-| Ed25519 sign | this host's default | net8.0 | 36.8–44.3 | 28.7–33.1 | 1.20× |
-| Ed25519 sign | no vector instructions | net10.0 | 61.0–66.0 | 48.7–56.4 | 1.26× |
-| Ed25519 sign | no vector instructions | net8.0 | 60.9–69.2 | 50.8–54.0 | 1.23× |
-| Ed25519 verify | this host's default | net10.0 | 97–119 | 75.2–82.2 | 1.36× |
-| Ed25519 verify | this host's default | net8.0 | 94–121 | 79.3–82.8 | 1.28× |
-| Ed25519 verify | no vector instructions | net10.0 | 192–208 | 138–150 | 1.41× |
-| Ed25519 verify | no vector instructions | net8.0 | 190–234 | 143–173 | 1.41× |
+| X25519 key generation | this host's default | net10.0 | 34.4-37.7 | 25.0-28.2 | 1.33× |
+| X25519 key generation | this host's default | net8.0 | 34.5-38.7 | 25.5-27.5 | 1.37× |
+| X25519 key generation | no vector instructions | net10.0 | 56.4-62.0 | 46.4-51.6 | 1.21× |
+| X25519 key generation | no vector instructions | net8.0 | 60.7-66.7 | 45.8-56.6 | 1.33× |
+| Ed25519 sign | this host's default | net10.0 | 34.8-38.3 | 28.4-29.8 | 1.24× |
+| Ed25519 sign | this host's default | net8.0 | 36.8-44.3 | 28.7-33.1 | 1.20× |
+| Ed25519 sign | no vector instructions | net10.0 | 61.0-66.0 | 48.7-56.4 | 1.26× |
+| Ed25519 sign | no vector instructions | net8.0 | 60.9-69.2 | 50.8-54.0 | 1.23× |
+| Ed25519 verify | this host's default | net10.0 | 97-119 | 75.2-82.2 | 1.36× |
+| Ed25519 verify | this host's default | net8.0 | 94-121 | 79.3-82.8 | 1.28× |
+| Ed25519 verify | no vector instructions | net10.0 | 192-208 | 138-150 | 1.41× |
+| Ed25519 verify | no vector instructions | net8.0 | 190-234 | 143-173 | 1.41× |
 
 The best of fifteen timed rounds, in two processes per build run alternately, shows where each
 operation's time goes. The parts F4 does not touch cost the same before and after:
 
 | Part (µs, best of 15 rounds) | net10.0 before | net10.0 after | net8.0 before | net8.0 after |
 |---|---|---|---|---|
-| sign into a span, whole | 33.0 | 25.8 (1.28×) | 34.4–36.8 | 27.2–27.3 (1.31×) |
-| verify, whole | 88.8–89.3 | 69.0–69.6 (1.29×) | 88.8 | 69.5–70.8 (1.27×) |
-| fixed-base multiplication | 23.2 | 16.8 (1.38×) | 24.2 | 17.1–17.2 (1.41×) |
-| double-scalar multiplication | 80.5–81.1 | 62.4–62.6 (1.29×) | 79.3–81.2 | 63.2–64.0 (1.26×) |
-| encoding a point (one inversion) | 4.8 | 4.7–4.8 | 4.8 | 4.8–4.9 |
-| decoding R (a square root) | 5.1 | 5.1–5.3 | 5.2–5.4 | 5.1–5.2 |
-| R's small-order check | 0.6–0.7 | 0.6 | 0.6 | 0.6 |
-| SHA-512 of the seed / of 128 bytes | 0.8 / 0.9–1.0 | 0.8 / 1.0 | 1.0–1.1 / 1.2–1.3 | 1.0–1.7 / 1.2 |
-| reducing a digest / the multiply-add mod L | 0.3 / 0.5–0.6 | 0.3 / 0.5 | 0.3 / 0.6 | 0.3 / 0.6 |
+| sign into a span, whole | 33.0 | 25.8 (1.28×) | 34.4-36.8 | 27.2-27.3 (1.31×) |
+| verify, whole | 88.8-89.3 | 69.0-69.6 (1.29×) | 88.8 | 69.5-70.8 (1.27×) |
+| fixed-base multiplication | 23.2 | 16.8 (1.38×) | 24.2 | 17.1-17.2 (1.41×) |
+| double-scalar multiplication | 80.5-81.1 | 62.4-62.6 (1.29×) | 79.3-81.2 | 63.2-64.0 (1.26×) |
+| encoding a point (one inversion) | 4.8 | 4.7-4.8 | 4.8 | 4.8-4.9 |
+| decoding R (a square root) | 5.1 | 5.1-5.3 | 5.2-5.4 | 5.1-5.2 |
+| R's small-order check | 0.6-0.7 | 0.6 | 0.6 | 0.6 |
+| SHA-512 of the seed / of 128 bytes | 0.8 / 0.9-1.0 | 0.8 / 1.0 | 1.0-1.1 / 1.2-1.3 | 1.0-1.7 / 1.2 |
+| reducing a digest / the multiply-add mod L | 0.3 / 0.5-0.6 | 0.3 / 0.5 | 0.3 / 0.6 | 0.3 / 0.6 |
 
 The plan's targets are met on the machine they were set on. They were 42 µs for signing, 38 µs for
-X25519 key generation and 110 µs for verification, against 1.1.0's 51–56, 49–51 and 136–150 µs:
+X25519 key generation and 110 µs for verification, against 1.1.0's 51-56, 49-51 and 136-150 µs:
 gains of about 1.27×, 1.32× and 1.30×. On that machine, before the work moved, one harness run of
 each build signed in 48.5 → 38.0 µs on .NET 10 and 50.9 → 39.2 µs on .NET 8, generated an X25519
 key in 48.4 → 35.2 and 45.6 → 34.3 µs, and verified in 131 → 99 and 132 → 102 µs. On the second
-machine, key generation meets the target's ratio by every measure (1.25–1.45×), and verification
-by the A/B medians and the best rounds on .NET 10 (1.29–1.36×) and within 2–3% of it on .NET 8
-(1.23–1.28×). Signing reaches it by the best rounds (1.28–1.31×) but not by the harness's medians
-(1.19–1.26×). The multiplications F4 changed gained 1.38–1.41× (fixed base) and 1.26–1.29×
+machine, key generation meets the target's ratio by every measure (1.25-1.45×), and verification
+by the A/B medians and the best rounds on .NET 10 (1.29-1.36×) and within 2-3% of it on .NET 8
+(1.23-1.28×). Signing reaches it by the best rounds (1.28-1.31×) but not by the harness's medians
+(1.19-1.26×). The multiplications F4 changed gained 1.38-1.41× (fixed base) and 1.26-1.29×
 (double-scalar), which matches their operation counts; about 7.5 µs of signing and 7 µs of
 verification on this machine lie outside them and are unchanged.
 
@@ -1174,19 +1174,19 @@ The three targets in each configuration:
 
 | net10.0 | Ed25519 sign | X25519 key generation | Ed25519 verify |
 |---|---|---|---|
-| this host's default | 36.3 → 29.8–31.0 (1.19×) | 36.8–37.1 → 24.4–26.6 (1.45×) | 98.8–98.9 → 79.3–79.6 (1.24×) |
-| `DOTNET_PreferredVectorBitWidth=512` | 35.8–37.3 → 30.3–31.8 (1.18×) | 35.3–37.5 → 27.3–27.4 (1.33×) | 95.6–99.7 → 79.7–83.9 (1.19×) |
-| AVX-512 off | 35.4–41.9 → 33.1–34.3 (1.15×) | 38.4–41.9 → 27.4–31.6 (1.36×) | 104–106 → 76.4–82.5 (1.32×) |
-| AVX2 off | 62.4–63.8 → 48.1–51.1 (1.27×) | 61.3–62.9 → 45.3–55.0 (1.24×) | 201–234 → 135–150 (1.53×) |
-| no vector instructions | 62.3–63.0 → 50.9–54.7 (1.19×) | 59.5–61.7 → 45.8–50.0 (1.26×) | 202–209 → 146–150 (1.39×) |
+| this host's default | 36.3 → 29.8-31.0 (1.19×) | 36.8-37.1 → 24.4-26.6 (1.45×) | 98.8-98.9 → 79.3-79.6 (1.24×) |
+| `DOTNET_PreferredVectorBitWidth=512` | 35.8-37.3 → 30.3-31.8 (1.18×) | 35.3-37.5 → 27.3-27.4 (1.33×) | 95.6-99.7 → 79.7-83.9 (1.19×) |
+| AVX-512 off | 35.4-41.9 → 33.1-34.3 (1.15×) | 38.4-41.9 → 27.4-31.6 (1.36×) | 104-106 → 76.4-82.5 (1.32×) |
+| AVX2 off | 62.4-63.8 → 48.1-51.1 (1.27×) | 61.3-62.9 → 45.3-55.0 (1.24×) | 201-234 → 135-150 (1.53×) |
+| no vector instructions | 62.3-63.0 → 50.9-54.7 (1.19×) | 59.5-61.7 → 45.8-50.0 (1.26×) | 202-209 → 146-150 (1.39×) |
 
 | net8.0 | Ed25519 sign | X25519 key generation | Ed25519 verify |
 |---|---|---|---|
-| this host's default | 38.0–40.6 → 30.5–31.7 (1.26×) | 33.1–36.1 → 26.6–28.6 (1.25×) | 97.9–98.1 → 76.9–82.5 (1.23×) |
-| `DOTNET_PreferredVectorBitWidth=512` | 35.6–36.9 → 31.9–32.7 (1.12×) | 32.7–34.9 → 26.1–26.9 (1.27×) | 95.8–98.5 → 79.2–83.1 (1.20×) |
-| AVX-512 off | 38.2–39.5 → 29.4–31.5 (1.28×) | 33.4–33.8 → 27.0–28.2 (1.22×) | 97–108 → 77.2–88.8 (1.23×) |
-| AVX2 off | 40.7–41.0 → 32.0–32.3 (1.27×) | 34.0–34.5 → 26.0–28.1 (1.27×) | 100–111 → 72.7–89.9 (1.30×) |
-| no vector instructions | 65.0–66.3 → 53.3–56.6 (1.19×) | 56.7–64.8 → 51.5–64.2 (1.05×) | 191–204 → 154–155 (1.28×) |
+| this host's default | 38.0-40.6 → 30.5-31.7 (1.26×) | 33.1-36.1 → 26.6-28.6 (1.25×) | 97.9-98.1 → 76.9-82.5 (1.23×) |
+| `DOTNET_PreferredVectorBitWidth=512` | 35.6-36.9 → 31.9-32.7 (1.12×) | 32.7-34.9 → 26.1-26.9 (1.27×) | 95.8-98.5 → 79.2-83.1 (1.20×) |
+| AVX-512 off | 38.2-39.5 → 29.4-31.5 (1.28×) | 33.4-33.8 → 27.0-28.2 (1.22×) | 97-108 → 77.2-88.8 (1.23×) |
+| AVX2 off | 40.7-41.0 → 32.0-32.3 (1.27×) | 34.0-34.5 → 26.0-28.1 (1.27×) | 100-111 → 72.7-89.9 (1.30×) |
+| no vector instructions | 65.0-66.3 → 53.3-56.6 (1.19×) | 56.7-64.8 → 51.5-64.2 (1.05×) | 191-204 → 154-155 (1.28×) |
 
 Every row's change, in every configuration:
 
@@ -1245,7 +1245,7 @@ How it was done, and where it departs from the design above:
   (`ComputeNonAdjacentForm`). A negative digit subtracts its multiple. The doublings stay in
   projective coordinates, and T is formed only when an addition follows. For scalars of 253 bits
   that is about 253 doublings of seven multiplications, 43 additions of eight and 32 of seven, where
-  1.1.0 took 256 doublings of eight and about 120 additions of nine: the 1.26–1.29× measured.
+  1.1.0 took 256 doublings of eight and about 120 additions of nine: the 1.26-1.29× measured.
   - The recoding places a digit past bit 255 when a scalar at or above 2^255 carries out of its top
     window, so this routine too serves every 256-bit scalar; verification's are below the group
     order.
@@ -1299,15 +1299,15 @@ How it was done, and where it departs from the design above:
 - **Left for later.**
   - The inversion that encodes R when signing (4.8 µs) and the square root that decodes it when
     verifying (5.1 µs) are now the largest costs outside the multiplications. A constant-time
-    inversion by divsteps (Bernstein–Yang) is the known faster alternative to the exponentiation.
-  - Signing recomputes the expanded key, SHA-512 of the seed, on every call (0.8–1.1 µs). The key
+    inversion by divsteps (Bernstein-Yang) is the known faster alternative to the exponentiation.
+  - Signing recomputes the expanded key, SHA-512 of the seed, on every call (0.8-1.1 µs). The key
     material could keep it, as it keeps the decoded public point, at the price of holding more
     secret material.
   - Verification forms the 8 odd multiples of −A on every call, about 70 field multiplications,
     which the key material could keep as well.
   - X25519's shared secret, the Montgomery ladder, is unchanged.
 
-### F5 — Serpent's wide-block variants (done)
+### F5 - Serpent's wide-block variants (done)
 
 F5's figures come from the second machine, F3's. The before build is this branch at 6ef77d8f, which adds the harness's
 block rows to master at 57c0ab26 (#729); the after build is at 9182607e, with F5's code. Both ran alternately, in each
@@ -1318,46 +1318,46 @@ midpoints, above 1 where F5 is faster. Nothing is allocated before or after.
 
 | One block per call (net10.0, this host's default) | Before F5 (MiB/s) | After F5 (MiB/s) | Change |
 |---|---|---|---|
-| Serpent-128 encrypt | 81.0–85.7 | 87.1–88.6 | 1.05× |
-| Serpent-128 decrypt | 82.9–86.6 | 82.7–88.4 | 1.01× |
-| Serpent-256 encrypt | 22.9–26.1 | 78.7–81.2 | 3.26× |
-| Serpent-256 decrypt | 21.6–22.9 | 79.4–81.5 | 3.62× |
-| Serpent-512 encrypt | 19.2–22.0 | 51.2–51.8 | 2.50× |
-| Serpent-512 decrypt | 19.4 | 47.9–50.6 | 2.54× |
-| Serpent-1024 encrypt | 16.9–17.7 | 40.1–41.9 | 2.37× |
-| Serpent-1024 decrypt | 15.7–16.3 | 40.7–41.7 | 2.58× |
+| Serpent-128 encrypt | 81.0-85.7 | 87.1-88.6 | 1.05× |
+| Serpent-128 decrypt | 82.9-86.6 | 82.7-88.4 | 1.01× |
+| Serpent-256 encrypt | 22.9-26.1 | 78.7-81.2 | 3.26× |
+| Serpent-256 decrypt | 21.6-22.9 | 79.4-81.5 | 3.62× |
+| Serpent-512 encrypt | 19.2-22.0 | 51.2-51.8 | 2.50× |
+| Serpent-512 decrypt | 19.4 | 47.9-50.6 | 2.54× |
+| Serpent-1024 encrypt | 16.9-17.7 | 40.1-41.9 | 2.37× |
+| Serpent-1024 decrypt | 15.7-16.3 | 40.7-41.7 | 2.58× |
 
 | One block per call (net8.0, this host's default) | Before F5 (MiB/s) | After F5 (MiB/s) | Change |
 |---|---|---|---|
-| Serpent-128 encrypt | 83.0–86.4 | 83.8–84.2 | 0.99× |
-| Serpent-128 decrypt | 88.3–88.4 | 78.7–88.1 | 0.94× |
-| Serpent-256 encrypt | 23.5–24.6 | 70.0–77.9 | 3.07× |
-| Serpent-256 decrypt | 20.0–20.6 | 76.3–82.4 | 3.91× |
-| Serpent-512 encrypt | 19.0–21.3 | 50.2–55.0 | 2.61× |
-| Serpent-512 decrypt | 16.4–17.9 | 49.0–50.2 | 2.89× |
-| Serpent-1024 encrypt | 15.5–17.6 | 39.1–43.5 | 2.50× |
-| Serpent-1024 decrypt | 13.9–14.3 | 41.3–43.0 | 2.99× |
+| Serpent-128 encrypt | 83.0-86.4 | 83.8-84.2 | 0.99× |
+| Serpent-128 decrypt | 88.3-88.4 | 78.7-88.1 | 0.94× |
+| Serpent-256 encrypt | 23.5-24.6 | 70.0-77.9 | 3.07× |
+| Serpent-256 decrypt | 20.0-20.6 | 76.3-82.4 | 3.91× |
+| Serpent-512 encrypt | 19.0-21.3 | 50.2-55.0 | 2.61× |
+| Serpent-512 decrypt | 16.4-17.9 | 49.0-50.2 | 2.89× |
+| Serpent-1024 encrypt | 15.5-17.6 | 39.1-43.5 | 2.50× |
+| Serpent-1024 decrypt | 13.9-14.3 | 41.3-43.0 | 2.99× |
 
 Five alternating A/B rounds of the wide-block rows, each build in its own process, give the same picture:
 
 | One block per call | Runtime | Before F5 (MiB/s) | After F5 (MiB/s) | Change (medians) |
 |---|---|---|---|---|
-| Serpent-256 encrypt | net10.0 | 24.5–25.8 | 71.7–79.5 | 3.06× |
-| Serpent-256 encrypt | net8.0 | 20.4–24.9 | 77.5–81.3 | 3.32× |
-| Serpent-256 decrypt | net10.0 | 23.0–24.5 | 76.1–86.9 | 3.31× |
-| Serpent-256 decrypt | net8.0 | 19.5–24.1 | 76.2–83.4 | 3.68× |
-| Serpent-512 encrypt | net10.0 | 18.7–21.7 | 44.2–51.9 | 2.52× |
-| Serpent-512 encrypt | net8.0 | 14.2–19.8 | 44.8–54.9 | 2.61× |
-| Serpent-512 decrypt | net10.0 | 16.5–20.6 | 45.2–48.9 | 2.54× |
-| Serpent-512 decrypt | net8.0 | 16.7–19.1 | 44.7–49.4 | 2.64× |
-| Serpent-1024 encrypt | net10.0 | 16.0–17.6 | 36.2–42.9 | 2.48× |
-| Serpent-1024 encrypt | net8.0 | 10.5–17.2 | 39.1–44.3 | 2.60× |
-| Serpent-1024 decrypt | net10.0 | 15.1–17.0 | 32.3–40.0 | 2.25× |
-| Serpent-1024 decrypt | net8.0 | 12.2–15.3 | 35.1–41.0 | 2.89× |
+| Serpent-256 encrypt | net10.0 | 24.5-25.8 | 71.7-79.5 | 3.06× |
+| Serpent-256 encrypt | net8.0 | 20.4-24.9 | 77.5-81.3 | 3.32× |
+| Serpent-256 decrypt | net10.0 | 23.0-24.5 | 76.1-86.9 | 3.31× |
+| Serpent-256 decrypt | net8.0 | 19.5-24.1 | 76.2-83.4 | 3.68× |
+| Serpent-512 encrypt | net10.0 | 18.7-21.7 | 44.2-51.9 | 2.52× |
+| Serpent-512 encrypt | net8.0 | 14.2-19.8 | 44.8-54.9 | 2.61× |
+| Serpent-512 decrypt | net10.0 | 16.5-20.6 | 45.2-48.9 | 2.54× |
+| Serpent-512 decrypt | net8.0 | 16.7-19.1 | 44.7-49.4 | 2.64× |
+| Serpent-1024 encrypt | net10.0 | 16.0-17.6 | 36.2-42.9 | 2.48× |
+| Serpent-1024 encrypt | net8.0 | 10.5-17.2 | 39.1-44.3 | 2.60× |
+| Serpent-1024 decrypt | net10.0 | 15.1-17.0 | 32.3-40.0 | 2.25× |
+| Serpent-1024 decrypt | net8.0 | 12.2-15.3 | 35.1-41.0 | 2.89× |
 
 The target, at least twice each variant's 1.1.0 speed one block per call, is met by every wide-block row in every
-configuration on both runtimes: Serpent-256 gains 3.0–4.1×, Serpent-512 2.3–3.1× and Serpent-1024 2.25–3.0×, while
-the Serpent-128 rows move 0.94–1.05×. Serpent-256 now runs about as fast per byte as Serpent-128 does one block per call,
+configuration on both runtimes: Serpent-256 gains 3.0-4.1×, Serpent-512 2.3-3.1× and Serpent-1024 2.25-3.0×, while
+the Serpent-128 rows move 0.94-1.05×. Serpent-256 now runs about as fast per byte as Serpent-128 does one block per call,
 although a block of it takes 48 rounds of two groups where Serpent-128's takes 32 rounds of one.
 
 Every row's change, in every configuration:
@@ -1404,18 +1404,18 @@ How it was done, and where it departs from the design above:
     The group is read into locals, takes its round key, S-box and linear transform, and is written to a second copy of
     the state one word to the left, which is the rotation. The two copies take 256 bytes of stack and are cleared after
     the block.
-  - In the spike, the resident rounds ran Serpent-256 1.27–1.30× faster than streaming it, on both runtimes. A width
+  - In the spike, the resident rounds ran Serpent-256 1.27-1.30× faster than streaming it, on both runtimes. A width
     fixed at compile time made no measurable difference to the streamed rounds.
 - **Departure: the tweak is folded into the round keys.** The design kept the tweak injection every fourth round.
   Each injection is followed at once by the next round's key, so `SerpentBlockCipher` adds the injected material to
   that key when the key is set, and keeps no tweak schedule. The construction and every output are unchanged. In the
-  spike, folding ran 2–13% faster than injecting.
+  spike, folding ran 2-13% faster than injecting.
 - **Removed code.** The per-pass helpers went, with the base class's inverse S-box and linear-transform wrappers, which
   nothing else called. The indexed `SerpentCore.SBox` stays for the key schedules, and `InverseSBox` for the circuit
   tests.
 - **Generated code, on both runtimes.** Each of the four entry points is `NoInlining | AggressiveOptimization`, so it
-  compiles once, fully optimized, with its own inlining budget: the resident ones to 3.1–3.3 KB and the streamed ones to
-  2.7–2.8 KB. They call only the throw helpers, and the streamed ones the argument check and the clearing of the
+  compiles once, fully optimized, with its own inlining budget: the resident ones to 3.1-3.3 KB and the streamed ones to
+  2.7-2.8 KB. They call only the throw helpers, and the streamed ones the argument check and the clearing of the
   copies as well.
 - **Tests.**
   - The replaced rounds stay in the tests as the oracle, `SerpentWideReference`, which applies `SerpentReference`'s
@@ -1432,7 +1432,7 @@ How it was done, and where it departs from the design above:
   - ARM64's thirty-one general registers could hold Serpent-512's sixteen words too. F7's hardware run would show
     whether a resident path pays there.
 
-### F6 — counter mode without the counter run (done)
+### F6 - counter mode without the counter run (done)
 
 F6's figures come from the second machine, F3's. The before build is this branch at a88da7a7, which adds the harness's
 ECB and 64-byte CTR rows beside each block cipher's CTR row, on master at 5f5a692e (#732); the after build is at
@@ -1445,33 +1445,33 @@ bytes per call, before and after, and the ECB row nothing.
 
 | Serpent-128 (net10.0, this host's default) | Before F6 (MiB/s) | After F6 (MiB/s) | Change |
 |---|---|---|---|
-| CTR 1 MiB | 644–646 | 725–732 | 1.13× |
-| CTR 64 B | 195–196 | 201–218 | 1.07× |
-| ECB bulk 1 MiB | 672–682 | 731–736 | 1.08× |
-| Twofish-CTR 1 MiB | 128–144 | 142–144 | 1.05× |
+| CTR 1 MiB | 644-646 | 725-732 | 1.13× |
+| CTR 64 B | 195-196 | 201-218 | 1.07× |
+| ECB bulk 1 MiB | 672-682 | 731-736 | 1.08× |
+| Twofish-CTR 1 MiB | 128-144 | 142-144 | 1.05× |
 
 | Serpent-128 (net8.0, this host's default) | Before F6 (MiB/s) | After F6 (MiB/s) | Change |
 |---|---|---|---|
-| CTR 1 MiB | 547–556 | 545–597 | 1.04× |
-| CTR 64 B | 156–176 | 181–190 | 1.12× |
-| ECB bulk 1 MiB | 578–602 | 584–600 | 1.00× |
-| Twofish-CTR 1 MiB | 146–147 | 136–142 | 0.95× |
+| CTR 1 MiB | 547-556 | 545-597 | 1.04× |
+| CTR 64 B | 156-176 | 181-190 | 1.12× |
+| ECB bulk 1 MiB | 578-602 | 584-600 | 1.00× |
+| Twofish-CTR 1 MiB | 146-147 | 136-142 | 0.95× |
 
-The ECB and Twofish rows moved 0.95–1.08× on their own, so the two runs alone cannot separate a few percent from the
+The ECB and Twofish rows moved 0.95-1.08× on their own, so the two runs alone cannot separate a few percent from the
 drift. Five alternating A/B rounds of the Serpent-128 rows, each build in its own process, can:
 
 | Serpent-128 | Runtime | Before F6 (MiB/s) | After F6 (MiB/s) | Change (medians) |
 |---|---|---|---|---|
-| CTR 1 MiB | net10.0 | 609–652 | 708–725 | 1.14× |
-| CTR 1 MiB | net8.0 | 525–568 | 579–600 | 1.06× |
-| CTR 64 B | net10.0 | 182–203 | 193–223 | 1.09× |
-| CTR 64 B | net8.0 | 147–181 | 182–186 | 1.09× |
-| ECB bulk 1 MiB | net10.0 | 691–741 | 694–742 | 1.01× |
-| ECB bulk 1 MiB | net8.0 | 597–616 | 557–611 | 0.98× |
+| CTR 1 MiB | net10.0 | 609-652 | 708-725 | 1.14× |
+| CTR 1 MiB | net8.0 | 525-568 | 579-600 | 1.06× |
+| CTR 64 B | net10.0 | 182-203 | 193-223 | 1.09× |
+| CTR 64 B | net8.0 | 147-181 | 182-186 | 1.09× |
+| ECB bulk 1 MiB | net10.0 | 691-741 | 694-742 | 1.01× |
+| ECB bulk 1 MiB | net8.0 | 597-616 | 557-611 | 0.98× |
 
 The target, Serpent-128-CTR within 10% of `EncryptBlocks`, is met in every configuration on both runtimes. Over the A/B
 rounds CTR runs at 1.00 of ECB's median rate on .NET 10 and 0.98 on .NET 8, where it ran at 0.89 and 0.91. Over the two
-runs of every configuration it runs at 0.94–1.02, where it ran at 0.86–1.03:
+runs of every configuration it runs at 0.94-1.02, where it ran at 0.86-1.03:
 
 | CTR 1 MiB ÷ ECB 1 MiB | Runtime | this host's default | `DOTNET_PreferredVectorBitWidth=512` | AVX-512 off | AVX2 off | no vector instructions |
 |---|---|---|---|---|---|---|
@@ -1496,18 +1496,18 @@ Every row's change, in every configuration:
 | Serpent-128-ECB bulk 1 MiB | 1.00× | 0.99× | 0.97× | 1.07× | 1.02× |
 | Twofish-CTR 1 MiB | 0.95× | 0.95× | 0.94× | 1.03× | 1.01× |
 
-With no vector instructions, the two runs put CTR at 0.97–0.98× of its old rate, inside the ECB row's own drift there.
+With no vector instructions, the two runs put CTR at 0.97-0.98× of its old rate, inside the ECB row's own drift there.
 Five alternating A/B rounds in that configuration settle it: the fused scalar loop runs a little faster than encrypting a
 run of counter blocks and XORing it in a second pass.
 
 | No vector instructions | Runtime | Before F6 (MiB/s) | After F6 (MiB/s) | Change (medians) |
 |---|---|---|---|---|
-| CTR 1 MiB | net10.0 | 82.5–86.4 | 83.3–88.6 | 1.04× |
-| CTR 1 MiB | net8.0 | 78.2–84.5 | 82.2–87.9 | 1.04× |
-| ECB bulk 1 MiB | net10.0 | 83.6–89.2 | 85.7–87.6 | 1.00× |
-| ECB bulk 1 MiB | net8.0 | 80.4–86.9 | 75.7–87.5 | 1.01× |
+| CTR 1 MiB | net10.0 | 82.5-86.4 | 83.3-88.6 | 1.04× |
+| CTR 1 MiB | net8.0 | 78.2-84.5 | 82.2-87.9 | 1.04× |
+| ECB bulk 1 MiB | net10.0 | 83.6-89.2 | 85.7-87.6 | 1.00× |
+| ECB bulk 1 MiB | net8.0 | 80.4-86.9 | 75.7-87.5 | 1.01× |
 
-There CTR runs at 1.00 of ECB's median rate on both runtimes, where it ran at 0.96–0.97.
+There CTR runs at 1.00 of ECB's median rate on both runtimes, where it ran at 0.96-0.97.
 
 How it was done, and where it departs from the design above:
 
@@ -1574,7 +1574,7 @@ How it was done, and where it departs from the design above:
     later.
   - AES cannot fuse, because its rounds run in the BCL.
 
-### F7 — ARM64 on real hardware, and a small-L3 desktop (done)
+### F7 - ARM64 on real hardware, and a small-L3 desktop (done)
 
 F7's figures come from GitHub's hosted runners, through a new workflow, *Cryptography benchmarks*
 (`.github/workflows/crypto-benchmarks.yml`). It runs on manual dispatch, and on any pull request that changes it, on
@@ -1633,16 +1633,16 @@ gate. Below 1, the AdvSimd kernel ran slower:
 
 Every kernel that gives each lane a state of its own won on both processors and both runtimes: ChaCha20 and Salsa20
 over four blocks, BLAKE3 over four chunks or parents, and Serpent-128 over four blocks. So did CubeHash's, whose
-1024-bit state fills eight vectors, and PMULL's GHASH and POLYVAL, by 3.6–5.5×. The kernels that spread one state
+1024-bit state fills eight vectors, and PMULL's GHASH and POLYVAL, by 3.6-5.5×. The kernels that spread one state
 across a vector's lanes lost on the N2, on both runtimes:
 
-- BLAKE2b ran at 0.32–0.42 of its scalar path, and BLAKE2s at 0.50–0.64.
-- A single BLAKE3 block ran at 0.68–0.69.
-- scrypt ran at 0.48–0.86.
-- Argon2 ran at 0.76–0.80.
+- BLAKE2b ran at 0.32-0.42 of its scalar path, and BLAKE2s at 0.50-0.64.
+- A single BLAKE3 block ran at 0.68-0.69.
+- scrypt ran at 0.48-0.86.
+- Argon2 ran at 0.76-0.80.
 
 The M1 agreed for BLAKE2 and the single BLAKE3 block on both runtimes, and for scrypt on .NET 10. Under .NET 8 its
-scrypt kernel ran about as fast as the scalar path, and its Argon2 kernel 1.5–1.6 times as fast; under .NET 10 its
+scrypt kernel ran about as fast as the scalar path, and its Argon2 kernel 1.5-1.6 times as fast; under .NET 10 its
 Argon2 kernel ran about as fast.
 
 The rotations are not what loses. BLAKE3's four-input kernel and its one-block kernel rotate through the same shim,
@@ -1654,17 +1654,17 @@ can, and rotate a word in one instruction, so its scalar kernels have little lef
 tuning candidate, `SHL` / `SRI` in place of `TBL` in `VectorRotation.AdvSimd`, was therefore not tried: every kernel
 that rotates through `VectorRotation.AdvSimd` won.
 
-.NET 10's scalar paths gained the most. On the N2, scrypt's scalar path ran N = 2¹⁴ in 40.8–41.1 ms under .NET 8
-and 22.8–22.9 ms under .NET 10, while its AdvSimd kernel took 47.3–47.8 ms under both. Under .NET 10 the scalar path
-beat OpenSSL's `EVP_PBE_scrypt` on the same machine, which took 23.8–24.2 ms.
+.NET 10's scalar paths gained the most. On the N2, scrypt's scalar path ran N = 2¹⁴ in 40.8-41.1 ms under .NET 8
+and 22.8-22.9 ms under .NET 10, while its AdvSimd kernel took 47.3-47.8 ms under both. Under .NET 10 the scalar path
+beat OpenSSL's `EVP_PBE_scrypt` on the same machine, which took 23.8-24.2 ms.
 
 **F2's ARM64 estimate.** F2 left `StepCost`'s cost for an AdvSimd step of four blocks, twice the block function's, for
 this run to check. On the N2 the kernels' rates over 1 MiB put the step at 2.5 block-function times for ChaCha20, and
-1.9–2.7 for Salsa20. With the step at 2.5 times, every one-pass plan up to 1 KiB comes out the same as with 2, and it
-would take 3 to change any. The M1's rates put the step at 1.6–2.0, noisily. A step under 2 would draw keystreams of
-65–128 bytes, and the same window past each further 256 bytes, in one pass rounded up to whole steps, where they are
+1.9-2.7 for Salsa20. With the step at 2.5 times, every one-pass plan up to 1 KiB comes out the same as with 2, and it
+would take 3 to change any. The M1's rates put the step at 1.6-2.0, noisily. A step under 2 would draw keystreams of
+65-128 bytes, and the same window past each further 256 bytes, in one pass rounded up to whole steps, where they are
 now drawn as they come. The estimate stays. At 64 bytes the AEADs sealed as fast under the AdvSimd kernel's plan as
-under the scalar kernel's: 0.99–1.00 on the N2, and 0.95–1.09 on the M1.
+under the scalar kernel's: 0.99-1.00 on the N2, and 0.95-1.09 on the M1.
 
 **The gate.** As the target asks, dispatch no longer selects the losing kernels.
 `SimdCapabilities.AdvSimdSingleState` holds back every AdvSimd kernel that spreads one state across its lanes, and it
@@ -1673,7 +1673,7 @@ and compresses a single block, or a lone input among several, with the scalar ke
 under .NET 10 and keeps its AdvSimd kernel under .NET 8, for the reason ARG-N-002 below gives.
 
 The workflow ran again on the gated build, in which Argon2 took its scalar kernel under both runtimes. On the N2 every
-gated row now runs at 0.95–1.00 of its scalar path, which is the same code, and its gain over 1.0.0 grew:
+gated row now runs at 0.95-1.00 of its scalar path, which is the same code, and its gain over 1.0.0 grew:
 
 | Case, vector ÷ 1.0.0 on the N2 | .NET 8 before the gate | .NET 8 gated | .NET 10 before the gate | .NET 10 gated |
 |---|---|---|---|---|
@@ -1688,7 +1688,7 @@ gated row now runs at 0.95–1.00 of its scalar path, which is the same code, an
 | Argon2id m = 64 MiB, t = 3, p = 4 (CPU) | 1.80 | 2.12 | 1.70 | 2.02 |
 
 Each run measures 1.0.0 afresh, on the runner it was given, so each ratio holds within its run. The kernels that were
-not gated ran as before, within 1–2%. On the M1 the gated rows read 0.80–1.26 of the scalar path, the same code, which
+not gated ran as before, within 1-2%. On the M1 the gated rows read 0.80-1.26 of the scalar path, the same code, which
 is how far that machine drifts within one run.
 
 **ARG-N-002 on ARM64.** `argon2-performance.md` asks that a 64 MiB derivation at p = 4 take at most 60% of 1.0.0's
@@ -1702,9 +1702,9 @@ runs before the gate:
 | Wall, the vector kernel | 16% | 21% | 16% | 25% | 7% | 9% |
 | Wall, the scalar kernel | 12% | 16% | 26% | 30% | 19% | 24% |
 
-In the gated run the scalar kernel took 46–50% on the N2, but 66–67% on the M1 under .NET 8, past the target, and
-55–59% under .NET 10. The M1's rows drift between runs, but under .NET 8 its scalar kernel took 58–67% in both, against
-36% for the AdvSimd kernel, which also ran 1.5–1.6 times as fast there. So Argon2 keeps the AdvSimd kernel under
+In the gated run the scalar kernel took 46-50% on the N2, but 66-67% on the M1 under .NET 8, past the target, and
+55-59% under .NET 10. The M1's rows drift between runs, but under .NET 8 its scalar kernel took 58-67% in both, against
+36% for the AdvSimd kernel, which also ran 1.5-1.6 times as fast there. So Argon2 keeps the AdvSimd kernel under
 .NET 8, at 0.8 of the scalar kernel's speed on the N2, and selects the scalar kernel under .NET 10, where it runs at
 least as fast as the AdvSimd kernel.
 
@@ -1715,11 +1715,11 @@ A third run, on the build as it merges, held both choices:
 | *vector*: AdvSimd under .NET 8, scalar under .NET 10 | 56% | 47% | 48% | 67% |
 | *scalar* | 45% | 45% | 63% | 47% |
 
-Under .NET 8 the AdvSimd kernel meets the target on both processors, and on the M1 ran 1.3–1.4 times as fast as the
+Under .NET 8 the AdvSimd kernel meets the target on both processors, and on the M1 ran 1.3-1.4 times as fast as the
 scalar kernel, which missed it again. Under .NET 10 both configurations run the scalar kernel. It meets the target on
-the N2, but the M1 read the same code at 47% and 67% within one job, and at 47–67% over the three runs, so that virtual
+the N2, but the M1 read the same code at 47% and 67% within one job, and at 47-67% over the three runs, so that virtual
 machine cannot place it either side. The AdvSimd kernel read 55% there in the one run that timed it under .NET 10. On
-the EPYC the AVX2 kernel takes 21–23%.
+the EPYC the AVX2 kernel takes 21-23%.
 
 **The small-L3 machine.** The EPYC's 32 MiB of L3 holds half of the harness's 64 MiB matrix, where the machine
 Argon2's thread threshold was set on held all of it. The sweep compares the default, which runs lanes on threads from
@@ -1736,13 +1736,13 @@ Argon2's thread threshold was set on held all of it. The sweep compares the defa
 | 64 MiB (the harness) | 2.39 | 1.78 | 3.55 | 2.68 | 1.92 | 2.01 |
 
 Below the threshold both columns run one thread, so the ratio is 1 but for noise. From the threshold up the threads
-cut the wall time on every machine, the small-L3 EPYC included, by 1.6–2.4 times there. The M1's two readings below 1,
+cut the wall time on every machine, the small-L3 EPYC included, by 1.6-2.4 times there. The M1's two readings below 1,
 at 16 and 32 MiB under .NET 10, come from runs whose threaded times spread from 13 to 60 ms and from 35 to 135 ms. The
 threshold stands. Whether it could be lower cannot be read here: the harness cannot run threads below it, since the
 threshold is internal.
 
-With AVX2 the EPYC runs Argon2 2.6–3.0 times as fast as its scalar kernel, on both runtimes, and at 64 MiB and p = 4
-in 7–9% of 1.0.0's wall time.
+With AVX2 the EPYC runs Argon2 2.6-3.0 times as fast as its scalar kernel, on both runtimes, and at 64 MiB and p = 4
+in 7-9% of 1.0.0's wall time.
 
 **x64's own single-state kernels.** The ARM64 result raised the question for x64, where the SSE2, SSSE3 and AVX2
 kernels of BLAKE2b, BLAKE2s, BLAKE3's single block, scrypt and Argon2 share the layout. On the second machine, F3's,
@@ -1760,8 +1760,8 @@ vector ÷ scalar in two alternating runs, in three of its configurations:
 | Argon2id m = 19 MiB, t = 2, p = 1 | 2.38 / 2.03 | 2.31 / 2.14 | 1.38 / 1.37 |
 
 Everything wins with AVX-512, and scrypt, Argon2 and BLAKE3's single block win everywhere. BLAKE2b's kernels are the
-exception. With AVX-512 off, its AVX2 kernel runs at 0.95–1.08 of the scalar path, and with AVX2 off, its 128-bit
-SSSE3 kernel at 0.88–0.96. F7's target covers only the AdvSimd kernels, so x64 dispatch is unchanged, and BLAKE2b is
+exception. With AVX-512 off, its AVX2 kernel runs at 0.95-1.08 of the scalar path, and with AVX2 off, its 128-bit
+SSSE3 kernel at 0.88-0.96. F7's target covers only the AdvSimd kernels, so x64 dispatch is unchanged, and BLAKE2b is
 left for later.
 
 How it was done, and where it departs from the design above:
@@ -1810,19 +1810,19 @@ How it was done, and where it departs from the design above:
   the scalar kernel's, 1.00 on both runtimes.
 - **Left for later.**
   - Tuning the gated kernels. The losing layout, not the rotations, is the cause, and the M1 hints that a core with
-    more vector pipes can win: its Argon2 kernel ran 1.3–1.6 times as fast as its scalar path under .NET 8. Dispatch
+    more vector pipes can win: its Argon2 kernel ran 1.3-1.6 times as fast as its scalar path under .NET 8. Dispatch
     cannot tell an M1 from an N2, so under .NET 8 the N2 runs Argon2's AdvSimd kernel at 0.8 of its scalar path's
     speed. BLAKE2's parallel variants, BLAKE2bp and BLAKE2sp, would give each lane a state of its own, but they are
     different functions.
   - A Poly1305 AdvSimd kernel. F1's design had a two-lane one, which waited for this run. On the N2, OpenSSL's NEON
-    code took 1 MiB at 3,156–3,174 MiB/s against the scalar loop's 1,610–1,652.
-  - BLAKE2b on x64 without AVX-512: its AVX2 kernel ran at 0.95–1.08 of the scalar path, and its SSSE3 kernel at
-    0.88–0.96. A five-round A/B would settle whether x64 should gate them too.
-  - Argon2's thread threshold below 4 MiB. At the threshold the threads already cut the wall time 1.4–2.9 times on
+    code took 1 MiB at 3,156-3,174 MiB/s against the scalar loop's 1,610-1,652.
+  - BLAKE2b on x64 without AVX-512: its AVX2 kernel ran at 0.95-1.08 of the scalar path, and its SSSE3 kernel at
+    0.88-0.96. A five-round A/B would settle whether x64 should gate them too.
+  - Argon2's thread threshold below 4 MiB. At the threshold the threads already cut the wall time 1.4-2.9 times on
     all three machines, so it may sit too high. Measuring below it needs the harness to reach the internal
     `FillOptions`.
 
-### F8 — Poly1305 on ARM64 (done)
+### F8 - Poly1305 on ARM64 (done)
 
 F8's figures come from F7's workflow, on the Neoverse N2 and the Apple M1; the EPYC runs only the Argon2 suites. The
 crypto harness gained a case for each Poly1305 kernel at each length from 64 bytes to 1 MiB, which calls the library's
@@ -1853,21 +1853,21 @@ serves both.
 
 Over 1 MiB on the N2 the kernel ran Poly1305 1.80 times as fast as the scalar loop under .NET 8 and 1.62 times under
 .NET 10, against the target's 1.5. That is 2,898 and 2,674 MiB/s, where OpenSSL's NEON code, on the same machine, ran
-at 3,161–3,163 MiB/s.
+at 3,161-3,163 MiB/s.
 
 **The three builds.** The scalar loop's time over each loop's for 1 MiB on the N2, by the medians of each run, with the
 vector instructions a step of four blocks takes under .NET 10:
 
 | Build | Instructions | .NET 8 | .NET 10 |
 |---|---|---|---|
-| The design's one-group loop: one group of two per step | — | 1.29 | 1.27 |
+| The design's one-group loop: one group of two per step | - | 1.29 | 1.27 |
 | The design's paired loop: two groups per step, each split into limbs on its own | 118 | 1.52 | 1.49 |
 | The step's four blocks split together, one to each 32-bit lane | 109 | 1.70 | 1.62 |
 | The same, carrying with `USRA` (the build as it merges) | 100 | 1.80 | 1.62 |
 
 The first build ran the design's two loops as two kinds. On both processors the paired loop ran faster than the
 one-group loop at every length where either beat the scalar loop, 256 bytes and up on the N2 and 192 and up on the
-M1, so the one-group loop and its threshold went. Its 1.49–1.52 times sat at the target's edge, which the next two
+M1, so the one-group loop and its threshold went. Its 1.49-1.52 times sat at the target's edge, which the next two
 builds cleared by cutting the instructions around the step's 50 multiplies. The carry's change registered under .NET 8
 alone: the kernel took 364 µs per MiB before it and 345 after, while under .NET 10 it took 373 both times.
 
@@ -1880,9 +1880,9 @@ run measures 1.0.0 afresh, so each ratio holds within its run:
 | XChaCha20-Poly1305 | 2.07 | 2.47 | 1.97 | 2.27 |
 | XSalsa20-Poly1305 | 2.45 | 3.01 | 2.01 | 2.39 |
 
-In MiB/s, XChaCha20-Poly1305 went from 574–579 to 668–681, and XSalsa20-Poly1305 from 677–688 to 817–832. At 256
-bytes, the shortest run the kernel takes, the MAC ran 1.03–1.04 times as fast as the scalar configuration on the N2,
-and at 1 KiB 1.31–1.38 times.
+In MiB/s, XChaCha20-Poly1305 went from 574-579 to 668-681, and XSalsa20-Poly1305 from 677-688 to 817-832. At 256
+bytes, the shortest run the kernel takes, the MAC ran 1.03-1.04 times as fast as the scalar configuration on the N2,
+and at 1 KiB 1.31-1.38 times.
 
 How it was done, and where it departs from the design above:
 

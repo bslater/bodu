@@ -25,7 +25,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// The 192-bit nonce is large enough to be chosen at random per message without meaningful collision risk, which makes
-/// XChaCha20-Poly1305 the safer choice for protocols that cannot guarantee a unique 96-bit nonce — the gap left by the
+/// XChaCha20-Poly1305 the safer choice for protocols that cannot guarantee a unique 96-bit nonce - the gap left by the
 /// BCL's 96-bit-nonce <see cref="System.Security.Cryptography.ChaCha20Poly1305" />.
 /// </para>
 /// <para>
@@ -53,7 +53,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha">draft-irtf-cfrg-xchacha — XChaCha:
+/// <seealso href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha">draft-irtf-cfrg-xchacha - XChaCha:
 /// eXtended-nonce ChaCha and AEAD_XChaCha20_Poly1305</seealso> <seealso cref="XChaCha20" /> <seealso cref="Poly1305" />
 /// <seealso cref="IStreamAeadTransform" />
 public sealed class XChaCha20Poly1305

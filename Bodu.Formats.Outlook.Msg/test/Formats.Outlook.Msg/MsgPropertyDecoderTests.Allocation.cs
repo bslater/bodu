@@ -32,6 +32,6 @@ public partial class MsgPropertyDecoderTests
         Assert.AreEqual(PayloadLength, properties.GetBinary(0x3701)!.Value.Length);
         Assert.IsTrue(
             allocated <= PayloadLength * 3 / 2,
-            $"Decoding a {PayloadLength / (1024 * 1024)} MiB value allocated {allocated / (1024 * 1024.0):F1} MiB — the value stream is copied twice.");
+            $"Decoding a {PayloadLength / (1024 * 1024)} MiB value allocated {allocated / (1024 * 1024.0):F1} MiB - the value stream is copied twice.");
     }
 }

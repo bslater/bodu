@@ -76,7 +76,7 @@ public partial class CrcTests
         byte[] expectedFirstHalf = baselineFirstHalf.ComputeHash(input.Slice(0, 4));
         CollectionAssert.AreEqual(expectedFirstHalf, snapshotAfterFirstHalf);
 
-        // Snapshot must not have mutated the accumulator — continuing to append the rest still produces the full
+        // Snapshot must not have mutated the accumulator - continuing to append the rest still produces the full
         // catalogue digest.
         subject.Append(input.Slice(4));
         byte[] finalDigest = subject.GetCurrentHash();

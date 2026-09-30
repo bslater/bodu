@@ -52,7 +52,7 @@ public sealed record CompoundMalformedKat(
 
 /// <summary>
 /// Catalogues the malformed reference fixtures and the reader's expected handling of each, used to prove that broken
-/// input is always handled safely — rejected with a stable category or tolerated, never crashing or hanging.
+/// input is always handled safely - rejected with a stable category or tolerated, never crashing or hanging.
 /// </summary>
 internal static class CompoundMalformedFixtures
 {

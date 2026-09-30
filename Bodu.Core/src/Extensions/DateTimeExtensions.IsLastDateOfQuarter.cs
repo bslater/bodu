@@ -22,8 +22,8 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>
     /// This overload uses the standard calendar alignment defined by
-    /// <see cref="CalendarQuarterDefinition.JanuaryToDecember" />: Q1 = Jan – Mar, Q2 = Apr – Jun, Q3 = Jul – Sep, Q4 =
-    /// Oct – Dec.
+    /// <see cref="CalendarQuarterDefinition.JanuaryToDecember" />: Q1 = Jan - Mar, Q2 = Apr - Jun, Q3 = Jul - Sep, Q4 =
+    /// Oct - Dec.
     /// </para>
     /// <para>
     /// The comparison is performed on the date component only; the time component of <paramref name="dateTime" /> is

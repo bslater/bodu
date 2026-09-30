@@ -56,13 +56,13 @@ public partial class CircularBufferTests
         buffer.ItemEvicted += handler;
 
         buffer.Enqueue(1);
-        buffer.Enqueue(2); // evicts 1 — handler fires
+        buffer.Enqueue(2); // evicts 1 - handler fires
 
         Assert.AreEqual(1, callCount);
 
         buffer.ItemEvicted -= handler;
 
-        buffer.Enqueue(3); // evicts 2 — handler should not fire
+        buffer.Enqueue(3); // evicts 2 - handler should not fire
 
         Assert.AreEqual(1, callCount);
     }

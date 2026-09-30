@@ -15,13 +15,13 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// This class centralises every piece of boilerplate that would otherwise be duplicated across
-/// the two test hierarchies — the algorithm factory, data generators, default configuration
+/// the two test hierarchies - the algorithm factory, data generators, default configuration
 /// constants, and the reference implementation of the Merkle reduction used to compute
 /// expected root hashes by hand.
 /// </para>
 /// <para>
 /// The <see cref="Factory" /> produces <see cref="MonitoringHashAlgorithm" /> instances, which
-/// compute an additive hash — the unsigned sum of all input bytes as a little-endian
+/// compute an additive hash - the unsigned sum of all input bytes as a little-endian
 /// <see cref="uint" />. This choice makes expected values hand-computable and keeps the tests
 /// independent of any real cipher. The trade-off is that an additive hash is commutative, so
 /// tests that need to catch ordering bugs should use a real non-commutative algorithm (see
@@ -40,14 +40,14 @@ internal static class MerkleTestData
     /// Gets a factory that produces fresh <see cref="MonitoringHashAlgorithm" /> instances.
     /// </summary>
     /// <remarks>
-    /// The algorithm computes an additive hash — the unsigned byte-sum of all input bytes as a
-    /// little-endian <see cref="uint" /> — making expected values trivially hand-computable.
+    /// The algorithm computes an additive hash - the unsigned byte-sum of all input bytes as a
+    /// little-endian <see cref="uint" /> - making expected values trivially hand-computable.
     /// </remarks>
     internal static Func<HashAlgorithm> Factory => () => new MonitoringHashAlgorithm();
 
     /// <summary>
     /// Returns a byte array of <paramref name="length" /> bytes with values 1, 2, 3, …
-    /// repeating modulo 251 (a prime — chosen to avoid block-boundary alignment patterns).
+    /// repeating modulo 251 (a prime - chosen to avoid block-boundary alignment patterns).
     /// </summary>
     /// <param name="length">The number of bytes to generate.</param>
     internal static byte[] MakeData(int length) => MakeData(length, seed: 1);
@@ -81,11 +81,11 @@ internal static class MerkleTestData
     /// <remarks>
     /// <list type="bullet">
     /// <item><description>
-    /// <b>Leaf nodes</b> — each input chunk is hashed as <c>H(0x00 || chunk)</c> at its actual length (the partial
+    /// <b>Leaf nodes</b> - each input chunk is hashed as <c>H(0x00 || chunk)</c> at its actual length (the partial
     /// tail is not zero-padded), matching the implementation's leaf path.
     /// </description></item>
     /// <item><description>
-    /// <b>Internal nodes</b> — child hashes within a fan-out group are hashed as <c>H(0x01 || child₀ || … )</c>,
+    /// <b>Internal nodes</b> - child hashes within a fan-out group are hashed as <c>H(0x01 || child₀ || … )</c>,
     /// matching the implementation's <c>CombineAndHash</c> / streaming <c>TransformBlock</c> path.
     /// </description></item>
     /// </list>
@@ -128,7 +128,7 @@ internal static class MerkleTestData
 
     /// <summary>
     /// Returns the additive leaf hash <c>H(0x00 || block)</c> as a 4-byte little-endian
-    /// <see cref="uint" /> — matching the length-bound, domain-prefixed leaf path in both implementations.
+    /// <see cref="uint" /> - matching the length-bound, domain-prefixed leaf path in both implementations.
     /// </summary>
     /// <param name="block">The actual-length leaf bytes (not zero-padded).</param>
     internal static byte[] AdditiveHash(ReadOnlySpan<byte> block)
@@ -142,7 +142,7 @@ internal static class MerkleTestData
 
     /// <summary>
     /// Returns the additive internal-node hash <c>H(0x01 || child₀ || … )</c> as a 4-byte little-endian
-    /// <see cref="uint" /> — matching the domain-prefixed internal-node hashing path.
+    /// <see cref="uint" /> - matching the domain-prefixed internal-node hashing path.
     /// </summary>
     /// <param name="hashes">The child hashes to combine, in order.</param>
     /// <remarks>

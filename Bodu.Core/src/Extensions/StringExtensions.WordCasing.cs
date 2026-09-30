@@ -46,7 +46,7 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Determines whether <paramref name="word" /> is a mixed-case word that must survive casing changes verbatim —
+    /// Determines whether <paramref name="word" /> is a mixed-case word that must survive casing changes verbatim -
     /// that is, it carries an upper-case letter beyond the first position and at least one lower-case letter.
     /// </summary>
     /// <param name="word">The word to inspect.</param>

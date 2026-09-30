@@ -35,7 +35,7 @@ public sealed partial class CbcModeTransformTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CbcModeTransform.Transform" /> in encrypt mode XORs each plaintext block with the prior ciphertext (or IV for block 0) before calling the cipher — the defining chaining property of CBC.
+    /// Verifies that <see cref="CbcModeTransform.Transform" /> in encrypt mode XORs each plaintext block with the prior ciphertext (or IV for block 0) before calling the cipher - the defining chaining property of CBC.
     /// </summary>
     [TestMethod]
     public void Transform_WhenEncrypting_ShouldApplyCBCChaining()

@@ -10,7 +10,7 @@ using Bodu.IO.Hashing;
 namespace Bodu.IO.Hashing.Samples.ChecksumTour.Scenarios;
 
 /// <summary>
-/// Demonstrates the classic non-cryptographic hash functions — FNV-1a, MurmurHash3, CityHash —
+/// Demonstrates the classic non-cryptographic hash functions - FNV-1a, MurmurHash3, CityHash -
 /// in their natural role: fast, well-distributed bucket assignment for sharding and hash tables.
 /// These are NOT cryptographic: an adversary can craft collisions, so never use them for
 /// signatures, passwords, or integrity against tampering (that is <c>Bodu.Security.Cryptography</c>'s job).

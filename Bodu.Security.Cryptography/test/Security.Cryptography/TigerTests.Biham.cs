@@ -14,7 +14,7 @@ public partial class TigerTests
     //
     // Loaded dynamically from the embedded labelled m:/h: reference file, which carries Ross Anderson
     // & Eli Biham's additional Tiger vectors (cs.technion.ac.il/~biham/Reports/Tiger) and the NESSIE
-    // Tiger / Tiger2 Set-1 vectors. Tiger uses 0x01 padding; Tiger2 uses 0x80 padding — the reader
+    // Tiger / Tiger2 Set-1 vectors. Tiger uses 0x01 padding; Tiger2 uses 0x80 padding - the reader
     // splits the two variants via the file's `option: variant = tiger2` switch.
 
     /// <summary>Resource name of the embedded Biham Tiger / Tiger2 reference file.</summary>

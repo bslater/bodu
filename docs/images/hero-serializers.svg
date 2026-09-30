@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220" role="img" aria-label="Bodu serializers — Bencode, TOML, and YAML sharing one System.Text.Json-aligned shape">
-  <title>Bodu serializers — Bencode · TOML · YAML</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220" role="img" aria-label="Bodu serializers - Bencode, TOML, and YAML sharing one System.Text.Json-aligned shape">
+  <title>Bodu serializers - Bencode · TOML · YAML</title>
   <defs>
     <linearGradient id="ser-bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0F172A"/>

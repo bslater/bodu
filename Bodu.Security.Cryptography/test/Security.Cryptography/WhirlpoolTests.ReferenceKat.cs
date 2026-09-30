@@ -13,8 +13,8 @@ public partial class WhirlpoolTests
     // ── Official OpenSSL / ISO-IEC 10118-3 Whirlpool reference tests ───────────────────────────
     //
     // Loaded dynamically from the embedded OpenSSL evptests reference file (test/recipes/
-    // 30-test_evp_data/evpmd_whirlpool.txt). These pin the standardized ISO/IEC 10118-3 revision —
-    // the default Whirlpool (WhirlpoolInfo3) — against the published ISO test-message set, including
+    // 30-test_evp_data/evpmd_whirlpool.txt). These pin the standardized ISO/IEC 10118-3 revision -
+    // the default Whirlpool (WhirlpoolInfo3) - against the published ISO test-message set, including
     // the one-million-'a' stress vector.
 
     /// <summary>Resource name of the embedded OpenSSL Whirlpool reference vector file.</summary>

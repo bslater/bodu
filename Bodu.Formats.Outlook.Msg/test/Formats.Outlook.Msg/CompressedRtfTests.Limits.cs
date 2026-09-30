@@ -47,7 +47,7 @@ public partial class CompressedRtfTests
 
     /// <summary>
     /// Verifies that a token stream producing more bytes than the declared uncompressed size stops at the declared
-    /// size — the header's size is the output's size, not a hint.
+    /// size - the header's size is the output's size, not a hint.
     /// </summary>
     [TestMethod]
     public void Decompress_WhenTokenStreamExpandsPastDeclaredSize_ShouldStopAtDeclaredSize()

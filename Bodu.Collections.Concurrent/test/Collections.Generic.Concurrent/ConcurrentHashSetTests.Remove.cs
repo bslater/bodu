@@ -74,7 +74,7 @@ public partial class ConcurrentHashSetTests
     }
 
     /// <summary>
-    /// Verifies that removing an element and re-adding it yields exactly one live copy — the logically deleted node
+    /// Verifies that removing an element and re-adding it yields exactly one live copy - the logically deleted node
     /// must never be resurrected alongside the new one.
     /// </summary>
     [TestMethod]
@@ -92,7 +92,7 @@ public partial class ConcurrentHashSetTests
 
     /// <summary>
     /// Verifies that interleaved removes and adds through a fully colliding equal-key run keep every surviving
-    /// element reachable — unlinking a marked node must never detach its unmarked successors.
+    /// element reachable - unlinking a marked node must never detach its unmarked successors.
     /// </summary>
     [TestMethod]
     public void Remove_WhenInterleavedWithAddsOnCollidingRun_ShouldKeepSurvivorsReachable()

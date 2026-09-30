@@ -53,7 +53,7 @@ public partial class CurrencyInfoTests
 
     /// <summary>
     /// Verifies that <see cref="CurrencyInfo.TryGetCurrencyCode" /> resolves a historic currency now that the full
-    /// ISO 4217 catalogue — active and historic — is represented in <see cref="CurrencyCode" />.
+    /// ISO 4217 catalogue - active and historic - is represented in <see cref="CurrencyCode" />.
     /// </summary>
     [TestMethod]
     public void TryGetCurrencyCode_WhenIsoIsHistoric_ShouldReturnTrue()

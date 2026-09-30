@@ -11,7 +11,7 @@ using System.Globalization;
 namespace Bodu.IO.Compound.Builders;
 
 /// <summary>
-/// Represents a storage entry in a mutable compound-file object model — a named container of child storages and
+/// Represents a storage entry in a mutable compound-file object model - a named container of child storages and
 /// streams.
 /// </summary>
 /// <remarks>

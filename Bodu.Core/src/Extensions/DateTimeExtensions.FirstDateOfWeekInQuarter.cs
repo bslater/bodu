@@ -155,7 +155,7 @@ public static partial class DateTimeExtensions
     /// The calendar year of the result. Must be between the <c>Year</c> property values of
     /// <see cref="DateTime.MinValue" /> and <see cref="DateTime.MaxValue" />, inclusive.
     /// </param>
-    /// <param name="quarter">The quarter number, from 1 (Jan – Mar) through 4 (Oct – Dec).</param>
+    /// <param name="quarter">The quarter number, from 1 (Jan - Mar) through 4 (Oct - Dec).</param>
     /// <param name="dayOfWeek">
     /// The <see cref="DayOfWeek" /> to locate within the quarter. For example, <see cref="DayOfWeek.Monday" /> returns
     /// the first Monday.

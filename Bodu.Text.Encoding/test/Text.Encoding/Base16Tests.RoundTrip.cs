@@ -155,7 +155,7 @@ public sealed partial class Base16Tests
 
     /// <summary>
     /// Verifies that the upper-case encoder produces output that the default (lower-case-preferring) decoder accepts
-    /// across every byte value — Base16 decoding is case-insensitive. Tagged Regression because it covers the full
+    /// across every byte value - Base16 decoding is case-insensitive. Tagged Regression because it covers the full
     /// byte range.
     /// </summary>
     [TestMethod]

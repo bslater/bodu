@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Recurrence.Samples.RecurrenceSets.Scenarios;
 /// <summary>
 /// Demonstrates the iCalendar property-block form: a <see cref="RecurrenceSet" /> renders to the
 /// <c>DTSTART</c> / <c>RRULE</c> / <c>RDATE</c> / <c>EXDATE</c> lines a calendar file carries, and
-/// parses back from them — a round trip that makes the text a storage format rather than a display
+/// parses back from them - a round trip that makes the text a storage format rather than a display
 /// form.
 /// </summary>
 public static class PropertyBlocks

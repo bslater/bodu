@@ -1,8 +1,8 @@
 # Bodu.Collections
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-The specialized generic-collection catalogue for the Bodu solution and for general .NET 8 use: bounded and ordered collections, bidirectional and layered dictionaries, navigable (order-statistic) sets and maps, interval and range-keyed lookups, graph and tree structures, and probabilistic sketches. The catalogue was split out of `Bodu.Core` with namespaces unchanged — code written against `Bodu.Collections.Generic` and its siblings keeps compiling; only the package reference changes. Every collection ships a struct enumerator for allocation-free iteration and implements the standard BCL interfaces (`IEnumerable<T>`, `ICollection<T>`, `IReadOnlyCollection<T>`, `ISet<T>`, `IList<T>`) so the types drop into existing code. The package references `Bodu.Core` for its shared primitives (`ThrowHelper` argument validation, `IRandomGenerator`, pooled buffers).
+The specialized generic-collection catalogue for the Bodu solution and for general .NET 8 use: bounded and ordered collections, bidirectional and layered dictionaries, navigable (order-statistic) sets and maps, interval and range-keyed lookups, graph and tree structures, and probabilistic sketches. The catalogue was split out of `Bodu.Core` with namespaces unchanged - code written against `Bodu.Collections.Generic` and its siblings keeps compiling; only the package reference changes. Every collection ships a struct enumerator for allocation-free iteration and implements the standard BCL interfaces (`IEnumerable<T>`, `ICollection<T>`, `IReadOnlyCollection<T>`, `ISet<T>`, `IList<T>`) so the types drop into existing code. The package references `Bodu.Core` for its shared primitives (`ThrowHelper` argument validation, `IRandomGenerator`, pooled buffers).
 
 ## Installation
 
@@ -48,9 +48,9 @@ The `Bodu.Collections.Generic.Trees` namespace provides `Tree<T>` (a mutable n-a
 
 The `Bodu.Collections.Probabilistic` namespace ships three fixed-footprint approximate sketches, each with a one-sided, quantified error contract:
 
-- `BloomFilter<T>` — approximate set membership with no false negatives; false positives approach the design rate as the fill approaches `ExpectedItems`.
-- `CountMinSketch<T>` — approximate frequencies that never underestimate; overestimates by at most `ε · TotalCount` with probability ≥ `1 − δ`.
-- `HyperLogLog<T>` — approximate distinct counts with a relative standard error of about `1.04/√m` for `m = 2^precision` one-byte registers.
+- `BloomFilter<T>` - approximate set membership with no false negatives; false positives approach the design rate as the fill approaches `ExpectedItems`.
+- `CountMinSketch<T>` - approximate frequencies that never underestimate; overestimates by at most `ε · TotalCount` with probability ≥ `1 − δ`.
+- `HyperLogLog<T>` - approximate distinct counts with a relative standard error of about `1.04/√m` for `m = 2^precision` one-byte registers.
 
 All three hash through an `IEqualityComparer<T>`, merge with parameter-compatible instances, and round-trip their state through an opaque, version-checked export format. None is thread-safe.
 

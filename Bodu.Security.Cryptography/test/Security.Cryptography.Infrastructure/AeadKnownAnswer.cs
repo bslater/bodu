@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Represents a single authenticated-encryption known-answer test vector — the inputs (key, nonce, associated data,
+/// Represents a single authenticated-encryption known-answer test vector - the inputs (key, nonce, associated data,
 /// plaintext) and the expected outputs (ciphertext and authentication tag) for one AEAD trial.
 /// </summary>
 /// <remarks>

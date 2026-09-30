@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Calendar;
 /// <para>
 /// Resolution runs in two phases. The first phase calculates every actual occurrence purely and seeds an occupied-day
 /// set with the actual dates of non-working occurrences. The second phase places observed dates in an explicit
-/// precedence order — earliest actual date, then higher priority, then stable identity — so that a substitute that opts
+/// precedence order - earliest actual date, then higher priority, then stable identity - so that a substitute that opts
 /// in to <see cref="AdjustmentPolicy.SkipNonWorkingDates" /> advances past days already claimed by other holidays.
 /// </para>
 /// <para>

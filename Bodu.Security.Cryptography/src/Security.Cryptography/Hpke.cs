@@ -14,8 +14,8 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Each <c>Seal*</c> method performs a complete HPKE exchange — encapsulate a fresh shared secret to the recipient, run
-/// the key schedule, and seal one message — returning both the encapsulated key and the ciphertext. The matching
+/// Each <c>Seal*</c> method performs a complete HPKE exchange - encapsulate a fresh shared secret to the recipient, run
+/// the key schedule, and seal one message - returning both the encapsulated key and the ciphertext. The matching
 /// <c>Open*</c> method reverses it. There is one method pair per establishment mode (<see cref="HpkeMode" />): base,
 /// PSK, auth, and auth-PSK. For sending several messages under one encapsulation, use <see cref="HpkeSender" /> and
 /// <see cref="HpkeReceiver" /> instead.

@@ -8,7 +8,7 @@ namespace Bodu.Security.Cryptography.Samples.HybridEncryption.Scenarios;
 
 /// <summary>
 /// Demonstrates <see cref="HpkeSender" /> and <see cref="HpkeReceiver" />, the stateful contexts that send several
-/// messages under one encapsulation — one public-key operation amortised across a whole stream.
+/// messages under one encapsulation - one public-key operation amortised across a whole stream.
 /// </summary>
 public static class MultiMessageContext
 {

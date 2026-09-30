@@ -29,7 +29,7 @@ public static partial class StringExtensions
     /// </para>
     /// <para>
     /// This is the canonical pattern for accent-insensitive search keys and is intentionally limited to diacritic
-    /// stripping — it does not transliterate non-Latin scripts (e.g. Cyrillic, CJK) and does not case-fold. For full
+    /// stripping - it does not transliterate non-Latin scripts (e.g. Cyrillic, CJK) and does not case-fold. For full
     /// search normalisation combine this with <c>ToLowerInvariant</c> and <see cref="CollapseWhitespace(string)" />.
     /// </para>
     /// </remarks>

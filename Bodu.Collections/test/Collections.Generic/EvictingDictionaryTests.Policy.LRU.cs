@@ -20,7 +20,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("one", 1);
         dictionary.Add("two", 2);
         dictionary["one"] = 11;   // access "one" so "two" becomes least recently used
-        dictionary.Add("three", 3); // capacity exceeded — "two" should be evicted
+        dictionary.Add("three", 3); // capacity exceeded - "two" should be evicted
 
         Assert.IsTrue(dictionary.ContainsKey("one"),
             "'one' should be retained because it was accessed most recently before capacity was exceeded.");

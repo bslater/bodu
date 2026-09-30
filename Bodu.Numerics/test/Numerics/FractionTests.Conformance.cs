@@ -12,7 +12,7 @@ public partial class FractionTests
 {
     /// <summary>
     /// Verifies that construction reduces to canonical form exactly as Python's <c>fractions.Fraction</c> and Apache
-    /// Commons Numbers <c>BigFraction</c> do — the sign is carried on the numerator and the components are divided by
+    /// Commons Numbers <c>BigFraction</c> do - the sign is carried on the numerator and the components are divided by
     /// their greatest common divisor. Rows are known-good values copied from those references.
     /// </summary>
     [TestMethod]

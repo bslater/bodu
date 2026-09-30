@@ -69,7 +69,7 @@ public partial class XmlDocFormatAnalyzerTests
 
     /// <summary>
     /// Verifies that a doc comment with a tag whose name is split mid-token across <c>///</c> lines does NOT
-    /// produce a diagnostic — the malformed-XML path leaves the comment untouched.
+    /// produce a diagnostic - the malformed-XML path leaves the comment untouched.
     /// </summary>
     [TestMethod]
     public async Task Analyze_WhenBlockTagNameSplitMidName_ShouldNotReport()

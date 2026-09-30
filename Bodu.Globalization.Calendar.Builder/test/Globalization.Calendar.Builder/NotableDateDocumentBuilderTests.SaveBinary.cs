@@ -39,7 +39,7 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
-    /// Verifies that <c>Save</c> routes a <c>.bcal</c> path — by explicit format and by extension inference — to the
+    /// Verifies that <c>Save</c> routes a <c>.bcal</c> path - by explicit format and by extension inference - to the
     /// binary compiler, producing a pack that loads from disk.
     /// </summary>
     [TestMethod]
@@ -64,7 +64,7 @@ public partial class NotableDateDocumentBuilderTests
 
     /// <summary>
     /// Verifies that an invalid document fails binary compilation with the same validation exception as
-    /// <see cref="NotableDateDocumentBuilder.Build()" /> — nothing invalid can reach a pack.
+    /// <see cref="NotableDateDocumentBuilder.Build()" /> - nothing invalid can reach a pack.
     /// </summary>
     [TestMethod]
     public void SaveBinary_WhenDocumentFailsValidation_ShouldThrowNotableDateValidationException()

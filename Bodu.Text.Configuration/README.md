@@ -1,6 +1,6 @@
 # Bodu.Text.Configuration
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 An EditorConfig-inspired, INI-backed configuration document model with parse, resolve, and write phases
 that consumers can compose independently.
@@ -51,17 +51,17 @@ of throwing; `ConfigurationDocument.Save(document, path, writeOptions)` round-tr
 
 ## Where to start
 
-- [Documentation index](../docs/docs/text-configuration/index.md) — high-level pipeline overview.
-- [Concepts](../docs/docs/text-configuration/concepts.md) — vocabulary used throughout the API: documents,
+- [Documentation index](../docs/docs/text-configuration/index.md) - high-level pipeline overview.
+- [Concepts](../docs/docs/text-configuration/concepts.md) - vocabulary used throughout the API: documents,
   views, profiles, target paths, preamble, unset values, diagnostics.
-- [Getting started](../docs/docs/text-configuration/getting-started.md) — worked samples for parsing,
+- [Getting started](../docs/docs/text-configuration/getting-started.md) - worked samples for parsing,
   resolving, typed value access, and round-tripping.
 
 ## Runnable samples
 
 The repository ships offline, `dotnet run`-able sample projects for this package and its
-bridge — the resolve cascade, diagnostics, `unset` dialect handling, save round trips, and
-the `Microsoft.Extensions.Configuration` integration — under
+bridge - the resolve cascade, diagnostics, `unset` dialect handling, save round trips, and
+the `Microsoft.Extensions.Configuration` integration - under
 [`samples/Text.Configuration/`](https://github.com/bslater/bodu/tree/master/samples/Text.Configuration).
 
 ## When to reach for the bridge package

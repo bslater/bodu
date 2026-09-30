@@ -338,14 +338,14 @@ internal partial struct Poly1305Core
     }
 
     /// <summary>
-    /// Clears the whole core — key, accumulator and any held bytes — through a write the compiler cannot elide.
+    /// Clears the whole core - key, accumulator and any held bytes - through a write the compiler cannot elide.
     /// </summary>
     internal void Clear() =>
         CryptographicOperations.ZeroMemory(MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref this, 1)));
 
     /// <summary>
-    /// Selects the kernel for a run of whole blocks. On x64: AVX-512 for long runs, AVX2 for shorter ones — two groups
-    /// at a time from <see cref="Avx2PairedMinimumBytes" /> where AVX-512VL's registers hold them — and the scalar loop
+    /// Selects the kernel for a run of whole blocks. On x64: AVX-512 for long runs, AVX2 for shorter ones - two groups
+    /// at a time from <see cref="Avx2PairedMinimumBytes" /> where AVX-512VL's registers hold them - and the scalar loop
     /// below <see cref="Avx2MinimumBytes" /> or where neither is available. On ARM64: AdvSimd from
     /// <see cref="AdvSimdMinimumBytes" />, and the scalar loop below.
     /// </summary>

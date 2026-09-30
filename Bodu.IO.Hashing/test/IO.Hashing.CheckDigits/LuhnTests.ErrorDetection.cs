@@ -13,7 +13,7 @@ public sealed partial class LuhnTests
 
     /// <summary>
     /// Verifies that Luhn detects every adjacent-digit transposition error in the seed sequence, <i>except</i>
-    /// the well-documented exception in which the two digits sum to nine and differ by nine — namely the
+    /// the well-documented exception in which the two digits sum to nine and differ by nine - namely the
     /// swap of <c>'0'</c> and <c>'9'</c>.
     /// </summary>
     [TestMethod]
@@ -42,7 +42,7 @@ public sealed partial class LuhnTests
     }
 
     /// <summary>
-    /// Verifies that Luhn detects every single-digit substitution error — for each position in the body, every
+    /// Verifies that Luhn detects every single-digit substitution error - for each position in the body, every
     /// distinct replacement digit invalidates the resulting sequence.
     /// </summary>
     [TestMethod]
@@ -78,7 +78,7 @@ public sealed partial class LuhnTests
     public void IsValid_WhenZeroAndNineAreTransposed_ShouldRemainValid()
     {
         Assert.IsTrue(Luhn.IsValid("091".AsSpan()), "Precondition: '091' is a valid Luhn sequence.");
-        Assert.IsTrue(Luhn.IsValid("901".AsSpan()), "Transposing the adjacent 0 and 9 of '091' must remain valid under Luhn — the documented blind spot.");
+        Assert.IsTrue(Luhn.IsValid("901".AsSpan()), "Transposing the adjacent 0 and 9 of '091' must remain valid under Luhn - the documented blind spot.");
     }
 
 }

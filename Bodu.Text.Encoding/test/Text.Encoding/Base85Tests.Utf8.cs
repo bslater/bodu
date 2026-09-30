@@ -14,7 +14,7 @@ public sealed partial class Base85Tests
     /// <summary>
     /// Verifies that <see cref="Base85.DecodeFromUtf8" /> reports <c>bytesConsumed = 0</c> and <c>bytesWritten = 0</c>
     /// on <see cref="OperationStatus.DestinationTooSmall" />. Base85 cannot commit partial output, so the contract is
-    /// "all-or-nothing" — the caller retries with a larger destination.
+    /// "all-or-nothing" - the caller retries with a larger destination.
     /// </summary>
     [TestMethod]
     public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReportNoCommittedProgress()

@@ -69,7 +69,7 @@ public partial class BloomFilterTests
     }
 
     /// <summary>
-    /// Verifies that items hashed through a custom comparer are found via any value the comparer treats as equal —
+    /// Verifies that items hashed through a custom comparer are found via any value the comparer treats as equal -
     /// here a case-insensitive string comparer.
     /// </summary>
     [TestMethod]

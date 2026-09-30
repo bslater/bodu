@@ -7,31 +7,31 @@ title: Bodu.Numerics
 `Bodu.Numerics` is a small numeric-primitives library that ships value
 types covering common but missing gaps in the .NET BCL:
 
-- **[`Fraction<T>`](xref:Bodu.Numerics.Fraction`1)** — an immutable
+- **[`Fraction<T>`](xref:Bodu.Numerics.Fraction`1)** - an immutable
   exact-rational number type generic over any
   `IBinaryInteger<T>` backing component. Use it for accounting,
   precise decimal arithmetic, or anywhere floating-point rounding is
   unacceptable.
-- **[`Interval<T>`](xref:Bodu.Numerics.Interval`1)** — an immutable
+- **[`Interval<T>`](xref:Bodu.Numerics.Interval`1)** - an immutable
   bounded interval generic over any `INumber<T>` endpoint type, with
   independent open or closed endpoints on each side and full set
   algebra. Use it for guarded numeric ranges, validation predicates,
   bucketing, and reservation-style overlap checks.
-- **[`BigDecimal`](xref:Bodu.Numerics.BigDecimal)** — an immutable
+- **[`BigDecimal`](xref:Bodu.Numerics.BigDecimal)** - an immutable
   arbitrary-precision decimal (`BigInteger` unscaled value plus an
   `int` scale). Use it for exact decimal values that exceed
-  `System.Decimal`'s 28–29 digit precision or its exponent range, or
+  `System.Decimal`'s 28-29 digit precision or its exponent range, or
   that must preserve trailing-zero scale.
 - **[`RunningStatistics<T>`](xref:Bodu.Numerics.RunningStatistics`1)**
-  / **[`RunningQuantile<T>`](xref:Bodu.Numerics.RunningQuantile`1)** —
+  / **[`RunningQuantile<T>`](xref:Bodu.Numerics.RunningQuantile`1)** -
   single-pass, constant-space stream accumulators: Welford
   count/min/max/mean/variance with a parallel `Combine` merge, and a
   P² streaming quantile estimator.
 - **[`MovingSum<T>`](xref:Bodu.Numerics.MovingSum`1)** /
-  **[`MovingMinMax<T>`](xref:Bodu.Numerics.MovingMinMax`1)** —
+  **[`MovingMinMax<T>`](xref:Bodu.Numerics.MovingMinMax`1)** -
   rolling-window companions reporting the sum/mean and min/max of the
   most recent N samples in amortized O(1).
-- **[`Complex<T>`](xref:Bodu.Numerics.Complex`1)** — an immutable
+- **[`Complex<T>`](xref:Bodu.Numerics.Complex`1)** - an immutable
   complex number over any `IFloatingPointIeee754<T>` component type
   (`float`, `double`, `Half`); the generic counterpart of the
   `double`-only `System.Numerics.Complex`, with the same arithmetic,
@@ -70,7 +70,7 @@ generic-math interfaces that ship in .NET 8+.
 
 <div class="bodu-card">
   <h3><a href="bigdecimal.md">Working with <code>BigDecimal</code></a></h3>
-  <p>Arbitrary-precision decimal arithmetic — the unscaled-value/scale model, exact add/subtract/multiply, division precision, rounding, and generic-math composition.</p>
+  <p>Arbitrary-precision decimal arithmetic - the unscaled-value/scale model, exact add/subtract/multiply, division precision, rounding, and generic-math composition.</p>
 </div>
 
 <div class="bodu-card">
@@ -80,27 +80,27 @@ generic-math interfaces that ship in .NET 8+.
 
 <div class="bodu-card">
   <h3><a href="json-serialization.md">JSON serialization</a></h3>
-  <p>Round-tripping <code>Fraction&lt;T&gt;</code>, <code>Interval&lt;T&gt;</code>, <code>DiscreteInterval&lt;T&gt;</code>, <code>IntervalSet&lt;T&gt;</code>, <code>BigDecimal</code>, and <code>Complex&lt;T&gt;</code> through <code>System.Text.Json</code> — the <code>Strict</code>, <code>Lenient</code>, and <code>Compact</code> wire shapes and how to register them.</p>
+  <p>Round-tripping <code>Fraction&lt;T&gt;</code>, <code>Interval&lt;T&gt;</code>, <code>DiscreteInterval&lt;T&gt;</code>, <code>IntervalSet&lt;T&gt;</code>, <code>BigDecimal</code>, and <code>Complex&lt;T&gt;</code> through <code>System.Text.Json</code> - the <code>Strict</code>, <code>Lenient</code>, and <code>Compact</code> wire shapes and how to register them.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="interval-algebra.md">Interval algebra</a></h3>
-  <p>The set-algebra surface of <code>Interval&lt;T&gt;</code> — intersection, union, difference, symmetric difference, unbounded bounds, the <code>&amp;</code> / <code>|</code> operators, and the empty-interval rules that make the operations total.</p>
+  <p>The set-algebra surface of <code>Interval&lt;T&gt;</code> - intersection, union, difference, symmetric difference, unbounded bounds, the <code>&amp;</code> / <code>|</code> operators, and the empty-interval rules that make the operations total.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="discrete-intervals.md">Discrete integer intervals</a></h3>
-  <p><code>DiscreteInterval&lt;T&gt;</code> — the integer-domain interval with successor-aware emptiness and adjacency, distinct from the continuous <code>Interval&lt;T&gt;</code>.</p>
+  <p><code>DiscreteInterval&lt;T&gt;</code> - the integer-domain interval with successor-aware emptiness and adjacency, distinct from the continuous <code>Interval&lt;T&gt;</code>.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="interval-algebra.md#disconnected-sets-with-intervalsett">Disconnected sets</a></h3>
-  <p><code>IntervalSet&lt;T&gt;</code> — a normalized union of disjoint intervals with N-ary union, intersection, difference, and complement over the whole line.</p>
+  <p><code>IntervalSet&lt;T&gt;</code> - a normalized union of disjoint intervals with N-ary union, intersection, difference, and complement over the whole line.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="running-statistics.md">Running and moving statistics</a></h3>
-  <p><code>RunningStatistics&lt;T&gt;</code>, <code>RunningQuantile&lt;T&gt;</code>, and the rolling-window <code>MovingSum&lt;T&gt;</code> / <code>MovingMinMax&lt;T&gt;</code> — single-pass stream summaries, the mutable-struct usage rules, and the P² estimator's behaviour.</p>
+  <p><code>RunningStatistics&lt;T&gt;</code>, <code>RunningQuantile&lt;T&gt;</code>, and the rolling-window <code>MovingSum&lt;T&gt;</code> / <code>MovingMinMax&lt;T&gt;</code> - single-pass stream summaries, the mutable-struct usage rules, and the P² estimator's behaviour.</p>
 </div>
 
 <div class="bodu-card">
@@ -112,19 +112,19 @@ generic-math interfaces that ship in .NET 8+.
 
 ## Reading path
 
-1. **[Working with `Fraction<T>`](fraction.md)** — the rational type and its arithmetic surface.
-2. **[Formatting and parsing `Fraction<T>`](formatting-and-parsing.md)** — once values are flowing, control how they render and what text round-trips.
-3. **[Working with `Interval<T>`](interval.md)** — the interval type, independent of fractions; read in any order.
-4. **[Running and moving statistics](running-statistics.md)** — the stream accumulators and rolling windows; independent of the other types.
-5. **[Working with `Complex<T>`](complex.md)** — the generic complex number; independent of the other types.
-6. **[JSON serialization](json-serialization.md)** — persist the value types; read last, after the value semantics are familiar.
+1. **[Working with `Fraction<T>`](fraction.md)** - the rational type and its arithmetic surface.
+2. **[Formatting and parsing `Fraction<T>`](formatting-and-parsing.md)** - once values are flowing, control how they render and what text round-trips.
+3. **[Working with `Interval<T>`](interval.md)** - the interval type, independent of fractions; read in any order.
+4. **[Running and moving statistics](running-statistics.md)** - the stream accumulators and rolling windows; independent of the other types.
+5. **[Working with `Complex<T>`](complex.md)** - the generic complex number; independent of the other types.
+6. **[JSON serialization](json-serialization.md)** - persist the value types; read last, after the value semantics are familiar.
 
 ## See also
 
-- [Bodu.Numerics introduction](../../docs/numerics/index.md) — namespaces, headline types, scenarios.
-- [Bodu.Numerics getting started](../../docs/numerics/getting-started.md) — install + minimal samples.
-- [Numerics & Financial topic guides](../topics/numerics-and-financial.md) — the topic map; the complete numerics guide list is this page, and the financial one is [its index](../financial/index.md).
-- [Numerics & Financial topic overview](../../docs/topics/numerics-and-financial.md) — package boundaries and the decision table.
+- [Bodu.Numerics introduction](../../docs/numerics/index.md) - namespaces, headline types, scenarios.
+- [Bodu.Numerics getting started](../../docs/numerics/getting-started.md) - install + minimal samples.
+- [Numerics & Financial topic guides](../topics/numerics-and-financial.md) - the topic map; the complete numerics guide list is this page, and the financial one is [its index](../financial/index.md).
+- [Numerics & Financial topic overview](../../docs/topics/numerics-and-financial.md) - package boundaries and the decision table.
 - [`Fraction<T>` API reference](xref:Bodu.Numerics.Fraction`1)
 - [`Interval<T>` API reference](xref:Bodu.Numerics.Interval`1)
 - [`BigDecimal` API reference](xref:Bodu.Numerics.BigDecimal)
@@ -132,5 +132,5 @@ generic-math interfaces that ship in .NET 8+.
 - [`RunningStatistics<T>` API reference](xref:Bodu.Numerics.RunningStatistics`1)
 - [`RunningQuantile<T>` API reference](xref:Bodu.Numerics.RunningQuantile`1)
 - [`Interval` static factory helpers](xref:Bodu.Numerics.Interval)
-- [`Bodu.Financial` overview](../financial/index.md) — money,
+- [`Bodu.Financial` overview](../financial/index.md) - money,
   currency, FX.

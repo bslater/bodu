@@ -13,7 +13,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <typeparam name="TTest">The concrete test type inheriting this class.</typeparam>
 /// <typeparam name="TAlgorithm">The check-digit algorithm under test.</typeparam>
 /// <remarks>
-/// The harness drives assertions that every check-digit algorithm must satisfy — streaming-equivalence with the
+/// The harness drives assertions that every check-digit algorithm must satisfy - streaming-equivalence with the
 /// static <c>Compute</c> helper, idempotent <c>GetCurrentCheckDigit</c> reads, <c>Reset</c> semantics,
 /// round-trip between <c>Compute</c> and <c>IsValid</c>, digit-only input validation, and a data-driven set of
 /// known-answer vectors supplied through

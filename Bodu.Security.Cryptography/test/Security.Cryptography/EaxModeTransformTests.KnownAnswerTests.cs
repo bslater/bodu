@@ -11,7 +11,7 @@ using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 
 namespace Bodu.Security.Cryptography;
 
-// Known-answer vectors — Bellare, Rogaway and Wagner, "The EAX Mode of Operation" (FSE 2004),
+// Known-answer vectors - Bellare, Rogaway and Wagner, "The EAX Mode of Operation" (FSE 2004),
 // Appendix G. All vectors use AES-128 with a 16-byte nonce, 8-byte header (AAD), and
 // ciphertext encoded as C || T (ciphertext followed by the 16-byte authentication tag).
 //
@@ -20,8 +20,8 @@ public sealed partial class EaxModeTransformTests
 {
     private static readonly AeadKnownAnswer[] KnownAnswers =
     [
-        // Vector 1 — empty message
-        Eax("EAX paper App. G #1 — empty message",
+        // Vector 1 - empty message
+        Eax("EAX paper App. G #1 - empty message",
             keyHex: "233952DEE4D5ED5F9B9C6D6FF80FF478",
             nonceHex: "62EC67F9C3A4A407FCB2A8C49031A8B3",
             aadHex: "6BFB914FD07EAE6B",
@@ -29,8 +29,8 @@ public sealed partial class EaxModeTransformTests
             ctHex: "",
             tagHex: "E037830E8389F27B025A2D6527E79D01"),
 
-        // Vector 2 — 2-byte message
-        Eax("EAX paper App. G #2 — 2-byte message",
+        // Vector 2 - 2-byte message
+        Eax("EAX paper App. G #2 - 2-byte message",
             keyHex: "91945D3F4DCBEE0BF45EF52255F095A4",
             nonceHex: "BECAF043B0A23D843194BA972C66DEBD",
             aadHex: "FA3BFD4806EB53FA",
@@ -38,8 +38,8 @@ public sealed partial class EaxModeTransformTests
             ctHex: "19DD",
             tagHex: "5C4C9331049D0BDAB0277408F67967E5"),
 
-        // Vector 3 — 5-byte message
-        Eax("EAX paper App. G #3 — 5-byte message",
+        // Vector 3 - 5-byte message
+        Eax("EAX paper App. G #3 - 5-byte message",
             keyHex: "01F74AD64077F2E704C0F60ADA3DD523",
             nonceHex: "70C3DB4F0D26368400A10ED05D2BFF5E",
             aadHex: "234A3463C1264AC6",
@@ -47,8 +47,8 @@ public sealed partial class EaxModeTransformTests
             ctHex: "D851D5BAE0",
             tagHex: "3A59F238A23E39199DC9266626C40F80"),
 
-        // Vector 4 — 5-byte message
-        Eax("EAX paper App. G #4 — 5-byte message",
+        // Vector 4 - 5-byte message
+        Eax("EAX paper App. G #4 - 5-byte message",
             keyHex: "D07CF6CBB7F313BDDE66B727AFD3C5E8",
             nonceHex: "8408DFFF3C1A2B1292DC199E46B7D617",
             aadHex: "33CCE2EABFF5A79D",
@@ -56,8 +56,8 @@ public sealed partial class EaxModeTransformTests
             ctHex: "632A9D131A",
             tagHex: "D4C168A4225D8E1FF755939974A7BEDE"),
 
-        // Vector 5 — 6-byte message
-        Eax("EAX paper App. G #5 — 6-byte message",
+        // Vector 5 - 6-byte message
+        Eax("EAX paper App. G #5 - 6-byte message",
             keyHex: "35B6D0580005BBC12B0587124557D2C2",
             nonceHex: "FDB6B06676EEDC5C61D74276E1F8E816",
             aadHex: "AEB96EAEBE2970E9",
@@ -65,8 +65,8 @@ public sealed partial class EaxModeTransformTests
             ctHex: "071DFE16C675",
             tagHex: "CB0677E536F73AFE6A14B74EE49844DD"),
 
-        // Vector 6 — 12-byte message
-        Eax("EAX paper App. G #6 — 12-byte message",
+        // Vector 6 - 12-byte message
+        Eax("EAX paper App. G #6 - 12-byte message",
             keyHex: "BD8E6E11475E60B268784C38C62FEB22",
             nonceHex: "6EAC5C93072D8E8513F750935E46DA1B",
             aadHex: "D4482D1CA78DCE0F",
@@ -74,8 +74,8 @@ public sealed partial class EaxModeTransformTests
             ctHex: "835BB4F15D743E350E728414",
             tagHex: "ABB8644FD6CCB86947C5E10590210A4F"),
 
-        // Vector 7 — 17-byte message
-        Eax("EAX paper App. G #7 — 17-byte message",
+        // Vector 7 - 17-byte message
+        Eax("EAX paper App. G #7 - 17-byte message",
             keyHex: "7C77D6E813BED5AC98BAA417477A2E7D",
             nonceHex: "1A8C98DCD73D38393B2BF1569DEEFC19",
             aadHex: "65D2017990D62528",
@@ -83,8 +83,8 @@ public sealed partial class EaxModeTransformTests
             ctHex: "02083E3979DA014812F59F11D52630DA30",
             tagHex: "137327D10649B0AA6E1C181DB617D7F2"),
 
-        // Vector 8 — 18-byte message
-        Eax("EAX paper App. G #8 — 18-byte message",
+        // Vector 8 - 18-byte message
+        Eax("EAX paper App. G #8 - 18-byte message",
             keyHex: "5FFF20CAFAB119CA2FC73549E20F5B0D",
             nonceHex: "DDE59B97D722156D4D9AFF2BC7559826",
             aadHex: "54B9F04E6A09189A",
@@ -92,8 +92,8 @@ public sealed partial class EaxModeTransformTests
             ctHex: "2EC47B2C4954A489AFC7BA4897EDCDAE8CC3",
             tagHex: "3B60450599BD02C96382902AEF7F832A"),
 
-        // Vector 9 — 18-byte message
-        Eax("EAX paper App. G #9 — 18-byte message",
+        // Vector 9 - 18-byte message
+        Eax("EAX paper App. G #9 - 18-byte message",
             keyHex: "A4A4782BCFFD3EC5E7EF6D8C34A56123",
             nonceHex: "B781FCF2F75FA5A8DE97A9CA48E522EC",
             aadHex: "899A175897561D7E",
@@ -101,8 +101,8 @@ public sealed partial class EaxModeTransformTests
             ctHex: "0DE18FD0FDD91E7AF19F1D8EE8733938B1E8",
             tagHex: "E7F6D2231618102FDB7FE55FF1991700"),
 
-        // Vector 10 — 21-byte message
-        Eax("EAX paper App. G #10 — 21-byte message",
+        // Vector 10 - 21-byte message
+        Eax("EAX paper App. G #10 - 21-byte message",
             keyHex: "8395FCF1E95BEBD697BD010BC766AAC3",
             nonceHex: "22E7ADD93CFC6393C57EC0B3C17D6B44",
             aadHex: "126735FCC320D25A",

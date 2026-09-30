@@ -48,7 +48,7 @@ public sealed partial class XtsModeTransformTests
 
         transform.Transform(input, output, encrypt: true);
 
-        // T_0 = tweakCipher.Encrypt(iv) — counted against tweakCipher, not dataCipher.
+        // T_0 = tweakCipher.Encrypt(iv) - counted against tweakCipher, not dataCipher.
         // dataCipher encrypts once per data block: 2 blocks → 2 calls.
         Assert.AreEqual(2, cipher.EncryptBlockCount,
             "XTS encryption must call the dataCipher's encrypt primitive once per data block.");
@@ -73,7 +73,7 @@ public sealed partial class XtsModeTransformTests
 
         transform.Transform(input, output, encrypt: false);
 
-        // T_0 = tweakCipher.Encrypt(iv) — not counted against cipher (dataCipher).
+        // T_0 = tweakCipher.Encrypt(iv) - not counted against cipher (dataCipher).
         Assert.AreEqual(0, cipher.EncryptBlockCount,
             "XTS decryption must not call the dataCipher's encrypt primitive (T_0 is on tweakCipher).");
         Assert.AreEqual(2, cipher.DecryptBlockCount,
@@ -222,7 +222,7 @@ public sealed partial class XtsModeTransformTests
 
     /// <summary>
     /// Transforms one data unit with XTS one block at a time: <c>T = E_K2(tweak)</c>, then each block becomes
-    /// <c>E_K1(block ⊕ T) ⊕ T</c> — or the decryption — and <c>T</c> is multiplied by <c>α</c>.
+    /// <c>E_K1(block ⊕ T) ⊕ T</c> - or the decryption - and <c>T</c> is multiplied by <c>α</c>.
     /// </summary>
     /// <param name="dataKey">The data key <c>K1</c>.</param>
     /// <param name="tweakKey">The tweak key <c>K2</c>.</param>

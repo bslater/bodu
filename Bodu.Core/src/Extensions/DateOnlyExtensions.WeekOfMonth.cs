@@ -80,17 +80,17 @@ public static partial class DateOnlyExtensions
     /// the <see cref="System.Globalization.Calendar.GetWeekOfYear" /> family applies to years:
     /// </para>
     /// <para>
-    /// <see cref="CalendarWeekRule.FirstDay" /> — week 1 begins on the first day of the month, however short that
+    /// <see cref="CalendarWeekRule.FirstDay" /> - week 1 begins on the first day of the month, however short that
     /// partial week is; each subsequent week begins on the next <paramref name="weekStart" />.
     /// </para>
     /// <para>
-    /// <see cref="CalendarWeekRule.FirstFullWeek" /> — week 1 begins on the first <paramref name="weekStart" /> on or
+    /// <see cref="CalendarWeekRule.FirstFullWeek" /> - week 1 begins on the first <paramref name="weekStart" /> on or
     /// after the first day of the month. Dates before that boundary belong to the trailing week of the previous month
     /// and return that week's number (for example, 1 March 2024 with a Sunday week start returns <c>4</c>, the week
     /// number of the week beginning Sunday 25 February).
     /// </para>
     /// <para>
-    /// <see cref="CalendarWeekRule.FirstFourDayWeek" /> — the week containing the first day of the month is week 1 when
+    /// <see cref="CalendarWeekRule.FirstFourDayWeek" /> - the week containing the first day of the month is week 1 when
     /// at least four of its days fall in that month; otherwise week 1 begins on the following
     /// <paramref name="weekStart" /> and the leading dates resolve to the previous month's trailing week, as for
     /// <see cref="CalendarWeekRule.FirstFullWeek" />.

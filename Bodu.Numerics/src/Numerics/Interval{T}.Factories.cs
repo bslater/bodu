@@ -9,7 +9,7 @@ namespace Bodu.Numerics;
 public readonly partial struct Interval<T>
 {
     /// <summary>
-    /// Gets the canonical empty interval — the interval that contains no values. Equal by
+    /// Gets the canonical empty interval - the interval that contains no values. Equal by
     /// <see cref="IEquatable{T}.Equals(T)" /> to every other empty <see cref="Interval{T}" /> over the same
     /// <typeparamref name="T" />.
     /// </summary>
@@ -41,14 +41,14 @@ public readonly partial struct Interval<T>
         new(T.Zero, T.Zero, lowerInclusive: false, upperInclusive: false);
 
     /// <summary>
-    /// Creates a closed-closed interval — <c>[lower, upper]</c> — that includes both endpoints.
+    /// Creates a closed-closed interval - <c>[lower, upper]</c> - that includes both endpoints.
     /// </summary>
     /// <param name="lower">The lower endpoint.</param>
     /// <param name="upper">The upper endpoint.</param>
     /// <returns>A closed-closed interval over the supplied bounds.</returns>
     /// <remarks>
     /// <para>
-    /// The closed-closed shape — also called <i>inclusive</i> — is the natural choice for ranges where both boundary
+    /// The closed-closed shape - also called <i>inclusive</i> - is the natural choice for ranges where both boundary
     /// values are valid members of the set: a percentage in <c>[0, 100]</c>, a die roll in <c>[1, 6]</c>, a thermometer
     /// reading in <c>[-273.15, +∞)</c>. Prefer <see cref="ClosedOpen(T, T)" /> for spans, slices, and scheduling
     /// windows where adjacent ranges should partition cleanly.
@@ -63,8 +63,8 @@ public readonly partial struct Interval<T>
     /// <code language="csharp">
     ///<![CDATA[
     /// var percentage = Interval<int>.Closed(0, 100);   // [0, 100]
-    /// percentage.Contains(0);                          // True — closed lower
-    /// percentage.Contains(100);                        // True — closed upper
+    /// percentage.Contains(0);                          // True - closed lower
+    /// percentage.Contains(100);                        // True - closed upper
     /// percentage.ToString();                           // "[0, 100]"
     ///
     /// // Inverted bounds collapse to Empty.
@@ -76,26 +76,26 @@ public readonly partial struct Interval<T>
         new(lower, upper, lowerInclusive: true, upperInclusive: true);
 
     /// <summary>
-    /// Creates an open-open interval — <c>(lower, upper)</c> — that excludes both endpoints.
+    /// Creates an open-open interval - <c>(lower, upper)</c> - that excludes both endpoints.
     /// </summary>
     /// <param name="lower">The lower endpoint.</param>
     /// <param name="upper">The upper endpoint.</param>
     /// <returns>An open-open interval over the supplied bounds.</returns>
     /// <remarks>
     /// <para>
-    /// The open-open shape — also called <i>exclusive</i> — is the natural choice for strict inequalities such as
+    /// The open-open shape - also called <i>exclusive</i> - is the natural choice for strict inequalities such as
     /// <c>0 &lt; rate &lt; 1</c> or "between but not at" semantics where neither boundary value is itself a member.
     /// </para>
     /// <para>
     /// When <paramref name="lower" /> is greater than or equal to <paramref name="upper" />, the returned interval is
-    /// empty — there is no value strictly between two equal or inverted bounds.
+    /// empty - there is no value strictly between two equal or inverted bounds.
     /// </para>
     /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
     /// var strictlyPositive = Interval<double>.Open(0.0, double.PositiveInfinity);  // (0, +∞)
-    /// strictlyPositive.Contains(0.0);                                              // False — open lower
+    /// strictlyPositive.Contains(0.0);                                              // False - open lower
     /// strictlyPositive.Contains(1e-300);                                           // True
     ///
     /// // Equal bounds with both endpoints open are empty.
@@ -107,7 +107,7 @@ public readonly partial struct Interval<T>
         new(lower, upper, lowerInclusive: false, upperInclusive: false);
 
     /// <summary>
-    /// Creates a closed-open interval — <c>[lower, upper)</c> — that includes the lower endpoint and excludes the upper
+    /// Creates a closed-open interval - <c>[lower, upper)</c> - that includes the lower endpoint and excludes the upper
     /// endpoint.
     /// </summary>
     /// <param name="lower">The lower endpoint (included).</param>
@@ -117,8 +117,8 @@ public readonly partial struct Interval<T>
     /// <para>
     /// The closed-open shape is the most common in programming contexts: a range starting at an inclusive lower bound
     /// and ending before an exclusive upper bound matches the conventions of <c>System.Range</c>, LINQ's
-    /// <c>Enumerable.Range</c>, and most iterator protocols. Adjacent closed-open intervals partition a span cleanly —
-    /// <c>[0, 90)</c> and <c>[90, 181)</c> together cover exactly <c>[0, 181)</c> with no overlap and no gap — so this
+    /// <c>Enumerable.Range</c>, and most iterator protocols. Adjacent closed-open intervals partition a span cleanly -
+    /// <c>[0, 90)</c> and <c>[90, 181)</c> together cover exactly <c>[0, 181)</c> with no overlap and no gap - so this
     /// shape is the default choice for scheduling windows, bucket boundaries, and time slots.
     /// </para>
     /// </remarks>
@@ -126,9 +126,9 @@ public readonly partial struct Interval<T>
     /// <code language="csharp">
     ///<![CDATA[
     /// var window = Interval<int>.ClosedOpen(0, 100);   // [0, 100)
-    /// window.Contains(0);                              // True  — closed lower
+    /// window.Contains(0);                              // True  - closed lower
     /// window.Contains(99);                             // True
-    /// window.Contains(100);                            // False — open upper
+    /// window.Contains(100);                            // False - open upper
     ///
     /// // Adjacent half-open windows merge with no overlap and no gap.
     /// var q1 = Interval<int>.ClosedOpen(0, 90);
@@ -141,7 +141,7 @@ public readonly partial struct Interval<T>
         new(lower, upper, lowerInclusive: true, upperInclusive: false);
 
     /// <summary>
-    /// Creates an open-closed interval — <c>(lower, upper]</c> — that excludes the lower endpoint and includes the
+    /// Creates an open-closed interval - <c>(lower, upper]</c> - that excludes the lower endpoint and includes the
     /// upper endpoint.
     /// </summary>
     /// <param name="lower">The lower endpoint (excluded).</param>
@@ -150,7 +150,7 @@ public readonly partial struct Interval<T>
     /// <remarks>
     /// <para>
     /// The open-closed shape is the mirror image of <see cref="ClosedOpen(T, T)" /> and the natural choice for ranges
-    /// expressed as "strictly greater than X, up to and including Y" — a billing tier above a threshold, a histogram
+    /// expressed as "strictly greater than X, up to and including Y" - a billing tier above a threshold, a histogram
     /// bin that owns its upper edge, or a tax bracket that exits at one boundary and enters at the next.
     /// </para>
     /// </remarks>
@@ -159,8 +159,8 @@ public readonly partial struct Interval<T>
     ///<![CDATA[
     /// // Billing tier: anything above $1,000 up to and including $10,000.
     /// var tier = Interval<decimal>.OpenClosed(1000m, 10_000m);   // (1000, 10000]
-    /// tier.Contains(1000m);                                       // False — open lower
-    /// tier.Contains(10_000m);                                     // True  — closed upper
+    /// tier.Contains(1000m);                                       // False - open lower
+    /// tier.Contains(10_000m);                                     // True  - closed upper
     /// tier.ToString();                                            // "(1000, 10000]"
     ///]]>
     /// </code>
@@ -169,7 +169,7 @@ public readonly partial struct Interval<T>
         new(lower, upper, lowerInclusive: false, upperInclusive: true);
 
     /// <summary>
-    /// Creates a degenerate interval that contains the single value <paramref name="value" /> — equivalent to
+    /// Creates a degenerate interval that contains the single value <paramref name="value" /> - equivalent to
     /// <c>[value, value]</c>.
     /// </summary>
     /// <param name="value">The single value the interval contains.</param>
@@ -199,7 +199,7 @@ public readonly partial struct Interval<T>
         new(value, value, lowerInclusive: true, upperInclusive: true);
 
     /// <summary>
-    /// Gets the unbounded interval <c>(-&#x221E;, +&#x221E;)</c> — the interval that contains every value of
+    /// Gets the unbounded interval <c>(-&#x221E;, +&#x221E;)</c> - the interval that contains every value of
     /// <typeparamref name="T" />.
     /// </summary>
     /// <value>
@@ -219,7 +219,7 @@ public readonly partial struct Interval<T>
         new(T.Zero, T.Zero, (byte)(LowerUnboundedFlag | UpperUnboundedFlag));
 
     /// <summary>
-    /// Creates the lower-bounded interval <c>[lower, +&#x221E;)</c> — every value greater than or equal to
+    /// Creates the lower-bounded interval <c>[lower, +&#x221E;)</c> - every value greater than or equal to
     /// <paramref name="lower" />.
     /// </summary>
     /// <param name="lower">The inclusive lower endpoint.</param>
@@ -237,7 +237,7 @@ public readonly partial struct Interval<T>
         new(lower, T.Zero, (byte)(LowerInclusiveFlag | UpperUnboundedFlag));
 
     /// <summary>
-    /// Creates the lower-bounded interval <c>(lower, +&#x221E;)</c> — every value strictly greater than
+    /// Creates the lower-bounded interval <c>(lower, +&#x221E;)</c> - every value strictly greater than
     /// <paramref name="lower" />.
     /// </summary>
     /// <param name="lower">The exclusive lower endpoint.</param>
@@ -246,7 +246,7 @@ public readonly partial struct Interval<T>
     /// <code language="csharp">
     ///<![CDATA[
     /// var positive = Interval<double>.GreaterThan(0.0);   // (0, +∞)
-    /// positive.Contains(0.0);                             // False — open lower
+    /// positive.Contains(0.0);                             // False - open lower
     /// positive.ToString();                                // "(0, +∞)"
     ///]]>
     /// </code>
@@ -255,7 +255,7 @@ public readonly partial struct Interval<T>
         new(lower, T.Zero, UpperUnboundedFlag);
 
     /// <summary>
-    /// Creates the upper-bounded interval <c>(-&#x221E;, upper]</c> — every value less than or equal to
+    /// Creates the upper-bounded interval <c>(-&#x221E;, upper]</c> - every value less than or equal to
     /// <paramref name="upper" />.
     /// </summary>
     /// <param name="upper">The inclusive upper endpoint.</param>
@@ -264,7 +264,7 @@ public readonly partial struct Interval<T>
     /// <code language="csharp">
     ///<![CDATA[
     /// var capped = Interval<double>.AtMost(5.0);   // (-∞, 5]
-    /// capped.Contains(5.0);                        // True — closed upper
+    /// capped.Contains(5.0);                        // True - closed upper
     /// capped.ToString();                           // "(-∞, 5]"
     ///]]>
     /// </code>
@@ -273,7 +273,7 @@ public readonly partial struct Interval<T>
         new(T.Zero, upper, (byte)(LowerUnboundedFlag | UpperInclusiveFlag));
 
     /// <summary>
-    /// Creates the upper-bounded interval <c>(-&#x221E;, upper)</c> — every value strictly less than
+    /// Creates the upper-bounded interval <c>(-&#x221E;, upper)</c> - every value strictly less than
     /// <paramref name="upper" />.
     /// </summary>
     /// <param name="upper">The exclusive upper endpoint.</param>
@@ -282,7 +282,7 @@ public readonly partial struct Interval<T>
     /// <code language="csharp">
     ///<![CDATA[
     /// var belowFive = Interval<double>.LessThan(5.0);   // (-∞, 5)
-    /// belowFive.Contains(5.0);                          // False — open upper
+    /// belowFive.Contains(5.0);                          // False - open upper
     /// belowFive.ToString();                             // "(-∞, 5)"
     ///]]>
     /// </code>

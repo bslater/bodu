@@ -61,7 +61,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 
     /// <summary>
     /// Verifies that <see cref="NonCryptographicHashAlgorithm.TryGetCurrentHash(Span{byte}, out int)" /> does
-    /// not mutate accumulator state — subsequent calls return the same digest.
+    /// not mutate accumulator state - subsequent calls return the same digest.
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]

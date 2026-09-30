@@ -79,7 +79,7 @@ public abstract class RateCacheBase<TOptions>
             return Array.Empty<CachedRate>();
 
         // Backends persist MergeRows output, so on the hot read path every stored row is still fresh, valid, and
-        // date-ordered — serve the stored list as-is instead of copying it. Stored lists are exposed read-only by the
+        // date-ordered - serve the stored list as-is instead of copying it. Stored lists are exposed read-only by the
         // in-box backends, so this cannot leak mutable cache state.
         return RateCacheRules.IsAllFreshOrdered(entries, duration, asOf)
             ? entries
@@ -172,8 +172,8 @@ public abstract class RateCacheBase<TOptions>
     /// The stored state, or <see cref="CachePairState.Empty" /> when none is available or the read fails.
     /// </returns>
     /// <remarks>
-    /// Declared <see langword="internal" /> so the storage seam is open to the backends in this assembly and — through
-    /// the existing <c>InternalsVisibleTo</c> grants — to the companion distributed package, which stores a pair's
+    /// Declared <see langword="internal" /> so the storage seam is open to the backends in this assembly and - through
+    /// the existing <c>InternalsVisibleTo</c> grants - to the companion distributed package, which stores a pair's
     /// whole state as one unit and derives from this base. A backend whose halves are independently addressable (the
     /// SQLite cache's two tables) or an unrelated third-party backend implements the public <see cref="IRateCache" />
     /// contract directly instead, as <see cref="NullRateCache" /> does.
@@ -227,7 +227,7 @@ public abstract class RateCacheBase<TOptions>
     /// </returns>
     /// <remarks>
     /// The default implementation completes synchronously over <see cref="ReadState" />, so backends with synchronous
-    /// storage pay nothing; a backend with genuinely asynchronous storage — the distributed cache — overrides this to
+    /// storage pay nothing; a backend with genuinely asynchronous storage - the distributed cache - overrides this to
     /// avoid blocking a thread on network I/O.
     /// </remarks>
     internal virtual ValueTask<CachePairState> ReadStateAsync(CurrencyPair pair, CancellationToken cancellationToken) =>

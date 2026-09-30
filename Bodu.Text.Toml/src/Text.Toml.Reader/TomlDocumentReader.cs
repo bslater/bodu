@@ -15,8 +15,8 @@ namespace Bodu.Text.Toml.Reader;
 /// <para>
 /// TOML cannot be tokenized into tree order in a single forward pass: out-of-line <c>[table]</c> and
 /// <c>[[array-of-tables]]</c> headers contribute to structure declared elsewhere in the document. The constructor
-/// therefore parses the entire document up front — scanning the UTF-8 bytes with <see cref="Utf8TomlReader" /> and
-/// enforcing TOML's key, value, table, and array-of-tables rules through <see cref="TomlDocumentBuilder" /> — into a
+/// therefore parses the entire document up front - scanning the UTF-8 bytes with <see cref="Utf8TomlReader" /> and
+/// enforcing TOML's key, value, table, and array-of-tables rules through <see cref="TomlDocumentBuilder" /> - into a
 /// flat row store, and <see cref="Read" /> advances a depth-first cursor over that store, emitting the normalized token
 /// stream on demand rather than materializing it. This type walks a parsed document; <see cref="Utf8TomlReader" />
 /// reads the UTF-8 source in document order.
@@ -67,7 +67,7 @@ public ref struct TomlDocumentReader
     /// <summary>The kind of the current token.</summary>
     private TomlTokenType _tokenType;
 
-    /// <summary>The string carried by the current token: the key for a property name, or the decoded string for a string scalar. It is <see langword="null" /> for a value-type scalar — whose value is decoded on demand from the current row — and for a structural token.</summary>
+    /// <summary>The string carried by the current token: the key for a property name, or the decoded string for a string scalar. It is <see langword="null" /> for a value-type scalar - whose value is decoded on demand from the current row - and for a structural token.</summary>
     private string? _value;
 
     /// <summary>The zero-based source byte offset at which the current token begins.</summary>
@@ -198,7 +198,7 @@ public ref struct TomlDocumentReader
     /// </summary>
     /// <param name="exception">The exception to annotate with the current token's position.</param>
     /// <remarks>
-    /// The guard on an existing offset ensures the innermost converter — closest to the offending value — wins as the
+    /// The guard on an existing offset ensures the innermost converter - closest to the offending value - wins as the
     /// exception unwinds through the enclosing container converters. The line and column count UTF-8 bytes, matching
     /// <see cref="TomlFormatException" />.
     /// </remarks>

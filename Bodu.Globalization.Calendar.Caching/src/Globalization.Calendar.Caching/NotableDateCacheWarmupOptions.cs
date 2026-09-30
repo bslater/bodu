@@ -13,8 +13,8 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// and the span of civil years they are warmed over.
 /// </summary>
 /// <remarks>
-/// The warmed span defaults to a rolling window around the current UTC civil year — <c>[year −
-/// <see cref="YearsBehind" />, year + <see cref="YearsAhead" />]</c>, evaluated when the warm-up runs — so a long-lived
+/// The warmed span defaults to a rolling window around the current UTC civil year - <c>[year −
+/// <see cref="YearsBehind" />, year + <see cref="YearsAhead" />]</c>, evaluated when the warm-up runs - so a long-lived
 /// deployment always warms the years users actually query. Either bound can be pinned with <see cref="FirstYear" /> or
 /// <see cref="LastYear" />; a pinned bound replaces its rolling default independently of the other.
 /// </remarks>

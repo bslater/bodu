@@ -10,8 +10,8 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Contains unit tests for the <see cref="Skein1024" /> hash algorithm across every supported
-/// (output size, operating mode) combination — the three <see cref="Skein1024TestVariant" /> hash variants and the
-/// matching Skein-MAC-1024 variants — driven from the Skein 1.3 / NIST CD known-answer test vectors and the
+/// (output size, operating mode) combination - the three <see cref="Skein1024TestVariant" /> hash variants and the
+/// matching Skein-MAC-1024 variants - driven from the Skein 1.3 / NIST CD known-answer test vectors and the
 /// Appendix B initial chaining values.
 /// </summary>
 [TestClass]
@@ -64,7 +64,7 @@ public partial class Skein1024Tests
 
     /// <inheritdoc />
     /// <remarks>
-    /// See <see cref="Skein256Tests.GetExpectedHashesForIncrementalInput" /> — the Skein 1.3 KAT files do not
+    /// See <see cref="Skein256Tests.GetExpectedHashesForIncrementalInput" /> - the Skein 1.3 KAT files do not
     /// publish a dense byte-by-byte sequence; the data-driven keyed KAT path supplies the reference coverage.
     /// </remarks>
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(Skein1024TestVariant variant) =>

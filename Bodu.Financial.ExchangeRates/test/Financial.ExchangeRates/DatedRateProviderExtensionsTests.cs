@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Verifies the behaviour of the <see cref="DatedRateProviderExtensions" /> materializers when the source is a
-/// <see cref="WebRateProvider" /> — the cross-package half of the suite that lives in
+/// <see cref="WebRateProvider" /> - the cross-package half of the suite that lives in
 /// <c>Bodu.Financial.Test</c>.
 /// </summary>
 [TestClass]

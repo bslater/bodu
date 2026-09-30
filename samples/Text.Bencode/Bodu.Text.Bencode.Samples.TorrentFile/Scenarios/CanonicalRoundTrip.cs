@@ -13,7 +13,7 @@ namespace Bodu.Text.Bencode.Samples.TorrentFile.Scenarios;
 
 /// <summary>
 /// Demonstrates Bencode's defining property: the encoding is canonical. A dictionary's keys must
-/// appear in ascending raw-byte order, so a value has exactly one valid encoding — which is why
+/// appear in ascending raw-byte order, so a value has exactly one valid encoding - which is why
 /// parse → re-emit reproduces the input byte for byte, why the writer sorts each dictionary's
 /// entries as it closes, and why the strict reader rejects unsorted input.
 /// </summary>

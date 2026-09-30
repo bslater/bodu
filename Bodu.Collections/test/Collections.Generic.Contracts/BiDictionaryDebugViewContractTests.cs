@@ -8,8 +8,8 @@ namespace Bodu.Collections.Generic.Contracts;
 
 /// <summary>
 /// Drives <see cref="DebugViewContractTests{TCollection}" /> against <see cref="BiDictionary{TKey, TValue}" />.
-/// Asserts the standard Bodu debugger-display contract — DebuggerDisplay, DebuggerTypeProxy, and an
-/// instance-constructible proxy — is present and wired up correctly.
+/// Asserts the standard Bodu debugger-display contract - DebuggerDisplay, DebuggerTypeProxy, and an
+/// instance-constructible proxy - is present and wired up correctly.
 /// </summary>
 [TestClass]
 public sealed class BiDictionaryDebugViewContractTests

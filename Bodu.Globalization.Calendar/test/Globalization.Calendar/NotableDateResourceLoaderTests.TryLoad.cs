@@ -50,8 +50,8 @@ public sealed partial class NotableDateResourceLoaderTests
     }
 
     /// <summary>
-    /// Verifies that a document failing validation returns <see langword="false" /> with the full diagnostic list —
-    /// the same codes the throwing overload reports — and no resource.
+    /// Verifies that a document failing validation returns <see langword="false" /> with the full diagnostic list -
+    /// the same codes the throwing overload reports - and no resource.
     /// </summary>
     [TestMethod]
     public void TryLoad_WhenDocumentFailsValidation_ShouldReturnFalseWithDiagnostics()
@@ -129,7 +129,7 @@ public sealed partial class NotableDateResourceLoaderTests
     }
 
     /// <summary>
-    /// Verifies that <see langword="null" /> arguments are rejected — the <c>Try</c> contract covers data errors, not
+    /// Verifies that <see langword="null" /> arguments are rejected - the <c>Try</c> contract covers data errors, not
     /// usage errors.
     /// </summary>
     [TestMethod]

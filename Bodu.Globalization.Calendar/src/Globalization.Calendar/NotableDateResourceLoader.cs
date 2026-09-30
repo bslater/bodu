@@ -261,7 +261,7 @@ public static class NotableDateResourceLoader
     /// <remarks>
     /// <para>
     /// A binary pack is written from an already-validated resource (see <see cref="NotableDateBinaryResource" />), so
-    /// loading skips parsing and semantic validation entirely — the trim- and AOT-friendly load path. Integrity is
+    /// loading skips parsing and semantic validation entirely - the trim- and AOT-friendly load path. Integrity is
     /// still enforced: the payload digest and every structural bound are verified.
     /// </para>
     /// </remarks>
@@ -269,8 +269,8 @@ public static class NotableDateResourceLoader
         NotableDateBinaryResource.Read(stream);
 
     /// <summary>
-    /// Attempts to load and validate a notable-date document from XML content, collecting every diagnostic — including
-    /// warnings and informational messages — instead of throwing on validation failure.
+    /// Attempts to load and validate a notable-date document from XML content, collecting every diagnostic - including
+    /// warnings and informational messages - instead of throwing on validation failure.
     /// </summary>
     /// <param name="xml">The notable-date document XML content.</param>
     /// <param name="resourceResolver">
@@ -291,7 +291,7 @@ public static class NotableDateResourceLoader
     /// <para>
     /// Unlike the throwing <c>Load</c> overloads, malformed XML is reported as a <c>BODU-CAL-SYNTAX</c> error
     /// diagnostic rather than a <see cref="FormatException" />, so a caller can lint arbitrary input without exception
-    /// handling. Argument errors still throw — the <c>Try</c> contract covers data, not usage.
+    /// handling. Argument errors still throw - the <c>Try</c> contract covers data, not usage.
     /// </para>
     /// </remarks>
     public static bool TryLoad(string xml, Func<string, string?> resourceResolver, out NotableDateResource? resource, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics) =>

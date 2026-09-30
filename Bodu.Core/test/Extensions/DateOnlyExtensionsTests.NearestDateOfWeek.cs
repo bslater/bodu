@@ -61,7 +61,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void NearestDateOfWeek_WhenTiedBetweenPastAndFuture_ShouldReturnEarlierDate()
     {
-        // Wednesday 17 April 2024, target Sunday: Sun 14 (3 days back) vs Sun 21 (4 days fwd) — back wins.
+        // Wednesday 17 April 2024, target Sunday: Sun 14 (3 days back) vs Sun 21 (4 days fwd) - back wins.
         var date = new DateOnly(2024, 4, 17);
         DateOnly actual = date.NearestDateOfWeek(DayOfWeek.Sunday);
         Assert.AreEqual(new DateOnly(2024, 4, 14), actual);

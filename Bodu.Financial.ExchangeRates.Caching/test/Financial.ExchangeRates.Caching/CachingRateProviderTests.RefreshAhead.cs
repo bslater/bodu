@@ -117,7 +117,7 @@ public sealed partial class CachingRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that with the default options an aged hit — served just before expiry — schedules no background work
+    /// Verifies that with the default options an aged hit - served just before expiry - schedules no background work
     /// and behaves exactly as before refresh-ahead existed.
     /// </summary>
     [TestMethod]

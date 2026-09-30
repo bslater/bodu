@@ -375,8 +375,8 @@ public sealed class EcbRateProvider
         }
         catch (Exception ex) when (ex is HttpRequestException or IOException or FormatException)
         {
-            // Only the failures a fetch is expected to produce — transport, stream, and malformed-feed errors
-            // (ExchangeRateFormatException derives from FormatException) — are logged as feed-load failures.
+            // Only the failures a fetch is expected to produce - transport, stream, and malformed-feed errors
+            // (ExchangeRateFormatException derives from FormatException) - are logged as feed-load failures.
             Log.FeedLoadFailed(_logger, _options.DownloadFailedLogLevel, feed.Name, ex);
             throw;
         }
@@ -420,7 +420,7 @@ public sealed class EcbRateProvider
     }
 
     /// <summary>
-    /// Selects the widest feed in the catalogue — the full-history feed when present, otherwise the last configured
+    /// Selects the widest feed in the catalogue - the full-history feed when present, otherwise the last configured
     /// feed.
     /// </summary>
     /// <returns>The widest feed.</returns>

@@ -4,9 +4,9 @@ title: Diagnostics
 
 # Diagnostics
 
-When `Bodu.Text.Configuration` encounters a problem it cannot silently resolve, it produces a `ConfigurationDiagnostic` — a structured record naming the diagnostic code, severity, source location, and a human-readable message. This guide covers the diagnostic surface end-to-end: how the parser surfaces diagnostics, how the modes interact, the severity scale, and the full catalogue of `ConfigurationDiagnosticCode` values.
+When `Bodu.Text.Configuration` encounters a problem it cannot silently resolve, it produces a `ConfigurationDiagnostic` - a structured record naming the diagnostic code, severity, source location, and a human-readable message. This guide covers the diagnostic surface end-to-end: how the parser surfaces diagnostics, how the modes interact, the severity scale, and the full catalogue of `ConfigurationDiagnosticCode` values.
 
-For the parse-time options that control diagnostic *behaviour* — `DiagnosticMode`, the profile presets — see [Parsing and profiles](parsing-and-profiles.md). For the view-time surface, see [Views and resolution](views-and-resolution.md).
+For the parse-time options that control diagnostic *behaviour* - `DiagnosticMode`, the profile presets - see [Parsing and profiles](parsing-and-profiles.md). For the view-time surface, see [Views and resolution](views-and-resolution.md).
 
 ## Diagnostic mode
 
@@ -18,7 +18,7 @@ For the parse-time options that control diagnostic *behaviour* — `DiagnosticMo
 | `Collect` | The parser continues past recoverable errors. Diagnostics accumulate on the `ConfigurationParseResult.Diagnostics` list. |
 | `Ignore` | Recoverable diagnostics are dropped silently. Non-recoverable errors still throw. |
 
-The `Bodu`, `EditorConfigCompatible`, and `Strict` profiles use `Throw`. The `Relaxed` profile uses `Collect` — handy for IDE-style validation where you want to surface every issue at once.
+The `Bodu`, `EditorConfigCompatible`, and `Strict` profiles use `Throw`. The `Relaxed` profile uses `Collect` - handy for IDE-style validation where you want to surface every issue at once.
 
 ```csharp
 using Bodu.Text.Configuration;
@@ -45,7 +45,7 @@ ConfigurationDocument document = result.Document;  // still populated, on a best
 | `Warning` | Non-fatal warning; the parse continues, the document is still produced. |
 | `Error` | Recoverable error; under `Collect` mode the parse continues, under `Throw` mode it stops. |
 
-The severity is fixed per diagnostic code — there is no "promote warnings to errors" knob.
+The severity is fixed per diagnostic code - there is no "promote warnings to errors" knob.
 
 ## The `ConfigurationDiagnostic` type
 
@@ -64,7 +64,7 @@ var diagnostic = new ConfigurationDiagnostic(
 
 ## The `ConfigurationDiagnosticCode` catalogue
 
-Stable codes — the values do not change across versions, so consumers can build IDE squiggle rules or build-time enforcement around them.
+Stable codes - the values do not change across versions, so consumers can build IDE squiggle rules or build-time enforcement around them.
 
 ### Structural errors
 
@@ -106,19 +106,19 @@ These fire when a section header is compiled as a `ConfigurationPattern`:
 
 ### Default code
 
-`None` *(0)* — no specific code. Reserved for diagnostics produced from custom validators that do not have a catalogue entry; not used by the shipped parser.
+`None` *(0)* - no specific code. Reserved for diagnostics produced from custom validators that do not have a catalogue entry; not used by the shipped parser.
 
 ## Diagnostics vs exceptions
 
 The parser raises three kinds of exception:
 
-1. **`ConfigurationParseException`** (a `FormatException`) — raised when `DiagnosticMode = Throw` hits the first recoverable error, or for any non-recoverable error. Exposes the primary `Diagnostic` and the full `Diagnostics` array of everything gathered before the failure; `Location` forwards to the primary diagnostic.
-2. **`ArgumentException` / `ArgumentNullException`** — for invalid inputs (null source, unreadable stream). Standard BCL contract.
-3. **`InvalidOperationException`** — raised by `Resolve` when the options require a path root (`MissingPathRootMode.Throw`), the document carries none, and no target path is supplied.
+1. **`ConfigurationParseException`** (a `FormatException`) - raised when `DiagnosticMode = Throw` hits the first recoverable error, or for any non-recoverable error. Exposes the primary `Diagnostic` and the full `Diagnostics` array of everything gathered before the failure; `Location` forwards to the primary diagnostic.
+2. **`ArgumentException` / `ArgumentNullException`** - for invalid inputs (null source, unreadable stream). Standard BCL contract.
+3. **`InvalidOperationException`** - raised by `Resolve` when the options require a path root (`MissingPathRootMode.Throw`), the document carries none, and no target path is supplied.
 
-Diagnostics under `Collect` and `Ignore` modes never throw — the parser carries on, populates the result document on a best-effort basis, and emits the diagnostic list for the caller to inspect.
+Diagnostics under `Collect` and `Ignore` modes never throw - the parser carries on, populates the result document on a best-effort basis, and emits the diagnostic list for the caller to inspect.
 
-## Working example — IDE-style validation
+## Working example - IDE-style validation
 
 ```csharp
 using Bodu.Text.Configuration;
@@ -154,7 +154,7 @@ The `Relaxed` profile is the right starting point for code-style validators and 
 
 ## See also
 
-- [Parsing and profiles](parsing-and-profiles.md) — how `DiagnosticMode` interacts with the profile defaults.
-- [Views and resolution](views-and-resolution.md) — `ConfigurationView`, key projection, typed lookup.
+- [Parsing and profiles](parsing-and-profiles.md) - how `DiagnosticMode` interacts with the profile defaults.
+- [Views and resolution](views-and-resolution.md) - `ConfigurationView`, key projection, typed lookup.
 - [`Bodu.Text.Configuration` API reference](xref:Bodu.Text.Configuration).
-- **[Configuration guides](../topics/configuration.md)** — every guide in this topic, across Bodu.Text.Configuration and Bodu.Extensions.Configuration.Text.
+- **[Configuration guides](../topics/configuration.md)** - every guide in this topic, across Bodu.Text.Configuration and Bodu.Extensions.Configuration.Text.

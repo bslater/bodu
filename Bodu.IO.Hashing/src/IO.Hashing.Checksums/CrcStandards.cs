@@ -16,7 +16,7 @@ namespace Bodu.IO.Hashing.Checksums
     /// </summary>
     /// <remarks>
     /// <para>The enum covers only canonical names. Published aliases (for example <c>CRC-32</c> or <c>PKZIP</c>) are not separate
-    /// values — they resolve to their canonical instance through <see cref="CrcStandard.FromName(string)" />. Standards whose width
+    /// values - they resolve to their canonical instance through <see cref="CrcStandard.FromName(string)" />. Standards whose width
     /// exceeds 64 bits (currently only <c>CRC-82/DARC</c>) are omitted because they cannot be represented in a <see cref="ulong" />.</para>
     /// </remarks>
     public enum CrcStandards

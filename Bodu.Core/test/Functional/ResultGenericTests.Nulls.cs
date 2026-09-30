@@ -25,7 +25,7 @@ public sealed partial class ResultGenericTests
 
     /// <summary>
     /// Verifies that a <see langword="null" /> Map projection throws <see cref="ArgumentNullException" /> from the
-    /// strict Success factory rather than producing a success carrying null — unlike
+    /// strict Success factory rather than producing a success carrying null - unlike
     /// <see cref="Option{T}.Map{TResult}(Func{T, TResult})" />, Result has no lenient lift.
     /// </summary>
     [TestMethod]

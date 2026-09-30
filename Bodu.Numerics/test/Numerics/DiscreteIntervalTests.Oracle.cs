@@ -15,7 +15,7 @@ public partial class DiscreteIntervalTests
 
     /// <summary>
     /// Verifies that <see cref="DiscreteInterval{T}.Contains(int)" /> agrees with a brute-force integer set for every
-    /// bracket shape over the small domain — the exhaustive check that catches successor/predecessor off-by-one bugs in
+    /// bracket shape over the small domain - the exhaustive check that catches successor/predecessor off-by-one bugs in
     /// canonicalization.
     /// </summary>
     [TestMethod]
@@ -115,7 +115,7 @@ public partial class DiscreteIntervalTests
                         var expected = oracle(BruteForce(a1, b1), BruteForce(a2, b2)).ToHashSet();
                         HashSet<int> result = actual(DiscreteInterval<int>.Closed(a1, b1), DiscreteInterval<int>.Closed(a2, b2));
 
-                        Assert.IsTrue(expected.SetEquals(result), $"[{a1},{b1}] op [{a2},{b2}] — expected {{{string.Join(",", expected.Order())}}}, got {{{string.Join(",", result.Order())}}}");
+                        Assert.IsTrue(expected.SetEquals(result), $"[{a1},{b1}] op [{a2},{b2}] - expected {{{string.Join(",", expected.Order())}}}, got {{{string.Join(",", result.Order())}}}");
                     }
                 }
             }

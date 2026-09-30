@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar.Samples.ValidationLint.Scenarios;
 
 /// <summary>
 /// Demonstrates linting a fluently authored document: <c>Validate()</c> returns every diagnostic the canonical
-/// loader would produce — without throwing — and <c>TryBuild(...)</c> is the non-throwing <c>Build()</c>.
+/// loader would produce - without throwing - and <c>TryBuild(...)</c> is the non-throwing <c>Build()</c>.
 /// </summary>
 public static class LintingAuthoredDocuments
 {

@@ -24,8 +24,8 @@ public sealed partial class GcmSivModeTransformTests
     private static readonly int[] s_referenceAadLengths = [0, 1, 17, 64, 100];
 
     /// <summary>
-    /// Verifies that the ciphertext and tag match a block-at-a-time reference built from RFC 8452's definitions — the
-    /// platform's AES and POLYVAL computed directly in its own field — for 128- and 256-bit keys across plaintext
+    /// Verifies that the ciphertext and tag match a block-at-a-time reference built from RFC 8452's definitions - the
+    /// platform's AES and POLYVAL computed directly in its own field - for 128- and 256-bit keys across plaintext
     /// lengths that fit in one run of counters, straddle one, and span several, with associated data of every
     /// alignment.
     /// </summary>

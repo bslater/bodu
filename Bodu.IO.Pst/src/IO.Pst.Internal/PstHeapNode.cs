@@ -10,13 +10,13 @@ using System.Globalization;
 namespace Bodu.IO.Pst.Internal;
 
 /// <summary>
-/// Parses a node's heap-on-node (<c>HN</c>) — the LTP allocator that subdivides the node's data blocks into small,
-/// <c>HID</c>-addressed items — and answers item reads over it.
+/// Parses a node's heap-on-node (<c>HN</c>) - the LTP allocator that subdivides the node's data blocks into small,
+/// <c>HID</c>-addressed items - and answers item reads over it.
 /// </summary>
 /// <remarks>
 /// An <c>HID</c> addresses an individual data block by index, so the heap is parsed over the node's ordered block
-/// segments rather than its flattened payload. Every geometric fact — header extents, the page map, allocation
-/// monotonicity, and item bounds — is validated at parse time at every validation level, so item reads slice
+/// segments rather than its flattened payload. Every geometric fact - header extents, the page map, allocation
+/// monotonicity, and item bounds - is validated at parse time at every validation level, so item reads slice
 /// already-verified ranges.
 /// </remarks>
 internal sealed class PstHeapNode
@@ -64,7 +64,7 @@ internal sealed class PstHeapNode
     /// <summary>
     /// Gets the total length of the heap's data blocks, in bytes.
     /// </summary>
-    /// <value>The summed segment length — an upper bound on the bytes any structure on the heap can address.</value>
+    /// <value>The summed segment length - an upper bound on the bytes any structure on the heap can address.</value>
     internal int TotalLength =>
         _totalLength;
 
@@ -103,7 +103,7 @@ internal sealed class PstHeapNode
             throw MalformedHeap(entry.NodeId);
 
         // HNHDR: ibHnpm(2) bSig(1) bClientSig(1) hidUserRoot(4) rgbFillLevel(4). Later blocks carry HNPAGEHDR or
-        // HNBITMAPHDR, whose only field this reader needs — ibHnpm — sits at offset 0 in all three shapes.
+        // HNBITMAPHDR, whose only field this reader needs - ibHnpm - sits at offset 0 in all three shapes.
         byte[] first = segments[0];
         if (first.Length < 12 || first[2] != HeapSignature)
             throw MalformedHeap(entry.NodeId);

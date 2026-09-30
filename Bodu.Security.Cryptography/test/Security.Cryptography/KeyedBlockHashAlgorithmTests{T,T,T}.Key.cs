@@ -27,7 +27,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
     /// <summary>
     /// Gets a value indicating whether the algorithm under test treats an empty byte array as a valid key
-    /// (typically selecting an unkeyed / plain-hash mode). Defaults to <see langword="false" /> — the strict
+    /// (typically selecting an unkeyed / plain-hash mode). Defaults to <see langword="false" /> - the strict
     /// keyed-MAC contract requires that assigning an empty key throws.
     /// </summary>
     /// <remarks>
@@ -82,7 +82,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             Assert.ThrowsExactly<CryptographicException>(
                 () => algorithm.Key = new byte[invalidLength],
                 $"[{variant}] Expected CryptographicException for key length {invalidLength} " +
-                $"(valid range: {specification.MinKeyLength}–{specification.MaxKeyLength} bytes).");
+                $"(valid range: {specification.MinKeyLength}-{specification.MaxKeyLength} bytes).");
         }
     }
 
@@ -112,7 +112,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             {
                 Assert.Fail(
                     $"[{variant}] Key length {validLength} should be accepted but threw {ex.GetType().Name}: {ex.Message} " +
-                    $"(valid range: {specification.MinKeyLength}–{specification.MaxKeyLength} bytes).");
+                    $"(valid range: {specification.MinKeyLength}-{specification.MaxKeyLength} bytes).");
             }
         }
     }
@@ -446,7 +446,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
     /// <summary>
     /// Verifies that byte-reversing the key produces a distinct digest. Regression guard for the SipHash
-    /// endianness fix — a key loader that treated the key as byte-order-agnostic (or otherwise lost ordering)
+    /// endianness fix - a key loader that treated the key as byte-order-agnostic (or otherwise lost ordering)
     /// would produce identical digests for reversed keys.
     /// </summary>
     [TestMethod]

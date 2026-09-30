@@ -46,7 +46,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void GetEnumerator_WhenWeekdaysOnly_ShouldYieldMondayThroughFriday()
     {
-        // 0b0111110 in Sunday-first order: Sunday=0, Monday=1, ..., Saturday=0 → Mon–Fri selected.
+        // 0b0111110 in Sunday-first order: Sunday=0, Monday=1, ..., Saturday=0 → Mon-Fri selected.
         var pattern = WeekPattern.FromByte(0b0111110);
 
         var days = new List<DayOfWeek>();

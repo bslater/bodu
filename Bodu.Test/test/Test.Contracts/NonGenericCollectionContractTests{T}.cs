@@ -18,7 +18,7 @@ namespace Bodu.Test.Contracts;
 /// <para>
 /// Covers <see cref="ICollection.Count" />, <see cref="ICollection.IsSynchronized" />,
 /// <see cref="ICollection.SyncRoot" /> idempotence, and <see cref="ICollection.CopyTo" /> to a
-/// <see cref="Array" /> destination. Skips concurrency-stress tests — those remain concrete on the
+/// <see cref="Array" /> destination. Skips concurrency-stress tests - those remain concrete on the
 /// implementing type.
 /// </para>
 /// <para>
@@ -64,7 +64,7 @@ public abstract class NonGenericCollectionContractTests<TCollection>
 
     /// <summary>
     /// Verifies that successive reads of <see cref="ICollection.SyncRoot" /> return the same instance,
-    /// or — when <see cref="SyncRootSupported" /> is <see langword="false" /> — that the property
+    /// or - when <see cref="SyncRootSupported" /> is <see langword="false" /> - that the property
     /// throws <see cref="NotSupportedException" />.
     /// </summary>
     [TestMethod]

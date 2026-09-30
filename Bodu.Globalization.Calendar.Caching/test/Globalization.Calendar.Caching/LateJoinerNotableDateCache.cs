@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// <para>
 /// The stampede window the parked reader reproduces is narrow and timing-dependent in production: a caller reads the
 /// cache and misses, a second caller computes the same year and removes its completed flight, and only then does the
-/// first caller reach the coalescing dictionary — finding no flight to join even though the year is now cached.
+/// first caller reach the coalescing dictionary - finding no flight to join even though the year is now cached.
 /// </para>
 /// <para>
 /// Holding the first reader at exactly that point turns the race into a fixed sequence: the test releases it only once

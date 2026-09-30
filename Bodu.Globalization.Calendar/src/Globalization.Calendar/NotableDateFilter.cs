@@ -13,7 +13,7 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <strong>Construction.</strong> A filter is created through the static factory methods on this class — for example
+/// <strong>Construction.</strong> A filter is created through the static factory methods on this class - for example
 /// <see cref="ForCategory(NotableDateCategory)" />, <see cref="WithTag(string)" />, <see cref="IsNonWorkingDay()" />,
 /// and <see cref="InDateRange(DateOnly, DateOnly)" />. There is no public constructor; every factory returns an
 /// immutable instance.

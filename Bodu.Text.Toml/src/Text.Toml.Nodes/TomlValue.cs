@@ -10,7 +10,7 @@ using Bodu.Text.Toml.Writer;
 namespace Bodu.Text.Toml.Nodes;
 
 /// <summary>
-/// Represents a scalar TOML value within a node tree — one of the eight TOML scalar kinds: a string, a 64-bit integer,
+/// Represents a scalar TOML value within a node tree - one of the eight TOML scalar kinds: a string, a 64-bit integer,
 /// a floating-point number, a Boolean, or one of the four date-time kinds.
 /// </summary>
 /// <remarks>

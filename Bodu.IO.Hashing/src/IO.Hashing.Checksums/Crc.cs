@@ -12,15 +12,15 @@ using Bodu.Extensions;
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// General-purpose CRC (Cyclic Redundancy Check) engine driven by a <see cref="CrcStandard" /> parameter set — supports
+/// General-purpose CRC (Cyclic Redundancy Check) engine driven by a <see cref="CrcStandard" /> parameter set - supports
 /// any catalogue width from 1 to 64 bits, snapshot-style intermediate digests, and resumption of a previous digest with
 /// additional input.
 /// </summary>
 /// <remarks>
 /// <para>
 /// CRCs are the workhorse of integrity checks in storage, networking, and file formats: every <c>.zip</c>, <c>.png</c>,
-/// Ethernet frame, USB packet, and Modbus message uses one. Each protocol bakes in slightly different choices —
-/// polynomial, initial value, input/output bit reflection, final XOR — and the same byte sequence can produce a
+/// Ethernet frame, USB packet, and Modbus message uses one. Each protocol bakes in slightly different choices -
+/// polynomial, initial value, input/output bit reflection, final XOR - and the same byte sequence can produce a
 /// different digest under <c>CRC-16/ARC</c>, <c>CRC-16/MODBUS</c>, or <c>CRC-32/ISO-HDLC</c>. Rather than ship a class
 /// per variant, <see cref="Crc" /> consumes the parameters from a <see cref="CrcStandard" /> and the same engine
 /// computes the right answer for every catalogue entry.
@@ -33,7 +33,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <term><see cref="CrcStandard" /> static properties</term>
 /// <description>
 /// For the common entries (<see cref="CrcStandard.CRC32_ISOHDLC" />, <see cref="CrcStandard.CRC32_ISCSI" />,
-/// <see cref="CrcStandard.CRC16_MODBUS" />, …) — direct, allocation-free references to the canonical instance.
+/// <see cref="CrcStandard.CRC16_MODBUS" />, …) - direct, allocation-free references to the canonical instance.
 /// </description>
 /// </item>
 /// <item>
@@ -45,7 +45,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <item>
 /// <term><see cref="CrcStandard.FromName(string)" /></term>
 /// <description>
-/// Resolves both canonical names and aliases — <c>"CRC-32"</c>, <c>"PKZIP"</c>, <c>"CRC-32/ISO-HDLC"</c> all return the
+/// Resolves both canonical names and aliases - <c>"CRC-32"</c>, <c>"PKZIP"</c>, <c>"CRC-32/ISO-HDLC"</c> all return the
 /// same instance.
 /// </description>
 /// </item>
@@ -62,13 +62,13 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <para>
 /// <strong>Snapshot semantics.</strong> The final reflection, XOR-out, and width mask are applied to a <em>copy</em> of
 /// the running accumulator, so <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" /> can be
-/// called as often as the caller likes without disturbing further <c>Append</c> calls — useful for emitting progressive
+/// called as often as the caller likes without disturbing further <c>Append</c> calls - useful for emitting progressive
 /// checksums of an unfinished stream.
 /// </para>
 /// <para>
 /// <strong>Resumption.</strong> <see cref="Crc" /> implements <see cref="IResumableHashAlgorithm" />: given a
 /// previously emitted digest and additional bytes, it produces the digest of the concatenated input <em>without</em>
-/// needing the original bytes back — handy for log-tail integrity checks and content-addressed storage. Resumption is
+/// needing the original bytes back - handy for log-tail integrity checks and content-addressed storage. Resumption is
 /// only valid against a digest produced by an instance configured with the same <see cref="CrcStandard" />.
 /// </para>
 /// <para>
@@ -79,7 +79,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// thread-safe</strong>; share behind explicit synchronization.
 /// </para>
 /// <note type="important">CRC is <strong>not</strong> cryptographically secure. It detects accidental corruption, not
-/// adversarial tampering — collisions are easy to construct. Use a member of <c>Bodu.Security.Cryptography</c> or
+/// adversarial tampering - collisions are easy to construct. Use a member of <c>Bodu.Security.Cryptography</c> or
 /// <see cref="System.Security.Cryptography.HashAlgorithm" /> for password hashing, digital signatures, message
 /// authentication, or any context where a determined attacker could choose the input.</note>
 /// <example>
@@ -94,13 +94,13 @@ namespace Bodu.IO.Hashing.Checksums;
 /// var crc32 = new Crc(CrcStandard.CRC32_ISOHDLC);
 /// byte[] digest = crc32.ComputeHash(File.ReadAllBytes("payload.bin"));
 ///
-/// // 2. Modbus RTU — different polynomial/init/reflect choices, same engine.
+/// // 2. Modbus RTU - different polynomial/init/reflect choices, same engine.
 /// var modbus = new Crc(CrcStandard.CRC16_MODBUS);
 /// modbus.Append(frameHeader);
 /// modbus.Append(framePayload);
 /// byte[] frameCrc = modbus.GetCurrentHash(); // non-destructive snapshot
 ///
-/// // 3. Resumption — fold an appended log segment into yesterday's digest without re-reading
+/// // 3. Resumption - fold an appended log segment into yesterday's digest without re-reading
 /// // the original bytes.
 /// var resumable = (IResumableHashAlgorithm)new Crc(CrcStandard.CRC32_ISOHDLC);
 /// byte[] updated = resumable.ComputeHashFrom(digest, File.ReadAllBytes("payload.appended.bin"));
@@ -332,7 +332,7 @@ public sealed class Crc
         }
 
         // Deserialize prior hash value. The width-byte hash is stored little-endian; read into an 8-byte buffer so
-        // that widths below 64 bits zero-extend cleanly. Work entirely in a local — the instance accumulator is
+        // that widths below 64 bits zero-extend cleanly. Work entirely in a local - the instance accumulator is
         // never touched, so any pending Append state on this instance survives the call unchanged.
         Span<byte> fullWord = stackalloc byte[sizeof(ulong)];
         previousHash.CopyTo(fullWord);
@@ -536,7 +536,7 @@ public sealed class Crc
     /// <param name="crc">The CRC accumulator on entry.</param>
     /// <param name="tables">The eight interleaved slicing tables for the active reflected polynomial.</param>
     /// <param name="t0">The ordinary byte-wise reflected table (equal to <c>tables[0]</c>), used for the tail.</param>
-    /// <param name="width">The CRC width in bits — either 32 or 64.</param>
+    /// <param name="width">The CRC width in bits - either 32 or 64.</param>
     /// <returns>The CRC accumulator after consuming <paramref name="data" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong ProcessReflectedSlicing(ReadOnlySpan<byte> data, ulong crc, ulong[][] tables, ulong[] t0, int width) =>

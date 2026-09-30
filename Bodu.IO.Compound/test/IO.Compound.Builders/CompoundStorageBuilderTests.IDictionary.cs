@@ -11,7 +11,7 @@ namespace Bodu.IO.Compound.Builders;
 /// </summary>
 /// <remarks>
 /// The builder is declared as an <see cref="IDictionary{TKey, TValue}" /> of child name to node, and several of its
-/// members are reachable only through that interface — the explicit
+/// members are reachable only through that interface - the explicit
 /// <see cref="ICollection{T}" /> implementations in particular. The convenience API (<c>AddStorage</c>,
 /// <c>TryGetStream</c>, and the rest) delegates to the same child dictionary, so these tests assert that the two
 /// views agree: a child added through one is visible through the other, and the single-parent rule holds either way.

@@ -26,7 +26,7 @@ public static class IWeekendDefinitionProviderExtensions
     /// <remarks>
     /// <para>
     /// Use this helper when adapting an <see cref="IWeekendDefinitionProvider" /> implementation to APIs that accept a
-    /// <see cref="WeekPattern" /> directly — for example, the <see cref="WeekPattern" />-accepting
+    /// <see cref="WeekPattern" /> directly - for example, the <see cref="WeekPattern" />-accepting
     /// <c>NotableDateService</c> constructor.
     /// </para>
     /// <example>

@@ -30,7 +30,7 @@ namespace Bodu.IO.Hashing;
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose FNV.</strong> FNV is byte-at-a-time, allocation-free, and trivially fast on small inputs — a
+/// <strong>When to choose FNV.</strong> FNV is byte-at-a-time, allocation-free, and trivially fast on small inputs - a
 /// common choice for hashing identifiers, dictionary keys, and cache lookups in hot paths. For most new code prefer
 /// <see cref="Fnv1a32" /> or <see cref="Fnv1a64" />: the FNV-1a ordering has measurably better avalanche than the
 /// original FNV-1. For inputs longer than a few hundred bytes, <see cref="MurmurHash3" /> or <see cref="CityHash" />
@@ -146,7 +146,7 @@ public abstract class Fnv
 
     /// <inheritdoc />
     /// <remarks>
-    /// FNV applies no finalization — the digest is the big-endian running accumulator — so resuming requires no
+    /// FNV applies no finalization - the digest is the big-endian running accumulator - so resuming requires no
     /// reversal: the digest seeds the accumulator directly. The computation runs against saved-and-restored instance
     /// state, so any in-progress incremental state on the instance survives the call unchanged.
     /// </remarks>

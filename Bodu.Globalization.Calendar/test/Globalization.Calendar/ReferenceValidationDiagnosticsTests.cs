@@ -73,8 +73,8 @@ public class ReferenceValidationDiagnosticsTests
         """;
 
     /// <summary>
-    /// Verifies that a replace-with-rule action referencing a notable date with multiple rules — without naming a
-    /// specific rule — reports the <c>BODU-CAL-REPLACE-AMBIGUOUS</c> diagnostic.
+    /// Verifies that a replace-with-rule action referencing a notable date with multiple rules - without naming a
+    /// specific rule - reports the <c>BODU-CAL-REPLACE-AMBIGUOUS</c> diagnostic.
     /// </summary>
     [TestMethod]
     public void Load_WhenReplaceReferenceIsAmbiguous_ShouldReportAmbiguousDiagnostic()
@@ -88,8 +88,8 @@ public class ReferenceValidationDiagnosticsTests
     }
 
     /// <summary>
-    /// Verifies that an offset strategy referencing a notable date with multiple rules — without naming a specific rule
-    /// — reports the <c>BODU-CAL-OFFSET-AMBIGUOUS</c> diagnostic.
+    /// Verifies that an offset strategy referencing a notable date with multiple rules - without naming a specific rule
+    /// - reports the <c>BODU-CAL-OFFSET-AMBIGUOUS</c> diagnostic.
     /// </summary>
     [TestMethod]
     public void Load_WhenOffsetReferenceIsAmbiguous_ShouldReportAmbiguousDiagnostic()

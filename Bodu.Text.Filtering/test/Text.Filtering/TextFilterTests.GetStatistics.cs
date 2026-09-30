@@ -129,7 +129,7 @@ public partial class TextFilterTests
     }
 
     /// <summary>
-    /// Verifies that a timed-out exclude fails safe as matched — the value is still vetoed — and is counted as a
+    /// Verifies that a timed-out exclude fails safe as matched - the value is still vetoed - and is counted as a
     /// regex timeout.
     /// </summary>
     [TestMethod]

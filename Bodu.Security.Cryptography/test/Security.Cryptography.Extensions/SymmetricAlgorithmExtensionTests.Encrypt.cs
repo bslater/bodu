@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 
 /// <summary>
 /// Tests for the synchronous <see cref="SymmetricAlgorithmExtensions.Encrypt(SymmetricAlgorithm, byte[])" />
-/// family — covering byte-array, offset/range, span, memory, and stream overloads.
+/// family - covering byte-array, offset/range, span, memory, and stream overloads.
 /// </summary>
 public partial class SymmetricAlgorithmExtensionTests
 {
@@ -75,7 +75,7 @@ public partial class SymmetricAlgorithmExtensionTests
         CollectionAssert.AreEqual(plainText, decrypted);
     }
 
-    // ─── Encrypt(byte[], int) — offset-to-end overload ────────────────────────────────────────
+    // ─── Encrypt(byte[], int) - offset-to-end overload ────────────────────────────────────────
 
     /// <summary>
     /// Verifies that the offset overload throws <see cref="ArgumentNullException" /> when the
@@ -134,7 +134,7 @@ public partial class SymmetricAlgorithmExtensionTests
         CollectionAssert.AreEqual(plainText, decrypted);
     }
 
-    // ─── Encrypt(byte[], int, int) — offset+count overload ────────────────────────────────────
+    // ─── Encrypt(byte[], int, int) - offset+count overload ────────────────────────────────────
 
     /// <summary>
     /// Verifies that the range overload throws <see cref="ArgumentNullException" /> when the
@@ -255,7 +255,7 @@ public partial class SymmetricAlgorithmExtensionTests
 
     /// <summary>
     /// Verifies that the span overload produces output identical to the byte-array overload for
-    /// the same input — confirming the two entry points share a code path.
+    /// the same input - confirming the two entry points share a code path.
     /// </summary>
     [TestMethod]
     public void Encrypt_Span_WhenComparedToByteArrayOverload_ShouldProduceIdenticalOutput()
@@ -316,7 +316,7 @@ public partial class SymmetricAlgorithmExtensionTests
         CollectionAssert.AreEqual(fromSpan, fromMemory);
     }
 
-    // ─── Encrypt(Stream, Stream) — default buffer size overload ───────────────────────────────
+    // ─── Encrypt(Stream, Stream) - default buffer size overload ───────────────────────────────
 
     /// <summary>
     /// Verifies that the default-buffer stream overload throws <see cref="ArgumentNullException" />
@@ -380,7 +380,7 @@ public partial class SymmetricAlgorithmExtensionTests
         CollectionAssert.AreEqual(plainText, decryptedStream.ToArray());
     }
 
-    // ─── Encrypt(Stream, Stream, int) — explicit buffer size overload ─────────────────────────
+    // ─── Encrypt(Stream, Stream, int) - explicit buffer size overload ─────────────────────────
 
     /// <summary>
     /// Verifies that the buffer-size stream overload throws <see cref="ArgumentOutOfRangeException" />
@@ -487,7 +487,7 @@ public partial class SymmetricAlgorithmExtensionTests
 
         byte[] plainText = CryptoTestUtilities.ByteSequence128;
 
-        // chunkSize=5 is not a multiple of the 16-byte block — exercises accumulation across chunk boundaries.
+        // chunkSize=5 is not a multiple of the 16-byte block - exercises accumulation across chunk boundaries.
         using var input = new FixedChunkStream(plainText, chunkSize: 5);
         using var output = new MemoryStream();
 
@@ -498,8 +498,8 @@ public partial class SymmetricAlgorithmExtensionTests
     }
 
     /// <summary>
-    /// Verifies that an <see cref="IncrementingByteStream" /> — which returns at most half of
-    /// its remaining bytes per read — produces correctly decryptable ciphertext, exercising the
+    /// Verifies that an <see cref="IncrementingByteStream" /> - which returns at most half of
+    /// its remaining bytes per read - produces correctly decryptable ciphertext, exercising the
     /// read loop under guaranteed partial reads.
     /// </summary>
     [TestMethod]
@@ -521,8 +521,8 @@ public partial class SymmetricAlgorithmExtensionTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="FixedLengthIncrementingStream" /> — which delivers sequential
-    /// bytes in partial reads — produces correctly decryptable ciphertext.
+    /// Verifies that a <see cref="FixedLengthIncrementingStream" /> - which delivers sequential
+    /// bytes in partial reads - produces correctly decryptable ciphertext.
     /// </summary>
     [TestMethod]
     public void Encrypt_Stream_WhenSourceIsFixedLengthIncrementingStream_ShouldProduceCorrectResult()
@@ -575,7 +575,7 @@ public partial class SymmetricAlgorithmExtensionTests
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        // Fault after 32 bytes — mid-way through a 128-byte input.
+        // Fault after 32 bytes - mid-way through a 128-byte input.
         using var input = new FaultingStream(CryptoTestUtilities.ByteSequence128, throwAfterBytes: 32);
         using var output = new MemoryStream();
 

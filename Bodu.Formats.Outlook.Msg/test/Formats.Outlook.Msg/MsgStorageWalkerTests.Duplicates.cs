@@ -9,8 +9,8 @@ namespace Bodu.Formats.Outlook.Msg;
 public partial class MsgStorageWalkerTests
 {
     /// <summary>
-    /// Verifies that two storages resolving to the same index — here a second spelling of index zero that the
-    /// hexadecimal parser accepts — yield one storage under compatible validation, so a crafted directory cannot
+    /// Verifies that two storages resolving to the same index - here a second spelling of index zero that the
+    /// hexadecimal parser accepts - yield one storage under compatible validation, so a crafted directory cannot
     /// decode the same recipient or attachment twice.
     /// </summary>
     [TestMethod]

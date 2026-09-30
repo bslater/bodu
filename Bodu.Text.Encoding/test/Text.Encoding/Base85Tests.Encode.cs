@@ -233,7 +233,7 @@ public sealed partial class Base85Tests
 
     /// <summary>
     /// Regression: verifies that the renamed exact <see cref="Base85.GetEncodedLength(ReadOnlySpan{byte}, Base85Variant)" />
-    /// accounts for the Ascii85 <c>z</c> shortcut — four-zero groups collapse to a single character.
+    /// accounts for the Ascii85 <c>z</c> shortcut - four-zero groups collapse to a single character.
     /// </summary>
     [TestMethod]
     public void GetEncodedLength_ForAscii85WithZeroGroups_ShouldAccountForShortcut()

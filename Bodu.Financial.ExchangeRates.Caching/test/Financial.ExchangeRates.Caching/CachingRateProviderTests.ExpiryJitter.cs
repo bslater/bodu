@@ -47,7 +47,7 @@ public sealed partial class CachingRateProviderTests
 
     /// <summary>
     /// Verifies that enabled jitter shortens the pair's effective expiry deterministically: a row older than the
-    /// jittered expiry — but still younger than the configured expiry — misses and refetches.
+    /// jittered expiry - but still younger than the configured expiry - misses and refetches.
     /// </summary>
     [TestMethod]
     public void GetRate_WhenJitterEnabled_ShouldExpireAtTheJitteredInstantNotTheConfiguredOne()
@@ -66,7 +66,7 @@ public sealed partial class CachingRateProviderTests
 
         _clock.Advance(TimeSpan.FromSeconds(2));
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
-        Assert.AreEqual(1, inner.TotalCallCount, "past the jittered expiry — though inside the configured one — must be a miss");
+        Assert.AreEqual(1, inner.TotalCallCount, "past the jittered expiry - though inside the configured one - must be a miss");
     }
 
     /// <summary>

@@ -81,7 +81,7 @@ format.indent.style = space
 
     /// <summary>
     /// Verifies that an unterminated section header still emits
-    /// <see cref="ConfigurationDiagnosticCode.UnterminatedSectionHeader" /> — the introduction of
+    /// <see cref="ConfigurationDiagnosticCode.UnterminatedSectionHeader" /> - the introduction of
     /// <see cref="ConfigurationDiagnosticCode.DuplicateSection" /> must not regress the original code.
     /// </summary>
     [TestMethod]

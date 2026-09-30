@@ -22,7 +22,7 @@ public sealed partial class ConcurrentLruCache<TKey, TValue> :
     /// </para>
     /// <para>
     /// Because the enumerator operates on a snapshot, it never throws <see cref="System.InvalidOperationException" />
-    /// due to concurrent modification — unlike enumerators on non-concurrent collections. The order of enumerated
+    /// due to concurrent modification - unlike enumerators on non-concurrent collections. The order of enumerated
     /// entries is unspecified.
     /// </para>
     /// </remarks>

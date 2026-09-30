@@ -17,8 +17,8 @@ namespace Bodu.Collections.Generic.Internal;
 /// <remarks>
 /// <para>
 /// The engine owns the backing store and the policy tracking structures and centralizes only the policy bookkeeping.
-/// Everything the two consumers deliberately do differently — locking, eviction events, enumeration versioning,
-/// time-based expiration, and count publication — stays in the consumer, which sequences calls into this engine from
+/// Everything the two consumers deliberately do differently - locking, eviction events, enumeration versioning,
+/// time-based expiration, and count publication - stays in the consumer, which sequences calls into this engine from
 /// its own mutation paths.
 /// </para>
 /// <para>
@@ -148,7 +148,7 @@ internal sealed class EvictionPolicyCore<TKey, TValue>
     /// <see langword="false" /> when only the SecondChance flag was set or the policy ignores touches.
     /// </returns>
     /// <remarks>
-    /// Re-links the existing node instead of allocating a fresh one per touch — this is the consumers' hottest path
+    /// Re-links the existing node instead of allocating a fresh one per touch - this is the consumers' hottest path
     /// (every read under a recency policy, held under the stripe lock in the concurrent dictionary).
     /// </remarks>
     internal bool Touch(TKey key, EvictionEntry<TKey, TValue> entry)
@@ -240,7 +240,7 @@ internal sealed class EvictionPolicyCore<TKey, TValue>
                 if (_store.Count > 0)
                 {
                     // Walk the key collection's struct enumerator to the drawn index rather than routing
-                    // through LINQ ElementAt — same O(n) worst case and the same selected element for a
+                    // through LINQ ElementAt - same O(n) worst case and the same selected element for a
                     // given draw, but no enumerator boxing or LINQ dispatch layers.
                     int skip = Random.Shared.Next(_store.Count);
                     foreach (TKey key in _store.Keys)
@@ -307,7 +307,7 @@ internal sealed class EvictionPolicyCore<TKey, TValue>
     /// </returns>
     /// <remarks>
     /// <see cref="SortedDictionary{TKey, TValue}" /> enumerates in ascending key order, so only the first bucket is
-    /// inspected — a single <c>MoveNext</c> rather than a LINQ <c>First()</c> chain.
+    /// inspected - a single <c>MoveNext</c> rather than a LINQ <c>First()</c> chain.
     /// </remarks>
     private LinkedListNode<TKey>? PeekLeastFrequentNode()
     {

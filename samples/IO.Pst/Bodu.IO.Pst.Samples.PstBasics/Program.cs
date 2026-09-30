@@ -9,9 +9,9 @@ using Bodu.IO.Pst.Samples.PstBasics.Scenarios;
 namespace Bodu.IO.Pst.Samples.PstBasics;
 
 /// <summary>
-/// Entry point for the PST sample: the Outlook personal-folders container via <c>Bodu.IO.Pst</c> —
+/// Entry point for the PST sample: the Outlook personal-folders container via <c>Bodu.IO.Pst</c> -
 /// format detection, the raw node database and its property/table views, streaming payload access
-/// with validation levels — and the mail-store view via <c>Bodu.Formats.Outlook.Pst</c>: folders,
+/// with validation levels - and the mail-store view via <c>Bodu.Formats.Outlook.Pst</c>: folders,
 /// messages, recipients, attachments, and bodies. Everything runs offline against the committed
 /// <c>Data/sample1.pst</c> (Unicode format) and <c>Data/sample2.pst</c> (ANSI format) fixtures; see
 /// <c>Data/NOTICE.md</c> for provenance.

@@ -18,8 +18,8 @@ namespace Bodu.Formats.Excel;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Opening a workbook reads its globals once — the date system, the shared string table, the format tables, and the
-/// sheet directory — while keeping the compound-file container open. A sheet is read on demand by seeking to the stream
+/// Opening a workbook reads its globals once - the date system, the shared string table, the format tables, and the
+/// sheet directory - while keeping the compound-file container open. A sheet is read on demand by seeking to the stream
 /// offset its bound-sheet record records, so a single sheet can be read without parsing the others and the whole
 /// workbook is never materialized.
 /// </para>

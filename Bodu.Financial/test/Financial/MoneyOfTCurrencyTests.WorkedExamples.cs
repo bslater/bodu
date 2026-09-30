@@ -19,7 +19,7 @@ namespace Bodu.Financial;
 public partial class MoneyOfTCurrencyTests
 {
     // ---------------------------------------------------------------------------------------------------------------
-    // Hospitality — restaurant bill with tip on pre-tax subtotal vs tax-inclusive total.
+    // Hospitality - restaurant bill with tip on pre-tax subtotal vs tax-inclusive total.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -59,7 +59,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Retail — multi-line invoice with tax-inclusive line pricing (AU/NZ GST convention).
+    // Retail - multi-line invoice with tax-inclusive line pricing (AU/NZ GST convention).
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -102,7 +102,7 @@ public partial class MoneyOfTCurrencyTests
     /// <summary>
     /// Verifies the documented per-step rounding drift when sequential discounts are applied to an amount that
     /// rounds at each step ($33.33 × 0.95 × 0.90 vs $33.33 × 0.855). The intermediate-rounded chain ends a cent
-    /// below the single-shot calculation — the kind of drift that matters in retail pricing engines.
+    /// below the single-shot calculation - the kind of drift that matters in retail pricing engines.
     /// </summary>
     [TestMethod]
     public void Retail_WhenSequentialDiscountsCauseIntermediateRounding_ShouldDriftFromSingleShot()
@@ -118,7 +118,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Payroll — annualisation, semi-monthly, and overtime accrual.
+    // Payroll - annualisation, semi-monthly, and overtime accrual.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -159,7 +159,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Banking — simple and compound interest.
+    // Banking - simple and compound interest.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -222,7 +222,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Mortgage — first-payment principal/interest split.
+    // Mortgage - first-payment principal/interest split.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -246,7 +246,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // FX — single-leg, round-trip, and a rate that loses value below the destination minor unit.
+    // FX - single-leg, round-trip, and a rate that loses value below the destination minor unit.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -301,7 +301,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Investing — stock dividend payout exercising the MultiplyExact escape hatch.
+    // Investing - stock dividend payout exercising the MultiplyExact escape hatch.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -316,7 +316,7 @@ public partial class MoneyOfTCurrencyTests
         int shares = 250;
         var dpsExact = Fraction<BigInteger>.Create(4275, 10000);    // 0.4275 exactly
 
-        // The naive path constructs Money<USD> with the DPS first — losing the 4th decimal to rounding.
+        // The naive path constructs Money<USD> with the DPS first - losing the 4th decimal to rounding.
         var naiveDps = new Money<USD>(0.4275m);                               // → 0.43 (digit at position 3 is 7 → rounds up at 2 dp)
         Money<USD> naivePayout = naiveDps * shares;                                  // 0.43 × 250 = 107.50
 
@@ -329,11 +329,11 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Banking — overdraft / negative-balance progression.
+    // Banking - overdraft / negative-balance progression.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies a checking-account overdraft progression — withdrawal, overdraft-fee debit, deposit — produces
+    /// Verifies a checking-account overdraft progression - withdrawal, overdraft-fee debit, deposit - produces
     /// the expected signed balance at each step.
     /// </summary>
     [TestMethod]
@@ -353,7 +353,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Edge case — single-cent transactions, zero amounts, single-part allocation.
+    // Edge case - single-cent transactions, zero amounts, single-part allocation.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -410,7 +410,7 @@ public partial class MoneyOfTCurrencyTests
 
     /// <summary>
     /// Verifies that allocating an amount of three minor units across four parts produces three single-unit
-    /// shares followed by a zero share — the canonical "amount smaller than parts" residual pattern.
+    /// shares followed by a zero share - the canonical "amount smaller than parts" residual pattern.
     /// </summary>
     [TestMethod]
     public void EdgeCase_WhenAmountIsThreeMinorUnitsAcrossFourParts_ShouldPadTrailingZero()
@@ -424,12 +424,12 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Edge case — minor-unit boundaries across all three categories on the same scenario.
+    // Edge case - minor-unit boundaries across all three categories on the same scenario.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
     /// Verifies that the same 10% tax computation applied to a unit amount produces minor-unit-precision results
-    /// in each currency category — JPY rounds to whole units, USD to two places, BHD to three.
+    /// in each currency category - JPY rounds to whole units, USD to two places, BHD to three.
     /// </summary>
     [TestMethod]
     public void EdgeCase_WhenApplyingTenPercentTaxAcrossMinorUnitCategories_ShouldRoundAtEachCurrencysPrecision()
@@ -461,7 +461,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Edge case — high-precision retention through Fraction for "thirds" and "sevenths" that scalar would drift on.
+    // Edge case - high-precision retention through Fraction for "thirds" and "sevenths" that scalar would drift on.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -508,7 +508,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Edge case — Inflation discounting demonstrating Fraction precision retention over many compounding steps.
+    // Edge case - Inflation discounting demonstrating Fraction precision retention over many compounding steps.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -532,7 +532,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Edge case — extreme precision currencies (BHD, 3 dp) preserved through arithmetic.
+    // Edge case - extreme precision currencies (BHD, 3 dp) preserved through arithmetic.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>

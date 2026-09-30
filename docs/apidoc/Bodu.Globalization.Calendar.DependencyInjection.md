@@ -9,16 +9,16 @@ uid: Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions
 ## Purpose
 
 The **Bodu.Globalization.Calendar.DependencyInjection** package provides the `Microsoft.Extensions.DependencyInjection`
-integration for [`Bodu.Globalization.Calendar`](Bodu.Globalization.Calendar.md). It registers
+integration for [`Bodu.Globalization.Calendar`](xref:Bodu.Globalization.Calendar). It registers
 <xref:Bodu.Globalization.Calendar.INotableDateService> as a singleton over a loaded
-<xref:Bodu.Globalization.Calendar.NotableDateResource> (or a factory that produces one), so an ASP.NET Core application
-— or any `Microsoft.Extensions.*`-style host — can inject the calendar service rather than composing
+<xref:Bodu.Globalization.Calendar.NotableDateResource> (or a factory that produces one), so an ASP.NET Core application -
+or any `Microsoft.Extensions.*`-style host - can inject the calendar service rather than composing
 `new NotableDateService(...)` by hand.
 
 The package is intentionally thin: a resource is an immutable, already-validated value, so registration takes the
 resource (or a factory for it) directly, optionally with a <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions>
 carrying the service collaborators (algorithm registry, collision resolver, adjustment handlers, code-first providers).
-There is no fluent builder — resource-level behavior is carried by the resource's `<ResolutionPolicy>`. Direct
+There is no fluent builder - resource-level behavior is carried by the resource's `<ResolutionPolicy>`. Direct
 construction continues to work for consoles, libraries, and tests that prefer not to bring in `IServiceCollection`.
 
 There is no `Bodu.Globalization.Calendar.DependencyInjection` namespace: the package contributes exactly one public
@@ -28,10 +28,10 @@ scope on `IServiceCollection`.
 
 ## Static documentation
 
-- **[Introduction](~/docs/calendar-di/index.md)** — the mental model, the full overload table, lifetimes and idempotency, headline types, and scenarios.
-- **[Getting started](~/docs/calendar-di/getting-started.md)** — install, dependencies, and the plain, keyed, and reloadable samples with `appsettings.json`, plus composing the caching decorator.
-- **[Calendar dependency injection guide](~/guides/calendar/dependency-injection.md)** — the complete walkthrough: factories, collaborators, the reloadable workflow, and lifetime semantics.
-- **[Caching notable dates guide](~/guides/calendar/caching/notable-date-caching.md)** — `AddCachedNotableDateService` and the durable backends that wrap these registrations.
+- **[Introduction](~/docs/calendar-di/index.md)** - the mental model, the full overload table, lifetimes and idempotency, headline types, and scenarios.
+- **[Getting started](~/docs/calendar-di/getting-started.md)** - install, dependencies, and the plain, keyed, and reloadable samples with `appsettings.json`, plus composing the caching decorator.
+- **[Calendar dependency injection guide](~/guides/calendar/dependency-injection.md)** - the complete walkthrough: factories, collaborators, the reloadable workflow, and lifetime semantics.
+- **[Caching notable dates guide](~/guides/calendar/caching/notable-date-caching.md)** - `AddCachedNotableDateService` and the durable backends that wrap these registrations.
 
 ## The registration surface
 
@@ -43,7 +43,7 @@ chaining and throws `ArgumentNullException` for a `null` `services`, resource, f
 |---|---|
 | `AddNotableDateService(IServiceCollection, NotableDateResource)` | A singleton `INotableDateService` over an already-loaded resource. |
 | `AddNotableDateService(IServiceCollection, NotableDateResource, NotableDateServiceOptions?)` | The same, composed with the collaborators on <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions>. |
-| `AddNotableDateService(IServiceCollection, Func<IServiceProvider, NotableDateResource>)` | The resource is produced from the container when the service is first resolved — e.g. loaded from configuration or a data pack resolved through DI. |
+| `AddNotableDateService(IServiceCollection, Func<IServiceProvider, NotableDateResource>)` | The resource is produced from the container when the service is first resolved - e.g. loaded from configuration or a data pack resolved through DI. |
 | `AddNotableDateService(IServiceCollection, Func<IServiceProvider, NotableDateResource>, Func<IServiceProvider, NotableDateServiceOptions?>?)` | Factory registration with the collaborators also produced from the container; the options factory and its result may be `null`. |
 | `AddNotableDateService(IServiceCollection, string serviceKey, NotableDateResource, NotableDateServiceOptions? = null)` | A **keyed** singleton, so a multi-tenant process registers one service per jurisdiction and resolves it with `GetRequiredKeyedService<INotableDateService>(key)` or `[FromKeyedServices(key)]`. |
 | `AddNotableDateService(IServiceCollection, string serviceKey, Func<IServiceProvider, NotableDateResource>, Func<IServiceProvider, NotableDateServiceOptions?>? = null)` | The keyed registration with factory-produced resource and collaborators. |
@@ -53,7 +53,7 @@ chaining and throws `ArgumentNullException` for a `null` `services`, resource, f
 | `AddReloadableNotableDateService<TOptions>(IServiceCollection, Func<IServiceProvider, TOptions, NotableDateResource>, NotableDateServiceOptions? = null) where TOptions : class` | Driven by `IOptionsMonitor<TOptions>`: the factory runs for the initial load and again on every options change, and each rebuilt resource is swapped into the live service. A factory failure during a change is logged (`EventId 4001`) and leaves the previous resource in effect; a successful swap logs `EventId 4002`. |
 
 `INotableDateService` is always a singleton, and every registration is idempotent (`TryAdd` semantics): a second
-registration for the same service — or the same key — leaves the first in place. Keyed and unkeyed registrations are
+registration for the same service - or the same key - leaves the first in place. Keyed and unkeyed registrations are
 independent, so both may coexist. Factories run lazily, on first resolution.
 
 ## Minimal sample
@@ -98,7 +98,7 @@ builder.Services.AddReloadableNotableDateService<CalendarOptions>((sp, options) 
     AsiaPacificCalendarData.LoadResource(options.Territory));
 ```
 
-The [`Bodu.Globalization.Calendar.Caching`](Bodu.Globalization.Calendar.Caching.md) decorator composes with any of
+The [`Bodu.Globalization.Calendar.Caching`](xref:Bodu.Globalization.Calendar.Caching) decorator composes with any of
 these: `services.AddCachedNotableDateService(...)`, called after the registration it wraps, replaces the registered
 `INotableDateService` with a caching decorator over it and observes the reloadable provider automatically. See the
 [Calendar dependency injection](~/guides/calendar/dependency-injection.md) guide for the full walkthrough, including

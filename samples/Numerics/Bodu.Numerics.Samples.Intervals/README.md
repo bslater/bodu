@@ -1,18 +1,18 @@
 # Bodu.Numerics.Samples.Intervals
 
 The interval algebra from `Bodu.Numerics`: `Interval<T>` over a continuous domain,
-`DiscreteInterval<T>` over the integers, and the normalized `IntervalSet<T>` — with the two-piece
+`DiscreteInterval<T>` over the integers, and the normalized `IntervalSet<T>` - with the two-piece
 result types `IntervalPair<T>` / `DiscreteIntervalPair<T>` that a subtraction or symmetric difference
 can produce. Four scenarios cover boundary-aware membership, the set operations on a pair of
 intervals, the discrete-only merge-on-adjacency behaviour, and normalized interval sets.
 
-Everything runs offline with fixed inputs — deterministic output every run.
+Everything runs offline with fixed inputs - deterministic output every run.
 
 ```bash
 dotnet run --project samples/Numerics/Bodu.Numerics.Samples.Intervals
 ```
 
-## Scenario 1 — IntervalBasics
+## Scenario 1 - IntervalBasics
 
 **Intent.** Show `Interval<T>` over a continuous domain: the closed / open / half-open factories, the
 empty interval, and the boundary-aware `Contains` and `Overlaps` predicates that respect endpoint
@@ -52,10 +52,10 @@ empty interval prints as `∅`:
 **APIs demonstrated.** `Interval<T>.Closed` / `.Open` / `.ClosedOpen`, `Interval<T>.Empty`,
 `Interval<T>.Contains(T)`, `Interval<T>.Overlaps`, `Interval<T>.IsEmpty`.
 
-## Scenario 2 — SetAlgebra
+## Scenario 2 - SetAlgebra
 
 **Intent.** Show the two-interval set operations. Intersection is always a single interval, but
-subtracting or symmetric-differencing two intervals can leave *two* disjoint pieces — which is
+subtracting or symmetric-differencing two intervals can leave *two* disjoint pieces - which is
 exactly what `IntervalPair<T>` carries, ready to bridge to an `IntervalSet<T>`.
 
 **What it does.** Takes `a = [0, 10]` and `b = [4, 20]`, computes `Intersect` (one interval), the
@@ -93,10 +93,10 @@ single left piece `[0, 4)`; and the symmetric difference is the genuine two-piec
 `Interval<T>.SymmetricDifference`, `IntervalPair<T>.Count`, `IntervalPair<T>.ToIntervalSet`,
 `IntervalSet<T>.Contains`.
 
-## Scenario 3 — DiscreteIntervals
+## Scenario 3 - DiscreteIntervals
 
 **Intent.** Show `DiscreteInterval<T>` over the integers. Because the domain is countable, an
-interval has a first and last member and an exact `Count`, and — crucially — adjacent intervals with
+interval has a first and last member and an exact `Count`, and - crucially - adjacent intervals with
 no integer between them merge into one, unlike the continuous `Interval<T>`.
 
 **What it does.** Builds `[3, 8]`, reads its endpoints and count, walks every member from `First` to
@@ -131,7 +131,7 @@ with a `Difference` that leaves two pieces in a `DiscreteIntervalPair<T>`.
 `.Count`, `DiscreteInterval<T>.TryUnion`, `DiscreteInterval<T>.Difference`,
 `DiscreteIntervalPair<T>.Count`.
 
-## Scenario 4 — IntervalSets
+## Scenario 4 - IntervalSets
 
 **Intent.** Show `IntervalSet<T>` as a normalized union of disjoint intervals: overlapping or
 touching pieces coalesce automatically, membership is one query across the whole set, and the
@@ -184,7 +184,7 @@ Bodu.Numerics.Samples.Intervals/
 
 ## Related
 
-- `Bodu.Numerics.Samples.Fractions` — the exact-rational `Fraction<T>` over the same numeric surface.
-- `Bodu.Numerics.Samples.JsonConverters` — round-tripping `Interval<T>` / `DiscreteInterval<T>` /
+- `Bodu.Numerics.Samples.Fractions` - the exact-rational `Fraction<T>` over the same numeric surface.
+- `Bodu.Numerics.Samples.JsonConverters` - round-tripping `Interval<T>` / `DiscreteInterval<T>` /
   `IntervalSet<T>` through `System.Text.Json` with the companion serialization package.
 ```

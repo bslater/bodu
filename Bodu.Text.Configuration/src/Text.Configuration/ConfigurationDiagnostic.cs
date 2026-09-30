@@ -9,7 +9,7 @@ using System.Diagnostics;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Represents a single diagnostic — informational message, warning, or recoverable error — produced while reading or
+/// Represents a single diagnostic - informational message, warning, or recoverable error - produced while reading or
 /// resolving a configuration document.
 /// </summary>
 /// <remarks>
@@ -36,7 +36,7 @@ namespace Bodu.Text.Configuration;
 ///         hasErrors = true;
 /// }
 ///
-/// // Build one directly — useful when a host integrates Bodu diagnostics into its own pipeline.
+/// // Build one directly - useful when a host integrates Bodu diagnostics into its own pipeline.
 /// var diag = new ConfigurationDiagnostic(
 ///     ConfigurationDiagnosticSeverity.Warning,
 ///     ConfigurationDiagnosticCode.UnknownKey,

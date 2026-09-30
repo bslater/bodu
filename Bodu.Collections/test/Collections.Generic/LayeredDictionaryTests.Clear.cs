@@ -10,7 +10,7 @@ public partial class LayeredDictionaryTests
 {
     /// <summary>
     /// Verifies that clearing empties the first layer only, leaving deeper layers untouched and their entries visible
-    /// — including previously shadowed ones.
+    /// - including previously shadowed ones.
     /// </summary>
     [TestMethod]
     public void Clear_WhenCalled_ShouldClearFirstLayerOnlyAndUnshadowDeeperEntries()

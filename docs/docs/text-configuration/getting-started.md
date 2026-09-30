@@ -1,8 +1,8 @@
 ---
-title: Bodu.Text.Configuration — Getting started
+title: Bodu.Text.Configuration - Getting started
 ---
 
-# Bodu.Text.Configuration — Getting started
+# Bodu.Text.Configuration - Getting started
 
 Unfamiliar with terms like *document*, *view*, *profile*, *preamble*, *target path*, *unset*, or *diagnostic mode*?
 Read [Core concepts](concepts.md) first.
@@ -16,8 +16,8 @@ dotnet add package Bodu.Text.Configuration
 Targets `net8.0`. Depends only on `Bodu.Core` (throw helpers); the INI document model is the library's own. No
 external NuGet references.
 
-For `Microsoft.Extensions.Configuration` integration — `AddTextConfiguration*`, options binding, file-provider
-support — install the sibling [`Bodu.Extensions.Configuration.Text`](../extensions-configuration-text/getting-started.md)
+For `Microsoft.Extensions.Configuration` integration - `AddTextConfiguration*`, options binding, file-provider
+support - install the sibling [`Bodu.Extensions.Configuration.Text`](../extensions-configuration-text/getting-started.md)
 package on top.
 
 ## Minimal samples
@@ -51,17 +51,17 @@ string logLevel    = view.GetString("logging:level:default");         // "Warnin
 ```
 
 Both the dotted form (`format.indent.style`) and the colon-delimited form (`format:indent:style`) work as lookup keys
-on the view — the library projects raw keys to canonical colon-delimited form during resolve, but the dotted form
+on the view - the library projects raw keys to canonical colon-delimited form during resolve, but the dotted form
 remains a valid alias.
 
 ### Read with a fallback
 
 ```csharp
-int indent = view.GetInt32("format:indent:size", fallback: 4);        // 4 if the key is missing — but FormatException still fires on malformed values
+int indent = view.GetInt32("format:indent:size", fallback: 4);        // 4 if the key is missing - but FormatException still fires on malformed values
 string logTo = view.GetString("logging:writeTo", fallback: "console");
 ```
 
-`TryGetXxx` never throws — including on malformed values. Use it when you cannot trust the source text and want
+`TryGetXxx` never throws - including on malformed values. Use it when you cannot trust the source text and want
 diagnostics on a per-key basis.
 
 ```csharp
@@ -71,7 +71,7 @@ if (view.TryGetInt32("format:indent:size", out int size))
 }
 ```
 
-### Generic typed accessor — any `ISpanParsable<T>`
+### Generic typed accessor - any `ISpanParsable<T>`
 
 ```csharp
 double threshold = view.GetValue<double>("limits:cpu:threshold");
@@ -84,12 +84,12 @@ All parsing uses `CultureInfo.InvariantCulture` so behaviour is deterministic ac
 ### Profile presets
 
 ```csharp
-// Strict — duplicate keys are rejected, key-only properties forbidden, inline comments off.
+// Strict - duplicate keys are rejected, key-only properties forbidden, inline comments off.
 ConfigurationDocument generated = ConfigurationDocument.Parse(
     text,
     ConfigurationParseOptions.Strict);
 
-// EditorConfig-compatible — inline comments disabled, identity key mapping, only `root` from preamble.
+// EditorConfig-compatible - inline comments disabled, identity key mapping, only `root` from preamble.
 ConfigurationDocument editorConfig = ConfigurationDocument.Parse(
     text,
     ConfigurationParseOptions.EditorConfigCompatible);
@@ -113,7 +113,7 @@ foreach (ConfigurationDiagnostic d in result.Diagnostics)
 
 if (result.Diagnostics.Length == 0)
 {
-    // Clean parse — document is fully usable.
+    // Clean parse - document is fully usable.
     ConfigurationView view = result.Document.Resolve("src/Foo.cs");
 }
 ```
@@ -133,11 +133,11 @@ ConfigurationDocument fromStream = ConfigurationDocument.Load(fs);
 
 `Load(path)` records the originating directory so anchored glob patterns (e.g. `[src/**]`) can resolve against the
 correct root without an explicit `PathRoot` setting. `Load(Stream)` and `Parse(string)` produce documents with no
-path context, so anchored globs require `ConfigurationResolveOptions.PathRoot` to be set explicitly — or
+path context, so anchored globs require `ConfigurationResolveOptions.PathRoot` to be set explicitly - or
 `MissingPathRootMode` set to `UseEmptyRoot` (the `Bodu` profile default; the `EditorConfigCompatible` profile selects
 `Throw`).
 
-### Resolve options — anchor a path root
+### Resolve options - anchor a path root
 
 ```csharp
 ConfigurationDocument doc = ConfigurationDocument.Parse(source);
@@ -154,7 +154,7 @@ ConfigurationView view = doc.Resolve("src/Bodu/Foo.cs", options);
 
 > [!IMPORTANT]
 > A target path is required for glob sections to match. `doc.Resolve()` with no path (or `null`) skips every named
-> section and returns a preamble-only view. Always pass the file you are evaluating — `doc.Resolve("src/Foo.cs")` — when
+> section and returns a preamble-only view. Always pass the file you are evaluating - `doc.Resolve("src/Foo.cs")` - when
 > you want section rules to apply.
 
 ### Trace where a value came from
@@ -253,8 +253,8 @@ Debug.Assert(reparsed.GlobalSection["root"] == doc.GlobalSection["root"]);
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — vocabulary refresher.
-- **[Introduction](index.md)** — type map, scenario index.
-- **[Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md)** — plug into `IConfigurationBuilder`, bind to `IOptions<T>`.
-- **[Bodu.Text.Configuration API reference](xref:Bodu.Text.Configuration)** — full type-by-type docs.
-- **[Bodu.Text.Ini](../formats/index.md)** — the standalone INI library, for codec-only INI reading and editing.
+- **[Core concepts](concepts.md)** - vocabulary refresher.
+- **[Introduction](index.md)** - type map, scenario index.
+- **[Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md)** - plug into `IConfigurationBuilder`, bind to `IOptions<T>`.
+- **[Bodu.Text.Configuration API reference](xref:Bodu.Text.Configuration)** - full type-by-type docs.
+- **[Bodu.Text.Ini](../formats/index.md)** - the standalone INI library, for codec-only INI reading and editing.

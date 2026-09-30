@@ -14,7 +14,7 @@ namespace Bodu.Collections.Concurrent.Samples.ThreadSafeCollections.Scenarios;
 /// </summary>
 /// <remarks>
 /// Everything runs single-threaded so the transcript is reproducible. Snapshots are sorted before printing because
-/// iteration order is unspecified — a split-ordered set stores elements by hash bucket, not by insertion, so relying
+/// iteration order is unspecified - a split-ordered set stores elements by hash bucket, not by insertion, so relying
 /// on the order you see would be relying on an implementation detail.
 /// </remarks>
 public static class LockFreeSet

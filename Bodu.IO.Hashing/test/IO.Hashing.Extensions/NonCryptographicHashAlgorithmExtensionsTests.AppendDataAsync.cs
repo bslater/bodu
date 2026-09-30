@@ -57,7 +57,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a small <paramref name="bufferSize" /> — forcing multiple read iterations — produces the correct
+    /// Verifies that a small <paramref name="bufferSize" /> - forcing multiple read iterations - produces the correct
     /// hash.
     /// </summary>
     [TestMethod]

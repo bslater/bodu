@@ -139,7 +139,7 @@ public partial class CrcStandardTests
 
     /// <summary>
     /// Verifies that constructing a <see cref="CrcStandard" /> with parameters that exactly fill the width mask
-    /// succeeds — the upper boundary of the permitted range.
+    /// succeeds - the upper boundary of the permitted range.
     /// </summary>
     /// <param name="size">The CRC width, in bits.</param>
     /// <param name="widthMask">The all-ones value for <paramref name="size" /> bits.</param>

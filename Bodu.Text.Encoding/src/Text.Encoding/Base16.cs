@@ -19,7 +19,7 @@ namespace Bodu.Text.Encoding;
 /// via <see cref="BaseFormatStyles" />.
 /// </para>
 /// <para>
-/// All public methods are thread-safe — the type is stateless. The implementation provides allocation-minimal fast
+/// All public methods are thread-safe - the type is stateless. The implementation provides allocation-minimal fast
 /// paths when no decoration flags are set, and falls back to a <see cref="System.Text.StringBuilder" />-based writer
 /// when spacing, prefix, or line breaks are requested.
 /// </para>
@@ -32,12 +32,12 @@ namespace Bodu.Text.Encoding;
 /// // Canonical lower-case hex.
 /// string lower = Base16.Encode(data);                                           // "deadbeef"
 ///
-/// // Upper-case with the "0x" prefix and byte spacing — useful for diagnostic output.
+/// // Upper-case with the "0x" prefix and byte spacing - useful for diagnostic output.
 /// string pretty = Base16.Encode(data, BaseFormattingOptions.UpperCase
 ///                                    | BaseFormattingOptions.IncludePrefix
 ///                                    | BaseFormattingOptions.InsertSpacing);    // "0xDE AD BE EF"
 ///
-/// // Lenient decoding — accepts the "0x" prefix and embedded whitespace.
+/// // Lenient decoding - accepts the "0x" prefix and embedded whitespace.
 /// byte[] roundtrip = Base16.Decode(pretty,
 ///     BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
 ///]]>

@@ -13,8 +13,8 @@ namespace Bodu.Text.Ini.Reader;
 /// insertion-ordered list of sections, with the duplicate-section and duplicate-key policies already applied.
 /// </summary>
 /// <remarks>
-/// The normalizer exists because duplicate-section merge declares structure out of source order — a later
-/// <c>[section]</c> appends to an earlier one — so the logical shape cannot be produced by a single forward token pass.
+/// The normalizer exists because duplicate-section merge declares structure out of source order - a later
+/// <c>[section]</c> appends to an earlier one - so the logical shape cannot be produced by a single forward token pass.
 /// It backs the read-only <see cref="Bodu.Text.Ini.Document.IniDocument" /> DOM and the serializer's normalized reader.
 /// </remarks>
 internal sealed class IniNormalizedDocument

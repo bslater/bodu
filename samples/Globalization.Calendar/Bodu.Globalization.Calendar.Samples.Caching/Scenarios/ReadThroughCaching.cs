@@ -11,8 +11,8 @@ namespace Bodu.Globalization.Calendar.Samples.Caching.Scenarios;
 
 /// <summary>
 /// Demonstrates the read-through decorator: <see cref="CachingNotableDateService" /> caches whole
-/// (territory, civil-year) result lists, so repeated queries — including sub-range queries inside a cached
-/// year — never re-run rule resolution.
+/// (territory, civil-year) result lists, so repeated queries - including sub-range queries inside a cached
+/// year - never re-run rule resolution.
 /// </summary>
 public static class ReadThroughCaching
 {

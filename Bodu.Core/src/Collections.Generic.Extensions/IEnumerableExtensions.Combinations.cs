@@ -28,14 +28,14 @@ public static partial class IEnumerableExtensions
     /// <remarks>
     /// <para>
     /// This method uses deferred execution. Negative <paramref name="size" /> values are rejected eagerly at the call
-    /// site, but the source count is only known once enumeration begins, so the <c>size &gt; count</c> contract —
-    /// producing an empty sequence rather than throwing — is observed on iteration. The source is materialized into a
+    /// site, but the source count is only known once enumeration begins, so the <c>size &gt; count</c> contract -
+    /// producing an empty sequence rather than throwing - is observed on iteration. The source is materialized into a
     /// buffer when enumeration begins and is enumerated exactly once.
     /// </para>
     /// <para>
     /// Rows are ordered lexicographically by the source positions they select: the first row is the first
     /// <paramref name="size" /> elements, and the last row is the final <paramref name="size" /> elements. Elements are
-    /// treated positionally, so duplicate values produce duplicate rows. Each row is an independent snapshot —
+    /// treated positionally, so duplicate values produce duplicate rows. Each row is an independent snapshot -
     /// retaining or mutating one row never affects another. A <paramref name="size" /> of 0 yields exactly one empty
     /// row, matching the mathematical convention that <em>C(n, 0)</em> = 1.
     /// </para>

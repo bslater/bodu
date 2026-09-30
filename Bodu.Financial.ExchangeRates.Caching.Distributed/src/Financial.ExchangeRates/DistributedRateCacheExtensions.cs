@@ -95,7 +95,7 @@ public static class DistributedRateCacheExtensions
         // fails the start rather than the first lookup. The probe runs through the same ValidateOnStart wiring.
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<DistributedRateCacheOptions>, DistributedCacheStorageStartupValidator>());
 
-        // Register the concrete cache once as a singleton so a single instance — and its per-pair locks — backs every
+        // Register the concrete cache once as a singleton so a single instance - and its per-pair locks - backs every
         // resolution. The backing IDistributedCache is resolved from the container so any registered distributed cache
         // (Redis, in-memory, SQL Server, …) can host it.
         services.TryAddSingleton(serviceProvider =>

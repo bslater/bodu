@@ -30,7 +30,7 @@ namespace Bodu.Security.Cryptography;
 ///<![CDATA[
 /// using Bodu.Security.Cryptography;
 ///
-/// // Legacy interop only — padding bytes are random; only the final length byte is validated.
+/// // Legacy interop only - padding bytes are random; only the final length byte is validated.
 /// IPaddingStrategy padding = new Iso10126Padding();
 /// byte[] padded = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes
 /// byte[] recovered = padding.Unpad(padded, blockSize: 128);
@@ -95,7 +95,7 @@ public sealed class Iso10126Padding
     /// <remarks>
     /// Unlike its siblings, ISO 10126 validation is deliberately <em>not</em> masked into a constant-time walk of the
     /// final block: the interior pad bytes are random by construction, so the trailing length byte is the only byte
-    /// that can be checked at all. Masking that single range check would buy nothing — the resulting exception is
+    /// that can be checked at all. Masking that single range check would buy nothing - the resulting exception is
     /// observable to an attacker either way, which is exactly the padding-oracle surface. As with every strippable
     /// padding, authenticate the ciphertext before depadding.
     /// </remarks>

@@ -60,7 +60,7 @@ public sealed partial class Base32Tests
     }
 
     /// <summary>
-    /// Verifies that Z-Base32 encoded output does NOT decode meaningfully when treated as the Standard variant —
+    /// Verifies that Z-Base32 encoded output does NOT decode meaningfully when treated as the Standard variant -
     /// the alphabets are disjoint enough that decoding produces wrong bytes or rejects.
     /// </summary>
     [TestMethod]

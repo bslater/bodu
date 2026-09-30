@@ -8,7 +8,7 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
 /// Identifies the provenance of a cryptographic known-answer test vector so that test names and reports do not
-/// overstate the authority of a vector — for example, distinguishing a published standard from an Internet-Draft, a
+/// overstate the authority of a vector - for example, distinguishing a published standard from an Internet-Draft, a
 /// value taken from a reference implementation, or an in-tree regression baseline.
 /// </summary>
 /// <remarks>

@@ -38,7 +38,7 @@ public sealed record MultiCharCheckDigitIsValidKnownAnswer
     public required string Name { get; init; }
 
     /// <summary>
-    /// Gets the complete sequence — body and check characters in their canonical form — passed to the algorithm's
+    /// Gets the complete sequence - body and check characters in their canonical form - passed to the algorithm's
     /// <c>IsValid</c> static helper.
     /// </summary>
     /// <value>A non-null string drawn from the algorithm's declared input alphabet.</value>

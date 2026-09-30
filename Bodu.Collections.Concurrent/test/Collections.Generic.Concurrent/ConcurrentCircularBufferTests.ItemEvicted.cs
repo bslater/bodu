@@ -60,7 +60,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.ItemEvicted += _ => secondHandlerFired = true;
 
         buffer.Enqueue(new TestItem(1));
-        buffer.Enqueue(new TestItem(2)); // buffer full — no eviction yet
+        buffer.Enqueue(new TestItem(2)); // buffer full - no eviction yet
         buffer.Enqueue(new TestItem(3)); // evicts 1, fires both handlers
 
         Assert.IsTrue(secondHandlerFired, "Second handler should be invoked even if the first throws.");
@@ -86,7 +86,7 @@ public partial class ConcurrentCircularBufferTests
     /// <summary>
     /// Verifies that an <see cref="OutOfMemoryException" /> thrown by an
     /// <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> handler propagates out of
-    /// <see cref="ConcurrentCircularBuffer{T}.Enqueue" /> rather than being swallowed — a process-fatal condition
+    /// <see cref="ConcurrentCircularBuffer{T}.Enqueue" /> rather than being swallowed - a process-fatal condition
     /// must not be masked as a successful eviction.
     /// </summary>
     [TestMethod]

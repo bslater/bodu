@@ -14,40 +14,40 @@ The types are organised into folders/namespaces by surface (`Reader`, `Writer`, 
 
 ## Static documentation
 
-- **[Bodu serializers introduction](~/docs/serialization/index.md)** — the three libraries, the shared tiers, and how to choose a format.
-- **[Core concepts](~/docs/serialization/toml/concepts.md)** — the serializer, the converter model, the two DOMs, and the reader/writer seam.
-- **[Getting started](~/docs/serialization/toml/getting-started.md)** — install and the first round trip.
-- **[Using TOML](~/guides/serialization/toml/using.md)** — type mapping, spec-version selection, the DOMs, and streams.
-- **[Writing converters](~/guides/serialization/toml/converters.md)** — custom shapes with `TomlConverter<T>`.
+- **[Bodu serializers introduction](~/docs/serialization/index.md)** - the three libraries, the shared tiers, and how to choose a format.
+- **[Core concepts](~/docs/serialization/toml/concepts.md)** - the serializer, the converter model, the two DOMs, and the reader/writer seam.
+- **[Getting started](~/docs/serialization/toml/getting-started.md)** - install and the first round trip.
+- **[Using TOML](~/guides/serialization/toml/using.md)** - type mapping, spec-version selection, the DOMs, and streams.
+- **[Writing converters](~/guides/serialization/toml/converters.md)** - custom shapes with `TomlConverter<T>`.
 
 ## Key types
 
 **Serializer (`Bodu.Text.Toml`)**
 
-- <xref:Bodu.Text.Toml.TomlSerializer> — static façade. `Serialize` to `string` / `IBufferWriter<byte>` / `Stream` and `Deserialize<T>` from `string` / `ReadOnlySpan<byte>` / `Stream`, sync and async.
-- <xref:Bodu.Text.Toml.TomlSerializerOptions> — converters, naming policy, ignore conditions, depth, `IncludeFields`, `SpecVersion`, and `ByteArrayHandling`; cached and frozen on first use.
-- <xref:Bodu.Text.Toml.TomlSerializerDefaults> — the `General` / `Web` preset selector.
-- <xref:Bodu.Text.Serialization.NamingPolicy> — camel, snake, and kebab casing policies.
-- <xref:Bodu.Text.Toml.TomlTokenType>, <xref:Bodu.Text.Toml.TomlValueKind> — the token and value-kind enumerations.
-- <xref:Bodu.Text.Toml.TomlSpecVersion> — the spec selector: `V1_0` (default) or `V1_1`. <xref:Bodu.Text.Toml.TomlByteArrayHandling> — integer-array or Base64-string `byte[]` mapping.
-- <xref:Bodu.Text.Toml.TomlFormatException> — malformed input (with line / column / offset). <xref:Bodu.Text.Toml.TomlSerializationException> — binding failures.
+- <xref:Bodu.Text.Toml.TomlSerializer> - static façade. `Serialize` to `string` / `IBufferWriter<byte>` / `Stream` and `Deserialize<T>` from `string` / `ReadOnlySpan<byte>` / `Stream`, sync and async.
+- <xref:Bodu.Text.Toml.TomlSerializerOptions> - converters, naming policy, ignore conditions, depth, `IncludeFields`, `SpecVersion`, and `ByteArrayHandling`; cached and frozen on first use.
+- <xref:Bodu.Text.Toml.TomlSerializerDefaults> - the `General` / `Web` preset selector.
+- <xref:Bodu.Text.Serialization.NamingPolicy> - camel, snake, and kebab casing policies.
+- <xref:Bodu.Text.Toml.TomlTokenType>, <xref:Bodu.Text.Toml.TomlValueKind> - the token and value-kind enumerations.
+- <xref:Bodu.Text.Toml.TomlSpecVersion> - the spec selector: `V1_0` (default) or `V1_1`. <xref:Bodu.Text.Toml.TomlByteArrayHandling> - integer-array or Base64-string `byte[]` mapping.
+- <xref:Bodu.Text.Toml.TomlFormatException> - malformed input (with line / column / offset). <xref:Bodu.Text.Toml.TomlSerializationException> - binding failures.
 
 **Low-level reader / writer**
 
-- <xref:Bodu.Text.Toml.Reader.Utf8TomlReader> (+ <xref:Bodu.Text.Toml.Reader.TomlReaderOptions>) — forward-only, allocation-free token reader.
-- <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> (+ <xref:Bodu.Text.Toml.Writer.TomlWriterOptions>) — forward-only token writer; emits canonical, block-style TOML.
+- <xref:Bodu.Text.Toml.Reader.Utf8TomlReader> (+ <xref:Bodu.Text.Toml.Reader.TomlReaderOptions>) - forward-only, allocation-free token reader.
+- <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> (+ <xref:Bodu.Text.Toml.Writer.TomlWriterOptions>) - forward-only token writer; emits canonical, block-style TOML.
 
 **Document object models**
 
-- <xref:Bodu.Text.Toml.Nodes.TomlNode> / <xref:Bodu.Text.Toml.Nodes.TomlObject> / <xref:Bodu.Text.Toml.Nodes.TomlArray> / <xref:Bodu.Text.Toml.Nodes.TomlValue> — the mutable, editable DOM (parsing tuned by <xref:Bodu.Text.Toml.Nodes.TomlNodeOptions>).
-- <xref:Bodu.Text.Toml.Document.TomlDocument> / <xref:Bodu.Text.Toml.Document.TomlElement> / <xref:Bodu.Text.Toml.Document.TomlProperty> — the read-only, low-allocation DOM (parsing tuned by <xref:Bodu.Text.Toml.Document.TomlDocumentOptions>).
+- <xref:Bodu.Text.Toml.Nodes.TomlNode> / <xref:Bodu.Text.Toml.Nodes.TomlObject> / <xref:Bodu.Text.Toml.Nodes.TomlArray> / <xref:Bodu.Text.Toml.Nodes.TomlValue> - the mutable, editable DOM (parsing tuned by <xref:Bodu.Text.Toml.Nodes.TomlNodeOptions>).
+- <xref:Bodu.Text.Toml.Document.TomlDocument> / <xref:Bodu.Text.Toml.Document.TomlElement> / <xref:Bodu.Text.Toml.Document.TomlProperty> - the read-only, low-allocation DOM (parsing tuned by <xref:Bodu.Text.Toml.Document.TomlDocumentOptions>).
 
 **Converters and attributes (`Bodu.Text.Toml.Serialization`)**
 
-- <xref:Bodu.Text.Toml.Serialization.TomlConverter`1> / <xref:Bodu.Text.Toml.Serialization.TomlConverterFactory> — base types for custom per-type converters and converter families.
+- <xref:Bodu.Text.Toml.Serialization.TomlConverter`1> / <xref:Bodu.Text.Toml.Serialization.TomlConverterFactory> - base types for custom per-type converters and converter families.
 - <xref:Bodu.Text.Serialization.PropertyNameAttribute>, <xref:Bodu.Text.Serialization.IgnoreAttribute>, <xref:Bodu.Text.Serialization.ConverterAttribute>, and the rest of the attribute family (`PropertyOrder`, `Constructor`, `Required`, `Include`, `ExtensionData`, `NamingPolicy`, `UnmappedMemberHandling`, `ObjectCreationHandling`, `StringEnumMemberName`).
-- <xref:Bodu.Text.Serialization.IOnSerializing>, <xref:Bodu.Text.Serialization.IOnSerialized>, <xref:Bodu.Text.Serialization.IOnDeserializing>, <xref:Bodu.Text.Serialization.IOnDeserialized> — the serialization callbacks.
-- <xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter>, <xref:Bodu.Text.Toml.Serialization.TomlNumberEnumConverter`1> — the built-in enum converters.
+- <xref:Bodu.Text.Serialization.IOnSerializing>, <xref:Bodu.Text.Serialization.IOnSerialized>, <xref:Bodu.Text.Serialization.IOnDeserializing>, <xref:Bodu.Text.Serialization.IOnDeserialized> - the serialization callbacks.
+- <xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter>, <xref:Bodu.Text.Toml.Serialization.TomlNumberEnumConverter`1> - the built-in enum converters.
 
 ## Example
 

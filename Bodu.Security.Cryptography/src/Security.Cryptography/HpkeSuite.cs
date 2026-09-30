@@ -11,8 +11,8 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Describes a complete HPKE cipher suite — the combination of a Key Encapsulation Mechanism (KEM), a Key Derivation
-/// Function (KDF), and an Authenticated Encryption with Associated Data (AEAD) function — and exposes the derived
+/// Describes a complete HPKE cipher suite - the combination of a Key Encapsulation Mechanism (KEM), a Key Derivation
+/// Function (KDF), and an Authenticated Encryption with Associated Data (AEAD) function - and exposes the derived
 /// element lengths defined by RFC 9180. Instances are immutable.
 /// </summary>
 /// <remarks>

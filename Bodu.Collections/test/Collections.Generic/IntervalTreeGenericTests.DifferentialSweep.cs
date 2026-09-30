@@ -22,7 +22,7 @@ public partial class IntervalTreeGenericTests
 
     /// <summary>
     /// Verifies that 4,000 seeded weighted add/remove operations mirrored against a brute-force entry-list oracle
-    /// leave the <see cref="IntervalTree{TKey, TValue}" /> in exactly the mirrored state at every checkpoint —
+    /// leave the <see cref="IntervalTree{TKey, TValue}" /> in exactly the mirrored state at every checkpoint -
     /// count, full ascending enumeration with per-interval insertion order, and stabbing/window probe batteries.
     /// Both remove overloads are exercised, mirroring first-stored and value-specific semantics on the oracle.
     /// </summary>

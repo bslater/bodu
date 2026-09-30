@@ -72,7 +72,7 @@ public readonly partial struct BigDecimal
 
     /// <summary>
     /// Explicitly converts a <see cref="double" /> to a <see cref="BigDecimal" /> via its shortest round-trip decimal
-    /// text — so <c>0.1d</c> becomes <c>0.1</c>, not its exact binary expansion.
+    /// text - so <c>0.1d</c> becomes <c>0.1</c>, not its exact binary expansion.
     /// </summary>
     /// <param name="value">The value to convert.</param>
     /// <returns>The decimal value.</returns>

@@ -15,14 +15,14 @@ namespace Bodu.Text.Configuration;
 /// Resolution is path-aware: each section in the document either matches the supplied target path (under EditorConfig
 /// glob semantics) or does not, and the resolved view layers the preamble and every matching section in source order,
 /// with the last matching section's value winning. This options bag controls every variable that influences that
-/// layering — which path root anchors anchored globs, whether preamble properties contribute, which string comparison
+/// layering - which path root anchors anchored globs, whether preamble properties contribute, which string comparison
 /// is used for path matching, and how the EditorConfig <c>unset</c> sentinel is handled.
 /// </para>
 /// <para>
 /// <see cref="PathRoot" /> deserves attention when the document was parsed from a string rather than loaded from a
 /// file. With no path on the document and <see cref="PathRoot" /> left <see langword="null" />, the resolver consults
 /// <see cref="MissingPathRootMode" /> to decide whether to use the empty root, throw, or fall back to the target path's
-/// parent — that choice changes which sections match.
+/// parent - that choice changes which sections match.
 /// </para>
 /// <para>
 /// <see cref="KeyOptions" /> should normally be the same instance passed to

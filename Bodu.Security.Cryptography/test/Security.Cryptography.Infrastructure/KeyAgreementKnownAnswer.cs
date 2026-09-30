@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Represents a single key-agreement known-answer test (KAT) vector — a private key, a peer public key, and either the
+/// Represents a single key-agreement known-answer test (KAT) vector - a private key, a peer public key, and either the
 /// expected shared secret or the expectation that the derivation is rejected.
 /// </summary>
 public sealed record KeyAgreementKnownAnswer

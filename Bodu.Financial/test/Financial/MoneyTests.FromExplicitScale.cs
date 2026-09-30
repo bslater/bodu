@@ -122,7 +122,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that mixed-scale addition preserves the sub-minor-unit digits exactly — the sum is lossless at the
+    /// Verifies that mixed-scale addition preserves the sub-minor-unit digits exactly - the sum is lossless at the
     /// finer scale and the stored amount never exceeds the reported precision.
     /// </summary>
     [TestMethod]

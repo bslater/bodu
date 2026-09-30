@@ -12,7 +12,7 @@ namespace Bodu.Text.Encoding;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Instances are obtained from <see cref="BinaryEncodings" /> — each property there returns a singleton implementation
+/// Instances are obtained from <see cref="BinaryEncodings" /> - each property there returns a singleton implementation
 /// bound to a specific variant. The pattern mirrors <see cref="System.Text.Encoding" />, but for radix encoding rather
 /// than character-set transcoding.
 /// </para>
@@ -46,7 +46,7 @@ public interface IBinaryEncoding
     string Description { get; }
 
     /// <summary>
-    /// Gets a short stable name identifying the encoding and variant — for example, <c>"base16-lower"</c>,
+    /// Gets a short stable name identifying the encoding and variant - for example, <c>"base16-lower"</c>,
     /// <c>"base32"</c>, <c>"base64-urlsafe"</c>. Suitable as a key in configuration and for diagnostic output.
     /// </summary>
     string Name { get; }
@@ -103,7 +103,7 @@ public interface IBinaryEncoding
     /// </returns>
     /// <remarks>
     /// On failure <paramref name="bytesWritten" /> is set to zero and the contents of <paramref name="destination" />
-    /// are unspecified — the BCL convention shared with
+    /// are unspecified - the BCL convention shared with
     /// <see cref="System.Convert.TryFromBase64Chars(System.ReadOnlySpan{char}, System.Span{byte}, out int)" />. Callers
     /// must not rely on any partial bytes that may have been written before the failure was detected.
     /// </remarks>

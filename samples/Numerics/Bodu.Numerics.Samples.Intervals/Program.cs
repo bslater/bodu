@@ -9,7 +9,7 @@ using Bodu.Numerics.Samples.Intervals.Scenarios;
 namespace Bodu.Numerics.Samples.Intervals;
 
 /// <summary>
-/// Entry point for the interval-algebra sample: the <c>Bodu.Numerics</c> interval types —
+/// Entry point for the interval-algebra sample: the <c>Bodu.Numerics</c> interval types -
 /// <c>Interval&lt;T&gt;</c> over a continuous domain, <c>DiscreteInterval&lt;T&gt;</c> over the
 /// integers, and the normalized <c>IntervalSet&lt;T&gt;</c>, together with the two-piece result
 /// types <c>IntervalPair&lt;T&gt;</c> / <c>DiscreteIntervalPair&lt;T&gt;</c>. Everything runs

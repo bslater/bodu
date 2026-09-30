@@ -13,8 +13,8 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Tweakable block ciphers — Threefish in this library, and tweakable variants used as building blocks for AEAD
-/// constructions — accept a third keying input alongside the key and IV: the <em>tweak</em>. The tweak is a per-message
+/// Tweakable block ciphers - Threefish in this library, and tweakable variants used as building blocks for AEAD
+/// constructions - accept a third keying input alongside the key and IV: the <em>tweak</em>. The tweak is a per-message
 /// value that varies the cipher's behavior without renegotiating a key, making it a natural fit for disk encryption,
 /// authenticated modes, and protocols that bind ciphertext to a position or message identifier. Constructing an
 /// encryptor or decryptor for one of these algorithms requires all three values to be valid in concert; the BCL-style
@@ -60,7 +60,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 ///     return BadRequest("invalid key, iv, or tweak");
 /// using (encryptor) { /* … encrypt with the validated transform … */ }
 ///
-/// // 2. Round-trip pairing — same try-pattern shape for the decryptor.
+/// // 2. Round-trip pairing - same try-pattern shape for the decryptor.
 /// if (tf.TryCreateDecryptor(suppliedKey, suppliedIv, suppliedTweak, out ICryptoTransform? decryptor))
 /// {
 ///     using (decryptor) { /* … decrypt … */ }

@@ -10,8 +10,8 @@ using System.Numerics;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the table-driven Serpent-128 that <see cref="SerpentCore" /> replaced — S-boxes applied by gathering each
-/// 4-bit input across the four words and reading it through a 16-entry table — kept as an independent oracle that the
+/// Provides the table-driven Serpent-128 that <see cref="SerpentCore" /> replaced - S-boxes applied by gathering each
+/// 4-bit input across the four words and reading it through a 16-entry table - kept as an independent oracle that the
 /// circuit tests and the differential tests hold the core to.
 /// </summary>
 internal static class SerpentReference

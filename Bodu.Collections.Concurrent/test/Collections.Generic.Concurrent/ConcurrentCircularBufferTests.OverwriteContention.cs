@@ -22,7 +22,7 @@ public partial class ConcurrentCircularBufferTests
     /// per admission: under concurrent producers a single logical "enqueue into a full buffer" can trigger more than
     /// one eviction (a producer may evict, then lose the freed slot to another producer and evict again), so the
     /// <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> count is an upper bound on distinct admissions, not a
-    /// one-to-one signal. What is guaranteed is conservation — every value is present-or-evicted exactly once — which
+    /// one-to-one signal. What is guaranteed is conservation - every value is present-or-evicted exactly once - which
     /// is what this test asserts.
     /// </para>
     /// </remarks>

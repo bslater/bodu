@@ -142,8 +142,8 @@ public partial class NavigableSetTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="NavigableSet{T}.Range" /> throws <see cref="ArgumentException" /> eagerly — before
-    /// iteration — when the lower bound orders after the upper bound.
+    /// Verifies that <see cref="NavigableSet{T}.Range" /> throws <see cref="ArgumentException" /> eagerly - before
+    /// iteration - when the lower bound orders after the upper bound.
     /// </summary>
     [TestMethod]
     public void Range_WhenLowGreaterThanHigh_ShouldThrowArgumentExceptionEagerly()

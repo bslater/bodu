@@ -26,7 +26,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// <strong>USD-anchored, keyless.</strong> Every rate the report publishes quotes a currency against the US dollar, so
 /// only <c>USD/X</c> and <c>X/USD</c> pairs are serviceable; a cross-currency pair is rejected. Direction is normalized
-/// on ingest — labels the IMF quotes in US dollars per currency unit are inverted — so the stored rate is always units
+/// on ingest - labels the IMF quotes in US dollars per currency unit are inverted - so the stored rate is always units
 /// of the quote currency per one US dollar. The report requires no API key.
 /// </para>
 /// <para>
@@ -362,8 +362,8 @@ public sealed class ImfRateProvider
         }
         catch (Exception ex) when (ex is HttpRequestException or IOException or FormatException)
         {
-            // Only the failures a fetch is expected to produce — transport, stream, and malformed-report errors
-            // (ExchangeRateFormatException derives from FormatException) — are logged as report-load failures.
+            // Only the failures a fetch is expected to produce - transport, stream, and malformed-report errors
+            // (ExchangeRateFormatException derives from FormatException) - are logged as report-load failures.
             Log.ReportLoadFailed(_logger, _options.DownloadFailedLogLevel, month.Key, ex);
             throw;
         }

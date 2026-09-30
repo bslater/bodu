@@ -42,11 +42,11 @@ makes the rest of the API obvious. *Packages: `Bodu.Formats.Outlook.Msg`, `Bodu.
 
 ## Related
 
-- [Outlook guides](../guides/outlook/index.md) — the shared MAPI value model, the `.msg` reader,
+- [Outlook guides](../guides/outlook/index.md) - the shared MAPI value model, the `.msg` reader,
   and the `.pst` mail-store reader that shares it.
-- [Bodu.Formats.Outlook introduction](../docs/outlook/index.md) — the value model and how the two
+- [Bodu.Formats.Outlook introduction](../docs/outlook/index.md) - the value model and how the two
   readers sit on it.
-- [IO.Pst samples](io-pst.md) — the `.pst` mail store, where the same value model is reached
+- [IO.Pst samples](io-pst.md) - the `.pst` mail store, where the same value model is reached
   through `OutlookMailStore` over a far larger container.
-- [IO.Compound samples](io-compound.md) — the OLE2 container reader, editor, and writer that
+- [IO.Compound samples](io-compound.md) - the OLE2 container reader, editor, and writer that
   backs `.msg`, `.xls`, and `.doc` files.

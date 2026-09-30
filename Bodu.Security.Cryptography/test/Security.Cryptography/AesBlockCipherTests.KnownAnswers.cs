@@ -8,17 +8,17 @@ using Bodu.Security.Cryptography.Infrastructure;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Curated <see cref="AesBlockCipher" /> known-answer test vectors. Transcribed verbatim from FIPS-197 Appendix C —
+/// Curated <see cref="AesBlockCipher" /> known-answer test vectors. Transcribed verbatim from FIPS-197 Appendix C -
 /// the canonical NIST reference for the three AES key sizes (128, 192, 256 bits). All three vectors share the same
 /// 128-bit plaintext and incremental-byte key prefix; only the key length and ciphertext differ.
 /// </summary>
 /// <remarks>
-/// All vectors target single-block ECB encryption with no padding or IV — the raw block primitive contract.
+/// All vectors target single-block ECB encryption with no padding or IV - the raw block primitive contract.
 /// AES is implemented in-tree as <see cref="AesBlockCipher" />, a thin adapter over the BCL <c>Aes</c> primitive;
 /// these KATs anchor the adapter against the FIPS reference outputs without depending on the BCL's own KAT
 /// coverage.
 /// </remarks>
-/// <seealso href="https://csrc.nist.gov/publications/detail/fips/197/final">FIPS 197 — Advanced Encryption Standard</seealso>
+/// <seealso href="https://csrc.nist.gov/publications/detail/fips/197/final">FIPS 197 - Advanced Encryption Standard</seealso>
 public sealed partial class AesBlockCipherTests
 {
     private const string AesPlaintext = "00112233445566778899AABBCCDDEEFF";

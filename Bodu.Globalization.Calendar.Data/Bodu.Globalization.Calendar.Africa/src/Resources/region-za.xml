@@ -40,48 +40,48 @@
 
   <NotableDates>
 
-    <!-- Human Rights Day — 21 March, marking the 1960 Sharpeville massacre. Strategy: Fixed day-of-month, observed Monday when on a Sunday. -->
+    <!-- Human Rights Day - 21 March, marking the 1960 Sharpeville massacre. Strategy: Fixed day-of-month, observed Monday when on a Sunday. -->
     <NotableDate id="human-rights-day" displayName="Human Rights Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="za"><Applicability fromYear="1995"><Territory code="ZA" /></Applicability>
         <Strategy><Fixed month="March" day="21" /></Strategy>
         <Adjustments><Adjustment policyRef="sunday-to-monday" /></Adjustments></Rule></Rules>
     </NotableDate>
 
-    <!-- Family Day — Easter Monday, the South African name for the day after Easter. Strategy: OffsetFromRule from the imported Easter Sunday anchor. -->
+    <!-- Family Day - Easter Monday, the South African name for the day after Easter. Strategy: OffsetFromRule from the imported Easter Sunday anchor. -->
     <NotableDate id="family-day-za" displayName="Family Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="za"><Applicability><Territory code="ZA" /></Applicability>
         <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Freedom Day — 27 April, marking the 1994 first democratic elections. Strategy: Fixed day-of-month, observed Monday when on a Sunday. -->
+    <!-- Freedom Day - 27 April, marking the 1994 first democratic elections. Strategy: Fixed day-of-month, observed Monday when on a Sunday. -->
     <NotableDate id="freedom-day" displayName="Freedom Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="za"><Applicability fromYear="1995"><Territory code="ZA" /></Applicability>
         <Strategy><Fixed month="April" day="27" /></Strategy>
         <Adjustments><Adjustment policyRef="sunday-to-monday" /></Adjustments></Rule></Rules>
     </NotableDate>
 
-    <!-- Youth Day — 16 June, marking the 1976 Soweto uprising. Strategy: Fixed day-of-month, observed Monday when on a Sunday. -->
+    <!-- Youth Day - 16 June, marking the 1976 Soweto uprising. Strategy: Fixed day-of-month, observed Monday when on a Sunday. -->
     <NotableDate id="youth-day" displayName="Youth Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="za"><Applicability fromYear="1995"><Territory code="ZA" /></Applicability>
         <Strategy><Fixed month="June" day="16" /></Strategy>
         <Adjustments><Adjustment policyRef="sunday-to-monday" /></Adjustments></Rule></Rules>
     </NotableDate>
 
-    <!-- National Women's Day — 9 August, marking the 1956 women's march. Strategy: Fixed day-of-month, observed Monday when on a Sunday. -->
+    <!-- National Women's Day - 9 August, marking the 1956 women's march. Strategy: Fixed day-of-month, observed Monday when on a Sunday. -->
     <NotableDate id="womens-day-za" displayName="National Women's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="za"><Applicability fromYear="1995"><Territory code="ZA" /></Applicability>
         <Strategy><Fixed month="August" day="9" /></Strategy>
         <Adjustments><Adjustment policyRef="sunday-to-monday" /></Adjustments></Rule></Rules>
     </NotableDate>
 
-    <!-- Heritage Day — 24 September. Strategy: Fixed day-of-month, observed Monday when on a Sunday. -->
+    <!-- Heritage Day - 24 September. Strategy: Fixed day-of-month, observed Monday when on a Sunday. -->
     <NotableDate id="heritage-day-za" displayName="Heritage Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="za"><Applicability fromYear="1995"><Territory code="ZA" /></Applicability>
         <Strategy><Fixed month="September" day="24" /></Strategy>
         <Adjustments><Adjustment policyRef="sunday-to-monday" /></Adjustments></Rule></Rules>
     </NotableDate>
 
-    <!-- Day of Reconciliation — 16 December. Strategy: Fixed day-of-month, observed Monday when on a Sunday. -->
+    <!-- Day of Reconciliation - 16 December. Strategy: Fixed day-of-month, observed Monday when on a Sunday. -->
     <NotableDate id="reconciliation-day" displayName="Day of Reconciliation" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="za"><Applicability fromYear="1995"><Territory code="ZA" /></Applicability>
         <Strategy><Fixed month="December" day="16" /></Strategy>

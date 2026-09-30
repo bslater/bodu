@@ -29,7 +29,7 @@ public sealed class CanonicalEncodingTests
     }
 
     /// <summary>
-    /// Verifies canonical-mode acceptance across many round-tripped inputs — what we encoded must decode under the
+    /// Verifies canonical-mode acceptance across many round-tripped inputs - what we encoded must decode under the
     /// canonical flag without rejection.
     /// </summary>
     /// <param name="inputLength">The payload byte count under test.</param>
@@ -54,7 +54,7 @@ public sealed class CanonicalEncodingTests
     }
 
     /// <summary>
-    /// Verifies that the same non-canonical Base32 input decodes without error when the canonical flag is not set —
+    /// Verifies that the same non-canonical Base32 input decodes without error when the canonical flag is not set -
     /// the unused bits are silently discarded.
     /// </summary>
     [TestMethod]
@@ -163,7 +163,7 @@ public sealed class CanonicalEncodingTests
     }
 
     /// <summary>
-    /// Verifies that a non-canonical Base64 encoding ("Zh==" — non-zero unused bits) is rejected when the canonical
+    /// Verifies that a non-canonical Base64 encoding ("Zh==" - non-zero unused bits) is rejected when the canonical
     /// flag is set. "Zh==" decodes to the same byte as "Zg==" because the bottom 4 bits are unused.
     /// </summary>
     [TestMethod]

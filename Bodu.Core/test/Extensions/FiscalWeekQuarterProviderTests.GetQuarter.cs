@@ -66,7 +66,7 @@ public partial class FiscalWeekQuarterProviderTests
     /// </summary>
     [TestMethod]
     public void GetQuarter_WhenDateTimeIsAfterAnchorFiscalYearAcrossCalendarYear_ShouldResolveToNextFiscalYear() =>
-        // Mar 30, 2024 = Saturday — the first day of FY 2024 under Saturday52.
+        // Mar 30, 2024 = Saturday - the first day of FY 2024 under Saturday52.
         Assert.AreEqual(1, s_saturday52.GetQuarter(new DateTime(2024, 3, 30)));
 
     /// <summary>
@@ -97,7 +97,7 @@ public partial class FiscalWeekQuarterProviderTests
     /// </summary>
     [TestMethod]
     public void GetQuarter_WhenDateTimeIsFirstDayOfNextFiscalYearAfter53WeekYear_ShouldReturnQuarter1() =>
-        // Jan 3, 2021 = Sunday — the first day of FY 2021 under Sunday53.
+        // Jan 3, 2021 = Sunday - the first day of FY 2021 under Sunday53.
         Assert.AreEqual(1, s_sunday53.GetQuarter(new DateTime(2021, 1, 3)));
 
     /// <summary>

@@ -11,7 +11,7 @@ using Microsoft.Data.Sqlite;
 namespace Bodu.Financial.ExchangeRates.Caching.Sqlite;
 
 /// <summary>
-/// Verifies the connection-level concurrency settings applied by <see cref="SqliteRateCache" /> on open — the
+/// Verifies the connection-level concurrency settings applied by <see cref="SqliteRateCache" /> on open - the
 /// write-ahead logging mode that lets caches and processes share one file safely.
 /// </summary>
 public sealed partial class SqliteRateCacheTests
@@ -55,7 +55,7 @@ public sealed partial class SqliteRateCacheTests
     }
 
     /// <summary>
-    /// Verifies that enabling write-ahead logging over a shared in-memory database — which cannot honor WAL — is applied
+    /// Verifies that enabling write-ahead logging over a shared in-memory database - which cannot honor WAL - is applied
     /// best-effort: construction does not throw, the database stays in its native <c>memory</c> journal mode, and rates
     /// still round-trip.
     /// </summary>
@@ -108,7 +108,7 @@ public sealed partial class SqliteRateCacheTests
     }
 
     /// <summary>
-    /// Verifies that a zero busy timeout — which disables waiting on a held lock — still allows an uncontended store and
+    /// Verifies that a zero busy timeout - which disables waiting on a held lock - still allows an uncontended store and
     /// read to succeed.
     /// </summary>
     [TestMethod]
@@ -130,7 +130,7 @@ public sealed partial class SqliteRateCacheTests
     }
 
     /// <summary>
-    /// Verifies that a single shared cache instance — the way it is registered in DI — handles concurrent writes to
+    /// Verifies that a single shared cache instance - the way it is registered in DI - handles concurrent writes to
     /// different pairs without losing any: every pair written in parallel reads back its own rate, exercising the
     /// per-pair lock granularity and the per-operation connections under contention.
     /// </summary>

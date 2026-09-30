@@ -30,7 +30,7 @@ internal static class PstDataTree
     /// <see cref="PstSource.MaxNodeDataLength" /> or <see cref="PstSource.MaxDataTreeLeaves" /> limit (<see cref="PstFileError.LimitExceeded" />).
     /// </exception>
     /// <remarks>
-    /// The leaf entries are resolved first — reading only tree blocks — so the declared total is checked against the
+    /// The leaf entries are resolved first - reading only tree blocks - so the declared total is checked against the
     /// materialization limit before any leaf payload is loaded, and the result is assembled into one exactly sized
     /// array rather than copied through a growable buffer.
     /// </remarks>

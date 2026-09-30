@@ -80,17 +80,17 @@ public static partial class DateTimeExtensions
     /// the <see cref="System.Globalization.Calendar.GetWeekOfYear" /> family applies to years:
     /// </para>
     /// <para>
-    /// <see cref="CalendarWeekRule.FirstDay" /> — week 1 begins on the first day of the month, however short that
+    /// <see cref="CalendarWeekRule.FirstDay" /> - week 1 begins on the first day of the month, however short that
     /// partial week is; each subsequent week begins on the next <paramref name="weekStart" />.
     /// </para>
     /// <para>
-    /// <see cref="CalendarWeekRule.FirstFullWeek" /> — week 1 begins on the first <paramref name="weekStart" /> on or
+    /// <see cref="CalendarWeekRule.FirstFullWeek" /> - week 1 begins on the first <paramref name="weekStart" /> on or
     /// after the first day of the month. Dates before that boundary belong to the trailing week of the previous month
     /// and return that week's number (for example, 1 March 2024 with a Sunday week start returns <c>4</c>, the week
     /// number of the week beginning Sunday 25 February).
     /// </para>
     /// <para>
-    /// <see cref="CalendarWeekRule.FirstFourDayWeek" /> — the week containing the first day of the month is week 1 when
+    /// <see cref="CalendarWeekRule.FirstFourDayWeek" /> - the week containing the first day of the month is week 1 when
     /// at least four of its days fall in that month; otherwise week 1 begins on the following
     /// <paramref name="weekStart" /> and the leading dates resolve to the previous month's trailing week, as for
     /// <see cref="CalendarWeekRule.FirstFullWeek" />.
@@ -117,7 +117,7 @@ public static partial class DateTimeExtensions
     /// <see cref="CalendarWeekRule" /> and week start day.
     /// </summary>
     /// <param name="year">The Gregorian year of the date to evaluate.</param>
-    /// <param name="month">The month (1–12) of the date to evaluate.</param>
+    /// <param name="month">The month (1-12) of the date to evaluate.</param>
     /// <param name="day">The day of the month of the date to evaluate.</param>
     /// <param name="dayOfWeek">The <see cref="DayOfWeek" /> of the date identified by the preceding components.</param>
     /// <param name="weekRule">
@@ -146,7 +146,7 @@ public static partial class DateTimeExtensions
         if (weekRule == CalendarWeekRule.FirstDay || (weekRule == CalendarWeekRule.FirstFourDayWeek && leadingDays <= 3))
             return ((day - 1 + leadingDays) / 7) + 1;
 
-        // FirstFullWeek — or FirstFourDayWeek where the straddling week belongs to the previous month:
+        // FirstFullWeek - or FirstFourDayWeek where the straddling week belongs to the previous month:
         // week 1 begins at the first weekStart on or after the 1st.
         int daysBeforeWeekOne = (7 - leadingDays) % 7;
 

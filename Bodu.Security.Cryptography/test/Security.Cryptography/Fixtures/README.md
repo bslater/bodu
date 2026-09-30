@@ -46,18 +46,18 @@ on-disk folder layout and file names can change **without touching any test code
 | scrypt | `OpenSsl` | `scrypt-corpus.txt` | Generated with OpenSSL 3.0.13 `EVP_PBE_scrypt` over an 80-row parameter grid; its header records the grid |
 | HPKE | `Rfc9180` | `test-vectors.json` | RFC 9180 |
 | Argon2 | `PhcReference` | `test.c`, `argon2{d,i,id}_v16` | github.com/P-H-C/phc-winner-argon2 at `f57e61e` (`src/test.c`, `kats/`); CC0 1.0 or Apache 2.0 |
-| Argon2 | `Bodu100` | `argon2-1.0.0-corpus.txt` | Recorded from the published `Bodu.Security.Cryptography` 1.0.0 package — an in-tree regression baseline, not an external source; its header explains the shapes |
+| Argon2 | `Bodu100` | `argon2-1.0.0-corpus.txt` | Recorded from the published `Bodu.Security.Cryptography` 1.0.0 package - an in-tree regression baseline, not an external source; its header explains the shapes |
 
 ## Shared files
 
 A few source documents cover more than one primitive. They live under their primary cipher and
 are consumed by several test classes:
 
-- **`ChaCha20/Rfc8439/rfc8439.txt`** — ChaCha20 (`Rfc8439VectorReader`, Appendix A.2), Poly1305
+- **`ChaCha20/Rfc8439/rfc8439.txt`** - ChaCha20 (`Rfc8439VectorReader`, Appendix A.2), Poly1305
   (Appendix A.3), and the XChaCha20-Poly1305 AEAD framing.
-- **`XChaCha20/Draft/draft-arciszewski-xchacha-03.txt`** — XChaCha20 (§2.2.1 HChaCha20 + A.3.2)
+- **`XChaCha20/Draft/draft-arciszewski-xchacha-03.txt`** - XChaCha20 (§2.2.1 HChaCha20 + A.3.2)
   and AEAD_XChaCha20_Poly1305 (A.3.1).
-- **`XSalsa20/GoCrypto/salsa20_test.go`** — the Go Salsa20 test source; the XSalsa20 vectors are
+- **`XSalsa20/GoCrypto/salsa20_test.go`** - the Go Salsa20 test source; the XSalsa20 vectors are
   consumed by the XSalsa20 tests (the Salsa20 tests use the ECRYPT file instead).
 
 ## Adding a new vector file

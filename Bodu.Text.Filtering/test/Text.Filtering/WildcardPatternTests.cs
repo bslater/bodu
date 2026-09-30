@@ -30,7 +30,7 @@ public partial class WildcardPatternTests
     }
 
     /// <summary>
-    /// A naive exponential reference matcher for patterns over literals, <c>*</c>, and <c>?</c> — the oracle the
+    /// A naive exponential reference matcher for patterns over literals, <c>*</c>, and <c>?</c> - the oracle the
     /// optimized matcher is pinned against in the Regression sweep. Deliberately implemented by direct recursion on
     /// the pattern text so it shares no code with the implementation under test.
     /// </summary>

@@ -57,7 +57,7 @@ public sealed class TempFileScope
         }
         catch
         {
-            // Best-effort cleanup — leaking a temp file is preferable to throwing during teardown.
+            // Best-effort cleanup - leaking a temp file is preferable to throwing during teardown.
         }
     }
 }

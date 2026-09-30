@@ -38,7 +38,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
 
         protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
         {
-            // Return exactly two blocks of BlockSizeBytes — the residual (zero-padded) followed by a
+            // Return exactly two blocks of BlockSizeBytes - the residual (zero-padded) followed by a
             // length-encoding block. Aligns with the ShouldPadFinalBlock=true, AllowUnalignedFinalBlock=false
             // contract where GetCurrentHashCore slices the output into BlockSizeBytes chunks.
             byte[] output = new byte[BlockSizeBytes * 2];

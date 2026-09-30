@@ -15,7 +15,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// An <see cref="IRateCache" /> that persists a single provider's rates and fetch-coverage windows in an injected
-/// <see cref="IDistributedCache" /> — for example a Redis cache — expiring them through the same freshness mechanism as
+/// <see cref="IDistributedCache" /> - for example a Redis cache - expiring them through the same freshness mechanism as
 /// the in-memory, TOML, and SQLite caches.
 /// </summary>
 /// <remarks>
@@ -30,8 +30,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// Because a pair's whole state travels as one blob, this backend fits the whole-state seam of
 /// <see cref="RateCacheBase{TOptions}" /> exactly: the read-merge-write mechanism, per-pair locking, snapshot read, and
 /// the shared <see cref="RateCacheRules" /> policy are all inherited, and this class contributes only the blob
-/// serialization. A single <see cref="RateCacheBase{TOptions}.StoreFetchedRange" /> set is all-or-nothing — the reader
-/// never observes coverage without its rows even across processes — while <em>cross-process</em> concurrent writes to
+/// serialization. A single <see cref="RateCacheBase{TOptions}.StoreFetchedRange" /> set is all-or-nothing - the reader
+/// never observes coverage without its rows even across processes - while <em>cross-process</em> concurrent writes to
 /// the same pair remain last-write-wins, consistent with the documented best-effort nature of the contract.
 /// </para>
 /// <para>
@@ -216,8 +216,8 @@ public sealed class DistributedRateCache
     /// <see cref="DistributedRateCacheOptions.EntryExpirationMargin" />, so a key whose pair stops being queried
     /// self-evicts from the backing store; any entry evicted at that point would already be stale on read, so served
     /// results are unchanged. The lifetime is expressed relative to the store's own clock (<see cref="DistributedCacheEntryOptions.AbsoluteExpirationRelativeToNow" />)
-    /// rather than as an application-clock absolute instant, so clock skew between the application and the store — or a
-    /// test-supplied synthetic clock — cannot evict entries prematurely. A <see langword="null" /> margin disables the
+    /// rather than as an application-clock absolute instant, so clock skew between the application and the store - or a
+    /// test-supplied synthetic clock - cannot evict entries prematurely. A <see langword="null" /> margin disables the
     /// server-side expiration entirely.
     /// </remarks>
     internal override bool WriteState(CurrencyPair pair, CachePairState state, TimeSpan duration, DateTimeOffset asOf)
@@ -230,8 +230,8 @@ public sealed class DistributedRateCache
     }
 
     /// <summary>
-    /// Serializes and writes a pair's whole state as one blob — all-or-nothing, so a reader never observes coverage
-    /// without its rows — or removes the key when the state is empty so the entry self-cleans. A backing-store fault or
+    /// Serializes and writes a pair's whole state as one blob - all-or-nothing, so a reader never observes coverage
+    /// without its rows - or removes the key when the state is empty so the entry self-cleans. A backing-store fault or
     /// a serialization fault is swallowed and reported as an unpersisted write.
     /// </summary>
     /// <param name="pair">The currency pair.</param>

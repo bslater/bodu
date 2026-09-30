@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// The stateless RFC 6962 primitives — the domain-separation prefixes, the split point, the prefixed hashes, the
+/// The stateless RFC 6962 primitives - the domain-separation prefixes, the split point, the prefixed hashes, the
 /// recursive Merkle Tree Hash, and the authentication-path and consistency walks.
 /// </summary>
 /// <remarks>
@@ -34,7 +34,7 @@ public sealed partial class MerkleTree
     internal const int BoundValueLength = sizeof(ulong);
 
     /// <summary>
-    /// Returns the largest power of two strictly less than <paramref name="count" /> — RFC 6962's split point.
+    /// Returns the largest power of two strictly less than <paramref name="count" /> - RFC 6962's split point.
     /// </summary>
     /// <param name="count">The number of entries in the subtree being split. Must be greater than one.</param>
     /// <returns>The number of entries belonging to the perfect left subtree.</returns>
@@ -58,8 +58,8 @@ public sealed partial class MerkleTree
     /// <returns><c>ceil(log2(treeSize))</c>, or zero for a tree of one entry or fewer.</returns>
     /// <remarks>
     /// This is an upper bound across <em>all</em> leaf indices, and is deliberately not the length expected of any
-    /// particular index. Path length varies by index — in a seven-leaf tree leaves 0 to 5 have three steps and leaf 6
-    /// has two — so a guard tightened to a per-index length would reject valid proofs. Only a path longer than this
+    /// particular index. Path length varies by index - in a seven-leaf tree leaves 0 to 5 have three steps and leaf 6
+    /// has two - so a guard tightened to a per-index length would reject valid proofs. Only a path longer than this
     /// bound can be discarded before it is walked; a path that is too short is caught by the walk itself.
     /// </remarks>
     internal static int MaximumPathLength(long treeSize) =>
@@ -188,7 +188,7 @@ public sealed partial class MerkleTree
     /// <remarks>
     /// The root computations reduce through <see cref="LevelFold" /> instead; this recursion serves the proof walks,
     /// which need subtree roots at arbitrary split points. Recursion depth is logarithmic in the entry count, so no
-    /// stack guard is required. A single leaf's hash is returned unchanged — a subtree root is promoted, never
+    /// stack guard is required. A single leaf's hash is returned unchanged - a subtree root is promoted, never
     /// re-hashed.
     /// </remarks>
     internal static byte[] Mth(ReadOnlySpan<byte[]> leafHashes, HashAlgorithm hasher, int hashLength)

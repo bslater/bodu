@@ -13,7 +13,7 @@ namespace Bodu.Extensions;
 /// <remarks>
 /// <para>
 /// In a retail fiscal calendar, each quarter comprises exactly 13 weeks, divided into three fiscal periods. The pattern
-/// determines how those 13 weeks are distributed — typically as a combination of one 5-week period and two 4-week
+/// determines how those 13 weeks are distributed - typically as a combination of one 5-week period and two 4-week
 /// periods.
 /// </para>
 /// <para>
@@ -30,7 +30,7 @@ public enum FiscalWeekPattern
     /// <summary>
     /// Each quarter is divided into periods of 5, 4, and 4 weeks respectively.
     /// <para>
-    /// Example for Q1: period 1 = weeks 1–5, period 2 = weeks 6–9, period 3 = weeks 10–13.
+    /// Example for Q1: period 1 = weeks 1-5, period 2 = weeks 6-9, period 3 = weeks 10-13.
     /// </para>
     /// </summary>
     Weeks544,
@@ -38,7 +38,7 @@ public enum FiscalWeekPattern
     /// <summary>
     /// Each quarter is divided into periods of 4, 5, and 4 weeks respectively.
     /// <para>
-    /// Example for Q1: period 1 = weeks 1–4, period 2 = weeks 5–9, period 3 = weeks 10–13.
+    /// Example for Q1: period 1 = weeks 1-4, period 2 = weeks 5-9, period 3 = weeks 10-13.
     /// </para>
     /// </summary>
     Weeks454,
@@ -46,7 +46,7 @@ public enum FiscalWeekPattern
     /// <summary>
     /// Each quarter is divided into periods of 4, 4, and 5 weeks respectively.
     /// <para>
-    /// Example for Q1: period 1 = weeks 1–4, period 2 = weeks 5–8, period 3 = weeks 9–13. In a 53-week fiscal year,
+    /// Example for Q1: period 1 = weeks 1-4, period 2 = weeks 5-8, period 3 = weeks 9-13. In a 53-week fiscal year,
     /// Q4's third period extends to 6 weeks.
     /// </para>
     /// </summary>

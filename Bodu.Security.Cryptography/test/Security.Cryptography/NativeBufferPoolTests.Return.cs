@@ -25,7 +25,7 @@ public sealed partial class NativeBufferPoolTests
     }
 
     /// <summary>
-    /// Verifies that when a smaller derivation reuses a larger buffer, the buffer is still all zero afterwards — the
+    /// Verifies that when a smaller derivation reuses a larger buffer, the buffer is still all zero afterwards - the
     /// blocks the smaller derivation wrote are cleared, and the rest were never touched.
     /// </summary>
     [TestMethod]
@@ -73,8 +73,8 @@ public sealed partial class NativeBufferPoolTests
     }
 
     /// <summary>
-    /// Verifies that a pool that retains nothing — the shared pool's behavior when the
-    /// <see cref="NativeBufferPool.DisableReuseSwitchName" /> switch is set — frees every buffer.
+    /// Verifies that a pool that retains nothing - the shared pool's behavior when the
+    /// <see cref="NativeBufferPool.DisableReuseSwitchName" /> switch is set - frees every buffer.
     /// </summary>
     [TestMethod]
     public void Return_WhenRetentionIsDisabled_ShouldFreeTheBuffer()

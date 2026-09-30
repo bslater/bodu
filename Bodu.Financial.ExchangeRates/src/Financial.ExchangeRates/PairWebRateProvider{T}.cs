@@ -11,8 +11,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 /// <summary>
 /// Provides the shared machinery for a <see cref="WebRateProvider" /> that fetches one currency pair per request from a
-/// remote feed — per-pair coverage tracking, single-flight request coalescing, the fetch-and-accumulate orchestration,
-/// and the diagnostic logging — leaving a derived type to supply only the feed identity and the feed-specific exception
+/// remote feed - per-pair coverage tracking, single-flight request coalescing, the fetch-and-accumulate orchestration,
+/// and the diagnostic logging - leaving a derived type to supply only the feed identity and the feed-specific exception
 /// text. The actual fetch and parse are delegated to an <see cref="IPairRateSource{TSeries}" />.
 /// </summary>
 /// <typeparam name="TSeries">
@@ -210,8 +210,8 @@ public abstract class PairWebRateProvider<TSeries>
         }
         catch (Exception ex) when (ex is HttpRequestException or IOException or FormatException)
         {
-            // Only the failures a fetch is expected to produce — transport, stream, and malformed-feed errors
-            // (ExchangeRateFormatException derives from FormatException) — are logged as pair-load failures.
+            // Only the failures a fetch is expected to produce - transport, stream, and malformed-feed errors
+            // (ExchangeRateFormatException derives from FormatException) - are logged as pair-load failures.
             WebRateProviderLog.PairLoadFailed(_logger, _options.DownloadFailedLogLevel, label, ex);
             throw;
         }

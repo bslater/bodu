@@ -122,7 +122,7 @@ public partial class ConcurrentCircularBufferTests
                 }
                 catch (InvalidOperationException)
                 {
-                    // empty at this instant — try again
+                    // empty at this instant - try again
                 }
                 Thread.SpinWait(50);
                 Interlocked.Increment(ref attempts);

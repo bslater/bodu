@@ -45,8 +45,8 @@ public sealed partial class SivModeTransformTests
     }
 
     /// <summary>
-    /// Seals a message with RFC 5297 AES-SIV one block at a time: S2V over the associated data — a string only when it is
-    /// non-empty, as the transform defines — and the plaintext, then CTR from the synthetic IV with bits 31 and 63
+    /// Seals a message with RFC 5297 AES-SIV one block at a time: S2V over the associated data - a string only when it is
+    /// non-empty, as the transform defines - and the plaintext, then CTR from the synthetic IV with bits 31 and 63
     /// cleared.
     /// </summary>
     /// <param name="s2vKey">The key <c>K1</c> for S2V.</param>

@@ -15,8 +15,8 @@ namespace Bodu.Text.Toml;
 /// individually through <see cref="IncludeAttribute" /> regardless of that option, mirroring
 /// <see cref="System.Text.Json.JsonSerializerOptions.IncludeFields" /> and
 /// <see cref="System.Text.Json.Serialization.JsonIncludeAttribute" />. Fields honor naming policies, name and order
-/// attributes — and because TOML output preserves member order, <see cref="PropertyOrderAttribute" /> visibly
-/// reorders the emitted lines — ignore conditions, and required-member enforcement exactly like properties; a
+/// attributes - and because TOML output preserves member order, <see cref="PropertyOrderAttribute" /> visibly
+/// reorders the emitted lines - ignore conditions, and required-member enforcement exactly like properties; a
 /// <see langword="readonly" /> field is written but never assigned on read.
 /// </summary>
 public partial class TomlSerializerTests
@@ -35,7 +35,7 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that enabling <see cref="TomlSerializerOptions.IncludeFields" /> surfaces public fields alongside
-    /// properties — written after the properties in declaration order — and assigns them on read.
+    /// properties - written after the properties in declaration order - and assigns them on read.
     /// </summary>
     [TestMethod]
     public void SerializeDeserialize_WhenIncludeFieldsEnabled_ShouldRoundTripPublicFields()
@@ -103,7 +103,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="PropertyOrderAttribute" /> on a field reorders the emitted lines — TOML output
+    /// Verifies that a <see cref="PropertyOrderAttribute" /> on a field reorders the emitted lines - TOML output
     /// preserves member order, so a field with a negative order is written before the type's properties.
     /// </summary>
     [TestMethod]

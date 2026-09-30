@@ -13,7 +13,7 @@ namespace Bodu.Globalization.Calendar.Samples.CustomCalendar.Scenarios;
 /// <summary>
 /// Demonstrates authoring a calendar from scratch with the fluent builder: notable-date concepts, per-concept rules
 /// using the declarative date strategies, a recurrence source, and a calculated end-date duration, plus the immediate
-/// build-to-service path. Rules are data, not code — the same document could equally have been written as XML by hand.
+/// build-to-service path. Rules are data, not code - the same document could equally have been written as XML by hand.
 /// </summary>
 public static class AuthoringCompanyHolidays
 {

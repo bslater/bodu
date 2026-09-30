@@ -9,8 +9,8 @@ namespace Bodu.Security.Cryptography;
 public partial class MLDsaEngineTests
 {
     /// <summary>
-    /// Verifies that the values key generation hands over — the matrix, NTT(t₁·2ᵈ) formed by linearity from values
-    /// already at hand, and the secret vectors — equal what the Expand methods derive from the encoded keys.
+    /// Verifies that the values key generation hands over - the matrix, NTT(t₁·2ᵈ) formed by linearity from values
+    /// already at hand, and the secret vectors - equal what the Expand methods derive from the encoded keys.
     /// </summary>
     /// <param name="designator">The parameter-set designator.</param>
     [TestMethod]

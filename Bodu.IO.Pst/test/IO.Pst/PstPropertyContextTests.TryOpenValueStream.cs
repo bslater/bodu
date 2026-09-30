@@ -124,7 +124,7 @@ public partial class PstPropertyContextTests
             Assert.AreEqual(expectedLength, totalRead, "The stream must yield the full logical payload.");
             Assert.IsTrue(maxDelta < CeilingBytes,
                 $"Streaming a {expectedLength / (1024 * 1024)} MB value must stay under the {CeilingBytes / (1024 * 1024)} MB ceiling; " +
-                $"observed a {maxDelta / (1024 * 1024)} MB peak — the payload is being materialized instead of streamed.");
+                $"observed a {maxDelta / (1024 * 1024)} MB peak - the payload is being materialized instead of streamed.");
         }
     }
 }

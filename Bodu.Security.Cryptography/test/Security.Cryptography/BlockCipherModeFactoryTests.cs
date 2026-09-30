@@ -129,7 +129,7 @@ public sealed class BlockCipherModeFactoryTests
     /// Verifies that <see cref="BlockCipherModeFactory.Create" /> rejects every authenticated or
     /// disk-encryption mode that the factory documents as out-of-scope, with
     /// <see cref="NotSupportedException" />. Regression guard for any silent expansion of the
-    /// factory's responsibility — those modes have a different contract and lifecycle and must be
+    /// factory's responsibility - those modes have a different contract and lifecycle and must be
     /// constructed directly.
     /// </summary>
     [TestMethod]

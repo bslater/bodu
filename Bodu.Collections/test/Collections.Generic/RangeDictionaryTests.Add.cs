@@ -10,7 +10,7 @@ public partial class RangeDictionaryTests
 {
 
     // --------------------------------------------------------
-    // Add — happy path
+    // Add - happy path
     // --------------------------------------------------------
 
     /// <summary>
@@ -102,7 +102,7 @@ public partial class RangeDictionaryTests
     }
 
     // --------------------------------------------------------
-    // Add — overlap rejection
+    // Add - overlap rejection
     // --------------------------------------------------------
 
     /// <summary>
@@ -178,7 +178,7 @@ public partial class RangeDictionaryTests
         });
     }
     // --------------------------------------------------------
-    // Add(TKey, TKey, TValue) — argument validation
+    // Add(TKey, TKey, TValue) - argument validation
     // --------------------------------------------------------
 
     /// <summary>

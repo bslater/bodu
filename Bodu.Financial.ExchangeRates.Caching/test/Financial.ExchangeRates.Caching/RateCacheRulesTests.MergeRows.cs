@@ -9,8 +9,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 public sealed partial class RateCacheRulesTests
 {
     /// <summary>
-    /// Verifies that a single incoming row for a new date is inserted at the correct position — front, middle, or back
-    /// — of a date-sorted existing list.
+    /// Verifies that a single incoming row for a new date is inserted at the correct position - front, middle, or back
+    /// - of a date-sorted existing list.
     /// </summary>
     /// <param name="day">The day-of-month of the incoming row.</param>
     /// <param name="expectedIndex">The index the incoming row must land at.</param>

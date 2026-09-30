@@ -29,10 +29,10 @@ namespace Bodu.Collections.Probabilistic;
 /// Elements are hashed via the supplied <see cref="IEqualityComparer{T}" /> (or
 /// <see cref="EqualityComparer{T}.Default" />): the comparer's 32-bit
 /// <see cref="IEqualityComparer{T}.GetHashCode(T)" /> is expanded through a deterministic SplitMix64-style avalanche
-/// into the shared double-hash pair, of which only the first 64-bit value is consumed — HyperLogLog needs a single
+/// into the shared double-hash pair, of which only the first 64-bit value is consumed - HyperLogLog needs a single
 /// well-avalanched hash, not a probe sequence, so the second value is deliberately unused. The top <c>b</c> bits select
 /// a register and the remaining <c>64 − b</c> bits contribute their leading-zero rank. All entropy therefore derives
-/// from the 32-bit comparer hash — standard practice for comparer-based sketches — which caps the number of
+/// from the 32-bit comparer hash - standard practice for comparer-based sketches - which caps the number of
 /// distinguishable elements at 2³² and bounds accuracy well below the theoretical HyperLogLog error on very large
 /// cardinalities: two elements with equal comparer hashes are indistinguishable and count once.
 /// </para>
@@ -44,17 +44,17 @@ namespace Bodu.Collections.Probabilistic;
 /// <para>
 /// <see cref="EstimateCardinality" /> applies the standard HyperLogLog small-range correction (linear counting) while
 /// any register is still zero and the raw estimate is at most <c>2.5·m</c>. The classic large-range correction from the
-/// original paper — which compensates for hash collisions as the true cardinality approaches the size of the hash space
-/// — is not applied. Although the register pipeline is 64-bit, all of its entropy derives from the 32-bit comparer hash
-/// expanded through a bijective mixer, so the effective hash space remains <c>2³²</c>: estimates progressively
-/// underestimate the true cardinality from roughly <c>10⁸</c> distinct elements onward, and approach a hard asymptote
-/// near <c>2³²</c> (about 4.3 billion) — beyond that point additional distinct elements produce no increase in the
-/// estimate.
+/// original paper - which compensates for hash collisions as the true cardinality approaches the size of the hash
+/// space - is not applied. Although the register pipeline is 64-bit, all of its entropy derives from the 32-bit
+/// comparer hash expanded through a bijective mixer, so the effective hash space remains <c>2³²</c>: estimates
+/// progressively underestimate the true cardinality from roughly <c>10⁸</c> distinct elements onward, and approach a
+/// hard asymptote near <c>2³²</c> (about 4.3 billion) - beyond that point additional distinct elements produce no
+/// increase in the estimate.
 /// </para>
 /// <para>
 /// <see cref="MergeWith" /> combines two compatible sketches by register-wise maximum, after which this sketch
-/// estimates the number of distinct elements in the union of both source streams. Merging is lossless — merging
-/// sketches of two streams yields exactly the sketch that observing the concatenated stream would have produced — and
+/// estimates the number of distinct elements in the union of both source streams. Merging is lossless - merging
+/// sketches of two streams yields exactly the sketch that observing the concatenated stream would have produced - and
 /// elements present in both streams are not double-counted.
 /// </para>
 /// <para>
@@ -185,7 +185,7 @@ public sealed class HyperLogLog<T>
     /// Gets the relative standard error of <see cref="EstimateCardinality" /> implied by the precision.
     /// </summary>
     /// <value>
-    /// <c>1.04/√m</c> where <c>m</c> is <see cref="RegisterCount" /> — approximately 0.26 at precision 4 and 0.0081 at
+    /// <c>1.04/√m</c> where <c>m</c> is <see cref="RegisterCount" /> - approximately 0.26 at precision 4 and 0.0081 at
     /// precision 14.
     /// </value>
     /// <remarks>
@@ -280,8 +280,8 @@ public sealed class HyperLogLog<T>
     /// <remarks>
     /// <para>
     /// The estimate is unbiased with a relative standard error of approximately <see cref="StandardError" />. It is not
-    /// monotonic in the true cardinality at fine granularity — adding one element can move the estimate by more or less
-    /// than one — but it converges on the true count as the stream grows.
+    /// monotonic in the true cardinality at fine granularity - adding one element can move the estimate by more or less
+    /// than one - but it converges on the true count as the stream grows.
     /// </para>
     /// <para>
     /// The original algorithm's large-range correction is not applied. Because the 64-bit ranking pipeline draws all of
@@ -348,7 +348,7 @@ public sealed class HyperLogLog<T>
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Compatibility requires an identical <see cref="Precision" /> and the same or an equal comparer instance — in
+    /// Compatibility requires an identical <see cref="Precision" /> and the same or an equal comparer instance - in
     /// practice, sketches constructed with the same parameters. The other sketch is not modified. The merge is lossless
     /// and idempotent: elements observed by both sketches are not double-counted, and merging a sketch with itself
     /// leaves it unchanged.

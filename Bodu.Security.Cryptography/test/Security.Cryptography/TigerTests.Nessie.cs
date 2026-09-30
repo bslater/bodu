@@ -13,8 +13,8 @@ public partial class TigerTests
     // ── Project NESSIE Tiger-192 known-answer tests ───────────────────────────────────────────
     //
     // Loaded dynamically from the embedded Project NESSIE Tiger test-vector file (Tiger, 0x01 padding,
-    // 192-bit). The NessieHashKatReader decodes the byte-message rows across all four sets — Set 1
-    // canonical strings, Set 2 byte-aligned zero-bit strings, Set 3 patterned 512-bit strings — and
+    // 192-bit). The NessieHashKatReader decodes the byte-message rows across all four sets - Set 1
+    // canonical strings, Set 2 byte-aligned zero-bit strings, Set 3 patterned 512-bit strings - and
     // skips the bit-unaligned and Set-4 iterated rows that are not a plain byte message.
 
     /// <summary>Resource name of the embedded NESSIE Tiger reference file.</summary>

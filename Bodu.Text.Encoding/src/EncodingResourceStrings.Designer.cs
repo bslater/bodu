@@ -328,7 +328,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Base32 input is not in canonical form — unused trailing bits are non-zero..
+        ///   Looks up a localized string similar to Base32 input is not in canonical form - unused trailing bits are non-zero..
         /// </summary>
         internal static string Format_Invalid_Base32NonCanonical {
             get {
@@ -463,7 +463,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Base64 input is not in canonical form — unused trailing bits are non-zero..
+        ///   Looks up a localized string similar to Base64 input is not in canonical form - unused trailing bits are non-zero..
         /// </summary>
         internal static string Format_Invalid_Base64NonCanonical {
             get {

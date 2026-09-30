@@ -12,8 +12,8 @@ namespace Bodu.Text.Configuration;
 /// <summary>
 /// Represents a parsed Bodu Text Configuration document and provides the profile-aware entry points for parsing,
 /// loading, and saving such documents. It inherits the read-only INI model from <see cref="IniDocumentBase" /> (global
-/// section, named sections, lookup) and adds Bodu-specific behaviour — profile presets, inline-comment-mode handling,
-/// diagnostic routing, and round-trip support — on top of the shared INI infrastructure.
+/// section, named sections, lookup) and adds Bodu-specific behaviour - profile presets, inline-comment-mode handling,
+/// diagnostic routing, and round-trip support - on top of the shared INI infrastructure.
 /// </summary>
 /// <remarks>
 /// <para>

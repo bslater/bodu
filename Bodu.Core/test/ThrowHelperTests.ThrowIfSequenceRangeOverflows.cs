@@ -11,7 +11,7 @@ public partial class ThrowHelperTests
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfSequenceRangeOverflows(int, int, string)" /> does not
-    /// throw — and on the ParamName-asserting overload reports nothing — for non-overflowing ranges,
+    /// throw - and on the ParamName-asserting overload reports nothing - for non-overflowing ranges,
     /// boundary-equal endpoints, and the <c>count &lt;= 0</c> short-circuit.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

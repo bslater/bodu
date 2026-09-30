@@ -207,7 +207,7 @@ internal static partial class MLKemEngine
                 Vector256<short> even = Canonicalize(MultiplyTwiddles(evenSum, montgomerySquared, montgomerySquaredQ));
                 Vector256<short> odd = Canonicalize(MultiplyTwiddles(oddSum, montgomerySquared, montgomerySquaredQ));
 
-                // Interleave back into pairs: within each 128-bit half, pairs 0–3 then 4–7 of that half's eight.
+                // Interleave back into pairs: within each 128-bit half, pairs 0-3 then 4-7 of that half's eight.
                 Vector256<short> low = Avx2.UnpackLow(even, odd);
                 Vector256<short> high = Avx2.UnpackHigh(even, odd);
                 Unpack(Avx2.Permute2x128(low, high, 0x20), ref destination, offset);

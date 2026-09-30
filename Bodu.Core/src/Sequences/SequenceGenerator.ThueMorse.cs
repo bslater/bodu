@@ -9,7 +9,7 @@ namespace Bodu.Sequences;
 public static partial class SequenceGenerator
 {
     /// <summary>
-    /// Yields the first <paramref name="count" /> terms of the Thue–Morse sequence as a stream of <c>0</c>s and
+    /// Yields the first <paramref name="count" /> terms of the Thue-Morse sequence as a stream of <c>0</c>s and
     /// <c>1</c>s.
     /// </summary>
     /// <param name="count">The number of terms to emit. Must be non-negative.</param>
@@ -26,7 +26,7 @@ public static partial class SequenceGenerator
     /// single index without first materializing the preceding <c>n</c> bits.
     /// </para>
     /// <para>
-    /// A <paramref name="count" /> of <c>0</c> returns an empty sequence. The sequence is finite and deterministic —
+    /// A <paramref name="count" /> of <c>0</c> returns an empty sequence. The sequence is finite and deterministic -
     /// the same input always produces the same output. Iteration is deferred and carries no allocations beyond the
     /// iterator state.
     /// </para>

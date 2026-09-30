@@ -11,8 +11,8 @@ namespace Bodu.Globalization.Calendar.Samples.CustomAlgorithm;
 
 /// <summary>
 /// Verifies that the sample's authored company calendar satisfies the shared data-pack contract by
-/// deriving <see cref="CalendarDataTestsBase" /> — the same base every regional
-/// <c>&lt;Region&gt;CalendarData</c> test derives — and pins the custom algorithm's output with
+/// deriving <see cref="CalendarDataTestsBase" /> - the same base every regional
+/// <c>&lt;Region&gt;CalendarData</c> test derives - and pins the custom algorithm's output with
 /// known-answer rows. This is the pattern for validating any consumer-built calendar or algorithm:
 /// supply the factory seams, inherit the load-and-resolve smoke contract, and add exact-date rows
 /// for the rules whose dates are deterministic.

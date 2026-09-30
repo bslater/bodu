@@ -55,7 +55,7 @@ internal static partial class WildcardPattern
         var open = FindFirstBrace(candidate);
         if (open < 0)
         {
-            // Fully expanded. The cap is enforced here — at the moment a finished alternative would be added — so
+            // Fully expanded. The cap is enforced here - at the moment a finished alternative would be added - so
             // multiplicative blow-ups ({a,b} repeated N times = 2^N alternatives) fail fast part-way through instead
             // of materializing the whole cross product first.
             if (results.Count >= MaxBraceExpansion) throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, FilteringResourceStrings.Arg_Invalid_BraceExpansionTooLarge, pattern, MaxBraceExpansion), nameof(pattern));
@@ -160,7 +160,7 @@ internal static partial class WildcardPattern
 
     /// <summary>
     /// Advances past a character class opened at <paramref name="start" />, returning the index of its closing <c>]</c>
-    /// (or the final index of the text when the class is unterminated — the compiler reports that error).
+    /// (or the final index of the text when the class is unterminated - the compiler reports that error).
     /// </summary>
     /// <param name="candidate">The pattern text being scanned.</param>
     /// <param name="start">The index of the opening <c>[</c>.</param>
@@ -174,7 +174,7 @@ internal static partial class WildcardPattern
         while (i < candidate.Length && candidate[i] != ']')
             i += candidate[i] == '\\' ? 2 : 1;
 
-        // An unterminated class swallows the rest of the text here without erroring — the expansion scanner only
+        // An unterminated class swallows the rest of the text here without erroring - the expansion scanner only
         // needs to know braces inside it are literal; the tokenizer owns reporting the unterminated-class error.
         return i < candidate.Length ? i : candidate.Length - 1;
     }

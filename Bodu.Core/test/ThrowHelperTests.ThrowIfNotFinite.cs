@@ -10,8 +10,8 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNotFinite(double, string?)" /> does not throw — and on
-    /// the ParamName-asserting overload reports nothing — for finite <see cref="double" /> values, including
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotFinite(double, string?)" /> does not throw - and on
+    /// the ParamName-asserting overload reports nothing - for finite <see cref="double" /> values, including
     /// zero, negative, and boundary values.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
@@ -99,8 +99,8 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNotFinite(float, string?)" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for finite <see cref="float" /> values, including
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotFinite(float, string?)" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for finite <see cref="float" /> values, including
     /// zero, negative, and boundary values.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

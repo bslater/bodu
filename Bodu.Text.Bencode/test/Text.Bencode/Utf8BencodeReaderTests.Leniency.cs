@@ -9,8 +9,8 @@ using Bodu.Text.Bencode.Reader;
 namespace Bodu.Text.Bencode;
 
 /// <summary>
-/// Verifies the opt-in dictionary-key leniency of <see cref="Utf8BencodeReader" /> —
-/// <see cref="BencodeReaderOptions.AllowUnsortedKeys" /> and <see cref="BencodeReaderOptions.AllowDuplicateKeys" /> —
+/// Verifies the opt-in dictionary-key leniency of <see cref="Utf8BencodeReader" /> -
+/// <see cref="BencodeReaderOptions.AllowUnsortedKeys" /> and <see cref="BencodeReaderOptions.AllowDuplicateKeys" /> -
 /// including that each option relaxes only its own rule and that the strict default distinguishes the duplicate-key
 /// error from the unordered-key error.
 /// </summary>

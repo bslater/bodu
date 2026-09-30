@@ -1,5 +1,5 @@
 ---
-title: Bodu.Text.Encoding — Introduction
+title: Bodu.Text.Encoding - Introduction
 ---
 
 # Bodu.Text.Encoding
@@ -7,33 +7,33 @@ title: Bodu.Text.Encoding — Introduction
 ![Bodu.Text.Encoding](../../images/hero-text-encoding.svg)
 
 **Bodu.Text.Encoding** is a focused, allocation-conscious library of binary-to-text encodings. The five core radix
-encodings that .NET applications reach for — **Base16**, **Base32**, **Base64**, **Base58**, and **Base85** — each
+encodings that .NET applications reach for - **Base16**, **Base32**, **Base64**, **Base58**, and **Base85** - each
 carry the same modern API shape: span- and UTF-8-friendly overloads, `OperationStatus`-returning streaming methods,
 length-prediction helpers, validation predicates, and a unified `IBinaryEncoding` interface that lets code select an
-encoding at runtime. Three special-purpose encodings sit alongside them — **Base45** (RFC 9285, QR-code payloads),
-**Base62** (compact identifiers), and **Bech32 / Bech32m** (BIP 173 / 350, checksummed addresses) — plus the
+encoding at runtime. Three special-purpose encodings sit alongside them - **Base45** (RFC 9285, QR-code payloads),
+**Base62** (compact identifiers), and **Bech32 / Bech32m** (BIP 173 / 350, checksummed addresses) - plus the
 convenience wrappers **Base58Check** and **Base64Url**.
 
 Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic.
 
 It fills two gaps that `System.Convert` and `System.Buffers.Text.Base64` leave open:
 
-1. **Variants** the BCL does not cover — base32hex, Crockford Base32, z-base-32, Base58 (Bitcoin / Flickr / Ripple), Ascii85, Z85, Base45, Base62, Bech32 / Bech32m.
-2. **Lenient parsing** and **formatting decoration** — `0x` prefix tolerance, whitespace stripping, byte spacing, line breaks every 64 / 76 characters — for the encodings that benefit from them.
+1. **Variants** the BCL does not cover - base32hex, Crockford Base32, z-base-32, Base58 (Bitcoin / Flickr / Ripple), Ascii85, Z85, Base45, Base62, Bech32 / Bech32m.
+2. **Lenient parsing** and **formatting decoration** - `0x` prefix tolerance, whitespace stripping, byte spacing, line breaks every 64 / 76 characters - for the encodings that benefit from them.
 
 ## Core mental model
 
-![Encode and decode pipeline — binary bytes to encoded text and back](../../images/diagrams/encoding-pipeline.svg)
+![Encode and decode pipeline - binary bytes to encoded text and back](../../images/diagrams/encoding-pipeline.svg)
 
 Every encoding in the library follows the same four-stage pipeline. Encoding takes raw binary bytes, runs the
 radix conversion (bit-stream pack for Base16 / Base32 / Base64, big-integer divmod for Base58, 4-byte block packing
 for Base85), applies the variant-specific transform (alphabet swap, padding, shortcut), and optionally adds
-decorations (case folding, prefix, byte spacing, line breaks). Decoding is the same path in reverse — strip
+decorations (case folding, prefix, byte spacing, line breaks). Decoding is the same path in reverse - strip
 decoration, apply alphabet lookup, then bit-stream unpack / divmod / block expansion.
 
 ## Where each encoding fits
 
-![Encoding families — payload expansion at a glance](../../images/diagrams/encoding-families.svg)
+![Encoding families - payload expansion at a glance](../../images/diagrams/encoding-families.svg)
 
 | Encoding | Bits per symbol | Payload expansion | Typical use cases |
 |---|---|---|---|
@@ -57,20 +57,20 @@ Every **core** encoding type (Base16, Base32, Base64, Base58, Base85) exposes th
 | **BCL-style aliases** | `ToBase{N}String(...)`, `FromBase{N}String(...)`, `TryToBase{N}String(...)` |
 | **UTF-8 path** | `EncodeToUtf8(span)`, `TryEncodeToUtf8(span, span, out int)`, `DecodeFromUtf8(span, span, out int, out int)` returning `OperationStatus` |
 | **Streaming decode** | `FromBase{N}String(span char/byte, span byte, out int, out int)` returning `OperationStatus` |
-| **Sizing** | `GetEncodedLength(int)`, `GetMaxDecodedLength(int)`, `GetDecodedLength(span)`, `TryGetDecodedLength(span, out int)` — variable-ratio encodings (Base58, Base85) expose `GetMaxEncodedLength(int)` in place of the exact `GetEncodedLength` / `GetDecodedLength` / `TryGetDecodedLength` forms |
+| **Sizing** | `GetEncodedLength(int)`, `GetMaxDecodedLength(int)`, `GetDecodedLength(span)`, `TryGetDecodedLength(span, out int)` - variable-ratio encodings (Base58, Base85) expose `GetMaxEncodedLength(int)` in place of the exact `GetEncodedLength` / `GetDecodedLength` / `TryGetDecodedLength` forms |
 | **Validation** | `IsValid(span)`, `IsBase{N}Digit(char)` |
 
 For runtime-selected encoding choice, see the **[IBinaryEncoding](../../guides/text-encoding/binary-encodings-interface.md)** interface and the
 `BinaryEncodings` registry: `BinaryEncodings.Base64`, `BinaryEncodings.Base32Crockford`,
 `BinaryEncodings.Z85`, etc.
 
-![Special-purpose encodings — Base45 packs byte pairs into three QR-alphabet characters, Base62 uses big-integer divmod over 0-9 A-Z a-z, and Bech32 frames a human-readable part, separator, 5-bit data, and a six-symbol checksum](../../images/diagrams/encoding-special-purpose.svg)
+![Special-purpose encodings - Base45 packs byte pairs into three QR-alphabet characters, Base62 uses big-integer divmod over 0-9 A-Z a-z, and Bech32 frames a human-readable part, separator, 5-bit data, and a six-symbol checksum](../../images/diagrams/encoding-special-purpose.svg)
 
 The **special-purpose** encodings (Base45, Base62, Bech32) share the `Encode` / `Decode` / `TryEncode` / `TryDecode`,
-sizing, and `IsValid` members but omit the `OperationStatus` streaming path — each needs the whole input at once.
+sizing, and `IsValid` members but omit the `OperationStatus` streaming path - each needs the whole input at once.
 Base45 and Base62 are registered as `BinaryEncodings.Base45` / `BinaryEncodings.Base62`; Bech32 takes a
 human-readable part and verifies a checksum, so it stays outside the flat-byte `IBinaryEncoding` contract.
-See the per-encoding guides — [Base45](../../guides/text-encoding/base45.md), [Base62](../../guides/text-encoding/base62.md),
+See the per-encoding guides - [Base45](../../guides/text-encoding/base45.md), [Base62](../../guides/text-encoding/base62.md),
 and [Bech32](../../guides/text-encoding/bech32.md).
 
 ## Variants at a glance
@@ -110,14 +110,14 @@ and [Bech32](../../guides/text-encoding/bech32.md).
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Text.Encoding.Base16> | Hexadecimal — 4 bits per symbol; flexible formatting (case, prefix, line breaks, spacing); lenient parsing |
-| <xref:Bodu.Text.Encoding.Base32> | Base32 — 5 bits per symbol; four variants (Standard, HexExtended, Crockford, Z-Base32); padding control |
-| <xref:Bodu.Text.Encoding.Base64> | Base64 — 6 bits per symbol; three variants (Standard, UrlSafe, Mime); delegates inner conversion to BCL for SIMD speed |
-| <xref:Bodu.Text.Encoding.Base58> | Base58 — non-power-of-two radix using big-integer arithmetic; preserves leading zeros |
-| <xref:Bodu.Text.Encoding.Base85> | Base85 — 4-byte block → 5 chars; Ascii85 with <c>z</c> shortcut and partial groups; Z85 with 4-byte alignment; Git binary-patch alphabet (compact and padded) |
-| <xref:Bodu.Text.Encoding.Base45> | Base45 — RFC 9285; 2 bytes → 3 chars; QR-code Alphanumeric-mode alphabet; no padding |
-| <xref:Bodu.Text.Encoding.Base62> | Base62 — GMP-style `0-9 A-Z a-z`; big-integer arithmetic; preserves leading zeros |
-| <xref:Bodu.Text.Encoding.Bech32> | Bech32 / Bech32m — HRP + `1` separator + 5-bit data + 6-symbol checksum; scheme via <xref:Bodu.Text.Encoding.Bech32Encoding> |
+| <xref:Bodu.Text.Encoding.Base16> | Hexadecimal - 4 bits per symbol; flexible formatting (case, prefix, line breaks, spacing); lenient parsing |
+| <xref:Bodu.Text.Encoding.Base32> | Base32 - 5 bits per symbol; four variants (Standard, HexExtended, Crockford, Z-Base32); padding control |
+| <xref:Bodu.Text.Encoding.Base64> | Base64 - 6 bits per symbol; three variants (Standard, UrlSafe, Mime); delegates inner conversion to BCL for SIMD speed |
+| <xref:Bodu.Text.Encoding.Base58> | Base58 - non-power-of-two radix using big-integer arithmetic; preserves leading zeros |
+| <xref:Bodu.Text.Encoding.Base85> | Base85 - 4-byte block → 5 chars; Ascii85 with <c>z</c> shortcut and partial groups; Z85 with 4-byte alignment; Git binary-patch alphabet (compact and padded) |
+| <xref:Bodu.Text.Encoding.Base45> | Base45 - RFC 9285; 2 bytes → 3 chars; QR-code Alphanumeric-mode alphabet; no padding |
+| <xref:Bodu.Text.Encoding.Base62> | Base62 - GMP-style `0-9 A-Z a-z`; big-integer arithmetic; preserves leading zeros |
+| <xref:Bodu.Text.Encoding.Bech32> | Bech32 / Bech32m - HRP + `1` separator + 5-bit data + 6-symbol checksum; scheme via <xref:Bodu.Text.Encoding.Bech32Encoding> |
 | <xref:Bodu.Text.Encoding.Base58Check> | Base58 plus the Bitcoin four-byte double-SHA-256 checksum, verified on decode |
 | <xref:Bodu.Text.Encoding.Base64Url> | RFC 4648 §5 URL-safe Base64 as a first-class type; padding omitted by default; UTF-8 path |
 
@@ -148,11 +148,11 @@ content-dependent and mode-driven. They are intentionally **not** <xref:Bodu.Tex
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — vocabulary: alphabet, variant, terminal quantum, padding, shortcut, decoration.
-- **[Getting started](getting-started.md)** — install + minimal sample per encoding type.
-- **[Bodu.Text.Encoding guides](../../guides/text-encoding/index.md)** — using each encoding, choosing variants, streaming, the `IBinaryEncoding` interface.
-- **[Bodu.Text.Encoding API reference](xref:Bodu.Text.Encoding)** — full type-by-type docs.
-- **Special-purpose guides** — [Base45](../../guides/text-encoding/base45.md) (QR codes), [Base62](../../guides/text-encoding/base62.md) (compact IDs), [Bech32](../../guides/text-encoding/bech32.md) (checksummed addresses).
-- **Escape-encoding guides** — [Quoted-Printable](../../guides/text-encoding/quoted-printable.md) (MIME bodies), [Percent-encoding](../../guides/text-encoding/percent-encoding.md) (URIs and forms).
+- **[Core concepts](concepts.md)** - vocabulary: alphabet, variant, terminal quantum, padding, shortcut, decoration.
+- **[Getting started](getting-started.md)** - install + minimal sample per encoding type.
+- **[Bodu.Text.Encoding guides](../../guides/text-encoding/index.md)** - using each encoding, choosing variants, streaming, the `IBinaryEncoding` interface.
+- **[Bodu.Text.Encoding API reference](xref:Bodu.Text.Encoding)** - full type-by-type docs.
+- **Special-purpose guides** - [Base45](../../guides/text-encoding/base45.md) (QR codes), [Base62](../../guides/text-encoding/base62.md) (compact IDs), [Bech32](../../guides/text-encoding/bech32.md) (checksummed addresses).
+- **Escape-encoding guides** - [Quoted-Printable](../../guides/text-encoding/quoted-printable.md) (MIME bodies), [Percent-encoding](../../guides/text-encoding/percent-encoding.md) (URIs and forms).
 - **For structured document formats** (CSV / TSV, DotEnv, INI) with their own self-describing grammar, see [Bodu.Text.Formats](../formats/index.md); for object serialization to Bencode, TOML, or YAML, see the [Bodu serializers](../serialization/index.md).
-- **[Text & Serialization topic](../topics/text-and-serialization.md)** — this package alongside its siblings Bodu.Text.Formats and the Bencode / TOML / YAML serializers.
+- **[Text & Serialization topic](../topics/text-and-serialization.md)** - this package alongside its siblings Bodu.Text.Formats and the Bencode / TOML / YAML serializers.

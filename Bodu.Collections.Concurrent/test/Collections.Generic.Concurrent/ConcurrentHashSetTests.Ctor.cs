@@ -207,7 +207,7 @@ public partial class ConcurrentHashSetTests
 
     /// <summary>
     /// Verifies that the capacity constructor interprets its argument as the expected number of elements (BCL
-    /// semantics), converting it to <c>ceil(capacity / MaxLoadFactor)</c> buckets — with <c>MaxLoadFactor == 2</c> —
+    /// semantics), converting it to <c>ceil(capacity / MaxLoadFactor)</c> buckets - with <c>MaxLoadFactor == 2</c> -
     /// clamped into the sizing envelope and rounded up to a power of two, so the split-ordered bucket mask is always
     /// valid and the table can absorb the expected population without an immediate resize.
     /// </summary>

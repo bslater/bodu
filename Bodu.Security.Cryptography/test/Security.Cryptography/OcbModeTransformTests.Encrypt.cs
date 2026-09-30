@@ -8,7 +8,7 @@ namespace Bodu.Security.Cryptography;
 
 public sealed partial class OcbModeTransformTests
 {
-    // ── Output length — non-default tag sizes ─────────────────────────────────────────────────
+    // ── Output length - non-default tag sizes ─────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that <see cref="OcbModeTransform.Encrypt" /> writes exactly
@@ -45,7 +45,7 @@ public sealed partial class OcbModeTransformTests
     /// it is <c>0xC0</c>. The different nonce word produces a different Ktop, Stretch, and
     /// Offset_0, so the entire computation diverges from the first cipher call onwards.
     /// This design prevents a forger from truncating a valid 128-bit ciphertext to produce
-    /// a valid 96-bit authentication — the two computations are entirely unrelated.
+    /// a valid 96-bit authentication - the two computations are entirely unrelated.
     /// </remarks>
     [TestMethod]
     public void Encrypt_WithDifferentTagLengths_ShouldProduceDifferentCiphertextAndTag()

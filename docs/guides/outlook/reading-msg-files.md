@@ -21,11 +21,11 @@ Console.WriteLine(message.SentTime);
 Console.WriteLine(message.BodyText);
 ```
 
-Every convenience is nullable and returns `null` when the message does not carry the underlying property — real-world messages omit fields freely.
+Every convenience is nullable and returns `null` when the message does not carry the underlying property - real-world messages omit fields freely.
 
 ## Sniff before opening
 
-`IsMsgFile` checks that a stream is an OLE2 compound file whose root carries the message property stream, restoring the stream position afterwards. The conventional root class identifier is *not* required — real-world writers frequently omit it.
+`IsMsgFile` checks that a stream is an OLE2 compound file whose root carries the message property stream, restoring the stream position afterwards. The conventional root class identifier is *not* required - real-world writers frequently omit it.
 
 <!-- compile -->
 ```csharp
@@ -74,13 +74,13 @@ A nested message shares the root session's container and named-property mapping:
 
 Three body conveniences cover the forms a message stores:
 
-- `BodyText` — the plain-text `PidTagBody`.
-- `BodyHtml` — the `PidTagHtml` payload, decoded through the message's internet code page.
-- `BodyRtf` — the `PidTagRtfCompressed` payload, decompressed per MS-OXRTFCP. Set <xref:Bodu.Formats.Outlook.OutlookMessageReaderOptions.DecompressRtf> to `false` to suppress the decompression; the raw payload stays reachable through the property collection.
+- `BodyText` - the plain-text `PidTagBody`.
+- `BodyHtml` - the `PidTagHtml` payload, decoded through the message's internet code page.
+- `BodyRtf` - the `PidTagRtfCompressed` payload, decompressed per MS-OXRTFCP. Set <xref:Bodu.Formats.Outlook.OutlookMessageReaderOptions.DecompressRtf> to `false` to suppress the decompression; the raw payload stays reachable through the property collection.
 
 ## Validation levels
 
 `Open` accepts <xref:Bodu.Formats.Outlook.OutlookMessageReaderOptions>, whose `ValidationLevel` reuses the container's <xref:Bodu.IO.Compound.CompoundValidationLevel>:
 
-- **Compatible** (default) — malformed properties are omitted and decoding continues; the tolerance real-world messages need.
-- **Strict** — structural problems (a missing value stream, a misaligned property stream, inconsistent recipient/attachment counts) throw <xref:Bodu.Formats.Outlook.OutlookMsgFormatException>.
+- **Compatible** (default) - malformed properties are omitted and decoding continues; the tolerance real-world messages need.
+- **Strict** - structural problems (a missing value stream, a misaligned property stream, inconsistent recipient/attachment counts) throw <xref:Bodu.Formats.Outlook.OutlookMsgFormatException>.

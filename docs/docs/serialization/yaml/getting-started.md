@@ -1,5 +1,5 @@
 ---
-title: Bodu.Text.Yaml — Getting started
+title: Bodu.Text.Yaml - Getting started
 ---
 
 # Getting started
@@ -44,7 +44,7 @@ ReadOnlySpan<byte> utf8 = Encoding.UTF8.GetBytes(yaml);
 ServerConfig fromBytes = YamlSerializer.Deserialize<ServerConfig>(utf8)!;
 ```
 
-`Deserialize<T>(Stream)` and `DeserializeAsync<T>(Stream)` read a stream to its end, and `Serialize<T>(IBufferWriter<byte>, …)` / `SerializeAsync<T>(Stream, …)` write UTF-8 bytes. The stream overloads buffer the whole document in memory — only the stream copy is asynchronous.
+`Deserialize<T>(Stream)` and `DeserializeAsync<T>(Stream)` read a stream to its end, and `Serialize<T>(IBufferWriter<byte>, …)` / `SerializeAsync<T>(Stream, …)` write UTF-8 bytes. The stream overloads buffer the whole document in memory - only the stream copy is asynchronous.
 
 ## Rename members
 
@@ -100,9 +100,9 @@ string updated = root.ToYamlString();
 
 ## Where to go next
 
-- **[Using YAML](../../../guides/serialization/yaml/using.md)** — the full set of worked patterns, including both DOMs and multi-document streams.
-- **[Mapping attributes](../../../guides/serialization/yaml/attributes.md)** — naming policies, `[PropertyName]`, `[Ignore]`, the wider attribute family, and the options flags.
-- **[Writing converters](../../../guides/serialization/yaml/converters.md)** — custom shapes with `YamlConverter<T>`.
-- **[Core concepts](concepts.md)** and the **[introduction](index.md)** — the family vocabulary and the YAML format specifics.
-- **[Bodu serializers introduction](../index.md)** — the family parent.
-- **API reference** — <xref:Bodu.Text.Yaml.YamlSerializer>, <xref:Bodu.Text.Yaml.YamlSerializerOptions>.
+- **[Using YAML](../../../guides/serialization/yaml/using.md)** - the full set of worked patterns, including both DOMs and multi-document streams.
+- **[Mapping attributes](../../../guides/serialization/yaml/attributes.md)** - naming policies, `[PropertyName]`, `[Ignore]`, the wider attribute family, and the options flags.
+- **[Writing converters](../../../guides/serialization/yaml/converters.md)** - custom shapes with `YamlConverter<T>`.
+- **[Core concepts](concepts.md)** and the **[introduction](index.md)** - the family vocabulary and the YAML format specifics.
+- **[Bodu serializers introduction](../index.md)** - the family parent.
+- **API reference** - <xref:Bodu.Text.Yaml.YamlSerializer>, <xref:Bodu.Text.Yaml.YamlSerializerOptions>.

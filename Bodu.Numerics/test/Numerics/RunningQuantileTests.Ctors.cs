@@ -9,7 +9,7 @@ namespace Bodu.Numerics;
 public partial class RunningQuantileTests
 {
     /// <summary>
-    /// Verifies that a probability outside the open interval (0, 1) — including NaN — throws
+    /// Verifies that a probability outside the open interval (0, 1) - including NaN - throws
     /// <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]

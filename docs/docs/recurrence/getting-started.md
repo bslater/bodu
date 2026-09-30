@@ -1,8 +1,8 @@
 ---
-title: Bodu.Globalization.Recurrence — Getting started
+title: Bodu.Globalization.Recurrence - Getting started
 ---
 
-# Bodu.Globalization.Recurrence — Getting started
+# Bodu.Globalization.Recurrence - Getting started
 
 Unfamiliar with terms like *occurrence*, *anchor*, *inclusive boundary*, or *`BYSETPOS`*? Read [Core concepts](concepts.md) first.
 
@@ -12,7 +12,7 @@ Unfamiliar with terms like *occurrence*, *anchor*, *inclusive boundary*, or *`BY
 dotnet add package Bodu.Globalization.Recurrence
 ```
 
-Targets `net8.0`. **Depends on** `Bodu.Core` only — no calendar data, no time-zone database, and no dependency on `Bodu.Globalization.Calendar`.
+Targets `net8.0`. **Depends on** `Bodu.Core` only - no calendar data, no time-zone database, and no dependency on `Bodu.Globalization.Calendar`.
 
 Status: **Preview** (see the [package matrix](../package-matrix.md)).
 
@@ -20,7 +20,7 @@ Every sample below is a pure function of the instants it is handed: substitute y
 
 ## Minimal samples
 
-### RFC 5545 recurrence rule — parse, next / previous, enumerate a window
+### RFC 5545 recurrence rule - parse, next / previous, enumerate a window
 
 A rule carries no start of its own; the series start (`DTSTART`) is passed to every query.
 
@@ -38,7 +38,7 @@ DateTime? previous = rule.GetPreviousOccurrence(start, before: new DateTime(2026
 
 // Every occurrence inside an inclusive window:
 foreach (DateTime occurrence in rule.GetOccurrences(start, new DateTime(2026, 2, 1), new DateTime(2026, 2, 28)))
-    Console.WriteLine(occurrence);                                  // 2 Feb, 4 Feb, 6 Feb, 16 Feb, 18 Feb, 20 Feb — all 09:00
+    Console.WriteLine(occurrence);                                  // 2 Feb, 4 Feb, 6 Feb, 16 Feb, 18 Feb, 20 Feb - all 09:00
 
 Console.WriteLine(rule);                                            // FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR
 Console.WriteLine(rule.Frequency);                                  // Weekly
@@ -85,7 +85,7 @@ RecurrenceRule fortnightly = new RecurrenceRuleBuilder(RecurrenceFrequency.Weekl
 Console.WriteLine(fortnightly);                                     // FREQ=WEEKLY;INTERVAL=2;UNTIL=20260630T000000;BYDAY=MO,TH
 ```
 
-### Recurrence set — rules plus `RDATE` / `EXDATE`, and a round trip
+### Recurrence set - rules plus `RDATE` / `EXDATE`, and a round trip
 
 A <xref:Bodu.Globalization.Recurrence.RecurrenceSet> owns its start and composes rules, explicit dates, and exception dates into one ascending, duplicate-free stream. Its canonical text is the iCalendar property block, which `Parse` reads back to an equal value.
 
@@ -101,7 +101,7 @@ var set = new RecurrenceSet(
 foreach (DateTime occurrence in set.GetOccurrences())
     Console.WriteLine($"{occurrence:yyyy-MM-dd ddd}");              // 03-02 Mon, 03-09 Mon, 03-12 Thu, 03-23 Mon
 
-DateTime? next = set.GetNextOccurrence(new DateTime(2026, 3, 10));  // 2026-03-12 10:00 — the RDATE
+DateTime? next = set.GetNextOccurrence(new DateTime(2026, 3, 10));  // 2026-03-12 10:00 - the RDATE
 
 // Round trip through the property block (CRLF-separated, no trailing line break):
 string block = set.ToString();
@@ -114,7 +114,7 @@ RecurrenceSet reparsed = RecurrenceSet.Parse(block);
 Console.WriteLine(set.Equals(reparsed));                            // True
 ```
 
-### Cron expression — parse, next / previous, enumerate
+### Cron expression - parse, next / previous, enumerate
 
 A <xref:Bodu.Globalization.Recurrence.CronExpression> needs no anchor. `Parse(string)` infers the five- or six-field layout from the field count; `Parse(string, CronFormat)` insists on one.
 
@@ -127,7 +127,7 @@ var now = new DateTime(2026, 1, 9, 14, 30, 0);                        // Friday 
 DateTime? next     = nightly.GetNextOccurrence(now);                  // 2026-01-12 02:00 (Monday)
 DateTime? previous = nightly.GetPreviousOccurrence(now);              // 2026-01-09 02:00 (this morning)
 
-Console.WriteLine(nightly);                                           // 0 2 * * 1,2,3,4,5  — canonical numeric lists
+Console.WriteLine(nightly);                                           // 0 2 * * 1,2,3,4,5  - canonical numeric lists
 Console.WriteLine(nightly.Format);                                    // Standard
 
 // Enumerate: cron has no GetOccurrences, so loop on the next occurrence.
@@ -135,7 +135,7 @@ DateTime? cursor = new DateTime(2026, 1, 12);
 for (var i = 0; i < 3 && cursor is not null; i++)
 {
     cursor = nightly.GetNextOccurrence(cursor.Value, inclusive: i == 0);
-    Console.WriteLine(cursor);                                        // 12 Jan, 13 Jan, 14 Jan — 02:00
+    Console.WriteLine(cursor);                                        // 12 Jan, 13 Jan, 14 Jan - 02:00
 }
 
 // Six-field layout with a leading seconds field, and the macros:
@@ -144,16 +144,16 @@ Console.WriteLine(halfMinute.GetNextOccurrence(now));                 // 2026-01
 
 CronExpression daily = CronExpression.Parse("@daily");
 Console.WriteLine(daily);                                             // 0 0 * * *
-Console.WriteLine(daily.Equals(CronExpression.Parse("0 0 * * *")));  // True — value equality
+Console.WriteLine(daily.Equals(CronExpression.Parse("0 0 * * *")));  // True - value equality
 
 // DateTimeOffset: evaluated on the wall clock, answered in the argument's offset.
 var nowInSydney = new DateTimeOffset(2026, 1, 9, 14, 30, 0, TimeSpan.FromHours(10));
 DateTimeOffset? nextInSydney = nightly.GetNextOccurrence(nowInSydney); // 2026-01-12 02:00 +10:00
 ```
 
-Remember the Vixie day-field rule: when both day fields are restricted an instant matches **either** — `0 0 13 * FRI` fires on every 13th *and* every Friday. See [Cron field semantics](concepts.md#cron-field-semantics).
+Remember the Vixie day-field rule: when both day fields are restricted an instant matches **either** - `0 0 13 * FRI` fires on every 13th *and* every Friday. See [Cron field semantics](concepts.md#cron-field-semantics).
 
-### Anchored interval — "every 4 hours after the last completed run"
+### Anchored interval - "every 4 hours after the last completed run"
 
 An <xref:Bodu.Globalization.Recurrence.AnchoredInterval> produces `anchor + k·interval` for `k ≥ 1`; the anchor is passed to every query and is never itself an occurrence.
 
@@ -168,13 +168,13 @@ var now           = new DateTime(2026, 1, 9, 15, 0, 0);
 DateTime? next     = every4h.GetNextOccurrence(lastCompleted, now);       // 2026-01-09 18:15
 DateTime? previous = every4h.GetPreviousOccurrence(lastCompleted, now);   // 2026-01-09 14:15
 
-// The due-ness recipe — a single comparison, no stored state:
+// The due-ness recipe - a single comparison, no stored state:
 bool isDue = lastCompleted < every4h.GetPreviousOccurrence(anchor: lastCompleted, before: now, inclusive: true);   // True
 
 foreach (DateTime occurrence in every4h.GetOccurrences(lastCompleted, new DateTime(2026, 1, 9), new DateTime(2026, 1, 10)))
     Console.WriteLine($"{occurrence:HH:mm}");                             // 10:15, 14:15, 18:15, 22:15
 
-Console.WriteLine(new AnchoredInterval(TimeSpan.FromDays(14)));           // P2W — canonical RFC 5545 duration text
+Console.WriteLine(new AnchoredInterval(TimeSpan.FromDays(14)));           // P2W - canonical RFC 5545 duration text
 Console.WriteLine(AnchoredInterval.Parse("P1DT2H30M").Interval);          // 1.02:30:00
 ```
 
@@ -205,7 +205,7 @@ if (!RecurrenceSet.TryParse("RRULE:FREQ=DAILY", out RecurrenceSet? _, out failur
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — the vocabulary behind these samples: occurrence vs. due-ness, anchor / `DTSTART`, inclusive boundaries, `WKST`, the `BY*` parts, cron semantics, the duration grammar, offsets.
-- **[Recurrence and scheduling guide](../../guides/recurrence/index.md)** — the due-ness recipe for a scheduling host, calendar-aware filtering by composition, bounded searches, and conformance.
-- **[Runnable samples](../../samples/recurrence.md)** — the per-form console projects and the `SchedulingHost` adapter that puts all four forms behind one interface.
-- **[Bodu.Globalization.Recurrence API reference](xref:Bodu.Globalization.Recurrence)** — full type-by-type docs.
+- **[Core concepts](concepts.md)** - the vocabulary behind these samples: occurrence vs. due-ness, anchor / `DTSTART`, inclusive boundaries, `WKST`, the `BY*` parts, cron semantics, the duration grammar, offsets.
+- **[Recurrence and scheduling guide](../../guides/recurrence/index.md)** - the due-ness recipe for a scheduling host, calendar-aware filtering by composition, bounded searches, and conformance.
+- **[Runnable samples](../../samples/recurrence.md)** - the per-form console projects and the `SchedulingHost` adapter that puts all four forms behind one interface.
+- **[Bodu.Globalization.Recurrence API reference](xref:Bodu.Globalization.Recurrence)** - full type-by-type docs.

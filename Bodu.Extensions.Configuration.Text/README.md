@@ -1,6 +1,6 @@
 # Bodu.Extensions.Configuration.Text
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 The EditorConfig-compatible `Microsoft.Extensions.Configuration` provider. This package bridges
 [`Bodu.Text.Configuration`](../Bodu.Text.Configuration) into the standard
@@ -13,19 +13,19 @@ same colon-delimited key space.
 
 ## Where to start
 
-- [Documentation index](../docs/docs/extensions-configuration-text/index.md) — high-level overview of how
+- [Documentation index](../docs/docs/extensions-configuration-text/index.md) - high-level overview of how
   the bridge fits between the document model and `IConfiguration`.
-- [Concepts](../docs/docs/extensions-configuration-text/concepts.md) — what is preserved versus discarded
+- [Concepts](../docs/docs/extensions-configuration-text/concepts.md) - what is preserved versus discarded
   when projecting a `ConfigurationView` into a Microsoft configuration dictionary (comments, source
   locations, key case, literal colons).
-- [Getting started](../docs/docs/extensions-configuration-text/getting-started.md) — worked samples for
+- [Getting started](../docs/docs/extensions-configuration-text/getting-started.md) - worked samples for
   the file, stream, and document overloads, plus reload-on-change.
 
 ## Runnable samples
 
-The repository ships an offline, `dotnet run`-able sample for this package —
+The repository ships an offline, `dotnet run`-able sample for this package -
 `AddTextConfigurationFile` with per-target cascade resolution, `AddTomlFile` flattening, and
-`AddConfigurationOptions<T>` into DI-resolved `IOptions<T>` — under
+`AddConfigurationOptions<T>` into DI-resolved `IOptions<T>` - under
 [`samples/Text.Configuration/`](https://github.com/bslater/bodu/tree/master/samples/Text.Configuration).
 
 ## API matrix vs `Microsoft.Extensions.Configuration.Json`
@@ -75,7 +75,7 @@ IConfiguration config = new ConfigurationBuilder()
     .Build();
 ```
 
-Stream sources are one-shot — the stream is read once when the builder is built and no file watcher is
+Stream sources are one-shot - the stream is read once when the builder is built and no file watcher is
 attached.
 
 ### Load with an explicit `IFileProvider`
@@ -105,7 +105,7 @@ new ConfigurationBuilder()
     .Build();
 ```
 
-When `TargetPath` is `null`, only preamble (top-of-file) keys flow into the configuration view — anchored
+When `TargetPath` is `null`, only preamble (top-of-file) keys flow into the configuration view - anchored
 sections are skipped.
 
 ## Array binding
@@ -153,5 +153,5 @@ services.AddTextConfigurationOptions<ServiceOptions>(config, sectionName: "servi
 var options = provider.GetRequiredService<IOptions<ServiceOptions>>().Value;
 ```
 
-The helper is a thin shim over `services.Configure<TOptions>(config.GetSection(name))` — it exists for
+The helper is a thin shim over `services.Configure<TOptions>(config.GetSection(name))` - it exists for
 discoverability alongside the `AddTextConfiguration` API surface.

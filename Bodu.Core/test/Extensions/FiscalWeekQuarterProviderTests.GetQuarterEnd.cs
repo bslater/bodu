@@ -75,7 +75,7 @@ public partial class FiscalWeekQuarterProviderTests
     /// </summary>
     [TestMethod]
     public void GetQuarterEnd_WhenDateTimeIsBeforeAnchorFiscalYear_ShouldResolveToPriorFiscalYear() =>
-        // Dec 31, 2022 resolves into FY 2022 (Jan 2, 2022 – Dec 31, 2022); Q4 ends Dec 31, 2022.
+        // Dec 31, 2022 resolves into FY 2022 (Jan 2, 2022 - Dec 31, 2022); Q4 ends Dec 31, 2022.
         Assert.AreEqual(new DateTime(2022, 12, 31), s_sunday52.GetQuarterEnd(new DateTime(2022, 12, 31)));
 
     /// <summary>
@@ -84,7 +84,7 @@ public partial class FiscalWeekQuarterProviderTests
     /// </summary>
     [TestMethod]
     public void GetQuarterEnd_WhenDateTimeIsFirstDayOfNextFiscalYearAfter53WeekYear_ShouldReturnQ1EndOfNextYear() =>
-        // Jan 3, 2021 = Sunday — first day of FY 2021 under Sunday53; Q1 ends Apr 3, 2021.
+        // Jan 3, 2021 = Sunday - first day of FY 2021 under Sunday53; Q1 ends Apr 3, 2021.
         Assert.AreEqual(new DateTime(2021, 4, 3), s_sunday53.GetQuarterEnd(new DateTime(2021, 1, 3)));
     // -----------------------------------------------------------------------
     // GetQuarterEnd(DateTime)

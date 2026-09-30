@@ -26,7 +26,7 @@ public sealed partial class CachingRateOptionsTests
     }
 
     /// <summary>
-    /// Verifies that a jitter fraction outside <c>[0, 1)</c> — or not a number — is rejected with the offending
+    /// Verifies that a jitter fraction outside <c>[0, 1)</c> - or not a number - is rejected with the offending
     /// parameter name, and that <see cref="CachingRateOptions.TryValidate" /> agrees.
     /// </summary>
     /// <param name="fraction">The invalid jitter fraction.</param>

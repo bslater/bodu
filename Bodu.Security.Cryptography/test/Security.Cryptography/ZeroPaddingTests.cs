@@ -16,7 +16,7 @@ public sealed partial class ZeroPaddingTests
 
     /// <inheritdoc />
     /// <remarks>
-    /// <see cref="ZeroPadding.Unpad" /> ignores its <c>blockSize</c> parameter — it returns the input unchanged
+    /// <see cref="ZeroPadding.Unpad" /> ignores its <c>blockSize</c> parameter - it returns the input unchanged
     /// because zero-padding bytes cannot be distinguished from legitimate trailing zero bytes. The block-size
     /// validation tests are therefore inapplicable.
     /// </remarks>

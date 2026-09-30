@@ -23,8 +23,8 @@ public static class ServiceCollectionExtensions
     public const string DefaultConfigurationSection = "Financial";
 
     /// <summary>
-    /// Registers the core financial services — an <see cref="ICurrencyLookup" /> singleton and the bound
-    /// <see cref="FinancialOptions" /> — and returns a builder for further composition.
+    /// Registers the core financial services - an <see cref="ICurrencyLookup" /> singleton and the bound
+    /// <see cref="FinancialOptions" /> - and returns a builder for further composition.
     /// </summary>
     /// <param name="services">The service collection to register into.</param>
     /// <param name="configuration">
@@ -41,7 +41,7 @@ public static class ServiceCollectionExtensions
     /// <para>
     /// No foreign-exchange provider is registered by default; supply one via
     /// <see cref="FinancialServiceBuilderExtensions.AddExchangeRateProvider{TProvider}(IFinancialServiceBuilder)" /> or
-    /// its dated counterpart. JSON serialization is not registered here either — the financial
+    /// its dated counterpart. JSON serialization is not registered here either - the financial
     /// <c>JsonSerializerOptions</c> registration (<c>AddFinancialJson</c>) ships in the companion
     /// <c>Bodu.Financial.Serialization.Json</c> package.
     /// </para>

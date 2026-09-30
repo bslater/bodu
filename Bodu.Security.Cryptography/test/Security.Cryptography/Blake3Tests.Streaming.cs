@@ -10,8 +10,8 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Self-consistency tests that exercise BLAKE3's chunk-stack and tree-merge logic without depending on an
-/// external reference implementation. Three independent code paths — one-shot, byte-at-a-time, and a
-/// pseudo-random chunking pattern — must produce identical 32-byte digests for the same input.
+/// external reference implementation. Three independent code paths - one-shot, byte-at-a-time, and a
+/// pseudo-random chunking pattern - must produce identical 32-byte digests for the same input.
 /// </summary>
 /// <remarks>
 /// These cases supplement the official <c>test_vectors.json</c> known-answer tests by catching tree-merge
@@ -65,7 +65,7 @@ public partial class Blake3Tests
     }
 
     /// <summary>
-    /// Verifies that a large write that starts part-way into a chunk — after a first write of the given length — hashes
+    /// Verifies that a large write that starts part-way into a chunk - after a first write of the given length - hashes
     /// as a stream of 100-byte writes does: the large write first completes the open chunk block by block, then hashes
     /// whole subtrees, and leaves its tail to be finished block by block.
     /// </summary>
@@ -191,7 +191,7 @@ public partial class Blake3Tests
         int offset = 0;
         while (offset < input.Length)
         {
-            // 0–127 byte chunks straddle the 64-byte block and the 1024-byte chunk boundary at irregular
+            // 0-127 byte chunks straddle the 64-byte block and the 1024-byte chunk boundary at irregular
             // intervals, which is what the tree-merge logic must tolerate.
             int chunk = Math.Min(rng.Next(0, 128), input.Length - offset);
             if (chunk == 0) continue;

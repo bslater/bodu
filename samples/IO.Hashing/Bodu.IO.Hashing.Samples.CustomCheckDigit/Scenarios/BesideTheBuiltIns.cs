@@ -10,8 +10,8 @@ namespace Bodu.IO.Hashing.Samples.CustomCheckDigit.Scenarios;
 
 /// <summary>
 /// Demonstrates the payoff of deriving <see cref="CheckDigitAlgorithm" />: the custom scheme is
-/// a drop-in peer of the built-ins. Code written against the base class — here a small issuing
-/// harness — drives <see cref="SkuCheckDigit" />, <see cref="Luhn" />, and
+/// a drop-in peer of the built-ins. Code written against the base class - here a small issuing
+/// harness - drives <see cref="SkuCheckDigit" />, <see cref="Luhn" />, and
 /// <see cref="Damm" /> identically.
 /// </summary>
 public static class BesideTheBuiltIns

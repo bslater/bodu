@@ -97,8 +97,8 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
-    /// Verifies that an action carrying a replacement <c>ruleRef</c> without a <c>notableDateRef</c> — reachable only by
-    /// parsing XML — is rejected when serialized to JSON, because the JSON subset cannot represent it.
+    /// Verifies that an action carrying a replacement <c>ruleRef</c> without a <c>notableDateRef</c> - reachable only by
+    /// parsing XML - is rejected when serialized to JSON, because the JSON subset cannot represent it.
     /// </summary>
     [TestMethod]
     public void ToJson_WhenActionCarriesRuleRefWithoutNotableDateRef_ShouldThrowNotSupportedException()
@@ -254,7 +254,7 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
-    /// Verifies that a rule whose strategy property is absent, empty, or unrecognized parses into a strategy-less rule —
+    /// Verifies that a rule whose strategy property is absent, empty, or unrecognized parses into a strategy-less rule -
     /// observable because such a rule cannot be re-serialized.
     /// </summary>
     /// <param name="ruleJson">The rule object JSON.</param>

@@ -4,7 +4,7 @@ title: Awareness and themed observances
 
 # Awareness and themed observances
 
-Concepts defined by the shared catalogues in this theme. A region pack imports the concepts it observes and supplies its own territory scope and non-working status — see the [region pages](index.md#by-region). The **When** column is a one-phrase gloss, not the calculation recipe.
+Concepts defined by the shared catalogues in this theme. A region pack imports the concepts it observes and supplies its own territory scope and non-working status - see the [region pages](index.md#by-region). The **When** column is a one-phrase gloss, not the calculation recipe.
 
 ## global-un
 
@@ -143,6 +143,6 @@ Concepts defined by the shared catalogues in this theme. A region pack imports t
 
 ## See also
 
-- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
-- **[Bodu.Globalization.Calendar guides](../index.md)** — the full guide index for the calendar runtime and its companions.
+- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- **[Bodu.Globalization.Calendar guides](../index.md)** - the full guide index for the calendar runtime and its companions.
 

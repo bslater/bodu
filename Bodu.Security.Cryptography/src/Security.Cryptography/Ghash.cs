@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A <see cref="Key" /> fixes the function — GHASH or POLYVAL — the kernel, and the key-dependent values.
+/// A <see cref="Key" /> fixes the function - GHASH or POLYVAL - the kernel, and the key-dependent values.
 /// <see cref="Update" /> folds data into a 16-byte state held in the function's own byte order and pads a final partial
 /// block with zeros, so the separately padded associated data and text of GCM and GCM-SIV are two calls.
 /// </para>

@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar.Samples.NotableDatesBasics.Scenarios;
 /// <summary>
 /// Demonstrates ISO 3166-2 subdivision shadowing: a state territory (AU-VIC) sees the national rules
 /// plus its own, and where both define the same concept the most specific rule wins. One country
-/// resource serves every subdivision — the territory string picks the view.
+/// resource serves every subdivision - the territory string picks the view.
 /// </summary>
 public static class SubdivisionShadowing
 {

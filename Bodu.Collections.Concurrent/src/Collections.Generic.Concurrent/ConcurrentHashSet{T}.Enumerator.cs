@@ -88,8 +88,8 @@ public sealed partial class ConcurrentHashSet<T>
         /// passed the end of the snapshot.
         /// </returns>
         /// <remarks>
-        /// A default-valued <see cref="Enumerator" /> — one produced by <c>default</c> rather than by
-        /// <see cref="ConcurrentHashSet{T}.GetEnumerator" /> — holds no snapshot and is treated as an empty sequence.
+        /// A default-valued <see cref="Enumerator" /> - one produced by <c>default</c> rather than by
+        /// <see cref="ConcurrentHashSet{T}.GetEnumerator" /> - holds no snapshot and is treated as an empty sequence.
         /// </remarks>
         public bool MoveNext()
         {

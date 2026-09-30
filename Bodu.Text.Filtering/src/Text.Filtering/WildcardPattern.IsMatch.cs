@@ -51,7 +51,7 @@ internal static partial class WildcardPattern
             else if (starU >= 0)
             {
                 // Mismatch after a star: widen that star by one consumed character and retry the units after it.
-                // starT only ever advances, so each (starT, u) pair is visited at most once — with consecutive stars
+                // starT only ever advances, so each (starT, u) pair is visited at most once - with consecutive stars
                 // collapsed at compile time this bounds the whole match at O(n·m) instead of exponential.
                 u = starU + 1;
                 t = ++starT;
@@ -67,7 +67,7 @@ internal static partial class WildcardPattern
         while (u < units.Length && units[u].Type == WildcardUnitType.Star)
             u++;
 
-        // A full match requires the pattern to be exhausted too — leftover non-star units mean the value was too short.
+        // A full match requires the pattern to be exhausted too - leftover non-star units mean the value was too short.
         return u == units.Length;
     }
 

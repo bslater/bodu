@@ -28,7 +28,7 @@ public partial class MoneyTests
     /// <summary>
     /// Verifies that ratio allocation awards residual minor units by largest fractional remainder rather than by input
     /// order. With ratios <c>[3, 2, 2]</c> over ten cents the exact shares are <c>4.29, 2.86, 2.86</c>; the two largest
-    /// remainders belong to the second and third slots, so the result is <c>[0.04, 0.03, 0.03]</c> — not the
+    /// remainders belong to the second and third slots, so the result is <c>[0.04, 0.03, 0.03]</c> - not the
     /// input-order result <c>[0.05, 0.03, 0.02]</c>.
     /// </summary>
     [TestMethod]

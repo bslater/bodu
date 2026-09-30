@@ -59,7 +59,7 @@ public partial class MovingMinMaxTests
     }
 
     /// <summary>
-    /// Verifies that duplicate samples are retained correctly — an equal older sample must not shadow a newer one as
+    /// Verifies that duplicate samples are retained correctly - an equal older sample must not shadow a newer one as
     /// the window slides.
     /// </summary>
     [TestMethod]

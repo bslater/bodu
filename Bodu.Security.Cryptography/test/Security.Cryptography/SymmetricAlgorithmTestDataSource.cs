@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// These methods must live in a non-generic static class so that MSTest's reflection-based method
-/// lookup — which does not apply <see cref="System.Reflection.BindingFlags.FlattenHierarchy" /> —
+/// lookup - which does not apply <see cref="System.Reflection.BindingFlags.FlattenHierarchy" /> -
 /// can locate them directly by type reference rather than traversing a generic base class.
 /// MSTest 4.x also requires <c>DynamicDataDisplayNameDeclaringType</c> to be set explicitly;
 /// the constructor-supplied type is used only for the data-source method, not the display-name method.
@@ -73,7 +73,7 @@ internal static class SymmetricAlgorithmTestDataSource
     /// <remarks>
     /// Stream ciphers such as <see cref="ChaCha20" /> are excluded implicitly: they derive from the native
     /// <see cref="SymmetricStreamAlgorithm" /> rather than <see cref="SymmetricAlgorithm" />, so the padding- and
-    /// mode-conformance suites driven by this data source — which have no meaning for an additive stream cipher — never
+    /// mode-conformance suites driven by this data source - which have no meaning for an additive stream cipher - never
     /// see them.
     /// </remarks>
     private static bool IsConstructibleSymmetricAlgorithm(Type type) =>

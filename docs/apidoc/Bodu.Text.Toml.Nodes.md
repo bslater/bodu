@@ -10,11 +10,11 @@ uid: Bodu.Text.Toml.Nodes
 
 ## Key types
 
-- <xref:Bodu.Text.Toml.Nodes.TomlNode> — abstract base: `Parse`, `AsObject` / `AsArray` / `AsValue`, `GetValue<T>`, `GetValueKind`, `WriteTo`, `ToUtf8Bytes`, `DeepEquals`, string and integer indexers, and implicit conversions from every TOML scalar CLR type.
-- <xref:Bodu.Text.Toml.Nodes.TomlObject> — a table node keyed by string, with `Add` / `Remove` / `TryGetValue` and an indexer.
-- <xref:Bodu.Text.Toml.Nodes.TomlArray> — an array node implementing `IList<TomlNode?>`.
-- <xref:Bodu.Text.Toml.Nodes.TomlValue> — a scalar leaf (string, integer, float, boolean, or one of the four date-time kinds), created via `Create` and read via `GetValue<T>` / `TryGetValue<T>`.
-- <xref:Bodu.Text.Toml.Nodes.TomlNodeOptions> — parsing options for `Parse`.
+- <xref:Bodu.Text.Toml.Nodes.TomlNode> - abstract base: `Parse`, `AsObject` / `AsArray` / `AsValue`, `GetValue<T>`, `GetValueKind`, `WriteTo`, `ToUtf8Bytes`, `DeepEquals`, string and integer indexers, and implicit conversions from every TOML scalar CLR type.
+- <xref:Bodu.Text.Toml.Nodes.TomlObject> - a table node keyed by string, with `Add` / `Remove` / `TryGetValue` and an indexer.
+- <xref:Bodu.Text.Toml.Nodes.TomlArray> - an array node implementing `IList<TomlNode?>`.
+- <xref:Bodu.Text.Toml.Nodes.TomlValue> - a scalar leaf (string, integer, float, boolean, or one of the four date-time kinds), created via `Create` and read via `GetValue<T>` / `TryGetValue<T>`.
+- <xref:Bodu.Text.Toml.Nodes.TomlNodeOptions> - parsing options for `Parse`.
 
 ## Example
 
@@ -32,4 +32,4 @@ byte[] back = root.ToUtf8Bytes();
 
 - **Table root.** The root of a parsed or written tree is always a <xref:Bodu.Text.Toml.Nodes.TomlObject>; writing a scalar or array as the root throws.
 - **Layout is normalized.** Comments and the original header/inline layout are not preserved; the writer re-emits the tree in canonical block form.
-- **See also:** the [Bodu.Text.Toml introduction](~/docs/serialization/toml/index.md) and the [Using TOML](~/guides/serialization/toml/using.md) guide (Pattern 6 — Edit a document with the mutable DOM).
+- **See also:** the [Bodu.Text.Toml introduction](~/docs/serialization/toml/index.md) and the [Using TOML](~/guides/serialization/toml/using.md) guide (Pattern 6 - Edit a document with the mutable DOM).

@@ -22,19 +22,19 @@ namespace Bodu.Financial.Serialization.Json;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <see cref="FinancialJsonPolicy.Strict" /> — canonical object form <c>{ "amount": 19.99, "currency": "USD" }</c>;
+/// <see cref="FinancialJsonPolicy.Strict" /> - canonical object form <c>{ "amount": 19.99, "currency": "USD" }</c>;
 /// rejects duplicate properties and currency mismatches.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="FinancialJsonPolicy.Lenient" /> — same shape as <see cref="FinancialJsonPolicy.Strict" />, with
+/// <see cref="FinancialJsonPolicy.Lenient" /> - same shape as <see cref="FinancialJsonPolicy.Strict" />, with
 /// additional tolerance for lowercase currency codes and whitespace around the currency value.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="FinancialJsonPolicy.Compact" /> — string form <c>"19.99 USD"</c>; reads accept either ISO-prefix or
+/// <see cref="FinancialJsonPolicy.Compact" /> - string form <c>"19.99 USD"</c>; reads accept either ISO-prefix or
 /// ISO-suffix arrangement and reuse
 /// <see cref="Money{TCurrency}.TryParse(ReadOnlySpan{char}, IFormatProvider?, out Money{TCurrency})" />.
 /// </description>

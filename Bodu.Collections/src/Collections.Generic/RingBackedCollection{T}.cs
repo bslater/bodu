@@ -9,8 +9,8 @@ using System.Diagnostics;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Provides the shared low-level mechanics for ring-buffer-backed collections — a contiguous backing array, head/tail
-/// indices with modulo wrap, a live element count, and a structural-version counter — as a reusable base type for
+/// Provides the shared low-level mechanics for ring-buffer-backed collections - a contiguous backing array, head/tail
+/// indices with modulo wrap, a live element count, and a structural-version counter - as a reusable base type for
 /// <see cref="CircularBuffer{T}" /> and <see cref="Deque{T}" />.
 /// </summary>
 /// <typeparam name="T">Specifies the type of elements stored in the collection.</typeparam>
@@ -22,14 +22,14 @@ namespace Bodu.Collections.Generic;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// A read-only public surface for consumers — <see cref="Capacity" />, <see cref="Count" />, <see cref="IsEmpty" />,
+/// A read-only public surface for consumers - <see cref="Capacity" />, <see cref="Count" />, <see cref="IsEmpty" />,
 /// the head-relative indexer, <see cref="Clear" />, <see cref="Contains(T)" />, <see cref="CopyTo(T[], int)" />,
 /// <see cref="ToArray" />, and <see cref="TrimExcess" />.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// The framework collection interfaces — <see cref="System.Collections.ICollection" />,
+/// The framework collection interfaces - <see cref="System.Collections.ICollection" />,
 /// <see cref="System.Collections.Generic.IEnumerable{T}" />, and
 /// <see cref="System.Collections.Generic.IReadOnlyCollection{T}" />.
 /// </description>
@@ -42,7 +42,7 @@ namespace Bodu.Collections.Generic;
 /// </item>
 /// <item>
 /// <description>
-/// Protected primitives for derived types — <see cref="AddTail(T)" />, <see cref="AddHead(T)" />,
+/// Protected primitives for derived types - <see cref="AddTail(T)" />, <see cref="AddHead(T)" />,
 /// <see cref="RemoveHead" />, <see cref="RemoveTail" />, <see cref="PeekHead" />, <see cref="PeekTail" />,
 /// <see cref="OverwriteTail(T)" />, and <see cref="Resize(int)" />.
 /// </description>
@@ -73,14 +73,14 @@ namespace Bodu.Collections.Generic;
 /// </list>
 /// <para>
 /// This type is not thread-safe. For thread-safe single-ended FIFO access, use <c>ConcurrentCircularBuffer&lt;T&gt;</c>
-/// in the Bodu.Collections.Concurrent package — its lock-free Vyukov implementation does not share storage with this
+/// in the Bodu.Collections.Concurrent package - its lock-free Vyukov implementation does not share storage with this
 /// hierarchy.
 /// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // The common surface is consumed through a concrete derivative — CircularBuffer<T> here.
+/// // The common surface is consumed through a concrete derivative - CircularBuffer<T> here.
 /// // The same Count, Capacity, IsEmpty, indexer, ToArray, and TrimExcess members are available
 /// // on every RingBackedCollection<T> subtype.
 /// RingBackedCollection<int> ring = new CircularBuffer<int>(capacity: 4);
@@ -89,7 +89,7 @@ namespace Bodu.Collections.Generic;
 ///
 /// Console.WriteLine(ring.Count);    // 2
 /// Console.WriteLine(ring.Capacity); // 4
-/// Console.WriteLine(ring[0]);       // 10 — head-relative indexer
+/// Console.WriteLine(ring[0]);       // 10 - head-relative indexer
 /// ring.TrimExcess();                // shrink Capacity towards Count
 ///]]>
 /// </code>
@@ -220,7 +220,7 @@ public abstract partial class RingBackedCollection<T>
             ThrowHelper.ThrowIfLessThan(index, 0);
             ThrowHelper.ThrowIfGreaterThanOrEqual(index, _count);
 
-            // head + index < 2 * capacity, so one conditional subtraction replaces the modulo division —
+            // head + index < 2 * capacity, so one conditional subtraction replaces the modulo division -
             // this indexer and the mutation primitives below are the hottest code in the ring family.
             int physicalIndex = _head + index;
             int capacityLimit = _array.Length;

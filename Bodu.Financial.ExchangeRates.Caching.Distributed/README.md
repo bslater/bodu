@@ -1,6 +1,6 @@
 # Bodu.Financial.ExchangeRates.Caching.Distributed
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 A distributed (Redis-capable) cache for `Bodu.Financial` exchange-rate providers.
 
@@ -12,7 +12,7 @@ A distributed (Redis-capable) cache for `Bodu.Financial` exchange-rate providers
 `DistributedRateCache` implements the `IRateCache` contract over a
 `Microsoft.Extensions.Caching.Distributed.IDistributedCache`, persisting one provider's dated rates and fetch-coverage
 windows so they need not be re-fetched while fresh. It is behaviourally identical to the in-memory, TOML, and SQLite
-caches in `Bodu.Financial.ExchangeRates.Caching` — the same freshness, merge, coverage, and validation semantics — and
+caches in `Bodu.Financial.ExchangeRates.Caching` - the same freshness, merge, coverage, and validation semantics - and
 is validated against the same shared `RateCacheContractTests`.
 
 Because it depends only on the `IDistributedCache` abstraction it is fully unit-testable in-memory (against
@@ -34,8 +34,8 @@ Because it depends only on the `IDistributedCache` abstraction it is fully unit-
 * Expiry is by caching duration: stale and semantically invalid rows are filtered on read and pruned on write; stale
   coverage windows are pruned when coverage is recorded, so the entry self-cleans.
 * The two **independent** half-writes preserve the other half: `Store` writes rate rows without dropping coverage, and
-  `RecordCoverage` writes coverage windows without dropping rows — each by read-modify-writing the per-pair blob.
-* `StoreFetchedRange` — the path the `CachingRateProvider` decorator uses after a range fetch — writes **both**
+  `RecordCoverage` writes coverage windows without dropping rows - each by read-modify-writing the per-pair blob.
+* `StoreFetchedRange` - the path the `CachingRateProvider` decorator uses after a range fetch - writes **both**
   halves together as one atomic blob set: the pair's rate rows and the fetched coverage window are merged and persisted
   in a single `Set`, all-or-nothing. A reader (even in another process) therefore never observes coverage without its
   rows, so a range lookup cannot report a false hit and return incomplete data as if complete. The write returns an
@@ -61,8 +61,8 @@ reports its **original** upstream fetch instant (data age), distinct from the ca
 
 Reach for this distributed (Redis-backed) cache when several application instances or processes share one rate cache,
 so a fetch by one instance warms the others. For a single process, prefer the SQLite, file (TOML), or in-memory caches
-in `Bodu.Financial.ExchangeRates.Caching` (and `…Caching.Sqlite`): they offer stronger local atomicity — the per-pair
-lock for the in-memory and file caches, and one transaction for SQLite — for every write path, including the independent
+in `Bodu.Financial.ExchangeRates.Caching` (and `…Caching.Sqlite`): they offer stronger local atomicity - the per-pair
+lock for the in-memory and file caches, and one transaction for SQLite - for every write path, including the independent
 `Store` / `RecordCoverage` halves.
 
 ## Usage

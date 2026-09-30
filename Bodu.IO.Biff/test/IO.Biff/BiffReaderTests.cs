@@ -35,7 +35,7 @@ public sealed partial class BiffReaderTests
     }
 
     /// <summary>
-    /// Advances a reader over a BIFF8 stream — a BIFF8 BOF followed by the record — onto the record.
+    /// Advances a reader over a BIFF8 stream - a BIFF8 BOF followed by the record - onto the record.
     /// </summary>
     /// <param name="record">The record bytes.</param>
     /// <param name="type">The record type to stop on.</param>
@@ -44,7 +44,7 @@ public sealed partial class BiffReaderTests
         ReadTo(BiffTestRecords.Stream(BiffTestRecords.Bof8(), record), type);
 
     /// <summary>
-    /// Advances a reader over a BIFF5 stream — a BIFF5 BOF followed by the record — onto the record.
+    /// Advances a reader over a BIFF5 stream - a BIFF5 BOF followed by the record - onto the record.
     /// </summary>
     /// <param name="record">The record bytes.</param>
     /// <param name="type">The record type to stop on.</param>

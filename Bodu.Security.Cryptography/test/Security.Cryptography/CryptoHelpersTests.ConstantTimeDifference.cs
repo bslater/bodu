@@ -24,7 +24,7 @@ public partial class CryptoHelpersTests
 
     /// <summary>
     /// Verifies that <see cref="CryptographyHelper.ConstantTimeDifference" /> returns a non-zero accumulator when a
-    /// single byte differs, wherever that byte sits — first, middle, or last position — so no position is exempt from
+    /// single byte differs, wherever that byte sits - first, middle, or last position - so no position is exempt from
     /// the comparison.
     /// </summary>
     [TestMethod]
@@ -56,7 +56,7 @@ public partial class CryptoHelpersTests
 
     /// <summary>
     /// Verifies that <see cref="CryptographyHelper.ConstantTimeDifference" /> throws
-    /// <see cref="ArgumentException" /> when the spans differ in length — a length mismatch is a caller error, not a
+    /// <see cref="ArgumentException" /> when the spans differ in length - a length mismatch is a caller error, not a
     /// comparison outcome.
     /// </summary>
     [TestMethod]

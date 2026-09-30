@@ -2,23 +2,23 @@
 
 The read-only BIFF8 workbook reader in `Bodu.Formats.Excel.Binary`: opening a real `.xls`
 and listing its sheets, the forward-only cell reader (the primary surface), the materialized
-convenience surface, and decoding cell kinds — including BIFF8's classic importer trap, dates
+convenience surface, and decoding cell kinds - including BIFF8's classic importer trap, dates
 stored as format-classified numbers. All scenarios run offline against the committed
-`Data/sample-biff8.xls` (464 KB, copied from the library's test fixtures — a genuine
+`Data/sample-biff8.xls` (464 KB, copied from the library's test fixtures - a genuine
 exchange-rates workbook with two sheets and ~18,000 cells).
 
-> Scope notes: this package reads the Excel **97-2003 binary** format (`.xls`) only — not
-> `.xlsx` — and is read-only. Formula cells surface their *cached results*; encrypted
+> Scope notes: this package reads the Excel **97-2003 binary** format (`.xls`) only - not
+> `.xlsx` - and is read-only. Formula cells surface their *cached results*; encrypted
 > workbooks throw `ExcelBinaryEncryptedWorkbookException`.
 
 ```bash
 dotnet run --project samples/Formats.Excel/Bodu.Formats.Excel.Binary.Samples.ExcelReading
 ```
 
-## Scenario 1 — WorkbookAndSheets
+## Scenario 1 - WorkbookAndSheets
 
 **Intent.** Show the session model: `ExcelBinaryWorkbook` opens the container once and
-exposes everything needed to decide *what* to read before reading any cells — the sheet
+exposes everything needed to decide *what* to read before reading any cells - the sheet
 directory (name, type, visibility, declared used range), the flattened document properties,
 and the workbook's declared date system.
 
@@ -27,7 +27,7 @@ each sheet's `ExcelWorksheetInfo` with its used range rendered in A1 notation vi
 `ExcelCellReference`.
 
 **What to expect.** Two visible worksheets; note the *declared* used range (`A1:BP2186`) is
-the sheet's claim, not a promise of populated cells — Scenario 2 shows actual content stops
+the sheet's claim, not a promise of populated cells - Scenario 2 shows actual content stops
 at row 874:
 
 ```text
@@ -44,10 +44,10 @@ at row 874:
 / `ExcelWorksheetInfo`, `.Properties` (`ExcelWorkbookProperties`), `.DateSystem`,
 `ExcelWorksheetDimensions`, `ExcelCellReference.ToA1`.
 
-## Scenario 2 — ForwardOnlyReader
+## Scenario 2 - ForwardOnlyReader
 
 **Intent.** Show the primary surface: `ExcelWorksheetReader` streams cells forward-only in
-file order — constant memory regardless of sheet size, the right shape for import pipelines
+file order - constant memory regardless of sheet size, the right shape for import pipelines
 that transform data as it arrives rather than loading 18,000 cells to look at each once.
 
 **What it does.** Drives the lowest-level `TryReadCell` loop over the `Data` sheet, counting
@@ -71,14 +71,14 @@ and classifying every cell without buffering any; then reopens the sheet and use
 `ExcelWorksheetReader.TryReadCell` / `.ReadRows` / `.Worksheet`, `ExcelCell.Kind` /
 `.RowIndex` / `.ColumnIndex`, `ExcelRow`.
 
-## Scenario 3 — MaterializedWorksheet
+## Scenario 3 - MaterializedWorksheet
 
 **Intent.** Show the convenience surface for when the sheet fits in memory and you need
 *random* access: `ReadWorksheet` materializes an `ExcelWorksheet` with indexed rows,
 coordinate lookup, and LINQ-friendly collections.
 
 **What it does.** Materializes the `Data` sheet, looks up `A1` by coordinates with
-`TryGetCell`, aggregates every non-date numeric cell with LINQ, and finds the widest row —
+`TryGetCell`, aggregates every non-date numeric cell with LINQ, and finds the widest row -
 noting that rows are sparse (only populated rows appear, each holding only its populated
 cells).
 
@@ -96,13 +96,13 @@ cells).
 **APIs demonstrated.** `ExcelBinaryWorkbook.ReadWorksheet(index)`, `ExcelWorksheet.Rows` /
 `.Cells` / `.TryGetCell`, sparse-row semantics.
 
-## Scenario 4 — CellKindsAndDates
+## Scenario 4 - CellKindsAndDates
 
 **Intent.** Decode cell values correctly. BIFF8 has five cell kinds (`Blank`, `String`,
-`Number`, `Boolean`, `Error`) — and **dates are not one of them**: a date is a `Number`
+`Number`, `Boolean`, `Error`) - and **dates are not one of them**: a date is a `Number`
 whose *format* is a date format. `ExcelCell.IsDateFormatted` surfaces the classification,
 and `ExcelSerialDate` + the workbook's `ExcelDateSystem` turn the serial into a real
-`DateTime` — get the system wrong and every date shifts by 1,462 days.
+`DateTime` - get the system wrong and every date shifts by 1,462 days.
 
 **What it does.** Surveys both sheets' kind distributions (the `Data` sheet has 887
 date-formatted numbers), decodes three of them via `ExcelSerialDate.ToDateTime(serial,
@@ -143,6 +143,6 @@ Bodu.Formats.Excel.Binary.Samples.ExcelReading/
 
 ## Related
 
-- `Bodu.IO.Compound` samples (`samples/IO.Compound/`) — the OLE2 container format a `.xls`
+- `Bodu.IO.Compound` samples (`samples/IO.Compound/`) - the OLE2 container format a `.xls`
   file lives inside.
 - Guides: `docs/guides/excel/`.

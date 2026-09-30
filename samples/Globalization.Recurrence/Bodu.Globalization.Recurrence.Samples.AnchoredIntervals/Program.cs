@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Recurrence.Samples.AnchoredIntervals;
 
 /// <summary>
 /// Entry point for the anchored-interval sample: <c>AnchoredInterval</c>, the calendar-free
-/// recurrence form — the RFC 5545 §3.3.6 duration grammar, the anchor supplied per query rather
+/// recurrence form - the RFC 5545 §3.3.6 duration grammar, the anchor supplied per query rather
 /// than stored, occurrence queries in both directions, and canonical duration text. Everything runs
 /// offline and deterministically.
 /// </summary>

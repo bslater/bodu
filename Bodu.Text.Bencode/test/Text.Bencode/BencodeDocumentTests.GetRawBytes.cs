@@ -30,7 +30,7 @@ public partial class BencodeDocumentTests
 
     /// <summary>
     /// Verifies that <see cref="BencodeElement.GetRawBytes" /> on a nested dictionary returns the exact encoded
-    /// slice including both delimiters — the info-hash scenario the member exists for.
+    /// slice including both delimiters - the info-hash scenario the member exists for.
     /// </summary>
     [TestMethod]
     public void GetRawBytes_WhenOnNestedDictionary_ShouldReturnExactEncodedSlice()

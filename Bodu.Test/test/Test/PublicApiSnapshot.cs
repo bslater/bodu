@@ -19,8 +19,8 @@ namespace Bodu.Test;
 /// <para>
 /// The fingerprint is intentionally a stable fingerprint rather than a faithful C# reproduction: it lists every
 /// exported type and, under each, its declared public and protected members in a fixed order. It does not encode
-/// nullable annotations, so a nullability-only change is not flagged; every other surface change — a new type, a new or
-/// removed member, or a changed signature — is.
+/// nullable annotations, so a nullability-only change is not flagged; every other surface change - a new type, a new or
+/// removed member, or a changed signature - is.
 /// </para>
 /// <para>
 /// The baseline is a plain text file committed under the test project's <c>PublicApi</c> folder and copied to the test
@@ -112,7 +112,7 @@ public static class PublicApiSnapshot
         : "class";
 
     /// <summary>
-    /// Determines whether <paramref name="member" /> is part of the consumer-visible surface — a public or protected
+    /// Determines whether <paramref name="member" /> is part of the consumer-visible surface - a public or protected
     /// member that is not a compiler-generated property/event accessor.
     /// </summary>
     /// <param name="member">The member to test.</param>

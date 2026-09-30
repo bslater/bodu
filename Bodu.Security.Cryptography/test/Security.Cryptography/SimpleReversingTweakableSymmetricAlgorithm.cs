@@ -283,7 +283,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     /// <inheritdoc />
     /// <remarks>
     /// Key and IV material are zeroed here. <see cref="TweakableSymmetricAlgorithm.Dispose" /> zeros
-    /// <see cref="TweakableSymmetricAlgorithm.TweakValue" /> — this override does not duplicate that work.
+    /// <see cref="TweakableSymmetricAlgorithm.TweakValue" /> - this override does not duplicate that work.
     /// </remarks>
     protected override void Dispose(bool disposing)
     {

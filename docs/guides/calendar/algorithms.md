@@ -4,17 +4,17 @@ title: Date calculation algorithms
 
 # Date calculation algorithms
 
-A single-date <xref:Bodu.Globalization.Calendar.NotableDateRule> finds its *nominal* date for a year through exactly one <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy>. The loader maps each `<Strategy>` element in a rule document to a strategy implementation. Most compute a date from calendar arithmetic; `<Algorithm>` delegates to a named astronomical or ecclesiastical calculator that cannot be expressed as a formula (Easter, the equinoxes, Vesak, Diwali, Qingming, …). (A rule may alternatively declare a `<Recurrence>` that yields many dates — see [Notable-date rule strategies](strategy-reference.md#recurrence-sources) — but this guide is about the single-date algorithms.)
+A single-date <xref:Bodu.Globalization.Calendar.NotableDateRule> finds its *nominal* date for a year through exactly one <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy>. The loader maps each `<Strategy>` element in a rule document to a strategy implementation. Most compute a date from calendar arithmetic; `<Algorithm>` delegates to a named astronomical or ecclesiastical calculator that cannot be expressed as a formula (Easter, the equinoxes, Vesak, Diwali, Qingming, …). (A rule may alternatively declare a `<Recurrence>` that yields many dates - see [Notable-date rule strategies](strategy-reference.md#recurrence-sources) - but this guide is about the single-date algorithms.)
 
 This guide focuses on the `<Algorithm>` strategy: the full set of built-in keys, `AlgorithmDateStrategy.IsKnownKey`, how to implement and register a custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm>, and how reference strategies resolve another rule's date through the strategy resolution context. For the complete catalogue of every strategy element and recurrence source, see [Notable-date rule strategies](strategy-reference.md).
 
-For the conceptual distinction between *algorithm* and *fixed rule*, see [Core concepts — Algorithm vs. fixed rule](../../docs/calendar/concepts.md#algorithm-vs-fixed-rule). For the namespace overview, see the [Algorithms API reference](xref:Bodu.Globalization.Calendar.Algorithms).
+For the conceptual distinction between *algorithm* and *fixed rule*, see [Core concepts - Algorithm vs. fixed rule](../../docs/calendar/concepts.md#algorithm-vs-fixed-rule). For the namespace overview, see the [Algorithms API reference](xref:Bodu.Globalization.Calendar.Algorithms).
 
 ---
 
 ## The strategy kinds
 
-A single-date `<Rule>` carries exactly one `<Strategy>` child, mapping to a public <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> implementation. You rarely construct these by hand — the loader builds them from the document — but they are the vocabulary the engine resolves against. The strategy contract is a single method, `DateOnly? Calculate(int year, StrategyResolutionContext context)`, returning `null` when the rule produces no occurrence for that year.
+A single-date `<Rule>` carries exactly one `<Strategy>` child, mapping to a public <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> implementation. You rarely construct these by hand - the loader builds them from the document - but they are the vocabulary the engine resolves against. The strategy contract is a single method, `DateOnly? Calculate(int year, StrategyResolutionContext context)`, returning `null` when the rule produces no occurrence for that year.
 
 | `<Strategy>` element | Strategy type | What it computes |
 |---|---|---|
@@ -32,11 +32,11 @@ A single-date `<Rule>` carries exactly one `<Strategy>` child, mapping to a publ
 | `<WorkingDayInMonth>` | <xref:Bodu.Globalization.Calendar.Algorithms.WorkingDayInMonthStrategy> | The *n*th working day of a month. |
 | `<Algorithm>` | <xref:Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy> | Dispatch to a named algorithm key. |
 
-The reference (`<OffsetFromRule>`, `<WeekdayNearRule>`, `<NthWeekdayFromRule>`, `<WorkingDayOffsetFromRule>`) and business-day (`<WorkingDayOffsetFromRule>`, `<WorkingDayInMonth>`) strategies resolve through the same `StrategyResolutionContext` — see [Cross-rule references and the resolution context](#cross-rule-references-and-the-resolution-context) below and [Notable-date rule strategies](strategy-reference.md) for each element's attributes and scenarios. Recurrence sources implement the sibling <xref:Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy> contract (`IEnumerable<DateOnly> GetOccurrences(DateRange range, StrategyResolutionContext context)`).
+The reference (`<OffsetFromRule>`, `<WeekdayNearRule>`, `<NthWeekdayFromRule>`, `<WorkingDayOffsetFromRule>`) and business-day (`<WorkingDayOffsetFromRule>`, `<WorkingDayInMonth>`) strategies resolve through the same `StrategyResolutionContext` - see [Cross-rule references and the resolution context](#cross-rule-references-and-the-resolution-context) below and [Notable-date rule strategies](strategy-reference.md) for each element's attributes and scenarios. Recurrence sources implement the sibling <xref:Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy> contract (`IEnumerable<DateOnly> GetOccurrences(DateRange range, StrategyResolutionContext context)`).
 
-### `<Fixed>` — a fixed month and day
+### `<Fixed>` - a fixed month and day
 
-The most common strategy: the same calendar position every year. `month` is a number 1–12 or an English month name; `day` is the day of month. An invalid combination (e.g. 29 February in a non-leap year) yields no occurrence for that year and the rule is skipped.
+The most common strategy: the same calendar position every year. `month` is a number 1-12 or an English month name; `day` is the day of month. An invalid combination (e.g. 29 February in a non-leap year) yields no occurrence for that year and the rule is skipped.
 
 ```xml
 <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday">
@@ -50,23 +50,23 @@ The most common strategy: the same calendar position every year. `month` is a nu
 
 `<Fixed>` also expresses dates in a non-Gregorian calendar via the enclosing `<Applicability calendar="...">` (`Hijri`, `UmmAlQura`, `Hebrew`, `Persian`, `ChineseLunisolar`). Because a short Hijri month can recur twice in a single Gregorian year, <xref:Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy> additionally exposes `CalculateAll`; the optional `skipLeapMonth` and `sweepCalendarYears` attributes tune lunisolar projection. See [Working with non-Gregorian calendars](non-gregorian-calendars.md).
 
-### `<DayOfWeekInMonth>` — the *n*th weekday in a month
+### `<DayOfWeekInMonth>` - the *n*th weekday in a month
 
 Driven by <xref:Bodu.Extensions.WeekOrdinal> (`First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`). `Fifth` yields no occurrence in months that lack a fifth instance; `Last` always selects the final occurrence.
 
 ```xml
-<!-- US Thanksgiving — the fourth Thursday in November. -->
+<!-- US Thanksgiving - the fourth Thursday in November. -->
 <Rule id="default">
   <Strategy><DayOfWeekInMonth month="11" dayOfWeek="Thursday" weekOrdinal="Fourth" /></Strategy>
 </Rule>
 ```
 
-### `<RelativeWeekdayInMonth>` — a weekday relative to an anchor weekday
+### `<RelativeWeekdayInMonth>` - a weekday relative to an anchor weekday
 
 Locates a weekday-in-month anchor (the `weekOrdinal`-th `dayOfWeek` of `month`), then steps to a `relativeDayOfWeek` positioned by `direction` (a <xref:Bodu.Globalization.Calendar.WeekdayProximity> value) from it.
 
 ```xml
-<!-- US Election Day — the Tuesday after the first Monday in November. -->
+<!-- US Election Day - the Tuesday after the first Monday in November. -->
 <Rule id="default">
   <Strategy>
     <RelativeWeekdayInMonth month="11" dayOfWeek="Monday" weekOrdinal="First"
@@ -75,18 +75,18 @@ Locates a weekday-in-month anchor (the `weekOrdinal`-th `dayOfWeek` of `month`),
 </Rule>
 ```
 
-### `<WeekdayNearDate>` — a weekday near a fixed date
+### `<WeekdayNearDate>` - a weekday near a fixed date
 
 Driven by <xref:Bodu.Globalization.Calendar.WeekdayProximity> (`Before`, `OnOrBefore`, `Nearest`, `OnOrAfter`, `After`) relative to the `month`/`day` reference.
 
 ```xml
-<!-- Victoria Day (CA) — the Monday on or before 24 May. -->
+<!-- Victoria Day (CA) - the Monday on or before 24 May. -->
 <Rule id="default">
   <Strategy><WeekdayNearDate month="5" day="24" dayOfWeek="Monday" direction="OnOrBefore" /></Strategy>
 </Rule>
 ```
 
-### `<OffsetFromRule>` — a signed offset from another rule
+### `<OffsetFromRule>` - a signed offset from another rule
 
 References another concept's rule via `notableDateRef` (and optional `ruleRef`) and adds a signed `offsetDays`. This is how the Easter cluster is authored: Good Friday and Easter Monday hang off Easter Sunday. The referenced rule is resolved first; references are resolved cycle-safely within the resource.
 
@@ -116,7 +116,7 @@ References another concept's rule via `notableDateRef` (and optional `ruleRef`) 
 
 The referenced algorithm runs once per year per resolution, regardless of how many offset rules consume it. See [Rule references](../../docs/calendar/concepts.md#rule-references-offset-from-rule) and the [resolution context](#cross-rule-references-and-the-resolution-context) below.
 
-### `<Algorithm>` — dispatch to a named calculator
+### `<Algorithm>` - dispatch to a named calculator
 
 For dates that cannot be expressed as calendar arithmetic. The `key` attribute names a built-in calculator (below) or a custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> registered in a <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry>.
 
@@ -128,7 +128,7 @@ For dates that cannot be expressed as calendar arithmetic. The `key` attribute n
 
 ### Constructing a strategy directly
 
-Each strategy is a public, sealed type with a constructor mirroring its `<Strategy>` attributes, so you can evaluate one outside a document — useful for unit tests or ad-hoc calculation. `Calculate(year, context)` takes a <xref:Bodu.Globalization.Calendar.Algorithms.StrategyResolutionContext>; pass one built over the resource the strategy resolves against (or, for the year-only strategies that never follow a reference, any context):
+Each strategy is a public, sealed type with a constructor mirroring its `<Strategy>` attributes, so you can evaluate one outside a document - useful for unit tests or ad-hoc calculation. `Calculate(year, context)` takes a <xref:Bodu.Globalization.Calendar.Algorithms.StrategyResolutionContext>; pass one built over the resource the strategy resolves against (or, for the year-only strategies that never follow a reference, any context):
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -145,13 +145,13 @@ var easter = new AlgorithmDateStrategy(AlgorithmDateStrategy.WesternEasterKey);
 DateOnly? easter2026 = easter.Calculate(2026, context);   // → 2026-04-05
 ```
 
-<xref:Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy> additionally exposes `IReadOnlyList<DateOnly> CalculateAll(int year, StrategyResolutionContext context)`, which returns *every* occurrence in the Gregorian year — the surface that surfaces a short Hijri month landing twice. The single-date `Calculate` returns the chronologically first. See [Working with non-Gregorian calendars](non-gregorian-calendars.md).
+<xref:Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy> additionally exposes `IReadOnlyList<DateOnly> CalculateAll(int year, StrategyResolutionContext context)`, which returns *every* occurrence in the Gregorian year - the surface that surfaces a short Hijri month landing twice. The single-date `Calculate` returns the chronologically first. See [Working with non-Gregorian calendars](non-gregorian-calendars.md).
 
 ---
 
 ## Built-in algorithm keys
 
-<xref:Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy> resolves a string key to a bundled astronomical or gazetted calculator. The calculators behind these keys are an internal implementation detail reached only through the key — there is no public class to instantiate; reference the key from a rule document instead.
+<xref:Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy> resolves a string key to a bundled astronomical or gazetted calculator. The calculators behind these keys are an internal implementation detail reached only through the key - there is no public class to instantiate; reference the key from a rule document instead.
 
 The two Easter keys are also exposed as constants on <xref:Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy>: `WesternEasterKey` (`"western-easter"`) and `OrthodoxEasterKey` (`"orthodox-easter"`).
 
@@ -163,13 +163,13 @@ The two Easter keys are also exposed as constants on <xref:Bodu.Globalization.Ca
 | `autumnal-equinox` | The astronomical September (autumnal) equinox. |
 | `jp-vernal-equinox` | Japan's gazetted Vernal Equinox Day (Shunbun no Hi). |
 | `jp-autumnal-equinox` | Japan's gazetted Autumnal Equinox Day (Shūbun no Hi). |
-| `qingming` | Qingming (Tomb-Sweeping Day) — the solar term 15° after the March equinox, typically 4–5 April. |
+| `qingming` | Qingming (Tomb-Sweeping Day) - the solar term 15° after the March equinox, typically 4-5 April. |
 | `tehran-nowruz` | Nowruz (Farvardin 1, the Solar Hijri new year) from the true vernal-equinox instant at the Tehran standard meridian. |
-| `vesak` | Vesak (Buddha's birthday) — the full-moon observance in the Theravāda tradition. |
-| `asalha-puja` | Asalha Puja (Dhamma Day) — the full moon of the eighth lunar month. |
-| `losar` | Losar (Tibetan New Year) — the Tibetan lunisolar new year. |
-| `matariki` | Matariki — the Māori new year, set by the gazetted public-holiday calendar. |
-| `ram-navami` | Ram Navami — the Hindu festival of Rama's birth. |
+| `vesak` | Vesak (Buddha's birthday) - the full-moon observance in the Theravāda tradition. |
+| `asalha-puja` | Asalha Puja (Dhamma Day) - the full moon of the eighth lunar month. |
+| `losar` | Losar (Tibetan New Year) - the Tibetan lunisolar new year. |
+| `matariki` | Matariki - the Māori new year, set by the gazetted public-holiday calendar. |
+| `ram-navami` | Ram Navami - the Hindu festival of Rama's birth. |
 | `raksha-bandhan` | Raksha Bandhan. |
 | `janmashtami` | Krishna Janmashtami. |
 | `ganesh-chaturthi` | Ganesh Chaturthi. |
@@ -180,11 +180,11 @@ The two Easter keys are also exposed as constants on <xref:Bodu.Globalization.Ca
 | `vasant-panchami` | Vasant Panchami. |
 | `maha-shivaratri` | Maha Shivaratri. |
 | `holi` | Holi. |
-| `maun-agiyaras` | Maun Agiyaras — the Jain observance on Margashirsha shukla 11. |
+| `maun-agiyaras` | Maun Agiyaras - the Jain observance on Margashirsha shukla 11. |
 
 The equinox and Qingming keys are computed astronomically and resolved in a specific time zone: `vernal-equinox` / `autumnal-equinox` use UTC, `jp-vernal-equinox` / `jp-autumnal-equinox` use Japan Standard Time (UTC+9), and `qingming` uses China Standard Time (UTC+8). The Hindu-festival keys are computed against the Hindu lunisolar *panchanga* by the engine's internal `HinduLunarCalculator`; `vesak` and `asalha-puja` resolve full-moon dates; `losar` and `matariki` come from gazetted-date tables.
 
-`tehran-nowruz` is an **observation-based variant**: it applies the official Iranian rule — Farvardin 1 falls on the day of the true vernal equinox when the equinox instant occurs before apparent solar noon at the 52.5°E Tehran standard meridian (UTC+03:30), otherwise on the following day — and is supported for the years 1800–2200 (outside that window it yields no occurrence). It is opt-in: the bundled tabular resources remain the default, and a rule chooses the astronomical variant by referencing the key.
+`tehran-nowruz` is an **observation-based variant**: it applies the official Iranian rule - Farvardin 1 falls on the day of the true vernal equinox when the equinox instant occurs before apparent solar noon at the 52.5°E Tehran standard meridian (UTC+03:30), otherwise on the following day - and is supported for the years 1800-2200 (outside that window it yields no occurrence). It is opt-in: the bundled tabular resources remain the default, and a rule chooses the astronomical variant by referencing the key.
 
 `AlgorithmDateStrategy.IsKnownKey(key)` reports whether a key is built in:
 
@@ -192,22 +192,22 @@ The equinox and Qingming keys are computed astronomically and resolved in a spec
 using Bodu.Globalization.Calendar.Algorithms;
 
 bool builtIn = AlgorithmDateStrategy.IsKnownKey("western-easter");          // true
-bool custom  = AlgorithmDateStrategy.IsKnownKey("pi-day");                  // false — needs a registry
+bool custom  = AlgorithmDateStrategy.IsKnownKey("pi-day");                  // false - needs a registry
 ```
 
-A key that `IsKnownKey` does not recognise is resolved against the custom <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry> supplied at load and construction time. An unregistered, unknown key surfaces as an error-severity validation diagnostic — and a `NotableDateValidationException` — when the document is loaded.
+A key that `IsKnownKey` does not recognise is resolved against the custom <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry> supplied at load and construction time. An unregistered, unknown key surfaces as an error-severity validation diagnostic - and a `NotableDateValidationException` - when the document is loaded.
 
 ---
 
 ## Implementing a custom algorithm
 
-Implement <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> to add a calculator the built-in set does not cover. The single method `Calculate` receives the target year and returns a `DateOnly?` — return `null` for years the algorithm does not support.
+Implement <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> to add a calculator the built-in set does not cover. The single method `Calculate` receives the target year and returns a `DateOnly?` - return `null` for years the algorithm does not support.
 
 ```csharp
 using System;
 using Bodu.Globalization.Calendar.Algorithms;
 
-// Pi Day — 14 March every year.
+// Pi Day - 14 March every year.
 public sealed class PiDayAlgorithm : INotableDateAlgorithm
 {
     public DateOnly? Calculate(int year) => new DateOnly(year, 3, 14);
@@ -220,7 +220,7 @@ A more realistic example computes a weekday-relative date:
 using System;
 using Bodu.Globalization.Calendar.Algorithms;
 
-// Mother's Day (US) — the second Sunday in May.
+// Mother's Day (US) - the second Sunday in May.
 public sealed class MothersDayAlgorithm : INotableDateAlgorithm
 {
     public DateOnly? Calculate(int year)
@@ -261,7 +261,7 @@ The custom registry implements <xref:Bodu.Globalization.Calendar.Algorithms.INot
 </NotableDate>
 ```
 
-Resolve as usual — by-year resolution is the `service.Resolve(year, territory)` extension:
+Resolve as usual - by-year resolution is the `service.Resolve(year, territory)` extension:
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -273,7 +273,7 @@ foreach (NotableDate date in dates)
 // → 14 Mar 2026  Pi Day, 10 May 2026  Mother's Day, …
 ```
 
-> **Packaging algorithms for reuse.** When a custom calculator ships in its own assembly, expose it as an <xref:Bodu.Globalization.Calendar.Plugins.INotableDateAlgorithmPlugin> and load it through the trust-gated `NotableDatePluginLoader` rather than referencing the type directly. See [Building and extending the service — Plugin system](building-the-service.md#plugin-system).
+> **Packaging algorithms for reuse.** When a custom calculator ships in its own assembly, expose it as an <xref:Bodu.Globalization.Calendar.Plugins.INotableDateAlgorithmPlugin> and load it through the trust-gated `NotableDatePluginLoader` rather than referencing the type directly. See [Building and extending the service - Plugin system](building-the-service.md#plugin-system).
 
 ---
 
@@ -321,11 +321,11 @@ See [Authoring notable date rules](rule-authoring.md) for imports and overrides,
 
 ## Where to go next
 
-- [Core concepts](../../docs/calendar/concepts.md) — vocabulary used across this guide.
-- [Using NotableDateService](notable-dates.md) — loading resources, querying by date / range / year, and filtering.
-- [Authoring notable date rules](rule-authoring.md) — documents, imports, and overrides.
-- [NotableDateRule and adjustment-policy reference](rule-reference.md) — the per-element strategy contracts.
-- [The resolution pipeline](resolution-pipeline.md) — resolution ordering and reference cycle detection.
-- [Working with non-Gregorian calendars](non-gregorian-calendars.md) — `<Fixed>` dates in Hijri / Hebrew / Persian / Chinese lunisolar calendars.
-- [Algorithms API reference](xref:Bodu.Globalization.Calendar.Algorithms) — full type reference.
-- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- [Core concepts](../../docs/calendar/concepts.md) - vocabulary used across this guide.
+- [Using NotableDateService](notable-dates.md) - loading resources, querying by date / range / year, and filtering.
+- [Authoring notable date rules](rule-authoring.md) - documents, imports, and overrides.
+- [NotableDateRule and adjustment-policy reference](rule-reference.md) - the per-element strategy contracts.
+- [The resolution pipeline](resolution-pipeline.md) - resolution ordering and reference cycle detection.
+- [Working with non-Gregorian calendars](non-gregorian-calendars.md) - `<Fixed>` dates in Hijri / Hebrew / Persian / Chinese lunisolar calendars.
+- [Algorithms API reference](xref:Bodu.Globalization.Calendar.Algorithms) - full type reference.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

@@ -13,13 +13,13 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// CMAC chains every block of the message through CBC-MAC and treats the last block specially: a complete last block is
-/// XORed with the subkey <c>K1</c>, and a partial one — or the empty message — is padded with <c>10*</c> and XORed with
+/// XORed with the subkey <c>K1</c>, and a partial one - or the empty message - is padded with <c>10*</c> and XORed with
 /// <c>K2</c>. <see cref="Append" /> therefore holds back the last block it has seen until more data or
 /// <see cref="Finish" /> shows whether it is the last, and folds everything before it through <see cref="CbcChain" />
 /// in whole runs, so a long message costs one chained call rather than one call per block.
 /// </para>
 /// <para>
-/// The caller owns every buffer — the subkeys, the chaining state, and the held-back block — and clears them when the
+/// The caller owns every buffer - the subkeys, the chaining state, and the held-back block - and clears them when the
 /// computation ends.
 /// </para>
 /// </remarks>

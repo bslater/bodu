@@ -19,7 +19,7 @@ public partial class ConfigurationDocumentTests
     /// multiple of a second on the build machine.
     /// </summary>
     /// <remarks>
-    /// The 10-second threshold is generous — typical CI machines complete this in well under one second.
+    /// The 10-second threshold is generous - typical CI machines complete this in well under one second.
     /// The intent is to catch a regression to quadratic behaviour, not to benchmark precisely.
     /// </remarks>
     [TestMethod]
@@ -44,7 +44,7 @@ public partial class ConfigurationDocumentTests
         Assert.HasCount(sectionCount, doc.Sections);
         Assert.IsLessThan(
             TimeSpan.FromSeconds(10), stopwatch.Elapsed,
-            $"Parsing {sectionCount} sections took {stopwatch.Elapsed.TotalSeconds:F2}s — expected sub-10s. " +
+            $"Parsing {sectionCount} sections took {stopwatch.Elapsed.TotalSeconds:F2}s - expected sub-10s. " +
             "A quadratic regression in duplicate detection is the likely cause.");
     }
 
@@ -70,6 +70,6 @@ public partial class ConfigurationDocumentTests
         Assert.HasCount(entryCount, doc.Sections[0].Entries);
         Assert.IsLessThan(
             TimeSpan.FromSeconds(10), stopwatch.Elapsed,
-            $"Parsing {entryCount} entries in one section took {stopwatch.Elapsed.TotalSeconds:F2}s — expected sub-10s.");
+            $"Parsing {entryCount} entries in one section took {stopwatch.Elapsed.TotalSeconds:F2}s - expected sub-10s.");
     }
 }

@@ -10,8 +10,8 @@ uid: Bodu.Text.DotEnv.Reader
 
 ## Key types
 
-- <xref:Bodu.Text.DotEnv.Reader.Utf8DotEnvReader> — the `ref struct` cursor: `Read` / `Skip` / `TrySkip`, `TokenType` (a <xref:Bodu.Text.DotEnv.DotEnvTokenType>), `ValueSpan` / `GetString`, `ValueTextEquals`, `CurrentIsExport`, `LineNumber`, `CurrentDepth`, and `BytesConsumed`.
-- <xref:Bodu.Text.DotEnv.Reader.DotEnvReaderOptions> — `DisallowExportPrefix`, `DisallowInlineComments`, and `SkipComments`.
+- <xref:Bodu.Text.DotEnv.Reader.Utf8DotEnvReader> - the `ref struct` cursor: `Read` / `Skip` / `TrySkip`, `TokenType` (a <xref:Bodu.Text.DotEnv.DotEnvTokenType>), `ValueSpan` / `GetString`, `ValueTextEquals`, `CurrentIsExport`, `LineNumber`, `CurrentDepth`, and `BytesConsumed`.
+- <xref:Bodu.Text.DotEnv.Reader.DotEnvReaderOptions> - `DisallowExportPrefix`, `DisallowInlineComments`, and `SkipComments`.
 
 ## Example
 
@@ -31,6 +31,6 @@ while (reader.Read())
 ## Notes
 
 - **One flat object.** The stream is `StartObject`, then `PropertyName` / `String` pairs (with `Comment` tokens unless `SkipComments`), then `EndObject`; there is no nesting.
-- **Literal values.** Quoting and escapes are decoded, but `${VAR}` interpolation is never performed — what the file says is what you get.
+- **Literal values.** Quoting and escapes are decoded, but `${VAR}` interpolation is never performed - what the file says is what you get.
 - **Malformed input** throws <xref:Bodu.Text.DotEnv.DotEnvFormatException>.
 - **See also:** the [line-formats introduction](~/docs/formats/index.md) and the [DotEnv guide](~/guides/formats/dotenv.md).

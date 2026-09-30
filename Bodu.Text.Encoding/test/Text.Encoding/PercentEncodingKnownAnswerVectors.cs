@@ -8,7 +8,7 @@ namespace Bodu.Text.Encoding;
 
 /// <summary>
 /// Provides Known Answer Test vectors for percent-encoding. The <see cref="PercentEncodingMode.UriComponent" /> vectors
-/// are drawn from RFC 3986 §2.1–2.3 (unreserved set and percent-encoded octets); the
+/// are drawn from RFC 3986 §2.1-2.3 (unreserved set and percent-encoded octets); the
 /// <see cref="PercentEncodingMode.FormUrlEncoded" /> vectors follow the WHATWG URL Standard
 /// <c>application/x-www-form-urlencoded</c> serializer. Each supplier is paired with the mode the rows were authored
 /// against.

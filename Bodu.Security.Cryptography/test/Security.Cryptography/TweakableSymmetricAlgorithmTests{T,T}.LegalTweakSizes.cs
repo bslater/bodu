@@ -57,7 +57,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// <summary>
     /// Verifies that reading <see cref="TweakableSymmetricAlgorithm.LegalTweakSizes" /> on a disposed instance does
     /// not throw <see cref="NullReferenceException" /> from a cleared backing field. Either the disposal contract
-    /// returns the array as before or it throws <see cref="ObjectDisposedException" /> — both are acceptable.
+    /// returns the array as before or it throws <see cref="ObjectDisposedException" /> - both are acceptable.
     /// </summary>
     [TestMethod]
     public void LegalTweakSizes_WhenAccessedAfterDispose_ShouldNotThrowUnexpected()
@@ -72,7 +72,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
         }
         catch (ObjectDisposedException)
         {
-            // Acceptable — disposal contract may forbid further reads.
+            // Acceptable - disposal contract may forbid further reads.
         }
         catch (Exception ex) when (ex is not ObjectDisposedException)
         {

@@ -76,7 +76,7 @@ public sealed class RecurrenceRuleBuilder
     }
 
     /// <summary>
-    /// Sets the interval — the positive multiple of the frequency between occurrences.
+    /// Sets the interval - the positive multiple of the frequency between occurrences.
     /// </summary>
     /// <param name="interval">The recurrence interval.</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
@@ -132,7 +132,7 @@ public sealed class RecurrenceRuleBuilder
     /// <summary>
     /// Sets the <c>BYSECOND</c> rule part.
     /// </summary>
-    /// <param name="seconds">The seconds to select (0–60).</param>
+    /// <param name="seconds">The seconds to select (0-60).</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is outside the range 0 to 60.</exception>
     public RecurrenceRuleBuilder BySecond(params int[] seconds)
@@ -144,7 +144,7 @@ public sealed class RecurrenceRuleBuilder
     /// <summary>
     /// Sets the <c>BYMINUTE</c> rule part.
     /// </summary>
-    /// <param name="minutes">The minutes to select (0–59).</param>
+    /// <param name="minutes">The minutes to select (0-59).</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is outside the range 0 to 59.</exception>
     public RecurrenceRuleBuilder ByMinute(params int[] minutes)
@@ -156,7 +156,7 @@ public sealed class RecurrenceRuleBuilder
     /// <summary>
     /// Sets the <c>BYHOUR</c> rule part.
     /// </summary>
-    /// <param name="hours">The hours to select (0–23).</param>
+    /// <param name="hours">The hours to select (0-23).</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is outside the range 0 to 23.</exception>
     public RecurrenceRuleBuilder ByHour(params int[] hours)
@@ -192,7 +192,7 @@ public sealed class RecurrenceRuleBuilder
     /// <summary>
     /// Sets the <c>BYMONTHDAY</c> rule part.
     /// </summary>
-    /// <param name="monthDays">The month days to select (1–31 or -31 to -1).</param>
+    /// <param name="monthDays">The month days to select (1-31 or -31 to -1).</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is zero or outside ±31.</exception>
     public RecurrenceRuleBuilder ByMonthDay(params int[] monthDays)
@@ -204,7 +204,7 @@ public sealed class RecurrenceRuleBuilder
     /// <summary>
     /// Sets the <c>BYYEARDAY</c> rule part.
     /// </summary>
-    /// <param name="yearDays">The year days to select (1–366 or -366 to -1).</param>
+    /// <param name="yearDays">The year days to select (1-366 or -366 to -1).</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is zero or outside ±366.</exception>
     public RecurrenceRuleBuilder ByYearDay(params int[] yearDays)
@@ -216,7 +216,7 @@ public sealed class RecurrenceRuleBuilder
     /// <summary>
     /// Sets the <c>BYWEEKNO</c> rule part.
     /// </summary>
-    /// <param name="weekNumbers">The week numbers to select (1–53 or -53 to -1).</param>
+    /// <param name="weekNumbers">The week numbers to select (1-53 or -53 to -1).</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is zero or outside ±53.</exception>
     public RecurrenceRuleBuilder ByWeekNo(params int[] weekNumbers)
@@ -228,7 +228,7 @@ public sealed class RecurrenceRuleBuilder
     /// <summary>
     /// Sets the <c>BYMONTH</c> rule part.
     /// </summary>
-    /// <param name="months">The months to select (1–12).</param>
+    /// <param name="months">The months to select (1-12).</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is outside the range 1 to 12.</exception>
     public RecurrenceRuleBuilder ByMonth(params int[] months)
@@ -240,7 +240,7 @@ public sealed class RecurrenceRuleBuilder
     /// <summary>
     /// Sets the <c>BYSETPOS</c> rule part.
     /// </summary>
-    /// <param name="setPositions">The set positions to select (1–366 or -366 to -1).</param>
+    /// <param name="setPositions">The set positions to select (1-366 or -366 to -1).</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is zero or outside ±366.</exception>
     public RecurrenceRuleBuilder BySetPos(params int[] setPositions)

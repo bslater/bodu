@@ -106,7 +106,7 @@ public sealed partial class FilterMatrixTests
 
     /// <summary>
     /// Verifies that <see cref="NotableDateFilter.WithTag" /> is case-sensitive, rejecting a tag that differs only in
-    /// case — a deliberate change from the v1 case-insensitive comparison.
+    /// case - a deliberate change from the v1 case-insensitive comparison.
     /// </summary>
     [TestMethod]
     public void Matches_WhenWithTagCaseDiffers_ShouldReturnFalse()
@@ -190,7 +190,7 @@ public sealed partial class FilterMatrixTests
 
     /// <summary>
     /// Verifies that <see cref="NotableDateFilter.WithName" /> is case-sensitive, rejecting a name that differs only in
-    /// case — a deliberate change from the v1 case-insensitive comparison.
+    /// case - a deliberate change from the v1 case-insensitive comparison.
     /// </summary>
     [TestMethod]
     public void Matches_WhenWithNameCaseDiffers_ShouldReturnFalse()
@@ -304,7 +304,7 @@ public sealed partial class FilterMatrixTests
     /// <param name="year">The emitted year.</param>
     /// <param name="month">The emitted month.</param>
     /// <param name="day">The emitted day.</param>
-    /// <param name="expected">Whether the occurrence is expected to match the 1–30 June 2024 range.</param>
+    /// <param name="expected">Whether the occurrence is expected to match the 1-30 June 2024 range.</param>
     [TestMethod]
     [DataRow(2024, 6, 1, true)]   // inclusive start boundary
     [DataRow(2024, 6, 30, true)]  // inclusive end boundary

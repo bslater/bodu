@@ -20,7 +20,7 @@ internal static partial class KeccakPermutation
     internal const int StateWords = 25;
 
     /// <summary>
-    /// Gets the round constants for the ι (iota) step — 24 values, one per round.
+    /// Gets the round constants for the ι (iota) step - 24 values, one per round.
     /// </summary>
     /// <remarks>
     /// The span reads the constants from the assembly's data, so reading them initializes no class and calls no helper:
@@ -38,7 +38,7 @@ internal static partial class KeccakPermutation
     ];
 
     /// <summary>
-    /// Applies the full <c>Keccak-f[1600]</c> permutation — 24 rounds of θ, ρ, π, χ, and ι — to the supplied 25-word
+    /// Applies the full <c>Keccak-f[1600]</c> permutation - 24 rounds of θ, ρ, π, χ, and ι - to the supplied 25-word
     /// state in place.
     /// </summary>
     /// <param name="state">The 25-element state to permute. Modified in place.</param>

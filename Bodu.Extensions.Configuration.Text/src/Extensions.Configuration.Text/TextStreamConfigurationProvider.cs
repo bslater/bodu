@@ -20,7 +20,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <see cref="TextConfigurationProvider" /> via <see cref="TextConfigurationLoader" />.
 /// </para>
 /// <para>
-/// Consumers do not construct this type directly — it is materialized by
+/// Consumers do not construct this type directly - it is materialized by
 /// <see cref="TextStreamConfigurationSource.Build(IConfigurationBuilder)" /> when an
 /// <see cref="IConfigurationBuilder" /> is built. The typed <see cref="TextSource" /> accessor exists for diagnostic
 /// scenarios where a host needs to inspect the source that produced a given <see cref="IConfigurationProvider" />.

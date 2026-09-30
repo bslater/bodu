@@ -43,7 +43,7 @@ public readonly partial struct Option<T>
     /// <code language="csharp">
     ///<![CDATA[
     /// var length = Option<string>.Some("railway").Map(s => s.Length); // Some(7)
-    /// var none = Option<string>.None.Map(s => s.Length);              // None — selector not invoked
+    /// var none = Option<string>.None.Map(s => s.Length);              // None - selector not invoked
     ///]]>
     /// </code>
     /// </example>

@@ -73,7 +73,7 @@ public sealed class MerkleTreeDiagnosticsTests
 
     /// <summary>
     /// Verifies that <see cref="MerkleTreeDiagnostics.GetAllNodes" /> returns nodes sorted by level
-    /// ascending, then by index ascending — independent of the order in which they were recorded.
+    /// ascending, then by index ascending - independent of the order in which they were recorded.
     /// </summary>
     [TestMethod]
     public void GetAllNodes_ShouldReturnNodesSortedByLevelThenIndex()
@@ -159,7 +159,7 @@ public sealed class MerkleTreeDiagnosticsTests
 
         bool ok = diagnostics.Validate(SHA256.Create, out IReadOnlyList<string>? errors);
 
-        Assert.IsTrue(ok, $"Validate should pass — got errors: {string.Join(", ", errors)}");
+        Assert.IsTrue(ok, $"Validate should pass - got errors: {string.Join(", ", errors)}");
         Assert.IsEmpty(errors);
     }
 
@@ -190,7 +190,7 @@ public sealed class MerkleTreeDiagnosticsTests
 
     /// <summary>
     /// Verifies that <see cref="MerkleTreeDiagnostics.Validate" /> succeeds trivially when no
-    /// internal nodes have been recorded — leaves are not re-validated against input bytes.
+    /// internal nodes have been recorded - leaves are not re-validated against input bytes.
     /// </summary>
     [TestMethod]
     public void Validate_WhenOnlyLeavesRecorded_ShouldReturnTrue()
@@ -310,7 +310,7 @@ public sealed class MerkleTreeDiagnosticsTests
     public void DiagnosticNode_RecordsWithIdenticalFields_ShouldNotBeReferenceEqualByByteArray()
     {
         // Records with byte[] fields use reference equality on the array, so two records with
-        // different array instances containing identical bytes are NOT equal — pin this contract
+        // different array instances containing identical bytes are NOT equal - pin this contract
         // so consumers don't assume value-equality.
         byte[] hashA = new byte[] { 0x01 };
         byte[] hashB = new byte[] { 0x01 };

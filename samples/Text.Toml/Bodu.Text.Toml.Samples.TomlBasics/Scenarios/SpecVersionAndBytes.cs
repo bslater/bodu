@@ -12,7 +12,7 @@ namespace Bodu.Text.Toml.Samples.TomlBasics.Scenarios;
 /// <summary>
 /// Demonstrates the two wire-level knobs: <c>SpecVersion</c> gates the TOML v1.1.0 grammar
 /// extensions on parse (v1.0.0 stays the strict default), and <c>ByteArrayHandling</c> chooses
-/// how <c>byte[]</c> travels — an integer array or a Base64 string.
+/// how <c>byte[]</c> travels - an integer array or a Base64 string.
 /// </summary>
 public static class SpecVersionAndBytes
 {

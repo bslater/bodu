@@ -13,8 +13,8 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="Threefish256CipherTests" /> at the wider 512-bit block size.
 /// </summary>
 /// <remarks>
-/// The two vectors mirror <see cref="TweakableBlockCipherVariant.ZeroedKeyAndTweak" /> — an all-zero
-/// (key, tweak, plaintext) baseline — and <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> — the
+/// The two vectors mirror <see cref="TweakableBlockCipherVariant.ZeroedKeyAndTweak" /> - an all-zero
+/// (key, tweak, plaintext) baseline - and <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> - the
 /// harness's incremental-byte default (key bytes 0x10..0x4F, tweak bytes 0x00..0x0F, descending plaintext
 /// FF..C0). The non-zero row is confirmed byte-for-byte against the Skein/Threefish golden KAT as mirrored in
 /// Crypto++ <c>threefish.txt</c> (Test Vector 8), little-endian word64 decode; the all-zero baseline row is an

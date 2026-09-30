@@ -17,6 +17,17 @@ reference makes to its reader, and a broken promise fails the build rather than 
                leads to generated code
   landing      every package's landing page (bld/docs-checks/package-docs-map.txt) cross-references
                the package's API
+  links        every link and asset reference in the rendered site leads to a file the site has, and
+               every #anchor to an element on that page, so a member deep link (an anchor on its
+               type's page) cannot dangle; DocFX checks neither the links in an apidoc overwrite file
+               nor the hrefs in XML documentation
+  xmldoc       every href in an XML documentation comment anywhere in the codebase that leads into
+               the site - relative, as the API pages render it, or an absolute URL of the published
+               site - names a page and anchor the site has, including comments no page renders
+  doclines     no line of documented XML documentation, outside a code block, begins with what
+               Markdown reads as the start of a block (-, +, * or 1. and a space, a run of - or =,
+               #, >): DocFX renders the documentation as Markdown, so the line would become a list,
+               heading or quote; the XML-doc formatter never wraps one there, but an author can
   overlay      every template partial copied from DocFX names the DocFX version the pipeline pins,
                so a DocFX upgrade cannot silently run on partials forked from another version
 """
@@ -27,22 +38,215 @@ import glob
 import html
 import json
 import os
+import posixpath
 import re
 import sys
+import urllib.parse
 from collections import defaultdict
-from typing import Any
+from typing import Any, Iterator
 
 import docfx_yaml as dy
 import docs_common as dc
 
 TYPE_KINDS = frozenset({"Class", "Struct", "Interface", "Enum", "Delegate"})
-SITE_API = os.path.join(dc.DOCS, "_site", "api")
+SITE = os.path.join(dc.DOCS, "_site")
+SITE_API = os.path.join(SITE, "api")
 OVERLAY = os.path.join(dc.DOCS, "templates", "bodu")
 GENERATED_SOURCE = re.compile(r"/obj/|\.Designer\.cs(?:$|#)|\.g\.cs(?:$|#)")
 
+# A link or asset reference in a rendered page, and an anchor a link can land on.
+LINK_ATTRIBUTE = re.compile(r'\s(?:href|src)="([^"]*)"')
+ANCHOR_ATTRIBUTE = re.compile(r'\s(?:id|name)="([^"]*)"')
+# A scheme (https:, mailto:, javascript:, ...) or a protocol-relative link leaves the site.
+LEAVES_SITE = re.compile(r"^(?:[A-Za-z][A-Za-z0-9+.-]*:|//)")
+# An XML documentation comment line, and an href within it.
+XML_DOC_LINE = re.compile(r"^\s*///(.*)$")
+XML_DOC_HREF = re.compile(r'\bhref="([^"]*)"')
+# XML documentation renders on the API pages, so a relative href in it resolves from api/.
+XML_DOC_BASE = "api/index.html"
+# Directories a walk of the codebase never needs to enter: build output and tooling state.
+UNSCANNED_DIRECTORIES = frozenset({".git", ".vs", "bin", "obj", "node_modules", "_site"})
+# Folders of a documented package that hold no documented source.
+UNDOCUMENTED_DIRECTORIES = UNSCANNED_DIRECTORIES | {"test", "tests", "bench", "benchmarks", "samples"}
+# Text that Markdown reads as the start of a block when it begins a line: a bullet, a setext underline or thematic
+# break, an ATX heading, a block quote, or an ordered list starting at one (the only kind that can interrupt a
+# paragraph). It mirrors DocWrapper.IsMarkdownBlockMarker in Bodu.CodeStyle.
+MARKDOWN_BLOCK_START = re.compile(r"^(?:[-+*](?:\s|$)|[-=*]+\s*$|#{1,6}(?:\s|$)|>|&gt;|1[.)](?:\s|$))")
+# The start of a <code> block or CDATA section that does not end on the same line, and the end of either.
+CODE_BLOCK_OPEN = re.compile(r"<code\b[^>]*>(?!.*</code>)|<!\[CDATA\[(?!.*\]\]>)")
+CODE_BLOCK_CLOSE = re.compile(r"</code>|\]\]>")
+# A tag closing a line, and the tags that sit inside prose rather than bounding a block of it.
+TRAILING_TAG = re.compile(r"</?([A-Za-z]+)\b[^<>]*>$")
+INLINE_XML_TAGS = frozenset({"see", "paramref", "typeparamref", "c", "a"})
+# Beyond this many broken links the rest are counted rather than listed.
+LINK_REPORT_LIMIT = 50
+
+
+class RenderedSite:
+    """The files of a built site and, read when first asked for, the anchors each page defines."""
+
+    def __init__(self, root: str) -> None:
+        self.root = root
+        self.files: set[str] = set()
+        for directory, _, names in os.walk(root):
+            for name in names:
+                self.files.add(os.path.relpath(os.path.join(directory, name), root).replace(os.sep, "/"))
+        self._anchors: dict[str, frozenset[str]] = {}
+
+    def pages(self) -> list[str]:
+        return sorted(path for path in self.files if path.endswith(".html"))
+
+    def read(self, page: str) -> str:
+        with open(os.path.join(self.root, page), encoding="utf-8", errors="replace") as stream:
+            return stream.read()
+
+    def anchors(self, page: str) -> frozenset[str]:
+        if page not in self._anchors:
+            self._anchors[page] = frozenset(html.unescape(anchor) for anchor in ANCHOR_ATTRIBUTE.findall(self.read(page)))
+        return self._anchors[page]
+
+    def problem(self, target: str, fragment: str) -> str | None:
+        """Returns why a link to ``target`` (a site-relative path) and ``fragment`` does not resolve, or None."""
+        if target.startswith("/"):
+            return "root-absolute, but the site is served under a path prefix (/bodu/, /bodu/dev/, ...)"
+        if target == ".." or target.startswith("../"):
+            return "leads outside the site"
+        page = next((c for c in (target, posixpath.normpath(posixpath.join(target, "index.html"))) if c in self.files), None)
+        if page is None:
+            return "no such file in the site"
+        if fragment and page.endswith(".html") and fragment not in self.anchors(page):
+            return f"{page} has no anchor #{fragment}"
+        return None
+
+
+def resolve_link(page: str, href: str) -> tuple[str, str] | None:
+    """Resolves ``href``, found on ``page`` (a site-relative path), to a site-relative target and fragment.
+
+    Returns None for a link that leaves the site. A root-absolute path is returned as it is, for
+    RenderedSite.problem to report. The query (the framework selector's ?view=) is dropped.
+    """
+    href = html.unescape(href).strip()
+    if not href or LEAVES_SITE.match(href):
+        return None
+    path, _, fragment = href.partition("#")
+    path = urllib.parse.unquote(path.split("?", 1)[0])
+    fragment = urllib.parse.unquote(fragment)
+    if path.startswith("/"):
+        return path, fragment
+    target = page if not path else posixpath.normpath(posixpath.join(posixpath.dirname(page), path))
+    return target, fragment
+
+
+def published_site_url() -> str:
+    """The URL GitHub Pages serves the site from, derived from the repository."""
+    owner, _, name = os.environ.get("GITHUB_REPOSITORY", "bslater/bodu").partition("/")
+    return f"https://{owner.lower()}.github.io/{name}/"
+
+
+def xml_doc_target(href: str, site_url: str) -> tuple[str, str] | None:
+    """Resolves an href from XML documentation to a target in the site, or None when it leads elsewhere.
+
+    A relative href resolves from the API pages, where the documentation renders. An absolute URL of
+    the published site resolves within it, less the version slot (dev/, 1.0/, ...) it names, since
+    every slot is a build of the same site.
+    """
+    href = html.unescape(href).strip()
+    if href.lower().startswith(site_url.lower()):
+        rest = re.sub(r"^(?:dev|[0-9]+\.[0-9]+)/", "", href[len(site_url):])
+        return resolve_link("index.html", rest or "index.html")
+    return resolve_link(XML_DOC_BASE, href)
+
+
+def rendered_link_problems(rendered: RenderedSite) -> list[str]:
+    problems = []
+    for page in rendered.pages():
+        for href in LINK_ATTRIBUTE.findall(rendered.read(page)):
+            resolved = resolve_link(page, href)
+            reason = resolved and rendered.problem(*resolved)
+            if reason:
+                problems.append(f"{page}: {href} ({reason})")
+    return problems
+
+
+def source_files(root: str, extension: str, skipped: frozenset[str] = UNSCANNED_DIRECTORIES) -> Iterator[str]:
+    """Yields every file under ``root`` with ``extension``, in a stable order, skipping the ``skipped`` folders."""
+    for directory, directories, names in os.walk(root):
+        directories[:] = sorted(d for d in directories if d not in skipped)
+        for name in sorted(names):
+            if name.endswith(extension):
+                yield os.path.join(directory, name)
+
+
+def xml_doc_link_problems(rendered: RenderedSite, source_root: str, site_url: str) -> list[str]:
+    problems = []
+    for path in source_files(source_root, ".cs"):
+        with open(path, encoding="utf-8", errors="replace") as stream:
+            for number, line in enumerate(stream, 1):
+                comment = XML_DOC_LINE.match(line)
+                for href in XML_DOC_HREF.findall(comment.group(1)) if comment else ():
+                    resolved = xml_doc_target(href, site_url)
+                    reason = resolved and rendered.problem(*resolved)
+                    if reason:
+                        problems.append(f"{os.path.relpath(path, source_root)}:{number}: {href} ({reason})")
+    return problems
+
+
+def documented_source_roots() -> list[str]:
+    """The package folder of every documented project: its src, and any shared source compiled into it."""
+    return sorted({os.path.dirname(os.path.dirname(entry["project"])) for entry in dc.read_json(dc.PROJECTS_JSON)})
+
+
+def continues_prose(previous: str) -> bool:
+    """Whether a documentation line following ``previous`` continues its paragraph, rather than starting a block.
+
+    A line after a blank line, or after a tag that bounds a block (``<para>``, ``</summary>``, ``<item>``, ...),
+    starts a block, so a marker there is the author's; after prose or an inline tag it continues the paragraph.
+    """
+    if not previous:
+        return False
+    tag = TRAILING_TAG.search(previous)
+    return tag is None or tag.group(1) in INLINE_XML_TAGS
+
+
+def xml_doc_line_start_problems(roots: list[str], relative_to: str) -> list[str]:
+    """Reports every XML documentation line under ``roots`` that continues a paragraph with a Markdown block marker.
+
+    Code blocks and CDATA are skipped. A marker that opens a block (after ``<para>`` or a blank line) is the
+    author's and is not reported; one that continues a paragraph turns the rest of it into a list, heading or quote.
+    """
+    problems = []
+    for root in roots:
+        for path in source_files(root, ".cs", UNDOCUMENTED_DIRECTORIES):
+            in_code = False
+            previous = ""
+            with open(path, encoding="utf-8", errors="replace") as stream:
+                for number, line in enumerate(stream, 1):
+                    comment = XML_DOC_LINE.match(line)
+                    if not comment:
+                        in_code, previous = False, ""
+                        continue
+                    text = comment.group(1).strip()
+                    if in_code:
+                        in_code = not CODE_BLOCK_CLOSE.search(text)
+                        previous = ""
+                        continue
+                    if continues_prose(previous) and MARKDOWN_BLOCK_START.match(text):
+                        problems.append(
+                            f"{os.path.relpath(path, relative_to)}:{number}: '{text}' continues a paragraph but opens a "
+                            "Markdown list, heading or quote on the API site; keep the marker at the end of the previous line")
+                    in_code = bool(CODE_BLOCK_OPEN.search(text))
+                    previous = text
+    return problems
+
+
+def capped(problems: list[str], limit: int = LINK_REPORT_LIMIT) -> list[str]:
+    if len(problems) <= limit:
+        return problems
+    return problems[:limit] + [f"... and {len(problems) - limit} more broken link(s)"]
+
 
 class Site:
-    """The merged metadata and the pipeline's resolved inputs, loaded once."""
+    """The merged metadata, the pipeline's resolved inputs, and the rendered site, loaded once."""
 
     def __init__(self) -> None:
         self.packages: dict[str, dict[str, Any]] = dc.read_json(dc.PACKAGES_JSON)
@@ -54,6 +258,7 @@ class Site:
             if name != "toc.yml":
                 self.pages[name] = dy.load_file(path)
         self.toc = dy.load_file(os.path.join(dc.API, "toc.yml"))
+        self.rendered = RenderedSite(SITE)
 
     def items(self) -> list[tuple[str, dict[str, Any]]]:
         return [(name, item) for name, page in self.pages.items() for item in page.get("items") or []]
@@ -224,6 +429,18 @@ def check_landing(site: Site) -> list[str]:
     return problems
 
 
+def check_links(site: Site) -> list[str]:
+    return capped(rendered_link_problems(site.rendered))
+
+
+def check_xmldoc(site: Site) -> list[str]:
+    return capped(xml_doc_link_problems(site.rendered, dc.ROOT, published_site_url()))
+
+
+def check_doclines(site: Site) -> list[str]:
+    return capped(xml_doc_line_start_problems(documented_source_roots(), dc.ROOT))
+
+
 def check_overlay() -> list[str]:
     tools = dc.read_json(os.path.join(dc.DOCS, ".config", "dotnet-tools.json"))
     pinned = tools["tools"]["docfx"]["version"]
@@ -243,6 +460,9 @@ CHECKS = {
     "pages": check_pages,
     "sources": check_sources,
     "landing": check_landing,
+    "links": check_links,
+    "xmldoc": check_xmldoc,
+    "doclines": check_doclines,
 }
 
 

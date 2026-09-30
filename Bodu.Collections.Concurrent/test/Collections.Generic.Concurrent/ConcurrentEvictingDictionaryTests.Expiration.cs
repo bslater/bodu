@@ -140,7 +140,7 @@ public partial class ConcurrentEvictingDictionaryTests
     /// <summary>
     /// Verifies that under sliding expiry a <see cref="ConcurrentEvictingDictionary{TKey, TValue}.ContainsKey" /> probe
     /// leaves the deadline intact while a later <see cref="ConcurrentEvictingDictionary{TKey, TValue}.TryGetValue" /> read
-    /// slides it — the containment probe and the value read are asymmetric with respect to the deadline.
+    /// slides it - the containment probe and the value read are asymmetric with respect to the deadline.
     /// </summary>
     [TestMethod]
     public void Expiration_WhenSlidingAndContainsKeyThenRead_ShouldSlideOnlyOnRead()

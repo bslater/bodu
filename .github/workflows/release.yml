@@ -3,12 +3,12 @@ name: Release
 # Builds, strong-name (real) signs, packs, and optionally publishes the Bodu packages.
 #
 # The whole solution is packed, but only packages listed in the shipping manifest
-# (bld/release-manifest.txt) are staged and pushed to nuget.org — packages for waves that have not
+# (bld/release-manifest.txt) are staged and pushed to nuget.org - packages for waves that have not
 # been released yet are produced as build artifacts only. See bld/RELEASING.md for the release model.
 #
 # Triggered for a release by pushing a version tag (e.g. v1.0.0), or manually via the Actions tab.
 #
-# The tag is a LABEL, not the version. Nothing here passes a version to `dotnet pack` — each package's
+# The tag is a LABEL, not the version. Nothing here passes a version to `dotnet pack` - each package's
 # version comes from bld/Versioning.props, which now runs two streams: Stable-tier packages ship at
 # BoduBaseVersion and the Preview/Experimental tier ships at BoduPreviewVersion (set per project via
 # BoduPackageVersionOverride, and reported in the build log). So a run tagged v1.0.0 publishes most
@@ -262,7 +262,7 @@ jobs:
             --configuration "$CONFIGURATION" \
             --output "${{ github.workspace }}/local-packages"
 
-      - name: Guard — fail fast if the public key is misconfigured
+      - name: Guard - fail fast if the public key is misconfigured
         shell: bash
         run: |
           # Real signing produces strong-named assemblies whose retained cross-library
@@ -300,11 +300,11 @@ jobs:
           printf '%s' "$BODU_SNK" | base64 -d > "$RUNNER_TEMP/Bodu.snk"
           # Sanity check: a valid .snk is non-empty binary.
           if [ ! -s "$RUNNER_TEMP/Bodu.snk" ]; then
-            echo "::error::Decoded key is empty — BODU_SNK is not valid base64 of a .snk file."
+            echo "::error::Decoded key is empty - BODU_SNK is not valid base64 of a .snk file."
             exit 1
           fi
 
-      - name: Guard — verify the signing key matches the committed public key
+      - name: Guard - verify the signing key matches the committed public key
         shell: bash
         run: |
           # The BODU_SNK secret is the full private key the assemblies are actually signed with; the
@@ -329,7 +329,7 @@ jobs:
           pubmod=$(od -An -v -t x1 -j 32 -N "$modlen" bld/Bodu.public.snk | tr -d ' \n')
           privmod=$(od -An -v -t x1 -j 20 -N "$modlen" "$priv" | tr -d ' \n')
           if [ "$pubmod" != "$privmod" ]; then
-            echo "::error::The BODU_SNK signing key does not match bld/Bodu.public.snk — they are different key pairs. Update the secret and the committed public key together when rotating the strong-name key."
+            echo "::error::The BODU_SNK signing key does not match bld/Bodu.public.snk - they are different key pairs. Update the secret and the committed public key together when rotating the strong-name key."
             exit 1
           fi
           echo "BODU_SNK matches bld/Bodu.public.snk."

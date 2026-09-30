@@ -19,7 +19,7 @@ namespace Bodu.Text.Formats.Generators;
 /// <remarks>
 /// The generated factories map the type's public read/write instance properties in declaration order, honour
 /// <c>[PropertyName]</c> for wire names, skip members annotated <c>[Ignore]</c> (with <c>IgnoreCondition.Always</c>),
-/// and convert scalars with the invariant culture — mirroring the runtime reflection binders so the two paths are
+/// and convert scalars with the invariant culture - mirroring the runtime reflection binders so the two paths are
 /// interchangeable.
 /// </remarks>
 [Generator(LanguageNames.CSharp)]

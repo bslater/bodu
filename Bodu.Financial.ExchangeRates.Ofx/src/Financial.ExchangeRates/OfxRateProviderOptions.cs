@@ -49,7 +49,7 @@ public sealed class OfxRateProviderOptions
     /// <remarks>
     /// OFX publishes multi-decade spot-rate history ("20+ years") but no fixed inception date, so the advertised
     /// <see cref="WebRateProviderOptions.HistoryAvailability" /> is deliberately
-    /// <see cref="RateHistoryAvailability.Unbounded" /> — there is no known floor worth pre-empting a request for. Set
+    /// <see cref="RateHistoryAvailability.Unbounded" /> - there is no known floor worth pre-empting a request for. Set
     /// the property when a concrete floor matters for the pairs in use.
     /// </remarks>
     public OfxRateProviderOptions()

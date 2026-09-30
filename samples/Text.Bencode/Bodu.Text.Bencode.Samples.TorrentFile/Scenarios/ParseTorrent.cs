@@ -10,7 +10,7 @@ namespace Bodu.Text.Bencode.Samples.TorrentFile.Scenarios;
 
 /// <summary>
 /// Demonstrates reading a torrent's metainfo with the read-only <see cref="BencodeDocument" />
-/// DOM: one parse over the raw bytes, then cheap <see cref="BencodeElement" /> cursors — the
+/// DOM: one parse over the raw bytes, then cheap <see cref="BencodeElement" /> cursors - the
 /// right layer for inspecting a file whose exact shape you discover as you go.
 /// </summary>
 public static class ParseTorrent

@@ -25,7 +25,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <see cref="AesBlockCipher" /> is not intended for direct encryption of user data. Wrap it in one of the
-/// authenticated mode transforms listed above — the mode transform is responsible for chaining, IV / nonce handling,
+/// authenticated mode transforms listed above - the mode transform is responsible for chaining, IV / nonce handling,
 /// associated-data authentication, and tag generation or verification.
 /// </para>
 /// <para>
@@ -74,7 +74,7 @@ public sealed class AesBlockCipher
     /// <summary>The cached CBC encryptor with a zero IV, created on the first chained encryption: each chain folds the caller's chaining value into its first block and resets the transform when it ends. Nulled on disposal.</summary>
     private ICryptoTransform? _cbcEncryptor;
 
-    /// <summary>The cached ECB decryptor, created on the first decryption so an instance that only encrypts — as the cipher of every counter-based mode does — never pays for one. Nulled on disposal.</summary>
+    /// <summary>The cached ECB decryptor, created on the first decryption so an instance that only encrypts - as the cipher of every counter-based mode does - never pays for one. Nulled on disposal.</summary>
     private ICryptoTransform? _decryptor;
 
     /// <summary>Indicates whether the instance has been disposed.</summary>
@@ -84,7 +84,7 @@ public sealed class AesBlockCipher
     /// Initializes a new instance of the <see cref="AesBlockCipher" /> class with the specified AES key.
     /// </summary>
     /// <param name="key">
-    /// The AES key. Valid lengths are 16, 24, or 32 bytes (AES-128, AES-192, or AES-256). A defensive copy is taken —
+    /// The AES key. Valid lengths are 16, 24, or 32 bytes (AES-128, AES-192, or AES-256). A defensive copy is taken -
     /// the caller may zero the original array immediately after construction.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
@@ -186,9 +186,9 @@ public sealed class AesBlockCipher
     /// </exception>
     /// <remarks>
     /// Moves the run through the cached ECB encryptor in chunks of up to 4 KiB, one platform call per chunk. The cached
-    /// transform keeps its key schedule, whereas the BCL's one-shot ECB methods rebuild a cipher context on every call
-    /// — which costs about as much as encrypting a kilobyte, so a counter mode handing over a few kilobytes at a time
-    /// would spend most of its time there. <paramref name="output" /> may be the same memory as
+    /// transform keeps its key schedule, whereas the BCL's one-shot ECB methods rebuild a cipher context on every
+    /// call - which costs about as much as encrypting a kilobyte, so a counter mode handing over a few kilobytes at a
+    /// time would spend most of its time there. <paramref name="output" /> may be the same memory as
     /// <paramref name="input" />.
     /// </remarks>
     public void EncryptBlocks(ReadOnlySpan<byte> input, Span<byte> output)

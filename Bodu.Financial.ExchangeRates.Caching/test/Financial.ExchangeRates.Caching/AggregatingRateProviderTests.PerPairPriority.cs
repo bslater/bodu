@@ -28,7 +28,7 @@ public sealed partial class AggregatingRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that different pairs honour their own route order — AUD/USD via [RBA, ECB] and USD/GBP via [ECB, RBA].
+    /// Verifies that different pairs honour their own route order - AUD/USD via [RBA, ECB] and USD/GBP via [ECB, RBA].
     /// </summary>
     [TestMethod]
     public void TryGetRate_WhenDifferentPairsRoutedDifferently_ShouldHonourEachRoute()

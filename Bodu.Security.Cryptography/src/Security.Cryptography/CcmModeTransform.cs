@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — a CTR-style keystream produces ciphertext and a MAC over nonce, associated data, and ciphertext produces the tag. In CCM the MAC is CBC-MAC."/>
+/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow - a CTR-style keystream produces ciphertext and a MAC over nonce, associated data, and ciphertext produces the tag. In CCM the MAC is CBC-MAC."/>
 /// </para>
 /// <para>
 /// CCM is the <b>CTR + CBC-MAC</b> instantiation of the generic AEAD shape above: the top pipeline is the plain CTR
@@ -27,10 +27,10 @@ namespace Bodu.Security.Cryptography;
 /// Fixed parameters (matching the most common deployment profile):
 /// <list type="bullet">
 /// <item>
-/// <description>Nonce (Nlen): 12 bytes — first 12 bytes of the IV.</description>
+/// <description>Nonce (Nlen): 12 bytes - first 12 bytes of the IV.</description>
 /// </item>
 /// <item>
-/// <description>Length field (q): 3 bytes — messages up to 2^24 − 1 bytes.</description>
+/// <description>Length field (q): 3 bytes - messages up to 2^24 − 1 bytes.</description>
 /// </item>
 /// <item>
 /// <description>Tag (T): 16 bytes.</description>
@@ -38,23 +38,23 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// </para>
 /// <para>
-/// Formatting follows NIST SP 800-38C Section 6.3. Flag byte B0: bit 6 = Adata, bits 5–3 = M' = (T−2)/2 = 7, bits 2–0 =
-/// L' = q−1 = 2. Counter block A_i: byte 0 = 0x02, bytes 1–12 = nonce, bytes 13–15 = counter (big-endian). AAD length
+/// Formatting follows NIST SP 800-38C Section 6.3. Flag byte B0: bit 6 = Adata, bits 5-3 = M' = (T−2)/2 = 7, bits 2-0 =
+/// L' = q−1 = 2. Counter block A_i: byte 0 = 0x02, bytes 1-12 = nonce, bytes 13-15 = counter (big-endian). AAD length
 /// is encoded as a 2-byte big-endian prefix (supports up to 65 279 bytes).
 /// </para>
 /// <para>
-/// <strong>When to use CCM.</strong> Pick CCM when interoperability with constrained-environment standards is required
-/// — IEEE 802.15.4 / Zigbee, Bluetooth Mesh, IPsec ESP, and TLS 1.2 with the AES-CCM cipher suites all use it. CCM is
-/// two-pass over the message (CBC-MAC then CTR), so it is slower than <see cref="GcmModeTransform" /> on commodity
-/// hardware, but it has no Galois-field arithmetic and is easier to implement correctly on minimal microcontrollers.
-/// For new general-purpose AEAD on x86/ARM hosts prefer GCM; for nonce-misuse resistance prefer
+/// <strong>When to use CCM.</strong> Pick CCM when interoperability with constrained-environment standards is
+/// required - IEEE 802.15.4 / Zigbee, Bluetooth Mesh, IPsec ESP, and TLS 1.2 with the AES-CCM cipher suites all use it.
+/// CCM is two-pass over the message (CBC-MAC then CTR), so it is slower than <see cref="GcmModeTransform" /> on
+/// commodity hardware, but it has no Galois-field arithmetic and is easier to implement correctly on minimal
+/// microcontrollers. For new general-purpose AEAD on x86/ARM hosts prefer GCM; for nonce-misuse resistance prefer
 /// <see cref="GcmSivModeTransform" /> or <see cref="SivModeTransform" />.
 /// </para>
 /// <para>
 /// <strong>Nonce uniqueness is required.</strong> CCM is not nonce-misuse resistant. Reusing a <c>(key, nonce)</c> pair
 /// across two messages reuses the CTR keystream and lets an attacker XOR the two ciphertexts to recover
 /// <c>P1 XOR P2</c>; CBC-MAC chains from the same starting state are also exposed, which weakens authentication.
-/// Callers must guarantee that every <c>(key, nonce)</c> pair is used at most once — typically via a per-message
+/// Callers must guarantee that every <c>(key, nonce)</c> pair is used at most once - typically via a per-message
 /// counter or a fresh random 96-bit value drawn from a CSPRNG. If nonce uniqueness cannot be guaranteed prefer
 /// <see cref="GcmSivModeTransform" /> or <see cref="SivModeTransform" />.
 /// </para>
@@ -75,7 +75,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/aead-modes.html#ccm--a-two-pass-alternative">CCM walk-through in the
+/// <seealso href="../guides/cryptography/aead-modes.html#ccm---a-two-pass-alternative">CCM walk-through in the
 /// AEAD-modes guide</seealso> <seealso cref="AesBlockCipher"/>
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class CcmModeTransform
@@ -92,7 +92,7 @@ public sealed class CcmModeTransform
 
     /// <summary>The maximum message length, in bytes, encodable in the 3-byte length field (<c>q = 3</c>): <c>2²⁴ − 1</c>. Internal so tests can validate the constant.</summary>
     /// <remarks>
-    /// The B0 length field occupies only bytes 13–15 and the CTR counter is likewise 3 bytes wide. A longer message
+    /// The B0 length field occupies only bytes 13-15 and the CTR counter is likewise 3 bytes wide. A longer message
     /// would silently truncate the encoded length (corrupting the CBC-MAC) and wrap the counter (reusing keystream), so
     /// a message at or beyond this ceiling must be rejected rather than transformed.
     /// </remarks>
@@ -213,8 +213,8 @@ public sealed class CcmModeTransform
     /// <remarks>
     /// <strong>Authentication pattern: write-then-clear.</strong> CCM recomputes its CBC-MAC over the decrypted
     /// plaintext, so the CTR decryption stream is applied to <paramref name="output" /> first and the tag is compared
-    /// in constant time afterwards. On any failure — an authentication mismatch or an exception from the underlying
-    /// cipher mid-transform — the plaintext region of <paramref name="output" /> is zeroed before the exception
+    /// in constant time afterwards. On any failure - an authentication mismatch or an exception from the underlying
+    /// cipher mid-transform - the plaintext region of <paramref name="output" /> is zeroed before the exception
     /// propagates, so unverified plaintext never escapes. See <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for
     /// the library-wide failure contract.
     /// </remarks>
@@ -261,8 +261,8 @@ public sealed class CcmModeTransform
         }
         catch
         {
-            // Zero the plaintext region on any failure — a tag mismatch or a fault from the underlying
-            // cipher mid-transform — so the unverified plaintext this write-then-clear mode has already
+            // Zero the plaintext region on any failure - a tag mismatch or a fault from the underlying
+            // cipher mid-transform - so the unverified plaintext this write-then-clear mode has already
             // written never leaks.
             CryptographyHelper.Clear(output[..plaintextLength]);
             throw;

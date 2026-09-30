@@ -22,9 +22,9 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// </para>
 /// <para>
 /// Bencode represents only integers and byte strings as scalars, so the built-in set covers <see cref="string" />,
-/// <see cref="byte" /> arrays and memory-of-byte, and the fixed-width integer family — including <see cref="Int128" />
+/// <see cref="byte" /> arrays and memory-of-byte, and the fixed-width integer family - including <see cref="Int128" />
 /// and <see cref="UInt128" />, confined by checked conversion to the 64-bit surfaces the implementation reads and
-/// writes through — plus enumerations and the structural shapes. It omits converters for Boolean, floating-point,
+/// writes through - plus enumerations and the structural shapes. It omits converters for Boolean, floating-point,
 /// character, GUID, URI, and date-time types. A program that needs to serialize one of those types registers a custom
 /// <see cref="BencodeConverter{T}" /> that reduces it to an integer or a byte string; without one an unsupported type
 /// surfaces as a missing-converter error.

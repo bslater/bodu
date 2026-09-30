@@ -17,9 +17,9 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// <remarks>
 /// <para>
 /// <see cref="ConcurrentHashSet{T}" /> is a <b>lock-free</b> hash set built on a split-ordered list (Shalev &amp;
-/// Shavit): every element lives in a single Harris–Michael lock-free ordered linked list, sorted by the bit-reversed
+/// Shavit): every element lives in a single Harris-Michael lock-free ordered linked list, sorted by the bit-reversed
 /// hash code of the element. The hash-table part is only an array of lazily initialized <i>shortcut</i> pointers into
-/// that list — one sentinel node per bucket. Doubling the table copies shortcut pointers but never rehashes or moves a
+/// that list - one sentinel node per bucket. Doubling the table copies shortcut pointers but never rehashes or moves a
 /// node, so growth is itself lock-free and readers are never invalidated by a resize.
 /// </para>
 /// <para>
@@ -32,7 +32,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// <para>
 /// <see cref="Add" />, <see cref="Remove" />, and <see cref="Contains" /> are each individually atomic (linearizable)
 /// and safe to call concurrently from any number of threads. <see cref="Count" /> and <see cref="IsEmpty" /> read a
-/// counter maintained with interlocked operations — exact whenever no mutation is in flight, and never off by more than
+/// counter maintained with interlocked operations - exact whenever no mutation is in flight, and never off by more than
 /// the operations currently executing. <see cref="Clear" /> atomically replaces the entire backing structure in one
 /// compare-and-swap; operations that began against the previous structure complete against it and are ordered before
 /// the clear.
@@ -49,7 +49,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// Performance characteristics differ from lock-based designs: progress is guaranteed without blocking, but every
 /// successful <see cref="Add" /> allocates one list node and every successful <see cref="Remove" /> allocates one
 /// short-lived marker (reclaimed by the garbage collector once unlinked). <see cref="Contains" /> is allocation-free.
-/// Elements that share a hash code form a single linearly scanned run, so — as with any hash set — a comparer with poor
+/// Elements that share a hash code form a single linearly scanned run, so - as with any hash set - a comparer with poor
 /// hash distribution degrades lookups toward linear time.
 /// </para>
 /// <para>
@@ -93,7 +93,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// <summary>The smallest bucket-shortcut array length a constructor will allocate, so tiny capacity hints do not cause an immediate cascade of doublings.</summary>
     private const int MinBucketCount = 8;
 
-    /// <summary>The largest bucket-shortcut array length — the greatest power of two representable in an <see cref="int" /> length. Once reached, the table stops doubling and equal-prefix runs simply lengthen.</summary>
+    /// <summary>The largest bucket-shortcut array length - the greatest power of two representable in an <see cref="int" /> length. Once reached, the table stops doubling and equal-prefix runs simply lengthen.</summary>
     private const int MaxBucketCount = 1 << 30;
 
     /// <summary>The average number of elements per bucket tolerated before <see cref="Add" /> requests a doubling of the shortcut array.</summary>
@@ -205,7 +205,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// </summary>
     /// <value>The element count observed at the moment of the call.</value>
     /// <remarks>
-    /// Reading this property is lock-free — a single interlocked counter read that never blocks writers. The value is
+    /// Reading this property is lock-free - a single interlocked counter read that never blocks writers. The value is
     /// exact whenever no mutation is concurrently in flight; while <see cref="Add" /> or <see cref="Remove" /> calls
     /// are executing on other threads the value may transiently lag those operations, and it may already be stale by
     /// the time the caller inspects it.
@@ -288,7 +288,7 @@ public sealed partial class ConcurrentHashSet<T>
                 return true;
             }
 
-            // The insertion window changed under us (competing insert, delete, or mark at pred) — re-traverse.
+            // The insertion window changed under us (competing insert, delete, or mark at pred) - re-traverse.
             spinner.SpinOnce();
         }
     }
@@ -301,7 +301,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// This operation is lock-free and linearizable: it atomically replaces the entire backing structure (list, bucket
     /// shortcuts, and counter) with a fresh empty one in a single compare-and-swap, which is the operation's
     /// linearization point. Operations that began against the previous structure complete against it and are ordered
-    /// before the clear — an <see cref="Add" /> that races the swap either lands in the new structure or is cleared
+    /// before the clear - an <see cref="Add" /> that races the swap either lands in the new structure or is cleared
     /// along with the old one, exactly as if it had completed an instant before the clear.
     /// </para>
     /// <para>
@@ -318,7 +318,7 @@ public sealed partial class ConcurrentHashSet<T>
             var replacement = new Core(Volatile.Read(ref core._buckets).Length);
 
             // CAS rather than a blind write so the replacement's bucket count is derived from the very generation
-            // being replaced — a racing grow can never be shrunk away by a stale observation.
+            // being replaced - a racing grow can never be shrunk away by a stale observation.
             if (ReferenceEquals(Interlocked.CompareExchange(ref _core, replacement, core), core))
                 return;
 
@@ -355,7 +355,7 @@ public sealed partial class ConcurrentHashSet<T>
 
             if (succ is { _isMarker: true })
             {
-                // curr is logically deleted — skip it via the marker's frozen successor without helping to unlink.
+                // curr is logically deleted - skip it via the marker's frozen successor without helping to unlink.
                 curr = succ._next;
                 continue;
             }
@@ -383,7 +383,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// <remarks>
     /// This operation is atomic and lock-free. Removal is two-phase in the Harris style: the node is first logically
     /// deleted by installing a marker into its successor link with a compare-and-swap (the linearization point), then
-    /// physically unlinked best-effort — any traversal that later encounters the marker completes the unlinking
+    /// physically unlinked best-effort - any traversal that later encounters the marker completes the unlinking
     /// cooperatively.
     /// </remarks>
     public bool Remove(T item)
@@ -436,7 +436,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// <remarks>
     /// <para>
     /// This method is a pure lock-free traversal of the split-ordered list: it never blocks writers. The result is <b>weakly
-    /// consistent</b> — it contains every element that was present for the entire duration of the call, but elements
+    /// consistent</b> - it contains every element that was present for the entire duration of the call, but elements
     /// added or removed while the copy is in progress may or may not appear, and the array is not guaranteed to reflect
     /// the set's state at any single instant.
     /// </para>
@@ -460,7 +460,7 @@ public sealed partial class ConcurrentHashSet<T>
 
             if (succ is { _isMarker: true })
             {
-                // curr is logically deleted — skip it via the marker's frozen successor without helping to unlink.
+                // curr is logically deleted - skip it via the marker's frozen successor without helping to unlink.
                 curr = succ._next;
                 continue;
             }
@@ -499,7 +499,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// Computes the split-order key of a data node for the specified hash code.
     /// </summary>
     /// <param name="hashCode">The element's hash code.</param>
-    /// <returns>The bit-reversed hash shifted left one position with the low bit set — always odd.</returns>
+    /// <returns>The bit-reversed hash shifted left one position with the low bit set - always odd.</returns>
     /// <remarks>
     /// Widening to 64 bits before setting the low discriminator bit preserves all 32 hash bits (the original 32-bit
     /// formulation of split-ordering sacrifices the top hash bit). Because bit reversal is a bijection, two data keys
@@ -513,7 +513,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// Computes the split-order key of the sentinel node for the specified bucket index.
     /// </summary>
     /// <param name="bucketNo">The bucket index.</param>
-    /// <returns>The bit-reversed bucket index shifted left one position — always even.</returns>
+    /// <returns>The bit-reversed bucket index shifted left one position - always even.</returns>
     /// <remarks>
     /// A sentinel key is a strict lower bound of every data key that hashes into its bucket: the two share the same
     /// reversed prefix, and the sentinel has zeros below it plus a zero discriminator bit.
@@ -530,8 +530,8 @@ public sealed partial class ConcurrentHashSet<T>
     /// <returns>The normalized bucket-shortcut array length.</returns>
     /// <remarks>
     /// The hint is expressed in expected elements (BCL semantics), so it is first divided by
-    /// <see cref="MaxLoadFactor" /> — the average elements-per-bucket the table tolerates before <see cref="Add" />
-    /// requests a doubling — using a ceiling division, so <c>buckets * MaxLoadFactor &gt;= capacity</c> and the table
+    /// <see cref="MaxLoadFactor" /> - the average elements-per-bucket the table tolerates before <see cref="Add" />
+    /// requests a doubling - using a ceiling division, so <c>buckets * MaxLoadFactor &gt;= capacity</c> and the table
     /// can absorb the expected population without an immediate resize. The result is clamped into the sizing envelope
     /// and rounded up to a power of two so the bucket mask stays valid. The <see cref="long" /> arithmetic guards
     /// against overflow when <paramref name="capacity" /> approaches <see cref="int.MaxValue" />.
@@ -571,13 +571,13 @@ public sealed partial class ConcurrentHashSet<T>
     /// <remarks>
     /// <para>
     /// Growth copies the shortcut pointers into an array of twice the length and publishes it with a single
-    /// compare-and-swap against <paramref name="observed" /> — nodes are never rehashed or moved, so concurrent readers
+    /// compare-and-swap against <paramref name="observed" /> - nodes are never rehashed or moved, so concurrent readers
     /// and writers are completely unaffected. Losing the compare-and-swap means another thread already grew the table;
     /// the freshly allocated array is simply discarded.
     /// </para>
     /// <para>
     /// One benign race is accepted by design: a sentinel published into a slot of the old array after that slot has
-    /// been copied is absent from the new array. Nothing is lost — the sentinel node itself is already linked into the
+    /// been copied is absent from the new array. Nothing is lost - the sentinel node itself is already linked into the
     /// list, and the next lookup that targets the bucket re-runs <see cref="InitializeBucket" />, whose traversal finds
     /// the existing sentinel by key and re-publishes the shortcut.
     /// </para>
@@ -620,7 +620,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// <param name="bucketNo">The bucket index to initialize. Never zero.</param>
     /// <returns>The bucket's sentinel node.</returns>
     /// <remarks>
-    /// The parent bucket (the index with its most significant set bit cleared) is initialized first — recursively —
+    /// The parent bucket (the index with its most significant set bit cleared) is initialized first - recursively -
     /// because the parent's sentinel is the nearest guaranteed entry point that precedes this bucket's position in
     /// split-order. Insertion is idempotent under races: the loser of the list compare-and-swap re-traverses, finds the
     /// winner's sentinel by its unique even key, and adopts it, so exactly one sentinel node ever represents a bucket
@@ -639,7 +639,7 @@ public sealed partial class ConcurrentHashSet<T>
         {
             if (Find(parent, key, matchData: false, default!, out Node pred, out Node? curr))
             {
-                // A racing initializer already inserted this bucket's sentinel — adopt it.
+                // A racing initializer already inserted this bucket's sentinel - adopt it.
                 sentinel = curr!;
                 break;
             }
@@ -664,7 +664,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// Traverses the list from <paramref name="start" /> looking for the specified split-order key, unlinking logically
     /// deleted nodes encountered along the way.
     /// </summary>
-    /// <param name="start">The node to begin the traversal from — a bucket sentinel or the list head.</param>
+    /// <param name="start">The node to begin the traversal from - a bucket sentinel or the list head.</param>
     /// <param name="key">The split-order key to locate.</param>
     /// <param name="matchData">
     /// <see langword="true" /> to match a data node for <paramref name="item" /> within the equal-key run;
@@ -674,7 +674,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// <param name="pred">When this method returns, the node immediately preceding <paramref name="curr" />.</param>
     /// <param name="curr">
     /// When this method returns <see langword="true" />, the matched node; when it returns <see langword="false" />,
-    /// the first node whose key is greater than <paramref name="key" /> (or <see langword="null" /> at the list end) —
+    /// the first node whose key is greater than <paramref name="key" /> (or <see langword="null" /> at the list end) -
     /// together with <paramref name="pred" /> this brackets the insertion window at the end of the equal-key run.
     /// </param>
     /// <returns><see langword="true" /> if a matching node was found; otherwise, <see langword="false" />.</returns>
@@ -699,7 +699,7 @@ public sealed partial class ConcurrentHashSet<T>
 
             if (succ is { _isMarker: true })
             {
-                // curr is logically deleted — help unlink it, or restart when pred itself has changed.
+                // curr is logically deleted - help unlink it, or restart when pred itself has changed.
                 if (!ReferenceEquals(Interlocked.CompareExchange(ref pred._next, succ._next, curr), curr))
                     goto retry;
 

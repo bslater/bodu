@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 /// Shared base for the tweakable Threefish algorithm-tier tests
 /// (<see cref="Threefish256Tests" />, <see cref="Threefish512Tests" />, <see cref="Threefish1024Tests" />).
 /// Inherits the full <see cref="TweakableSymmetricAlgorithmTests{TTest, TAlgorithm}" /> contract surface and
-/// hoists wiring that is identical across every Threefish block size — currently the
+/// hoists wiring that is identical across every Threefish block size - currently the
 /// <see cref="Threefish.BlockMode" /> setter for <see cref="SymmetricAlgorithmTests{TTest, TAlgorithm}.SetBlockMode" />.
 /// </summary>
 /// <typeparam name="TTest">The concrete test class, used to resolve specification data for

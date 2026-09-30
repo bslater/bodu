@@ -16,7 +16,7 @@ namespace Bodu.Text.Toml.Reader;
 /// when <see cref="Utf8TomlReader.Read" /> returns <see langword="false" />, capture
 /// <see cref="Utf8TomlReader.CurrentState" />, carry the bytes from <see cref="Utf8TomlReader.BytesConsumed" /> onward
 /// into the next buffer together with the newly arrived data, and construct the next reader from that buffer and this
-/// state. A token never spans reader instances — the reader consumes input only in whole tokens — so the caller's
+/// state. A token never spans reader instances - the reader consumes input only in whole tokens - so the caller's
 /// buffer must eventually contain the largest single token.
 /// </para>
 /// <para>

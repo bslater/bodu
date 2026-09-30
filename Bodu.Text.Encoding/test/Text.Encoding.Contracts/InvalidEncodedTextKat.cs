@@ -9,7 +9,7 @@ using Bodu.Test.Kat;
 namespace Bodu.Text.Encoding.Contracts;
 
 /// <summary>
-/// Represents a known-answer test row for malformed encoded text — the input that the decoder is expected to reject —
+/// Represents a known-answer test row for malformed encoded text - the input that the decoder is expected to reject -
 /// optionally tagged with the variant selector and the expected exception type when the decoder throws rather than
 /// returning <see langword="false" />.
 /// </summary>

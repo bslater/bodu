@@ -38,8 +38,8 @@ public partial class MLKemEngineTests
         };
 
     /// <summary>
-    /// Returns polynomials whose coefficients sit at the ends of [0, q) and at a few patterns — among them q − 1 and 0
-    /// alternating in runs of every power of two from 2 to 128, which pairs them differently in each butterfly layer —
+    /// Returns polynomials whose coefficients sit at the ends of [0, q) and at a few patterns - among them q − 1 and 0
+    /// alternating in runs of every power of two from 2 to 128, which pairs them differently in each butterfly layer -
     /// then seeded ones.
     /// </summary>
     /// <returns>The polynomials.</returns>

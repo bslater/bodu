@@ -24,7 +24,7 @@ public partial class BitSetTests
     }
 
     /// <summary>
-    /// Verifies that bits can be set — including beyond the initial capacity — queried, and enumerated in ascending
+    /// Verifies that bits can be set - including beyond the initial capacity - queried, and enumerated in ascending
     /// index order.
     /// </summary>
     [TestMethod]

@@ -15,8 +15,8 @@ namespace Bodu.Globalization.Calendar;
 /// <remarks>
 /// <para>
 /// Maun Agiyaras (Maun Ekadashi) is Margashirsha shukla ekadashi, computed by the engine's sidereal lunar calculator. It
-/// falls in late November or December and can occasionally land on 1 January of the following year, so — like other
-/// near-boundary swept dates — a given Gregorian year may contain no occurrence (2028 within the validated range); the
+/// falls in late November or December and can occasionally land on 1 January of the following year, so - like other
+/// near-boundary swept dates - a given Gregorian year may contain no occurrence (2028 within the validated range); the
 /// years asserted below all resolve.
 /// </para>
 /// </remarks>

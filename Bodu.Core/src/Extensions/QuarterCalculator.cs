@@ -14,8 +14,8 @@ namespace Bodu.Extensions;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The quarter engine is expressed over calendar components (year, month, day) and day numbers — the number of days
-/// since 0001-01-01, the common currency of <see cref="DateOnly.DayNumber" /> and <c>DateTime.Ticks / TicksPerDay</c> —
+/// The quarter engine is expressed over calendar components (year, month, day) and day numbers - the number of days
+/// since 0001-01-01, the common currency of <see cref="DateOnly.DayNumber" /> and <c>DateTime.Ticks / TicksPerDay</c> -
 /// so both extension surfaces compute identical results from a single implementation. The <see cref="DateTime" /> twin
 /// scales the returned day numbers by <see cref="DateTimeExtensions.TicksPerDay" />; the <see cref="DateOnly" /> twin
 /// consumes them directly.
@@ -55,11 +55,11 @@ internal static class QuarterCalculator
     }
 
     /// <summary>
-    /// Determines the quarter number (1 – 4) that includes the specified calendar month and day, based on a month-day
+    /// Determines the quarter number (1 - 4) that includes the specified calendar month and day, based on a month-day
     /// anchor definition.
     /// </summary>
-    /// <param name="month">The calendar month component (1 – 12) of the date to evaluate.</param>
-    /// <param name="day">The calendar day component (1 – 31) of the date to evaluate.</param>
+    /// <param name="month">The calendar month component (1 - 12) of the date to evaluate.</param>
+    /// <param name="day">The calendar day component (1 - 31) of the date to evaluate.</param>
     /// <param name="definition">A tuple representing the start of Q1, encoded as (month, day).</param>
     /// <returns>An integer between 1 and 4 representing the resolved quarter number.</returns>
     /// <remarks>
@@ -91,7 +91,7 @@ internal static class QuarterCalculator
     /// Computes the day number for the first day of the specified quarter, based on a month-day anchor definition.
     /// </summary>
     /// <param name="year">The fiscal or calendar year in which the quarter starts.</param>
-    /// <param name="quarter">The 1-based quarter number (1 – 4).</param>
+    /// <param name="quarter">The 1-based quarter number (1 - 4).</param>
     /// <param name="definition">
     /// A tuple representing the anchor month and day that define the start of Q1 (e.g. (4, 6) for April 6).
     /// </param>
@@ -118,7 +118,7 @@ internal static class QuarterCalculator
     /// Computes the day number for the last day of the specified quarter, based on a month-day anchor definition.
     /// </summary>
     /// <param name="year">The fiscal or calendar year in which the quarter ends.</param>
-    /// <param name="quarter">The 1-based quarter number (1 – 4).</param>
+    /// <param name="quarter">The 1-based quarter number (1 - 4).</param>
     /// <param name="definition">
     /// A tuple representing the anchor month and day that define the start of Q1 (e.g. (4, 6) for April 6).
     /// </param>
@@ -149,10 +149,10 @@ internal static class QuarterCalculator
     /// The <see cref="CalendarQuarterDefinition" /> that defines quarter anchor points.
     /// </param>
     /// <param name="year">The calendar year component of the reference date.</param>
-    /// <param name="month">The calendar month component (1 – 12) of the reference date.</param>
-    /// <param name="day">The calendar day component (1 – 31) of the reference date.</param>
+    /// <param name="month">The calendar month component (1 - 12) of the reference date.</param>
+    /// <param name="day">The calendar day component (1 - 31) of the reference date.</param>
     /// <param name="dayNumber">The day number (days since 0001-01-01) of the reference date.</param>
-    /// <returns>A tuple containing the resolved year and quarter number (1 – 4).</returns>
+    /// <returns>A tuple containing the resolved year and quarter number (1 - 4).</returns>
     /// <remarks>
     /// If the calculated start of the resolved quarter is after the reference date, the year is decremented to reflect
     /// the prior fiscal year.
@@ -162,7 +162,7 @@ internal static class QuarterCalculator
     {
         (uint Month, uint Day) def = GetDefinition(definition);
 
-        // Determine the quarter number (1–4) for the provided reference date
+        // Determine the quarter number (1-4) for the provided reference date
         int q = GetQuarter(month, day, def);
 
         // Compute the actual calendar month when the resolved quarter starts

@@ -7,8 +7,8 @@
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Serves as the base for nonce-based symmetric-cipher known-answer test vectors — stream ciphers and AEAD
-/// constructions — adding the per-vector nonce to the plaintext / ciphertext pair.
+/// Serves as the base for nonce-based symmetric-cipher known-answer test vectors - stream ciphers and AEAD
+/// constructions - adding the per-vector nonce to the plaintext / ciphertext pair.
 /// </summary>
 public abstract record NoncedCipherKnownAnswer
     : SymmetricCipherKnownAnswer

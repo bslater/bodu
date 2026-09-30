@@ -28,22 +28,22 @@
       ============================================================================================================
     -->
 
-    <!-- Naming and Circumcision of Jesus Christ — 1 January. Strategy: Fixed day-of-month. -->
+    <!-- Naming and Circumcision of Jesus Christ - 1 January. Strategy: Fixed day-of-month. -->
     <NotableDate id="naming-and-circumcision-of-jesus" displayName="Naming and Circumcision of Jesus Christ" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="January" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Baptism of Christ — Sunday after Epiphany. Strategy: WeekdayNearDate. -->
+    <!-- Baptism of Christ - Sunday after Epiphany. Strategy: WeekdayNearDate. -->
     <NotableDate id="baptism-of-christ" displayName="Baptism of Christ" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><WeekdayNearDate month="January" day="6" dayOfWeek="Sunday" direction="After" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Michael and All Angels — 29 September. Strategy: Fixed day-of-month. -->
+    <!-- Michael and All Angels - 29 September. Strategy: Fixed day-of-month. -->
     <NotableDate id="michael-and-all-angels" displayName="Michael and All Angels" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="September" day="29" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Holy Innocents — 28 December. Strategy: Fixed day-of-month. -->
+    <!-- Holy Innocents - 28 December. Strategy: Fixed day-of-month. -->
     <NotableDate id="holy-innocents" displayName="Holy Innocents" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="December" day="28" /></Strategy></Rule></Rules>
     </NotableDate>
@@ -56,97 +56,97 @@
       omit lower-priority entries where they are not observed.
     -->
 
-    <!-- Conversion of Saint Paul — 25 January. Strategy: Fixed day-of-month. -->
+    <!-- Conversion of Saint Paul - 25 January. Strategy: Fixed day-of-month. -->
     <NotableDate id="conversion-of-saint-paul" displayName="Conversion of Saint Paul" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="January" day="25" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Matthias the Apostle — 24 February. Strategy: Fixed day-of-month. -->
+    <!-- Matthias the Apostle - 24 February. Strategy: Fixed day-of-month. -->
     <NotableDate id="matthias-the-apostle" displayName="Matthias the Apostle" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="February" day="24" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Joseph of Nazareth — 19 March. Strategy: Fixed day-of-month. -->
+    <!-- Joseph of Nazareth - 19 March. Strategy: Fixed day-of-month. -->
     <NotableDate id="joseph-of-nazareth" displayName="Joseph of Nazareth" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="March" day="19" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Mark the Evangelist — 25 April. Strategy: Fixed day-of-month. -->
+    <!-- Mark the Evangelist - 25 April. Strategy: Fixed day-of-month. -->
     <NotableDate id="mark-the-evangelist" displayName="Mark the Evangelist" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="April" day="25" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Philip and James, Apostles — 1 May. Strategy: Fixed day-of-month. -->
+    <!-- Philip and James, Apostles - 1 May. Strategy: Fixed day-of-month. -->
     <NotableDate id="philip-and-james-apostles" displayName="Philip and James, Apostles" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Barnabas the Apostle — 11 June. Strategy: Fixed day-of-month. -->
+    <!-- Barnabas the Apostle - 11 June. Strategy: Fixed day-of-month. -->
     <NotableDate id="barnabas-the-apostle" displayName="Barnabas the Apostle" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="June" day="11" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- John the Baptist — 24 June. Strategy: Fixed day-of-month. -->
+    <!-- John the Baptist - 24 June. Strategy: Fixed day-of-month. -->
     <NotableDate id="john-the-baptist" displayName="John the Baptist" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="June" day="24" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Peter and Paul, Apostles — 29 June. Strategy: Fixed day-of-month. -->
+    <!-- Peter and Paul, Apostles - 29 June. Strategy: Fixed day-of-month. -->
     <NotableDate id="peter-and-paul-apostles" displayName="Peter and Paul, Apostles" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="June" day="29" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Mary Magdalene — 22 July. Strategy: Fixed day-of-month. -->
+    <!-- Mary Magdalene - 22 July. Strategy: Fixed day-of-month. -->
     <NotableDate id="mary-magdalene" displayName="Mary Magdalene" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="July" day="22" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- James the Apostle — 25 July. Strategy: Fixed day-of-month. -->
+    <!-- James the Apostle - 25 July. Strategy: Fixed day-of-month. -->
     <NotableDate id="james-the-apostle" displayName="James the Apostle" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="July" day="25" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Mary, Mother of Our Lord — 15 August. Strategy: Fixed day-of-month. -->
+    <!-- Mary, Mother of Our Lord - 15 August. Strategy: Fixed day-of-month. -->
     <NotableDate id="mary-mother-of-our-lord" displayName="Mary, Mother of Our Lord" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Bartholomew the Apostle — 24 August. Strategy: Fixed day-of-month. -->
+    <!-- Bartholomew the Apostle - 24 August. Strategy: Fixed day-of-month. -->
     <NotableDate id="bartholomew-the-apostle" displayName="Bartholomew the Apostle" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="August" day="24" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Matthew, Apostle and Evangelist — 21 September. Strategy: Fixed day-of-month. -->
+    <!-- Matthew, Apostle and Evangelist - 21 September. Strategy: Fixed day-of-month. -->
     <NotableDate id="matthew-apostle-and-evangelist" displayName="Matthew, Apostle and Evangelist" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="September" day="21" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Luke the Evangelist — 18 October. Strategy: Fixed day-of-month. -->
+    <!-- Luke the Evangelist - 18 October. Strategy: Fixed day-of-month. -->
     <NotableDate id="luke-the-evangelist" displayName="Luke the Evangelist" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="October" day="18" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Simon and Jude, Apostles — 28 October. Strategy: Fixed day-of-month. -->
+    <!-- Simon and Jude, Apostles - 28 October. Strategy: Fixed day-of-month. -->
     <NotableDate id="simon-and-jude-apostles" displayName="Simon and Jude, Apostles" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="October" day="28" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Andrew the Apostle — 30 November. Strategy: Fixed day-of-month. -->
+    <!-- Andrew the Apostle - 30 November. Strategy: Fixed day-of-month. -->
     <NotableDate id="andrew-the-apostle" displayName="Andrew the Apostle" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="November" day="30" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Thomas the Apostle — 21 December. Strategy: Fixed day-of-month. -->
+    <!-- Thomas the Apostle - 21 December. Strategy: Fixed day-of-month. -->
     <NotableDate id="thomas-the-apostle" displayName="Thomas the Apostle" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="December" day="21" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Stephen, Deacon and First Martyr — 26 December. Strategy: Fixed day-of-month. -->
+    <!-- Stephen, Deacon and First Martyr - 26 December. Strategy: Fixed day-of-month. -->
     <NotableDate id="stephen-deacon-and-first-martyr" displayName="Stephen, Deacon and First Martyr" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- John, Apostle and Evangelist — 27 December. Strategy: Fixed day-of-month. -->
+    <!-- John, Apostle and Evangelist - 27 December. Strategy: Fixed day-of-month. -->
     <NotableDate id="john-apostle-and-evangelist" displayName="John, Apostle and Evangelist" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="December" day="27" /></Strategy></Rule></Rules>
     </NotableDate>

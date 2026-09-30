@@ -33,11 +33,11 @@ logging.level.default = Debug
     /// <summary>
     /// Verifies that an <c>OnLoadException</c> handler attached to the source receives the parse exception
     /// raised when a reload encounters a malformed file. The bridge does not unwrap the parse exception
-    /// — the handler sees the <see cref="ConfigurationParseException" /> exactly as the document parser
+    /// - the handler sees the <see cref="ConfigurationParseException" /> exactly as the document parser
     /// raised it.
     /// </summary>
     /// <remarks>
-    /// We do not assert what happens to the in-memory <c>Data</c> after a suppressed reload — that
+    /// We do not assert what happens to the in-memory <c>Data</c> after a suppressed reload - that
     /// behaviour is inherited from <see cref="FileConfigurationProvider" /> and may evolve between
     /// framework versions. The Bodu-specific contract this test pins is "the exception surface is the
     /// real parse exception, not a generic wrapper."
@@ -120,7 +120,7 @@ logging.level.default = Debug
         Assert.IsFalse(typeof(FileConfigurationProvider).IsAssignableFrom(streamProvider!.GetType()));
 
         // Calling Load() again on the same provider re-uses the source's now-exhausted stream.
-        // We are not asserting a specific outcome here — the design is intentionally one-shot and the
+        // We are not asserting a specific outcome here - the design is intentionally one-shot and the
         // assertion above on the type hierarchy is what pins the contract.
     }
 }

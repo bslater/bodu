@@ -29,7 +29,7 @@ public sealed partial class CtsModeTransformTests
     /// <summary>
     /// Verifies that <see cref="CtsModeTransform" /> encrypting under AES-128 produces exactly the
     /// CBC-CS3 ciphertext derived from the NIST SP 800-38A F.2.1 inputs, and that decryption recovers
-    /// the plaintext — pinning the ciphertext-stealing data path a symmetric round-trip cannot.
+    /// the plaintext - pinning the ciphertext-stealing data path a symmetric round-trip cannot.
     /// </summary>
     /// <param name="keyHex">The AES-128 key.</param>
     /// <param name="ivHex">The 16-byte initialization vector.</param>

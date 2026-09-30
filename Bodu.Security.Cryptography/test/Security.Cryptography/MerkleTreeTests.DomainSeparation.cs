@@ -26,7 +26,7 @@ public partial class MerkleTreeTests
         Assert.AreNotEqual(
             Hex(tree.ComputeRootOfBlocks(new byte[] { 0x41 }, VectorBlockSize)),
             Hex(tree.ComputeRootOfBlocks(new byte[] { 0x41, 0x00 }, VectorBlockSize)),
-            "Inputs differing only by a trailing zero produced the same root — the leaf is not length-bound.");
+            "Inputs differing only by a trailing zero produced the same root - the leaf is not length-bound.");
     }
 
     /// <summary>
@@ -42,12 +42,12 @@ public partial class MerkleTreeTests
         Assert.AreNotEqual(
             Hex(tree.ComputeRootOfBlocks(partialTail, VectorBlockSize)),
             Hex(tree.ComputeRootOfBlocks(fullTail, VectorBlockSize)),
-            "A zero-padded partial tail collided with an explicit trailing zero — leaf length is not bound.");
+            "A zero-padded partial tail collided with an explicit trailing zero - leaf length is not bound.");
     }
 
     /// <summary>
     /// Verifies that the concatenation of two leaf hashes, presented as a single leaf, does not reproduce the root over
-    /// the two blocks — leaves and nodes occupy different hash domains.
+    /// the two blocks - leaves and nodes occupy different hash domains.
     /// </summary>
     [TestMethod]
     public void ComputeRootOfBlocks_WhenLeafHashConcatenationFedAsSingleLeaf_ShouldNotReproduceRoot()

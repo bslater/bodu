@@ -12,12 +12,12 @@ namespace Bodu.Functional;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Each operation mirrors its synchronous counterpart — <c>MapAsync</c> pairs with
+/// Each operation mirrors its synchronous counterpart - <c>MapAsync</c> pairs with
 /// <see cref="Result{T}.Map{TResult}(Func{T, TResult})" />, <c>BindAsync</c> with
 /// <see cref="Result{T}.Bind{TResult}(Func{T, Result{TResult}})" />, <c>MatchAsync</c> with
 /// <see cref="Result{T}.Match{TResult}(Func{T, TResult}, Func{ResultError, TResult})" />, and <c>TapAsync</c> /
 /// <c>TapErrorAsync</c> with <see cref="Result{T}.Tap(Action{T})" /> and
-/// <see cref="Result{T}.TapError(Action{ResultError})" /> — so an asynchronous pipeline over
+/// <see cref="Result{T}.TapError(Action{ResultError})" /> - so an asynchronous pipeline over
 /// <c>Task&lt;Result&lt;T&gt;&gt;</c> composes exactly like its synchronous equivalent, with the error propagating
 /// untouched past every combinator.
 /// </para>

@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography.Extensions;
 
 /// <summary>
-/// Tests covering the <see cref="SymmetricAlgorithmExtensions" /> surface — including the
+/// Tests covering the <see cref="SymmetricAlgorithmExtensions" /> surface - including the
 /// synchronous and asynchronous <c>Encrypt</c>/<c>Decrypt</c> families and the
 /// <c>TryCreateEncryptor</c>/<c>TryCreateDecryptor</c> helpers. Tests for each method live in
 /// their own partial file.

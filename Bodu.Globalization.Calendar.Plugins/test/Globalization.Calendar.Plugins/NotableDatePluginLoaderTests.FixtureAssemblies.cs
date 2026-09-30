@@ -27,8 +27,8 @@ public sealed partial class NotableDatePluginLoaderTests
     }
 
     /// <summary>
-    /// Verifies that the file-path overload activates a genuinely foreign fixture plugin — an assembly that is not the
-    /// test assembly — into a dedicated collectible load context.
+    /// Verifies that the file-path overload activates a genuinely foreign fixture plugin - an assembly that is not the
+    /// test assembly - into a dedicated collectible load context.
     /// </summary>
     [TestMethod]
     public void LoadFrom_WhenGivenFixtureAssemblyPath_ShouldActivateForeignPlugin()

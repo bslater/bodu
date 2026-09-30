@@ -144,7 +144,7 @@ public partial class NavigableDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that draining the dictionary key by key — ascending, descending, and middle-out — always keeps the
+    /// Verifies that draining the dictionary key by key - ascending, descending, and middle-out - always keeps the
     /// remainder sorted, rank-consistent, and value-faithful, exercising every red-black deletion path.
     /// </summary>
     [TestMethod]

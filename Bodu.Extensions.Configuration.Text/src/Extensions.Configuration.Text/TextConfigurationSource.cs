@@ -24,7 +24,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <para>
 /// Most callers do not construct this type directly; reach for the
 /// <see cref="TextConfigurationExtensions.AddTextConfigurationFile(IConfigurationBuilder, string, string?, bool, bool)" />
-/// extensions instead. Direct construction is appropriate when a host already has the source instance in hand — for
+/// extensions instead. Direct construction is appropriate when a host already has the source instance in hand - for
 /// example, when wiring a custom <see cref="IConfigurationBuilder" /> programmatically.
 /// </para>
 /// </remarks>
@@ -41,7 +41,7 @@ namespace Bodu.Extensions.Configuration.Text;
 ///     source.ParseOptions   = ConfigurationParseOptions.Strict;
 /// });
 ///
-/// // Direct construction — for example, in a custom builder host.
+/// // Direct construction - for example, in a custom builder host.
 /// var source = new TextConfigurationSource
 /// {
 ///     Path           = "app.boduconfig",

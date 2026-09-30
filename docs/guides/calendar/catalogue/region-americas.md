@@ -33,21 +33,21 @@ Notable dates observed by each country in the **Americas** data pack, grouped by
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
 
 ### Cultural
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Christmas Eve | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 24 Dec |
-| New Year's Eve | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 31 Dec |
+| Christmas Eve | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 24 Dec |
+| New Year's Eve | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 31 Dec |
 
 ### Observance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Father's Day | — | National | inline | 3rd Sun Jun |
-| Mother's Day | — | National | inline | 3rd Sun Oct |
+| Father's Day | - | National | inline | 3rd Sun Jun |
+| Mother's Day | - | National | inline | 3rd Sun Oct |
 
 ## BR
 
@@ -75,26 +75,26 @@ Notable dates observed by each country in the **Americas** data pack, grouped by
 |---|---|---|---|---|
 | Saint George's Day | Yes | RJ | inline | Fixed 23 Apr |
 | Our Lady of Aparecida | Yes | National | inline | Fixed 12 Oct |
-| Corpus Christi | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Easter +60 |
-| Easter Sunday | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
+| Corpus Christi | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Easter +60 |
+| Easter Sunday | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
 
 ### Cultural
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Dia dos Namorados | — | National | inline | Fixed 12 Jun |
-| Children's Day | — | National | inline | Fixed 12 Oct |
-| Christmas Eve | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 24 Dec |
-| New Year's Eve | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 31 Dec |
-| Carnival Monday | — | National | inline | Easter -48 |
-| Carnival Tuesday | — | National | inline | Easter -47 |
+| Dia dos Namorados | - | National | inline | Fixed 12 Jun |
+| Children's Day | - | National | inline | Fixed 12 Oct |
+| Christmas Eve | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 24 Dec |
+| New Year's Eve | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 31 Dec |
+| Carnival Monday | - | National | inline | Easter -48 |
+| Carnival Tuesday | - | National | inline | Easter -47 |
 
 ### Observance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Mother's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 2nd Sun May |
-| Father's Day | — | National | inline | 2nd Sun Aug |
+| Mother's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 2nd Sun May |
+| Father's Day | - | National | inline | 2nd Sun Aug |
 
 ## CA
 
@@ -134,26 +134,26 @@ Notable dates observed by each country in the **Americas** data pack, grouped by
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
 
 ### Cultural
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Groundhog Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 2 Feb |
-| Valentine's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 14 Feb |
-| Halloween | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 31 Oct |
-| Christmas Eve | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 24 Dec |
+| Groundhog Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 2 Feb |
+| Valentine's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 14 Feb |
+| Halloween | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 31 Oct |
+| Christmas Eve | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 24 Dec |
 
 ### Observance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| International Women's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 8 Mar |
-| Mother's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 2nd Sun May |
-| Father's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 3rd Sun Jun |
+| International Women's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 8 Mar |
+| Mother's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 2nd Sun May |
+| Father's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 3rd Sun Jun |
 | National Indigenous Peoples Day | Yes | National + NT, YT | inline | Fixed 21 Jun |
-| Heritage Day | — | AB | inline | 1st Mon Aug |
+| Heritage Day | - | AB | inline | 1st Mon Aug |
 
 ### Remembrance
 
@@ -187,15 +187,15 @@ Notable dates observed by each country in the **Americas** data pack, grouped by
 | Saints Peter and Paul | Yes | National | inline | Fixed 29 Jun |
 | Our Lady of Mount Carmel | Yes | National | inline | Fixed 16 Jul |
 | Day of the Evangelical and Protestant Churches | Yes | National | inline | Fixed 31 Oct |
-| Easter Sunday | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
-| Holy Saturday | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Easter -1 |
+| Easter Sunday | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
+| Holy Saturday | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Easter -1 |
 
 ### Observance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Mother's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 2nd Sun May |
-| Father's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 3rd Sun Jun |
+| Mother's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 2nd Sun May |
+| Father's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 3rd Sun Jun |
 
 ## CO
 
@@ -225,15 +225,15 @@ Notable dates observed by each country in the **Americas** data pack, grouped by
 | Saints Peter and Paul | Yes | National | inline | Fixed 29 Jun |
 | Ascension of the Lord | Yes | National | inline | Easter +43 |
 | Corpus Christi | Yes | National | inline | Easter +64 |
-| Easter Sunday | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
 | Sacred Heart | Yes | National | inline | Easter +71 |
 
 ### Observance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Mother's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 2nd Sun May |
-| Father's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 3rd Sun Jun |
+| Mother's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 2nd Sun May |
+| Father's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 3rd Sun Jun |
 
 ## MX
 
@@ -253,35 +253,35 @@ Notable dates observed by each country in the **Americas** data pack, grouped by
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Epiphany | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 6 Jan |
-| All Saints' Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 1 Nov |
-| Day of the Virgin of Guadalupe | — | National | inline | Fixed 12 Dec |
-| Easter Sunday | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
-| Good Friday | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Easter -2 |
-| Maundy Thursday | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Easter -3 |
+| Epiphany | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 6 Jan |
+| All Saints' Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 1 Nov |
+| Day of the Virgin of Guadalupe | - | National | inline | Fixed 12 Dec |
+| Easter Sunday | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
+| Good Friday | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Easter -2 |
+| Maundy Thursday | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Easter -3 |
 
 ### Cultural
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Valentine's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 14 Feb |
-| Cinco de Mayo | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 5 May |
-| Day of the Dead | — | National | inline | Fixed 2 Nov |
-| Christmas Eve | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 24 Dec |
-| New Year's Eve | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 31 Dec |
+| Valentine's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 14 Feb |
+| Cinco de Mayo | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 5 May |
+| Day of the Dead | - | National | inline | Fixed 2 Nov |
+| Christmas Eve | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 24 Dec |
+| New Year's Eve | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 31 Dec |
 
 ### Observance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Mother's Day | — | National | inline | Fixed 10 May |
-| Father's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 3rd Sun Jun |
+| Mother's Day | - | National | inline | Fixed 10 May |
+| Father's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 3rd Sun Jun |
 
 ### Civic
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Flag Day | — | National | inline | Fixed 24 Feb |
+| Flag Day | - | National | inline | Fixed 24 Feb |
 
 ## PE
 
@@ -308,14 +308,14 @@ Notable dates observed by each country in the **Americas** data pack, grouped by
 |---|---|---|---|---|
 | Saints Peter and Paul | Yes | National | inline | Fixed 29 Jun |
 | Saint Rose of Lima | Yes | National | inline | Fixed 30 Aug |
-| Easter Sunday | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
 
 ### Observance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Mother's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 2nd Sun May |
-| Father's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 3rd Sun Jun |
+| Mother's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 2nd Sun May |
+| Father's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 3rd Sun Jun |
 
 ## US
 
@@ -330,16 +330,16 @@ Notable dates observed by each country in the **Americas** data pack, grouped by
 | Inauguration Day | Yes | DC | inline | Fixed 20 Jan |
 | Lincoln's Birthday | Yes | CT, IL, MO, NY | inline | Fixed 12 Feb |
 | Presidents' Day | Yes | National | inline | 3rd Mon Feb |
-| Texas Independence Day | — | TX | inline | Fixed 2 Mar |
-| Casimir Pulaski Day | — | IL | inline | 1st Mon Mar |
+| Texas Independence Day | - | TX | inline | Fixed 2 Mar |
+| Casimir Pulaski Day | - | IL | inline | 1st Mon Mar |
 | Seward's Day | Yes | AK | inline | last Mon Mar |
 | Town Meeting Day | Yes | VT | inline | 1st Tue Mar |
 | Prince Jonah Kuhio Kalanianaole Day | Yes | HI | inline | Fixed 26 Mar |
-| Cesar Chavez Day | — | CA, TX | inline | Fixed 31 Mar |
+| Cesar Chavez Day | - | CA, TX | inline | Fixed 31 Mar |
 | Patriots' Day | Yes | MA, ME | inline | 3rd Mon Apr |
 | Emancipation Day | Yes | DC | inline | Fixed 16 Apr |
-| San Jacinto Day | — | TX | inline | Fixed 21 Apr |
-| Harry S. Truman Day | — | MO | inline | Fixed 8 May |
+| San Jacinto Day | - | TX | inline | Fixed 21 Apr |
+| Harry S. Truman Day | - | MO | inline | Fixed 8 May |
 | Memorial Day | Yes | National | inline | last Mon May |
 | Kamehameha Day | Yes | HI | inline | Fixed 11 Jun |
 | Juneteenth National Independence Day | Yes | National | inline | Fixed 19 Jun |
@@ -365,48 +365,48 @@ Notable dates observed by each country in the **Americas** data pack, grouped by
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
-| Good Friday | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Easter -2 |
+| Easter Sunday | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
+| Good Friday | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Easter -2 |
 
 ### Cultural
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Groundhog Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 2 Feb |
-| Valentine's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 14 Feb |
-| Saint Patrick's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 17 Mar |
-| Cinco de Mayo | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 5 May |
-| Halloween | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 31 Oct |
-| Christmas Eve | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 24 Dec |
-| Black Friday | — | National | inline | thanksgiving +1 |
-| Cyber Monday | — | National | inline | thanksgiving +4 |
+| Groundhog Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 2 Feb |
+| Valentine's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 14 Feb |
+| Saint Patrick's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 17 Mar |
+| Cinco de Mayo | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 5 May |
+| Halloween | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 31 Oct |
+| Christmas Eve | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 24 Dec |
+| Black Friday | - | National | inline | thanksgiving +1 |
+| Cyber Monday | - | National | inline | thanksgiving +4 |
 
 ### Observance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Daisy Gatson Bates Day | — | AR | inline | 3rd Mon Feb |
-| Arbor Day | — | National | inline | last Fri Apr |
-| Earth Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 22 Apr |
-| Mother's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 2nd Sun May |
-| Flag Day | — | National | inline | Fixed 14 Jun |
-| Father's Day | — | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 3rd Sun Jun |
-| Lyndon Baines Johnson Day | — | TX | inline | Fixed 27 Aug |
-| California Admission Day | — | CA | inline | Fixed 9 Sep |
-| Native American Day | — | CA | inline | 4th Fri Sep |
-| Indigenous Peoples' Day | — | National | inline | 2nd Mon Oct |
+| Daisy Gatson Bates Day | - | AR | inline | 3rd Mon Feb |
+| Arbor Day | - | National | inline | last Fri Apr |
+| Earth Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 22 Apr |
+| Mother's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 2nd Sun May |
+| Flag Day | - | National | inline | Fixed 14 Jun |
+| Father's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 3rd Sun Jun |
+| Lyndon Baines Johnson Day | - | TX | inline | Fixed 27 Aug |
+| California Admission Day | - | CA | inline | Fixed 9 Sep |
+| Native American Day | - | CA | inline | 4th Fri Sep |
+| Indigenous Peoples' Day | - | National | inline | 2nd Mon Oct |
 
 ### Remembrance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Pearl Harbor Remembrance Day | — | National | inline | Fixed 7 Dec |
+| Pearl Harbor Remembrance Day | - | National | inline | Fixed 7 Dec |
 
 ### Civic
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Election Day | — | National | inline | 1st Mon Nov (relative) |
+| Election Day | - | National | inline | 1st Mon Nov (relative) |
 
 ---
 
@@ -414,6 +414,6 @@ Notable dates observed by each country in the **Americas** data pack, grouped by
 
 ## See also
 
-- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
-- **[Bodu.Globalization.Calendar guides](../index.md)** — the full guide index for the calendar runtime and its companions.
+- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- **[Bodu.Globalization.Calendar guides](../index.md)** - the full guide index for the calendar runtime and its companions.
 

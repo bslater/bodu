@@ -50,7 +50,7 @@ public static partial class DateTimeExtensions
     /// </para>
     /// <para>
     /// <paramref name="dateTime" /> is first projected into the target calendar, so the result is equivalent to
-    /// <c>calendar.GetDaysInYear(calendar.GetYear(dateTime))</c> — the length of the calendar's own year containing the
+    /// <c>calendar.GetDaysInYear(calendar.GetYear(dateTime))</c> - the length of the calendar's own year containing the
     /// date, not the Gregorian year.
     /// </para>
     /// </remarks>

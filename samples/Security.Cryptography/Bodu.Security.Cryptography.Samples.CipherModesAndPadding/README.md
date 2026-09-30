@@ -1,12 +1,12 @@
 # Bodu.Security.Cryptography.Samples.CipherModesAndPadding
 
 The layer beneath `SymmetricAlgorithm.Mode`: the `IPaddingStrategy` implementations as standalone objects, the
-confidentiality mode transforms driven directly over an `IBlockCipher`, and the specialist modes — ciphertext
+confidentiality mode transforms driven directly over an `IBlockCipher`, and the specialist modes - ciphertext
 stealing, XTS, and the nonce-misuse-resistant authenticated modes. Three scenarios.
 
 This is the complement to `…Samples.SymmetricAndAead`, which configures modes through the algorithm facade. Direct
 use of this layer is appropriate when wiring a custom block cipher into the existing mode infrastructure, or
-building a higher-level construction on top — which is exactly what `MerkleTree` and HPKE do internally.
+building a higher-level construction on top - which is exactly what `MerkleTree` and HPKE do internally.
 
 Keys, IVs and tweaks are fixed so every byte of output is reproducible. **In real use a CBC IV must be fresh and
 unpredictable per message, and a CTR/CCM/GCM-SIV nonce must never repeat under one key.**
@@ -21,12 +21,12 @@ For NuGet consumers:
 dotnet add package Bodu.Security.Cryptography
 ```
 
-Every scenario opens by printing a **What / Why / Expect** banner — the same three things this README
-records per scenario — so a transcript stands on its own and a reader can tell a correct run from a broken
+Every scenario opens by printing a **What / Why / Expect** banner - the same three things this README
+records per scenario - so a transcript stands on its own and a reader can tell a correct run from a broken
 one without opening the source. The `text` blocks below show the value lines only; run the sample to see
 the banner above each of them.
 
-## Scenario 1 — PaddingStrategies
+## Scenario 1 - PaddingStrategies
 
 **Intent.** Show each padding scheme's actual bytes side by side, and make the two things that bite callers
 explicit: the block size is in **bits**, and only some schemes can recover the original length on unpad.
@@ -38,8 +38,8 @@ ISO 7816-4, ISO 10126 and Zeros, printing the padded bytes and confirming the ro
 
 **What to expect.** Each scheme's trailer is visible and distinct: PKCS#7 repeats the count (`030303`), ANSI X9.23
 zero-fills and puts the count last (`000003`), ISO 7816-4 writes a `0x80` marker then zeros (`800000`), and Zeros
-just zero-fills. The **aligned** case is where the reversible schemes must add a whole extra block — otherwise the
-last byte of real data could be mistaken for a padding count — while Zeros adds nothing and stays at 8 bytes:
+just zero-fills. The **aligned** case is where the reversible schemes must add a whole extra block - otherwise the
+last byte of real data could be mistaken for a padding count - while Zeros adds nothing and stays at 8 bytes:
 
 ```text
   block size    : 64 bits = 8 bytes
@@ -89,7 +89,7 @@ last byte of real data could be mistaken for a padding count — while Zeros add
 ```
 
 Two things worth pausing on. **`Pad` takes its block size in bits**, matching
-`SymmetricAlgorithm.BlockSize` — passing `8` asks for alignment to a *one-byte* boundary, which every scheme
+`SymmetricAlgorithm.BlockSize` - passing `8` asks for alignment to a *one-byte* boundary, which every scheme
 satisfies trivially and silently, so the sample's constant is named `BlockSizeBits`. And `ISO 10126` fills with
 **random** bytes, encoding only the count in the last byte; its padded form differs on every run, so the sample
 masks the random span as `?` rather than documenting output that cannot be reproduced.
@@ -97,13 +97,13 @@ masks the random span as `?` rather than documenting output that cannot be repro
 `StripsPaddingOnUnpad=False` on `ZeroPadding` and `NoPadding` is a real limitation, not a gap: neither records how
 much was added, so `Unpad` returns the input untouched and the original length is lost. Use them only when the
 length is known out of band. The PKCS#7 corrupted-count rejection is also the reason padding errors must never be
-reported distinguishably to a remote caller — that is the padding-oracle attack.
+reported distinguishably to a remote caller - that is the padding-oracle attack.
 
 **APIs demonstrated.** `IPaddingStrategy.Pad` / `.Unpad` / `.StripsPaddingOnUnpad`, `Pkcs7Padding`,
 `Ansix923Padding`, `Iso7816_4Padding`, `Iso10126Padding`, `ZeroPadding`, `NoPadding`,
 `PaddingFactory.Create(PaddingMode)` / `.Create(PaddingModeKind)`, `PaddingModeKind.ISO7816_4`.
 
-## Scenario 2 — ModeTransforms
+## Scenario 2 - ModeTransforms
 
 **Intent.** Drive `IBlockCipherModeTransform` directly to show what a chaining mode actually does, and demonstrate
 the composition the interface documents: padding is *not* the transform's job, it is the caller's.
@@ -113,7 +113,7 @@ same **two identical 16-byte blocks** through ECB, CBC, CFB, OFB and CTR via `Bl
 ciphertext and whether the two ciphertext blocks match. It then composes `Pkcs7Padding` with `CbcModeTransform` on
 a 21-byte message, shows the transform rejecting unpadded input, and shows CTR needing no padding at all.
 
-**What to expect.** Only ECB's two ciphertext blocks are identical — it has no chaining, so identical plaintext
+**What to expect.** Only ECB's two ciphertext blocks are identical - it has no chaining, so identical plaintext
 blocks always encrypt identically and the structure of the plaintext survives encryption. That is the whole reason
 the other modes exist:
 
@@ -148,7 +148,7 @@ the other modes exist:
 
 Notice that CFB, OFB and CTR share an identical **first** block (`d5d8ce0d…`) and diverge only from the second.
 That is expected rather than a bug: all three XOR the plaintext with the encryption of their starting value, and
-here the IV and the initial counter are the same bytes. They differ in how that value evolves afterwards — CFB
+here the IV and the initial counter are the same bytes. They differ in how that value evolves afterwards - CFB
 feeds back the ciphertext, OFB feeds back its own output, CTR increments a counter.
 
 `IBlockCipher.BlockSize` is in **bits** here too, so byte-array work converts at the call site as `BlockSize / 8`.
@@ -160,18 +160,18 @@ a fresh one per direction rather than reusing one.
 `CipherModeKind.ECB` / `.CBC` / `.CFB` / `.OFB` / `.CTR`, `CbcModeTransform`, `CtrModeTransform`,
 `Pkcs7Padding.Pad` / `.Unpad`.
 
-## Scenario 3 — SpecialistModes
+## Scenario 3 - SpecialistModes
 
 **Intent.** Cover the modes that exist for one specific job: CTS when the ciphertext must be exactly as long as the
-plaintext, XTS for disk sectors, and the authenticated modes CCM, SIV and GCM-SIV — ending with a measurement that
+plaintext, XTS for disk sectors, and the authenticated modes CCM, SIV and GCM-SIV - ending with a measurement that
 shows what "nonce-misuse resistant" actually buys.
 
 **What it does.** Runs CTS at five lengths and below one block; encrypts identical sector contents at two different
 tweaks under XTS; seals and opens under CCM, SIV and GCM-SIV with tamper rejection and the detached-tag surface.
 Then, under a deliberately repeated nonce, it changes **one plaintext byte** and counts how many output bytes move.
 
-**What to expect.** CTS never expands the ciphertext at any length — it borrows bytes from the second-to-last block
-to fill the final short one — but it needs at least one full block, so it refuses 8 bytes rather than degrading to
+**What to expect.** CTS never expands the ciphertext at any length - it borrows bytes from the second-to-last block
+to fill the final short one - but it needs at least one full block, so it refuses 8 bytes rather than degrading to
 ECB. XTS produces different ciphertext for identical plaintext at different sectors, which is how a disk encrypts
 without storing a per-sector IV. The final measurement is the load-bearing one:
 
@@ -212,7 +212,7 @@ without storing a per-sector IV. The final measurement is the load-bearing one:
 nonce the keystream repeats: one changed plaintext byte moves that one ciphertext byte and the 16-byte tag, and
 nothing else. An observer who sees two messages sealed under the same `(key, nonce)` can XOR them and recover the
 XOR of the plaintexts. SIV and GCM-SIV derive their counter from a MAC over the plaintext itself, so any change
-re-derives the entire keystream — repeating a nonce then leaks only *whether* two messages were identical, never a
+re-derives the entire keystream - repeating a nonce then leaks only *whether* two messages were identical, never a
 relationship between different ones.
 
 The last block is included to head off a wrong conclusion: sealing the *same* plaintext twice is deterministic in
@@ -237,7 +237,7 @@ sealedBytes = AeadBlockCipherModeTransformExtensions.Encrypt(encryptor, plaintex
 
 That is deliberate. `IAeadBlockCipherModeTransform` declares its own
 `int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)`, and an instance method always beats an extension
-method — so `encryptor.Encrypt(plaintext, associatedData)` binds to the span overload, treats the associated data as
+method - so `encryptor.Encrypt(plaintext, associatedData)` binds to the span overload, treats the associated data as
 the output buffer, and fails to compile on the return type. The sibling `…Samples.SymmetricAndAead` sample does the
 same thing for the same reason.
 
@@ -255,8 +255,8 @@ Bodu.Security.Cryptography.Samples.CipherModesAndPadding/
 
 ## Related
 
-- `Bodu.Security.Cryptography.Samples.SymmetricAndAead` — the same modes configured through the algorithm facade
+- `Bodu.Security.Cryptography.Samples.SymmetricAndAead` - the same modes configured through the algorithm facade
   (`SymmetricAlgorithm.Mode`), plus the block and stream ciphers and the GCM/EAX/OCB AEAD modes.
-- `Bodu.Security.Cryptography.Samples.HybridEncryption` — RFC 9180 HPKE, a higher-level construction built on the
+- `Bodu.Security.Cryptography.Samples.HybridEncryption` - RFC 9180 HPKE, a higher-level construction built on the
   AEAD layer this sample drives directly.
-- `Bodu.Security.Cryptography.Samples.CustomHash` — the equivalent extension point on the hashing side.
+- `Bodu.Security.Cryptography.Samples.CustomHash` - the equivalent extension point on the hashing side.

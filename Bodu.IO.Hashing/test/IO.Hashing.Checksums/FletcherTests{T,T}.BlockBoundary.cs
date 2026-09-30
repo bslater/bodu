@@ -12,7 +12,7 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     /// <summary>
     /// Verifies that appending inputs around the Fletcher block boundary (a spread of lengths covering residual-only,
     /// exact-block, block-plus-one, and multi-block scenarios) produces identical digests whether the input is
-    /// submitted in a single call, in three roughly equal chunks, or one byte at a time — exercising the residual
+    /// submitted in a single call, in three roughly equal chunks, or one byte at a time - exercising the residual
     /// buffer state machine inside <see cref="BlockNonCryptographicHashAlgorithm{T}.Append" />.
     /// </summary>
     /// <param name="length">The input length under test, in bytes.</param>

@@ -8,7 +8,7 @@ namespace Bodu.Financial;
 
 /// <summary>
 /// Rounds a raw monetary amount to a given number of fractional digits. Implementations encapsulate the rounding
-/// convention applied at operation boundaries — banker's rounding, away-from-zero, and so on.
+/// convention applied at operation boundaries - banker's rounding, away-from-zero, and so on.
 /// </summary>
 public interface IRoundingStrategy
 {

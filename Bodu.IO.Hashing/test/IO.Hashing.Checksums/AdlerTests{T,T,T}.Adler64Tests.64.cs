@@ -50,7 +50,7 @@ public sealed partial class Adler64Tests
             QuickBrownFox = "00015BCD00000FDA",
             Zeros16 = "0000001000000001",
 
-            // Long-input regression vectors for issue #127 — expected digests are the canonical
+            // Long-input regression vectors for issue #127 - expected digests are the canonical
             // Adler-64 values (modulus 4294967291) for the (byte)(i & 0xFF) sequence at each
             // length, derived from the per-byte spec.
             Additional =

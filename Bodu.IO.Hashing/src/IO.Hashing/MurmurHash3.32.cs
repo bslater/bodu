@@ -16,7 +16,7 @@ namespace Bodu.IO.Hashing;
 /// <remarks>
 /// <para>
 /// <see cref="MurmurHash3_32" /> processes input in 4-byte blocks, applying a pair of multiply-rotate-XOR mixing steps
-/// per block, followed by a tail pass for any remaining 1–3 bytes. The output is finalized using
+/// per block, followed by a tail pass for any remaining 1-3 bytes. The output is finalized using
 /// <see cref="MurmurHash3.FMix32(uint)" /> to ensure strong avalanche properties.
 /// </para>
 /// <para>
@@ -34,7 +34,7 @@ namespace Bodu.IO.Hashing;
 /// <description>Variant: <c>MurmurHash3_x86_32</c>.</description>
 /// </item>
 /// <item>
-/// <description>Block size: 4 bytes; tail pass for remaining 1–3 bytes.</description>
+/// <description>Block size: 4 bytes; tail pass for remaining 1-3 bytes.</description>
 /// </item>
 /// <item>
 /// <description>Seed: 32 bits, defaults to <c>0</c>.</description>
@@ -136,7 +136,7 @@ public sealed class MurmurHash3_32
         uint h1 = _h1;
         uint k = 0;
 
-        // Tail: fold in the remaining 1–3 bytes.
+        // Tail: fold in the remaining 1-3 bytes.
         switch (tail.Length)
         {
             case 3: k ^= (uint)tail[2] << 16; goto case 2;
@@ -150,7 +150,7 @@ public sealed class MurmurHash3_32
                 break;
         }
 
-        // Finalization over a local copy — the running accumulator is left untouched.
+        // Finalization over a local copy - the running accumulator is left untouched.
         h1 = unchecked(h1 ^ (uint)totalBytes);
         h1 = FMix32(h1);
 

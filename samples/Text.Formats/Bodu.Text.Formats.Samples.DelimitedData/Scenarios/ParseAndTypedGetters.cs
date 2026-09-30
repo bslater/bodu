@@ -13,7 +13,7 @@ namespace Bodu.Samples.Text.Formats.DelimitedData.Scenarios;
 /// <summary>
 /// Demonstrates the read surfaces: <see cref="DelimitedDocument" /> gives JsonDocument-style access to a parsed CSV
 /// (records as objects keyed by header), and <see cref="DelimitedSerializer" /> binds the same file straight onto a
-/// typed record class — numbers and timestamps parsed with <c>InvariantCulture</c>, so nothing depends on the
+/// typed record class - numbers and timestamps parsed with <c>InvariantCulture</c>, so nothing depends on the
 /// machine's locale.
 /// </summary>
 public static class ParseAndTypedGetters

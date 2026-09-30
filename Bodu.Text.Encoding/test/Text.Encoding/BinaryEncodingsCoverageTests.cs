@@ -242,7 +242,7 @@ public sealed class BinaryEncodingsCoverageTests
 
     /// <summary>
     /// Verifies that <see cref="BinaryEncodings.Get(string)" /> throws <see cref="ArgumentException" /> for unknown
-    /// encoding names — the default branch of the switch expression.
+    /// encoding names - the default branch of the switch expression.
     /// </summary>
     [TestMethod]
     public void Get_WhenUnknownName_ShouldThrowExactly()

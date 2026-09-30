@@ -31,7 +31,7 @@ public static partial class IEnumerableExtensions
     /// only the current chunk. This detects transitions between adjacent elements, not separator values.
     /// </para>
     /// <para>
-    /// <paramref name="shouldSplit" /> is invoked exactly once per adjacent pair — that is, <c>count - 1</c> times.
+    /// <paramref name="shouldSplit" /> is invoked exactly once per adjacent pair - that is, <c>count - 1</c> times.
     /// Each yielded chunk is a stable snapshot and is not modified when the enumerator advances.
     /// </para>
     /// <para>

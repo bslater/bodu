@@ -10,8 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Bodu.Financial.Samples.CurrencyServices.Scenarios;
 
 /// <summary>
-/// Demonstrates <see cref="MonetaryContext" /> — the immutable bundle of rounding, scale, cash, and
-/// allocation policy — and registering several of them as named (keyed) services so different parts
+/// Demonstrates <see cref="MonetaryContext" /> - the immutable bundle of rounding, scale, cash, and
+/// allocation policy - and registering several of them as named (keyed) services so different parts
 /// of an application settle money under different rules.
 /// </summary>
 public static class NamedContexts

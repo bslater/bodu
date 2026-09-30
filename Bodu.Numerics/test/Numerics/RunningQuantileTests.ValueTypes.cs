@@ -9,7 +9,7 @@ namespace Bodu.Numerics;
 public partial class RunningQuantileTests
 {
     /// <summary>
-    /// Verifies that passing the estimator by value gives the callee an independent copy — the caller does not
+    /// Verifies that passing the estimator by value gives the callee an independent copy - the caller does not
     /// observe the callee's additions.
     /// </summary>
     [TestMethod]
@@ -23,7 +23,7 @@ public partial class RunningQuantileTests
     }
 
     /// <summary>
-    /// Verifies that passing the estimator by <see langword="ref" /> shares the instance — the caller observes the
+    /// Verifies that passing the estimator by <see langword="ref" /> shares the instance - the caller observes the
     /// callee's additions, including the inline-array marker state.
     /// </summary>
     [TestMethod]

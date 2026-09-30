@@ -75,7 +75,7 @@ public partial class BencodeSerializerTests
 
         byte[] bytes = BencodeSerializer.Serialize(value);
 
-        // d {1:a}{2: 0x01 0x02} {1:b}{0:} e — keys sort ascending, byte-string values carry the raw bytes.
+        // d {1:a}{2: 0x01 0x02} {1:b}{0:} e - keys sort ascending, byte-string values carry the raw bytes.
         byte[] expected = [.. Encoding.Latin1.GetBytes("d1:a2:"), 0x01, 0x02, .. Encoding.Latin1.GetBytes("1:b0:e")];
         CollectionAssert.AreEqual(expected, bytes);
 

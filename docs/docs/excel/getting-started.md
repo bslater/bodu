@@ -1,8 +1,8 @@
 ---
-title: Bodu.Formats.Excel.Binary — Getting started
+title: Bodu.Formats.Excel.Binary - Getting started
 ---
 
-# Bodu.Formats.Excel.Binary — Getting started
+# Bodu.Formats.Excel.Binary - Getting started
 
 Unfamiliar with terms like *BIFF8* and *BIFF5*, *workbook globals*, *cell kind*, *serial date*, or *used range*? Read [Core concepts](concepts.md) first.
 
@@ -22,10 +22,10 @@ using Bodu.Formats.Excel;
 using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead("rates.xls");
 
 foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
-    Console.WriteLine($"{sheet.Index}: {sheet.Name} — {sheet.Dimensions.RowCount} × {sheet.Dimensions.ColumnCount}");
+    Console.WriteLine($"{sheet.Index}: {sheet.Name} - {sheet.Dimensions.RowCount} × {sheet.Dimensions.ColumnCount}");
 ```
 
-`OpenRead` parses the workbook globals — the date system, shared strings, number formats, and sheet directory — and lists the sheets without reading any of their cells. The returned workbook is <xref:System.IDisposable>; the `using` declaration disposes it and closes the source unless `leaveOpen: true` was passed.
+`OpenRead` parses the workbook globals - the date system, shared strings, number formats, and sheet directory - and lists the sheets without reading any of their cells. The returned workbook is <xref:System.IDisposable>; the `using` declaration disposes it and closes the source unless `leaveOpen: true` was passed.
 
 There are four open factories: `OpenRead(string path)`, `OpenRead(FileInfo file)`, `OpenRead(Stream stream, bool leaveOpen = false)`, and `Open(Stream stream, ExcelBinaryReaderOptions options)`. The path and `FileInfo` overloads always own the file they open; the stream overloads read from the stream's current position and let you keep it open.
 
@@ -116,7 +116,7 @@ using (ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead("report.xls")
 {
     Console.WriteLine(workbook.Properties.Title);
     Console.WriteLine(workbook.Properties.Author);
-    Console.WriteLine(workbook.BiffVersion);   // Biff8 (Excel 97–2003) or Biff5 (Excel 5.0/95)
+    Console.WriteLine(workbook.BiffVersion);   // Biff8 (Excel 97-2003) or Biff5 (Excel 5.0/95)
 }
 
 // Or skip the optional metadata work for a pure numeric, time-series read.
@@ -155,7 +155,7 @@ catch (ExcelBinaryUnsupportedException)
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — the vocabulary behind these samples.
-- **[Introduction](index.md)** — headline types and common scenarios.
-- **[Bodu.Formats.Excel.Binary guides](../../guides/excel/index.md)** — reading workbooks, cell values and dates, and the streaming-vs-materialized surfaces.
-- **API reference** — [Bodu.Formats.Excel](xref:Bodu.Formats.Excel).
+- **[Core concepts](concepts.md)** - the vocabulary behind these samples.
+- **[Introduction](index.md)** - headline types and common scenarios.
+- **[Bodu.Formats.Excel.Binary guides](../../guides/excel/index.md)** - reading workbooks, cell values and dates, and the streaming-vs-materialized surfaces.
+- **API reference** - [Bodu.Formats.Excel](xref:Bodu.Formats.Excel).

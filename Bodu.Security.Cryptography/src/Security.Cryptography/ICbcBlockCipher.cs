@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// CBC encryption is sequential — each block is encrypted after the previous ciphertext block is XORed into it — so
+/// CBC encryption is sequential - each block is encrypted after the previous ciphertext block is XORed into it - so
 /// <see cref="IBlockCipher.EncryptBlocks" /> cannot express it. A cipher backed by a platform implementation, such as
 /// <see cref="AesBlockCipher" />, can run the chain in one platform call; the CBC-MAC modes (CMAC, CCM) and CBC
 /// encryption use this interface through <see cref="CbcChain" /> when the cipher offers it.

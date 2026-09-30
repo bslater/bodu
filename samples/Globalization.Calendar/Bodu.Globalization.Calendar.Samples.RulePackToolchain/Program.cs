@@ -20,7 +20,7 @@ namespace Bodu.Globalization.Calendar.Samples.RulePackToolchain;
 /// side: loading that pack.
 /// </para>
 /// <para>
-/// Nothing here reads the network, and the compile step is incremental — a rebuild with no edit to the document
+/// Nothing here reads the network, and the compile step is incremental - a rebuild with no edit to the document
 /// does no work.
 /// </para>
 /// </remarks>

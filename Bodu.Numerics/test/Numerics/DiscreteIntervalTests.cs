@@ -7,7 +7,7 @@
 namespace Bodu.Numerics;
 
 /// <summary>
-/// Verifies the <see cref="DiscreteInterval{T}" /> type — the discrete integer-domain interval — covering the
+/// Verifies the <see cref="DiscreteInterval{T}" /> type - the discrete integer-domain interval - covering the
 /// successor/predecessor-aware emptiness and adjacency that distinguish it from the continuous <see cref="Interval{T}" />.
 /// </summary>
 [TestClass]
@@ -15,7 +15,7 @@ public partial class DiscreteIntervalTests
 {
     /// <summary>
     /// Verifies that an open interval over consecutive integers is empty, because no integer lies strictly between the
-    /// bounds — the P0.1 discrete-domain contradiction the continuous interval cannot express.
+    /// bounds - the P0.1 discrete-domain contradiction the continuous interval cannot express.
     /// </summary>
     [TestMethod]
     public void Open_WhenBoundsAreConsecutiveIntegers_ShouldBeEmpty()

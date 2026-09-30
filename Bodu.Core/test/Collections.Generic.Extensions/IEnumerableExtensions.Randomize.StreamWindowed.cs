@@ -30,7 +30,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
 
     /// <summary>
     /// Verifies that <see cref="RandomizationMode.StreamWindowed" /> applied to a source larger than the window size
-    /// produces a permutation that genuinely differs from the input order — confirming the streaming-replacement loop
+    /// produces a permutation that genuinely differs from the input order - confirming the streaming-replacement loop
     /// actually permutes the sequence rather than yielding the input verbatim.
     /// </summary>
     [TestMethod]

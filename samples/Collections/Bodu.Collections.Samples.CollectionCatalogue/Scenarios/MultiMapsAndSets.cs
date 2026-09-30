@@ -11,7 +11,7 @@ namespace Bodu.Collections.Samples.CollectionCatalogue.Scenarios;
 /// <summary>
 /// Demonstrates the multi-map and set family: <see cref="MultiValueDictionary{TKey, TValue}" /> (one key,
 /// many values), <see cref="Multiset{T}" /> (elements with multiplicities), and the two insertion-ordered
-/// sets — <see cref="OrderedSet{T}" /> and the index-addressable <see cref="IndexedSet{T}" />.
+/// sets - <see cref="OrderedSet{T}" /> and the index-addressable <see cref="IndexedSet{T}" />.
 /// </summary>
 /// <remarks>
 /// Each of these replaces a hand-rolled shape that is easy to write badly: a <c>Dictionary&lt;K, List&lt;V&gt;&gt;</c>

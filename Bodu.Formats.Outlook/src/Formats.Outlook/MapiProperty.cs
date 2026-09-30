@@ -21,7 +21,7 @@ namespace Bodu.Formats.Outlook;
 /// type.
 /// </para>
 /// <para>
-/// A <see langword="null" /> value is permitted — it represents a property whose payload is absent or, as for
+/// A <see langword="null" /> value is permitted - it represents a property whose payload is absent or, as for
 /// <see cref="MapiPropertyType.Object" />, not representable inline.
 /// </para>
 /// </remarks>

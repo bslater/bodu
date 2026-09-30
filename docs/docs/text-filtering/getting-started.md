@@ -1,8 +1,8 @@
 ---
-title: Bodu.Text.Filtering — Getting started
+title: Bodu.Text.Filtering - Getting started
 ---
 
-# Bodu.Text.Filtering — Getting started
+# Bodu.Text.Filtering - Getting started
 
 Unfamiliar with terms like *action*, *evaluation mode*, or *deciding pattern*? Read
 [Core concepts](concepts.md) first.
@@ -54,9 +54,9 @@ bool vetoed = filter.IsMatch("error-debug");   // → false
 var ordered = new TextFilterOptions { Mode = TextFilterEvaluationMode.LastMatchWins };
 var filter = TextFilter.Parse(["!*.log", "important.log"], ordered);
 
-filter.IsMatch("app.log");        // → false — excluded by "!*.log"
-filter.IsMatch("important.log");  // → true  — re-included by the later rule
-filter.IsMatch("readme.txt");     // → true  — unmatched values are included
+filter.IsMatch("app.log");        // → false - excluded by "!*.log"
+filter.IsMatch("important.log");  // → true  - re-included by the later rule
+filter.IsMatch("readme.txt");     // → true  - unmatched values are included
 ```
 
 ### Ask which pattern decided
@@ -71,7 +71,7 @@ var result = filter.Evaluate("app.log");
 ```csharp
 var stats = filter.GetStatistics();
 // → stats.ItemsEvaluated, stats.ItemsAccepted, stats.ItemsExcluded,
-//   stats.Patterns[i].HitCount — decisions credited to each pattern
+//   stats.Patterns[i].HitCount - decisions credited to each pattern
 ```
 
 ## Fluent assembly with the builder
@@ -86,8 +86,8 @@ var filter = new TextFilterBuilder()
 
 ## Where to go next
 
-- **[Bodu.Text.Filtering guides](../../guides/text-filtering/index.md)** — the grammar, the modes, and telemetry in depth.
-- **[Core concepts](concepts.md)** — vocabulary refresher.
-- **[Introduction](index.md)** — type map and scenario index.
-- **[Runnable samples](../../samples/text-filtering.md)** — the FilteringTour console sample.
-- **[Bodu.Text.Filtering API reference](xref:Bodu.Text.Filtering)** — full type-by-type docs.
+- **[Bodu.Text.Filtering guides](../../guides/text-filtering/index.md)** - the grammar, the modes, and telemetry in depth.
+- **[Core concepts](concepts.md)** - vocabulary refresher.
+- **[Introduction](index.md)** - type map and scenario index.
+- **[Runnable samples](../../samples/text-filtering.md)** - the FilteringTour console sample.
+- **[Bodu.Text.Filtering API reference](xref:Bodu.Text.Filtering)** - full type-by-type docs.

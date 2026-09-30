@@ -1,6 +1,6 @@
 # Bodu.Globalization.Calendar.Caching.Sqlite
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 A durable **SQLite** storage backend for the
 [`Bodu.Globalization.Calendar.Caching`](https://www.nuget.org/packages/Bodu.Globalization.Calendar.Caching)
@@ -32,7 +32,7 @@ services.AddSqliteNotableDateCache(/* … */);
 | `SqliteNotableDateCacheOptions` | Connection and store configuration |
 | `SqliteNotableDateCacheExtensions` | The `AddSqliteNotableDateCache` registration |
 
-It is a storage backend only — the caching *policy* (per-year units, time-to-live plus
+It is a storage backend only - the caching *policy* (per-year units, time-to-live plus
 resource-version invalidation, single-flight cold misses, best-effort storage) lives in
 `CachingNotableDateService` and is identical across every backend. Like the other shipped backends
 it degrades gracefully: a failed read is treated as a miss and a failed write is skipped, so a

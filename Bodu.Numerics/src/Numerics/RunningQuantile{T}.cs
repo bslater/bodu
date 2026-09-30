@@ -20,7 +20,7 @@ namespace Bodu.Numerics;
 /// <para>
 /// The estimator maintains five markers that track the minimum, the maximum, the target quantile, and the two quantiles
 /// halfway between it and the extremes, adjusting the middle markers with piecewise-parabolic (hence "P²")
-/// interpolation as samples arrive. Each <see cref="Add" /> is O(1) and the state is a fixed scalar block — the samples
+/// interpolation as samples arrive. Each <see cref="Add" /> is O(1) and the state is a fixed scalar block - the samples
 /// themselves are never stored. Samples are widened to <see cref="double" /> with
 /// <see cref="double.CreateChecked{TOther}(TOther)" />, so <see cref="Estimate" /> is always a floating-point estimate.
 /// </para>
@@ -32,12 +32,12 @@ namespace Bodu.Numerics;
 /// </para>
 /// <para>
 /// This is a <b>mutable value type</b>. Store it in a mutable field or local and pass it by <see langword="ref" />; do
-/// not capture it in a lambda or iterator that expects reference semantics — each copy accumulates independently from
+/// not capture it in a lambda or iterator that expects reference semantics - each copy accumulates independently from
 /// the point of the copy, which is also the supported way to checkpoint. The <see langword="default" /> value is a
 /// valid empty <em>median</em> estimator; use the constructor for any other probability.
 /// </para>
 /// <para>
-/// Unlike <see cref="RunningStatistics{T}" />, two P² estimators cannot be merged — the marker states of two partitions
+/// Unlike <see cref="RunningStatistics{T}" />, two P² estimators cannot be merged - the marker states of two partitions
 /// do not compose. Partition-and-combine workloads should carry the mergeable moments in
 /// <see cref="RunningStatistics{T}" /> and reserve this type for single-stream use. Samples must be finite: NaN and
 /// infinite values are rejected by <see cref="Add" />.
@@ -193,7 +193,7 @@ public partial struct RunningQuantile<T>
     /// <param name="x">The widened sample value.</param>
     private void AddSteadyState(double x)
     {
-        // Step 1 — find the cell k with q[k] <= x < q[k+1], clamping a new extreme into the outer marker.
+        // Step 1 - find the cell k with q[k] <= x < q[k+1], clamping a new extreme into the outer marker.
         int k;
         if (x < _heights[0])
         {
@@ -212,7 +212,7 @@ public partial struct RunningQuantile<T>
                 k++;
         }
 
-        // Step 2 — shift the actual positions above the cell, and advance every desired position.
+        // Step 2 - shift the actual positions above the cell, and advance every desired position.
         for (var i = k + 1; i < 5; i++)
             _positions[i]++;
 
@@ -222,7 +222,7 @@ public partial struct RunningQuantile<T>
         _desired[3] += (1.0 + p) / 2.0;
         _desired[4] += 1.0;
 
-        // Step 3 — re-centre the middle markers toward their desired positions, one rank at a time.
+        // Step 3 - re-centre the middle markers toward their desired positions, one rank at a time.
         for (var i = 1; i <= 3; i++)
         {
             var offset = _desired[i] - _positions[i];

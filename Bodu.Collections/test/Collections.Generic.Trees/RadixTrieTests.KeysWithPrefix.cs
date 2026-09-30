@@ -21,7 +21,7 @@ public sealed partial class RadixTrieTests
     }
 
     /// <summary>
-    /// Verifies that a prefix crossing a split boundary — matching an intermediate node exactly — returns only the
+    /// Verifies that a prefix crossing a split boundary - matching an intermediate node exactly - returns only the
     /// keys below that node.
     /// </summary>
     [TestMethod]

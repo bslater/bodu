@@ -2,7 +2,7 @@
 
 This guide describes how Bodu measures test coverage, how to reproduce the
 numbers locally, and the handful of cases where a literal "99% on one machine"
-target is misleading — most importantly the SIMD/scalar split in
+target is misleading - most importantly the SIMD/scalar split in
 `Bodu.Security.Cryptography`.
 
 ## Measuring coverage
@@ -10,13 +10,13 @@ target is misleading — most importantly the SIMD/scalar split in
 **coverlet is the authoritative basis.** The test projects reference
 `coverlet.collector` (supplied centrally by `Directory.Build.targets`, gated on
 `IsTestProject`), and its `line-rate` already uses the line basis this document
-defines — see [Reading the numbers](#reading-the-numbers) — so the tool's number
+defines - see [Reading the numbers](#reading-the-numbers) - so the tool's number
 and the project's working definition are the same number. `Microsoft.NET.Test.Sdk`
 also brings the Microsoft **Code Coverage** collector; it remains available as a
 secondary diagnostic, but reported figures come from coverlet.
 
-Coverage must be collected against the **full** suite — the `regression`
-tier — because the default `bvt` run deliberately excludes the exhaustive
+Coverage must be collected against the **full** suite - the `regression`
+tier - because the default `bvt` run deliberately excludes the exhaustive
 vector tables and large sweeps that exercise many branches. `coverage.runsettings`
 pairs that tier filter with a fully configured collector, so the ordinary
 `regression.runsettings` run stays uninstrumented and fast:
@@ -64,7 +64,7 @@ Every collected package sits at or above **90% line coverage**, and
 `bld/coverage-thresholds.json` holds a per-package floor at roughly its measured
 rate. The floor is a gate, not a target: a package well above it is not
 "finished", and a package at it is not in trouble. What the invariant buys is
-that a new gap has to be introduced deliberately — the ratchet fails the build
+that a new gap has to be introduced deliberately - the ratchet fails the build
 before an untested subsystem can arrive quietly inside an otherwise healthy
 package total.
 
@@ -72,8 +72,8 @@ Two consequences worth stating, because both were live questions while the floor
 was being established:
 
 - **A package total can hide an entire dead subsystem.** `Bodu.IO.Pst` read 79.9%
-  overall while `PstDataTree.cs` — the `XBLOCK`/`XXBLOCK` layout every node payload
-  above roughly 8&#160;KB uses — was 30 of 37 lines uncovered, because the whole
+  overall while `PstDataTree.cs` - the `XBLOCK`/`XXBLOCK` layout every node payload
+  above roughly 8&#160;KB uses - was 30 of 37 lines uncovered, because the whole
   reference corpus is small files whose nodes each fit one block. The number to
   interrogate is the shape of the gap, not the percentage.
 - **Reaching the floor with unrelated lines is the failure mode the floor exists
@@ -96,12 +96,12 @@ based on the CPU, so **no single machine can cover both**:
 - On a host **without** AVX512 the scalar path is covered and every
   `*.Avx512.cs` file reports 0%.
 
-These files are therefore **not a missing-test gap** — they are exercised by
+These files are therefore **not a missing-test gap** - they are exercised by
 the standard KAT suites; coverage simply depends on where the suite runs. The
 report that prompted this work was collected on a non-AVX512 machine, which is
 why those files appeared at 0%.
 
-> **Measured correction — see [Coverage baseline](coverage-baseline.md).** That
+> **Measured correction - see [Coverage baseline](coverage-baseline.md).** That
 > reasoning holds for whichever path the host *can* execute, but it has been used
 > to wave away both. Collected on an **AVX512-capable** host with
 > `Bodu.Security.Cryptography.Simd.Test` in the merge, the split is:
@@ -115,7 +115,7 @@ why those files appeared at 0%.
 > `ThreefishBlockCipher.1024.cs` sits at 8.3%, `.256.cs` at 19.0%, and `.512.cs`
 > at 12.8%. The two-run merge is what should close this, but
 > `Bodu.Security.Cryptography.Simd.Test` runs **3 tests** against the main
-> suite's 28,757 — the feature switch works, the suite behind it is a stub.
+> suite's 28,757 - the feature switch works, the suite behind it is a stub.
 >
 > The symmetry is what makes this easy to miss: on a non-AVX512 machine the same
 > gap is invisible, because there the scalar paths are the ones the KAT suite
@@ -126,7 +126,7 @@ why those files appeared at 0%.
 > Closing it means running the existing known-answer suites under the switch, not
 > authoring new vectors.
 
-### The dual pass — now automated
+### The dual pass - now automated
 
 The two-run merge this section prescribes is wired into the tooling:
 
@@ -144,7 +144,7 @@ ReportGenerator takes the maximum hit count per line, so merging the two yields
 the union rather than either half. `.github/workflows/coverage.yml` runs the
 scalar pass automatically in whichever job collected the crypto suite.
 
-Measured effect of adding the second pass — no test code was written:
+Measured effect of adding the second pass - no test code was written:
 
 | | Intrinsic paths | Scalar paths | Package |
 |---|--:|--:|--:|
@@ -157,8 +157,8 @@ wall clock for nothing.
 
 **This does not retire the `n/a (hardware-gated)` classification** in
 `tools/New-CoverageMatrix.ps1`. A single-pass local run on a machine without
-AVX-512 still cannot execute the intrinsic files — every `*.Avx512.cs`, and the
-512-bit `*.Vector512.cs` kernels, which the script classifies with them — and
+AVX-512 still cannot execute the intrinsic files - every `*.Avx512.cs`, and the
+512-bit `*.Vector512.cs` kernels, which the script classifies with them - and
 reporting them as 0% there would be wrong. The classification stays for that case; after a dual pass it
 simply never triggers, because neither path is unreachable any more.
 
@@ -188,8 +188,8 @@ BLAKE3's 128-bit kernels reuse the BLAKE2s shims, so on ARM64 they too run throu
 512-bit one, `Blake3Core.Vector512.cs`, is classified with the AVX-512 files.
 
 `tools/New-CoverageMatrix.ps1` therefore treats `*.AdvSimd.cs` and
-`*.PmullIsa.cs` as hardware-gated whenever no collecting host is ARM64 — judged
-from the `arch` field every collection manifest records — and reports them as
+`*.PmullIsa.cs` as hardware-gated whenever no collecting host is ARM64 - judged
+from the `arch` field every collection manifest records - and reports them as
 `n/a (hardware-gated)` rather than 0%. As with the AVX-512 files, the rule
 applies only on positive evidence: a collection with no recorded architecture
 reports the files as measured. The shims are not untested: the ARM64 job in
@@ -210,12 +210,12 @@ suites for every SIMD-gated primitive, so the scalar fallbacks are held to the
 same vectors as the accelerated paths.
 
 The suites are **linked**, not duplicated, and not reached by referencing the main
-test assembly — nothing there has to be unsealed or made visible. `KatCensus` is
+test assembly - nothing there has to be unsealed or made visible. `KatCensus` is
 deliberately excluded: `KatCensusTests` rewrites the committed `kat-census.txt`,
 and a second writer in a second assembly would corrupt it.
 
-Run on its own, that assembly executes the scalar implementations at 87–95% and
-every Threefish `*.Avx512.cs` file at **0%** — measured proof that the switch is
+Run on its own, that assembly executes the scalar implementations at 87-95% and
+every Threefish `*.Avx512.cs` file at **0%** - measured proof that the switch is
 engaged and the intrinsic path is not running. The BLAKE intrinsic files of the
 time showed four lines of their static constructor, which initialized rotation
 constants whenever the type was touched; no intrinsic compute code executed. The
@@ -227,8 +227,8 @@ should the environment-variable pass ever be removed.
 
 ## Stale paths across a folder or namespace refactor
 
-Coverage is keyed by source-file path. When a report is collected — or several
-runs are **merged** — across a commit that *moves or renames* source files, the
+Coverage is keyed by source-file path. When a report is collected - or several
+runs are **merged** - across a commit that *moves or renames* source files, the
 result silently double-counts: the old paths linger as **phantom entries at 0%**
 that no longer exist on disk, sitting alongside the real entries for the renamed
 files. The phantom rows drag every module aggregate down even though the live
@@ -237,7 +237,7 @@ code is well covered.
 The flatten in **#528** (`Bodu.Financial.ExchangeRates.<Provider>` →
 `Bodu.Financial.ExchangeRates`, moving `src/Financial.ExchangeRates.<Provider>/…`
 to `src/Financial.ExchangeRates/…`) is the worked example. A report spanning that
-commit listed the provider modules at 41–61% and every parser at 0%, when the
+commit listed the provider modules at 41-61% and every parser at 0%, when the
 real per-file coverage was already healthy:
 
 | File | Report (phantom path) | Actual (live path) |
@@ -253,22 +253,22 @@ discard any row whose file path does not resolve on disk before computing a
 percentage. A path that exists under two different folder spellings is the
 tell-tale of a cross-refactor artifact, not a coverage gap.
 
-The genuinely low spots this re-measurement surfaced were narrow — the
+The genuinely low spots this re-measurement surfaced were narrow - the
 `OfxRateProvider` owned-client constructor path (now covered) and the
 file-system feed/response/workbook caches' best-effort I/O swallow blocks. The
 caches' `Store` `IOException` path is covered; their `UnauthorizedAccessException`
 catches and `TryGet` read-fault catches are left uncovered by design per
-[Reading the numbers](#reading-the-numbers) — the test process runs as root, so
+[Reading the numbers](#reading-the-numbers) - the test process runs as root, so
 permission denial cannot be forced, and a mid-read I/O fault is not reproducible
 cross-platform.
 
 ## Source compiled into more than one assembly
 
-`Bodu.Text.Serialization/shared/**` is not only shipped as its own assembly — it
+`Bodu.Text.Serialization/shared/**` is not only shipped as its own assembly - it
 is also `Compile Include`d directly into `Bodu.Text.Toml`, `Bodu.Text.Bencode`
 and `Bodu.Text.Yaml`, each under its own format symbol. The `Link=` metadata
-affects only IDE display, so the PDB document path — and therefore the Cobertura
-`filename` — is the real on-disk path under `Bodu.Text.Serialization/shared/`.
+affects only IDE display, so the PDB document path - and therefore the Cobertura
+`filename` - is the real on-disk path under `Bodu.Text.Serialization/shared/`.
 
 Those lines consequently appear **once per host assembly**. ReportGenerator will
 not collapse them, and it is right not to: they genuinely belong to three
@@ -299,13 +299,13 @@ the host csproj globs.
 | `shared/Caching/**` | `Caching (shared source)` | `Financial.ExchangeRates.Caching`, `Globalization.Calendar.Caching` |
 
 Attribution matters even where the totals do not move. The file map is keyed by
-repo-relative path, so a shared file is never *double-counted* — but before this
+repo-relative path, so a shared file is never *double-counted* - but before this
 table existed, the two smaller sets were attributed wholesale to whichever host
 the merge happened to emit first. `Bodu.Formats.Outlook.Msg` carried all 48 lines
 of `CrcCore.cs` and `Bodu.IO.Pst` showed none of it; closing a line in that file
 would have moved a row that does not own it. Splitting the sets out cost
 `Outlook.Msg` 1.1pp and gained `ExchangeRates.Caching` 0.3pp, with the solution
-figure unchanged — a correction, not a regression, so the two `Outlook.Msg`
+figure unchanged - a correction, not a regression, so the two `Outlook.Msg`
 ratchet floors were lowered by hand to match. That is the only circumstance in
 which a floor comes down.
 
@@ -313,10 +313,10 @@ The three sets are not alike in one respect that the stale-numbering check cares
 about. `Bodu.Text.Serialization/shared/**` selects **whole members** by format
 symbol, so its hosts legitimately instrument different line sets and it is exempt
 from that check. The other two select only a namespace declaration, which carries
-no sequence points — so if their hosts ever disagree about which lines are
+no sequence points - so if their hosts ever disagree about which lines are
 instrumentable, that really is stale data and should be reported.
 
-The same keying — by source path and line number rather than by class — also
+The same keying - by source path and line number rather than by class - also
 collapses the duplicate rows a file containing several classes would otherwise
 contribute.
 
@@ -330,7 +330,7 @@ the package.
 Large generated catalogues are covered by a single reflective sweep rather than
 per-item tests:
 
-- **`Bodu.Financial.Currencies`** — `CurrencyCatalogueTests` enumerates every
+- **`Bodu.Financial.Currencies`** - `CurrencyCatalogueTests` enumerates every
   shipped `ICurrency` tag type, validates its static metadata against the
   `CurrencyRegistry`, and exercises the generated constructors. Regenerating the
   catalogue (`dotnet run --project tools/CurrencyCatalogueGenerator`) keeps the

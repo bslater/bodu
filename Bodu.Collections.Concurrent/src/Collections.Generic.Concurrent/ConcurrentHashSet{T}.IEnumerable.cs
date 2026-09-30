@@ -23,7 +23,7 @@ public sealed partial class ConcurrentHashSet<T> :
     /// </para>
     /// <para>
     /// Because the enumerator operates on a snapshot, it never throws <see cref="System.InvalidOperationException" />
-    /// due to concurrent modification — unlike enumerators on non-concurrent collections.
+    /// due to concurrent modification - unlike enumerators on non-concurrent collections.
     /// </para>
     /// </remarks>
     public Enumerator GetEnumerator() =>

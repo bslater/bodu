@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// ANSI X.923 round-trip tests driven across every concrete <see cref="SymmetricAlgorithm" />
-/// declared in the library. ANSI X.923 is a length-recoverable padding scheme — every input
+/// declared in the library. ANSI X.923 is a length-recoverable padding scheme - every input
 /// (including empty and already-block-aligned) produces ciphertext that is one block longer
 /// than the plaintext, padded out with zero bytes followed by a length byte. These tests
 /// pin the encrypt/decrypt round-trip across <see cref="CryptoStream" /> for empty,
@@ -44,7 +44,7 @@ public sealed partial class Ansix923PaddingTests
 
     /// <summary>
     /// Verifies that a block-aligned plaintext round-trips through <see cref="CryptoStream" />
-    /// under <see cref="PaddingMode.ANSIX923" /> — ANSI X.923 always appends a full block of
+    /// under <see cref="PaddingMode.ANSIX923" /> - ANSI X.923 always appends a full block of
     /// padding (since the input is already aligned), and the decrypt pipeline strips it back off.
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
@@ -69,7 +69,7 @@ public sealed partial class Ansix923PaddingTests
 
     /// <summary>
     /// Verifies that a sub-block plaintext round-trips through <see cref="CryptoStream" /> under
-    /// <see cref="PaddingMode.ANSIX923" /> — the trailing residual is padded out to the next
+    /// <see cref="PaddingMode.ANSIX923" /> - the trailing residual is padded out to the next
     /// block boundary, and the decrypt pipeline recovers the original prefix.
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
@@ -95,9 +95,9 @@ public sealed partial class Ansix923PaddingTests
     }
 
     /// <summary>
-    /// Verifies that a multi-write <see cref="CryptoStream" /> session — calling
+    /// Verifies that a multi-write <see cref="CryptoStream" /> session - calling
     /// <see cref="Stream.Write(byte[], int, int)" /> several times with chunks of varying sizes
-    /// that do not align with the cipher's block boundary — still produces ciphertext that
+    /// that do not align with the cipher's block boundary - still produces ciphertext that
     /// decrypts to the concatenated plaintext under <see cref="PaddingMode.ANSIX923" />.
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>

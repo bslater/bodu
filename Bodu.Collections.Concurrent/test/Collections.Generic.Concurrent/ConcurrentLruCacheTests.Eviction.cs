@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 public partial class ConcurrentLruCacheTests
 {
     /// <summary>
-    /// Verifies that entries that are never read are evicted in insertion order — the pseudo-LRU degenerates to FIFO
+    /// Verifies that entries that are never read are evicted in insertion order - the pseudo-LRU degenerates to FIFO
     /// flow-through when nothing is accessed.
     /// </summary>
     [TestMethod]

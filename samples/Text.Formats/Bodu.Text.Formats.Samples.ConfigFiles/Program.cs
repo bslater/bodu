@@ -10,7 +10,7 @@ namespace Bodu.Samples.Text.Formats.ConfigFiles;
 
 /// <summary>
 /// Entry point for the config-files sample: the INI and DotEnv formats from <c>Bodu.Text.Ini</c>
-/// and <c>Bodu.Text.DotEnv</c> — reading typed values, mutating and re-emitting an INI document
+/// and <c>Bodu.Text.DotEnv</c> - reading typed values, mutating and re-emitting an INI document
 /// with its comments intact, and the deliberately literal (no-interpolation) DotEnv contract.
 /// Everything runs offline against the committed <c>Data/app.ini</c> and <c>Data/env.sample</c>.
 /// </summary>

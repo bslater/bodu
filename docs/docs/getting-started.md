@@ -4,13 +4,13 @@ title: Getting started
 
 # Getting started
 
-This page is a **cross-library tour**. It installs the Bodu packages, then for each library gives a one-minute orientation, a minimal working sample, and pointers to that library's introduction and getting-started guide. The sections follow the suite's seven topics — each topic heading links to its [topic overview](introduction.md#the-suite-in-seven-topics) page.
+This page is a **cross-library tour**. It installs the Bodu packages, then for each library gives a one-minute orientation, a minimal working sample, and pointers to that library's introduction and getting-started guide. The sections follow the suite's seven topics - each topic heading links to its [topic overview](introduction.md#the-suite-in-seven-topics) page.
 
-If you only need a single library, jump straight to its section below — each one ends with links to its dedicated **Introduction**, **Getting started**, and **Guides** pages.
+If you only need a single library, jump straight to its section below - each one ends with links to its dedicated **Introduction**, **Getting started**, and **Guides** pages.
 
 ## Prerequisites
 
-- The **.NET 8 SDK** — every runtime package in the solution targets `net8.0`. (The one exception is the build-time `Bodu.Globalization.Calendar.Build` MSBuild task package, which targets `netstandard2.0` so it loads inside any MSBuild host.)
+- The **.NET 8 SDK** - every runtime package in the solution targets `net8.0`. (The one exception is the build-time `Bodu.Globalization.Calendar.Build` MSBuild task package, which targets `netstandard2.0` so it loads inside any MSBuild host.)
 
 ```bash
 dotnet --version
@@ -18,7 +18,7 @@ dotnet --version
 
 ## Install
 
-Each package is versioned and released independently; install only the ones you need. `Bodu.Core` is the common foundation and is pulled in automatically. A few packages layer on other Bodu packages — `Bodu.Financial` on `Bodu.Numerics`, `Bodu.Formats.Excel.Binary` on `Bodu.IO.Compound` and `Bodu.IO.Biff`, `Bodu.IO.Pst` on `Bodu.Collections`, every serializer on `Bodu.Text.Serialization` — and NuGet resolves those transitively too; the [package matrix](package-matrix.md) lists each package's dependencies.
+Each package is versioned and released independently; install only the ones you need. `Bodu.Core` is the common foundation and is pulled in automatically. A few packages layer on other Bodu packages - `Bodu.Financial` on `Bodu.Numerics`, `Bodu.Formats.Excel.Binary` on `Bodu.IO.Compound` and `Bodu.IO.Biff`, `Bodu.IO.Pst` on `Bodu.Collections`, every serializer on `Bodu.Text.Serialization` - and NuGet resolves those transitively too; the [package matrix](package-matrix.md) lists each package's dependencies.
 
 ```bash
 # Core Foundations
@@ -71,11 +71,11 @@ dotnet add package Bodu.Formats.Outlook.Pst
 
 ## Core Foundations
 
-The foundation of the suite — see the **[Core Foundations overview](topics/core-foundations.md)** for how every other topic builds on it.
+The foundation of the suite - see the **[Core Foundations overview](topics/core-foundations.md)** for how every other topic builds on it.
 
 ### Bodu.Core
 
-**Bodu.Core** is the foundation package — the `WeekPattern` value type, pooled buffers, async coordination primitives, railway outcomes (`Option<T>` / `Result<T>`), and date / numeric / span extensions sitting on a centralized `ThrowHelper`. It is the one package every other Bodu library depends on.
+**Bodu.Core** is the foundation package - the `WeekPattern` value type, pooled buffers, async coordination primitives, railway outcomes (`Option<T>` / `Result<T>`), and date / numeric / span extensions sitting on a centralized `ThrowHelper`. It is the one package every other Bodu library depends on.
 
 ```csharp
 using Bodu;
@@ -87,13 +87,13 @@ WeekPattern allDays  = weekdays | weekend;
 bool monday = weekdays.Contains(DayOfWeek.Monday); // true
 ```
 
-`WeekPattern` is an immutable 7-bit bitmask value type for sets of days of the week — compose with the bitwise operators, parse from compact text, and enumerate the selected days in order.
+`WeekPattern` is an immutable 7-bit bitmask value type for sets of days of the week - compose with the bitwise operators, parse from compact text, and enumerate the selected days in order.
 
 → **[Introduction](core/index.md)** · **[Getting started](core/getting-started.md)** · **[Guides](../guides/core/index.md)**
 
 ### Bodu.Collections
 
-**Bodu.Collections** is the specialized collection catalogue (it depends on `Bodu.Core`; the namespaces are unchanged) — fixed-capacity rings, policy-driven caches with TTL expiry, navigable and range-keyed lookups, interval trees, graphs, tries, and probabilistic sketches.
+**Bodu.Collections** is the specialized collection catalogue (it depends on `Bodu.Core`; the namespaces are unchanged) - fixed-capacity rings, policy-driven caches with TTL expiry, navigable and range-keyed lookups, interval trees, graphs, tries, and probabilistic sketches.
 
 ```csharp
 using Bodu.Collections.Generic;
@@ -115,7 +115,7 @@ int oldest = buffer.Dequeue(); // 2
 
 ### Bodu.Collections.Concurrent
 
-**Bodu.Collections.Concurrent** ships the thread-safe members of the catalogue (it depends on `Bodu.Collections`) — the lock-free `ConcurrentCircularBuffer<T>` and the lock-free split-ordered `ConcurrentHashSet<T>`, both with snapshot enumeration that never throws on concurrent modification, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache with all six eviction policies, optional TTL, and single-flight `GetOrAdd`.
+**Bodu.Collections.Concurrent** ships the thread-safe members of the catalogue (it depends on `Bodu.Collections`) - the lock-free `ConcurrentCircularBuffer<T>` and the lock-free split-ordered `ConcurrentHashSet<T>`, both with snapshot enumeration that never throws on concurrent modification, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache with all six eviction policies, optional TTL, and single-flight `GetOrAdd`.
 
 ```csharp
 using Bodu.Collections.Generic.Concurrent;
@@ -129,13 +129,13 @@ Parallel.ForEach(events, e =>
 });
 ```
 
-`Contains` is lock-free — readers never block writers — and disjoint writers proceed in parallel across independently locked bucket regions.
+`Contains` is lock-free - readers never block writers - and disjoint writers proceed in parallel across independently locked bucket regions.
 
 → **[Introduction](collections-concurrent/index.md)** · **[Getting started](collections-concurrent/getting-started.md)** · **[Guides](../guides/core/concurrent-collections.md)**
 
 ### Bodu.Text
 
-The **`Bodu.Text`** namespace — shipped in the `Bodu.Core` package — adds the ergonomic, allocation-aware surface the BCL leaves out on top of `System.Text.Encoding` — byte-order-mark detection, span- and UTF-8-friendly transcoding, preamble handling, and validation. (For binary-to-text codecs such as Base64, reach for `Bodu.Text.Encoding` below.)
+The **`Bodu.Text`** namespace - shipped in the `Bodu.Core` package - adds the ergonomic, allocation-aware surface the BCL leaves out on top of `System.Text.Encoding` - byte-order-mark detection, span- and UTF-8-friendly transcoding, preamble handling, and validation. (For binary-to-text codecs such as Base64, reach for `Bodu.Text.Encoding` below.)
 
 ```csharp
 using Bodu.Text;
@@ -156,17 +156,17 @@ int written = text.EncodeUtf8To(buffer);
 byte[] withBom = text.ToBytesWithPreamble(System.Text.Encoding.UTF8);
 ```
 
-`EncodingDetection.TryDetectByPreamble` is non-allocating and recognises the five canonical Unicode BOMs; `GetStringSkippingPreamble` decodes the payload while dropping any leading preamble. Going the other way, `StringEncodingExtensions` sizes and writes UTF-8 (or any encoding) straight into a span or `IBufferWriter<byte>` — `GetUtf8ByteCount` / `EncodeUtf8To` above, plus `TryEncodeUtf8To`, `WriteUtf8To`, the pooled `GetUtf8BytesPooled`, and their `Encoding`-parameterised twins — and `ToBytesWithPreamble` emits the BOM the detector will recognise. The `EncodingExtensions` surface adds the chunked and `Try*` overloads for the hot paths.
+`EncodingDetection.TryDetectByPreamble` is non-allocating and recognises the five canonical Unicode BOMs; `GetStringSkippingPreamble` decodes the payload while dropping any leading preamble. Going the other way, `StringEncodingExtensions` sizes and writes UTF-8 (or any encoding) straight into a span or `IBufferWriter<byte>` - `GetUtf8ByteCount` / `EncodeUtf8To` above, plus `TryEncodeUtf8To`, `WriteUtf8To`, the pooled `GetUtf8BytesPooled`, and their `Encoding`-parameterised twins - and `ToBytesWithPreamble` emits the BOM the detector will recognise. The `EncodingExtensions` surface adds the chunked and `Try*` overloads for the hot paths.
 
 → **[Introduction](text/index.md)** · **[API reference](xref:Bodu.Text)**
 
 ## Hashing & Cryptography
 
-One question splits the two packages — *is there an adversary?* — see the **[Hashing & Cryptography overview](topics/hashing-and-cryptography.md)** for the decision rule.
+One question splits the two packages - *is there an adversary?* - see the **[Hashing & Cryptography overview](topics/hashing-and-cryptography.md)** for the decision rule.
 
 ### Bodu.IO.Hashing
 
-**Bodu.IO.Hashing** covers non-cryptographic hashing — fingerprints for hash-table keys, checksums for error detection, and check digits for human-typed identifiers. Every type shares the BCL `Append` / `GetCurrentHash` / `Reset` lifecycle, and nothing here is safe against an adversary who can choose the input.
+**Bodu.IO.Hashing** covers non-cryptographic hashing - fingerprints for hash-table keys, checksums for error detection, and check digits for human-typed identifiers. Every type shares the BCL `Append` / `GetCurrentHash` / `Reset` lifecycle, and nothing here is safe against an adversary who can choose the input.
 
 ```csharp
 using System.Text;
@@ -186,7 +186,7 @@ Swap `CRC32_ISOHDLC` for any of the 113 entries in the [CRC catalogue](../guides
 
 ### Bodu.Security.Cryptography
 
-**Bodu.Security.Cryptography** provides cryptographic primitives with a formal adversary model — block ciphers, AEAD modes, keyed hashes, and cryptographic digests — all on the standard `SymmetricAlgorithm` / `HashAlgorithm` contracts, so they drop into any code that already speaks .NET cryptography.
+**Bodu.Security.Cryptography** provides cryptographic primitives with a formal adversary model - block ciphers, AEAD modes, keyed hashes, and cryptographic digests - all on the standard `SymmetricAlgorithm` / `HashAlgorithm` contracts, so they drop into any code that already speaks .NET cryptography.
 
 ```csharp
 using System.Security.Cryptography;
@@ -206,11 +206,11 @@ ulong digest = BitConverter.ToUInt64(sip.ComputeHash(data));
 
 ## Globalization & Calendars
 
-The notable-date runtime plus its companions and regional data packs — see the **[Globalization & Calendars overview](topics/globalization-and-calendars.md)** for how the package family composes.
+The notable-date runtime plus its companions and regional data packs - see the **[Globalization & Calendars overview](topics/globalization-and-calendars.md)** for how the package family composes.
 
 ### Bodu.Globalization.Calendar
 
-**Bodu.Globalization.Calendar** resolves notable dates — public holidays, observances, religious festivals — for a date, range, or year and territory, from rule documents loaded into an immutable resource and queried through `NotableDateService`.
+**Bodu.Globalization.Calendar** resolves notable dates - public holidays, observances, religious festivals - for a date, range, or year and territory, from rule documents loaded into an immutable resource and queried through `NotableDateService`.
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -227,7 +227,7 @@ For authoring rule documents, territory filtering, the observance-adjustment pip
 
 ### Bodu.Globalization.Recurrence
 
-**Bodu.Globalization.Recurrence** answers *when does this repeat?* in four shapes — RFC 5545 `RRULE`, an `RDATE` / `EXDATE` composed `RecurrenceSet`, Vixie-style `CronExpression`, and the instant-anchored `AnchoredInterval`. It depends only on `Bodu.Core`, so it is a sibling of the calendar engine rather than a dependant, and it is pure in its arguments — no wall clock, no machine time zone.
+**Bodu.Globalization.Recurrence** answers *when does this repeat?* in four shapes - RFC 5545 `RRULE`, an `RDATE` / `EXDATE` composed `RecurrenceSet`, Vixie-style `CronExpression`, and the instant-anchored `AnchoredInterval`. It depends only on `Bodu.Core`, so it is a sibling of the calendar engine rather than a dependant, and it is pure in its arguments - no wall clock, no machine time zone.
 
 ```csharp
 using Bodu.Globalization.Recurrence;
@@ -243,20 +243,20 @@ DateTime? previous = rule.GetPreviousOccurrence(start, before: new DateTime(2026
 // previous = 2026-01-19 09:00 (Monday)
 
 foreach (DateTime occurrence in rule.GetOccurrences(start, new DateTime(2026, 2, 1), new DateTime(2026, 2, 28)))
-    Console.WriteLine(occurrence);                                  // 2, 4, 6, 16, 18, 20 Feb — all 09:00
+    Console.WriteLine(occurrence);                                  // 2, 4, 6, 16, 18, 20 Feb - all 09:00
 ```
 
-Build rules fluently with `RecurrenceRuleBuilder`, compose exceptions into a `RecurrenceSet`, or swap the grammar for cron — every form carries a defect-naming `TryParse(s, out result, out failureMessage)` overload.
+Build rules fluently with `RecurrenceRuleBuilder`, compose exceptions into a `RecurrenceSet`, or swap the grammar for cron - every form carries a defect-naming `TryParse(s, out result, out failureMessage)` overload.
 
 → **[Introduction](recurrence/index.md)** · **[Getting started](recurrence/getting-started.md)** · **[Guides](../guides/recurrence/index.md)**
 
 ## Text & Serialization
 
-Three different jobs that all sound like "text" — see the **[Text & Serialization overview](topics/text-and-serialization.md)** for the codec / document-format / serializer disambiguation.
+Three different jobs that all sound like "text" - see the **[Text & Serialization overview](topics/text-and-serialization.md)** for the codec / document-format / serializer disambiguation.
 
 ### Bodu.Text.Encoding
 
-**Bodu.Text.Encoding** is a library of binary-to-text encoders — Base16, Base32, Base64, Base58, and Base85 — each with span- and UTF-8-friendly overloads, `OperationStatus` streaming, and a unified `IBinaryEncoding` interface for runtime-pluggable selection.
+**Bodu.Text.Encoding** is a library of binary-to-text encoders - Base16, Base32, Base64, Base58, and Base85 - each with span- and UTF-8-friendly overloads, `OperationStatus` streaming, and a unified `IBinaryEncoding` interface for runtime-pluggable selection.
 
 ```csharp
 using Bodu.Text.Encoding;
@@ -284,7 +284,7 @@ For lenient parsing (whitespace, `0x` prefix, missing padding), `OperationStatus
 
 ### Bodu.Text.Filtering
 
-**Bodu.Text.Filtering** filters lists of text values through include/exclude pattern sets — glob and regex patterns compiled once into a cost-tiered `TextFilter`, with Ant / MSBuild set semantics or gitignore-style ordered rules, and built-in telemetry reporting what matched and why.
+**Bodu.Text.Filtering** filters lists of text values through include/exclude pattern sets - glob and regex patterns compiled once into a cost-tiered `TextFilter`, with Ant / MSBuild set semantics or gitignore-style ordered rules, and built-in telemetry reporting what matched and why.
 
 ```csharp
 using Bodu.Text.Filtering;
@@ -304,7 +304,7 @@ var why  = filter.Evaluate("error-debug");   // → Excluded, decided by "!*debu
 
 ### Bodu.Text.Formats
 
-**Bodu.Text.Formats** parses and emits self-framing serialization formats — Delimited (CSV / TSV), DotEnv, and Ini — each through a strongly-typed value model and a span- and stream-friendly codec with `Try*` overloads.
+**Bodu.Text.Formats** parses and emits self-framing serialization formats - Delimited (CSV / TSV), DotEnv, and Ini - each through a strongly-typed value model and a span- and stream-friendly codec with `Try*` overloads.
 
 ```csharp
 using Bodu.Text.Ini;
@@ -348,7 +348,7 @@ Swap `Toml` for `Bencode` (and `string` for `byte[]`) for the Bencode equivalent
 
 ## Configuration
 
-Layered, EditorConfig-style configuration and its `Microsoft.Extensions.Configuration` bridge — see the **[Configuration overview](topics/configuration.md)** for the full pipeline.
+Layered, EditorConfig-style configuration and its `Microsoft.Extensions.Configuration` bridge - see the **[Configuration overview](topics/configuration.md)** for the full pipeline.
 
 ### Bodu.Text.Configuration
 
@@ -371,10 +371,10 @@ ConfigurationView view = ConfigurationDocument
     .Parse(source)
     .Resolve("src/App/Program.cs");
 
-int indentSize = view.GetInt32("format:indent:size");   // 2 — the last matching section wins
+int indentSize = view.GetInt32("format:indent:size");   // 2 - the last matching section wins
 ```
 
-`Resolve` walks the document once in source order, layering the preamble and every glob-matching section; the flat `ConfigurationView` then exposes typed accessors — `GetInt32`, `GetBoolean`, `GetEnum<T>`, `GetValue<T>` — plus optional diagnostic collection and byte-faithful round-trip save.
+`Resolve` walks the document once in source order, layering the preamble and every glob-matching section; the flat `ConfigurationView` then exposes typed accessors - `GetInt32`, `GetBoolean`, `GetEnum<T>`, `GetValue<T>` - plus optional diagnostic collection and byte-faithful round-trip save.
 
 → **[Introduction](text-configuration/index.md)** · **[Getting started](text-configuration/getting-started.md)** · **[Guides](../guides/text-configuration/index.md)**
 
@@ -393,17 +393,17 @@ IConfiguration config = new ConfigurationBuilder()
 string? indentSize = config["format:indent:size"];
 ```
 
-`AddTextConfigurationFile` mirrors `AddJsonFile` — the Bodu source layers into the standard provider stack and participates in `IOptions<T>` binding, so existing `Microsoft.Extensions.Configuration` code adopts it with no learning curve.
+`AddTextConfigurationFile` mirrors `AddJsonFile` - the Bodu source layers into the standard provider stack and participates in `IOptions<T>` binding, so existing `Microsoft.Extensions.Configuration` code adopts it with no learning curve.
 
 → **[Introduction](extensions-configuration-text/index.md)** · **[Getting started](extensions-configuration-text/getting-started.md)** · **[Guides](../guides/extensions-configuration-text/index.md)**
 
 ## Numerics & Financial
 
-Exact arithmetic and the monetary primitives built on it — see the **[Numerics & Financial overview](topics/numerics-and-financial.md)** for how `Money` rides on `Fraction<BigInteger>`.
+Exact arithmetic and the monetary primitives built on it - see the **[Numerics & Financial overview](topics/numerics-and-financial.md)** for how `Money` rides on `Fraction<BigInteger>`.
 
 ### Bodu.Numerics
 
-**Bodu.Numerics** ships two generic-math value types — `Fraction<T>` for exact rational arithmetic and `Interval<T>` for bounded intervals — both built on `INumber<T>` so they compose with any generic-math algorithm.
+**Bodu.Numerics** ships two generic-math value types - `Fraction<T>` for exact rational arithmetic and `Interval<T>` for bounded intervals - both built on `INumber<T>` so they compose with any generic-math algorithm.
 
 ```csharp
 using Bodu.Numerics;
@@ -426,12 +426,12 @@ Every `Fraction<T>` is GCD-reduced on construction and promotes to `BigInteger` 
 using Bodu.Financial;
 using Bodu.Financial.Currencies;
 
-// Runtime-tagged money — currency carried as a CurrencyCode.
+// Runtime-tagged money - currency carried as a CurrencyCode.
 Money price = new Money(125.50m, CurrencyCode.AUD);
 Money gst   = price * 0.10m;
 Money total = price + gst;             // 138.05 AUD
 
-// Compile-time currency safety — the currency is the type parameter.
+// Compile-time currency safety - the currency is the type parameter.
 Money<AUD> typed = new Money<AUD>(125.50m);
 ```
 
@@ -447,7 +447,7 @@ services.AddFinancialService();
 
 ## Binary Formats & I/O
 
-Legacy binary container and document formats — a read/edit/author compound-file container with narrower read-only format readers on top; see the **[Binary Formats & I/O overview](topics/binary-formats.md)** for the layered container-vs-format split.
+Legacy binary container and document formats - a read/edit/author compound-file container with narrower read-only format readers on top; see the **[Binary Formats & I/O overview](topics/binary-formats.md)** for the layered container-vs-format split.
 
 ### Bodu.IO.Compound
 
@@ -473,7 +473,7 @@ Open with `buffered: false` to read sectors on demand for large files; `OpenStre
 
 ### Bodu.IO.Biff
 
-**Bodu.IO.Biff** is the record-stream codec beneath the `.xls` reader — a forward-only, allocation-free `ref struct` over a span. It frames every physical record, establishes the version from `BOF` and the code page from `CODEPAGE`, and decodes the structural and cell records through typed accessors. Unknown records are never an error.
+**Bodu.IO.Biff** is the record-stream codec beneath the `.xls` reader - a forward-only, allocation-free `ref struct` over a span. It frames every physical record, establishes the version from `BOF` and the code page from `CODEPAGE`, and decodes the structural and cell records through typed accessors. Unknown records are never an error.
 
 ```csharp
 using Bodu.IO.Biff;
@@ -489,13 +489,13 @@ while (reader.Read())
     Console.WriteLine($"{reader.RecordType,-14} id=0x{reader.RecordId:X4} length={reader.RecordLength}");
 ```
 
-`BiffReaderState` resumes framing across buffers, `BiffSstReader` walks the shared string table over its `CONTINUE` records, and `BiffWriter` emits BIFF5 or BIFF8 records. There is no container dependency and no workbook model — that is the next package up.
+`BiffReaderState` resumes framing across buffers, `BiffSstReader` walks the shared string table over its `CONTINUE` records, and `BiffWriter` emits BIFF5 or BIFF8 records. There is no container dependency and no workbook model - that is the next package up.
 
 → **[Introduction](io-biff/index.md)** · **[Getting started](io-biff/getting-started.md)**
 
 ### Bodu.Formats.Excel.Binary
 
-**Bodu.Formats.Excel.Binary** is the read-only workbook reader over those two layers: raw worksheet cell values — strings, numbers, booleans, errors, and a formula cell's cached result — with each sheet's declared used range. No formula evaluation, no styling.
+**Bodu.Formats.Excel.Binary** is the read-only workbook reader over those two layers: raw worksheet cell values - strings, numbers, booleans, errors, and a formula cell's cached result - with each sheet's declared used range. No formula evaluation, no styling.
 
 ```csharp
 using Bodu.Formats.Excel;
@@ -503,7 +503,7 @@ using Bodu.Formats.Excel;
 using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead("rates.xls");
 
 foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
-    Console.WriteLine($"{sheet.Index}: {sheet.Name} — {sheet.Dimensions.RowCount} × {sheet.Dimensions.ColumnCount}");
+    Console.WriteLine($"{sheet.Index}: {sheet.Name} - {sheet.Dimensions.RowCount} × {sheet.Dimensions.ColumnCount}");
 ```
 
 `OpenWorksheet(name)` returns a forward-only `ExcelWorksheetReader` for streaming, and `ReadWorksheet(name)` materializes an addressable `ExcelWorksheet` when random access is easier.
@@ -512,7 +512,7 @@ foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
 
 ### Bodu.IO.Pst
 
-**Bodu.IO.Pst** is the container layer for Outlook personal-folders files (Unicode and ANSI) — the node database and the LTP layer over it, with the block encodings decoded and the checksums verified. It exposes wire-typed values, not MAPI semantics, and never writes.
+**Bodu.IO.Pst** is the container layer for Outlook personal-folders files (Unicode and ANSI) - the node database and the LTP layer over it, with the block encodings decoded and the checksums verified. It exposes wire-typed values, not MAPI semantics, and never writes.
 
 ```csharp
 using Bodu.IO.Pst;
@@ -524,7 +524,7 @@ foreach (PstPropertyValue value in store.ReadPropertyContext())
     Console.WriteLine($"0x{value.PropertyId:X4} (wire 0x{value.WireType:X4}): {value.RawData.Length} bytes");
 ```
 
-`EnumerateNodes()` walks the node B-tree, and each `PstNode` offers its raw bytes, its subnodes, and the two LTP views — `ReadPropertyContext()` and `ReadTableContext()`.
+`EnumerateNodes()` walks the node B-tree, and each `PstNode` offers its raw bytes, its subnodes, and the two LTP views - `ReadPropertyContext()` and `ReadTableContext()`.
 
 → **[Introduction](io-pst/index.md)** · **[Getting started](io-pst/getting-started.md)** · **[Guides](../guides/io-pst/index.md)**
 
@@ -553,7 +553,7 @@ foreach (OutlookAttachment attachment in message.Attachments)
 
 ## Where to go next
 
-- **[Introduction](introduction.md)** — what each library is for and how they fit together.
+- **[Introduction](introduction.md)** - what each library is for and how they fit together.
 - **Topic overviews:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md) · [Binary Formats & I/O](topics/binary-formats.md).
 - **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.Collections](collections/index.md) · [Bodu.Collections.Concurrent](collections-concurrent/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Globalization.Recurrence](recurrence/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Filtering](text-filtering/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md) · [Bodu.IO.Biff](io-biff/index.md) · [Bodu.Formats.Excel.Binary](excel/index.md) · [Bodu.IO.Pst](io-pst/index.md) · [Bodu.Formats.Outlook](outlook/index.md).
 - **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial) · [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.IO.Biff](xref:Bodu.IO.Biff) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel) · [Bodu.IO.Pst](xref:Bodu.IO.Pst) · [Bodu.Formats.Outlook](xref:Bodu.Formats.Outlook) · [Bodu.Globalization.Recurrence](xref:Bodu.Globalization.Recurrence).

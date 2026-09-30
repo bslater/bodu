@@ -58,7 +58,7 @@ public partial class MerkleTreeTests
         })).ToArray();
         startGate.Set();
 
-        Assert.IsTrue(await CompletedInTime(tasks), $"not all tasks completed within {StressDeadlockTimeoutMs} ms — possible deadlock");
+        Assert.IsTrue(await CompletedInTime(tasks), $"not all tasks completed within {StressDeadlockTimeoutMs} ms - possible deadlock");
         Assert.IsEmpty(errors, string.Join("\n", errors));
     }
 
@@ -80,7 +80,7 @@ public partial class MerkleTreeTests
         })).ToArray();
         startGate.Set();
 
-        Assert.IsTrue(await CompletedInTime(tasks), "tasks did not complete — possible deadlock");
+        Assert.IsTrue(await CompletedInTime(tasks), "tasks did not complete - possible deadlock");
         Assert.HasCount(parallelism, results);
         for (int index = 0; index < parallelism; index++)
             CollectionAssert.AreEqual(ComputeAdditiveRoot(MakeData(8 + (index % 8), seed: index), 4, 2), results[index], $"instance {index}");
@@ -158,7 +158,7 @@ public partial class MerkleTreeTests
         })).ToArray();
         startGate.Set();
 
-        Assert.IsTrue(await CompletedInTime(tasks), "tasks did not complete — possible deadlock");
+        Assert.IsTrue(await CompletedInTime(tasks), "tasks did not complete - possible deadlock");
         Assert.HasCount(parallelism, traces);
         foreach (MerkleTreeDiagnostics diagnostics in traces)
             Assert.IsTrue(diagnostics.Validate(Factory, out IReadOnlyList<string> errors), string.Join("; ", errors));

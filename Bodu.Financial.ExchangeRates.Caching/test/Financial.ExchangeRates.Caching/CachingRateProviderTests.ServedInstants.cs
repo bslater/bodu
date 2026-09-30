@@ -10,7 +10,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// Pins the served-instant semantics of a single-date cache hit: the provenance cache-write instant and the restored
-/// upstream fetch instant come from the row that actually resolved the lookup — exact, nearest, or inverse — with the
+/// upstream fetch instant come from the row that actually resolved the lookup - exact, nearest, or inverse - with the
 /// oldest-candidate fallback reserved for the same-currency identity serve.
 /// </summary>
 public sealed partial class CachingRateProviderTests

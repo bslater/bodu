@@ -6,7 +6,7 @@ title: Compiling packs in MSBuild
 
 `Bodu.Globalization.Calendar.Build` compiles notable-date documents to sealed `.bcal` packs as part of `dotnet build`, incrementally, using the bundled `bodu-calendar` compiler. It is a **development dependency**: the package contributes a `.targets` file, an MSBuild task assembly, and the tool binaries, and adds no runtime reference to the consuming project. Validation failures surface as build errors carrying the same stable `BODU-CAL-*` lines the [command-line tool](bodu-calendar-cli.md) prints.
 
-## Pattern 1 — reference the package and declare packs
+## Pattern 1 - reference the package and declare packs
 
 ```xml
 <ItemGroup>
@@ -23,7 +23,7 @@ title: Compiling packs in MSBuild
 
 | Metadata | Meaning |
 |---|---|
-| `ResolverDir` | Optional directory whose `<name>.xml` / `<name>.json` files satisfy the document's imports, consulted before the bundled catalogues — the same semantics as the tool's `--resolver-dir`. |
+| `ResolverDir` | Optional directory whose `<name>.xml` / `<name>.json` files satisfy the document's imports, consulted before the bundled catalogues - the same semantics as the tool's `--resolver-dir`. |
 
 Each item compiles to `$(NotableDatePackOutputPath)<Filename>.bcal` and, by default, is copied into the project output directory beside the application.
 
@@ -33,9 +33,9 @@ The `.targets` file wires every item to `CompileNotableDatePack`, a `ToolTask` t
 
 | Parameter | Required | Value the targets pass |
 |---|---|---|
-| `Input` | yes | `%(NotableDatePack.Identity)` — the document path. |
+| `Input` | yes | `%(NotableDatePack.Identity)` - the document path. |
 | `Output` | yes | `$(NotableDatePackOutputPath)%(NotableDatePack.Filename).bcal`. The task creates the output directory before running the tool. |
-| `ToolDll` | yes | `$(BoduCalendarToolDll)` — the `bodu-calendar` assembly executed through the `dotnet` host. |
+| `ToolDll` | yes | `$(BoduCalendarToolDll)` - the `bodu-calendar` assembly executed through the `dotnet` host. |
 | `ResolverDir` | no | `%(NotableDatePack.ResolverDir)`; omitted when empty. |
 
 The `dotnet` host is resolved from the `PATH`; `--roll-forward Major` lets the net8.0 tool run on any newer installed runtime. Standard output and standard error are logged at high importance, so the compile summary and the diagnostic lines appear even at minimal verbosity, and a non-zero exit fails the build.
@@ -58,7 +58,7 @@ The `dotnet` host is resolved from the `PATH`; `--roll-forward Major` lets the n
 
 ## Incremental build behaviour
 
-The `CompileNotableDatePacks` target declares `Inputs="@(NotableDatePack)"` and `Outputs="@(NotableDatePack->'$(NotableDatePackOutputPath)%(Filename).bcal')"`, so MSBuild skips each `(document, pack)` pair whose output is newer than its input — a rebuild with an unchanged document does not invoke the tool at all. Because the compiler's output is byte-stable for a given document (the pack embeds a SHA-256 of its payload and no timestamps), downstream up-to-date checks stay sound after a recompile.
+The `CompileNotableDatePacks` target declares `Inputs="@(NotableDatePack)"` and `Outputs="@(NotableDatePack->'$(NotableDatePackOutputPath)%(Filename).bcal')"`, so MSBuild skips each `(document, pack)` pair whose output is newer than its input - a rebuild with an unchanged document does not invoke the tool at all. Because the compiler's output is byte-stable for a given document (the pack embeds a SHA-256 of its payload and no timestamps), downstream up-to-date checks stay sound after a recompile.
 
 Two consequences to know:
 
@@ -67,7 +67,7 @@ Two consequences to know:
 
 The target runs `BeforeTargets="AssignTargetPaths"` so the compiled packs can join the normal content copy in the same build. The repository's `CompileNotableDatePackIntegrationTests` drives a fixture project through this pipeline and asserts both the incremental skip and that an invalid document fails the build with its diagnostic code.
 
-## Pattern 2 — consume the compiled pack at run time
+## Pattern 2 - consume the compiled pack at run time
 
 With `NotableDatePackCopyToOutput` left at `true`, the pack sits beside the executable under its document's file name:
 
@@ -84,22 +84,22 @@ var service = new NotableDateService(resource);
 IReadOnlyList<NotableDate> thisYear = service.Resolve(2026, "US");
 ```
 
-Loading a pack performs no parsing and no validation — the build already did both — which is the trim- and AOT-friendly path described in [Binary rule packs](../binary-rule-packs.md). To embed the pack instead of copying it, add the compiled file as an `EmbeddedResource` from `$(NotableDatePackOutputPath)` in a target that runs `AfterTargets="CompileNotableDatePacks"`, and load it from a manifest resource stream.
+Loading a pack performs no parsing and no validation - the build already did both - which is the trim- and AOT-friendly path described in [Binary rule packs](../binary-rule-packs.md). To embed the pack instead of copying it, add the compiled file as an `EmbeddedResource` from `$(NotableDatePackOutputPath)` in a target that runs `AfterTargets="CompileNotableDatePacks"`, and load it from a manifest resource stream.
 
 ## Troubleshooting
 
-**`error MSB4062: The task "Bodu.Globalization.Calendar.Build.CompileNotableDatePack" could not be loaded`.** `BoduCalendarTaskAssembly` does not point at the task DLL — usually a stale override left in a `Directory.Build.props`.
+**`error MSB4062: The task "Bodu.Globalization.Calendar.Build.CompileNotableDatePack" could not be loaded`.** `BoduCalendarTaskAssembly` does not point at the task DLL - usually a stale override left in a `Directory.Build.props`.
 
 **The build fails with a `BODU-CAL-*` line.** The document is invalid; run `bodu-calendar lint <document>` for the same diagnostics interactively, then rebuild.
 
-**A pack is not recompiled after editing a shared catalogue.** See the incremental caveat above — imports are not inputs.
+**A pack is not recompiled after editing a shared catalogue.** See the incremental caveat above - imports are not inputs.
 
 **`dotnet` not found.** The task launches the `dotnet` host from the `PATH`; on a build agent that installs the SDK to a private location, add it to `PATH` for the build step.
 
 ## Where to go next
 
-- **[The bodu-calendar CLI](bodu-calendar-cli.md)** — the compiler the task invokes, its exit codes, and the diagnostic line format.
-- **[Binary rule packs](../binary-rule-packs.md)** — what the format guarantees.
-- **[Calendar validation diagnostics](../validation-diagnostics.md)** — the `BODU-CAL-*` catalogue.
+- **[The bodu-calendar CLI](bodu-calendar-cli.md)** - the compiler the task invokes, its exit codes, and the diagnostic line format.
+- **[Binary rule packs](../binary-rule-packs.md)** - what the format guarantees.
+- **[Calendar validation diagnostics](../validation-diagnostics.md)** - the `BODU-CAL-*` catalogue.
 - **[Bodu.Globalization.Calendar tooling introduction](../../../docs/calendar-tooling/index.md)**
-- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

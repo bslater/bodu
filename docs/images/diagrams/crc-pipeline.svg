@@ -43,7 +43,7 @@
     <rect class="panel" width="800" height="320" rx="8"/>
     <rect class="header" width="800" height="30" rx="8"/>
     <rect class="header" y="22" width="800" height="8"/>
-    <text class="title" x="16" y="20">Table-driven CRC — one byte per iteration</text>
+    <text class="title" x="16" y="20">Table-driven CRC - one byte per iteration</text>
     <text class="formula" x="800" y="20" text-anchor="end" dx="-16">reg ← (reg » 8) ⊕ table[(byte ⊕ reg) &amp; 0xFF]</text>
 
     <!-- incoming byte on the left -->

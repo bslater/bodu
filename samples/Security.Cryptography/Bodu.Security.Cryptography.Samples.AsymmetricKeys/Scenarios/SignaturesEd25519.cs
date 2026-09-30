@@ -42,7 +42,7 @@ public static class SignaturesEd25519
         Console.WriteLine($"  signature  : {Hex.ToHex(signature)}");
         Console.WriteLine();
 
-        // The verifier holds only the public key — the private seed never leaves the signer.
+        // The verifier holds only the public key - the private seed never leaves the signer.
         using var verifier = Ed25519.Create();
         verifier.ImportPublicKey(publicKey);
 

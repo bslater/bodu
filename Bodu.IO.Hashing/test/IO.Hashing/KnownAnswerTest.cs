@@ -7,7 +7,7 @@
 namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Represents a named known-answer test case for a non-cryptographic hash algorithm — an input payload paired
+/// Represents a named known-answer test case for a non-cryptographic hash algorithm - an input payload paired
 /// with its expected digest.
 /// </summary>
 /// <remarks>

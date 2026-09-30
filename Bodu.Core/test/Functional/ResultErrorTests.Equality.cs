@@ -47,7 +47,7 @@ public sealed partial class ResultErrorTests
 
     /// <summary>
     /// Verifies the exception-by-reference pin: equivalent but distinct exception instances make errors unequal,
-    /// while the hash code — which excludes the exception — stays identical.
+    /// while the hash code - which excludes the exception - stays identical.
     /// </summary>
     [TestMethod]
     public void Equals_WhenExceptionsAreDistinctButEquivalent_ShouldNotBeEqualYetHashIdentically()

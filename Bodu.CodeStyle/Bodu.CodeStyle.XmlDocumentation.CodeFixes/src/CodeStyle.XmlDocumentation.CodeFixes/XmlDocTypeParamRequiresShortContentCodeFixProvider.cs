@@ -22,13 +22,13 @@ using Microsoft.CodeAnalysis.Text;
 namespace Bodu.CodeStyle.XmlDocumentation.CodeFixes;
 
 /// <summary>
-/// Provides the code fix for <c>BODU1406</c> — shortens a <c>&lt;typeparam&gt;</c> element to its first sentence and
+/// Provides the code fix for <c>BODU1406</c> - shortens a <c>&lt;typeparam&gt;</c> element to its first sentence and
 /// relocates the trailing prose into a <c>&lt;para&gt;</c> appended to the existing <c>&lt;remarks&gt;</c> block (or
 /// wrapped in a new <c>&lt;remarks&gt;</c> block inserted immediately after the <c>&lt;typeparam&gt;</c>).
 /// </summary>
 /// <remarks>
 /// <para>
-/// The fix preserves the original surface text verbatim — no rephrasing or grammar adjustment is attempted. The author
+/// The fix preserves the original surface text verbatim - no rephrasing or grammar adjustment is attempted. The author
 /// may re-word the relocated <c>&lt;para&gt;</c> by hand if the standalone reading is awkward.
 /// </para>
 /// <para>
@@ -39,7 +39,7 @@ namespace Bodu.CodeStyle.XmlDocumentation.CodeFixes;
 /// </para>
 /// <para>
 /// Fix All is served by a dedicated <see cref="DocumentBasedFixAllProvider" /> that groups all diagnostics by their
-/// containing documentation comment and emits a single coherent transformation per comment — one <c>&lt;remarks&gt;</c>
+/// containing documentation comment and emits a single coherent transformation per comment - one <c>&lt;remarks&gt;</c>
 /// block carrying every relocated paragraph in source order. This avoids the overlapping / duplicate
 /// <c>&lt;remarks&gt;</c> insertions that a batch merge of independently-computed fixes would otherwise produce when a
 /// generic type declares several overflowing type parameters.
@@ -137,7 +137,7 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
     /// <param name="lineEnding">The line ending to emit between synthesized lines.</param>
     /// <returns>
     /// The ordered list of text changes: each element shortened to its first sentence in place, plus the collected
-    /// paragraphs appended to the comment's existing <c>&lt;remarks&gt;</c> block — or, when none exists, wrapped in
+    /// paragraphs appended to the comment's existing <c>&lt;remarks&gt;</c> block - or, when none exists, wrapped in
     /// one fresh <c>&lt;remarks&gt;</c> block inserted after the last <c>&lt;typeparam&gt;</c> line.
     /// </returns>
     private static List<TextChange> BuildChangesForDocComment(

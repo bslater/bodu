@@ -12,8 +12,8 @@ public sealed partial class Argon2CoreTests
     private const int DifferentialBlocks = 200;
 
     /// <summary>
-    /// Verifies that a vector kernel overwriting its destination — every pass of version 0x10 and the first pass of
-    /// version 0x13 — produces the scalar kernel's block and carried state for seeded random inputs.
+    /// Verifies that a vector kernel overwriting its destination - every pass of version 0x10 and the first pass of
+    /// version 0x13 - produces the scalar kernel's block and carried state for seeded random inputs.
     /// </summary>
     /// <param name="kernel">The name of the vector kernel.</param>
     [TestMethod]
@@ -24,7 +24,7 @@ public sealed partial class Argon2CoreTests
         AssertKernelMatchesScalar(ParseSupportedKernel(kernel), withXor: false, referenceIsDestination: false);
 
     /// <summary>
-    /// Verifies that a vector kernel XORing into its destination — every pass after the first in version 0x13 —
+    /// Verifies that a vector kernel XORing into its destination - every pass after the first in version 0x13 -
     /// produces the scalar kernel's block and carried state for seeded random inputs.
     /// </summary>
     /// <param name="kernel">The name of the vector kernel.</param>
@@ -36,8 +36,8 @@ public sealed partial class Argon2CoreTests
         AssertKernelMatchesScalar(ParseSupportedKernel(kernel), withXor: true, referenceIsDestination: false);
 
     /// <summary>
-    /// Verifies that a vector kernel whose reference block is also its destination — as the Argon2i address generator
-    /// compresses its address block in place — reads the reference before overwriting it, as the scalar kernel does.
+    /// Verifies that a vector kernel whose reference block is also its destination - as the Argon2i address generator
+    /// compresses its address block in place - reads the reference before overwriting it, as the scalar kernel does.
     /// </summary>
     /// <param name="kernel">The name of the vector kernel.</param>
     [TestMethod]

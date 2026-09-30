@@ -22,7 +22,7 @@ namespace Bodu.IO.Hashing;
 /// <typeparam name="TVariant">The enumeration type used to represent algorithm configuration variants.</typeparam>
 /// <remarks>
 /// This class supplies a standardised infrastructure for testing non-cryptographic hash algorithms across one or
-/// more configurations — variant differentiation, incremental-append parity, reset semantics, and data-driven
+/// more configurations - variant differentiation, incremental-append parity, reset semantics, and data-driven
 /// known-answer evaluation via the typed <see cref="NonCryptographicHashKnownAnswers" /> record.
 /// </remarks>
 public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, TVariant>
@@ -256,7 +256,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     protected abstract IReadOnlyList<string> GetExpectedHashesForIncrementalInput(TVariant variant);
     /// <summary>
     /// Returns the <see cref="NonCryptographicHashAlgorithmSpecification" /> describing the expected properties
-    /// of <typeparamref name="TAlgorithm" /> — including its known-answer test vectors — when constructed for
+    /// of <typeparamref name="TAlgorithm" /> - including its known-answer test vectors - when constructed for
     /// the given <paramref name="variant" />.
     /// </summary>
     /// <param name="variant">The variant under test.</param>

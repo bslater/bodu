@@ -13,7 +13,7 @@ public partial class SipHash64Tests
     // ── SipHash-2-4 (64-bit) reference known-answer tests ─────────────────────────────────────
     //
     // Loaded dynamically from the embedded SipHash reference implementation source (github.com/veorq/
-    // SipHash, vectors.h, table vectors_sip64) — the vectors from the 2012 Aumasson-Bernstein paper's
+    // SipHash, vectors.h, table vectors_sip64) - the vectors from the 2012 Aumasson-Bernstein paper's
     // reference code. Scheme: key = the bytes 0x00..0x0F, and vector i is the 64-bit tag over the
     // i-byte message 0x00..0x(i-1), i in 0..63.
 

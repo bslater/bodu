@@ -13,7 +13,7 @@ namespace Bodu.IO.Pst.Internal;
 /// <remarks>
 /// The parameters differ from the catalogued CRC-32 in <c>Bodu.IO.Hashing</c> (which applies the standard all-ones
 /// initialization and final complement), so the variant is not expressible as a catalogue entry; this type applies the
-/// MS-PST parameters over the shared <see cref="CrcCore" /> engine source-compiled from <c>Bodu.IO.Hashing/shared</c> —
+/// MS-PST parameters over the shared <see cref="CrcCore" /> engine source-compiled from <c>Bodu.IO.Hashing/shared</c> -
 /// no package dependency, and the slicing-by-8 loop accelerates the Strict-mode page and block validation.
 /// </remarks>
 internal static class PstCrc

@@ -4,13 +4,13 @@ title: Using NotableDateService
 
 # Using NotableDateService
 
-`NotableDateService` is the main entry point for resolving notable dates — public holidays, observances, religious festivals, regional events — for a given date, range, or year and territory. It is built over an immutable, already-validated `NotableDateResource` and resolves `NotableDate` occurrences on demand.
+`NotableDateService` is the main entry point for resolving notable dates - public holidays, observances, religious festivals, regional events - for a given date, range, or year and territory. It is built over an immutable, already-validated `NotableDateResource` and resolves `NotableDate` occurrences on demand.
 
 For the vocabulary used below (document vs. resource, rule vs. resolved date, nominal vs. observed, territory containment, …) see [Core concepts](../../docs/calendar/concepts.md).
 
-## Pattern 1 — a minimal service from a bundled catalogue
+## Pattern 1 - a minimal service from a bundled catalogue
 
-Load one of the bundled common catalogues to create a service without referencing a companion data pack — handy for smoke tests and demos. `default-minimal` carries just New Year's Day:
+Load one of the bundled common catalogues to create a service without referencing a companion data pack - handy for smoke tests and demos. `default-minimal` carries just New Year's Day:
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -25,7 +25,7 @@ IReadOnlyList<NotableDate> dates = service.Resolve(DateTime.Today.Year, "XX");
 
 Region-specific public holidays ship in dedicated `Bodu.Globalization.Calendar.<Region>` companion packages. See [Calendar data packs](data-packs.md).
 
-## Pattern 2 — load a data pack and filter by territory
+## Pattern 2 - load a data pack and filter by territory
 
 Each pack exposes a static factory with `CreateService(territory)` (and `LoadResource(territory)` if you want the resource alone):
 
@@ -47,7 +47,7 @@ foreach (NotableDate date in nswDates)
 
 All examples below assume a service constructed with the relevant data pack.
 
-## Pattern 3 — filter by category
+## Pattern 3 - filter by category
 
 `NotableDateFilter` is a composable predicate built from static factory methods. Pass it to the filtered `Resolve` overloads:
 
@@ -60,7 +60,7 @@ NotableDateService service = EuropeCalendarData.CreateService("GB");
 NotableDateFilter publicFilter = NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday);
 IReadOnlyList<NotableDate> holidays = service.Resolve(2026, "GB", publicFilter);
 
-// Non-working public holidays — combine predicates with And:
+// Non-working public holidays - combine predicates with And:
 NotableDateFilter nonWorkingFilter = NotableDateFilter
     .ForCategory(NotableDateCategory.PublicHoliday)
     .And(NotableDateFilter.IsNonWorkingDay());
@@ -71,7 +71,7 @@ NotableDateFilter culturalOrObservance =
     NotableDateFilter.ForAnyCategory(NotableDateCategory.Cultural, NotableDateCategory.Observance);
 ```
 
-## Pattern 4 — query a date range
+## Pattern 4 - query a date range
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -84,7 +84,7 @@ IReadOnlyList<NotableDate> autumn = service.Resolve(window, "AU");
 
 Multi-day events (`DurationDays > 1`) are included when their span intersects the query window; which occurrence (actual or observed) controls inclusion is governed by the resource's [`ObservedDateRangePolicy`](identity-and-resolution.md).
 
-## Pattern 5 — query a single day
+## Pattern 5 - query a single day
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -96,7 +96,7 @@ IReadOnlyList<NotableDate> onDay = service.Resolve(new DateOnly(2026, 4, 25), "A
 
 This overload also returns multi-day spans whose nominal date lies on a preceding day but whose span covers the queried date.
 
-## Pattern 6 — check non-working days and weekends
+## Pattern 6 - check non-working days and weekends
 
 These are working-day extension methods in `Bodu.Extensions` (over `DateOnly`, `DateTime`, and `DateTimeOffset`):
 
@@ -107,16 +107,16 @@ using Bodu.Extensions;
 NotableDateService service = AsiaPacificCalendarData.CreateService("AU");
 DateOnly christmas = new DateOnly(2026, 12, 25);
 
-bool isWeekend       = christmas.IsWeekend();                       // weekend per the default Mon–Fri working week
+bool isWeekend       = christmas.IsWeekend();                       // weekend per the default Mon-Fri working week
 bool isNonWorking    = christmas.IsNonWorkingDay(service, "AU");    // weekend or a non-working notable date
 bool isNonWorkingNSW = christmas.IsNonWorkingDay(service, "AU-NSW");
 ```
 
 For full working-day arithmetic (`IsWorkingDay`, `AddWorkingDays`, `NextWorkingDay`, `SnapToWorkingDay`, `WorkingDaysBetween`, …) see [Working-day arithmetic](working-days.md).
 
-## Pattern 7 — enumerate and walk notable dates from a date
+## Pattern 7 - enumerate and walk notable dates from a date
 
-Beyond `Resolve`, the `Bodu.Extensions` surface offers date-anchored convenience methods over `DateOnly` — the same set exists over `DateTime` and `DateTimeOffset` — that fold the year/month boundary calculation and the territory query into a single call:
+Beyond `Resolve`, the `Bodu.Extensions` surface offers date-anchored convenience methods over `DateOnly` - the same set exists over `DateTime` and `DateTimeOffset` - that fold the year/month boundary calculation and the territory query into a single call:
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -134,16 +134,16 @@ NotableDate? next = anchor.NextNotableDate(service, "AU-NSW",
     NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday));
 NotableDate? prev = anchor.PreviousNotableDate(service, "AU-NSW");
 
-// Lazy enumeration across an arbitrary span (deferred — materialise with ToList where needed):
+// Lazy enumeration across an arbitrary span (deferred - materialise with ToList where needed):
 foreach (NotableDate d in anchor.EnumerateNotableDates(new DateOnly(2026, 12, 31), service, "AU-NSW"))
     Console.WriteLine($"{d.Date:d MMM}  {d.DisplayName}");
 ```
 
-`GetNotableDates(service, territory)` returns the occurrences *on the anchor day itself* (the same set as `service.Resolve(date, territory)`), while `EnumerateWorkingDays` / `EnumerateNonWorkingDays` yield the bare `DateOnly` values across a span. `NextNotableDate` / `PreviousNotableDate` return a nullable `NotableDate?` — `null` when none exists within the search horizon. See [Working-day arithmetic](working-days.md) for the full method roster.
+`GetNotableDates(service, territory)` returns the occurrences *on the anchor day itself* (the same set as `service.Resolve(date, territory)`), while `EnumerateWorkingDays` / `EnumerateNonWorkingDays` yield the bare `DateOnly` values across a span. `NextNotableDate` / `PreviousNotableDate` return a nullable `NotableDate?` - `null` when none exists within the search horizon. See [Working-day arithmetic](working-days.md) for the full method roster.
 
-## Pattern 8 — ID-targeted overrides at load time
+## Pattern 8 - ID-targeted overrides at load time
 
-Because a resource is immutable, edits to imported concepts are authored as ID-targeted `<Overrides>` in the document and applied during loading — add a rule, patch one, or remove one:
+Because a resource is immutable, edits to imported concepts are authored as ID-targeted `<Overrides>` in the document and applied during loading - add a rule, patch one, or remove one:
 
 ```xml
 <Overrides>
@@ -158,7 +158,7 @@ Because a resource is immutable, edits to imported concepts are authored as ID-t
 
 See [Authoring notable date rules](rule-authoring.md) for the full override vocabulary.
 
-## Pattern 9 — swap the rule set at runtime
+## Pattern 9 - swap the rule set at runtime
 
 A *live* change means loading a new resource and swapping it in. Build the service over a `MutableNotableDateResourceProvider` via `ReloadableNotableDateService`:
 
@@ -168,11 +168,11 @@ using Bodu.Globalization.Calendar;
 var provider = new MutableNotableDateResourceProvider(NotableDateResourceLoader.Load(initialXml));
 INotableDateService service = new ReloadableNotableDateService(provider);
 
-// later, when the rules change — the live service picks it up atomically:
+// later, when the rules change - the live service picks it up atomically:
 provider.Reload(NotableDateResourceLoader.Load(updatedXml));
 ```
 
-## Pattern 10 — discover what a resource covers
+## Pattern 10 - discover what a resource covers
 
 A service projects two read-only views off its immutable resource, each computed once at construction:
 
@@ -185,26 +185,26 @@ IReadOnlyList<string>         territories = service.GetSupportedTerritories();  
 IReadOnlyList<CalendarSystem> calendars   = service.GetSupportedCalendars();   // e.g. Gregorian (+ Hijri / Hebrew where used)
 ```
 
-`GetSupportedTerritories` returns every distinct territory mentioned by a rule's `<Territory>` scope; `GetSupportedCalendars` returns the distinct <xref:Bodu.Globalization.Calendar.CalendarSystem> values across the rules' `<Applicability calendar="…">` (`Gregorian`, `Hijri`, `UmmAlQura`, `Hebrew`, `Persian`, `ChineseLunisolar`). Both are stable for the life of the service; a reload via the [reloadable workflow](#pattern-9--swap-the-rule-set-at-runtime) recomputes them for the new resource.
+`GetSupportedTerritories` returns every distinct territory mentioned by a rule's `<Territory>` scope; `GetSupportedCalendars` returns the distinct <xref:Bodu.Globalization.Calendar.CalendarSystem> values across the rules' `<Applicability calendar="…">` (`Gregorian`, `Hijri`, `UmmAlQura`, `Hebrew`, `Persian`, `ChineseLunisolar`). Both are stable for the life of the service; a reload via the [reloadable workflow](#pattern-9---swap-the-rule-set-at-runtime) recomputes them for the new resource.
 
-## Pattern 11 — supply custom collaborators
+## Pattern 11 - supply custom collaborators
 
-The single-argument `new NotableDateService(resource)` covers documents that reference only built-in algorithms and policies. Documents that reference a custom `<Algorithm key="…">`, a `CollisionPolicy.Custom` resolver, custom adjustment trigger / action handlers, or code-first occurrence providers wire those collaborators through <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions> — an object with five `init`-only slots — passed to the second constructor:
+The single-argument `new NotableDateService(resource)` covers documents that reference only built-in algorithms and policies. Documents that reference a custom `<Algorithm key="…">`, a `CollisionPolicy.Custom` resolver, custom adjustment trigger / action handlers, or code-first occurrence providers wire those collaborators through <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions> - an object with five `init`-only slots - passed to the second constructor:
 
 ```csharp
 using Bodu.Globalization.Calendar;
 
 var service = new NotableDateService(resource, new NotableDateServiceOptions
 {
-    Algorithms        = algorithmRegistry,      // INotableDateAlgorithmRegistry — custom <Algorithm key>
-    CollisionResolver = collisionResolver,      // INotableDateCollisionResolver — CollisionPolicy.Custom
-    Handlers          = actionHandlers,         // IAdjustmentHandlerRegistry    — AdjustmentAction.Custom
-    TriggerHandlers   = triggerHandlers,        // IAdjustmentTriggerHandlerRegistry — AdjustmentTrigger.Custom
+    Algorithms        = algorithmRegistry,      // INotableDateAlgorithmRegistry - custom <Algorithm key>
+    CollisionResolver = collisionResolver,      // INotableDateCollisionResolver - CollisionPolicy.Custom
+    Handlers          = actionHandlers,         // IAdjustmentHandlerRegistry    - AdjustmentAction.Custom
+    TriggerHandlers   = triggerHandlers,        // IAdjustmentTriggerHandlerRegistry - AdjustmentTrigger.Custom
     Providers         = codeFirstProviders,     // IEnumerable<INotableDateProvider>
 });
 ```
 
-Every slot is optional and defaults to `null`. There is no positional-collaborator constructor — pass only the slots a document needs. See [Building and extending the service](building-the-service.md).
+Every slot is optional and defaults to `null`. There is no positional-collaborator constructor - pass only the slots a document needs. See [Building and extending the service](building-the-service.md).
 
 ## Working with `NotableDate` results
 
@@ -212,7 +212,7 @@ Every slot is optional and defaults to `null`. There is no positional-collaborat
 
 | Member | Description |
 |---|---|
-| `Date` | The emitted (observed) date — the post-adjustment date to display. |
+| `Date` | The emitted (observed) date - the post-adjustment date to display. |
 | `ActualDate` | The originally calculated (nominal) date. |
 | `IsObserved` | Whether `Date` differs from `ActualDate` because an adjustment applied. |
 | `EndDate` | The inclusive last day (`Date + DurationDays − 1`). |
@@ -241,7 +241,7 @@ foreach (NotableDate date in service.Resolve(2026, "AU"))
 
 ### Expanding observed-only results into a full timeline
 
-Data packs whose adjustment policies emit `ObservedOnly` return a single occurrence per adjusted date, anchored on the observed (substitute) day — the nominal day survives only in `ActualDate`. When you want the full sequential story, `WithActualOccurrences()` on <xref:Bodu.Globalization.Calendar.NotableDateSequenceExtensions> synthesizes the missing actual occurrences and re-sorts by the standard `Resolve` ordering — the consumer-side equivalent of an `ActualAndObserved` emission:
+Data packs whose adjustment policies emit `ObservedOnly` return a single occurrence per adjusted date, anchored on the observed (substitute) day - the nominal day survives only in `ActualDate`. When you want the full sequential story, `WithActualOccurrences()` on <xref:Bodu.Globalization.Calendar.NotableDateSequenceExtensions> synthesizes the missing actual occurrences and re-sorts by the standard `Resolve` ordering - the consumer-side equivalent of an `ActualAndObserved` emission:
 
 <!-- compile -->
 ```csharp
@@ -259,7 +259,7 @@ foreach (NotableDate date in timeline)
     Console.WriteLine($"{date.Date:d}  {date.DisplayName}  {(date.IsObserved ? "(observed)" : "(actual)")}");
 ```
 
-Synthesized occurrences match the shape the engine emits for the actual half of `ActualAndObserved` (`IsObserved` is `false`, no adjustment policy or reason, all other fields — including `DisplayName` — unchanged), and expansion skips occurrences whose actual day is already present, so the method is idempotent and a no-op for packs that already emit both. A synthesized date can precede the range you originally queried; apply `NotableDateFilter.InDateRange` afterwards if strict containment matters.
+Synthesized occurrences match the shape the engine emits for the actual half of `ActualAndObserved` (`IsObserved` is `false`, no adjustment policy or reason, all other fields - including `DisplayName` - unchanged), and expansion skips occurrences whose actual day is already present, so the method is idempotent and a no-op for packs that already emit both. A synthesized date can precede the range you originally queried; apply `NotableDateFilter.InDateRange` afterwards if strict containment matters.
 
 ## Composing filters
 
@@ -303,19 +303,19 @@ NotableDateService.Resolve(date | range | year, territory[, filter])
       → duplicate/collision settlement → emission → NotableDate set
 ```
 
-1. **Load** — `NotableDateResourceLoader` parses the document, resolves `<Imports>` through the supplied resolver, applies `<Overrides>`, assembles the definitions, and runs semantic validation, throwing `NotableDateValidationException` on any error-severity diagnostic.
-2. **Resolve** — for each applicable rule the <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> computes the nominal date; the referenced <xref:Bodu.Globalization.Calendar.AdjustmentPolicy> shifts it to the observed date when a trigger matches.
-3. **Settle** — the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> reconciles duplicates and same-day collisions and decides which occurrences are emitted.
+1. **Load** - `NotableDateResourceLoader` parses the document, resolves `<Imports>` through the supplied resolver, applies `<Overrides>`, assembles the definitions, and runs semantic validation, throwing `NotableDateValidationException` on any error-severity diagnostic.
+2. **Resolve** - for each applicable rule the <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> computes the nominal date; the referenced <xref:Bodu.Globalization.Calendar.AdjustmentPolicy> shifts it to the observed date when a trigger matches.
+3. **Settle** - the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> reconciles duplicates and same-day collisions and decides which occurrences are emitted.
 
 See [The resolution pipeline](resolution-pipeline.md) for the full walk-through with a concrete trace.
 
 ## Where to go next
 
-- [Core concepts](../../docs/calendar/concepts.md) — the vocabulary used throughout this guide.
-- [Territories and regional composition](territories.md) — how `TerritoryCode` and containment govern query results.
-- [Working-day arithmetic](working-days.md) — `IsWorkingDay`, `AddWorkingDays`, `NextWorkingDay`, snap operations.
-- [Calendar data packs](data-packs.md) — the official Americas / Asia-Pacific / Europe / Middle East / Africa companion packages.
-- [Authoring notable date rules](rule-authoring.md) — XML / JSON documents, imports, and overrides.
-- [Date calculation algorithms](algorithms.md) — the built-in keys and how to implement a custom algorithm.
-- [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.
-- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- [Core concepts](../../docs/calendar/concepts.md) - the vocabulary used throughout this guide.
+- [Territories and regional composition](territories.md) - how `TerritoryCode` and containment govern query results.
+- [Working-day arithmetic](working-days.md) - `IsWorkingDay`, `AddWorkingDays`, `NextWorkingDay`, snap operations.
+- [Calendar data packs](data-packs.md) - the official Americas / Asia-Pacific / Europe / Middle East / Africa companion packages.
+- [Authoring notable date rules](rule-authoring.md) - XML / JSON documents, imports, and overrides.
+- [Date calculation algorithms](algorithms.md) - the built-in keys and how to implement a custom algorithm.
+- [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) - full type reference.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

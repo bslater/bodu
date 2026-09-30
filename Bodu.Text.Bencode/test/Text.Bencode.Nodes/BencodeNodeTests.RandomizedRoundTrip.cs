@@ -7,7 +7,7 @@
 namespace Bodu.Text.Bencode.Nodes;
 
 /// <summary>
-/// Verifies, over randomized node trees, that writing and re-reading preserves structure and canonical bytes —
+/// Verifies, over randomized node trees, that writing and re-reading preserves structure and canonical bytes -
 /// insurance for the streaming writer's buffering and sorting logic across arbitrary shapes.
 /// </summary>
 public partial class BencodeNodeTests

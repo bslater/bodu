@@ -14,7 +14,7 @@ namespace Bodu.IO.Pst.Internal;
 /// <para>
 /// The three 256-byte tables are the published <c>mpbbR</c> / <c>mpbbS</c> / <c>mpbbI</c> data of MS-PST §5.1:
 /// <see cref="s_tableR" /> and <see cref="s_tableI" /> are mutually inverse permutations and <see cref="s_tableS" /> is
-/// an involution — which makes <see cref="Cyclic" /> self-inverse, so the same routine encodes and decodes.
+/// an involution - which makes <see cref="Cyclic" /> self-inverse, so the same routine encodes and decodes.
 /// </para>
 /// <para>
 /// These schemes are obfuscation, not cryptography; they apply only to external (leaf data) blocks, never to pages or

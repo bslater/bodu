@@ -11,13 +11,13 @@ namespace Bodu.Globalization.Calendar.Samples.NotableDatesBasics.Scenarios;
 /// <summary>
 /// Demonstrates observed-date substitution (the weekend/in-lieu machinery): when a holiday falls on a
 /// weekend, adjustment policies in the rule data move the *observed* day off to a weekday, and the
-/// resolved occurrence says exactly what happened — the emitted date, the actual (original) date, and
+/// resolved occurrence says exactly what happened - the emitted date, the actual (original) date, and
 /// the observed flag.
 /// </summary>
 public static class ObservedDates
 {
     /// <summary>
-    /// Resolves Christmas/Boxing Day 2021 for Australia — the classic double-substitution year.
+    /// Resolves Christmas/Boxing Day 2021 for Australia - the classic double-substitution year.
     /// </summary>
     public static void Run()
     {

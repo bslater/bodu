@@ -31,19 +31,19 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description><see cref="Threefish256" /> — 256-bit block, 256-bit key, 128-bit tweak.</description>
+/// <description><see cref="Threefish256" /> - 256-bit block, 256-bit key, 128-bit tweak.</description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="Threefish512" /> — 512-bit block, 512-bit key, 128-bit tweak (the recommended general-purpose default).
+/// <see cref="Threefish512" /> - 512-bit block, 512-bit key, 128-bit tweak (the recommended general-purpose default).
 /// </description>
 /// </item>
 /// <item>
-/// <description><see cref="Threefish1024" /> — 1024-bit block, 1024-bit key, 128-bit tweak.</description>
+/// <description><see cref="Threefish1024" /> - 1024-bit block, 1024-bit key, 128-bit tweak.</description>
 /// </item>
 /// </list>
 /// <para>
-/// Threefish is the cipher under the UBI mode of <see cref="Skein" /> — the same key-and-tweak primitive that drives
+/// Threefish is the cipher under the UBI mode of <see cref="Skein" /> - the same key-and-tweak primitive that drives
 /// Skein's hash compression. For a non-tweakable, hardware-accelerated default prefer
 /// <see cref="System.Security.Cryptography.Aes" />. For try-pattern transform creation that surfaces bad key/IV/tweak
 /// combinations as a <see langword="false" /> return, see
@@ -55,7 +55,7 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Use the recommended general-purpose variant — Threefish-512 over a CTR mode.
+/// // Use the recommended general-purpose variant - Threefish-512 over a CTR mode.
 /// using TweakableSymmetricAlgorithm alg = new Threefish512();
 /// alg.GenerateKey();
 /// alg.GenerateIV();
@@ -72,7 +72,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="Threefish256"/> <seealso cref="Threefish512"/> <seealso cref="Threefish1024"/>
 /// <seealso cref="TweakableSymmetricAlgorithm"/> <seealso cref="Skein"/>
 /// <seealso href="https://www.schneier.com/wp-content/uploads/2016/02/skein.pdf">The Skein Hash Function Family
-/// (Schneier et al., 2010) — specifies Threefish</seealso>
+/// (Schneier et al., 2010) - specifies Threefish</seealso>
 public abstract class Threefish
     : TweakableSymmetricAlgorithm
 {

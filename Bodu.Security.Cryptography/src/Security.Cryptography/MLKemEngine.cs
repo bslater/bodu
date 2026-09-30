@@ -139,8 +139,8 @@ internal static partial class MLKemEngine
     }
 
     /// <summary>
-    /// Runs ML-KEM.Encaps_internal (FIPS 203 Algorithm 17) from the values derived from the encapsulation key — its
-    /// hash, the matrix Â and the vector t̂ — so a caller that keeps them need not derive them again for each
+    /// Runs ML-KEM.Encaps_internal (FIPS 203 Algorithm 17) from the values derived from the encapsulation key - its
+    /// hash, the matrix Â and the vector t̂ - so a caller that keeps them need not derive them again for each
     /// encapsulation.
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
@@ -215,8 +215,8 @@ internal static partial class MLKemEngine
     }
 
     /// <summary>
-    /// Runs ML-KEM.Decaps_internal (FIPS 203 Algorithm 18) from the values derived from the decapsulation key — the
-    /// matrix Â and the vectors t̂ and ŝ — so a caller that keeps them need not derive them again for each
+    /// Runs ML-KEM.Decaps_internal (FIPS 203 Algorithm 18) from the values derived from the decapsulation key - the
+    /// matrix Â and the vectors t̂ and ŝ - so a caller that keeps them need not derive them again for each
     /// decapsulation.
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
@@ -271,7 +271,7 @@ internal static partial class MLKemEngine
     }
 
     /// <summary>
-    /// Expands the matrix Â from the seed ρ (FIPS 203 Algorithm 13, lines 3–7): entry (i, j) is SampleNTT(ρ ‖ j ‖ i).
+    /// Expands the matrix Â from the seed ρ (FIPS 203 Algorithm 13, lines 3-7): entry (i, j) is SampleNTT(ρ ‖ j ‖ i).
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
     /// <param name="rho">The 32-byte matrix seed, the last 32 bytes of the encapsulation key.</param>

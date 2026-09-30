@@ -1,6 +1,6 @@
 # Bodu.Financial.ExchangeRates.Fred
 
-> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
 
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by **FRED**
 (Federal Reserve Bank of St. Louis), served through its foreign-exchange REST series.
@@ -8,7 +8,7 @@ A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by **FRED**
 It resolves each currency pair to a single FRED series identifier, fetches that series'
 observations, parses the JSON response, and serves the results as
 `Bodu.Financial.ExchangeRates.ExchangeRate` values through the standard
-`IDatedRateProvider` and `IRateProvider` contracts — so it composes with
+`IDatedRateProvider` and `IRateProvider` contracts - so it composes with
 `Money.ConvertTo`, the caching and aggregating providers, and the rest of the
 Bodu.Financial FX stack. The same interfaces and DI shape as every other provider, a
 different data source.
@@ -28,10 +28,10 @@ RateLookupResult usd = provider.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 ## Behaviour
 
 - **Per-series mapping.** FRED publishes each foreign-exchange rate as an independent time
-  series quoted in a fixed direction — for example `DEXUSEU` quotes US dollars per euro
+  series quoted in a fixed direction - for example `DEXUSEU` quotes US dollars per euro
   (`EUR/USD`). The `SeriesMap` on the options maps each currency pair to its FRED series id,
   keyed `FROM/TO` in the exact direction the series is quoted, so no inversion is required.
-- **Unmapped pairs.** A pair with no entry in `SeriesMap` returns no data — without issuing a
+- **Unmapped pairs.** A pair with no entry in `SeriesMap` returns no data - without issuing a
   request. The reverse direction of a mapped pair is served by the base class's inverse-lookup
   fallback. To support additional pairs, add mappings via `SeriesMap`.
 - **Built-in defaults.** The options seed a table of common USD pairs (EUR/USD, GBP/USD,
@@ -60,7 +60,7 @@ RateLookupResult usd = provider.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 ## Dependency injection
 
 The package ships its own `AddFredExchangeRates` registration in the
-`Bodu.Financial.ExchangeRates` namespace — there is no separate `*.DependencyInjection`
+`Bodu.Financial.ExchangeRates` namespace - there is no separate `*.DependencyInjection`
 package.
 
 ```csharp

@@ -31,7 +31,7 @@ public sealed class XmlNamespaceResolverTests
     /// the resolver subsequently produces unqualified <see cref="XName" /> values that match the source document.
     /// </summary>
     /// <remarks>
-    /// <see cref="XName.Namespace" /> is contractually never <see langword="null" /> in <c>System.Xml.Linq</c> — unqualified names
+    /// <see cref="XName.Namespace" /> is contractually never <see langword="null" /> in <c>System.Xml.Linq</c> - unqualified names
     /// carry <see cref="XNamespace.None" /> rather than a missing namespace. This test exercises that boundary so that any future
     /// change to the resolver's null-handling contract is detected.
     /// </remarks>

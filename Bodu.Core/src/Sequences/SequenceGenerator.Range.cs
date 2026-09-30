@@ -21,7 +21,7 @@ public static partial class SequenceGenerator
     /// <para>
     /// Prefer this overload over <see cref="System.Linq.Enumerable.Range(int, int)" /> when the natural way to express
     /// the range is "from <c>a</c> to <c>b</c>" rather than "<c>n</c> values starting at <c>a</c>", or when a
-    /// descending sequence is required — <c>Enumerable.Range</c> only walks forwards and rejects negative counts.
+    /// descending sequence is required - <c>Enumerable.Range</c> only walks forwards and rejects negative counts.
     /// </para>
     /// <para>
     /// The step direction is chosen automatically: ascending when <paramref name="start" /> is less than
@@ -29,7 +29,7 @@ public static partial class SequenceGenerator
     /// single-element sequence is returned.
     /// </para>
     /// <para>
-    /// Both endpoints are inclusive. The result is deferred — no values are produced until the sequence is enumerated —
+    /// Both endpoints are inclusive. The result is deferred - no values are produced until the sequence is enumerated -
     /// and the underlying iterator allocates only the per-enumeration state object.
     /// </para>
     /// </remarks>
@@ -75,7 +75,7 @@ public static partial class SequenceGenerator
     /// <see cref="int.MaxValue" /> or <see cref="int.MinValue" /> the sequence terminates cleanly rather than throwing.
     /// </para>
     /// <para>
-    /// When <paramref name="step" /> is <c>0</c> the method returns an infinite sequence — callers must compose it with
+    /// When <paramref name="step" /> is <c>0</c> the method returns an infinite sequence - callers must compose it with
     /// an operator such as <c>Take</c> or <c>TakeWhile</c> to bound enumeration.
     /// </para>
     /// <para>
@@ -91,7 +91,7 @@ public static partial class SequenceGenerator
     /// foreach (int n in SequenceGenerator.Range(10, 1, -3))
     ///     Console.Write($"{n} "); // => 10 7 4 1
     ///
-    /// // Step of zero yields an unbounded sequence — bound it with Take.
+    /// // Step of zero yields an unbounded sequence - bound it with Take.
     /// var heartbeat = SequenceGenerator.Range(42, 0, 0).Take(3); // => 42, 42, 42
     ///]]>
     /// </code>

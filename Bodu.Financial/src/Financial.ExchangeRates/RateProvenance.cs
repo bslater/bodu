@@ -8,7 +8,7 @@ namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Captures the lineage of a single served exchange rate: the provider name it is attributed to, whether it was
-/// resolved directly by a provider or served from a cache, the cache backend that served it, and — for a cache serve —
+/// resolved directly by a provider or served from a cache, the cache backend that served it, and - for a cache serve -
 /// the instant the served data was cached together with the derived age at the time of the lookup.
 /// </summary>
 /// <param name="Provider">The provider name the served rate is attributed to.</param>
@@ -34,8 +34,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// <para>
 /// Construct instances through <see cref="Live(string)" />, <see cref="Live(string, string)" />, and
-/// <see cref="FromCache" /> rather than the positional constructor so the origin-specific invariants — a live serve
-/// carries neither a cache instant nor an age — are applied consistently.
+/// <see cref="FromCache" /> rather than the positional constructor so the origin-specific invariants - a live serve
+/// carries neither a cache instant nor an age - are applied consistently.
 /// </para>
 /// </remarks>
 public readonly record struct RateProvenance(

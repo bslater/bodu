@@ -1,15 +1,15 @@
 # Bodu.Financial.ExchangeRates.Imf
 
-> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
 
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **IMF**
-(International Monetary Fund) **Representative Exchange Rates** — the daily rates each
+(International Monetary Fund) **Representative Exchange Rates** - the daily rates each
 issuing central bank reports to the Fund, published as a monthly report.
 
 It downloads the IMF's monthly tab-separated report (every reported currency across each
 business day of the month), parses it, and serves the results as
 `Bodu.Financial.ExchangeRates.ExchangeRate` values through the standard `IDatedRateProvider`
-and `IRateProvider` contracts — so it composes with `Money.ConvertTo`, the caching and
+and `IRateProvider` contracts - so it composes with `Money.ConvertTo`, the caching and
 aggregating providers, and the rest of the Bodu.Financial FX stack. The same interfaces and
 DI shape as every other provider, a different data source.
 
@@ -17,7 +17,7 @@ DI shape as every other provider, a different data source.
 using Bodu.Financial.ExchangeRates;
 
 // The provider builds and owns its HttpClient from the options; dispose it to release the client.
-// The IMF report is keyless — no API key is required.
+// The IMF report is keyless - no API key is required.
 using var provider = new ImfRateProvider(new ImfRateProviderOptions());
 
 // Warm the in-memory store for a range (recommended), then look rates up synchronously.
@@ -79,17 +79,17 @@ foreach (ImfSeriesInfo info in provider.GetAvailablePairs())
 
 The provider is `IDisposable` and offers two construction styles:
 
-- `new ImfRateProvider(options, ...)` — the provider builds, owns, and disposes its own
+- `new ImfRateProvider(options, ...)` - the provider builds, owns, and disposes its own
   `HttpClient`, created via `RateProviderHttpClientFactory.Create` from the configured user
   agent and timeout. Dispose the provider (for example with `using`) to release the client.
-- `new ImfRateProvider(httpClient, options, ...)` — you supply the client and own its
+- `new ImfRateProvider(httpClient, options, ...)` - you supply the client and own its
   lifetime; the provider never disposes a client it did not create. This is the form the DI
   registration uses, backed by `IHttpClientFactory`.
 
 ## Dependency injection
 
 The package ships its own `AddImfExchangeRates` registration in the
-`Bodu.Financial.ExchangeRates` namespace — there is no separate `*.DependencyInjection`
+`Bodu.Financial.ExchangeRates` namespace - there is no separate `*.DependencyInjection`
 package.
 
 ```csharp

@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The three cost parameters — <see cref="MemoryKiB" />, <see cref="Iterations" />, and <see cref="Parallelism" /> —
+/// The three cost parameters - <see cref="MemoryKiB" />, <see cref="Iterations" />, and <see cref="Parallelism" /> -
 /// have no universally safe defaults and must be chosen for the deployment. RFC 9106, Section 4 gives recommended
 /// settings; a common starting point for interactive password hashing is 64 MiB of memory, three iterations, and a
 /// parallelism of four.
@@ -39,7 +39,7 @@ public sealed record Argon2Parameters
     public required int Iterations { get; init; }
 
     /// <summary>
-    /// Gets the degree of parallelism — the number of independent lanes (the RFC 9106 parameter <c>p</c>).
+    /// Gets the degree of parallelism - the number of independent lanes (the RFC 9106 parameter <c>p</c>).
     /// </summary>
     /// <value>The number of lanes.</value>
     public required int Parallelism { get; init; }

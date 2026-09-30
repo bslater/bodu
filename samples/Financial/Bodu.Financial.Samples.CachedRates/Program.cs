@@ -10,7 +10,7 @@ namespace Bodu.Financial.Samples.CachedRates;
 
 /// <summary>
 /// Entry point for the cached-rates sample: the read-through caching decorator, coverage-based range
-/// serving, tiered cache stacking, and history-availability clamping — all against an offline source.
+/// serving, tiered cache stacking, and history-availability clamping - all against an offline source.
 /// </summary>
 public static class Program
 {

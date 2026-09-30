@@ -14,7 +14,7 @@ namespace Bodu.Text.Filtering;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Patterns do not match values on their own; they are compiled — together with the other patterns of a rule set — into
+/// Patterns do not match values on their own; they are compiled - together with the other patterns of a rule set - into
 /// a <see cref="TextFilter" /> via
 /// <see cref="TextFilter.Build(System.Collections.Generic.IEnumerable{TextFilterPattern})" />. Wildcard grammar errors
 /// and regular-expression syntax errors are reported at that point, not by this constructor.

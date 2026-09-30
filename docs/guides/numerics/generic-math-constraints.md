@@ -9,7 +9,7 @@ title: Generic math with Fraction<T> and Interval<T>
 distinct places:
 
 - **`Fraction<T>` constrains its backing type** to
-  `IBinaryInteger<T>` — the numerator and denominator are stored in `T` —
+  `IBinaryInteger<T>` - the numerator and denominator are stored in `T` -
   and **the fraction type itself implements `INumber<Fraction<T>>` and
   `ISignedNumber<Fraction<T>>`**, so a `Fraction<int>` is a first-class
   `INumber`.
@@ -36,8 +36,8 @@ So `Fraction<int>` stores two `int`s, and `Fraction<int>` is itself an
 `INumber<Fraction<int>>`. The first layer governs storage and overflow;
 the second governs composability.
 
-`Interval<T>` has only the first kind of relationship — its endpoints are
-`INumber<T>` — and the interval struct is *not* itself an `INumber`,
+`Interval<T>` has only the first kind of relationship - its endpoints are
+`INumber<T>` - and the interval struct is *not* itself an `INumber`,
 because a range is not a scalar.
 
 ## Writing a method constrained to `INumber<TSelf>`
@@ -72,7 +72,7 @@ The same method body now serves exact rational inputs and ordinary
 floating-point inputs:
 
 ```csharp
-// Exact: the mean of 1/2, 1/3, 1/6 is exactly 1/3 — no rounding.
+// Exact: the mean of 1/2, 1/3, 1/6 is exactly 1/3 - no rounding.
 Fraction<int>[] fractions =
 {
     Fraction<int>.Create(1, 2),
@@ -81,13 +81,13 @@ Fraction<int>[] fractions =
 };
 Fraction<int> exact = Mean<Fraction<int>>(fractions);   // 1/3
 
-// The identical method over double — inexact, as floating point always is.
+// The identical method over double - inexact, as floating point always is.
 double approx = Mean<double>(stackalloc[] { 0.5, 0.3333, 0.1667 });
 ```
 
-The static abstract members of `INumber<TSelf>` — `TSelf.Zero`,
+The static abstract members of `INumber<TSelf>` - `TSelf.Zero`,
 `TSelf.One`, `TSelf.CreateChecked`, the operators, the `IsXxx`
-predicates — all resolve to the `Fraction<T>` implementations, so nothing
+predicates - all resolve to the `Fraction<T>` implementations, so nothing
 in the generic body special-cases the rational type.
 
 A handful of these are worth knowing when you write the generic body:
@@ -98,12 +98,12 @@ A handful of these are worth knowing when you write the generic body:
 | `TSelf.AdditiveIdentity` / `TSelf.MultiplicativeIdentity` | `Zero` and `One`. |
 | `TSelf.CreateChecked<TOther>(x)` | Exact for integer and `decimal` `x`; via nearest `double` otherwise; non-finite `x` is rejected; overflow throws. |
 | `TSelf.CreateSaturating` / `CreateTruncating` | As checked, but clamp to `MinValue` / `MaxValue` on overflow instead of throwing. |
-| `TSelf.IsFinite` / `IsNaN` / `IsInfinity` | `true` / `false` / `false` — a rational is always a finite real. |
+| `TSelf.IsFinite` / `IsNaN` / `IsInfinity` | `true` / `false` / `false` - a rational is always a finite real. |
 | `TSelf.Abs` / `MaxMagnitude` / `MinMagnitude` | Magnitude operations; the magnitude helpers break a tie by sign per the BCL convention. |
 
 `CreateChecked` over a non-bounded backing type never overflows from the
-conversion — `TSelf.CreateChecked(anyInteger)` with `TSelf` bound to
-`Fraction<BigInteger>` always succeeds — which is another reason a routine that must accept arbitrary
+conversion - `TSelf.CreateChecked(anyInteger)` with `TSelf` bound to
+`Fraction<BigInteger>` always succeeds - which is another reason a routine that must accept arbitrary
 magnitudes should be left parameterised over `T`.
 
 `Fraction<T>` additionally implements `ISignedNumber<Fraction<T>>`, so a
@@ -124,12 +124,12 @@ risk of an `OverflowException` on narrowing.
 | `int` | Values and denominators stay small; storage matters. | Compact (8 bytes); overflows near `int.MaxValue` on narrowing. |
 | `long` | Headroom for chained arithmetic over moderate magnitudes. | 16 bytes; still bounded, so still narrows. |
 | `Int128` / `UInt128` | Large fixed-width magnitudes without `BigInteger` allocation. | 32 bytes; bounded. |
-| `BigInteger` | Long chains of multiplications / divisions, or unknown magnitude. | Unbounded — never overflows; heap-allocates per component. |
+| `BigInteger` | Long chains of multiplications / divisions, or unknown magnitude. | Unbounded - never overflows; heap-allocates per component. |
 
 Unsigned backing types (`uint`, `ulong`, `byte`, …) are accepted but
 cannot represent negative rationals: any operation that would produce a
-negative numerator — unary `-`, `Negate()`, `MinusOne`, certain
-subtractions — throws `OverflowException` at run time. Pick a signed
+negative numerator - unary `-`, `Negate()`, `MinusOne`, certain
+subtractions - throws `OverflowException` at run time. Pick a signed
 backing type whenever negative values are possible.
 
 ## Overflow versus `BigInteger` promotion
@@ -150,13 +150,13 @@ var doubled = huge + huge;   // throws OverflowException on narrowing
 ```
 
 Switching the backing type to `BigInteger` removes the narrowing step
-entirely — the exact intermediate *is* the stored value, so overflow is
+entirely - the exact intermediate *is* the stored value, so overflow is
 impossible:
 
 <!-- compile -->
 ```csharp
 var hugeBig = Fraction<BigInteger>.Create(int.MaxValue, 1);
-var doubledBig = hugeBig + hugeBig;   // 4294967294/1 — no overflow
+var doubledBig = hugeBig + hugeBig;   // 4294967294/1 - no overflow
 ```
 
 The trade-off is the usual one: `Fraction<BigInteger>` allocates for its
@@ -229,14 +229,14 @@ ClampTo(42m, Interval<decimal>.Closed(0m, 1000m));     // 42m
 
 Because the endpoint type is just `INumber<T>`, the same interval value
 can carry an integer scheduling window, a `double` percentage band, or a
-`BigInteger` magnitude bound — and `Length` (computed as
+`BigInteger` magnitude bound - and `Length` (computed as
 `Upper - Lower`) is exact for `decimal` and `BigInteger` endpoints where a
 `double` range would accumulate floating-point error.
 
 ## See also
 
-- [Working with `Fraction<T>`](fraction.md) — the rational type's full surface: construction, arithmetic, parsing, formatting.
-- [Working with `Interval<T>`](interval.md) and [Interval algebra](interval-algebra.md) — the range type and its set operations.
+- [Working with `Fraction<T>`](fraction.md) - the rational type's full surface: construction, arithmetic, parsing, formatting.
+- [Working with `Interval<T>`](interval.md) and [Interval algebra](interval-algebra.md) - the range type and its set operations.
 - [`Fraction<T>` API reference](xref:Bodu.Numerics.Fraction`1) and [`Interval<T>` API reference](xref:Bodu.Numerics.Interval`1).
-- <xref:System.Numerics.INumber`1> and <xref:System.Numerics.IBinaryInteger`1> — the BCL generic-math interfaces these types build on.
-- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.
+- <xref:System.Numerics.INumber`1> and <xref:System.Numerics.IBinaryInteger`1> - the BCL generic-math interfaces these types build on.
+- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** - every guide in this topic, across Bodu.Numerics and Bodu.Financial.

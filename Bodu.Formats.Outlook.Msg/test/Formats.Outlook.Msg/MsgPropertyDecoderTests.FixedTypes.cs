@@ -31,7 +31,7 @@ public partial class MsgPropertyDecoderTests
     }
 
     /// <summary>
-    /// Verifies that a zero FILETIME — the conventional "unset time stamp" — materializes as a present property with
+    /// Verifies that a zero FILETIME - the conventional "unset time stamp" - materializes as a present property with
     /// a <see langword="null" /> value at every validation level, rather than being treated as corruption.
     /// </summary>
     /// <param name="validationLevel">The validation level to decode under.</param>

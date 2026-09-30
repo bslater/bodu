@@ -13,8 +13,8 @@ using Microsoft.Extensions.Options;
 namespace Bodu.Financial.Samples.CachedRates.Scenarios;
 
 /// <summary>
-/// Demonstrates the two add-on rate-cache backends — <c>Bodu.Financial.ExchangeRates.Caching.Sqlite</c> and
-/// <c>…Caching.Distributed</c> — behind the same <see cref="IRateCache" /> contract the in-memory and TOML backends
+/// Demonstrates the two add-on rate-cache backends - <c>Bodu.Financial.ExchangeRates.Caching.Sqlite</c> and
+/// <c>…Caching.Distributed</c> - behind the same <see cref="IRateCache" /> contract the in-memory and TOML backends
 /// implement.
 /// </summary>
 public static class DurableBackends

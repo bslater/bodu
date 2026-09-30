@@ -295,7 +295,7 @@ public partial class ConcurrentEvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that concurrent time-to-live churn — adds with short lifetimes racing explicit purges and reads — never
+    /// Verifies that concurrent time-to-live churn - adds with short lifetimes racing explicit purges and reads - never
     /// faults and converges to an empty dictionary once everything has expired and been purged.
     /// </summary>
     [TestMethod]

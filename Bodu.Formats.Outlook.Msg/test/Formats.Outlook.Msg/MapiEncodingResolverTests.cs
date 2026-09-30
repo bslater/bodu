@@ -17,7 +17,7 @@ namespace Bodu.Formats.Outlook.Msg;
 public partial class MapiEncodingResolverTests
 {
     /// <summary>
-    /// Verifies that a declared Windows code page resolves — proving the code-pages provider registration — and that
+    /// Verifies that a declared Windows code page resolves - proving the code-pages provider registration - and that
     /// the message code page is preferred over the internet code page.
     /// </summary>
     [TestMethod]
@@ -55,8 +55,8 @@ public partial class MapiEncodingResolverTests
     }
 
     /// <summary>
-    /// Verifies that a UTF-16 code page (1200 or 1201) is not a usable encoding for code-page strings — a writer that
-    /// declares it means "this message is Unicode" — so resolution falls through to the next candidate.
+    /// Verifies that a UTF-16 code page (1200 or 1201) is not a usable encoding for code-page strings - a writer that
+    /// declares it means "this message is Unicode" - so resolution falls through to the next candidate.
     /// </summary>
     /// <param name="messageCodePage">The declared message code page.</param>
     [TestMethod]
@@ -69,8 +69,8 @@ public partial class MapiEncodingResolverTests
     }
 
     /// <summary>
-    /// Verifies that the HTML-body resolution prefers the internet code page over the message code page — the
-    /// reverse of the precedence code-page strings use — and falls back the same way.
+    /// Verifies that the HTML-body resolution prefers the internet code page over the message code page - the
+    /// reverse of the precedence code-page strings use - and falls back the same way.
     /// </summary>
     [TestMethod]
     public void GetHtmlEncoding_WhenBothDeclared_ShouldPreferInternetCodePage()

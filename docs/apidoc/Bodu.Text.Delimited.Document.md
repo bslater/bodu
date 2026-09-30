@@ -10,10 +10,10 @@ uid: Bodu.Text.Delimited.Document
 
 ## Key types
 
-- <xref:Bodu.Text.Delimited.Document.DelimitedDocument> — the disposable owner: `Parse` (with an optional <xref:Bodu.Text.Delimited.Reader.DelimitedReaderOptions>), `RootElement`, and `Headers`.
-- <xref:Bodu.Text.Delimited.Document.DelimitedElement> — the cursor: `ValueKind` (a <xref:Bodu.Text.Delimited.DelimitedValueKind>), `GetString`, `GetProperty` / `TryGetProperty`, an integer indexer, `GetArrayLength`, and `EnumerateArray` / `EnumerateObject`.
-- <xref:Bodu.Text.Delimited.Document.DelimitedElement.ArrayEnumerator> / <xref:Bodu.Text.Delimited.Document.DelimitedElement.ObjectEnumerator> — the struct enumerators returned by `EnumerateArray` / `EnumerateObject`.
-- <xref:Bodu.Text.Delimited.Document.DelimitedProperty> — a `Name` / `Value` pair yielded by `EnumerateObject`.
+- <xref:Bodu.Text.Delimited.Document.DelimitedDocument> - the disposable owner: `Parse` (with an optional <xref:Bodu.Text.Delimited.Reader.DelimitedReaderOptions>), `RootElement`, and `Headers`.
+- <xref:Bodu.Text.Delimited.Document.DelimitedElement> - the cursor: `ValueKind` (a <xref:Bodu.Text.Delimited.DelimitedValueKind>), `GetString`, `GetProperty` / `TryGetProperty`, an integer indexer, `GetArrayLength`, and `EnumerateArray` / `EnumerateObject`.
+- <xref:Bodu.Text.Delimited.Document.DelimitedElement.ArrayEnumerator> / <xref:Bodu.Text.Delimited.Document.DelimitedElement.ObjectEnumerator> - the struct enumerators returned by `EnumerateArray` / `EnumerateObject`.
+- <xref:Bodu.Text.Delimited.Document.DelimitedProperty> - a `Name` / `Value` pair yielded by `EnumerateObject`.
 
 ## Example
 

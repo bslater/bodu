@@ -34,8 +34,8 @@ public enum DequeOverflowPolicy
     Reject = 0,
 
     /// <summary>
-    /// Adds to a full deque silently discard the element at the opposite end to make room — the tail element for
-    /// <see cref="Deque{T}.AddFirst(T)" />, the head element for <see cref="Deque{T}.AddLast(T)" /> — so
+    /// Adds to a full deque silently discard the element at the opposite end to make room - the tail element for
+    /// <see cref="Deque{T}.AddFirst(T)" />, the head element for <see cref="Deque{T}.AddLast(T)" /> - so
     /// <see cref="RingBackedCollection{T}.Count" /> stays at <see cref="RingBackedCollection{T}.Capacity" /> and the
     /// <c>Try*</c> variants return <see langword="true" />. This mirrors Python's <c>collections.deque(maxlen=N)</c>
     /// bounded-deque semantics.

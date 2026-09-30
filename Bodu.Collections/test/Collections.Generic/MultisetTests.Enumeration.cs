@@ -27,7 +27,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Distinct — empty multiset
+    // Distinct - empty multiset
     // --------------------------------------------------------
 
     /// <summary>
@@ -57,7 +57,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Distinct — RemoveAll invalidation
+    // Distinct - RemoveAll invalidation
     // --------------------------------------------------------
 
     /// <summary>
@@ -76,7 +76,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Enumerator — Current after exhaustion
+    // Enumerator - Current after exhaustion
     // --------------------------------------------------------
 
     /// <summary>
@@ -97,7 +97,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Enumerator — Current before MoveNext
+    // Enumerator - Current before MoveNext
     // --------------------------------------------------------
 
     /// <summary>
@@ -178,7 +178,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Enumerator — Add(T, int) invalidation
+    // Enumerator - Add(T, int) invalidation
     // --------------------------------------------------------
 
     /// <summary>
@@ -212,7 +212,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Enumerator — RemoveAll invalidation
+    // Enumerator - RemoveAll invalidation
     // --------------------------------------------------------
 
     /// <summary>
@@ -231,7 +231,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Enumerator — Reset
+    // Enumerator - Reset
     // --------------------------------------------------------
 
     /// <summary>
@@ -284,7 +284,7 @@ public partial class MultisetTests
     // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="Multiset{T}.Frequencies()"/> returns correct element–count pairs.
+    /// Verifies that <see cref="Multiset{T}.Frequencies()"/> returns correct element-count pairs.
     /// </summary>
     [TestMethod]
     public void Frequencies_WhenCalled_ShouldReturnCorrectPairs()
@@ -299,7 +299,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Frequencies — empty multiset
+    // Frequencies - empty multiset
     // --------------------------------------------------------
 
     /// <summary>
@@ -329,7 +329,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Frequencies — RemoveAll invalidation
+    // Frequencies - RemoveAll invalidation
     // --------------------------------------------------------
 
     /// <summary>

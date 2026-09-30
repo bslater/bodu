@@ -6,7 +6,7 @@ title: Calendar dependency injection
 
 The optional `Bodu.Globalization.Calendar.DependencyInjection` companion package wires <xref:Bodu.Globalization.Calendar.INotableDateService> into a `Microsoft.Extensions.DependencyInjection` container, so ASP.NET Core, generic-host, or any `IServiceCollection`-based application can resolve the calendar service like any other framework-registered dependency.
 
-The package is intentionally thin. A resource is an immutable, already-validated value, so registration takes the resource (or a factory for it) directly — there is no fluent builder. The service's behaviour is carried by the resource's `<ResolutionPolicy>` and, when the service needs collaborators (a custom algorithm registry, collision resolver, adjustment handlers, or code-first providers), by a <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions> passed to the matching overload (see [Building and extending the service](building-the-service.md)). If you are constructing the service by hand — in a console app or a test — keep using `new NotableDateService(...)`; this page is only relevant when you want the host to compose the service for you.
+The package is intentionally thin. A resource is an immutable, already-validated value, so registration takes the resource (or a factory for it) directly - there is no fluent builder. The service's behaviour is carried by the resource's `<ResolutionPolicy>` and, when the service needs collaborators (a custom algorithm registry, collision resolver, adjustment handlers, or code-first providers), by a <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions> passed to the matching overload (see [Building and extending the service](building-the-service.md)). If you are constructing the service by hand - in a console app or a test - keep using `new NotableDateService(...)`; this page is only relevant when you want the host to compose the service for you.
 
 ## Install
 
@@ -23,8 +23,8 @@ Every extension method lives on <xref:Bodu.Globalization.Calendar.NotableDateSer
 | Method | Registers |
 |---|---|
 | `AddNotableDateService(IServiceCollection, NotableDateResource)` | A singleton `INotableDateService` over an already-loaded resource. |
-| `AddNotableDateService(IServiceCollection, NotableDateResource, NotableDateServiceOptions?)` | The same, composed with collaborators — a custom algorithm registry, collision resolver, adjustment handlers, or code-first providers. |
-| `AddNotableDateService(IServiceCollection, Func<IServiceProvider, NotableDateResource>)` | The same, but the resource is produced from the container — e.g. loaded from configuration or a data pack resolved through DI. |
+| `AddNotableDateService(IServiceCollection, NotableDateResource, NotableDateServiceOptions?)` | The same, composed with collaborators - a custom algorithm registry, collision resolver, adjustment handlers, or code-first providers. |
+| `AddNotableDateService(IServiceCollection, Func<IServiceProvider, NotableDateResource>)` | The same, but the resource is produced from the container - e.g. loaded from configuration or a data pack resolved through DI. |
 | `AddNotableDateService(IServiceCollection, Func<IServiceProvider, NotableDateResource>, Func<IServiceProvider, NotableDateServiceOptions?>?)` | Factory registration with collaborators also produced from the container. |
 | `AddNotableDateService(IServiceCollection, string, NotableDateResource, NotableDateServiceOptions?)` | A **keyed** singleton `INotableDateService`, so a multi-tenant process registers one service per jurisdiction and resolves them by key. |
 | `AddNotableDateService(IServiceCollection, string, Func<IServiceProvider, NotableDateResource>, Func<IServiceProvider, NotableDateServiceOptions?>?)` | The keyed registration with factory-produced resource and collaborators. |
@@ -33,7 +33,7 @@ Every extension method lives on <xref:Bodu.Globalization.Calendar.NotableDateSer
 | `AddReloadableNotableDateService(IServiceCollection, Func<IServiceProvider, NotableDateResource>, NotableDateServiceOptions?)` | The reloadable registration with the initial resource produced from the container. |
 | `AddReloadableNotableDateService<TOptions>(IServiceCollection, Func<IServiceProvider, TOptions, NotableDateResource>, NotableDateServiceOptions?)` | The reloadable registration driven by `IOptionsMonitor<TOptions>`: every options change rebuilds the resource through the factory and swaps it into the live service. |
 
-`INotableDateService` is always registered as a singleton, and every registration is idempotent (`TryAdd` semantics): a second registration for the same service — or the same key — leaves the first in place rather than replacing it.
+`INotableDateService` is always registered as a singleton, and every registration is idempotent (`TryAdd` semantics): a second registration for the same service - or the same key - leaves the first in place rather than replacing it.
 
 Keyed services resolve through the standard .NET 8 keyed-service surface:
 
@@ -46,7 +46,7 @@ public sealed class PayrollCalendar([FromKeyedServices("AU")] INotableDateServic
 
 ## Register a resource
 
-Pass a loaded resource — typically from a companion data pack, or from `NotableDateResourceLoader.Load(...)` for your own document:
+Pass a loaded resource - typically from a companion data pack, or from `NotableDateResourceLoader.Load(...)` for your own document:
 
 <!-- compile -->
 ```csharp
@@ -57,7 +57,7 @@ services.AddNotableDateService(AsiaPacificCalendarData.LoadResource("AU"));
 
 ## Register via a factory
 
-The factory overload defers loading until the container builds the service, so the resource can depend on other registered services — for example reading the territory from `IConfiguration`:
+The factory overload defers loading until the container builds the service, so the resource can depend on other registered services - for example reading the territory from `IConfiguration`:
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -120,7 +120,7 @@ The provider is also registered as <xref:Bodu.Globalization.Calendar.INotableDat
 
 ### Configuration-driven reloads
 
-When the rule set is derived from configuration, bind an options type and use the monitored overload instead of calling `Reload` by hand — every change the options infrastructure observes (for example an edited `appsettings.json` with `reloadOnChange`) rebuilds the resource through your factory and swaps it into the live service:
+When the rule set is derived from configuration, bind an options type and use the monitored overload instead of calling `Reload` by hand - every change the options infrastructure observes (for example an edited `appsettings.json` with `reloadOnChange`) rebuilds the resource through your factory and swaps it into the live service:
 
 ```csharp
 builder.Services.AddOptions<CalendarOptions>().Bind(builder.Configuration.GetSection("Calendar"));
@@ -132,7 +132,7 @@ A factory failure during a change is logged and leaves the previously loaded res
 
 ## Registering a service with custom collaborators
 
-When the service needs collaborators — a custom algorithm registry, collision resolver, adjustment handlers, or code-first providers (see [Building and extending the service](building-the-service.md)) — pass a `NotableDateServiceOptions` to the matching overload. The factory pair defers both the resource and the options to container-build time:
+When the service needs collaborators - a custom algorithm registry, collision resolver, adjustment handlers, or code-first providers (see [Building and extending the service](building-the-service.md)) - pass a `NotableDateServiceOptions` to the matching overload. The factory pair defers both the resource and the options to container-build time:
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -159,8 +159,8 @@ Anything the registration surface still cannot express remains expressible as a 
 
 ## Where to go next
 
-- **[Building and extending the service](building-the-service.md)** — the collaborators (`NotableDateAlgorithmRegistry`, collision resolver, adjustment handlers, code-first providers) you can compose into the resource/service before registering it.
-- **[Calendar data packs](data-packs.md)** — composing a regional pack resource (Americas / Asia-Pacific / Europe / Middle East / Africa) through `AddNotableDateService`.
-- **[Using NotableDateService](notable-dates.md)** — query patterns and working-day arithmetic.
-- **[Bodu.Globalization.Calendar.DependencyInjection API reference](xref:Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions)** — the registration surface.
-- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- **[Building and extending the service](building-the-service.md)** - the collaborators (`NotableDateAlgorithmRegistry`, collision resolver, adjustment handlers, code-first providers) you can compose into the resource/service before registering it.
+- **[Calendar data packs](data-packs.md)** - composing a regional pack resource (Americas / Asia-Pacific / Europe / Middle East / Africa) through `AddNotableDateService`.
+- **[Using NotableDateService](notable-dates.md)** - query patterns and working-day arithmetic.
+- **[Bodu.Globalization.Calendar.DependencyInjection API reference](xref:Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions)** - the registration surface.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

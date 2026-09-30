@@ -14,7 +14,7 @@ public sealed partial class CcmModeTransformTests
 {
     // ── AES-CCM cross-checked against the BCL AesCcm (a NIST-validated CCM implementation) ────────
     //
-    // CcmModeTransform fixes Nlen = 12, q = 3, T = 16 — exactly the AES-128 / 12-byte-nonce /
+    // CcmModeTransform fixes Nlen = 12, q = 3, T = 16 - exactly the AES-128 / 12-byte-nonce /
     // 16-byte-tag parameters System.Security.Cryptography.AesCcm supports. Using AesCcm as an
     // authoritative oracle pins the exact ciphertext+tag across a range of AAD/plaintext lengths,
     // exercising the real data path (which a symmetric encrypt/decrypt round-trip cannot).

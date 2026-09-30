@@ -16,7 +16,7 @@ namespace Bodu.Collections.Samples.CollectionCatalogue.Scenarios;
 /// </summary>
 /// <remarks>
 /// The neighbour quartet is easy to misread. Floor and ceiling are inclusive of an exact match; lower and higher
-/// are strictly exclusive — so against a set containing 30, <c>Floor(30)</c> is 30 while <c>Lower(30)</c> is 20.
+/// are strictly exclusive - so against a set containing 30, <c>Floor(30)</c> is 30 while <c>Lower(30)</c> is 20.
 /// Reaching for the wrong pair is an off-by-one that only appears when a query happens to land exactly on an
 /// element, which is precisely the case a small test set is least likely to cover.
 /// </remarks>

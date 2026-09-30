@@ -35,8 +35,8 @@ public sealed partial class RadixTrieTests
     }
 
     /// <summary>
-    /// Verifies that adding a strict prefix of an existing key forces an edge split — <c>"team"</c> then
-    /// <c>"tea"</c> — while both keys stay individually resolvable.
+    /// Verifies that adding a strict prefix of an existing key forces an edge split - <c>"team"</c> then
+    /// <c>"tea"</c> - while both keys stay individually resolvable.
     /// </summary>
     [TestMethod]
     public void Add_WhenKeyIsPrefixOfExistingKey_ShouldSplitEdgeAndKeepBoth()
@@ -55,7 +55,7 @@ public sealed partial class RadixTrieTests
     }
 
     /// <summary>
-    /// Verifies that adding an extension of an existing key — <c>"tea"</c> then <c>"team"</c> — grows the compressed
+    /// Verifies that adding an extension of an existing key - <c>"tea"</c> then <c>"team"</c> - grows the compressed
     /// edge without disturbing the shorter key.
     /// </summary>
     [TestMethod]
@@ -72,7 +72,7 @@ public sealed partial class RadixTrieTests
     }
 
     /// <summary>
-    /// Verifies the classic radix-tree example — <c>romane / romanus / romulus</c> — whose insertion order forces
+    /// Verifies the classic radix-tree example - <c>romane / romanus / romulus</c> - whose insertion order forces
     /// splits at two different depths, leaving every key and prefix answerable.
     /// </summary>
     [TestMethod]

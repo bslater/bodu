@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Identifies the checksum constant used by <see cref="Bech32" /> — the original Bech32 scheme defined by BIP-173 or
+/// Identifies the checksum constant used by <see cref="Bech32" /> - the original Bech32 scheme defined by BIP-173 or
 /// the Bech32m revision defined by BIP-350.
 /// </summary>
 /// <remarks>

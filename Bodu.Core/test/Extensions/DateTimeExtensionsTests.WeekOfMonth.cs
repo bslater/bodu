@@ -167,7 +167,7 @@ public partial class DateTimeExtensionsTests
     /// <summary>
     /// Verifies that <see cref="CalendarWeekRule.FirstFourDayWeek" /> counts the straddling week as week 1 when at
     /// least four of its days fall in the month (February 2024 with a Monday week start) and defers to the following
-    /// week start when it does not (March 2024 with a Monday week start, where only Friday–Sunday fall in March).
+    /// week start when it does not (March 2024 with a Monday week start, where only Friday-Sunday fall in March).
     /// </summary>
     [TestMethod]
     public void WeekOfMonth_WhenUsingFirstFourDayWeek_ShouldHonourFourDayThreshold()

@@ -59,7 +59,7 @@ public partial class ThrowHelperTests
     }
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid{T}(System.Span{T}, int, int, string, string, string)" />
-    /// does not throw — and on the ParamName-asserting overload reports nothing — for both
+    /// does not throw - and on the ParamName-asserting overload reports nothing - for both
     /// <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" /> when the <c>(offset, count)</c> window
     /// fits inside the buffer.
     /// </summary>
@@ -91,8 +91,8 @@ public partial class ThrowHelperTests
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid{T}(System.Span{T}, int, int, string, string, string)" />
-    /// throws the expected exception type with the expected <c>ParamName</c> — disambiguating across
-    /// <c>span</c>, <c>offset</c>, and <c>count</c> — for both <see cref="Span{T}" /> and
+    /// throws the expected exception type with the expected <c>ParamName</c> - disambiguating across
+    /// <c>span</c>, <c>offset</c>, and <c>count</c> - for both <see cref="Span{T}" /> and
     /// <see cref="ReadOnlySpan{T}" /> when offset or count is out of range. Spans are value types so there
     /// is no null branch.
     /// </summary>

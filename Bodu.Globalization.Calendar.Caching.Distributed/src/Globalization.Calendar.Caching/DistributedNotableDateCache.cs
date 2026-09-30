@@ -14,8 +14,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Bodu.Globalization.Calendar.Caching;
 
 /// <summary>
-/// An <see cref="INotableDateCache" /> that persists computed years in any <see cref="IDistributedCache" /> — Redis,
-/// SQL Server, or an in-memory distributed cache — as one JSON blob per territory, expiring them through the same
+/// An <see cref="INotableDateCache" /> that persists computed years in any <see cref="IDistributedCache" /> - Redis,
+/// SQL Server, or an in-memory distributed cache - as one JSON blob per territory, expiring them through the same
 /// freshness and version mechanism as the other backends.
 /// </summary>
 /// <remarks>
@@ -148,8 +148,8 @@ public sealed class DistributedNotableDateCache
     /// <see cref="DistributedNotableDateCacheOptions.EntryExpirationMargin" />, so a key whose territory stops being
     /// queried self-evicts from the backing store; any entry evicted at that point would already be stale on read, so
     /// served results are unchanged. The lifetime is expressed relative to the store's own clock (<see cref="DistributedCacheEntryOptions.AbsoluteExpirationRelativeToNow" />)
-    /// rather than as an application-clock absolute instant, so clock skew between the application and the store — or a
-    /// test-supplied synthetic clock — cannot evict entries prematurely. A <see langword="null" /> margin disables the
+    /// rather than as an application-clock absolute instant, so clock skew between the application and the store - or a
+    /// test-supplied synthetic clock - cannot evict entries prematurely. A <see langword="null" /> margin disables the
     /// server-side expiration entirely.
     /// </remarks>
     protected internal override bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries, TimeSpan ttl, DateTimeOffset asOf)

@@ -22,7 +22,7 @@ public sealed partial class Ed25519Tests
     private const string WycheproofResourceName = "Bodu.Security.Cryptography.Ed25519.Wycheproof.txt";
 
     /// <summary>
-    /// Yields the published RFC 8032 §7.1 pure-Ed25519 vectors (TEST 1–3, TEST 1024 and TEST SHA(abc)) as KAT rows
+    /// Yields the published RFC 8032 §7.1 pure-Ed25519 vectors (TEST 1-3, TEST 1024 and TEST SHA(abc)) as KAT rows
     /// carrying the private seed for deterministic signing checks.
     /// </summary>
     /// <returns>One row per vector.</returns>

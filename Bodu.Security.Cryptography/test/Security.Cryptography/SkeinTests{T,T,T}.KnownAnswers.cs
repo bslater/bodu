@@ -45,7 +45,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     /// <summary>
     /// Verifies that hashing <paramref name="input" /> under the variant configured by <paramref name="variant" />
     /// (with <paramref name="key" /> overriding the variant default when supplied as a non-string array) reproduces
-    /// <paramref name="expected" /> — the published Skein 1.3 / NIST CD known-answer digest for this row.
+    /// <paramref name="expected" /> - the published Skein 1.3 / NIST CD known-answer digest for this row.
     /// </summary>
     /// <param name="variant">The (output size, mode) configuration to instantiate.</param>
     /// <param name="vectorName">A semantic name printed in the failure message to identify the row.</param>

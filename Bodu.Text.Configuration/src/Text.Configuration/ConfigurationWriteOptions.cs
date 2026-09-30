@@ -26,7 +26,7 @@ namespace Bodu.Text.Configuration;
 /// <para>
 /// <see cref="Encoding" /> defaults to UTF-8 without a byte-order mark to match the EditorConfig file convention;
 /// supply an alternative explicitly when interoperating with a host that expects a BOM or a different code page.
-/// <see cref="NewLine" /> defaults to a single LF — switch to <c>"\r\n"</c> for hosts that require CRLF on output.
+/// <see cref="NewLine" /> defaults to a single LF - switch to <c>"\r\n"</c> for hosts that require CRLF on output.
 /// Every property is <c>init</c>-only, so instances are safe to cache and share across threads.
 /// </para>
 /// <example>

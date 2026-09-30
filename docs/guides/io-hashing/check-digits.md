@@ -4,30 +4,30 @@ title: Check digits
 
 # Check digits
 
-Check-digit algorithms validate human-readable identifiers — credit card numbers, barcodes, bank account numbers, securities codes — by appending a short computed suffix that lets any reader confirm the identifier was not mis-typed or mis-transcribed. They target the specific error patterns that humans introduce when copying a string by hand: single-digit substitutions, adjacent transpositions, twin errors (e.g. `11 → 22`), and jump transpositions.
+Check-digit algorithms validate human-readable identifiers - credit card numbers, barcodes, bank account numbers, securities codes - by appending a short computed suffix that lets any reader confirm the identifier was not mis-typed or mis-transcribed. They target the specific error patterns that humans introduce when copying a string by hand: single-digit substitutions, adjacent transpositions, twin errors (e.g. `11 → 22`), and jump transpositions.
 
 > **Note.** Check-digit algorithms are not cryptographic and must not be used for password hashing, digital signatures, or integrity validation in security-sensitive applications. They are error-detection primitives for human-readable identifiers, nothing more.
 
 ## One namespace, one root, three base classes
 
-Every check-digit type in this package lives in the single `Bodu.IO.Hashing.CheckDigits` namespace. Every one of them ultimately derives from the root <xref:Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm> (`AlgorithmName`, `CheckLength`, `Append`, `GetCurrentCheckValue`, `Reset`). What differs between them is which of its three abstract derivatives each one extends — and that base captures the input alphabet and the output shape:
+Every check-digit type in this package lives in the single `Bodu.IO.Hashing.CheckDigits` namespace. Every one of them ultimately derives from the root <xref:Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm> (`AlgorithmName`, `CheckLength`, `Append`, `GetCurrentCheckValue`, `Reset`). What differs between them is which of its three abstract derivatives each one extends - and that base captures the input alphabet and the output shape:
 
 | Base class | Input alphabet | Output | Types |
 |---|---|---|---|
-| <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm> | ASCII decimal digits (`'0'`–`'9'`) | A single `char` | `Luhn`, `Damm`, `Verhoeff`, `Ean8`, `Ean13`, `Gtin14`, `UpcA`, `Isbn13`, `AbaRoutingNumber` |
+| <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm> | ASCII decimal digits (`'0'`-`'9'`) | A single `char` | `Luhn`, `Damm`, `Verhoeff`, `Ean8`, `Ean13`, `Gtin14`, `UpcA`, `Isbn13`, `AbaRoutingNumber` |
 | <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm> | Digits and/or letters | A single `char` (may be `'X'`) | `Isin`, `Isbn10`, `Sedol`, `Cusip`, `Iso7064Mod11_2` |
 | <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm> | Digits and/or letters | A fixed-length `string` (typically two digits) | `Iban`, `Lei`, `Iso7064Mod97_10` |
 
-All three bases expose the same streaming idiom: `Append` digits or characters into the running state; call `GetCurrentCheckDigit()` (single-char bases) or `GetCurrentCheckDigits()` (the multi-char base) — or the root's `GetCurrentCheckValue()` string form on any of them — to read the result non-destructively; call `Reset()` to restart. The static `Compute` / `IsValid` helpers wrap that lifecycle for the common one-shot case.
+All three bases expose the same streaming idiom: `Append` digits or characters into the running state; call `GetCurrentCheckDigit()` (single-char bases) or `GetCurrentCheckDigits()` (the multi-char base) - or the root's `GetCurrentCheckValue()` string form on any of them - to read the result non-destructively; call `Reset()` to restart. The static `Compute` / `IsValid` helpers wrap that lifecycle for the common one-shot case.
 
 > [!NOTE]
-> Every example below uses `using Bodu.IO.Hashing.CheckDigits;` — there is no longer a separate `Checksums` namespace for the alphanumeric or multi-character schemes.
+> Every example below uses `using Bodu.IO.Hashing.CheckDigits;` - there is no longer a separate `Checksums` namespace for the alphanumeric or multi-character schemes.
 
 ---
 
-## Decimal check-digit algorithms — `Bodu.IO.Hashing.CheckDigits`
+## Decimal check-digit algorithms - `Bodu.IO.Hashing.CheckDigits`
 
-### Luhn — `Luhn`
+### Luhn - `Luhn`
 
 The **Luhn algorithm** (ISO/IEC 7812, also called *modulus 10* or *mod 10*) was designed by Hans Peter Luhn at IBM in 1954. It is the check-digit scheme used by virtually every payment card number (Visa, Mastercard, Amex, Discover), IMEI numbers, and many national identification numbers.
 
@@ -36,7 +36,7 @@ The **Luhn algorithm** (ISO/IEC 7812, also called *modulus 10* or *mod 10*) was 
 ```csharp
 using Bodu.IO.Hashing.CheckDigits;
 
-// Streaming — append the body digits and read the check digit.
+// Streaming - append the body digits and read the check digit.
 var luhn = new Luhn();
 luhn.Append("7992739871");
 char check = luhn.GetCurrentCheckDigit();   // '3'  →  full number "79927398713"
@@ -49,9 +49,9 @@ bool invalid  = Luhn.IsValid("79927398710");         // false
 
 ---
 
-### Damm — `Damm`
+### Damm - `Damm`
 
-The **Damm algorithm** uses a quasigroup operation table designed by H. Michael Damm (2004). It detects **all** single-digit substitution errors and **all** adjacent transposition errors — including the `09 ↔ 90` swap that Luhn misses. It also detects many twin errors.
+The **Damm algorithm** uses a quasigroup operation table designed by H. Michael Damm (2004). It detects **all** single-digit substitution errors and **all** adjacent transposition errors - including the `09 ↔ 90` swap that Luhn misses. It also detects many twin errors.
 
 <!-- compile -->
 ```csharp
@@ -66,7 +66,7 @@ bool valid = Damm.IsValid("5724");          // true
 
 ---
 
-### Verhoeff — `Verhoeff`
+### Verhoeff - `Verhoeff`
 
 The **Verhoeff algorithm** uses the dihedral group D₅ and a permutation table to detect all single-digit substitution errors, all adjacent transpositions, and all twin errors. It was designed by Jacobus Verhoeff (1969) and is used by the German ID card system and various medical device identifiers.
 
@@ -82,7 +82,7 @@ bool valid = Verhoeff.IsValid("2363");          // true
 
 ---
 
-### EAN barcodes — `Ean8` / `Ean13`
+### EAN barcodes - `Ean8` / `Ean13`
 
 EAN-8 and EAN-13 use the GS1 weighted-mod-10 algorithm. They are the standard barcodes on retail products worldwide.
 
@@ -102,7 +102,7 @@ char check8 = Ean8.Compute("1234567");   // '0'
 
 ---
 
-### GTIN-14 — `Gtin14`
+### GTIN-14 - `Gtin14`
 
 GTIN-14 extends EAN-13 with a packaging-level indicator digit, using the same GS1 weighted-mod-10 algorithm. It is the standard for shipping cartons and pallet-level barcodes.
 
@@ -115,7 +115,7 @@ bool valid  = Gtin14.IsValid("12345678901231");  // true
 
 ---
 
-### UPC-A — `UpcA`
+### UPC-A - `UpcA`
 
 UPC-A is the standard 12-digit barcode used in the United States and Canada. It is structurally identical to EAN-13 with a leading zero, using the same GS1 weighted-mod-10 algorithm.
 
@@ -128,7 +128,7 @@ bool valid  = UpcA.IsValid("036000241457");  // true
 
 ---
 
-### ISIN — `Isin`
+### ISIN - `Isin`
 
 An **ISIN** (International Securities Identification Number, ISO 6166) is a 12-character alphanumeric code identifying a financial security. The check digit is computed by expanding each letter to two digits (`A`=10, `B`=11, …, `Z`=35), concatenating the result with the numeric body, then applying the Luhn algorithm.
 
@@ -143,7 +143,7 @@ bool valid = Isin.IsValid("US0378331005");   // true  (Apple Inc.)
 
 ---
 
-### ABA routing number — `AbaRoutingNumber`
+### ABA routing number - `AbaRoutingNumber`
 
 US bank routing numbers use a weighted-mod-10 scheme with weights `[3, 7, 1]` repeating. The ABA (American Bankers Association) routing transit number is always 9 digits.
 
@@ -155,11 +155,11 @@ bool valid = AbaRoutingNumber.IsValid("021000021");   // true (JPMorgan Chase, N
 
 ---
 
-## Alphanumeric and multi-character algorithms — `Bodu.IO.Hashing.CheckDigits`
+## Alphanumeric and multi-character algorithms - `Bodu.IO.Hashing.CheckDigits`
 
-### IBAN — `Iban`
+### IBAN - `Iban`
 
-An **IBAN** (International Bank Account Number, ISO 13616) begins with a two-letter country code followed by two check digits and the country-specific BBAN. The check uses ISO 7064 MOD 97–10 over the rearranged and letter-expanded string.
+An **IBAN** (International Bank Account Number, ISO 13616) begins with a two-letter country code followed by two check digits and the country-specific BBAN. The check uses ISO 7064 MOD 97-10 over the rearranged and letter-expanded string.
 
 ```csharp
 using Bodu.IO.Hashing.CheckDigits;
@@ -176,7 +176,7 @@ bool valid = Iban.IsValid("GB29BARC20201530093459");   // true
 
 ---
 
-### ISBN — `Isbn10` / `Isbn13`
+### ISBN - `Isbn10` / `Isbn13`
 
 `Isbn10` uses weighted mod-11 (the check digit may be `'X'` representing 10). `Isbn13` uses GS1 weighted mod-10 and is identical to EAN-13. Both share the same streaming API.
 
@@ -192,7 +192,7 @@ bool valid13 = Isbn13.IsValid("9780306406157");
 
 ---
 
-### SEDOL — `Sedol`
+### SEDOL - `Sedol`
 
 SEDOL (Stock Exchange Daily Official List) is a 7-character identifier used by the London Stock Exchange. The 6-character body uses digits and uppercase consonants (vowels are excluded); the check digit is the result of a weighted mod-10 computation.
 
@@ -205,7 +205,7 @@ bool valid  = Sedol.IsValid("7108892");   // true
 
 ---
 
-### CUSIP — `Cusip`
+### CUSIP - `Cusip`
 
 CUSIP (Committee on Uniform Securities Identification Procedures, ANSI X9.6) identifies North American financial securities with a 9-character identifier. The check is computed from the 8-character body using a modified Luhn algorithm that handles alphanumeric characters.
 
@@ -218,9 +218,9 @@ bool valid  = Cusip.IsValid("0378331005");
 
 ---
 
-### LEI — `Lei`
+### LEI - `Lei`
 
-An **LEI** (Legal Entity Identifier, ISO 17442) is a 20-character alphanumeric code that uniquely identifies legal entities (companies, funds, etc.) globally. The check uses ISO 7064 MOD 97–10 over the letter-expanded string.
+An **LEI** (Legal Entity Identifier, ISO 17442) is a 20-character alphanumeric code that uniquely identifies legal entities (companies, funds, etc.) globally. The check uses ISO 7064 MOD 97-10 over the letter-expanded string.
 
 ```csharp
 using Bodu.IO.Hashing.CheckDigits;
@@ -242,11 +242,11 @@ A check digit is only as good as the keying errors it catches. The schemes here 
 | Mod 11 | `Isbn10`, `Sedol`, `Cusip`, `Iso7064Mod11_2` | All | Most | Some |
 | Mod 97-10 (ISO 7064) | `Iban`, `Lei`, `Iso7064Mod97_10` | Effectively all | Effectively all | Effectively all |
 
-The `Ean*`, `Gtin14`, `UpcA`, and `Isin` schemes share Luhn's mod-10 floor (and its `09 ↔ 90` blind spot) because they reduce to a weighted-sum-mod-10 over the expanded payload. For a **free** choice of a general decimal identifier, `Damm` closes that gap with a single character; `Verhoeff` adds twin-error coverage at the cost of a permutation table. Reach for `Luhn` only when a standard mandates it. The two-character `Iban` / `Lei` schemes over a large modulus catch essentially every realistic transcription error — the appropriate strength for high-value financial identifiers. See the [concepts page](../../docs/io-hashing/concepts.md#transcription-error-classes) for what each error class means.
+The `Ean*`, `Gtin14`, `UpcA`, and `Isin` schemes share Luhn's mod-10 floor (and its `09 ↔ 90` blind spot) because they reduce to a weighted-sum-mod-10 over the expanded payload. For a **free** choice of a general decimal identifier, `Damm` closes that gap with a single character; `Verhoeff` adds twin-error coverage at the cost of a permutation table. Reach for `Luhn` only when a standard mandates it. The two-character `Iban` / `Lei` schemes over a large modulus catch essentially every realistic transcription error - the appropriate strength for high-value financial identifiers. See the [concepts page](../../docs/io-hashing/concepts.md#transcription-error-classes) for what each error class means.
 
 ## Streaming a payload in chunks
 
-The static `Compute` / `IsValid` helpers cover one-shot use, but each type is also a stateful instance you can feed in pieces — useful when the payload arrives across buffers, or when you want to validate then re-read the computed digit:
+The static `Compute` / `IsValid` helpers cover one-shot use, but each type is also a stateful instance you can feed in pieces - useful when the payload arrives across buffers, or when you want to validate then re-read the computed digit:
 
 ```csharp
 using Bodu.IO.Hashing.CheckDigits;
@@ -255,7 +255,7 @@ var luhn = new Luhn();
 luhn.Append("7992");           // ReadOnlySpan<char> overload
 luhn.Append('7');              // single-char overload
 luhn.Append("39871");
-char check = luhn.GetCurrentCheckDigit();   // '3' — non-destructive
+char check = luhn.GetCurrentCheckDigit();   // '3' - non-destructive
 luhn.Reset();                               // ready for the next identifier
 ```
 
@@ -282,7 +282,7 @@ luhn.Reset();                               // ready for the next identifier
 
 ## Where to go next
 
-- [Bodu.IO.Hashing introduction](../../docs/io-hashing/index.md) — how check digits relate to checksums and fingerprints, and where the cryptographic families fit.
-- [Bodu.IO.Hashing overview](index.md) — the broader non-cryptographic hashing landscape.
-- [Bodu.IO.Hashing API reference](xref:Bodu.IO.Hashing) — full type documentation.
-- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
+- [Bodu.IO.Hashing introduction](../../docs/io-hashing/index.md) - how check digits relate to checksums and fingerprints, and where the cryptographic families fit.
+- [Bodu.IO.Hashing overview](index.md) - the broader non-cryptographic hashing landscape.
+- [Bodu.IO.Hashing API reference](xref:Bodu.IO.Hashing) - full type documentation.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

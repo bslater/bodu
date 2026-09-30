@@ -14,7 +14,7 @@ namespace Bodu.Financial.Samples.OfflineRates;
 /// Loads the committed static rate file into a ready-to-query provider. This is the offline-first pattern:
 /// any rate data you already hold (a file, a database table, an API response you archived) can be poured
 /// through <see cref="RateTableBuilder" /> into an immutable <see cref="RateBook" /> and served through
-/// <see cref="FixedDatedRateProvider" /> — the same contracts the live web providers implement.
+/// <see cref="FixedDatedRateProvider" /> - the same contracts the live web providers implement.
 /// </summary>
 public static class StaticRates
 {

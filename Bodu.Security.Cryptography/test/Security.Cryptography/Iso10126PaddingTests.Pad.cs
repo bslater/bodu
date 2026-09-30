@@ -33,7 +33,7 @@ public sealed partial class Iso10126PaddingTests
     [TestMethod]
     public void Pad_WhenCalledRepeatedly_ShouldProduceDifferentInteriorBytes()
     {
-        // Residual leaves 10 pad bytes (9 random interior + 1 length) — enough room that
+        // Residual leaves 10 pad bytes (9 random interior + 1 length) - enough room that
         // a repeat collision across two draws is astronomically unlikely.
         Iso10126Padding padding = CreatePadding();
         byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 10);

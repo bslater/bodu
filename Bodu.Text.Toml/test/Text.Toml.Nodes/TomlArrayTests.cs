@@ -377,7 +377,7 @@ public class TomlArrayTests
     }
 
     /// <summary>
-    /// Verifies that serialization preserves insertion order — array elements are never sorted.
+    /// Verifies that serialization preserves insertion order - array elements are never sorted.
     /// </summary>
     [TestMethod]
     public void ToUtf8Bytes_WhenElementsAdded_ShouldPreserveInsertionOrder()

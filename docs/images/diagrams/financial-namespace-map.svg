@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 412" role="img" aria-labelledby="fin-t fin-d">
-  <title id="fin-t">Bodu.Financial — namespace map</title>
-  <desc id="fin-d">Bodu.Financial is organised into four namespaces. Bodu.Financial hosts the monetary primitives Money&lt;TCurrency&gt;, Money, and MoneyBag. Bodu.Financial.Currencies ships the runtime currency metadata (ICurrency, CurrencyInfo, CurrencyRegistry) alongside sealed tag types — one per ISO 4217 code. Bodu.Financial.ExchangeRates hosts the exchange-rate provider stack. The companion package Bodu.Financial.Serialization.Json ships System.Text.Json converters plus the FinancialJsonPolicy enum that switches between Strict, Lenient, and Compact wire shapes. Currency tags are erased at runtime but their static metadata flows through Money&lt;TCurrency&gt;, the registry, and the serialization layer.</desc>
+  <title id="fin-t">Bodu.Financial - namespace map</title>
+  <desc id="fin-d">Bodu.Financial is organised into four namespaces. Bodu.Financial hosts the monetary primitives Money&lt;TCurrency&gt;, Money, and MoneyBag. Bodu.Financial.Currencies ships the runtime currency metadata (ICurrency, CurrencyInfo, CurrencyRegistry) alongside sealed tag types - one per ISO 4217 code. Bodu.Financial.ExchangeRates hosts the exchange-rate provider stack. The companion package Bodu.Financial.Serialization.Json ships System.Text.Json converters plus the FinancialJsonPolicy enum that switches between Strict, Lenient, and Compact wire shapes. Currency tags are erased at runtime but their static metadata flows through Money&lt;TCurrency&gt;, the registry, and the serialization layer.</desc>
 
   <defs>
     <style>
@@ -27,7 +27,7 @@
     <rect class="fin-pan" width="800" height="392" rx="8"/>
     <rect class="fin-hdr" width="800" height="46" rx="8"/>
     <rect class="fin-hdr" y="38" width="800" height="8"/>
-    <text class="fin-ttl" x="16" y="29">Bodu.Financial — four namespaces, one monetary surface</text>
+    <text class="fin-ttl" x="16" y="29">Bodu.Financial - four namespaces, one monetary surface</text>
     <text class="fin-form" x="784" y="29" text-anchor="end">type-safe · ISO 4217 · audit-grade FX</text>
 
     <!-- Row 1: namespaces -->

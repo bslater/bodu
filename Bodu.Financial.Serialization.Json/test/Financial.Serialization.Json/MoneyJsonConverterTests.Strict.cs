@@ -32,8 +32,8 @@ public partial class MoneyJsonConverterTests
         Assert.AreEqual(new Money(19.99m, CurrencyCode.USD), JsonSerializer.Deserialize<Money>("{\"amount\":\"19.99\",\"currency\":\"USD\"}", OptionsFor(FinancialJsonPolicy.Strict)));
 
     /// <summary>
-    /// Verifies that the canonical object form rejects malformed payloads — a non-object, a non-numeric amount, a
-    /// non-string currency, a missing property, or a wrong-length ISO code — with a <see cref="JsonException" />.
+    /// Verifies that the canonical object form rejects malformed payloads - a non-object, a non-numeric amount, a
+    /// non-string currency, a missing property, or a wrong-length ISO code - with a <see cref="JsonException" />.
     /// </summary>
     [TestMethod]
     [DataRow("[1,2]", DisplayName = "Not an object")]
@@ -47,7 +47,7 @@ public partial class MoneyJsonConverterTests
         Assert.ThrowsExactly<JsonException>(() => JsonSerializer.Deserialize<Money>(json, OptionsFor(FinancialJsonPolicy.Strict)));
 
     /// <summary>
-    /// Verifies that a JSON payload with duplicate <c>"amount"</c> or <c>"currency"</c> properties is rejected —
+    /// Verifies that a JSON payload with duplicate <c>"amount"</c> or <c>"currency"</c> properties is rejected -
     /// last-write-wins on financial payloads is a silent data-integrity hazard.
     /// </summary>
     [TestMethod]

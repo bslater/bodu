@@ -9,7 +9,7 @@ using Bodu.Text.Toml.Samples.TomlDocuments.Scenarios;
 namespace Bodu.Text.Toml.Samples.TomlDocuments;
 
 /// <summary>
-/// Entry point for the TOML document-model sample: the layers beneath <c>TomlSerializer</c> —
+/// Entry point for the TOML document-model sample: the layers beneath <c>TomlSerializer</c> -
 /// the mutable <c>TomlNode</c> DOM, the read-only <c>TomlDocument</c> DOM, and the ref-struct
 /// <c>Utf8TomlReader</c>/<c>Utf8TomlWriter</c> token surface, including streaming reads across
 /// buffer boundaries. Everything runs offline against the committed <c>Data/server-config.toml</c>.

@@ -11,7 +11,7 @@ namespace Bodu.Samples.Text.Formats.ConfigFiles.Scenarios;
 
 /// <summary>
 /// Demonstrates the DotEnv read surfaces: <c>export</c> prefixes, double/single quoting, inline comments, and empty
-/// values via the read-only <see cref="DotEnvDocument" /> — plus <see cref="DotEnvSerializer" /> binding the file
+/// values via the read-only <see cref="DotEnvDocument" /> - plus <see cref="DotEnvSerializer" /> binding the file
 /// straight onto a typed settings class with the SCREAMING_SNAKE_CASE naming policy. Values are returned
 /// <em>literally</em>: no <c>${VAR}</c> interpolation happens at parse time.
 /// </summary>

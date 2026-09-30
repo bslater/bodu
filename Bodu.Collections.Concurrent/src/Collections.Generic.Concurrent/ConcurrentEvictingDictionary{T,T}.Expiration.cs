@@ -121,7 +121,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// No <see cref="Expiration" /> configuration was supplied at construction.
     /// </exception>
     /// <remarks>
-    /// The factory is invoked inside the owning segment's lock — at most once per key even under concurrent misses. See
+    /// The factory is invoked inside the owning segment's lock - at most once per key even under concurrent misses. See
     /// <see cref="GetOrAdd(TKey, Func{TKey, TValue})" /> for the factory caveats; the <paramref name="timeToLive" /> is
     /// applied only when the entry is added.
     /// </remarks>

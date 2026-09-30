@@ -10,8 +10,8 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfZero{T}(T, string)" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for non-zero values (positive and negative) across
+    /// Verifies that <see cref="ThrowHelper.ThrowIfZero{T}(T, string)" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for non-zero values (positive and negative) across
     /// the <see cref="int" />, <see cref="long" />, <see cref="double" />, and <see cref="decimal" />
     /// overloads.
     /// </summary>
