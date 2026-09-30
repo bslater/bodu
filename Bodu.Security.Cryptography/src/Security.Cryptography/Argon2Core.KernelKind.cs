@@ -40,5 +40,17 @@ internal static partial class Argon2Core
         /// The 256-bit kernel on x64, over AVX2.
         /// </summary>
         Avx2,
+
+        /// <summary>
+        /// The scalar kernel holding each row or column in general registers across its round. Temporary: F13 of the
+        /// follow-up plan measures it against <see cref="Scalar" />.
+        /// </summary>
+        ScalarResident,
+
+        /// <summary>
+        /// Pairs of rows and pairs of columns on ARM64, one of each pair over AdvSimd and the other in general
+        /// registers, interleaved. Temporary, as <see cref="ScalarResident" /> is.
+        /// </summary>
+        AdvSimdHybrid,
     }
 }

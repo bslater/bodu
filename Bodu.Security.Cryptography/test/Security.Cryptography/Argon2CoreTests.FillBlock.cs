@@ -12,38 +12,45 @@ public sealed partial class Argon2CoreTests
     private const int DifferentialBlocks = 200;
 
     /// <summary>
-    /// Verifies that a vector kernel overwriting its destination - every pass of version 0x10 and the first pass of
+    /// Verifies that each other kernel overwriting its destination - every pass of version 0x10 and the first pass of
     /// version 0x13 - produces the scalar kernel's block and carried state for seeded random inputs.
     /// </summary>
-    /// <param name="kernel">The name of the vector kernel.</param>
+    /// <param name="kernel">The name of the kernel.</param>
     [TestMethod]
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
+    [DataRow("ScalarResident")]
+    [DataRow("AdvSimdHybrid")]
     public void FillBlock_WhenOverwriting_ShouldMatchTheScalarKernel(string kernel) =>
         AssertKernelMatchesScalar(ParseSupportedKernel(kernel), withXor: false, referenceIsDestination: false);
 
     /// <summary>
-    /// Verifies that a vector kernel XORing into its destination - every pass after the first in version 0x13 -
+    /// Verifies that each other kernel XORing into its destination - every pass after the first in version 0x13 -
     /// produces the scalar kernel's block and carried state for seeded random inputs.
     /// </summary>
-    /// <param name="kernel">The name of the vector kernel.</param>
+    /// <param name="kernel">The name of the kernel.</param>
     [TestMethod]
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
+    [DataRow("ScalarResident")]
+    [DataRow("AdvSimdHybrid")]
     public void FillBlock_WhenXoring_ShouldMatchTheScalarKernel(string kernel) =>
         AssertKernelMatchesScalar(ParseSupportedKernel(kernel), withXor: true, referenceIsDestination: false);
 
     /// <summary>
-    /// Verifies that a vector kernel whose reference block is also its destination - as the Argon2i address generator
-    /// compresses its address block in place - reads the reference before overwriting it, as the scalar kernel does.
+    /// Verifies that each other kernel whose reference block is also its destination - as the Argon2i address
+    /// generator compresses its address block in place - reads the reference before overwriting it, as the scalar
+    /// kernel does.
     /// </summary>
-    /// <param name="kernel">The name of the vector kernel.</param>
+    /// <param name="kernel">The name of the kernel.</param>
     [TestMethod]
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
+    [DataRow("ScalarResident")]
+    [DataRow("AdvSimdHybrid")]
     public void FillBlock_WhenReferenceIsTheDestination_ShouldMatchTheScalarKernel(string kernel) =>
         AssertKernelMatchesScalar(ParseSupportedKernel(kernel), withXor: false, referenceIsDestination: true);
 
@@ -117,6 +124,14 @@ public sealed partial class Argon2CoreTests
 
             case Argon2Core.KernelKind.Ssse3:
                 FillBlock<Argon2Core.Vector128Kernel<Argon2Core.Ssse3Isa>>(state, scratch, reference, next, withXor);
+                break;
+
+            case Argon2Core.KernelKind.ScalarResident:
+                FillBlock<Argon2Core.ResidentScalarKernel>(state, scratch, reference, next, withXor);
+                break;
+
+            case Argon2Core.KernelKind.AdvSimdHybrid:
+                FillBlock<Argon2Core.HybridKernel<Argon2Core.AdvSimdIsa>>(state, scratch, reference, next, withXor);
                 break;
 
             default:

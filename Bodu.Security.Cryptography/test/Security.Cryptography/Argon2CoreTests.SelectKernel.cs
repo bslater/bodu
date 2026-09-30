@@ -119,6 +119,7 @@ public sealed partial class Argon2CoreTests
     [TestMethod]
     [DataRow("Auto")]
     [DataRow("Scalar")]
+    [DataRow("ScalarResident")]
     public void IsSupported_WhenKernelRunsEverywhere_ShouldReturnTrue(string kernel)
     {
         Assert.IsTrue(Argon2Core.IsSupported(Enum.Parse<Argon2Core.KernelKind>(kernel)));
@@ -143,6 +144,7 @@ public sealed partial class Argon2CoreTests
         Assert.AreEqual(System.Runtime.Intrinsics.X86.Avx2.IsSupported, Argon2Core.IsSupported(Argon2Core.KernelKind.Avx2));
         Assert.AreEqual(System.Runtime.Intrinsics.X86.Ssse3.IsSupported, Argon2Core.IsSupported(Argon2Core.KernelKind.Ssse3));
         Assert.AreEqual(System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported, Argon2Core.IsSupported(Argon2Core.KernelKind.AdvSimd));
+        Assert.AreEqual(System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported, Argon2Core.IsSupported(Argon2Core.KernelKind.AdvSimdHybrid));
     }
 
     /// <summary>

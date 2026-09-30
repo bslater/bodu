@@ -215,9 +215,9 @@ internal static partial class Argon2Core
     /// </returns>
     internal static bool IsSupported(KernelKind kernel) => kernel switch
     {
-        KernelKind.Auto or KernelKind.Scalar => true,
+        KernelKind.Auto or KernelKind.Scalar or KernelKind.ScalarResident => true,
         KernelKind.Ssse3 => System.Runtime.Intrinsics.X86.Ssse3.IsSupported,
-        KernelKind.AdvSimd => System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported,
+        KernelKind.AdvSimd or KernelKind.AdvSimdHybrid => System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported,
         KernelKind.Avx2 => System.Runtime.Intrinsics.X86.Avx2.IsSupported,
         _ => false,
     };
@@ -247,6 +247,14 @@ internal static partial class Argon2Core
 
             case KernelKind.Ssse3:
                 FillMemory<Vector128Kernel<Ssse3Isa>>(matrix, geometry, workers);
+                break;
+
+            case KernelKind.ScalarResident:
+                FillMemory<ResidentScalarKernel>(matrix, geometry, workers);
+                break;
+
+            case KernelKind.AdvSimdHybrid:
+                FillMemory<HybridKernel<AdvSimdIsa>>(matrix, geometry, workers);
                 break;
 
             default:
