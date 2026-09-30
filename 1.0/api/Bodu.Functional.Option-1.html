@@ -1,98 +1,142 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Struct Option&lt;T&gt; | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Struct Option&lt;T&gt; | BODU ">
-    
-    <meta name="description" content="Represents an optional value: either Some(value) carrying a non-null value of type T, or None carrying nothing.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>Option&lt;T&gt; Struct
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Option&lt;T&gt; Struct
+ | BODU ">
+      
+      <meta name="description" content="Represents an optional value: either Some(value) carrying a non-null value of type T, or None carrying nothing.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Functional.Option`1">
+
+        <article data-uid="Bodu.Functional.Option`1">
 
 
 
-  <h1 id="Bodu_Functional_Option_1" data-uid="Bodu.Functional.Option`1" class="text-break">Struct Option&lt;T&gt;</h1>
-  <div class="markdown level0 summary"><p>Represents an optional value: either <code>Some(value)</code> carrying a non-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value of type
+
+  <h1 id="Bodu_Functional_Option_1" data-uid="Bodu.Functional.Option`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+Option&lt;T&gt; Struct
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Functional_Option_1_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Functional.html">Functional</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Factories.cs">Option{T}.Factories.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents an optional value: either <code>Some(value)</code> carrying a non-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value of type
 <code class="typeparamref">T</code>, or <code>None</code> carrying nothing.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;&gt;</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct Option&lt;T&gt; : IEquatable&lt;Option&lt;T&gt;&gt;</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the contained value.</p>
+</dd>
+  </dl>
+
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;&gt;</div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
     </div>
@@ -102,335 +146,1230 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Functional.html">Functional</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
-  <h5 id="Bodu_Functional_Option_1_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly struct Option&lt;T&gt; : IEquatable&lt;Option&lt;T&gt;&gt;</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 class="typeParameters">Type Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="parametername">T</span></td>
-        <td><p>The type of the contained value.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Bodu_Functional_Option_1_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Functional.OptionAsyncExtensions.html#Bodu_Functional_OptionAsyncExtensions_BindAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Option___1____">OptionAsyncExtensions.BindAsync&lt;T, TResult&gt;(Option&lt;T&gt;, Func&lt;T, Task&lt;Option&lt;TResult&gt;&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Functional.OptionAsyncExtensions.html#Bodu_Functional_OptionAsyncExtensions_MapAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task___1___">OptionAsyncExtensions.MapAsync&lt;T, TResult&gt;(Option&lt;T&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Functional.OptionAsyncExtensions.html#Bodu_Functional_OptionAsyncExtensions_MatchAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___">OptionAsyncExtensions.MatchAsync&lt;T, TResult&gt;(Option&lt;T&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Functional_Option_1_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 <a class="xref" href="Bodu.Functional.Option-1.html">Option&lt;T&gt;</a> makes the possible absence of a value explicit in a signature, replacing
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> returns and <code>bool Try…(out …)</code> pairs with a single composable value. Chain
-transformations with <a class="xref" href="Bodu.Functional.Option-1.Map.html#Bodu_Functional_Option_1_Map__1_System_Func__0___0__">Map&lt;TResult&gt;(Func&lt;T, TResult&gt;)</a> and
-<a class="xref" href="Bodu.Functional.Option-1.Bind.html#Bodu_Functional_Option_1_Bind__1_System_Func__0_Bodu_Functional_Option___0___">Bind&lt;TResult&gt;(Func&lt;T, Option&lt;TResult&gt;&gt;)</a>, and collapse to a final value with
-<a class="xref" href="Bodu.Functional.Option-1.Match.html#Bodu_Functional_Option_1_Match__1_System_Func__0___0__System_Func___0__">Match&lt;TResult&gt;(Func&lt;T, TResult&gt;, Func&lt;TResult&gt;)</a> or the <code>GetValueOrDefault</code> overloads.
+transformations with <a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_Map__1_System_Func__0___0__">Map&lt;TResult&gt;(Func&lt;T, TResult&gt;)</a> and
+<a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_Bind__1_System_Func__0_Bodu_Functional_Option___0___">Bind&lt;TResult&gt;(Func&lt;T, Option&lt;TResult&gt;&gt;)</a>, and collapse to a final value with
+<a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_Match__1_System_Func__0___0__System_Func___0__">Match&lt;TResult&gt;(Func&lt;T, TResult&gt;, Func&lt;TResult&gt;)</a> or the <code>GetValueOrDefault</code> overloads.
 </p>
 <p>
-<code>default(Option&lt;T&gt;)</code> equals <a class="xref" href="Bodu.Functional.Option-1.None.html#Bodu_Functional_Option_1_None">None</a> — an option that was never assigned behaves exactly like
+<code>default(Option&lt;T&gt;)</code> equals <a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_None">None</a> — an option that was never assigned behaves exactly like
 an explicit <code>None</code>, so the type is total and safe to use as a field or array element without initialization.
 </p>
 <p>
-The type distinguishes a <em>strict</em> and a <em>lenient</em> lift: <a class="xref" href="Bodu.Functional.Option-1.Some.html#Bodu_Functional_Option_1_Some__0_">Some(T)</a> rejects
+The type distinguishes a <em>strict</em> and a <em>lenient</em> lift: <a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_Some__0_">Some(T)</a> rejects
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> (a present null is treated as a bug), while the
-implicit conversion from <code class="typeparamref">T</code> maps <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to <a class="xref" href="Bodu.Functional.Option-1.None.html#Bodu_Functional_Option_1_None">None</a> (absence).
+implicit conversion from <code class="typeparamref">T</code> maps <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to <a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_None">None</a> (absence).
 </p>
 </div>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Functional_Option_1_IsNone_" data-uid="Bodu.Functional.Option`1.IsNone*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_IsNone" data-uid="Bodu.Functional.Option`1.IsNone">
+  IsNone
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether this option carries no value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsNone { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if no value is present; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_IsSome_" data-uid="Bodu.Functional.Option`1.IsSome*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_IsSome" data-uid="Bodu.Functional.Option`1.IsSome">
+  IsSome
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether this option carries a value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsSome { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if a value is present; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_None_" data-uid="Bodu.Functional.Option`1.None*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_None" data-uid="Bodu.Functional.Option`1.None">
+  None
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the option that carries no value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Option&lt;T&gt; None { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;</dt>
+    <dd><p>An <a class="xref" href="Bodu.Functional.Option-1.html">Option&lt;T&gt;</a> whose <a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_IsNone">IsNone</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>. Equal to
+<code>default(Option&lt;T&gt;)</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_Value_" data-uid="Bodu.Functional.Option`1.Value*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_Value" data-uid="Bodu.Functional.Option`1.Value">
+  Value
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the contained value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T Value { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The value carried by this option.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_Option_1_Value_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Prefer <a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_TryGetValue__0__">TryGetValue(out T)</a>, <a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_Match__1_System_Func__0___0__System_Func___0__">Match&lt;TResult&gt;(Func&lt;T, TResult&gt;, Func&lt;TResult&gt;)</a>, or the
+<code>GetValueOrDefault</code> overloads over direct access when absence is an expected state; <a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_Value">Value</a> is
+intended for call sites that have already established <a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_IsSome">IsSome</a>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The option does not contain a value.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Functional_Option_1_Bind_" data-uid="Bodu.Functional.Option`1.Bind*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_Bind__1_System_Func__0_Bodu_Functional_Option___0___" data-uid="Bodu.Functional.Option`1.Bind``1(System.Func{`0,Bodu.Functional.Option{``0}})">
+  Bind&lt;TResult&gt;(Func&lt;T, Option&lt;TResult&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Projects the contained value into another option using the specified option-returning selector.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Option&lt;TResult&gt; Bind&lt;TResult&gt;(Func&lt;T, Option&lt;TResult&gt;&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The option-returning projection applied to the contained value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;TResult&gt;</dt>
+    <dd><p>The option produced by the selector when a value is present; otherwise <code>None</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The value type of the resulting option.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_Option_1_Bind__1_System_Func__0_Bodu_Functional_Option___0____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The selector is not invoked when this option is <code>None</code>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">selector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_Equals_" data-uid="Bodu.Functional.Option`1.Equals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_Equals_Bodu_Functional_Option__0__" data-uid="Bodu.Functional.Option`1.Equals(Bodu.Functional.Option{`0})">
+  Equals(Option&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the specified option is equal to the current instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(Option&lt;T&gt; other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;</dt>
+    <dd><p>The option to compare with this instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if both are <code>None</code>, or both carry values that compare equal using
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.equalitycomparer-1.default">Default</a>; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_Equals_" data-uid="Bodu.Functional.Option`1.Equals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_Equals_System_Object_" data-uid="Bodu.Functional.Option`1.Equals(System.Object)">
+  Equals(object?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the specified object is equal to the current option.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to compare. Only another <a class="xref" href="Bodu.Functional.Option-1.html">Option&lt;T&gt;</a> can be equal; all other types, including
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">obj</code> is an <a class="xref" href="Bodu.Functional.Option-1.html">Option&lt;T&gt;</a> equal to this instance;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_Filter_" data-uid="Bodu.Functional.Option`1.Filter*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_Filter_System_Func__0_System_Boolean__" data-uid="Bodu.Functional.Option`1.Filter(System.Func{`0,System.Boolean})">
+  Filter(Func&lt;T, bool&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Retains the contained value only when it satisfies the specified predicate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Option&lt;T&gt; Filter(Func&lt;T, bool&gt; predicate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>predicate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd><p>The condition the contained value must satisfy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;</dt>
+    <dd><p>This option when a value is present and satisfies <code class="paramref">predicate</code>; otherwise <code>None</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_Option_1_Filter_System_Func__0_System_Boolean___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The predicate is not invoked when this option is <code>None</code>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">predicate</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_GetHashCode_" data-uid="Bodu.Functional.Option`1.GetHashCode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_GetHashCode" data-uid="Bodu.Functional.Option`1.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a hash code for the current instance consistent with <a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_Equals_Bodu_Functional_Option__0__">Equals(Option&lt;T&gt;)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The contained value's hash code when present; otherwise <code>0</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_GetValueOrDefault_" data-uid="Bodu.Functional.Option`1.GetValueOrDefault*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_GetValueOrDefault" data-uid="Bodu.Functional.Option`1.GetValueOrDefault">
+  GetValueOrDefault()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the contained value, or the default value of <code class="typeparamref">T</code> when none is present.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T? GetValueOrDefault()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The contained value, or <code>default(T)</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_GetValueOrDefault_" data-uid="Bodu.Functional.Option`1.GetValueOrDefault*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_GetValueOrDefault_System_Func__0__" data-uid="Bodu.Functional.Option`1.GetValueOrDefault(System.Func{`0})">
+  GetValueOrDefault(Func&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the contained value, or the value produced by the specified factory when none is present.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T GetValueOrDefault(Func&lt;T&gt; defaultFactory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>defaultFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-1">Func</a>&lt;T&gt;</dt>
+    <dd><p>The factory invoked to produce the fallback value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The contained value, or the factory's result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_Option_1_GetValueOrDefault_System_Func__0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The factory is not invoked when a value is present.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">defaultFactory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_GetValueOrDefault_" data-uid="Bodu.Functional.Option`1.GetValueOrDefault*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_GetValueOrDefault__0_" data-uid="Bodu.Functional.Option`1.GetValueOrDefault(`0)">
+  GetValueOrDefault(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the contained value, or the specified fallback when none is present.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T GetValueOrDefault(T defaultValue)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>defaultValue</code> <span class="xref">T</span></dt>
+    <dd><p>The value returned when no value is present.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The contained value, or <code class="paramref">defaultValue</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_Map_" data-uid="Bodu.Functional.Option`1.Map*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_Map__1_System_Func__0___0__" data-uid="Bodu.Functional.Option`1.Map``1(System.Func{`0,``0})">
+  Map&lt;TResult&gt;(Func&lt;T, TResult&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Projects the contained value into a new option using the specified selector.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Option&lt;TResult&gt; Map&lt;TResult&gt;(Func&lt;T, TResult&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, TResult&gt;</dt>
+    <dd><p>The projection applied to the contained value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;TResult&gt;</dt>
+    <dd><p><code>Some(selector(value))</code> when a value is present and the projection is non-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>;
+otherwise <code>None</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by the selector.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_Option_1_Map__1_System_Func__0___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var length = Option&lt;string&gt;.Some("railway").Map(s =&gt; s.Length); // Some(7)
+var none = Option&lt;string&gt;.None.Map(s =&gt; s.Length);              // None — selector not invoked</code></pre>
+
+
+  <h4 class="section" id="Bodu_Functional_Option_1_Map__1_System_Func__0___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The selector is not invoked when this option is <code>None</code>. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> projection result maps to
+<code>None</code> (the lenient lift), so a mapping chain can never produce a present null.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">selector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_Match_" data-uid="Bodu.Functional.Option`1.Match*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_Match_System_Action__0__System_Action_" data-uid="Bodu.Functional.Option`1.Match(System.Action{`0},System.Action)">
+  Match(Action&lt;T&gt;, Action)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Invokes the matching action for the state of the option.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Match(Action&lt;T&gt; onSome, Action onNone)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>onSome</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;T&gt;</dt>
+    <dd><p>The action invoked with the contained value when one is present.</p>
+</dd>
+    <dt><code>onNone</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action">Action</a></dt>
+    <dd><p>The action invoked when no value is present.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">onSome</code> or <code class="paramref">onNone</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_Match_" data-uid="Bodu.Functional.Option`1.Match*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_Match__1_System_Func__0___0__System_Func___0__" data-uid="Bodu.Functional.Option`1.Match``1(System.Func{`0,``0},System.Func{``0})">
+  Match&lt;TResult&gt;(Func&lt;T, TResult&gt;, Func&lt;TResult&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Collapses the option to a single value by invoking the matching branch.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TResult Match&lt;TResult&gt;(Func&lt;T, TResult&gt; onSome, Func&lt;TResult&gt; onNone)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>onSome</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, TResult&gt;</dt>
+    <dd><p>The projection invoked with the contained value when one is present.</p>
+</dd>
+    <dt><code>onNone</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-1">Func</a>&lt;TResult&gt;</dt>
+    <dd><p>The factory invoked when no value is present.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TResult</span></dt>
+    <dd><p>The value produced by the invoked branch.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by both branches.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_Option_1_Match__1_System_Func__0___0__System_Func___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var label = option.Match(v =&gt; $"got {v}", () =&gt; "nothing");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">onSome</code> or <code class="paramref">onNone</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_Some_" data-uid="Bodu.Functional.Option`1.Some*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_Some__0_" data-uid="Bodu.Functional.Option`1.Some(`0)">
+  Some(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates an option carrying the specified non-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Option&lt;T&gt; Some(T value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to wrap. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;</dt>
+    <dd><p>An <a class="xref" href="Bodu.Functional.Option-1.html">Option&lt;T&gt;</a> whose <a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_IsSome">IsSome</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_Option_1_Some__0__examples">Examples</h4>
+  <pre><code class="lang-csharp">var some = Option&lt;string&gt;.Some("value"); // Some(value)
+var none = Option&lt;string&gt;.None;          // None</code></pre>
+
+
+  <h4 class="section" id="Bodu_Functional_Option_1_Some__0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This is the strict lift: a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument is rejected because a present null value defeats the
+purpose of the type. To map <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to <a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_None">None</a> instead, use the implicit conversion
+from <code class="typeparamref">T</code> (the lenient lift).
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_Tap_" data-uid="Bodu.Functional.Option`1.Tap*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_Tap_System_Action__0__" data-uid="Bodu.Functional.Option`1.Tap(System.Action{`0})">
+  Tap(Action&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Invokes the specified action with the contained value when a value is present.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Option&lt;T&gt; Tap(Action&lt;T&gt; action)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;T&gt;</dt>
+    <dd><p>The side effect invoked with the contained value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;</dt>
+    <dd><p>This option, unchanged, so calls can be chained.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_Option_1_Tap_System_Action__0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The action is not invoked when this option is <code>None</code>; the option itself is always returned.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">action</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_ToResult_" data-uid="Bodu.Functional.Option`1.ToResult*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_ToResult_Bodu_Functional_ResultError_" data-uid="Bodu.Functional.Option`1.ToResult(Bodu.Functional.ResultError)">
+  ToResult(ResultError)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.ToResult.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Converts the option to a result, using the specified error when no value is present.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Result&lt;T&gt; ToResult(ResultError error)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>error</code> <a class="xref" href="Bodu.Functional.ResultError.html">ResultError</a></dt>
+    <dd><p>The error carried by the failure produced when this option is <code>None</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p><code>Success(value)</code> when a value is present; otherwise <code>Failure(error)</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_Option_1_ToResult_Bodu_Functional_ResultError__examples">Examples</h4>
+  <pre><code class="lang-csharp">var found = Option&lt;string&gt;.Some("value").ToResult("missing"); // Success(value)
+var missing = Option&lt;string&gt;.None.ToResult("missing");        // Failure(missing)</code></pre>
+
+
+  <h4 class="section" id="Bodu_Functional_Option_1_ToResult_Bodu_Functional_ResultError__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This is the bridge from the absence-shaped <a class="xref" href="Bodu.Functional.Option-1.html">Option&lt;T&gt;</a> onto the failure-shaped
+<a class="xref" href="Bodu.Functional.Result-1.html">Result&lt;T&gt;</a> railway: the caller names the error that absence represents. The inverse direction is
+<a class="xref" href="Bodu.Functional.Result-1.html#Bodu_Functional_Result_1_ToOption">ToOption()</a>, which discards the error.
+</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_ToString_" data-uid="Bodu.Functional.Option`1.ToString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_ToString" data-uid="Bodu.Functional.Option`1.ToString">
+  ToString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a string representation of the option.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p><code>&quot;Some(value)&quot;</code> when a value is present; otherwise <code>&quot;None&quot;</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_TryGetValue_" data-uid="Bodu.Functional.Option`1.TryGetValue*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_TryGetValue__0__" data-uid="Bodu.Functional.Option`1.TryGetValue(`0@)">
+  TryGetValue(out T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Functions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to retrieve the contained value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetValue(out T value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>When this method returns, the contained value if one is present; otherwise the default value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if a value is present; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="Bodu_Functional_Option_1_op_Equality_" data-uid="Bodu.Functional.Option`1.op_Equality*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_op_Equality_Bodu_Functional_Option__0__Bodu_Functional_Option__0__" data-uid="Bodu.Functional.Option`1.op_Equality(Bodu.Functional.Option{`0},Bodu.Functional.Option{`0})">
+  operator ==(Option&lt;T&gt;, Option&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether two options are equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(Option&lt;T&gt; left, Option&lt;T&gt; right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;</dt>
+    <dd><p>The first option to compare.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;</dt>
+    <dd><p>The second option to compare.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if both are <code>None</code>, or both carry values that compare equal using the default
+equality comparer; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_op_Implicit_" data-uid="Bodu.Functional.Option`1.op_Implicit*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_op_Implicit__0__Bodu_Functional_Option__0_" data-uid="Bodu.Functional.Option`1.op_Implicit(`0)~Bodu.Functional.Option{`0}">
+  implicit operator Option&lt;T&gt;(T?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Converts a value to an option, mapping <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to <code>None</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator Option&lt;T&gt;(T? value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to lift.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;</dt>
+    <dd><p><code>Some(value)</code> when <code class="paramref">value</code> is not <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>; otherwise <code>None</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_Option_1_op_Implicit__0__Bodu_Functional_Option__0__examples">Examples</h4>
+  <pre><code class="lang-csharp">string? found = lookup.TryGet(key);
+Option&lt;string&gt; option = found; // null becomes None, a value becomes Some</code></pre>
+
+
+  <h4 class="section" id="Bodu_Functional_Option_1_op_Implicit__0__Bodu_Functional_Option__0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This is the lenient lift: <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> means absence. To treat <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> as a bug
+instead, use the strict <a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_Some__0_">Some(T)</a> factory, which throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a>. To
+lift a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.nullable-1">Nullable&lt;T&gt;</a> value type, use <code>Option.FromNullable</code>.
+</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Functional_Option_1_op_Inequality_" data-uid="Bodu.Functional.Option`1.op_Inequality*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Functional_Option_1_op_Inequality_Bodu_Functional_Option__0__Bodu_Functional_Option__0__" data-uid="Bodu.Functional.Option`1.op_Inequality(Bodu.Functional.Option{`0},Bodu.Functional.Option{`0})">
+  operator !=(Option&lt;T&gt;, Option&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Functional/Option%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether two options are not equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(Option&lt;T&gt; left, Option&lt;T&gt; right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;</dt>
+    <dd><p>The first option to compare.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;</dt>
+    <dd><p>The second option to compare.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the options differ; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Functional_Option_1_IsNone" data-uid="Bodu.Functional.Option`1.IsNone">
-          <a class="xref" href="Bodu.Functional.Option-1.IsNone.html#Bodu_Functional_Option_1_IsNone">IsNone</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether this option carries no value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_IsSome" data-uid="Bodu.Functional.Option`1.IsSome">
-          <a class="xref" href="Bodu.Functional.Option-1.IsSome.html#Bodu_Functional_Option_1_IsSome">IsSome</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether this option carries a value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_None" data-uid="Bodu.Functional.Option`1.None">
-          <a class="xref" href="Bodu.Functional.Option-1.None.html#Bodu_Functional_Option_1_None">None</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the option that carries no value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_Value" data-uid="Bodu.Functional.Option`1.Value">
-          <a class="xref" href="Bodu.Functional.Option-1.Value.html#Bodu_Functional_Option_1_Value">Value</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the contained value.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Functional_Option_1_Bind__1_System_Func__0_Bodu_Functional_Option___0___" data-uid="Bodu.Functional.Option`1.Bind``1(System.Func{`0,Bodu.Functional.Option{``0}})">
-          <a class="xref" href="Bodu.Functional.Option-1.Bind.html#Bodu_Functional_Option_1_Bind__1_System_Func__0_Bodu_Functional_Option___0___">Bind&lt;TResult&gt;(Func&lt;T, Option&lt;TResult&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Projects the contained value into another option using the specified option-returning selector.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_Equals_Bodu_Functional_Option__0__" data-uid="Bodu.Functional.Option`1.Equals(Bodu.Functional.Option{`0})">
-          <a class="xref" href="Bodu.Functional.Option-1.Equals.html#Bodu_Functional_Option_1_Equals_Bodu_Functional_Option__0__">Equals(Option&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the specified option is equal to the current instance.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_Equals_System_Object_" data-uid="Bodu.Functional.Option`1.Equals(System.Object)">
-          <a class="xref" href="Bodu.Functional.Option-1.Equals.html#Bodu_Functional_Option_1_Equals_System_Object_">Equals(object?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the specified object is equal to the current option.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_Filter_System_Func__0_System_Boolean__" data-uid="Bodu.Functional.Option`1.Filter(System.Func{`0,System.Boolean})">
-          <a class="xref" href="Bodu.Functional.Option-1.Filter.html#Bodu_Functional_Option_1_Filter_System_Func__0_System_Boolean__">Filter(Func&lt;T, bool&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Retains the contained value only when it satisfies the specified predicate.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_GetHashCode" data-uid="Bodu.Functional.Option`1.GetHashCode">
-          <a class="xref" href="Bodu.Functional.Option-1.GetHashCode.html#Bodu_Functional_Option_1_GetHashCode">GetHashCode()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a hash code for the current instance consistent with <a class="xref" href="Bodu.Functional.Option-1.Equals.html#Bodu_Functional_Option_1_Equals_Bodu_Functional_Option__0__">Equals(Option&lt;T&gt;)</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_GetValueOrDefault" data-uid="Bodu.Functional.Option`1.GetValueOrDefault">
-          <a class="xref" href="Bodu.Functional.Option-1.GetValueOrDefault.html#Bodu_Functional_Option_1_GetValueOrDefault">GetValueOrDefault()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the contained value, or the default value of <code class="typeparamref">T</code> when none is present.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_GetValueOrDefault_System_Func__0__" data-uid="Bodu.Functional.Option`1.GetValueOrDefault(System.Func{`0})">
-          <a class="xref" href="Bodu.Functional.Option-1.GetValueOrDefault.html#Bodu_Functional_Option_1_GetValueOrDefault_System_Func__0__">GetValueOrDefault(Func&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the contained value, or the value produced by the specified factory when none is present.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_GetValueOrDefault__0_" data-uid="Bodu.Functional.Option`1.GetValueOrDefault(`0)">
-          <a class="xref" href="Bodu.Functional.Option-1.GetValueOrDefault.html#Bodu_Functional_Option_1_GetValueOrDefault__0_">GetValueOrDefault(T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the contained value, or the specified fallback when none is present.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_Map__1_System_Func__0___0__" data-uid="Bodu.Functional.Option`1.Map``1(System.Func{`0,``0})">
-          <a class="xref" href="Bodu.Functional.Option-1.Map.html#Bodu_Functional_Option_1_Map__1_System_Func__0___0__">Map&lt;TResult&gt;(Func&lt;T, TResult&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Projects the contained value into a new option using the specified selector.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_Match_System_Action__0__System_Action_" data-uid="Bodu.Functional.Option`1.Match(System.Action{`0},System.Action)">
-          <a class="xref" href="Bodu.Functional.Option-1.Match.html#Bodu_Functional_Option_1_Match_System_Action__0__System_Action_">Match(Action&lt;T&gt;, Action)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Invokes the matching action for the state of the option.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_Match__1_System_Func__0___0__System_Func___0__" data-uid="Bodu.Functional.Option`1.Match``1(System.Func{`0,``0},System.Func{``0})">
-          <a class="xref" href="Bodu.Functional.Option-1.Match.html#Bodu_Functional_Option_1_Match__1_System_Func__0___0__System_Func___0__">Match&lt;TResult&gt;(Func&lt;T, TResult&gt;, Func&lt;TResult&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Collapses the option to a single value by invoking the matching branch.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_Some__0_" data-uid="Bodu.Functional.Option`1.Some(`0)">
-          <a class="xref" href="Bodu.Functional.Option-1.Some.html#Bodu_Functional_Option_1_Some__0_">Some(T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates an option carrying the specified non-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_Tap_System_Action__0__" data-uid="Bodu.Functional.Option`1.Tap(System.Action{`0})">
-          <a class="xref" href="Bodu.Functional.Option-1.Tap.html#Bodu_Functional_Option_1_Tap_System_Action__0__">Tap(Action&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Invokes the specified action with the contained value when a value is present.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_ToResult_Bodu_Functional_ResultError_" data-uid="Bodu.Functional.Option`1.ToResult(Bodu.Functional.ResultError)">
-          <a class="xref" href="Bodu.Functional.Option-1.ToResult.html#Bodu_Functional_Option_1_ToResult_Bodu_Functional_ResultError_">ToResult(ResultError)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts the option to a result, using the specified error when no value is present.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_ToString" data-uid="Bodu.Functional.Option`1.ToString">
-          <a class="xref" href="Bodu.Functional.Option-1.ToString.html#Bodu_Functional_Option_1_ToString">ToString()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a string representation of the option.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_TryGetValue__0__" data-uid="Bodu.Functional.Option`1.TryGetValue(`0@)">
-          <a class="xref" href="Bodu.Functional.Option-1.TryGetValue.html#Bodu_Functional_Option_1_TryGetValue__0__">TryGetValue(out T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to retrieve the contained value.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="operators">Operators
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Functional_Option_1_op_Equality_Bodu_Functional_Option__0__Bodu_Functional_Option__0__" data-uid="Bodu.Functional.Option`1.op_Equality(Bodu.Functional.Option{`0},Bodu.Functional.Option{`0})">
-          <a class="xref" href="Bodu.Functional.Option-1.op_Equality.html#Bodu_Functional_Option_1_op_Equality_Bodu_Functional_Option__0__Bodu_Functional_Option__0__">operator ==(Option&lt;T&gt;, Option&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two options are equal.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_op_Implicit__0__Bodu_Functional_Option__0_" data-uid="Bodu.Functional.Option`1.op_Implicit(`0)~Bodu.Functional.Option{`0}">
-          <a class="xref" href="Bodu.Functional.Option-1.op_Implicit.html#Bodu_Functional_Option_1_op_Implicit__0__Bodu_Functional_Option__0_">implicit operator Option&lt;T&gt;(T?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts a value to an option, mapping <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to <code>None</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_Option_1_op_Inequality_Bodu_Functional_Option__0__Bodu_Functional_Option__0__" data-uid="Bodu.Functional.Option`1.op_Inequality(Bodu.Functional.Option{`0},Bodu.Functional.Option{`0})">
-          <a class="xref" href="Bodu.Functional.Option-1.op_Inequality.html#Bodu_Functional_Option_1_op_Inequality_Bodu_Functional_Option__0__Bodu_Functional_Option__0__">operator !=(Option&lt;T&gt;, Option&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two options are not equal.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Functional.OptionAsyncExtensions.BindAsync.html#Bodu_Functional_OptionAsyncExtensions_BindAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Option___1____">OptionAsyncExtensions.BindAsync&lt;T, TResult&gt;(Option&lt;T&gt;, Func&lt;T, Task&lt;Option&lt;TResult&gt;&gt;&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Functional.OptionAsyncExtensions.MapAsync.html#Bodu_Functional_OptionAsyncExtensions_MapAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task___1___">OptionAsyncExtensions.MapAsync&lt;T, TResult&gt;(Option&lt;T&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Functional.OptionAsyncExtensions.MatchAsync.html#Bodu_Functional_OptionAsyncExtensions_MatchAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___">OptionAsyncExtensions.MatchAsync&lt;T, TResult&gt;(Option&lt;T&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;)</a>
-  </div>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

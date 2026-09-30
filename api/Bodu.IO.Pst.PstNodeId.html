@@ -1,98 +1,136 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Struct PstNodeId | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Struct PstNodeId | BODU ">
-    
-    <meta name="description" content="Represents a 32-bit node identifier: five type bits in the low positions and a 27-bit index above them (MS-PST &#167;2.2.2.1).">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>PstNodeId Struct
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="PstNodeId Struct
+ | BODU ">
+      
+      <meta name="description" content="Represents a 32-bit node identifier: five type bits in the low positions and a 27-bit index above them (MS-PST &#167;2.2.2.1).">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.IO.Pst.PstNodeId">
+
+        <article data-uid="Bodu.IO.Pst.PstNodeId">
 
 
 
-  <h1 id="Bodu_IO_Pst_PstNodeId" data-uid="Bodu.IO.Pst.PstNodeId" class="text-break">Struct PstNodeId</h1>
-  <div class="markdown level0 summary"><p>Represents a 32-bit node identifier: five type bits in the low positions and a 27-bit index above them (MS-PST
+
+  <h1 id="Bodu_IO_Pst_PstNodeId" data-uid="Bodu.IO.Pst.PstNodeId" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+PstNodeId Struct
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Pst/src/IO.Pst/PstNodeId.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_IO_Pst_PstNodeId_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Pst.html">Pst</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.IO.Pst.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Pst">Bodu.IO.Pst</a> <span class="bodu-package-version">0.7.1</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Pst/src/IO.Pst/PstNodeId.cs">PstNodeId.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a 32-bit node identifier: five type bits in the low positions and a 27-bit index above them (MS-PST
 §2.2.2.1).</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a>&gt;</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct PstNodeId : IEquatable&lt;PstNodeId&gt;</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
     </div>
@@ -102,249 +140,662 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.BufferConverter.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;T&gt;(T, byte[], int)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Pst.html">Pst</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.IO.Pst.dll</h6>
-  <h5 id="Bodu_IO_Pst_PstNodeId_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly struct PstNodeId : IEquatable&lt;PstNodeId&gt;</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_IO_Pst_PstNodeId_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>A handful of fixed identifiers anchor every file — <a class="xref" href="Bodu.IO.Pst.PstNodeId.MessageStore.html#Bodu_IO_Pst_PstNodeId_MessageStore">MessageStore</a> (<code>0x21</code>),
-<a class="xref" href="Bodu.IO.Pst.PstNodeId.NameToIdMap.html#Bodu_IO_Pst_PstNodeId_NameToIdMap">NameToIdMap</a> (<code>0x61</code>), and <a class="xref" href="Bodu.IO.Pst.PstNodeId.RootFolder.html#Bodu_IO_Pst_PstNodeId_RootFolder">RootFolder</a> (<code>0x122</code>) — and are exposed here as
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_IO_Pst_PstNodeId_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>A handful of fixed identifiers anchor every file — <a class="xref" href="Bodu.IO.Pst.PstNodeId.html#Bodu_IO_Pst_PstNodeId_MessageStore">MessageStore</a> (<code>0x21</code>),
+<a class="xref" href="Bodu.IO.Pst.PstNodeId.html#Bodu_IO_Pst_PstNodeId_NameToIdMap">NameToIdMap</a> (<code>0x61</code>), and <a class="xref" href="Bodu.IO.Pst.PstNodeId.html#Bodu_IO_Pst_PstNodeId_RootFolder">RootFolder</a> (<code>0x122</code>) — and are exposed here as
 well-known values.</p>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_IO_Pst_PstNodeId__ctor_" data-uid="Bodu.IO.Pst.PstNodeId.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Pst_PstNodeId__ctor_Bodu_IO_Pst_PstNodeType_System_UInt32_" data-uid="Bodu.IO.Pst.PstNodeId.#ctor(Bodu.IO.Pst.PstNodeType,System.UInt32)">
+  PstNodeId(PstNodeType, uint)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Pst/src/IO.Pst/PstNodeId.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a> struct from a type and index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PstNodeId(PstNodeType type, uint index)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="Bodu.IO.Pst.PstNodeType.html">PstNodeType</a></dt>
+    <dd><p>The node type (the five low bits).</p>
+</dd>
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a></dt>
+    <dd><p>The 27-bit index.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Pst_PstNodeId__ctor_" data-uid="Bodu.IO.Pst.PstNodeId.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Pst_PstNodeId__ctor_System_UInt32_" data-uid="Bodu.IO.Pst.PstNodeId.#ctor(System.UInt32)">
+  PstNodeId(uint)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Pst/src/IO.Pst/PstNodeId.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a> struct from a raw 32-bit identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PstNodeId(uint value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a></dt>
+    <dd><p>The raw identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_IO_Pst_PstNodeId_Index_" data-uid="Bodu.IO.Pst.PstNodeId.Index*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Pst_PstNodeId_Index" data-uid="Bodu.IO.Pst.PstNodeId.Index">
+  Index
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Pst/src/IO.Pst/PstNodeId.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the 27-bit index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public uint Index { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a></dt>
+    <dd><p>The index above the type bits.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Pst_PstNodeId_MessageStore_" data-uid="Bodu.IO.Pst.PstNodeId.MessageStore*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Pst_PstNodeId_MessageStore" data-uid="Bodu.IO.Pst.PstNodeId.MessageStore">
+  MessageStore
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Pst/src/IO.Pst/PstNodeId.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the message-store node identifier (<code>NID_MESSAGE_STORE</code>, <code>0x21</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PstNodeId MessageStore { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a></dt>
+    <dd><p>The well-known identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Pst_PstNodeId_NameToIdMap_" data-uid="Bodu.IO.Pst.PstNodeId.NameToIdMap*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Pst_PstNodeId_NameToIdMap" data-uid="Bodu.IO.Pst.PstNodeId.NameToIdMap">
+  NameToIdMap
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Pst/src/IO.Pst/PstNodeId.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the named-property mapping node identifier (<code>NID_NAME_TO_ID_MAP</code>, <code>0x61</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PstNodeId NameToIdMap { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a></dt>
+    <dd><p>The well-known identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Pst_PstNodeId_RootFolder_" data-uid="Bodu.IO.Pst.PstNodeId.RootFolder*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Pst_PstNodeId_RootFolder" data-uid="Bodu.IO.Pst.PstNodeId.RootFolder">
+  RootFolder
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Pst/src/IO.Pst/PstNodeId.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the root folder node identifier (<code>NID_ROOT_FOLDER</code>, <code>0x122</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PstNodeId RootFolder { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a></dt>
+    <dd><p>The well-known identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Pst_PstNodeId_Type_" data-uid="Bodu.IO.Pst.PstNodeId.Type*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Pst_PstNodeId_Type" data-uid="Bodu.IO.Pst.PstNodeId.Type">
+  Type
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Pst/src/IO.Pst/PstNodeId.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the node type carried in the five low bits.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PstNodeType Type { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Pst.PstNodeType.html">PstNodeType</a></dt>
+    <dd><p>The <a class="xref" href="Bodu.IO.Pst.PstNodeType.html">PstNodeType</a> of the node.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Pst_PstNodeId_Value_" data-uid="Bodu.IO.Pst.PstNodeId.Value*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Pst_PstNodeId_Value" data-uid="Bodu.IO.Pst.PstNodeId.Value">
+  Value
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Pst/src/IO.Pst/PstNodeId.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the raw 32-bit identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public uint Value { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a></dt>
+    <dd><p>The raw value: type in the five low bits, index above.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_IO_Pst_PstNodeId_Equals_" data-uid="Bodu.IO.Pst.PstNodeId.Equals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Pst_PstNodeId_Equals_Bodu_IO_Pst_PstNodeId_" data-uid="Bodu.IO.Pst.PstNodeId.Equals(Bodu.IO.Pst.PstNodeId)">
+  Equals(PstNodeId)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Pst/src/IO.Pst/PstNodeId.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether this identifier carries the same raw value as another.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(PstNodeId other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a></dt>
+    <dd><p>The identifier to compare with.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when both carry the same <a class="xref" href="Bodu.IO.Pst.PstNodeId.html#Bodu_IO_Pst_PstNodeId_Value">Value</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Pst_PstNodeId_Equals_" data-uid="Bodu.IO.Pst.PstNodeId.Equals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Pst_PstNodeId_Equals_System_Object_" data-uid="Bodu.IO.Pst.PstNodeId.Equals(System.Object)">
+  Equals(object?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Pst/src/IO.Pst/PstNodeId.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether this identifier equals another object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to compare with.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">obj</code> is an equal <a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Pst_PstNodeId_GetHashCode_" data-uid="Bodu.IO.Pst.PstNodeId.GetHashCode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Pst_PstNodeId_GetHashCode" data-uid="Bodu.IO.Pst.PstNodeId.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Pst/src/IO.Pst/PstNodeId.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a hash code consistent with <a class="xref" href="Bodu.IO.Pst.PstNodeId.html#Bodu_IO_Pst_PstNodeId_Equals_Bodu_IO_Pst_PstNodeId_">Equals(PstNodeId)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A hash code computed over the raw value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Pst_PstNodeId_ToString_" data-uid="Bodu.IO.Pst.PstNodeId.ToString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Pst_PstNodeId_ToString" data-uid="Bodu.IO.Pst.PstNodeId.ToString">
+  ToString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Pst/src/IO.Pst/PstNodeId.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the canonical hexadecimal form of the identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The raw value as <code>0x</code> followed by eight upper-case hexadecimal digits.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="Bodu_IO_Pst_PstNodeId_op_Equality_" data-uid="Bodu.IO.Pst.PstNodeId.op_Equality*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Pst_PstNodeId_op_Equality_Bodu_IO_Pst_PstNodeId_Bodu_IO_Pst_PstNodeId_" data-uid="Bodu.IO.Pst.PstNodeId.op_Equality(Bodu.IO.Pst.PstNodeId,Bodu.IO.Pst.PstNodeId)">
+  operator ==(PstNodeId, PstNodeId)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Pst/src/IO.Pst/PstNodeId.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether two identifiers carry the same raw value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(PstNodeId left, PstNodeId right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a></dt>
+    <dd><p>The first identifier.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a></dt>
+    <dd><p>The second identifier.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the identifiers are equal.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Pst_PstNodeId_op_Inequality_" data-uid="Bodu.IO.Pst.PstNodeId.op_Inequality*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Pst_PstNodeId_op_Inequality_Bodu_IO_Pst_PstNodeId_Bodu_IO_Pst_PstNodeId_" data-uid="Bodu.IO.Pst.PstNodeId.op_Inequality(Bodu.IO.Pst.PstNodeId,Bodu.IO.Pst.PstNodeId)">
+  operator !=(PstNodeId, PstNodeId)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Pst/src/IO.Pst/PstNodeId.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether two identifiers carry different raw values.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(PstNodeId left, PstNodeId right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a></dt>
+    <dd><p>The first identifier.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a></dt>
+    <dd><p>The second identifier.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the identifiers differ.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_IO_Pst_PstNodeId__ctor_Bodu_IO_Pst_PstNodeType_System_UInt32_" data-uid="Bodu.IO.Pst.PstNodeId.#ctor(Bodu.IO.Pst.PstNodeType,System.UInt32)">
-          <a class="xref" href="Bodu.IO.Pst.PstNodeId.-ctor.html#Bodu_IO_Pst_PstNodeId__ctor_Bodu_IO_Pst_PstNodeType_System_UInt32_">PstNodeId(PstNodeType, uint)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a> struct from a type and index.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Pst_PstNodeId__ctor_System_UInt32_" data-uid="Bodu.IO.Pst.PstNodeId.#ctor(System.UInt32)">
-          <a class="xref" href="Bodu.IO.Pst.PstNodeId.-ctor.html#Bodu_IO_Pst_PstNodeId__ctor_System_UInt32_">PstNodeId(uint)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a> struct from a raw 32-bit identifier.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Pst_PstNodeId_Index" data-uid="Bodu.IO.Pst.PstNodeId.Index">
-          <a class="xref" href="Bodu.IO.Pst.PstNodeId.Index.html#Bodu_IO_Pst_PstNodeId_Index">Index</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the 27-bit index.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Pst_PstNodeId_MessageStore" data-uid="Bodu.IO.Pst.PstNodeId.MessageStore">
-          <a class="xref" href="Bodu.IO.Pst.PstNodeId.MessageStore.html#Bodu_IO_Pst_PstNodeId_MessageStore">MessageStore</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the message-store node identifier (<code>NID_MESSAGE_STORE</code>, <code>0x21</code>).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Pst_PstNodeId_NameToIdMap" data-uid="Bodu.IO.Pst.PstNodeId.NameToIdMap">
-          <a class="xref" href="Bodu.IO.Pst.PstNodeId.NameToIdMap.html#Bodu_IO_Pst_PstNodeId_NameToIdMap">NameToIdMap</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the named-property mapping node identifier (<code>NID_NAME_TO_ID_MAP</code>, <code>0x61</code>).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Pst_PstNodeId_RootFolder" data-uid="Bodu.IO.Pst.PstNodeId.RootFolder">
-          <a class="xref" href="Bodu.IO.Pst.PstNodeId.RootFolder.html#Bodu_IO_Pst_PstNodeId_RootFolder">RootFolder</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the root folder node identifier (<code>NID_ROOT_FOLDER</code>, <code>0x122</code>).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Pst_PstNodeId_Type" data-uid="Bodu.IO.Pst.PstNodeId.Type">
-          <a class="xref" href="Bodu.IO.Pst.PstNodeId.Type.html#Bodu_IO_Pst_PstNodeId_Type">Type</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the node type carried in the five low bits.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Pst_PstNodeId_Value" data-uid="Bodu.IO.Pst.PstNodeId.Value">
-          <a class="xref" href="Bodu.IO.Pst.PstNodeId.Value.html#Bodu_IO_Pst_PstNodeId_Value">Value</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the raw 32-bit identifier.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Pst_PstNodeId_Equals_Bodu_IO_Pst_PstNodeId_" data-uid="Bodu.IO.Pst.PstNodeId.Equals(Bodu.IO.Pst.PstNodeId)">
-          <a class="xref" href="Bodu.IO.Pst.PstNodeId.Equals.html#Bodu_IO_Pst_PstNodeId_Equals_Bodu_IO_Pst_PstNodeId_">Equals(PstNodeId)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether this identifier carries the same raw value as another.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Pst_PstNodeId_Equals_System_Object_" data-uid="Bodu.IO.Pst.PstNodeId.Equals(System.Object)">
-          <a class="xref" href="Bodu.IO.Pst.PstNodeId.Equals.html#Bodu_IO_Pst_PstNodeId_Equals_System_Object_">Equals(object?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether this identifier equals another object.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Pst_PstNodeId_GetHashCode" data-uid="Bodu.IO.Pst.PstNodeId.GetHashCode">
-          <a class="xref" href="Bodu.IO.Pst.PstNodeId.GetHashCode.html#Bodu_IO_Pst_PstNodeId_GetHashCode">GetHashCode()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a hash code consistent with <a class="xref" href="Bodu.IO.Pst.PstNodeId.Equals.html#Bodu_IO_Pst_PstNodeId_Equals_Bodu_IO_Pst_PstNodeId_">Equals(PstNodeId)</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Pst_PstNodeId_ToString" data-uid="Bodu.IO.Pst.PstNodeId.ToString">
-          <a class="xref" href="Bodu.IO.Pst.PstNodeId.ToString.html#Bodu_IO_Pst_PstNodeId_ToString">ToString()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the canonical hexadecimal form of the identifier.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="operators">Operators
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Pst_PstNodeId_op_Equality_Bodu_IO_Pst_PstNodeId_Bodu_IO_Pst_PstNodeId_" data-uid="Bodu.IO.Pst.PstNodeId.op_Equality(Bodu.IO.Pst.PstNodeId,Bodu.IO.Pst.PstNodeId)">
-          <a class="xref" href="Bodu.IO.Pst.PstNodeId.op_Equality.html#Bodu_IO_Pst_PstNodeId_op_Equality_Bodu_IO_Pst_PstNodeId_Bodu_IO_Pst_PstNodeId_">operator ==(PstNodeId, PstNodeId)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two identifiers carry the same raw value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Pst_PstNodeId_op_Inequality_Bodu_IO_Pst_PstNodeId_Bodu_IO_Pst_PstNodeId_" data-uid="Bodu.IO.Pst.PstNodeId.op_Inequality(Bodu.IO.Pst.PstNodeId,Bodu.IO.Pst.PstNodeId)">
-          <a class="xref" href="Bodu.IO.Pst.PstNodeId.op_Inequality.html#Bodu_IO_Pst_PstNodeId_op_Inequality_Bodu_IO_Pst_PstNodeId_Bodu_IO_Pst_PstNodeId_">operator !=(PstNodeId, PstNodeId)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two identifiers carry different raw values.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;T&gt;(T, byte[], int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

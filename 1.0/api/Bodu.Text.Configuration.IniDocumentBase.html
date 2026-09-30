@@ -1,102 +1,145 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class IniDocumentBase | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class IniDocumentBase | BODU ">
-    
-    <meta name="description" content="Provides the shared, read-oriented model for an INI-style document: a global section plus an ordered set of named sections, with name-based lookup. Serves as the common base for the mutable  and for configuration-layer document types that expose only a read surface.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>IniDocumentBase Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="IniDocumentBase Class
+ | BODU ">
+      
+      <meta name="description" content="Provides the shared, read-oriented model for an INI-style document: a global section plus an ordered set of named sections, with name-based lookup. Serves as the common base for the mutable  and for configuration-layer document types that expose only a read surface.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Configuration.IniDocumentBase">
+
+        <article data-uid="Bodu.Text.Configuration.IniDocumentBase">
 
 
 
-  <h1 id="Bodu_Text_Configuration_IniDocumentBase" data-uid="Bodu.Text.Configuration.IniDocumentBase" class="text-break">Class IniDocumentBase</h1>
-  <div class="markdown level0 summary"><p>Provides the shared, read-oriented model for an INI-style document: a global section plus an ordered set of named
+
+  <h1 id="Bodu_Text_Configuration_IniDocumentBase" data-uid="Bodu.Text.Configuration.IniDocumentBase" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+IniDocumentBase Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Configuration/src/Text.Configuration/IniDocumentBase.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Text_Configuration_IniDocumentBase_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Configuration.html">Configuration</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Configuration.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Configuration">Bodu.Text.Configuration</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Configuration/src/Text.Configuration/IniDocumentBase.cs">IniDocumentBase.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides the shared, read-oriented model for an INI-style document: a global section plus an ordered set of named
 sections, with name-based lookup. Serves as the common base for the mutable <a class="xref" href="Bodu.Text.Configuration.IniDocument.html">IniDocument</a> and for
 configuration-layer document types that expose only a read surface.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">IniDocumentBase</span></div>
-      <div class="level2"><a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a></div>
-      <div class="level2"><a class="xref" href="Bodu.Text.Configuration.IniDocument.html">IniDocument</a></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class IniDocumentBase</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">IniDocumentBase</span></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a></div>
+      <div><a class="xref" href="Bodu.Text.Configuration.IniDocument.html">IniDocument</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -118,20 +161,47 @@ configuration-layer document types that expose only a read surface.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Configuration.html">Configuration</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Configuration.dll</h6>
-  <h5 id="Bodu_Text_Configuration_IniDocumentBase_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public abstract class IniDocumentBase</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Text_Configuration_IniDocumentBase_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.html#Bodu_Text_Configuration_ConfigurationExtensions_Resolve_Bodu_Text_Configuration_IniDocumentBase_System_String_">ConfigurationExtensions.Resolve(IniDocumentBase, string?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.html#Bodu_Text_Configuration_ConfigurationExtensions_Resolve_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationResolveOptions_">ConfigurationExtensions.Resolve(IniDocumentBase, string?, ConfigurationResolveOptions?)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Text_Configuration_IniDocumentBase_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-The public surface of <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> is read-only: it exposes <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.GlobalSection.html#Bodu_Text_Configuration_IniDocumentBase_GlobalSection">GlobalSection</a>,
-<a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.Sections.html#Bodu_Text_Configuration_IniDocumentBase_Sections">Sections</a>, and the <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.GetSection.html#Bodu_Text_Configuration_IniDocumentBase_GetSection_System_String_">GetSection(string)</a>/
-<a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.TryGetSection.html#Bodu_Text_Configuration_IniDocumentBase_TryGetSection_System_String_Bodu_Text_Configuration_IniSection__">TryGetSection(string, out IniSection?)</a> lookups. Mutation is reserved to derived types through the
-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/protected">protected</a> core methods (<a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.AddSectionCore.html#Bodu_Text_Configuration_IniDocumentBase_AddSectionCore_Bodu_Text_Configuration_IniSection_">AddSectionCore(IniSection)</a>,
-<a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.GetOrAddSectionCore.html#Bodu_Text_Configuration_IniDocumentBase_GetOrAddSectionCore_System_String_">GetOrAddSectionCore(string)</a>, <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.RemoveSectionCore.html#Bodu_Text_Configuration_IniDocumentBase_RemoveSectionCore_System_String_">RemoveSectionCore(string)</a>); a concrete subclass chooses
+The public surface of <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> is read-only: it exposes <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_GlobalSection">GlobalSection</a>,
+<a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_Sections">Sections</a>, and the <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_GetSection_System_String_">GetSection(string)</a>/
+<a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_TryGetSection_System_String_Bodu_Text_Configuration_IniSection__">TryGetSection(string, out IniSection?)</a> lookups. Mutation is reserved to derived types through the
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/protected">protected</a> core methods (<a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_AddSectionCore_Bodu_Text_Configuration_IniSection_">AddSectionCore(IniSection)</a>,
+<a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_GetOrAddSectionCore_System_String_">GetOrAddSectionCore(string)</a>, <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_RemoveSectionCore_System_String_">RemoveSectionCore(string)</a>); a concrete subclass chooses
 whether to re-expose them publicly.
 </p>
 <p>
@@ -139,179 +209,475 @@ Section lookup uses ordinal comparison, case-insensitive by default and case-sen
 with that option.
 </p>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Configuration_IniDocumentBase__ctor_Bodu_Text_Configuration_IniSection_System_Collections_Generic_IEnumerable_Bodu_Text_Configuration_IniSection__System_Boolean_" data-uid="Bodu.Text.Configuration.IniDocumentBase.#ctor(Bodu.Text.Configuration.IniSection,System.Collections.Generic.IEnumerable{Bodu.Text.Configuration.IniSection},System.Boolean)">
-          <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.-ctor.html#Bodu_Text_Configuration_IniDocumentBase__ctor_Bodu_Text_Configuration_IniSection_System_Collections_Generic_IEnumerable_Bodu_Text_Configuration_IniSection__System_Boolean_">IniDocumentBase(IniSection, IEnumerable&lt;IniSection&gt;, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> class from a global section and an ordered
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_IniDocumentBase__ctor_" data-uid="Bodu.Text.Configuration.IniDocumentBase.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_IniDocumentBase__ctor_Bodu_Text_Configuration_IniSection_System_Collections_Generic_IEnumerable_Bodu_Text_Configuration_IniSection__System_Boolean_" data-uid="Bodu.Text.Configuration.IniDocumentBase.#ctor(Bodu.Text.Configuration.IniSection,System.Collections.Generic.IEnumerable{Bodu.Text.Configuration.IniSection},System.Boolean)">
+  IniDocumentBase(IniSection, IEnumerable&lt;IniSection&gt;, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Configuration/src/Text.Configuration/IniDocumentBase.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> class from a global section and an ordered
 sequence of named sections.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_IniDocumentBase__ctor_System_Boolean_" data-uid="Bodu.Text.Configuration.IniDocumentBase.#ctor(System.Boolean)">
-          <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.-ctor.html#Bodu_Text_Configuration_IniDocumentBase__ctor_System_Boolean_">IniDocumentBase(bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> class with an empty global section and no named
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected IniDocumentBase(IniSection globalSection, IEnumerable&lt;IniSection&gt; sections, bool caseSensitiveSections)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>globalSection</code> <a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a></dt>
+    <dd><p>The global section (entries authored before the first named section header). Its <a class="xref" href="Bodu.Text.Configuration.IniSection.html#Bodu_Text_Configuration_IniSection_Name">Name</a>
+must be the empty string.</p>
+</dd>
+    <dt><code>sections</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a>&gt;</dt>
+    <dd><p>The ordered, named sections that follow the global section.</p>
+</dd>
+    <dt><code>caseSensitiveSections</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to compare section names with ordinal case sensitivity; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> (the INI default).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">globalSection</code> or <code class="paramref">sections</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">globalSection</code> has a non-empty <a class="xref" href="Bodu.Text.Configuration.IniSection.html#Bodu_Text_Configuration_IniSection_Name">Name</a>, or when
+<code class="paramref">sections</code> contains a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> entry.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_IniDocumentBase__ctor_" data-uid="Bodu.Text.Configuration.IniDocumentBase.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_IniDocumentBase__ctor_System_Boolean_" data-uid="Bodu.Text.Configuration.IniDocumentBase.#ctor(System.Boolean)">
+  IniDocumentBase(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Configuration/src/Text.Configuration/IniDocumentBase.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> class with an empty global section and no named
 sections.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Configuration_IniDocumentBase_GlobalSection" data-uid="Bodu.Text.Configuration.IniDocumentBase.GlobalSection">
-          <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.GlobalSection.html#Bodu_Text_Configuration_IniDocumentBase_GlobalSection">GlobalSection</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the global section, which contains any key/value entries that appeared before the first named section
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected IniDocumentBase(bool caseSensitiveSections)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>caseSensitiveSections</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to compare section names with ordinal case sensitivity; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> (the INI default).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_IniDocumentBase_GlobalSection_" data-uid="Bodu.Text.Configuration.IniDocumentBase.GlobalSection*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_IniDocumentBase_GlobalSection" data-uid="Bodu.Text.Configuration.IniDocumentBase.GlobalSection">
+  GlobalSection
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Configuration/src/Text.Configuration/IniDocumentBase.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the global section, which contains any key/value entries that appeared before the first named section
 header.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_IniDocumentBase_Sections" data-uid="Bodu.Text.Configuration.IniDocumentBase.Sections">
-          <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.Sections.html#Bodu_Text_Configuration_IniDocumentBase_Sections">Sections</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the named sections in the order they first appeared in the source.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Configuration_IniDocumentBase_AddSectionCore_Bodu_Text_Configuration_IniSection_" data-uid="Bodu.Text.Configuration.IniDocumentBase.AddSectionCore(Bodu.Text.Configuration.IniSection)">
-          <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.AddSectionCore.html#Bodu_Text_Configuration_IniDocumentBase_AddSectionCore_Bodu_Text_Configuration_IniSection_">AddSectionCore(IniSection)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Appends <code class="paramref">section</code> to the document. Intended for use by derived types that expose a mutation
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IniSection GlobalSection { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a></dt>
+    <dd><p>An <a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a> whose <a class="xref" href="Bodu.Text.Configuration.IniSection.html#Bodu_Text_Configuration_IniSection_Name">Name</a> is the empty string. Never
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>; its <a class="xref" href="Bodu.Text.Configuration.IniSection.html#Bodu_Text_Configuration_IniSection_Entries">Entries</a> list is empty when the source contained no
+pre-section keys.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_IniDocumentBase_Sections_" data-uid="Bodu.Text.Configuration.IniDocumentBase.Sections*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_IniDocumentBase_Sections" data-uid="Bodu.Text.Configuration.IniDocumentBase.Sections">
+  Sections
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Configuration/src/Text.Configuration/IniDocumentBase.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the named sections in the order they first appeared in the source.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;IniSection&gt; Sections { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a>&gt;</dt>
+    <dd><p>A read-only list of <a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a> instances. Does not include <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_GlobalSection">GlobalSection</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_IniDocumentBase_AddSectionCore_" data-uid="Bodu.Text.Configuration.IniDocumentBase.AddSectionCore*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_IniDocumentBase_AddSectionCore_Bodu_Text_Configuration_IniSection_" data-uid="Bodu.Text.Configuration.IniDocumentBase.AddSectionCore(Bodu.Text.Configuration.IniSection)">
+  AddSectionCore(IniSection)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Configuration/src/Text.Configuration/IniDocumentBase.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Appends <code class="paramref">section</code> to the document. Intended for use by derived types that expose a mutation
 surface.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_IniDocumentBase_GetOrAddSectionCore_System_String_" data-uid="Bodu.Text.Configuration.IniDocumentBase.GetOrAddSectionCore(System.String)">
-          <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.GetOrAddSectionCore.html#Bodu_Text_Configuration_IniDocumentBase_GetOrAddSectionCore_System_String_">GetOrAddSectionCore(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the first section with the supplied name, creating and appending one when no match exists. Intended for
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected void AddSectionCore(IniSection section)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>section</code> <a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a></dt>
+    <dd><p>The section to append.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">section</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">section</code> has an empty <a class="xref" href="Bodu.Text.Configuration.IniSection.html#Bodu_Text_Configuration_IniSection_Name">Name</a> (i.e. it is the global section).</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_IniDocumentBase_GetOrAddSectionCore_" data-uid="Bodu.Text.Configuration.IniDocumentBase.GetOrAddSectionCore*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_IniDocumentBase_GetOrAddSectionCore_System_String_" data-uid="Bodu.Text.Configuration.IniDocumentBase.GetOrAddSectionCore(System.String)">
+  GetOrAddSectionCore(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Configuration/src/Text.Configuration/IniDocumentBase.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the first section with the supplied name, creating and appending one when no match exists. Intended for
 use by derived types that expose a mutation surface.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_IniDocumentBase_GetSection_System_String_" data-uid="Bodu.Text.Configuration.IniDocumentBase.GetSection(System.String)">
-          <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.GetSection.html#Bodu_Text_Configuration_IniDocumentBase_GetSection_System_String_">GetSection(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the named section with the specified name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> if it is absent.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_IniDocumentBase_RemoveSectionCore_System_String_" data-uid="Bodu.Text.Configuration.IniDocumentBase.RemoveSectionCore(System.String)">
-          <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.RemoveSectionCore.html#Bodu_Text_Configuration_IniDocumentBase_RemoveSectionCore_System_String_">RemoveSectionCore(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Removes the section with the supplied name. When multiple sections share the same name (under
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected IniSection GetOrAddSectionCore(string name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The section name.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a></dt>
+    <dd><p>The matching or newly created section.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">name</code> is empty.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_IniDocumentBase_GetSection_" data-uid="Bodu.Text.Configuration.IniDocumentBase.GetSection*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_IniDocumentBase_GetSection_System_String_" data-uid="Bodu.Text.Configuration.IniDocumentBase.GetSection(System.String)">
+  GetSection(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Configuration/src/Text.Configuration/IniDocumentBase.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the named section with the specified name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> if it is absent.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IniSection? GetSection(string name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The section name to look up.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a></dt>
+    <dd><p>The matching <a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a>, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when not found.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_IniDocumentBase_RemoveSectionCore_" data-uid="Bodu.Text.Configuration.IniDocumentBase.RemoveSectionCore*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_IniDocumentBase_RemoveSectionCore_System_String_" data-uid="Bodu.Text.Configuration.IniDocumentBase.RemoveSectionCore(System.String)">
+  RemoveSectionCore(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Configuration/src/Text.Configuration/IniDocumentBase.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Removes the section with the supplied name. When multiple sections share the same name (under
 <a class="xref" href="Bodu.Text.Configuration.IniDuplicateSectionBehavior.html#Bodu_Text_Configuration_IniDuplicateSectionBehavior_Preserve">Preserve</a> or <a class="xref" href="Bodu.Text.Configuration.IniDuplicateSectionBehavior.html#Bodu_Text_Configuration_IniDuplicateSectionBehavior_MergeAdjacent">MergeAdjacent</a>
 ), every occurrence is removed. Intended for use by derived types that expose a mutation surface.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_IniDocumentBase_TryGetSection_System_String_Bodu_Text_Configuration_IniSection__" data-uid="Bodu.Text.Configuration.IniDocumentBase.TryGetSection(System.String,Bodu.Text.Configuration.IniSection@)">
-          <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.TryGetSection.html#Bodu_Text_Configuration_IniDocumentBase_TryGetSection_System_String_Bodu_Text_Configuration_IniSection__">TryGetSection(string, out IniSection?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the named section with the specified name.</p>
-</td>
-      </tr>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected bool RemoveSectionCore(string name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The section name to remove.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when at least one section was removed; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Configuration_IniDocumentBase_TryGetSection_" data-uid="Bodu.Text.Configuration.IniDocumentBase.TryGetSection*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Configuration_IniDocumentBase_TryGetSection_System_String_Bodu_Text_Configuration_IniSection__" data-uid="Bodu.Text.Configuration.IniDocumentBase.TryGetSection(System.String,Bodu.Text.Configuration.IniSection@)">
+  TryGetSection(string, out IniSection?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Configuration/src/Text.Configuration/IniDocumentBase.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the named section with the specified name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetSection(string name, out IniSection? section)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The section name to look up.</p>
+</dd>
+    <dt><code>section</code> <a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, contains the matching section; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the section is present; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.Resolve.html#Bodu_Text_Configuration_ConfigurationExtensions_Resolve_Bodu_Text_Configuration_IniDocumentBase_System_String_">ConfigurationExtensions.Resolve(IniDocumentBase, string?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.Resolve.html#Bodu_Text_Configuration_ConfigurationExtensions_Resolve_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationResolveOptions_">ConfigurationExtensions.Resolve(IniDocumentBase, string?, ConfigurationResolveOptions?)</a>
-  </div>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

@@ -1,95 +1,131 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Struct Utf8YamlReader | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Struct Utf8YamlReader | BODU ">
-    
-    <meta name="description" content="Provides a forward-only, read-only token cursor over a parsed YAML document, surfacing its nodes as structural and scalar tokens in document order. The token surface mirrors , but the underlying reader is buffered rather than a single-pass streaming scanner.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>Utf8YamlReader Struct
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Utf8YamlReader Struct
+ | BODU ">
+      
+      <meta name="description" content="Provides a forward-only, read-only token cursor over a parsed YAML document, surfacing its nodes as structural and scalar tokens in document order. The token surface mirrors , but the underlying reader is buffered rather than a single-pass streaming scanner.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader">
+
+        <article data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader">
 
 
 
-  <h1 id="Bodu_Text_Yaml_Reader_Utf8YamlReader" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader" class="text-break">Struct Utf8YamlReader</h1>
-  <div class="markdown level0 summary"><p>Provides a forward-only, read-only token cursor over a parsed YAML document, surfacing its nodes as structural and
+
+  <h1 id="Bodu_Text_Yaml_Reader_Utf8YamlReader" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+Utf8YamlReader Struct
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Yaml/src/Text.Yaml.Reader/Utf8YamlReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Text_Yaml_Reader_Utf8YamlReader_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Yaml.html">Yaml</a>.<a class="xref" href="Bodu.Text.Yaml.Reader.html">Reader</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Yaml.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Yaml">Bodu.Text.Yaml</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Yaml/src/Text.Yaml.Reader/Utf8YamlReader.cs">Utf8YamlReader.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides a forward-only, read-only token cursor over a parsed YAML document, surfacing its nodes as structural and
 scalar tokens in document order. The token surface mirrors <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.utf8jsonreader">Utf8JsonReader</a>, but the
 underlying reader is buffered rather than a single-pass streaming scanner.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ref struct Utf8YamlReader</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.equals">ValueType.Equals(object)</a>
     </div>
@@ -108,19 +144,20 @@ underlying reader is buffered rather than a single-pass streaming scanner.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Yaml.html">Yaml</a>.<a class="xref" href="Bodu.Text.Yaml.Reader.html">Reader</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Yaml.dll</h6>
-  <h5 id="Bodu_Text_Yaml_Reader_Utf8YamlReader_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ref struct Utf8YamlReader</code></pre>
-  </div>
-  <h5 id="Bodu_Text_Yaml_Reader_Utf8YamlReader_remarks"><strong>Remarks</strong></h5>
+    </dd>
+  </dl>
+
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Text_Yaml_Reader_Utf8YamlReader_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Unlike <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.utf8jsonreader">Utf8JsonReader</a>, this type is not a low-allocation single-pass streaming
 reader. YAML cannot be tokenized in a single forward pass because indentation context, back-referencing aliases,
 merge keys, and document boundaries all require look-ahead and composition. The constructor therefore copies the
-source and fully parses it into an in-memory node store; <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.Read.html#Bodu_Text_Yaml_Reader_Utf8YamlReader_Read">Read()</a> then walks that store in document
+source and fully parses it into an in-memory node store; <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.html#Bodu_Text_Yaml_Reader_Utf8YamlReader_Read">Read()</a> then walks that store in document
 order. In that respect the reader is the analogue of the sibling <code>TomlDocumentReader</code> cursor rather than the
 streaming <code>Utf8TomlReader</code> scanner.
 </p>
@@ -133,165 +170,502 @@ Inputs that violate the profile are rejected with <a class="xref" href="Bodu.Tex
 The reader is a <code>ref struct</code> and cannot be boxed, stored on the heap, or captured by a lambda.
 </p>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Yaml_Reader_Utf8YamlReader__ctor_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.#ctor(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.-ctor.html#Bodu_Text_Yaml_Reader_Utf8YamlReader__ctor_System_ReadOnlySpan_System_Byte__">Utf8YamlReader(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.html">Utf8YamlReader</a> struct over UTF-8 source.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_Reader_Utf8YamlReader__ctor_System_ReadOnlySpan_System_Byte__Bodu_Text_Yaml_Reader_YamlReaderOptions_" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.#ctor(System.ReadOnlySpan{System.Byte},Bodu.Text.Yaml.Reader.YamlReaderOptions)">
-          <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.-ctor.html#Bodu_Text_Yaml_Reader_Utf8YamlReader__ctor_System_ReadOnlySpan_System_Byte__Bodu_Text_Yaml_Reader_YamlReaderOptions_">Utf8YamlReader(ReadOnlySpan&lt;byte&gt;, YamlReaderOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.html">Utf8YamlReader</a> struct over UTF-8 source with options.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Yaml_Reader_Utf8YamlReader_CurrentDepth" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.CurrentDepth">
-          <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.CurrentDepth.html#Bodu_Text_Yaml_Reader_Utf8YamlReader_CurrentDepth">CurrentDepth</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the nesting depth of the current token, with the root at zero.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_Reader_Utf8YamlReader_TokenType" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.TokenType">
-          <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.TokenType.html#Bodu_Text_Yaml_Reader_Utf8YamlReader_TokenType">TokenType</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the type of the current token.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Yaml_Reader_Utf8YamlReader_GetBoolean" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.GetBoolean">
-          <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.GetBoolean.html#Bodu_Text_Yaml_Reader_Utf8YamlReader_GetBoolean">GetBoolean()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the boolean value of the current boolean scalar token.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_Reader_Utf8YamlReader_GetDouble" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.GetDouble">
-          <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.GetDouble.html#Bodu_Text_Yaml_Reader_Utf8YamlReader_GetDouble">GetDouble()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the floating-point value of the current numeric scalar token.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_Reader_Utf8YamlReader_GetInt64" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.GetInt64">
-          <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.GetInt64.html#Bodu_Text_Yaml_Reader_Utf8YamlReader_GetInt64">GetInt64()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the integer value of the current integer scalar token.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_Reader_Utf8YamlReader_GetString" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.GetString">
-          <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.GetString.html#Bodu_Text_Yaml_Reader_Utf8YamlReader_GetString">GetString()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the string value of the current property name or string scalar token.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_Reader_Utf8YamlReader_Read" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.Read">
-          <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.Read.html#Bodu_Text_Yaml_Reader_Utf8YamlReader_Read">Read()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Advances the reader to the next token.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_Reader_Utf8YamlReader_Skip" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.Skip">
-          <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.Skip.html#Bodu_Text_Yaml_Reader_Utf8YamlReader_Skip">Skip()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Advances the reader past the value at its current position without materializing it, so an unbound member's
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Text_Yaml_Reader_Utf8YamlReader__ctor_" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Yaml_Reader_Utf8YamlReader__ctor_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.#ctor(System.ReadOnlySpan{System.Byte})">
+  Utf8YamlReader(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Yaml/src/Text.Yaml.Reader/Utf8YamlReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.html">Utf8YamlReader</a> struct over UTF-8 source.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Utf8YamlReader(ReadOnlySpan&lt;byte&gt; utf8Yaml)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Yaml</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 encoded YAML source.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a></dt>
+    <dd><p>The source is not valid YAML.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Yaml_Reader_Utf8YamlReader__ctor_" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Yaml_Reader_Utf8YamlReader__ctor_System_ReadOnlySpan_System_Byte__Bodu_Text_Yaml_Reader_YamlReaderOptions_" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.#ctor(System.ReadOnlySpan{System.Byte},Bodu.Text.Yaml.Reader.YamlReaderOptions)">
+  Utf8YamlReader(ReadOnlySpan&lt;byte&gt;, YamlReaderOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Yaml/src/Text.Yaml.Reader/Utf8YamlReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.html">Utf8YamlReader</a> struct over UTF-8 source with options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Utf8YamlReader(ReadOnlySpan&lt;byte&gt; utf8Yaml, YamlReaderOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Yaml</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 encoded YAML source.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Yaml.Reader.YamlReaderOptions.html">YamlReaderOptions</a></dt>
+    <dd><p>The reader options.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a></dt>
+    <dd><p>The source is not valid YAML.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Text_Yaml_Reader_Utf8YamlReader_CurrentDepth_" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.CurrentDepth*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Yaml_Reader_Utf8YamlReader_CurrentDepth" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.CurrentDepth">
+  CurrentDepth
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Yaml/src/Text.Yaml.Reader/Utf8YamlReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the nesting depth of the current token, with the root at zero.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly int CurrentDepth { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The current container depth.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Yaml_Reader_Utf8YamlReader_TokenType_" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.TokenType*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Yaml_Reader_Utf8YamlReader_TokenType" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.TokenType">
+  TokenType
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Yaml/src/Text.Yaml.Reader/Utf8YamlReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the type of the current token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly YamlTokenType TokenType { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlTokenType.html">YamlTokenType</a></dt>
+    <dd><p>The current token type, or <a class="xref" href="Bodu.Text.Yaml.YamlTokenType.html#Bodu_Text_Yaml_YamlTokenType_None">None</a> before the first read.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Yaml_Reader_Utf8YamlReader_GetBoolean_" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.GetBoolean*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Yaml_Reader_Utf8YamlReader_GetBoolean" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.GetBoolean">
+  GetBoolean()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Yaml/src/Text.Yaml.Reader/Utf8YamlReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the boolean value of the current boolean scalar token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly bool GetBoolean()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>The boolean value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The current token is not a boolean scalar.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Yaml_Reader_Utf8YamlReader_GetDouble_" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.GetDouble*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Yaml_Reader_Utf8YamlReader_GetDouble" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.GetDouble">
+  GetDouble()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Yaml/src/Text.Yaml.Reader/Utf8YamlReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the floating-point value of the current numeric scalar token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly double GetDouble()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>The double-precision value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The current token is not a numeric scalar.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Yaml_Reader_Utf8YamlReader_GetInt64_" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.GetInt64*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Yaml_Reader_Utf8YamlReader_GetInt64" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.GetInt64">
+  GetInt64()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Yaml/src/Text.Yaml.Reader/Utf8YamlReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the integer value of the current integer scalar token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly long GetInt64()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>The 64-bit integer value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The current token is not an integer scalar.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Yaml_Reader_Utf8YamlReader_GetString_" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.GetString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Yaml_Reader_Utf8YamlReader_GetString" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.GetString">
+  GetString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Yaml/src/Text.Yaml.Reader/Utf8YamlReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the string value of the current property name or string scalar token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly string GetString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The decoded string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The current token is not a property name or string scalar.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Yaml_Reader_Utf8YamlReader_Read_" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.Read*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Yaml_Reader_Utf8YamlReader_Read" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.Read">
+  Read()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Yaml/src/Text.Yaml.Reader/Utf8YamlReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Advances the reader to the next token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Read()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a token was read; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> at the end of the document.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Yaml_Reader_Utf8YamlReader_Skip_" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.Skip*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Yaml_Reader_Utf8YamlReader_Skip" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.Skip">
+  Skip()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Yaml/src/Text.Yaml.Reader/Utf8YamlReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Advances the reader past the value at its current position without materializing it, so an unbound member's
 value is consumed and the enclosing loop resumes on the next token.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_Reader_Utf8YamlReader_ValueTextEquals_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.ValueTextEquals(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.ValueTextEquals.html#Bodu_Text_Yaml_Reader_Utf8YamlReader_ValueTextEquals_System_ReadOnlySpan_System_Byte__">ValueTextEquals(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the current property name equals the given UTF-8 text.</p>
-</td>
-      </tr>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Skip()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Yaml_Reader_Utf8YamlReader_Skip_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>On a scalar token this is a no-op — the scalar is already fully consumed and the caller's next
+<a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.html#Bodu_Text_Yaml_Reader_Utf8YamlReader_Read">Read()</a> moves past it. On a container start token the reader advances to the matching end token,
+balancing nested containers along the way.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Yaml_Reader_Utf8YamlReader_ValueTextEquals_" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.ValueTextEquals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Yaml_Reader_Utf8YamlReader_ValueTextEquals_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Yaml.Reader.Utf8YamlReader.ValueTextEquals(System.ReadOnlySpan{System.Byte})">
+  ValueTextEquals(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Yaml/src/Text.Yaml.Reader/Utf8YamlReader.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the current property name equals the given UTF-8 text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly bool ValueTextEquals(ReadOnlySpan&lt;byte&gt; utf8Text)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 text to compare against.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the current property name matches.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

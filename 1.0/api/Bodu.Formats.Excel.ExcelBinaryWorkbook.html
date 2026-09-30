@@ -1,103 +1,143 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class ExcelBinaryWorkbook | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class ExcelBinaryWorkbook | BODU ">
-    
-    <meta name="description" content="Provides a disposable, read-only session over an Excel binary workbook (.xls, BIFF5 as written by Excel 5.0/95 or BIFF8 as written by Excel 97-2003), exposing its sheets and the raw cell values of each.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>ExcelBinaryWorkbook Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ExcelBinaryWorkbook Class
+ | BODU ">
+      
+      <meta name="description" content="Provides a disposable, read-only session over an Excel binary workbook (.xls, BIFF5 as written by Excel 5.0/95 or BIFF8 as written by Excel 97-2003), exposing its sheets and the raw cell values of each.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook">
+
+        <article data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook">
 
 
 
-  <h1 id="Bodu_Formats_Excel_ExcelBinaryWorkbook" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook" class="text-break">Class ExcelBinaryWorkbook</h1>
-  <div class="markdown level0 summary"><p>Provides a disposable, read-only session over an Excel binary workbook (<code>.xls</code>, BIFF5 as written by Excel
+
+  <h1 id="Bodu_Formats_Excel_ExcelBinaryWorkbook" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+ExcelBinaryWorkbook Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Formats.html">Formats</a>.<a class="xref" href="Bodu.Formats.Excel.html">Excel</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Formats.Excel.Binary.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Formats.Excel.Binary">Bodu.Formats.Excel.Binary</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs">ExcelBinaryWorkbook.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides a disposable, read-only session over an Excel binary workbook (<code>.xls</code>, BIFF5 as written by Excel
 5.0/95 or BIFF8 as written by Excel 97-2003), exposing its sheets and the raw cell values of each.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">ExcelBinaryWorkbook</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class ExcelBinaryWorkbook : IDisposable</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">ExcelBinaryWorkbook</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -116,14 +156,35 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Formats</span>.<a class="xref" href="Bodu.Formats.Excel.html">Excel</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Formats.Excel.Binary.dll</h6>
-  <h5 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class ExcelBinaryWorkbook : IDisposable</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Opening a workbook reads its globals once — the date system, the shared string table, the format tables, and the
 sheet directory — while keeping the compound-file container open. A sheet is read on demand by seeking to the stream
@@ -132,8 +193,8 @@ workbook is never materialized.
 </p>
 <p>
 The primary, high-throughput surface is the forward-only <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a> returned by
-<a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenWorksheet.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenWorksheet_System_Int32_">OpenWorksheet(int)</a>. A materialized, randomly addressable <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a> is offered as
-a convenience through <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.ReadWorksheet.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_ReadWorksheet_System_Int32_">ReadWorksheet(int)</a>.
+<a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenWorksheet_System_Int32_">OpenWorksheet(int)</a>. A materialized, randomly addressable <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a> is offered as
+a convenience through <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_ReadWorksheet_System_Int32_">ReadWorksheet(int)</a>.
 </p>
 <p>
 The session owns the underlying container and, unless the caller opts to leave it open, the source stream; dispose
@@ -153,203 +214,868 @@ foreach (ExcelWorksheetInfo info in workbook.Worksheets)
 }</code></pre>
 </example>
 </div>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Formats_Excel_ExcelBinaryWorkbook_BiffVersion_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.BiffVersion*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_BiffVersion" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.BiffVersion">
+  BiffVersion
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the BIFF version the workbook stream is encoded in.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BiffVersion BiffVersion { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Biff.BiffVersion.html">BiffVersion</a></dt>
+    <dd><p><a class="xref" href="Bodu.IO.Biff.BiffVersion.html#Bodu_IO_Biff_BiffVersion_Biff5">Biff5</a> for an Excel 5.0/95 workbook or
+<a class="xref" href="Bodu.IO.Biff.BiffVersion.html#Bodu_IO_Biff_BiffVersion_Biff8">Biff8</a> for an Excel 97-2003 workbook.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Excel_ExcelBinaryWorkbook_DateSystem_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.DateSystem*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_DateSystem" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.DateSystem">
+  DateSystem
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the date system the workbook uses to interpret serial date numbers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ExcelDateSystem DateSystem { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelDateSystem.html">ExcelDateSystem</a></dt>
+    <dd><p>The declared date system; <a class="xref" href="Bodu.Formats.Excel.ExcelDateSystem.html#Bodu_Formats_Excel_ExcelDateSystem_Excel1900">Excel1900</a> when the workbook declares none.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Excel_ExcelBinaryWorkbook_Properties_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.Properties*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_Properties" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.Properties">
+  Properties
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the document properties of the workbook.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ExcelWorkbookProperties Properties { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelWorkbookProperties.html">ExcelWorkbookProperties</a></dt>
+    <dd><p>The workbook properties; members are <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the corresponding property set is absent or
+was not read.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Excel_ExcelBinaryWorkbook_Worksheets_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.Worksheets*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_Worksheets" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.Worksheets">
+  Worksheets
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the sheets contained in the workbook, in workbook order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;ExcelWorksheetInfo&gt; Worksheets { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.Formats.Excel.ExcelWorksheetInfo.html">ExcelWorksheetInfo</a>&gt;</dt>
+    <dd><p>A read-only list of <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheetInfo.html">ExcelWorksheetInfo</a> describing each sheet.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Formats_Excel_ExcelBinaryWorkbook_Dispose_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.Dispose*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_Dispose" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Excel_ExcelBinaryWorkbook_GetDateTime_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.GetDateTime*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_GetDateTime_Bodu_Formats_Excel_ExcelCell_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.GetDateTime(Bodu.Formats.Excel.ExcelCell)">
+  GetDateTime(ExcelCell)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Converts a numeric cell to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> using the workbook's date system.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTime? GetDateTime(ExcelCell cell)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cell</code> <a class="xref" href="Bodu.Formats.Excel.ExcelCell.html">ExcelCell</a></dt>
+    <dd><p>The cell to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>?</dt>
+    <dd><p>The date and time represented by the cell's value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the cell is not numeric.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Formats_Excel_ExcelBinaryWorkbook_GetDateTime_Bodu_Formats_Excel_ExcelCell__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The conversion is applied to any numeric cell; inspect <a class="xref" href="Bodu.Formats.Excel.ExcelCell.html#Bodu_Formats_Excel_ExcelCell_IsDateFormatted">IsDateFormatted</a> first when only
+date-formatted cells should be treated as dates.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when the cell's value is outside the range of representable OLE Automation dates.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Excel_ExcelBinaryWorkbook_GetNumberFormatCode_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.GetNumberFormatCode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_GetNumberFormatCode_System_UInt16_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.GetNumberFormatCode(System.UInt16)">
+  GetNumberFormatCode(ushort)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the format code for a number-format index, including the well-known built-in formats.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? GetNumberFormatCode(ushort formatIndex)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>formatIndex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a></dt>
+    <dd><p>The number-format index, as carried by <a class="xref" href="Bodu.Formats.Excel.ExcelCell.html#Bodu_Formats_Excel_ExcelCell_FormatIndex">FormatIndex</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The format code, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when none is known for the index.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Excel_ExcelBinaryWorkbook_Open_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.Open*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_Open_System_IO_Stream_Bodu_Formats_Excel_ExcelBinaryReaderOptions_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.Open(System.IO.Stream,Bodu.Formats.Excel.ExcelBinaryReaderOptions)">
+  Open(Stream, ExcelBinaryReaderOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Opens a workbook over the supplied stream with the specified options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ExcelBinaryWorkbook Open(Stream stream, ExcelBinaryReaderOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream containing the <code>.xls</code> file; read from its current position.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryReaderOptions.html">ExcelBinaryReaderOptions</a></dt>
+    <dd><p>The options governing how the workbook is read.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a></dt>
+    <dd><p>An open <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Formats_Excel_ExcelBinaryWorkbook_Open_System_IO_Stream_Bodu_Formats_Excel_ExcelBinaryReaderOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+// Read from a stream that the caller continues to own.
+using var source = File.OpenRead("report.xls");
+var options = new ExcelBinaryReaderOptions { LeaveOpen = true };
+using var workbook = ExcelBinaryWorkbook.Open(source, options);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">stream</code> or <code class="paramref">options</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_System_IO_FileInfo_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead(System.IO.FileInfo)">
+  OpenRead(FileInfo)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Opens a workbook from a file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ExcelBinaryWorkbook OpenRead(FileInfo file)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>file</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileinfo">FileInfo</a></dt>
+    <dd><p>The <code>.xls</code> file to open.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a></dt>
+    <dd><p>An open <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">file</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_System_IO_Stream_System_Boolean_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead(System.IO.Stream,System.Boolean)">
+  OpenRead(Stream, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Opens a workbook over the supplied stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ExcelBinaryWorkbook OpenRead(Stream stream, bool leaveOpen = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream containing the <code>.xls</code> file; read from its current position.</p>
+</dd>
+    <dt><code>leaveOpen</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to leave <code class="paramref">stream</code> open when the workbook is disposed; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a></dt>
+    <dd><p>An open <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
+    <dd><p>Thrown when the stream is not a valid compound file.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbookStreamNotFoundException.html">ExcelBinaryWorkbookStreamNotFoundException</a></dt>
+    <dd><p>Thrown when the compound file has no workbook stream.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelBinaryFormatException.html">ExcelBinaryFormatException</a></dt>
+    <dd><p>Thrown when the workbook stream is not valid BIFF.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelBinaryUnsupportedException.html">ExcelBinaryUnsupportedException</a></dt>
+    <dd><p>Thrown when the workbook is in a BIFF version before BIFF5.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelBinaryEncryptedWorkbookException.html">ExcelBinaryEncryptedWorkbookException</a></dt>
+    <dd><p>Thrown when the workbook is encrypted.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_System_String_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead(System.String)">
+  OpenRead(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Opens a workbook from a file path.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ExcelBinaryWorkbook OpenRead(string path)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path of the <code>.xls</code> file.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a></dt>
+    <dd><p>An open <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+using var workbook = ExcelBinaryWorkbook.OpenRead("report.xls");
+Console.WriteLine($"{workbook.Worksheets.Count} sheet(s), date system: {workbook.DateSystem}");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
+    <dd><p>Thrown when the file is not a valid compound file.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbookStreamNotFoundException.html">ExcelBinaryWorkbookStreamNotFoundException</a></dt>
+    <dd><p>Thrown when the compound file has no workbook stream.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelBinaryFormatException.html">ExcelBinaryFormatException</a></dt>
+    <dd><p>Thrown when the workbook stream is not valid BIFF.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelBinaryUnsupportedException.html">ExcelBinaryUnsupportedException</a></dt>
+    <dd><p>Thrown when the workbook is in a BIFF version before BIFF5.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelBinaryEncryptedWorkbookException.html">ExcelBinaryEncryptedWorkbookException</a></dt>
+    <dd><p>Thrown when the workbook is encrypted.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_System_String_Bodu_Formats_Excel_ExcelBinaryReaderOptions_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead(System.String,Bodu.Formats.Excel.ExcelBinaryReaderOptions)">
+  OpenRead(string, ExcelBinaryReaderOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Opens a workbook from a file path with the specified options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ExcelBinaryWorkbook OpenRead(string path, ExcelBinaryReaderOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path of the <code>.xls</code> file.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryReaderOptions.html">ExcelBinaryReaderOptions</a></dt>
+    <dd><p>The options governing how the workbook is read.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a></dt>
+    <dd><p>An open <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_System_String_Bodu_Formats_Excel_ExcelBinaryReaderOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+// Skip document properties and date-format detection for a fast, numeric-only read.
+var options = new ExcelBinaryReaderOptions { ReadDocumentProperties = false, DetectDateFormats = false };
+using var workbook = ExcelBinaryWorkbook.OpenRead("data.xls", options);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">path</code> or <code class="paramref">options</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenWorksheet_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenWorksheet*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenWorksheet_System_Int32_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenWorksheet(System.Int32)">
+  OpenWorksheet(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Opens a forward-only reader over the sheet at the specified index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ExcelWorksheetReader OpenWorksheet(int worksheetIndex)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>worksheetIndex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based sheet index.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a></dt>
+    <dd><p>A forward-only <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a> over the sheet's value records.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenWorksheet_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+using var workbook = ExcelBinaryWorkbook.OpenRead("report.xls");
+using ExcelWorksheetReader reader = workbook.OpenWorksheet(0);
+while (reader.TryReadCell(out ExcelCell cell))
+{
+    if (cell.Kind == ExcelCellKind.Number)
+        Console.WriteLine($"R{cell.RowIndex} C{cell.ColumnIndex} = {cell.NumberValue}");
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">worksheetIndex</code> is out of range.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelBinaryFormatException.html">ExcelBinaryFormatException</a></dt>
+    <dd><p>Thrown when the sheet substream is malformed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the workbook has been disposed.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenWorksheet_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenWorksheet*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenWorksheet_System_String_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenWorksheet(System.String)">
+  OpenWorksheet(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Opens a forward-only reader over the sheet with the specified name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ExcelWorksheetReader OpenWorksheet(string worksheetName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>worksheetName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The sheet name, compared using ordinal equality.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a></dt>
+    <dd><p>A forward-only <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a> over the sheet's value records.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">worksheetName</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></dt>
+    <dd><p>Thrown when no sheet with the given name exists.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the workbook has been disposed.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Excel_ExcelBinaryWorkbook_ReadWorksheet_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.ReadWorksheet*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_ReadWorksheet_System_Int32_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.ReadWorksheet(System.Int32)">
+  ReadWorksheet(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Reads the sheet at the specified index into a materialized, randomly addressable view.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ExcelWorksheet ReadWorksheet(int worksheetIndex)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>worksheetIndex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based sheet index.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a></dt>
+    <dd><p>A materialized <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a> buffering the sheet's populated cells.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Formats_Excel_ExcelBinaryWorkbook_ReadWorksheet_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+using var workbook = ExcelBinaryWorkbook.OpenRead("report.xls");
+ExcelWorksheet sheet = workbook.ReadWorksheet(0);
+if (sheet.TryGetCell(0, 0, out ExcelCell a1))
+    Console.WriteLine($"A1 = {a1.StringValue ?? a1.NumberValue?.ToString()}");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">worksheetIndex</code> is out of range.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelBinaryFormatException.html">ExcelBinaryFormatException</a></dt>
+    <dd><p>Thrown when the sheet substream is malformed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the workbook has been disposed.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Formats_Excel_ExcelBinaryWorkbook_ReadWorksheet_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.ReadWorksheet*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Formats_Excel_ExcelBinaryWorkbook_ReadWorksheet_System_String_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.ReadWorksheet(System.String)">
+  ReadWorksheet(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelBinaryWorkbook.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Reads the sheet with the specified name into a materialized, randomly addressable view.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ExcelWorksheet ReadWorksheet(string worksheetName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>worksheetName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The sheet name, compared using ordinal equality.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a></dt>
+    <dd><p>A materialized <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a> buffering the sheet's populated cells.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">worksheetName</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></dt>
+    <dd><p>Thrown when no sheet with the given name exists.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the workbook has been disposed.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelBinaryWorkbook_BiffVersion" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.BiffVersion">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.BiffVersion.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_BiffVersion">BiffVersion</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the BIFF version the workbook stream is encoded in.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelBinaryWorkbook_DateSystem" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.DateSystem">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.DateSystem.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_DateSystem">DateSystem</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the date system the workbook uses to interpret serial date numbers.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelBinaryWorkbook_Properties" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.Properties">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.Properties.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_Properties">Properties</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the document properties of the workbook.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelBinaryWorkbook_Worksheets" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.Worksheets">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.Worksheets.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_Worksheets">Worksheets</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the sheets contained in the workbook, in workbook order.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelBinaryWorkbook_Dispose" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.Dispose">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.Dispose.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_Dispose">Dispose()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelBinaryWorkbook_GetDateTime_Bodu_Formats_Excel_ExcelCell_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.GetDateTime(Bodu.Formats.Excel.ExcelCell)">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.GetDateTime.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_GetDateTime_Bodu_Formats_Excel_ExcelCell_">GetDateTime(ExcelCell)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts a numeric cell to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> using the workbook's date system.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelBinaryWorkbook_GetNumberFormatCode_System_UInt16_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.GetNumberFormatCode(System.UInt16)">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.GetNumberFormatCode.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_GetNumberFormatCode_System_UInt16_">GetNumberFormatCode(ushort)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the format code for a number-format index, including the well-known built-in formats.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelBinaryWorkbook_Open_System_IO_Stream_Bodu_Formats_Excel_ExcelBinaryReaderOptions_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.Open(System.IO.Stream,Bodu.Formats.Excel.ExcelBinaryReaderOptions)">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.Open.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_Open_System_IO_Stream_Bodu_Formats_Excel_ExcelBinaryReaderOptions_">Open(Stream, ExcelBinaryReaderOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Opens a workbook over the supplied stream with the specified options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_System_IO_FileInfo_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead(System.IO.FileInfo)">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_System_IO_FileInfo_">OpenRead(FileInfo)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Opens a workbook from a file.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_System_IO_Stream_System_Boolean_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead(System.IO.Stream,System.Boolean)">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_System_IO_Stream_System_Boolean_">OpenRead(Stream, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Opens a workbook over the supplied stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_System_String_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead(System.String)">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_System_String_">OpenRead(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Opens a workbook from a file path.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_System_String_Bodu_Formats_Excel_ExcelBinaryReaderOptions_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead(System.String,Bodu.Formats.Excel.ExcelBinaryReaderOptions)">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_System_String_Bodu_Formats_Excel_ExcelBinaryReaderOptions_">OpenRead(string, ExcelBinaryReaderOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Opens a workbook from a file path with the specified options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenWorksheet_System_Int32_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenWorksheet(System.Int32)">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenWorksheet.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenWorksheet_System_Int32_">OpenWorksheet(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Opens a forward-only reader over the sheet at the specified index.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenWorksheet_System_String_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenWorksheet(System.String)">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenWorksheet.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenWorksheet_System_String_">OpenWorksheet(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Opens a forward-only reader over the sheet with the specified name.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelBinaryWorkbook_ReadWorksheet_System_Int32_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.ReadWorksheet(System.Int32)">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.ReadWorksheet.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_ReadWorksheet_System_Int32_">ReadWorksheet(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Reads the sheet at the specified index into a materialized, randomly addressable view.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelBinaryWorkbook_ReadWorksheet_System_String_" data-uid="Bodu.Formats.Excel.ExcelBinaryWorkbook.ReadWorksheet(System.String)">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelBinaryWorkbook.ReadWorksheet.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_ReadWorksheet_System_String_">ReadWorksheet(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Reads the sheet with the specified name into a materialized, randomly addressable view.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

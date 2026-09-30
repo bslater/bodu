@@ -1,100 +1,138 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class Base16 | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class Base16 | BODU ">
-    
-    <meta name="description" content="Provides Base16 (hexadecimal) encoding and decoding of binary data, with support for flexible output formatting (case selection, byte spacing, line wrapping, 0x prefix) and lenient input parsing (prefix tolerance, whitespace stripping).">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>Base16 Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Base16 Class
+ | BODU ">
+      
+      <meta name="description" content="Provides Base16 (hexadecimal) encoding and decoding of binary data, with support for flexible output formatting (case selection, byte spacing, line wrapping, 0x prefix) and lenient input parsing (prefix tolerance, whitespace stripping).">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Encoding.Base16">
+
+        <article data-uid="Bodu.Text.Encoding.Base16">
 
 
 
-  <h1 id="Bodu_Text_Encoding_Base16" data-uid="Bodu.Text.Encoding.Base16" class="text-break">Class Base16</h1>
-  <div class="markdown level0 summary"><p>Provides Base16 (hexadecimal) encoding and decoding of binary data, with support for flexible output formatting
+
+  <h1 id="Bodu_Text_Encoding_Base16" data-uid="Bodu.Text.Encoding.Base16" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+Base16 Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Text_Encoding_Base16_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Encoding.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Encoding">Bodu.Text.Encoding</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs">Base16.BclAliases.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides Base16 (hexadecimal) encoding and decoding of binary data, with support for flexible output formatting
 (case selection, byte spacing, line wrapping, <code>0x</code> prefix) and lenient input parsing (prefix tolerance,
 whitespace stripping).</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">Base16</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class Base16</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">Base16</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -116,27 +154,14 @@ whitespace stripping).</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Encoding.dll</h6>
-  <h5 id="Bodu_Text_Encoding_Base16_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class Base16</code></pre>
-  </div>
-  <h5 id="Bodu_Text_Encoding_Base16_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-<a class="xref" href="Bodu.Text.Encoding.Base16.Encode.html#Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, BaseFormattingOptions)</a> emits two hexadecimal characters per input byte
-using the configured <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a> flags.
-<a class="xref" href="Bodu.Text.Encoding.Base16.Decode.html#Bodu_Text_Encoding_Base16_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_">Decode(ReadOnlySpan&lt;char&gt;, BaseFormatStyles)</a> reverses the operation and accepts decoration tolerance
-via <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a>.
-</p>
-<p>
-All public methods are thread-safe — the type is stateless. The implementation provides allocation-minimal fast
-paths when no decoration flags are set, and falls back to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a>-based writer
-when spacing, prefix, or line breaks are requested.
-</p>
-</div>
-  <h5 id="Bodu_Text_Encoding_Base16_examples"><strong>Examples</strong></h5>
+    </dd>
+  </dl>
+
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Text_Encoding_Base16_examples">Examples</h2>
   <pre><code class="lang-csharp">byte[] data = { 0xDE, 0xAD, 0xBE, 0xEF };
 
 // Canonical lower-case hex.
@@ -151,413 +176,2704 @@ string pretty = Base16.Encode(data, BaseFormattingOptions.UpperCase
 byte[] roundtrip = Base16.Decode(pretty,
     BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);</code></pre>
 
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
+
+  <h2 id="Bodu_Text_Encoding_Base16_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+<a class="xref" href="Bodu.Text.Encoding.Base16.html#Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, BaseFormattingOptions)</a> emits two hexadecimal characters per input byte
+using the configured <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a> flags.
+<a class="xref" href="Bodu.Text.Encoding.Base16.html#Bodu_Text_Encoding_Base16_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_">Decode(ReadOnlySpan&lt;char&gt;, BaseFormatStyles)</a> reverses the operation and accepts decoration tolerance
+via <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a>.
+</p>
+<p>
+All public methods are thread-safe — the type is stateless. The implementation provides allocation-minimal fast
+paths when no decoration flags are set, and falls back to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a>-based writer
+when spacing, prefix, or line breaks are requested.
+</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Encoding_Base16_Decode_" data-uid="Bodu.Text.Encoding.Base16.Decode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_Decode_System_Char___System_Int32_System_Int32_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.Decode(System.Char[],System.Int32,System.Int32,Bodu.Text.Encoding.BaseFormatStyles)">
+  Decode(char[], int, int, BaseFormatStyles)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Decode.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes a portion of a character array containing hexadecimal-encoded data into a byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Decode(char[] chars, int offset, int count, BaseFormatStyles style = BaseFormatStyles.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>chars</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>[]</dt>
+    <dd><p>The character array containing Base16 (hex) characters.</p>
+</dd>
+    <dt><code>offset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based starting position within <code class="paramref">chars</code>.</p>
+</dd>
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of characters to decode.</p>
+</dd>
+    <dt><code>style</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a></dt>
+    <dd><p>Parsing styles that allow optional prefix and whitespace tolerance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array representing the decoded binary data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">chars</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">offset</code> or <code class="paramref">count</code> is negative, or either exceeds the bounds of
+<code class="paramref">chars</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when the segment defined by <code class="paramref">offset</code> and <code class="paramref">count</code> exceeds the
+available range of <code class="paramref">chars</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input contains non-hexadecimal characters, or when it has an odd number of hex digits after
+applying <code class="paramref">style</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_Decode_" data-uid="Bodu.Text.Encoding.Base16.Decode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.Decode(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.BaseFormatStyles)">
+  Decode(ReadOnlySpan&lt;char&gt;, BaseFormatStyles)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Decode.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes a read-only span of hexadecimal characters into a byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Decode(ReadOnlySpan&lt;char&gt; chars, BaseFormatStyles style = BaseFormatStyles.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>chars</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The span containing Base16 (hex) characters.</p>
+</dd>
+    <dt><code>style</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a></dt>
+    <dd><p>Parsing styles that allow optional prefix and whitespace tolerance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array representing the decoded binary data. Returns <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.empty">Empty&lt;T&gt;()</a> when
+<code class="paramref">chars</code> is empty.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input contains non-hexadecimal characters, or when it has an odd number of hex digits after
+applying <code class="paramref">style</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_Decode_" data-uid="Bodu.Text.Encoding.Base16.Decode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_Decode_System_String_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.Decode(System.String,Bodu.Text.Encoding.BaseFormatStyles)">
+  Decode(string, BaseFormatStyles)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Decode.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes a hexadecimal-encoded string into a byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Decode(string s, BaseFormatStyles style = BaseFormatStyles.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string containing Base16 (hex) characters.</p>
+</dd>
+    <dt><code>style</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a></dt>
+    <dd><p>Parsing styles that allow optional prefix and whitespace tolerance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array representing the decoded binary data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">s</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input contains non-hexadecimal characters, or when it has an odd number of hex digits after
+applying <code class="paramref">style</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_DecodeFromUtf8_" data-uid="Bodu.Text.Encoding.Base16.DecodeFromUtf8*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_DecodeFromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__Bodu_Text_Encoding_BaseFormatStyles_System_Boolean_" data-uid="Bodu.Text.Encoding.Base16.DecodeFromUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,Bodu.Text.Encoding.BaseFormatStyles,System.Boolean)">
+  DecodeFromUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, out int, BaseFormatStyles, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Utf8.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Streaming decode of a UTF-8 hexadecimal byte span into a byte span, with leniency styles and a streaming
+indicator.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OperationStatus DecodeFromUtf8(ReadOnlySpan&lt;byte&gt; source, Span&lt;byte&gt; destination, out int bytesConsumed, out int bytesWritten, BaseFormatStyles styles = BaseFormatStyles.None, bool isFinalBlock = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 hexadecimal source bytes.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination span receiving decoded bytes.</p>
+</dd>
+    <dt><code>bytesConsumed</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of source bytes consumed.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of destination bytes written.</p>
+</dd>
+    <dt><code>styles</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a></dt>
+    <dd><p>Parsing styles influencing leniency.</p>
+</dd>
+    <dt><code>isFinalBlock</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the decoder enforces that the input forms complete byte pairs and any trailing
+partial pair is reported as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus#system-buffers-operationstatus-invaliddata">InvalidData</a>. When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, a
+trailing single character is reported as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus#system-buffers-operationstatus-needmoredata">NeedMoreData</a> so the caller can resume on
+more input.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a></dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a> describing the outcome.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_DecodeGuid_" data-uid="Bodu.Text.Encoding.Base16.DecodeGuid*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_DecodeGuid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.DecodeGuid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.BaseFormatStyles)">
+  DecodeGuid(ReadOnlySpan&lt;char&gt;, BaseFormatStyles)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Guid.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes a hexadecimal representation of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Guid DecodeGuid(ReadOnlySpan&lt;char&gt; source, BaseFormatStyles styles = BaseFormatStyles.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The hexadecimal characters (32 hex digits after any decoration is stripped).</p>
+</dd>
+    <dt><code>styles</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a></dt>
+    <dd><p>Parsing styles to apply when interpreting decorations.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a></dt>
+    <dd><p>The decoded <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input does not decode to exactly 16 bytes.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_Encode_" data-uid="Bodu.Text.Encoding.Base16.Encode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_Encode_System_Byte___Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.Byte[],Bodu.Text.Encoding.Base16Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+  Encode(byte[], Base16Variant, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes the entire byte array into a hexadecimal string using the supplied variant.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Encode(byte[] bytes, Base16Variant variant, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The byte array to encode.</p>
+</dd>
+    <dt><code>variant</code> <a class="xref" href="Bodu.Text.Encoding.Base16Variant.html">Base16Variant</a></dt>
+    <dd><p>The Base16 alphabet case.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Additional formatting options to apply, such as spacing, prefix, or line breaks.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A Base16 encoded string representing the input bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Encoding_Base16_Encode_System_Byte___Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is the variant-based form of <a class="xref" href="Bodu.Text.Encoding.Base16.html#Bodu_Text_Encoding_Base16_Encode_System_Byte___Bodu_Text_Encoding_BaseFormattingOptions_">Encode(byte[], BaseFormattingOptions)</a>, sharing the uniform
+<code>(bytes, variant, options)</code> shape used by the other Base-N families. The case selected by
+<code class="paramref">variant</code> takes precedence over <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">bytes</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_Encode_" data-uid="Bodu.Text.Encoding.Base16.Encode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_Encode_System_Byte___Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.Byte[],Bodu.Text.Encoding.BaseFormattingOptions)">
+  Encode(byte[], BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes the entire byte array into a hexadecimal string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Encode(byte[] bytes, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The byte array to encode.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Formatting options to apply, such as upper case, spacing, prefix, or line breaks.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A Base16 encoded string representing the input bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">bytes</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_Encode_" data-uid="Bodu.Text.Encoding.Base16.Encode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_Encode_System_Byte___System_Int32_System_Int32_Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.Byte[],System.Int32,System.Int32,Bodu.Text.Encoding.Base16Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+  Encode(byte[], int, int, Base16Variant, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes a portion of a byte array into a formatted hexadecimal string using the supplied variant.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Encode(byte[] bytes, int offset, int count, Base16Variant variant, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The byte array to encode.</p>
+</dd>
+    <dt><code>offset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based offset in <code class="paramref">bytes</code> at which to begin encoding.</p>
+</dd>
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes to encode.</p>
+</dd>
+    <dt><code>variant</code> <a class="xref" href="Bodu.Text.Encoding.Base16Variant.html">Base16Variant</a></dt>
+    <dd><p>The Base16 alphabet case.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Additional formatting options to apply, such as spacing, prefix, or line breaks.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A Base16 encoded string representing the selected slice of <code class="paramref">bytes</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">bytes</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">offset</code> or <code class="paramref">count</code> is negative, or either exceeds the bounds of
+<code class="paramref">bytes</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when the segment defined by <code class="paramref">offset</code> and <code class="paramref">count</code> exceeds the
+available range of <code class="paramref">bytes</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_Encode_" data-uid="Bodu.Text.Encoding.Base16.Encode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_Encode_System_Byte___System_Int32_System_Int32_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.Byte[],System.Int32,System.Int32,Bodu.Text.Encoding.BaseFormattingOptions)">
+  Encode(byte[], int, int, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes a portion of a byte array into a formatted hexadecimal string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Encode(byte[] bytes, int offset, int count, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The byte array to encode.</p>
+</dd>
+    <dt><code>offset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based offset in <code class="paramref">bytes</code> at which to begin encoding.</p>
+</dd>
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes to encode.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Formatting options to apply, such as upper case, spacing, prefix, or line breaks.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A Base16 encoded string representing the selected slice of <code class="paramref">bytes</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">bytes</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">offset</code> or <code class="paramref">count</code> is negative, or either exceeds the bounds of
+<code class="paramref">bytes</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when the segment defined by <code class="paramref">offset</code> and <code class="paramref">count</code> exceeds the
+available range of <code class="paramref">bytes</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_Encode_" data-uid="Bodu.Text.Encoding.Base16.Encode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_Encode_System_Guid_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.Guid,Bodu.Text.Encoding.BaseFormattingOptions)">
+  Encode(Guid, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Guid.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes the byte representation of <code class="paramref">value</code> as a hexadecimal string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Encode(Guid value, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a> to encode.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Formatting options applied to the hex output (case, prefix, spacing, line breaks).</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A Base16 string of the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a>'s 16 underlying bytes (mixed-endian, matching
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid.trywritebytes#system-guid-trywritebytes(system-span((system-byte)))">TryWriteBytes(Span&lt;byte&gt;)</a>).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Encoding_Base16_Encode_System_Guid_Bodu_Text_Encoding_BaseFormattingOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The encoding uses the GUID's native byte layout — the first three fields are little-endian, the fourth is
+big-endian. This matches <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid.tobytearray#system-guid-tobytearray">ToByteArray()</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid.trywritebytes#system-guid-trywritebytes(system-span((system-byte)))">TryWriteBytes(Span&lt;byte&gt;)</a>, so
+the result of <a class="xref" href="Bodu.Text.Encoding.Base16.html#Bodu_Text_Encoding_Base16_DecodeGuid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_">DecodeGuid(ReadOnlySpan&lt;char&gt;, BaseFormatStyles)</a> reconstructs the original
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a> exactly.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_Encode_" data-uid="Bodu.Text.Encoding.Base16.Encode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Base16Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+  Encode(ReadOnlySpan&lt;byte&gt;, Base16Variant, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes a read-only span of bytes into a formatted hexadecimal string using the supplied variant.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Encode(ReadOnlySpan&lt;byte&gt; bytes, Base16Variant variant, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>variant</code> <a class="xref" href="Bodu.Text.Encoding.Base16Variant.html">Base16Variant</a></dt>
+    <dd><p>The Base16 alphabet case.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Additional formatting options to apply, such as spacing, prefix, or line breaks.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A Base16 encoded string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The case selected by <code class="paramref">variant</code> takes precedence over
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a>.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_Encode_" data-uid="Bodu.Text.Encoding.Base16.Encode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.BaseFormattingOptions)">
+  Encode(ReadOnlySpan&lt;byte&gt;, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes a read-only span of bytes into a formatted hexadecimal string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Encode(ReadOnlySpan&lt;byte&gt; bytes, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Formatting options to apply, such as upper case, spacing, prefix, or line breaks.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A Base16 encoded string. When <code class="paramref">bytes</code> is empty and
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_IncludePrefix">IncludePrefix</a> is set, the result is the prefix string alone; otherwise the
+result is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string.empty">Empty</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_BaseFormattingOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Provides the optimal allocation profile when no formatting flags beyond
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a> are specified. When spacing, prefix, or line break flags are
+requested, the implementation falls back to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a>-backed writer.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_Encode_" data-uid="Bodu.Text.Encoding.Base16.Encode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Char__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Char},Bodu.Text.Encoding.Base16Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+  Encode(ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;char&gt;, Base16Variant, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BufferWriter.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> as hexadecimal characters into <code class="paramref">writer</code> using the supplied
+variant.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int Encode(ReadOnlySpan&lt;byte&gt; source, IBufferWriter&lt;char&gt; writer, Base16Variant variant, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>writer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The buffer writer that receives the encoded characters.</p>
+</dd>
+    <dt><code>variant</code> <a class="xref" href="Bodu.Text.Encoding.Base16Variant.html">Base16Variant</a></dt>
+    <dd><p>The Base16 alphabet case.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Additional formatting options. Only <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a> is supported on this
+overload; <code class="paramref">variant</code> takes precedence over it for the alphabet case.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of characters written to <code class="paramref">writer</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">writer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> contains any flag other than
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_Encode_" data-uid="Bodu.Text.Encoding.Base16.Encode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Char__Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Char},Bodu.Text.Encoding.BaseFormattingOptions)">
+  Encode(ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;char&gt;, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BufferWriter.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> as hexadecimal characters into <code class="paramref">writer</code>, suitable for use
+in pipelines and other <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>-based scenarios.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int Encode(ReadOnlySpan&lt;byte&gt; source, IBufferWriter&lt;char&gt; writer, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>writer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The buffer writer that receives the encoded characters.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Formatting options. Only <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a> is supported on this overload —
+formatted output (spacing, prefix, line breaks) is not compatible with the writer's contiguous span contract.
+For decorated output, call <a class="xref" href="Bodu.Text.Encoding.Base16.html#Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, BaseFormattingOptions)</a> and write the
+resulting string explicitly.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of characters written to <code class="paramref">writer</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">writer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> contains any flag other than
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_Encode_" data-uid="Bodu.Text.Encoding.Base16.Encode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},Bodu.Text.Encoding.Base16Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+  Encode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, Base16Variant, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes a read-only span of bytes directly into a pre-allocated character destination using the supplied
+variant.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int Encode(ReadOnlySpan&lt;byte&gt; bytes, Span&lt;char&gt; destination, Base16Variant variant, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The span that receives the encoded characters.</p>
+</dd>
+    <dt><code>variant</code> <a class="xref" href="Bodu.Text.Encoding.Base16Variant.html">Base16Variant</a></dt>
+    <dd><p>The Base16 alphabet case.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Additional formatting options. Only <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a> is supported on this
+overload; <code class="paramref">variant</code> takes precedence over it for the alphabet case.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of characters written to <code class="paramref">destination</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> contains any flag other than
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a>, or when <code class="paramref">destination</code> is too small to receive
+the encoded output.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_Encode_" data-uid="Bodu.Text.Encoding.Base16.Encode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},Bodu.Text.Encoding.BaseFormattingOptions)">
+  Encode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes a read-only span of bytes directly into a pre-allocated character destination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int Encode(ReadOnlySpan&lt;byte&gt; bytes, Span&lt;char&gt; destination, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The span that receives the encoded characters.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Formatting options. Only <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a> is supported on this overload.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of characters written to <code class="paramref">destination</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> contains any flag other than
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a>, or when <code class="paramref">destination</code> is too small to receive
+the encoded output.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_EncodeToUtf8_" data-uid="Bodu.Text.Encoding.Base16.EncodeToUtf8*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_EncodeToUtf8_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base16.EncodeToUtf8(System.ReadOnlySpan{System.Byte})">
+  EncodeToUtf8(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Utf8.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> into a UTF-8 hexadecimal byte array using lower case characters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] EncodeToUtf8(ReadOnlySpan&lt;byte&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A UTF-8 encoded hexadecimal byte array. Each input byte produces two output bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Encoding_Base16_EncodeToUtf8_System_ReadOnlySpan_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Hexadecimal characters are ASCII, so each UTF-8 byte equals the ASCII code of its corresponding character.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_EncodeToUtf8_" data-uid="Bodu.Text.Encoding.Base16.EncodeToUtf8*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_EncodeToUtf8_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base16Variant_" data-uid="Bodu.Text.Encoding.Base16.EncodeToUtf8(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Base16Variant)">
+  EncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Base16Variant)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Utf8.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> into a UTF-8 hexadecimal byte array using the supplied variant.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] EncodeToUtf8(ReadOnlySpan&lt;byte&gt; source, Base16Variant variant)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>variant</code> <a class="xref" href="Bodu.Text.Encoding.Base16Variant.html">Base16Variant</a></dt>
+    <dd><p>The Base16 alphabet case.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A UTF-8 encoded hexadecimal byte array. Each input byte produces two output bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Encoding_Base16_EncodeToUtf8_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base16Variant__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is the variant-based form of <a class="xref" href="Bodu.Text.Encoding.Base16.html#Bodu_Text_Encoding_Base16_EncodeToUtf8_System_ReadOnlySpan_System_Byte__">EncodeToUtf8(ReadOnlySpan&lt;byte&gt;)</a>. Hexadecimal characters are
+ASCII, so each UTF-8 byte equals the ASCII code of its corresponding character.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_EncodeToUtf8_" data-uid="Bodu.Text.Encoding.Base16.EncodeToUtf8*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_EncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.EncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Byte},Bodu.Text.Encoding.Base16Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+  EncodeToUtf8(ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;byte&gt;, Base16Variant, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BufferWriter.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> as UTF-8 hexadecimal bytes into <code class="paramref">writer</code> using the supplied
+variant.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int EncodeToUtf8(ReadOnlySpan&lt;byte&gt; source, IBufferWriter&lt;byte&gt; writer, Base16Variant variant, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>writer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The buffer writer that receives the UTF-8 hexadecimal bytes.</p>
+</dd>
+    <dt><code>variant</code> <a class="xref" href="Bodu.Text.Encoding.Base16Variant.html">Base16Variant</a></dt>
+    <dd><p>The Base16 alphabet case.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Additional formatting options. Only <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a> is supported on this
+overload; <code class="paramref">variant</code> takes precedence over it for the alphabet case.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of UTF-8 bytes written to <code class="paramref">writer</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">writer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> contains any flag other than
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_EncodeToUtf8_" data-uid="Bodu.Text.Encoding.Base16.EncodeToUtf8*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_EncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.EncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Byte},Bodu.Text.Encoding.BaseFormattingOptions)">
+  EncodeToUtf8(ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;byte&gt;, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BufferWriter.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> as UTF-8 hexadecimal bytes into <code class="paramref">writer</code>, suitable for use
+in pipelines and other <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>-based scenarios.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int EncodeToUtf8(ReadOnlySpan&lt;byte&gt; source, IBufferWriter&lt;byte&gt; writer, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>writer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The buffer writer that receives the UTF-8 hexadecimal bytes.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Formatting options. Only <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a> is supported on this overload.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of UTF-8 bytes written to <code class="paramref">writer</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">writer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> contains any flag other than
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_FromHexString_" data-uid="Bodu.Text.Encoding.Base16.FromHexString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_FromHexString_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base16.FromHexString(System.ReadOnlySpan{System.Byte})">
+  FromHexString(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes a UTF-8 encoded hexadecimal byte span into a byte array using strict parsing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] FromHexString(ReadOnlySpan&lt;byte&gt; utf8Source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 hexadecimal source.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The decoded byte array.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Encoding_Base16_FromHexString_System_ReadOnlySpan_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Hexadecimal characters are ASCII, so the UTF-8 representation is bit-identical to the character form. This
+overload avoids allocating a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> when the caller already has the input as bytes.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input is not strict hex.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_FromHexString_" data-uid="Bodu.Text.Encoding.Base16.FromHexString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_FromHexString_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__" data-uid="Bodu.Text.Encoding.Base16.FromHexString(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@)">
+  FromHexString(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Strict-mode streaming decode of a UTF-8 hexadecimal byte span into a byte span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OperationStatus FromHexString(ReadOnlySpan&lt;byte&gt; utf8Source, Span&lt;byte&gt; destination, out int bytesConsumed, out int bytesWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 hexadecimal source.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination span.</p>
+</dd>
+    <dt><code>bytesConsumed</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of source bytes consumed.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of bytes written.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a></dt>
+    <dd><p><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus#system-buffers-operationstatus-done">Done</a> on full success; <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus#system-buffers-operationstatus-destinationtoosmall">DestinationTooSmall</a> when
+<code class="paramref">destination</code> cannot fit the result; <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus#system-buffers-operationstatus-invaliddata">InvalidData</a> for invalid
+characters or odd source length.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_FromHexString_" data-uid="Bodu.Text.Encoding.Base16.FromHexString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_FromHexString_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Encoding.Base16.FromHexString(System.ReadOnlySpan{System.Char})">
+  FromHexString(ReadOnlySpan&lt;char&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes a hexadecimal character span into a byte array using strict parsing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] FromHexString(ReadOnlySpan&lt;char&gt; chars)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>chars</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The hexadecimal characters.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The decoded byte array.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input is not strict hex.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_FromHexString_" data-uid="Bodu.Text.Encoding.Base16.FromHexString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_FromHexString_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__" data-uid="Bodu.Text.Encoding.Base16.FromHexString(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@)">
+  FromHexString(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Strict-mode streaming decode of a hexadecimal character span into a byte span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OperationStatus FromHexString(ReadOnlySpan&lt;char&gt; source, Span&lt;byte&gt; destination, out int charsConsumed, out int bytesWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The hexadecimal characters.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination span.</p>
+</dd>
+    <dt><code>charsConsumed</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of characters consumed.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of bytes written.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a></dt>
+    <dd><p><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus#system-buffers-operationstatus-done">Done</a> on full success; <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus#system-buffers-operationstatus-destinationtoosmall">DestinationTooSmall</a> when
+<code class="paramref">destination</code> cannot fit the result; <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus#system-buffers-operationstatus-invaliddata">InvalidData</a> for invalid
+characters or odd source length.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_FromHexString_" data-uid="Bodu.Text.Encoding.Base16.FromHexString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_FromHexString_System_String_" data-uid="Bodu.Text.Encoding.Base16.FromHexString(System.String)">
+  FromHexString(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes a hexadecimal string into a byte array using strict parsing (no prefix, no whitespace).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] FromHexString(string s)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The hexadecimal input.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The decoded byte array.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">s</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input is not strict hex.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_GetDecodedLength_" data-uid="Bodu.Text.Encoding.Base16.GetDecodedLength*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_GetDecodedLength_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.GetDecodedLength(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.BaseFormatStyles)">
+  GetDecodedLength(ReadOnlySpan&lt;char&gt;, BaseFormatStyles)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Computes the exact number of bytes that decoding <code class="paramref">source</code> would produce after stripping
+decorations permitted by <code class="paramref">styles</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetDecodedLength(ReadOnlySpan&lt;char&gt; source, BaseFormatStyles styles = BaseFormatStyles.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The hexadecimal input.</p>
+</dd>
+    <dt><code>styles</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a></dt>
+    <dd><p>The parsing styles.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The exact byte count that <a class="xref" href="Bodu.Text.Encoding.Base16.html#Bodu_Text_Encoding_Base16_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_">Decode(ReadOnlySpan&lt;char&gt;, BaseFormatStyles)</a> would return.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the post-decoration digit count is odd, which indicates the input cannot decode cleanly.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_GetEncodedLength_" data-uid="Bodu.Text.Encoding.Base16.GetEncodedLength*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_GetEncodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base16.GetEncodedLength(System.Int32)">
+  GetEncodedLength(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the number of characters produced by encoding <code class="paramref">byteCount</code> bytes with strict formatting
+(no decorations).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetEncodedLength(int byteCount)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>byteCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The input byte count. Must be non-negative.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p><code>byteCount * 2</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">byteCount</code> is negative.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_GetEncodedLength_" data-uid="Bodu.Text.Encoding.Base16.GetEncodedLength*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_GetEncodedLength_System_Int32_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.GetEncodedLength(System.Int32,Bodu.Text.Encoding.BaseFormattingOptions)">
+  GetEncodedLength(int, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Computes the number of characters required to encode <code class="paramref">byteCount</code> bytes with the supplied
+formatting options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetEncodedLength(int byteCount, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>byteCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of input bytes. Must be non-negative.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>The formatting options that influence the output length.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The exact number of characters that <a class="xref" href="Bodu.Text.Encoding.Base16.html#Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, BaseFormattingOptions)</a> will
+produce.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">byteCount</code> is negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a></dt>
+    <dd><p>Thrown when <code class="paramref">byteCount</code> is large enough that the resulting character count would overflow
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_GetMaxDecodedLength_" data-uid="Bodu.Text.Encoding.Base16.GetMaxDecodedLength*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_GetMaxDecodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base16.GetMaxDecodedLength(System.Int32)">
+  GetMaxDecodedLength(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Computes the maximum number of bytes that can result from decoding <code class="paramref">charCount</code> characters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetMaxDecodedLength(int charCount)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>charCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of input characters. Must be non-negative.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The upper bound on the number of decoded bytes. The actual byte count will be lower when the input contains
+decorations that are stripped during parsing.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">charCount</code> is negative.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_IsHexDigit_" data-uid="Bodu.Text.Encoding.Base16.IsHexDigit*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_IsHexDigit_System_Char_" data-uid="Bodu.Text.Encoding.Base16.IsHexDigit(System.Char)">
+  IsHexDigit(char)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Indicates whether <code class="paramref">value</code> is one of the 22 hexadecimal digit characters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsHexDigit(char value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a></dt>
+    <dd><p>The character to test.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> for <code>'0'</code>-<code>'9'</code>, <code>'A'</code>-<code>'F'</code>, and <code>'a'</code>-<code>'f'</code>; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_IsValid_" data-uid="Bodu.Text.Encoding.Base16.IsValid*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.IsValid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.BaseFormatStyles)">
+  IsValid(ReadOnlySpan&lt;char&gt;, BaseFormatStyles)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is a valid hexadecimal input under the supplied parsing styles.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsValid(ReadOnlySpan&lt;char&gt; source, BaseFormatStyles styles = BaseFormatStyles.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The input characters.</p>
+</dd>
+    <dt><code>styles</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a></dt>
+    <dd><p>The parsing styles.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when every retained character is a hex digit and the retained count is even; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_ToHexString_" data-uid="Bodu.Text.Encoding.Base16.ToHexString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_ToHexString_System_Byte___" data-uid="Bodu.Text.Encoding.Base16.ToHexString(System.Byte[])">
+  ToHexString(byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">inArray</code> into an upper case hexadecimal string. Aliases
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.convert.tohexstring#system-convert-tohexstring(system-byte())">ToHexString(byte[])</a> with no formatting decorations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToHexString(byte[] inArray)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>inArray</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The byte array to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>An upper case hexadecimal string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">inArray</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_ToHexString_" data-uid="Bodu.Text.Encoding.Base16.ToHexString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_ToHexString_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Text.Encoding.Base16.ToHexString(System.Byte[],System.Int32,System.Int32)">
+  ToHexString(byte[], int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes a portion of <code class="paramref">inArray</code> into an upper case hexadecimal string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToHexString(byte[] inArray, int offset, int length)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>inArray</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The byte array to encode.</p>
+</dd>
+    <dt><code>offset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The starting offset.</p>
+</dd>
+    <dt><code>length</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>An upper case hexadecimal string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">inArray</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">offset</code> or <code class="paramref">length</code> is out of range for
+<code class="paramref">inArray</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when the segment defined by <code class="paramref">offset</code> and <code class="paramref">length</code> exceeds the
+available range of <code class="paramref">inArray</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_ToHexString_" data-uid="Bodu.Text.Encoding.Base16.ToHexString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_ToHexString_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base16.ToHexString(System.ReadOnlySpan{System.Byte})">
+  ToHexString(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into an upper case hexadecimal string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToHexString(ReadOnlySpan&lt;byte&gt; bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>An upper case hexadecimal string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_ToHexStringLower_" data-uid="Bodu.Text.Encoding.Base16.ToHexStringLower*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_ToHexStringLower_System_Byte___" data-uid="Bodu.Text.Encoding.Base16.ToHexStringLower(System.Byte[])">
+  ToHexStringLower(byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">inArray</code> into a lower case hexadecimal string. Mirrors
+<code>Convert.ToHexStringLower</code> introduced in .NET 9.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToHexStringLower(byte[] inArray)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>inArray</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The byte array to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A lower case hexadecimal string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">inArray</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_ToHexStringLower_" data-uid="Bodu.Text.Encoding.Base16.ToHexStringLower*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_ToHexStringLower_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Text.Encoding.Base16.ToHexStringLower(System.Byte[],System.Int32,System.Int32)">
+  ToHexStringLower(byte[], int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes a portion of <code class="paramref">inArray</code> into a lower case hexadecimal string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToHexStringLower(byte[] inArray, int offset, int length)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>inArray</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The byte array to encode.</p>
+</dd>
+    <dt><code>offset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The starting offset.</p>
+</dd>
+    <dt><code>length</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A lower case hexadecimal string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">inArray</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">offset</code> or <code class="paramref">length</code> is out of range for
+<code class="paramref">inArray</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when the segment defined by <code class="paramref">offset</code> and <code class="paramref">length</code> exceeds the
+available range of <code class="paramref">inArray</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_ToHexStringLower_" data-uid="Bodu.Text.Encoding.Base16.ToHexStringLower*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_ToHexStringLower_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base16.ToHexStringLower(System.ReadOnlySpan{System.Byte})">
+  ToHexStringLower(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into a lower case hexadecimal string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToHexStringLower(ReadOnlySpan&lt;byte&gt; bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A lower case hexadecimal string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_TryDecode_" data-uid="Bodu.Text.Encoding.Base16.TryDecode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.TryDecode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.BaseFormatStyles)">
+  TryDecode(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, BaseFormatStyles)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Decode.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to decode hexadecimal characters into bytes using the provided destination span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryDecode(ReadOnlySpan&lt;char&gt; chars, Span&lt;byte&gt; destination, out int bytesWritten, BaseFormatStyles style = BaseFormatStyles.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>chars</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The span of characters to decode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The span that receives the decoded bytes.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of bytes written, or <code>0</code> when decoding failed.</p>
+</dd>
+    <dt><code>style</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a></dt>
+    <dd><p>Parsing styles that allow optional prefix and whitespace tolerance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when decoding succeeded; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when the input is malformed or
+<code class="paramref">destination</code> is too small.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Encoding_Base16_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_BaseFormatStyles__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method never throws for malformed input — it returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> instead. Callers that require
+exception semantics should use <a class="xref" href="Bodu.Text.Encoding.Base16.html#Bodu_Text_Encoding_Base16_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_">Decode(ReadOnlySpan&lt;char&gt;, BaseFormatStyles)</a>.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_TryDecodeGuid_" data-uid="Bodu.Text.Encoding.Base16.TryDecodeGuid*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_TryDecodeGuid_System_ReadOnlySpan_System_Char__System_Guid__Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.TryDecodeGuid(System.ReadOnlySpan{System.Char},System.Guid@,Bodu.Text.Encoding.BaseFormatStyles)">
+  TryDecodeGuid(ReadOnlySpan&lt;char&gt;, out Guid, BaseFormatStyles)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Guid.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to decode a hexadecimal representation of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryDecodeGuid(ReadOnlySpan&lt;char&gt; source, out Guid value, BaseFormatStyles styles = BaseFormatStyles.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The hexadecimal characters.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a></dt>
+    <dd><p>When this method returns, contains the decoded <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid.empty">Empty</a> when the input
+is invalid.</p>
+</dd>
+    <dt><code>styles</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a></dt>
+    <dd><p>Parsing styles to apply when interpreting decorations.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when decoding succeeds; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_TryEncode_" data-uid="Bodu.Text.Encoding.Base16.TryEncode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.TryEncode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,Bodu.Text.Encoding.Base16Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+  TryEncode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int, Base16Variant, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to encode binary bytes into hexadecimal characters using the supplied variant and destination span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryEncode(ReadOnlySpan&lt;byte&gt; bytes, Span&lt;char&gt; destination, out int charsWritten, Base16Variant variant, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The span that receives the encoded characters.</p>
+</dd>
+    <dt><code>charsWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of characters written, or <code>0</code> when
+<code class="paramref">destination</code> is too small.</p>
+</dd>
+    <dt><code>variant</code> <a class="xref" href="Bodu.Text.Encoding.Base16Variant.html">Base16Variant</a></dt>
+    <dd><p>The Base16 alphabet case.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Additional formatting options. Only <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a> is supported on this
+overload; <code class="paramref">variant</code> takes precedence over it for the alphabet case.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the destination is large enough and the encoding succeeded; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> contains any flag other than
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_TryEncode_" data-uid="Bodu.Text.Encoding.Base16.TryEncode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.TryEncode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,Bodu.Text.Encoding.BaseFormattingOptions)">
+  TryEncode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to encode binary bytes into hexadecimal characters using the provided destination span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryEncode(ReadOnlySpan&lt;byte&gt; bytes, Span&lt;char&gt; destination, out int charsWritten, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The span that receives the encoded characters.</p>
+</dd>
+    <dt><code>charsWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of characters written, or <code>0</code> when
+<code class="paramref">destination</code> is too small.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Formatting options. Only <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a> is supported on this overload.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the destination is large enough and the encoding succeeded; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> contains any flag other than
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_TryEncodeToUtf8_" data-uid="Bodu.Text.Encoding.Base16.TryEncodeToUtf8*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_TryEncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.TryEncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.Base16Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+  TryEncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, Base16Variant, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Utf8.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into <code class="paramref">destination</code> as UTF-8 hexadecimal bytes
+using the supplied variant.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryEncodeToUtf8(ReadOnlySpan&lt;byte&gt; source, Span&lt;byte&gt; destination, out int bytesWritten, Base16Variant variant, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination UTF-8 byte span.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of UTF-8 bytes written.</p>
+</dd>
+    <dt><code>variant</code> <a class="xref" href="Bodu.Text.Encoding.Base16Variant.html">Base16Variant</a></dt>
+    <dd><p>The Base16 alphabet case.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Additional formatting options. Only <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a> is honoured;
+<code class="paramref">variant</code> takes precedence over it for the alphabet case.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">destination</code> is large enough; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>
+.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> contains any flag other than
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_TryEncodeToUtf8_" data-uid="Bodu.Text.Encoding.Base16.TryEncodeToUtf8*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_TryEncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.TryEncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.BaseFormattingOptions)">
+  TryEncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, BaseFormattingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.Utf8.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into <code class="paramref">destination</code> as UTF-8 hexadecimal bytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryEncodeToUtf8(ReadOnlySpan&lt;byte&gt; source, Span&lt;byte&gt; destination, out int bytesWritten, BaseFormattingOptions options = BaseFormattingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination UTF-8 byte span.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of UTF-8 bytes written.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></dt>
+    <dd><p>Formatting options. Only <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a> is honoured; line-break / spacing /
+prefix flags are not supported on the UTF-8 fast path.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">destination</code> is large enough; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>
+.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> contains any flag other than
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_TryGetDecodedLength_" data-uid="Bodu.Text.Encoding.Base16.TryGetDecodedLength*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_TryGetDecodedLength_System_ReadOnlySpan_System_Char__System_Int32__Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.TryGetDecodedLength(System.ReadOnlySpan{System.Char},System.Int32@,Bodu.Text.Encoding.BaseFormatStyles)">
+  TryGetDecodedLength(ReadOnlySpan&lt;char&gt;, out int, BaseFormatStyles)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to compute the exact number of bytes that decoding <code class="paramref">source</code> would produce.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryGetDecodedLength(ReadOnlySpan&lt;char&gt; source, out int byteCount, BaseFormatStyles styles = BaseFormatStyles.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The hexadecimal input.</p>
+</dd>
+    <dt><code>byteCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the byte count, or <code>0</code> when the input is malformed.</p>
+</dd>
+    <dt><code>styles</code> <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a></dt>
+    <dd><p>The parsing styles.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the input would decode cleanly; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_TryToHexString_" data-uid="Bodu.Text.Encoding.Base16.TryToHexString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_TryToHexString_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.Base16.TryToHexString(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
+  TryToHexString(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into UTF-8 <code class="paramref">utf8Destination</code> using upper case
+hex.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryToHexString(ReadOnlySpan&lt;byte&gt; source, Span&lt;byte&gt; utf8Destination, out int bytesWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>utf8Destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 destination span.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of bytes written.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on success; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when the destination is too small.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_TryToHexString_" data-uid="Bodu.Text.Encoding.Base16.TryToHexString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_TryToHexString_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__" data-uid="Bodu.Text.Encoding.Base16.TryToHexString(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@)">
+  TryToHexString(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into <code class="paramref">destination</code> using upper case hex.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryToHexString(ReadOnlySpan&lt;byte&gt; source, Span&lt;char&gt; destination, out int charsWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The destination character span.</p>
+</dd>
+    <dt><code>charsWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of characters written.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on success; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when the destination is too small.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_TryToHexStringLower_" data-uid="Bodu.Text.Encoding.Base16.TryToHexStringLower*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_TryToHexStringLower_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.Base16.TryToHexStringLower(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
+  TryToHexStringLower(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into UTF-8 <code class="paramref">utf8Destination</code> using lower case
+hex.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryToHexStringLower(ReadOnlySpan&lt;byte&gt; source, Span&lt;byte&gt; utf8Destination, out int bytesWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>utf8Destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 destination span.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of bytes written.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on success; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when the destination is too small.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base16_TryToHexStringLower_" data-uid="Bodu.Text.Encoding.Base16.TryToHexStringLower*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base16_TryToHexStringLower_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__" data-uid="Bodu.Text.Encoding.Base16.TryToHexStringLower(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@)">
+  TryToHexStringLower(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base16.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into <code class="paramref">destination</code> using lower case hex.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryToHexStringLower(ReadOnlySpan&lt;byte&gt; source, Span&lt;char&gt; destination, out int charsWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The destination character span.</p>
+</dd>
+    <dt><code>charsWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of characters written.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on success; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when the destination is too small.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_Decode_System_Char___System_Int32_System_Int32_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.Decode(System.Char[],System.Int32,System.Int32,Bodu.Text.Encoding.BaseFormatStyles)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.Decode.html#Bodu_Text_Encoding_Base16_Decode_System_Char___System_Int32_System_Int32_Bodu_Text_Encoding_BaseFormatStyles_">Decode(char[], int, int, BaseFormatStyles)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a portion of a character array containing hexadecimal-encoded data into a byte array.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.Decode(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.BaseFormatStyles)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.Decode.html#Bodu_Text_Encoding_Base16_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_">Decode(ReadOnlySpan&lt;char&gt;, BaseFormatStyles)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a read-only span of hexadecimal characters into a byte array.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_Decode_System_String_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.Decode(System.String,Bodu.Text.Encoding.BaseFormatStyles)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.Decode.html#Bodu_Text_Encoding_Base16_Decode_System_String_Bodu_Text_Encoding_BaseFormatStyles_">Decode(string, BaseFormatStyles)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a hexadecimal-encoded string into a byte array.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_DecodeFromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__Bodu_Text_Encoding_BaseFormatStyles_System_Boolean_" data-uid="Bodu.Text.Encoding.Base16.DecodeFromUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,Bodu.Text.Encoding.BaseFormatStyles,System.Boolean)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.DecodeFromUtf8.html#Bodu_Text_Encoding_Base16_DecodeFromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__Bodu_Text_Encoding_BaseFormatStyles_System_Boolean_">DecodeFromUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, out int, BaseFormatStyles, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Streaming decode of a UTF-8 hexadecimal byte span into a byte span, with leniency styles and a streaming
-indicator.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_DecodeGuid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.DecodeGuid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.BaseFormatStyles)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.DecodeGuid.html#Bodu_Text_Encoding_Base16_DecodeGuid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_">DecodeGuid(ReadOnlySpan&lt;char&gt;, BaseFormatStyles)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a hexadecimal representation of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_Encode_System_Byte___Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.Byte[],Bodu.Text.Encoding.Base16Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.Encode.html#Bodu_Text_Encoding_Base16_Encode_System_Byte___Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(byte[], Base16Variant, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes the entire byte array into a hexadecimal string using the supplied variant.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_Encode_System_Byte___Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.Byte[],Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.Encode.html#Bodu_Text_Encoding_Base16_Encode_System_Byte___Bodu_Text_Encoding_BaseFormattingOptions_">Encode(byte[], BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes the entire byte array into a hexadecimal string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_Encode_System_Byte___System_Int32_System_Int32_Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.Byte[],System.Int32,System.Int32,Bodu.Text.Encoding.Base16Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.Encode.html#Bodu_Text_Encoding_Base16_Encode_System_Byte___System_Int32_System_Int32_Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(byte[], int, int, Base16Variant, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes a portion of a byte array into a formatted hexadecimal string using the supplied variant.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_Encode_System_Byte___System_Int32_System_Int32_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.Byte[],System.Int32,System.Int32,Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.Encode.html#Bodu_Text_Encoding_Base16_Encode_System_Byte___System_Int32_System_Int32_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(byte[], int, int, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes a portion of a byte array into a formatted hexadecimal string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_Encode_System_Guid_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.Guid,Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.Encode.html#Bodu_Text_Encoding_Base16_Encode_System_Guid_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(Guid, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes the byte representation of <code class="paramref">value</code> as a hexadecimal string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Base16Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.Encode.html#Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, Base16Variant, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes a read-only span of bytes into a formatted hexadecimal string using the supplied variant.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.Encode.html#Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes a read-only span of bytes into a formatted hexadecimal string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Char__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Char},Bodu.Text.Encoding.Base16Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.Encode.html#Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Char__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;char&gt;, Base16Variant, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> as hexadecimal characters into <code class="paramref">writer</code> using the supplied
-variant.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Char__Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Char},Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.Encode.html#Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Char__Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;char&gt;, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> as hexadecimal characters into <code class="paramref">writer</code>, suitable for use
-in pipelines and other <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>-based scenarios.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},Bodu.Text.Encoding.Base16Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.Encode.html#Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, Base16Variant, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes a read-only span of bytes directly into a pre-allocated character destination using the supplied
-variant.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.Encode.html#Bodu_Text_Encoding_Base16_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes a read-only span of bytes directly into a pre-allocated character destination.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_EncodeToUtf8_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base16.EncodeToUtf8(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.EncodeToUtf8.html#Bodu_Text_Encoding_Base16_EncodeToUtf8_System_ReadOnlySpan_System_Byte__">EncodeToUtf8(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> into a UTF-8 hexadecimal byte array using lower case characters.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_EncodeToUtf8_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base16Variant_" data-uid="Bodu.Text.Encoding.Base16.EncodeToUtf8(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Base16Variant)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.EncodeToUtf8.html#Bodu_Text_Encoding_Base16_EncodeToUtf8_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base16Variant_">EncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Base16Variant)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> into a UTF-8 hexadecimal byte array using the supplied variant.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_EncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.EncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Byte},Bodu.Text.Encoding.Base16Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.EncodeToUtf8.html#Bodu_Text_Encoding_Base16_EncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_">EncodeToUtf8(ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;byte&gt;, Base16Variant, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> as UTF-8 hexadecimal bytes into <code class="paramref">writer</code> using the supplied
-variant.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_EncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.EncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Byte},Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.EncodeToUtf8.html#Bodu_Text_Encoding_Base16_EncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Encoding_BaseFormattingOptions_">EncodeToUtf8(ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;byte&gt;, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> as UTF-8 hexadecimal bytes into <code class="paramref">writer</code>, suitable for use
-in pipelines and other <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>-based scenarios.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_FromHexString_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base16.FromHexString(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.FromHexString.html#Bodu_Text_Encoding_Base16_FromHexString_System_ReadOnlySpan_System_Byte__">FromHexString(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a UTF-8 encoded hexadecimal byte span into a byte array using strict parsing.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_FromHexString_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__" data-uid="Bodu.Text.Encoding.Base16.FromHexString(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.FromHexString.html#Bodu_Text_Encoding_Base16_FromHexString_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__">FromHexString(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Strict-mode streaming decode of a UTF-8 hexadecimal byte span into a byte span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_FromHexString_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Encoding.Base16.FromHexString(System.ReadOnlySpan{System.Char})">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.FromHexString.html#Bodu_Text_Encoding_Base16_FromHexString_System_ReadOnlySpan_System_Char__">FromHexString(ReadOnlySpan&lt;char&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a hexadecimal character span into a byte array using strict parsing.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_FromHexString_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__" data-uid="Bodu.Text.Encoding.Base16.FromHexString(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.FromHexString.html#Bodu_Text_Encoding_Base16_FromHexString_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__">FromHexString(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Strict-mode streaming decode of a hexadecimal character span into a byte span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_FromHexString_System_String_" data-uid="Bodu.Text.Encoding.Base16.FromHexString(System.String)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.FromHexString.html#Bodu_Text_Encoding_Base16_FromHexString_System_String_">FromHexString(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a hexadecimal string into a byte array using strict parsing (no prefix, no whitespace).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_GetDecodedLength_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.GetDecodedLength(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.BaseFormatStyles)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.GetDecodedLength.html#Bodu_Text_Encoding_Base16_GetDecodedLength_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_">GetDecodedLength(ReadOnlySpan&lt;char&gt;, BaseFormatStyles)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Computes the exact number of bytes that decoding <code class="paramref">source</code> would produce after stripping
-decorations permitted by <code class="paramref">styles</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_GetEncodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base16.GetEncodedLength(System.Int32)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.GetEncodedLength.html#Bodu_Text_Encoding_Base16_GetEncodedLength_System_Int32_">GetEncodedLength(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the number of characters produced by encoding <code class="paramref">byteCount</code> bytes with strict formatting
-(no decorations).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_GetEncodedLength_System_Int32_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.GetEncodedLength(System.Int32,Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.GetEncodedLength.html#Bodu_Text_Encoding_Base16_GetEncodedLength_System_Int32_Bodu_Text_Encoding_BaseFormattingOptions_">GetEncodedLength(int, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Computes the number of characters required to encode <code class="paramref">byteCount</code> bytes with the supplied
-formatting options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_GetMaxDecodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base16.GetMaxDecodedLength(System.Int32)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.GetMaxDecodedLength.html#Bodu_Text_Encoding_Base16_GetMaxDecodedLength_System_Int32_">GetMaxDecodedLength(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Computes the maximum number of bytes that can result from decoding <code class="paramref">charCount</code> characters.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_IsHexDigit_System_Char_" data-uid="Bodu.Text.Encoding.Base16.IsHexDigit(System.Char)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.IsHexDigit.html#Bodu_Text_Encoding_Base16_IsHexDigit_System_Char_">IsHexDigit(char)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Indicates whether <code class="paramref">value</code> is one of the 22 hexadecimal digit characters.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.IsValid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.BaseFormatStyles)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.IsValid.html#Bodu_Text_Encoding_Base16_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_BaseFormatStyles_">IsValid(ReadOnlySpan&lt;char&gt;, BaseFormatStyles)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is a valid hexadecimal input under the supplied parsing styles.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_ToHexString_System_Byte___" data-uid="Bodu.Text.Encoding.Base16.ToHexString(System.Byte[])">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.ToHexString.html#Bodu_Text_Encoding_Base16_ToHexString_System_Byte___">ToHexString(byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">inArray</code> into an upper case hexadecimal string. Aliases
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.convert.tohexstring#system-convert-tohexstring(system-byte())">ToHexString(byte[])</a> with no formatting decorations.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_ToHexString_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Text.Encoding.Base16.ToHexString(System.Byte[],System.Int32,System.Int32)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.ToHexString.html#Bodu_Text_Encoding_Base16_ToHexString_System_Byte___System_Int32_System_Int32_">ToHexString(byte[], int, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes a portion of <code class="paramref">inArray</code> into an upper case hexadecimal string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_ToHexString_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base16.ToHexString(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.ToHexString.html#Bodu_Text_Encoding_Base16_ToHexString_System_ReadOnlySpan_System_Byte__">ToHexString(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into an upper case hexadecimal string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_ToHexStringLower_System_Byte___" data-uid="Bodu.Text.Encoding.Base16.ToHexStringLower(System.Byte[])">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.ToHexStringLower.html#Bodu_Text_Encoding_Base16_ToHexStringLower_System_Byte___">ToHexStringLower(byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">inArray</code> into a lower case hexadecimal string. Mirrors
-<code>Convert.ToHexStringLower</code> introduced in .NET 9.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_ToHexStringLower_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Text.Encoding.Base16.ToHexStringLower(System.Byte[],System.Int32,System.Int32)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.ToHexStringLower.html#Bodu_Text_Encoding_Base16_ToHexStringLower_System_Byte___System_Int32_System_Int32_">ToHexStringLower(byte[], int, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes a portion of <code class="paramref">inArray</code> into a lower case hexadecimal string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_ToHexStringLower_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base16.ToHexStringLower(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.ToHexStringLower.html#Bodu_Text_Encoding_Base16_ToHexStringLower_System_ReadOnlySpan_System_Byte__">ToHexStringLower(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into a lower case hexadecimal string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.TryDecode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.BaseFormatStyles)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.TryDecode.html#Bodu_Text_Encoding_Base16_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_BaseFormatStyles_">TryDecode(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, BaseFormatStyles)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to decode hexadecimal characters into bytes using the provided destination span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_TryDecodeGuid_System_ReadOnlySpan_System_Char__System_Guid__Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.TryDecodeGuid(System.ReadOnlySpan{System.Char},System.Guid@,Bodu.Text.Encoding.BaseFormatStyles)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.TryDecodeGuid.html#Bodu_Text_Encoding_Base16_TryDecodeGuid_System_ReadOnlySpan_System_Char__System_Guid__Bodu_Text_Encoding_BaseFormatStyles_">TryDecodeGuid(ReadOnlySpan&lt;char&gt;, out Guid, BaseFormatStyles)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to decode a hexadecimal representation of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.TryEncode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,Bodu.Text.Encoding.Base16Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.TryEncode.html#Bodu_Text_Encoding_Base16_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_">TryEncode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int, Base16Variant, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to encode binary bytes into hexadecimal characters using the supplied variant and destination span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.TryEncode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.TryEncode.html#Bodu_Text_Encoding_Base16_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_BaseFormattingOptions_">TryEncode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to encode binary bytes into hexadecimal characters using the provided destination span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_TryEncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.TryEncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.Base16Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.TryEncodeToUtf8.html#Bodu_Text_Encoding_Base16_TryEncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base16Variant_Bodu_Text_Encoding_BaseFormattingOptions_">TryEncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, Base16Variant, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into <code class="paramref">destination</code> as UTF-8 hexadecimal bytes
-using the supplied variant.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_TryEncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base16.TryEncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.BaseFormattingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.TryEncodeToUtf8.html#Bodu_Text_Encoding_Base16_TryEncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_BaseFormattingOptions_">TryEncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, BaseFormattingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into <code class="paramref">destination</code> as UTF-8 hexadecimal bytes.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_TryGetDecodedLength_System_ReadOnlySpan_System_Char__System_Int32__Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base16.TryGetDecodedLength(System.ReadOnlySpan{System.Char},System.Int32@,Bodu.Text.Encoding.BaseFormatStyles)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.TryGetDecodedLength.html#Bodu_Text_Encoding_Base16_TryGetDecodedLength_System_ReadOnlySpan_System_Char__System_Int32__Bodu_Text_Encoding_BaseFormatStyles_">TryGetDecodedLength(ReadOnlySpan&lt;char&gt;, out int, BaseFormatStyles)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to compute the exact number of bytes that decoding <code class="paramref">source</code> would produce.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_TryToHexString_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.Base16.TryToHexString(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.TryToHexString.html#Bodu_Text_Encoding_Base16_TryToHexString_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__">TryToHexString(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into UTF-8 <code class="paramref">utf8Destination</code> using upper case
-hex.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_TryToHexString_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__" data-uid="Bodu.Text.Encoding.Base16.TryToHexString(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.TryToHexString.html#Bodu_Text_Encoding_Base16_TryToHexString_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__">TryToHexString(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into <code class="paramref">destination</code> using upper case hex.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_TryToHexStringLower_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.Base16.TryToHexStringLower(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.TryToHexStringLower.html#Bodu_Text_Encoding_Base16_TryToHexStringLower_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__">TryToHexStringLower(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into UTF-8 <code class="paramref">utf8Destination</code> using lower case
-hex.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base16_TryToHexStringLower_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__" data-uid="Bodu.Text.Encoding.Base16.TryToHexStringLower(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@)">
-          <a class="xref" href="Bodu.Text.Encoding.Base16.TryToHexStringLower.html#Bodu_Text_Encoding_Base16_TryToHexStringLower_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__">TryToHexStringLower(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into <code class="paramref">destination</code> using lower case hex.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
 
+
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

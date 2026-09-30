@@ -1,101 +1,332 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Enum CipherModeKind | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Enum CipherModeKind | BODU ">
-    
-    <meta name="description" content="Specifies a block-cipher mode for encrypting or decrypting multi-block messages. Mirrors the standard framework  values where this library exposes the same mode, and extends that surface with additional modes that are not part of the framework enum.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>CipherModeKind Enum
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="CipherModeKind Enum
+ | BODU ">
+      
+      <meta name="description" content="Specifies a block-cipher mode for encrypting or decrypting multi-block messages. Mirrors the standard framework  values where this library exposes the same mode, and extends that surface with additional modes that are not part of the framework enum.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.CipherModeKind">
+
+        <article data-uid="Bodu.Security.Cryptography.CipherModeKind">
 
 
 
 
-  <h1 id="Bodu_Security_Cryptography_CipherModeKind" data-uid="Bodu.Security.Cryptography.CipherModeKind" class="text-break">Enum CipherModeKind</h1>
-  <div class="markdown level0 summary"><p>Specifies a block-cipher mode for encrypting or decrypting multi-block messages. Mirrors the standard framework
+
+  <h1 id="Bodu_Security_Cryptography_CipherModeKind" data-uid="Bodu.Security.Cryptography.CipherModeKind" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+CipherModeKind Enum
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/CipherModeKind.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Security_Cryptography_CipherModeKind_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/CipherModeKind.cs">CipherModeKind.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Specifies a block-cipher mode for encrypting or decrypting multi-block messages. Mirrors the standard framework
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> values where this library exposes the same mode, and extends that surface with additional
 modes that are not part of the framework enum.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
-  <h5 id="Bodu_Security_Cryptography_CipherModeKind_syntax">Syntax</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public enum CipherModeKind</code></pre>
   </div>
-  <h5 id="Bodu_Security_Cryptography_CipherModeKind_remarks"><strong>Remarks</strong></h5>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.BufferConverter.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;T&gt;(T, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+  <h2 id="fields">Fields
+</h2>
+  <dl class="parameters">
+    <dt id="Bodu_Security_Cryptography_CipherModeKind_CBC" data-bodu-frameworks="net8.0 net10.0"><code>CBC = 1</code></dt>
+  <dd><p>Cipher Block Chaining (CBC) mode. Each plaintext block is XORed with the previous ciphertext block before
+encryption. Mirrors <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode#system-security-cryptography-ciphermode-cbc">CBC</a>.</p>
+<p>
+CBC provides confidentiality by chaining ciphertext blocks, so identical plaintext blocks produce different
+ciphertexts assuming different IVs. The first block uses an initialization vector (IV) instead of a previous
+ciphertext block.
+</p>
+<p>
+This mode requires an IV equal in length to the cipher block size, which should be unpredictable for each
+message.
+</p>
+</dd>
+  
+    <dt id="Bodu_Security_Cryptography_CipherModeKind_ECB" data-bodu-frameworks="net8.0 net10.0"><code>ECB = 2</code></dt>
+  <dd><p>Electronic Codebook (ECB) mode. Each block is encrypted independently with no feedback. Mirrors
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode#system-security-cryptography-ciphermode-ecb">ECB</a>.</p>
+<p>
+ECB is trivially parallelisable but leaks structural information: identical plaintext blocks always produce
+identical ciphertext blocks. It is insecure for virtually all real-world messages and should only be used as a
+primitive inside a higher-level construction.
+</p>
+<p>
+This mode does not require an initialization vector.
+</p>
+</dd>
+  
+    <dt id="Bodu_Security_Cryptography_CipherModeKind_OFB" data-bodu-frameworks="net8.0 net10.0"><code>OFB = 3</code></dt>
+  <dd><p>Output Feedback (OFB) mode. Encrypts the previous output, or IV, to produce a keystream that is XORed with the
+plaintext or ciphertext. Mirrors <span class="xref">System.Security.Cryptography.CipherMode.OFB</span>.</p>
+<p>
+OFB is similar to CFB but feeds the previous keystream block back into the cipher rather than the ciphertext,
+making it immune to bit-flip propagation. It operates like a synchronous stream cipher. The IV seeds the initial
+feedback register.
+</p>
+<p>
+This mode requires an IV equal in length to the cipher block size, which must never be reused under the same
+key.
+</p>
+</dd>
+  
+    <dt id="Bodu_Security_Cryptography_CipherModeKind_CFB" data-bodu-frameworks="net8.0 net10.0"><code>CFB = 4</code></dt>
+  <dd><p>Cipher Feedback (CFB) mode. Encrypts the previous ciphertext, or IV, to produce a keystream that is XORed with
+the current plaintext or ciphertext. Mirrors <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode#system-security-cryptography-ciphermode-cfb">CFB</a>.</p>
+<p>
+CFB turns a block cipher into a self-synchronizing stream cipher. It can recover from bit errors after a few
+blocks and uses the cipher's encryption primitive for both encryption and decryption. The IV is used to seed the
+feedback register for the first block.
+</p>
+<p>
+This mode requires an IV equal in length to the cipher block size.
+</p>
+</dd>
+  
+    <dt id="Bodu_Security_Cryptography_CipherModeKind_CTS" data-bodu-frameworks="net8.0 net10.0"><code>CTS = 5</code></dt>
+  <dd><p>Ciphertext Stealing (CTS) mode. Applies CBC-style chaining while allowing the final plaintext portion to be
+shorter than a full block without expanding the ciphertext. Mirrors <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode#system-security-cryptography-ciphermode-cts">CTS</a>.</p>
+<p>
+CTS is used when ciphertext expansion is not acceptable and the final input block is partial. It rearranges the
+final two ciphertext blocks so that the ciphertext length matches the plaintext length.
+</p>
+<p>
+This mode requires an IV equal in length to the cipher block size. It is not an authenticated mode and does not
+provide integrity protection.
+</p>
+</dd>
+  
+    <dt id="Bodu_Security_Cryptography_CipherModeKind_CTR" data-bodu-frameworks="net8.0 net10.0"><code>CTR = 1024</code></dt>
+  <dd><p>Counter (CTR) mode. Encrypts successive counter values to produce a keystream that is XORed with plaintext or
+ciphertext. This mode extends <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> and has no framework counterpart.</p>
+<p>
+CTR transforms a block cipher into a parallelisable stream cipher with random access. It requires a nonce, or
+initial counter value, equal in length to the cipher block size.
+</p>
+<p>
+Reusing a key and nonce pair across messages is catastrophic: the XOR of two ciphertexts encrypted with the same
+keystream recovers the XOR of the plaintexts. Callers must ensure that every counter value is used at most once
+per key.
+</p>
+</dd>
+  
+    <dt id="Bodu_Security_Cryptography_CipherModeKind_XTS" data-bodu-frameworks="net8.0 net10.0"><code>XTS = 2048</code></dt>
+  <dd><p>XEX-based Tweaked-Codebook mode with Ciphertext Stealing (XTS). Each block is independently encrypted with a
+per-block tweak derived from a sector number and updated via GF(2^n) multiplication. This mode extends
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> and has no framework counterpart.</p>
+<p>
+XTS is the standard mode for storage and disk encryption (IEEE 1619-2007). The tweak evolves deterministically
+across consecutive blocks in a sector:
+<ul><li>Encrypt: C_i = E(P_i ⊕ T_i) ⊕ T_i</li><li>Decrypt: P_i = D(C_i ⊕ T_i) ⊕ T_i</li></ul>
+
+<p>
+XTS requires two independent key streams, typically expressed as a doubled key, and an IV equal to the cipher
+block size representing the sector number. The decrypt direction uses the cipher's <em>decryption</em>
+primitive, unlike CFB, OFB, and CTR.
+</p>
+</dd>
+  
+    <dt id="Bodu_Security_Cryptography_CipherModeKind_OCB" data-bodu-frameworks="net8.0 net10.0"><code>OCB = 4096</code></dt>
+  <dd><p>Offset Codebook mode 3 (OCB3 / RFC 7253). A single-pass authenticated encryption mode that processes each block
+with a ntz-derived offset, producing ciphertext and an integrity tag simultaneously. This mode extends
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> and has no framework counterpart.</p>
+<p>
+OCB derives a sequence of offsets from a nonce and pre-computed multiples of E(0...0):
+<ul><li>Encrypt: C_i = E(P_i ⊕ Δ_i) ⊕ Δ_i</li><li>Decrypt: P_i = D(C_i ⊕ Δ_i) ⊕ Δ_i</li></ul>
+<p>where Δ_i = Δ_{i−1} ⊕ L[ntz(i)] and ntz(i) is the number of trailing zeros of i.</p>
+
+<p>
+The <a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a> implementation provides the encryption/decryption transform component. Full
+AEAD authentication, including associated data processing and tag generation/verification, requires the
+<code>IAeadBlockCipherModeTransform</code> interface extension.
+</p>
+</dd>
+  
+    <dt id="Bodu_Security_Cryptography_CipherModeKind_EAX" data-bodu-frameworks="net8.0 net10.0"><code>EAX = 8192</code></dt>
+  <dd><p>EAX mode (Bellare, Rogaway, Wagner). A two-pass authenticated encryption mode combining CTR encryption with
+OMAC-based authentication of the nonce, ciphertext, and optional associated data. This mode extends
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> and has no framework counterpart.</p>
+<p>
+EAX encryption applies CTR mode using OMAC(nonce) as the counter start:
+<ul><li>Keystream_i = E(counter_i), where counter increments each block.</li><li>Both encrypt and decrypt XOR the input with the keystream (CTR property).</li></ul>
+
+<p>
+The <a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a> implementation provides the CTR encryption component using the nonce
+directly as the initial counter. Full AEAD authentication, including OMAC nonce processing, OMAC ciphertext tag,
+and associated data, requires the <code>IAeadBlockCipherModeTransform</code> interface extension.
+</p>
+</dd>
+  
+    <dt id="Bodu_Security_Cryptography_CipherModeKind_SIV" data-bodu-frameworks="net8.0 net10.0"><code>SIV = 16384</code></dt>
+  <dd><p>Synthetic IV (SIV / RFC 5297). A misuse-resistant authenticated encryption mode that derives a deterministic IV
+from the plaintext and associated data via S2V, then applies CTR encryption seeded by that IV. This mode extends
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> and has no framework counterpart.</p>
+<p>
+SIV's determinism makes it resistant to nonce reuse: even if the same message is encrypted twice, the ciphertext
+is identical but no confidentiality is lost beyond confirming message equality. It is widely used for key
+wrapping and contexts where generating a unique nonce is unreliable.
+</p>
+<p>
+The CTR counter is initialized from the SIV with bits 31 and 63 cleared to prevent counter wrap. Both encrypt
+and decrypt use only the cipher's encryption primitive (CTR property).
+</p>
+<p>
+The <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a> implementation accepts the pre-computed SIV directly as the IV. Full AEAD
+authentication, including S2V computation from plaintext and associated data, requires the
+<code>IAeadBlockCipherModeTransform</code> interface extension.
+</p>
+</dd>
+  
+  </dl>
+
+
+  <h2 id="Bodu_Security_Cryptography_CipherModeKind_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 The mirrored values <a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html#Bodu_Security_Cryptography_CipherModeKind_CBC">CBC</a>, <a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html#Bodu_Security_Cryptography_CipherModeKind_ECB">ECB</a>, <a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html#Bodu_Security_Cryptography_CipherModeKind_OFB">OFB</a>, <a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html#Bodu_Security_Cryptography_CipherModeKind_CFB">CFB</a>, and
 <a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html#Bodu_Security_Cryptography_CipherModeKind_CTS">CTS</a> are deliberately aligned with the numeric values of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> so that those
@@ -121,203 +352,49 @@ authentication logic. The five panels above show the classic, non-authenticated 
 
 <p>
 Modes differ in security properties, parallelism, whether they require an initialization vector or nonce, and
-whether they provide authentication. Use <a class="xref" href="Bodu.Security.Cryptography.BlockCipherModeFactory.Create.html#Bodu_Security_Cryptography_BlockCipherModeFactory_Create_Bodu_Security_Cryptography_CipherModeKind_Bodu_Security_Cryptography_IBlockCipher_System_Byte___">Create(CipherModeKind, IBlockCipher, byte[]?)</a> to obtain an
+whether they provide authentication. Use <a class="xref" href="Bodu.Security.Cryptography.BlockCipherModeFactory.html#Bodu_Security_Cryptography_BlockCipherModeFactory_Create_Bodu_Security_Cryptography_CipherModeKind_Bodu_Security_Cryptography_IBlockCipher_System_Byte___">Create(CipherModeKind, IBlockCipher, byte[]?)</a> to obtain an
 <a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a> for a given value.
 </p>
 </div>
-  <h3 id="fields">Fields
-</h3>
-  <table class="table table-bordered table-condensed">
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    <thead>
-    </thead></thead><tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_CipherModeKind_CBC">CBC</td>
-        <td><p>Cipher Block Chaining (CBC) mode. Each plaintext block is XORed with the previous ciphertext block before
-encryption. Mirrors <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode#system-security-cryptography-ciphermode-cbc">CBC</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_CipherModeKind_ECB">ECB</td>
-        <td><p>Electronic Codebook (ECB) mode. Each block is encrypted independently with no feedback. Mirrors
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode#system-security-cryptography-ciphermode-ecb">ECB</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_CipherModeKind_OFB">OFB</td>
-        <td><p>Output Feedback (OFB) mode. Encrypts the previous output, or IV, to produce a keystream that is XORed with the
-plaintext or ciphertext. Mirrors <span class="xref">System.Security.Cryptography.CipherMode.OFB</span>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_CipherModeKind_CFB">CFB</td>
-        <td><p>Cipher Feedback (CFB) mode. Encrypts the previous ciphertext, or IV, to produce a keystream that is XORed with
-the current plaintext or ciphertext. Mirrors <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode#system-security-cryptography-ciphermode-cfb">CFB</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_CipherModeKind_CTS">CTS</td>
-        <td><p>Ciphertext Stealing (CTS) mode. Applies CBC-style chaining while allowing the final plaintext portion to be
-shorter than a full block without expanding the ciphertext. Mirrors <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode#system-security-cryptography-ciphermode-cts">CTS</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_CipherModeKind_CTR">CTR</td>
-        <td><p>Counter (CTR) mode. Encrypts successive counter values to produce a keystream that is XORed with plaintext or
-ciphertext. This mode extends <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> and has no framework counterpart.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_CipherModeKind_XTS">XTS</td>
-        <td><p>XEX-based Tweaked-Codebook mode with Ciphertext Stealing (XTS). Each block is independently encrypted with a
-per-block tweak derived from a sector number and updated via GF(2^n) multiplication. This mode extends
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> and has no framework counterpart.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_CipherModeKind_OCB">OCB</td>
-        <td><p>Offset Codebook mode 3 (OCB3 / RFC 7253). A single-pass authenticated encryption mode that processes each block
-with a ntz-derived offset, producing ciphertext and an integrity tag simultaneously. This mode extends
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> and has no framework counterpart.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_CipherModeKind_EAX">EAX</td>
-        <td><p>EAX mode (Bellare, Rogaway, Wagner). A two-pass authenticated encryption mode combining CTR encryption with
-OMAC-based authentication of the nonce, ciphertext, and optional associated data. This mode extends
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> and has no framework counterpart.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_CipherModeKind_SIV">SIV</td>
-        <td><p>Synthetic IV (SIV / RFC 5297). A misuse-resistant authenticated encryption mode that derives a deterministic IV
-from the plaintext and associated data via S2V, then applies CTR encryption seeded by that IV. This mode extends
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> and has no framework counterpart.</p>
-</td>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h5 id="Bodu_Security_Cryptography_CipherModeKind_seealso">See Also</h5>
+
+  <h2 id="seealso">See Also</h2>
   <div class="seealso">
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a></div>
       <div><span><a href="../guides/cryptography/cipher-modes.html">Cipher block modes (guide
-    with per-mode worked examples)</a></span></div>
+            with per-mode worked examples)</a></span></div>
       <div><span><a href="../guides/cryptography/encryption-basics.html">Encryption
-    basics</a></span></div>
+            basics</a></span></div>
       <div><span><a href="../guides/cryptography/padding.html">Padding</a></span></div>
   </div>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;CipherModeKind&gt;(CipherModeKind, byte[], int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind, IComparer&lt;CipherModeKind&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind, IComparer&lt;CipherModeKind&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind?, CipherModeKind?, IComparer&lt;CipherModeKind&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind?, CipherModeKind?, IComparer&lt;CipherModeKind&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind, IComparer&lt;CipherModeKind&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind?, IComparer&lt;CipherModeKind&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind?, IComparer&lt;CipherModeKind&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind?, IComparer&lt;CipherModeKind&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind?, IComparer&lt;CipherModeKind&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind?, CipherModeKind?, IComparer&lt;CipherModeKind&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind, IComparer&lt;CipherModeKind&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind, IComparer&lt;CipherModeKind&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.ClearFlag.html#Bodu_Extensions_EnumExtensions_ClearFlag__1___0___0_">EnumExtensions.ClearFlag&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDescription.html#Bodu_Extensions_EnumExtensions_GetDescription__1___0_">EnumExtensions.GetDescription&lt;CipherModeKind&gt;(CipherModeKind)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDisplayName.html#Bodu_Extensions_EnumExtensions_GetDisplayName__1___0_">EnumExtensions.GetDisplayName&lt;CipherModeKind&gt;(CipherModeKind)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAllFlags.html#Bodu_Extensions_EnumExtensions_HasAllFlags__1___0___0_">EnumExtensions.HasAllFlags&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAnyFlag.html#Bodu_Extensions_EnumExtensions_HasAnyFlag__1___0___0_">EnumExtensions.HasAnyFlag&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.SetFlag.html#Bodu_Extensions_EnumExtensions_SetFlag__1___0___0_">EnumExtensions.SetFlag&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.ToggleFlag.html#Bodu_Extensions_EnumExtensions_ToggleFlag__1___0___0_">EnumExtensions.ToggleFlag&lt;CipherModeKind&gt;(CipherModeKind, CipherModeKind)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.TryGetDescription.html#Bodu_Extensions_EnumExtensions_TryGetDescription__1___0_System_String__">EnumExtensions.TryGetDescription&lt;CipherModeKind&gt;(CipherModeKind, out string)</a>
-  </div>
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

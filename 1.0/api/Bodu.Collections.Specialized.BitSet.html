@@ -1,106 +1,146 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class BitSet | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class BitSet | BODU ">
-    
-    <meta name="description" content="Represents a growable set of non-negative integers stored as a packed bit array, following the semantics of the Java BitSet class: writes beyond the current capacity grow the storage automatically, and reads beyond the current capacity report the bit as clear rather than throwing.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>BitSet Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="BitSet Class
+ | BODU ">
+      
+      <meta name="description" content="Represents a growable set of non-negative integers stored as a packed bit array, following the semantics of the Java BitSet class: writes beyond the current capacity grow the storage automatically, and reads beyond the current capacity report the bit as clear rather than throwing.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Specialized.BitSet">
+
+        <article data-uid="Bodu.Collections.Specialized.BitSet">
 
 
 
-  <h1 id="Bodu_Collections_Specialized_BitSet" data-uid="Bodu.Collections.Specialized.BitSet" class="text-break">Class BitSet</h1>
-  <div class="markdown level0 summary"><p>Represents a growable set of non-negative integers stored as a packed bit array, following the semantics of the Java
+
+  <h1 id="Bodu_Collections_Specialized_BitSet" data-uid="Bodu.Collections.Specialized.BitSet" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+BitSet Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Collections_Specialized_BitSet_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Collections.html">Collections</a>.<a class="xref" href="Bodu.Collections.Specialized.html">Specialized</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Collections.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Collections">Bodu.Collections</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.Enumerator.cs">BitSet.Enumerator.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a growable set of non-negative integers stored as a packed bit array, following the semantics of the Java
 <code>BitSet</code> class: writes beyond the current capacity grow the storage automatically, and reads beyond the current
 capacity report the bit as clear rather than throwing.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">BitSet</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class BitSet : IEnumerable&lt;int&gt;, IEnumerable, IEquatable&lt;BitSet&gt;</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a>&gt;</div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">BitSet</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
     </div>
@@ -110,53 +150,34 @@ capacity report the bit as clear rather than throwing.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Collections</span>.<a class="xref" href="Bodu.Collections.Specialized.html">Specialized</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Collections.dll</h6>
-  <h5 id="Bodu_Collections_Specialized_BitSet_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class BitSet : IEnumerable&lt;int&gt;, IEnumerable, IEquatable&lt;BitSet&gt;</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Collections_Specialized_BitSet_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-A <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> is backed by a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> array packing 64 bits per word. Single-bit
-<a class="xref" href="Bodu.Collections.Specialized.BitSet.Get.html#Bodu_Collections_Specialized_BitSet_Get_System_Int32_">Get(int)</a>, <a class="xref" href="Bodu.Collections.Specialized.BitSet.Set.html#Bodu_Collections_Specialized_BitSet_Set_System_Int32_">Set(int)</a>, <a class="xref" href="Bodu.Collections.Specialized.BitSet.Clear.html#Bodu_Collections_Specialized_BitSet_Clear_System_Int32_">Clear(int)</a>, and <a class="xref" href="Bodu.Collections.Specialized.BitSet.Flip.html#Bodu_Collections_Specialized_BitSet_Flip_System_Int32_">Flip(int)</a> operations
-are O(1) (amortized when growth occurs); range operations and the word-wise logical operators (<a class="xref" href="Bodu.Collections.Specialized.BitSet.And.html#Bodu_Collections_Specialized_BitSet_And_Bodu_Collections_Specialized_BitSet_">And(BitSet)</a>,
-<a class="xref" href="Bodu.Collections.Specialized.BitSet.Or.html#Bodu_Collections_Specialized_BitSet_Or_Bodu_Collections_Specialized_BitSet_">Or(BitSet)</a>, <a class="xref" href="Bodu.Collections.Specialized.BitSet.Xor.html#Bodu_Collections_Specialized_BitSet_Xor_Bodu_Collections_Specialized_BitSet_">Xor(BitSet)</a>, <a class="xref" href="Bodu.Collections.Specialized.BitSet.AndNot.html#Bodu_Collections_Specialized_BitSet_AndNot_Bodu_Collections_Specialized_BitSet_">AndNot(BitSet)</a>) process 64 bits per step.
-</p>
-<p>
-The type distinguishes the <em>logical length</em> from the <em>allocated capacity</em>: <a class="xref" href="Bodu.Collections.Specialized.BitSet.Length.html#Bodu_Collections_Specialized_BitSet_Length">Length</a> is
-one greater than the index of the highest set bit (the Java <code>length()</code> contract), while <a class="xref" href="Bodu.Collections.Specialized.BitSet.Capacity.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a>
-is the number of bits the current backing storage can address without reallocating. Reading a bit at or beyond
-<a class="xref" href="Bodu.Collections.Specialized.BitSet.Capacity.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>; clearing such a bit is a no-op; setting or flipping it
-grows the storage.
-</p>
-<p>
-The addressable universe is bounded: bit indices range from 0 to <a class="xref" href="Bodu.Collections.Specialized.BitSet.MaxBitCount.html">MaxBitCount</a> − 1, which keeps
-<a class="xref" href="Bodu.Collections.Specialized.BitSet.Capacity.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> and <a class="xref" href="Bodu.Collections.Specialized.BitSet.Length.html#Bodu_Collections_Specialized_BitSet_Length">Length</a> representable as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> values.
-<a class="xref" href="Bodu.Collections.Specialized.BitSet.Get.html#Bodu_Collections_Specialized_BitSet_Get_System_Int32_">Get(int)</a> and <a class="xref" href="Bodu.Collections.Specialized.BitSet.Clear.html#Bodu_Collections_Specialized_BitSet_Clear_System_Int32_">Clear(int)</a> accept any non-negative index (indices beyond the universe are
-trivially clear), whereas <a class="xref" href="Bodu.Collections.Specialized.BitSet.Set.html#Bodu_Collections_Specialized_BitSet_Set_System_Int32_">Set(int)</a> and <a class="xref" href="Bodu.Collections.Specialized.BitSet.Flip.html#Bodu_Collections_Specialized_BitSet_Flip_System_Int32_">Flip(int)</a> reject indices outside the universe.
-</p>
-<p>
-Enumerating a <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> yields the indices of the set bits in ascending order through a non-boxing
-<a class="xref" href="Bodu.Collections.Specialized.BitSet.Enumerator.html">BitSet.Enumerator</a> struct. Any mutation invalidates active enumerators.
-</p>
-<p>
-Equality is a value comparison over the logical content: two instances are equal when they have the same set bits,
-regardless of allocated capacity. Because the content is mutable, the hash code changes as bits change — do not use
-a <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> as a dictionary key while it is being mutated.
-</p>
-<p>
-Unlike <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.bitarray">BitArray</a> — which has a fixed, explicit length, no set-bit query surface,
-and a boxing enumerator over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a> values — <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> grows on demand, exposes
-<a class="xref" href="Bodu.Collections.Specialized.BitSet.NextSetBit.html#Bodu_Collections_Specialized_BitSet_NextSetBit_System_Int32_">NextSetBit(int)</a> / <a class="xref" href="Bodu.Collections.Specialized.BitSet.NextClearBit.html#Bodu_Collections_Specialized_BitSet_NextClearBit_System_Int32_">NextClearBit(int)</a> / <a class="xref" href="Bodu.Collections.Specialized.BitSet.Cardinality.html#Bodu_Collections_Specialized_BitSet_Cardinality">Cardinality</a>, and enumerates set-bit indices
-without boxing.
-</p>
-<p>
-<a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> is not thread-safe. Concurrent reads and writes require external synchronization.
-</p>
-</div>
-  <h5 id="Bodu_Collections_Specialized_BitSet_examples"><strong>Examples</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Collections_Specialized_BitSet_examples">Examples</h2>
   <pre><code class="lang-csharp">var primes = new BitSet();
 primes.Set(2);
 primes.Set(3);
@@ -170,513 +191,1664 @@ Console.WriteLine(primes.Get(1_000_000)); // False — beyond capacity, no throw
 foreach (int index in primes)
     Console.WriteLine(index);             // 2, 3, 5, 100 — ascending</code></pre>
 
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet__ctor" data-uid="Bodu.Collections.Specialized.BitSet.#ctor">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.-ctor.html#Bodu_Collections_Specialized_BitSet__ctor">BitSet()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> class with all bits clear and a small default capacity.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet__ctor_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.#ctor(Bodu.Collections.Specialized.BitSet)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.-ctor.html#Bodu_Collections_Specialized_BitSet__ctor_Bodu_Collections_Specialized_BitSet_">BitSet(BitSet)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> class containing the same set bits as the specified
+
+  <h2 id="Bodu_Collections_Specialized_BitSet_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+A <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> is backed by a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> array packing 64 bits per word. Single-bit
+<a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Get_System_Int32_">Get(int)</a>, <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Set_System_Int32_">Set(int)</a>, <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Clear_System_Int32_">Clear(int)</a>, and <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Flip_System_Int32_">Flip(int)</a> operations
+are O(1) (amortized when growth occurs); range operations and the word-wise logical operators (<a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_And_Bodu_Collections_Specialized_BitSet_">And(BitSet)</a>,
+<a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Or_Bodu_Collections_Specialized_BitSet_">Or(BitSet)</a>, <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Xor_Bodu_Collections_Specialized_BitSet_">Xor(BitSet)</a>, <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_AndNot_Bodu_Collections_Specialized_BitSet_">AndNot(BitSet)</a>) process 64 bits per step.
+</p>
+<p>
+The type distinguishes the <em>logical length</em> from the <em>allocated capacity</em>: <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Length">Length</a> is
+one greater than the index of the highest set bit (the Java <code>length()</code> contract), while <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a>
+is the number of bits the current backing storage can address without reallocating. Reading a bit at or beyond
+<a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>; clearing such a bit is a no-op; setting or flipping it
+grows the storage.
+</p>
+<p>
+The addressable universe is bounded: bit indices range from 0 to <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_MaxBitCount">MaxBitCount</a> − 1, which keeps
+<a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> and <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Length">Length</a> representable as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> values.
+<a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Get_System_Int32_">Get(int)</a> and <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Clear_System_Int32_">Clear(int)</a> accept any non-negative index (indices beyond the universe are
+trivially clear), whereas <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Set_System_Int32_">Set(int)</a> and <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Flip_System_Int32_">Flip(int)</a> reject indices outside the universe.
+</p>
+<p>
+Enumerating a <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> yields the indices of the set bits in ascending order through a non-boxing
+<a class="xref" href="Bodu.Collections.Specialized.BitSet.Enumerator.html">BitSet.Enumerator</a> struct. Any mutation invalidates active enumerators.
+</p>
+<p>
+Equality is a value comparison over the logical content: two instances are equal when they have the same set bits,
+regardless of allocated capacity. Because the content is mutable, the hash code changes as bits change — do not use
+a <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> as a dictionary key while it is being mutated.
+</p>
+<p>
+Unlike <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.bitarray">BitArray</a> — which has a fixed, explicit length, no set-bit query surface,
+and a boxing enumerator over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a> values — <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> grows on demand, exposes
+<a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_NextSetBit_System_Int32_">NextSetBit(int)</a> / <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_NextClearBit_System_Int32_">NextClearBit(int)</a> / <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Cardinality">Cardinality</a>, and enumerates set-bit indices
+without boxing.
+</p>
+<p>
+<a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> is not thread-safe. Concurrent reads and writes require external synchronization.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet__ctor_" data-uid="Bodu.Collections.Specialized.BitSet.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet__ctor" data-uid="Bodu.Collections.Specialized.BitSet.#ctor">
+  BitSet()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> class with all bits clear and a small default capacity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BitSet()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet__ctor_" data-uid="Bodu.Collections.Specialized.BitSet.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet__ctor_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.#ctor(Bodu.Collections.Specialized.BitSet)">
+  BitSet(BitSet)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> class containing the same set bits as the specified
 source set.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet__ctor_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.#ctor(System.Int32)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.-ctor.html#Bodu_Collections_Specialized_BitSet__ctor_System_Int32_">BitSet(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> class with all bits clear and storage pre-allocated for
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BitSet(BitSet source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a></dt>
+    <dd><p>The set whose bits are copied. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet__ctor_Bodu_Collections_Specialized_BitSet__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The copy shares no storage with <code class="paramref">source</code> — subsequent mutations of either instance do not
+affect the other. The copy's <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> matches the source's capacity at the time of the copy.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet__ctor_" data-uid="Bodu.Collections.Specialized.BitSet.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet__ctor_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.#ctor(System.Int32)">
+  BitSet(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> class with all bits clear and storage pre-allocated for
 at least the specified number of bits.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="fields">Fields
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_MaxBitCount" data-uid="Bodu.Collections.Specialized.BitSet.MaxBitCount">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.MaxBitCount.html">MaxBitCount</a>
-        </td>
-        <td class="markdown level1 summary"><p>The number of addressable bits in the largest supported <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a>. Bit indices range from 0 to <a class="xref" href="Bodu.Collections.Specialized.BitSet.MaxBitCount.html">MaxBitCount</a> − 1.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Capacity" data-uid="Bodu.Collections.Specialized.BitSet.Capacity">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Capacity.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of bits the current backing storage can address without reallocating.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Cardinality" data-uid="Bodu.Collections.Specialized.BitSet.Cardinality">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Cardinality.html#Bodu_Collections_Specialized_BitSet_Cardinality">Cardinality</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of set bits in the set.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_IsEmpty" data-uid="Bodu.Collections.Specialized.BitSet.IsEmpty">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.IsEmpty.html#Bodu_Collections_Specialized_BitSet_IsEmpty">IsEmpty</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the set contains no set bits.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Item_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.Item(System.Int32)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Item.html#Bodu_Collections_Specialized_BitSet_Item_System_Int32_">this[int]</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the value of the bit at the specified index.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Length" data-uid="Bodu.Collections.Specialized.BitSet.Length">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Length.html#Bodu_Collections_Specialized_BitSet_Length">Length</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the logical length of the set — one greater than the index of the highest set bit.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_And_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.And(Bodu.Collections.Specialized.BitSet)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.And.html#Bodu_Collections_Specialized_BitSet_And_Bodu_Collections_Specialized_BitSet_">And(BitSet)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Performs an in-place logical AND with the specified set: a bit remains set only when it is set in both operands.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_AndNot_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.AndNot(Bodu.Collections.Specialized.BitSet)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.AndNot.html#Bodu_Collections_Specialized_BitSet_AndNot_Bodu_Collections_Specialized_BitSet_">AndNot(BitSet)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Performs an in-place logical AND NOT (set difference) with the specified set: every bit that is set in
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BitSet(int initialCapacityBits)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>initialCapacityBits</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bits the set can address before its first growth. A value of 0 allocates no storage.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet__ctor_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The requested capacity is rounded up to a whole number of 64-bit words, so <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> may exceed
+<code class="paramref">initialCapacityBits</code>. The capacity is a pre-allocation hint only — the set still grows
+automatically when a bit beyond it is set or flipped.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">initialCapacityBits</code> &lt; 0, or <code class="paramref">initialCapacityBits</code> &gt;
+<a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_MaxBitCount">MaxBitCount</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_MaxBitCount" data-uid="Bodu.Collections.Specialized.BitSet.MaxBitCount">
+  MaxBitCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>The number of addressable bits in the largest supported <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a>. Bit indices range from 0 to <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_MaxBitCount">MaxBitCount</a> − 1.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int MaxBitCount = 2147483584</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_MaxBitCount_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The bound (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a> − 63) is the largest whole-word bit count whose capacity and logical
+length remain representable as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> values.</p>
+</div>
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Capacity_" data-uid="Bodu.Collections.Specialized.BitSet.Capacity*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Capacity" data-uid="Bodu.Collections.Specialized.BitSet.Capacity">
+  Capacity
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the number of bits the current backing storage can address without reallocating.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Capacity { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The allocated size in bits — always a multiple of 64.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_Capacity_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+<a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> is an allocation detail, distinct from the logical <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Length">Length</a>: reading a bit
+at or beyond the capacity returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, clearing it is a no-op, and setting or flipping it
+grows the storage (increasing the capacity). The capacity never shrinks.
+</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Cardinality_" data-uid="Bodu.Collections.Specialized.BitSet.Cardinality*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Cardinality" data-uid="Bodu.Collections.Specialized.BitSet.Cardinality">
+  Cardinality
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the number of set bits in the set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Cardinality { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The population count — the total number of bits whose value is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_IsEmpty_" data-uid="Bodu.Collections.Specialized.BitSet.IsEmpty*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_IsEmpty" data-uid="Bodu.Collections.Specialized.BitSet.IsEmpty">
+  IsEmpty
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the set contains no set bits.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsEmpty { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if no bit is set; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Item_" data-uid="Bodu.Collections.Specialized.BitSet.Item*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Item_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.Item(System.Int32)">
+  this[int]
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the value of the bit at the specified index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool this[int index] { get; set; }</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based bit index.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the bit at <code class="paramref">index</code> is set; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_Item_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The getter follows the <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Get_System_Int32_">Get(int)</a> contract (indices beyond <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> read as
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>); the setter follows the <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Set_System_Int32_System_Boolean_">Set(int, bool)</a> contract (auto-growing when a
+bit beyond the capacity is set to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>).</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">index</code> &lt; 0, or — for the setter only — <code class="paramref">index</code> ≥
+<a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_MaxBitCount">MaxBitCount</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Length_" data-uid="Bodu.Collections.Specialized.BitSet.Length*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Length" data-uid="Bodu.Collections.Specialized.BitSet.Length">
+  Length
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the logical length of the set — one greater than the index of the highest set bit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Length { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The highest set-bit index plus one, or 0 when the set is empty.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_Length_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+<a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Length">Length</a> is the Java <code>BitSet.length()</code> contract and reflects only the logical content — it is
+unrelated to the allocated <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a>. Clearing the highest set bit reduces the length; clearing
+every bit reduces it to 0 regardless of how much storage remains allocated.
+</p>
+</div>
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_And_" data-uid="Bodu.Collections.Specialized.BitSet.And*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_And_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.And(Bodu.Collections.Specialized.BitSet)">
+  And(BitSet)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.Operations.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Performs an in-place logical AND with the specified set: a bit remains set only when it is set in both operands.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void And(BitSet other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a></dt>
+    <dd><p>The set to intersect with. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_And_Bodu_Collections_Specialized_BitSet__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The result can never contain bits beyond either operand's content, so this operation never grows the storage.
+Bits of this set beyond <code class="paramref">other</code>'s capacity are cleared (they are ANDed with conceptually clear
+bits). Passing this instance as <code class="paramref">other</code> is a no-op.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">other</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_AndNot_" data-uid="Bodu.Collections.Specialized.BitSet.AndNot*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_AndNot_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.AndNot(Bodu.Collections.Specialized.BitSet)">
+  AndNot(BitSet)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.Operations.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Performs an in-place logical AND NOT (set difference) with the specified set: every bit that is set in
 <code class="paramref">other</code> is cleared in this set.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Clear" data-uid="Bodu.Collections.Specialized.BitSet.Clear">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Clear.html#Bodu_Collections_Specialized_BitSet_Clear">Clear()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Clears every bit in the set.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Clear_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.Clear(System.Int32)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Clear.html#Bodu_Collections_Specialized_BitSet_Clear_System_Int32_">Clear(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Clears the bit at the specified index.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Clear_System_Int32_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.Clear(System.Int32,System.Int32)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Clear.html#Bodu_Collections_Specialized_BitSet_Clear_System_Int32_System_Int32_">Clear(int, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Clears every bit in the half-open range [<code class="paramref">fromInclusive</code>, <code class="paramref">toExclusive</code>).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Equals_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.Equals(Bodu.Collections.Specialized.BitSet)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Equals.html#Bodu_Collections_Specialized_BitSet_Equals_Bodu_Collections_Specialized_BitSet_">Equals(BitSet?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> contains the same set bits as this instance.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Equals_System_Object_" data-uid="Bodu.Collections.Specialized.BitSet.Equals(System.Object)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Equals.html#Bodu_Collections_Specialized_BitSet_Equals_System_Object_">Equals(object?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the specified object is a <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> containing the same set bits as this
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AndNot(BitSet other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a></dt>
+    <dd><p>The set whose bits are removed from this set. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_AndNot_Bodu_Collections_Specialized_BitSet__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The result is a subset of this set's content, so this operation never grows the storage. Passing this instance
+as <code class="paramref">other</code> clears every bit.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">other</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Clear_" data-uid="Bodu.Collections.Specialized.BitSet.Clear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Clear" data-uid="Bodu.Collections.Specialized.BitSet.Clear">
+  Clear()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Clears every bit in the set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Clear()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_Clear_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The allocated <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> is retained; only the logical content is reset. After this call
+<a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_IsEmpty">IsEmpty</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> and <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Length">Length</a> is 0.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Clear_" data-uid="Bodu.Collections.Specialized.BitSet.Clear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Clear_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.Clear(System.Int32)">
+  Clear(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Clears the bit at the specified index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Clear(int index)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based index of the bit to clear.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_Clear_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>An index at or beyond <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> is already conceptually clear, so the call is a no-op — it never
+grows the storage and never throws for large indices (Java <code>BitSet.clear</code> semantics). Such a no-op call
+does not invalidate in-flight enumerators.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">index</code> &lt; 0.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Clear_" data-uid="Bodu.Collections.Specialized.BitSet.Clear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Clear_System_Int32_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.Clear(System.Int32,System.Int32)">
+  Clear(int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Clears every bit in the half-open range [<code class="paramref">fromInclusive</code>, <code class="paramref">toExclusive</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Clear(int fromInclusive, int toExclusive)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fromInclusive</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The first bit index of the range.</p>
+</dd>
+    <dt><code>toExclusive</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The exclusive upper bound of the range.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_Clear_System_Int32_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>An empty range (<code class="paramref">fromInclusive</code> equal to <code class="paramref">toExclusive</code>) is a no-op that does
+not invalidate in-flight enumerators. The portion of the range at or beyond <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> is already
+conceptually clear, so the operation never grows the storage; a range entirely beyond <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> is
+likewise an enumerator-preserving no-op.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">fromInclusive</code> &lt; 0, or <code class="paramref">toExclusive</code> &lt; 0.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">fromInclusive</code> &gt; <code class="paramref">toExclusive</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Equals_" data-uid="Bodu.Collections.Specialized.BitSet.Equals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Equals_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.Equals(Bodu.Collections.Specialized.BitSet)">
+  Equals(BitSet?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.Operations.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> contains the same set bits as this instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(BitSet? other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a></dt>
+    <dd><p>The set to compare, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">other</code> has the same set bits; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_Equals_Bodu_Collections_Specialized_BitSet__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Equality is a value comparison over the logical content only: allocated capacity and trailing zero words are
+ignored, so a set that grew and was subsequently cleared equals a freshly constructed empty set.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Equals_" data-uid="Bodu.Collections.Specialized.BitSet.Equals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Equals_System_Object_" data-uid="Bodu.Collections.Specialized.BitSet.Equals(System.Object)">
+  Equals(object?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.Operations.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the specified object is a <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> containing the same set bits as this
 instance.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Flip_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.Flip(System.Int32)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Flip.html#Bodu_Collections_Specialized_BitSet_Flip_System_Int32_">Flip(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Toggles the bit at the specified index — a set bit becomes clear and a clear bit becomes set.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Flip_System_Int32_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.Flip(System.Int32,System.Int32)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Flip.html#Bodu_Collections_Specialized_BitSet_Flip_System_Int32_System_Int32_">Flip(int, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Toggles every bit in the half-open range [<code class="paramref">fromInclusive</code>, <code class="paramref">toExclusive</code>).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Get_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.Get(System.Int32)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Get.html#Bodu_Collections_Specialized_BitSet_Get_System_Int32_">Get(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the value of the bit at the specified index.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_GetEnumerator" data-uid="Bodu.Collections.Specialized.BitSet.GetEnumerator">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.GetEnumerator.html#Bodu_Collections_Specialized_BitSet_GetEnumerator">GetEnumerator()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a non-boxing enumerator that yields the indices of the set bits in ascending order.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_GetHashCode" data-uid="Bodu.Collections.Specialized.BitSet.GetHashCode">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.GetHashCode.html#Bodu_Collections_Specialized_BitSet_GetHashCode">GetHashCode()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a hash code derived from the logical content of the set.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Intersects_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.Intersects(Bodu.Collections.Specialized.BitSet)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Intersects.html#Bodu_Collections_Specialized_BitSet_Intersects_Bodu_Collections_Specialized_BitSet_">Intersects(BitSet)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether this set and the specified set have at least one set bit in common.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_NextClearBit_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.NextClearBit(System.Int32)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.NextClearBit.html#Bodu_Collections_Specialized_BitSet_NextClearBit_System_Int32_">NextClearBit(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the index of the first clear bit at or after the specified index.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_NextSetBit_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.NextSetBit(System.Int32)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.NextSetBit.html#Bodu_Collections_Specialized_BitSet_NextSetBit_System_Int32_">NextSetBit(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the index of the first set bit at or after the specified index, or −1 when no further bit is set.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Or_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.Or(Bodu.Collections.Specialized.BitSet)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Or.html#Bodu_Collections_Specialized_BitSet_Or_Bodu_Collections_Specialized_BitSet_">Or(BitSet)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Performs an in-place logical OR with the specified set: a bit becomes set when it is set in either operand.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Set_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.Set(System.Int32)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Set.html#Bodu_Collections_Specialized_BitSet_Set_System_Int32_">Set(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Sets the bit at the specified index to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, growing the storage as required.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Set_System_Int32_System_Boolean_" data-uid="Bodu.Collections.Specialized.BitSet.Set(System.Int32,System.Boolean)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Set.html#Bodu_Collections_Specialized_BitSet_Set_System_Int32_System_Boolean_">Set(int, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Sets the bit at the specified index to the specified value, growing the storage as required.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Set_System_Int32_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.Set(System.Int32,System.Int32)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Set.html#Bodu_Collections_Specialized_BitSet_Set_System_Int32_System_Int32_">Set(int, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Sets every bit in the half-open range [<code class="paramref">fromInclusive</code>, <code class="paramref">toExclusive</code>) to
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to compare, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">obj</code> is a <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> with the same set bits; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Flip_" data-uid="Bodu.Collections.Specialized.BitSet.Flip*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Flip_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.Flip(System.Int32)">
+  Flip(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Toggles the bit at the specified index — a set bit becomes clear and a clear bit becomes set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Flip(int index)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based index of the bit to toggle.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_Flip_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Flipping a bit at or beyond <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> sets it (the bit was conceptually clear), growing the
+storage as required.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">index</code> &lt; 0, or <code class="paramref">index</code> ≥ <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_MaxBitCount">MaxBitCount</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Flip_" data-uid="Bodu.Collections.Specialized.BitSet.Flip*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Flip_System_Int32_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.Flip(System.Int32,System.Int32)">
+  Flip(int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Toggles every bit in the half-open range [<code class="paramref">fromInclusive</code>, <code class="paramref">toExclusive</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Flip(int fromInclusive, int toExclusive)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fromInclusive</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The first bit index of the range.</p>
+</dd>
+    <dt><code>toExclusive</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The exclusive upper bound of the range.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_Flip_System_Int32_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>An empty range (<code class="paramref">fromInclusive</code> equal to <code class="paramref">toExclusive</code>) is a no-op that does
+not invalidate in-flight enumerators. The storage grows as required so that clear bits beyond the current
+<a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> become set.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">fromInclusive</code> &lt; 0, <code class="paramref">toExclusive</code> &lt; 0, or
+<code class="paramref">toExclusive</code> &gt; <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_MaxBitCount">MaxBitCount</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">fromInclusive</code> &gt; <code class="paramref">toExclusive</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Get_" data-uid="Bodu.Collections.Specialized.BitSet.Get*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Get_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.Get(System.Int32)">
+  Get(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the value of the bit at the specified index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Get(int index)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based bit index.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the bit at <code class="paramref">index</code> is set; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_Get_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>An index at or beyond <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> rather than throwing — every bit
+outside the allocated storage is conceptually clear (Java <code>BitSet.get</code> semantics). Any non-negative index,
+including <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a>, is accepted.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">index</code> &lt; 0.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_GetEnumerator_" data-uid="Bodu.Collections.Specialized.BitSet.GetEnumerator*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_GetEnumerator" data-uid="Bodu.Collections.Specialized.BitSet.GetEnumerator">
+  GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a non-boxing enumerator that yields the indices of the set bits in ascending order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BitSet.Enumerator GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a>.<a class="xref" href="Bodu.Collections.Specialized.BitSet.Enumerator.html">Enumerator</a></dt>
+    <dd><p>An <a class="xref" href="Bodu.Collections.Specialized.BitSet.Enumerator.html">BitSet.Enumerator</a> positioned before the first set bit.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_GetHashCode_" data-uid="Bodu.Collections.Specialized.BitSet.GetHashCode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_GetHashCode" data-uid="Bodu.Collections.Specialized.BitSet.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.Operations.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a hash code derived from the logical content of the set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> hash code consistent with <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Equals_Bodu_Collections_Specialized_BitSet_">Equals(BitSet?)</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_GetHashCode_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The hash covers only the words up to the highest set bit, so trailing zero words (excess capacity) do not affect
+it. Because the content is mutable, the hash code changes as bits change.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Intersects_" data-uid="Bodu.Collections.Specialized.BitSet.Intersects*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Intersects_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.Intersects(Bodu.Collections.Specialized.BitSet)">
+  Intersects(BitSet)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.Operations.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether this set and the specified set have at least one set bit in common.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Intersects(BitSet other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a></dt>
+    <dd><p>The set to test against. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if any bit is set in both this set and <code class="paramref">other</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_Intersects_Bodu_Collections_Specialized_BitSet__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Neither operand is modified. Passing this instance as <code class="paramref">other</code> returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>
+exactly when the set is non-empty.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">other</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_NextClearBit_" data-uid="Bodu.Collections.Specialized.BitSet.NextClearBit*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_NextClearBit_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.NextClearBit(System.Int32)">
+  NextClearBit(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the index of the first clear bit at or after the specified index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int NextClearBit(int fromIndex)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fromIndex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The index at which the search starts.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The index of the first clear bit ≥ <code class="paramref">fromIndex</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_NextClearBit_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A clear bit conceptually always exists — every bit at or beyond <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> is clear — so this
+method never returns −1. The result may therefore be ≥ <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Length">Length</a> (and ≥ <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> when
+every allocated bit from <code class="paramref">fromIndex</code> onward is set).</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">fromIndex</code> &lt; 0.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_NextSetBit_" data-uid="Bodu.Collections.Specialized.BitSet.NextSetBit*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_NextSetBit_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.NextSetBit(System.Int32)">
+  NextSetBit(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the index of the first set bit at or after the specified index, or −1 when no further bit is set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int NextSetBit(int fromIndex)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fromIndex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The index at which the search starts.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The index of the first set bit ≥ <code class="paramref">fromIndex</code>, or −1 if none exists.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_NextSetBit_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The canonical iteration idiom is <code>for (int i = bits.NextSetBit(0); i &gt;= 0; i = bits.NextSetBit(i + 1))</code>;
+the struct <a class="xref" href="Bodu.Collections.Specialized.BitSet.Enumerator.html">BitSet.Enumerator</a> obtained from <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_GetEnumerator">GetEnumerator()</a> provides the same walk as a
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/statements/iteration-statements#the-foreach-statement">foreach</a> loop.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">fromIndex</code> &lt; 0.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Or_" data-uid="Bodu.Collections.Specialized.BitSet.Or*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Or_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.Or(Bodu.Collections.Specialized.BitSet)">
+  Or(BitSet)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.Operations.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Performs an in-place logical OR with the specified set: a bit becomes set when it is set in either operand.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Or(BitSet other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a></dt>
+    <dd><p>The set to union with. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_Or_Bodu_Collections_Specialized_BitSet__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The storage grows as required to accommodate <code class="paramref">other</code>'s logical <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Length">Length</a>, so bits
+set beyond this set's current capacity are preserved in the result. Passing this instance as
+<code class="paramref">other</code> is a no-op.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">other</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Set_" data-uid="Bodu.Collections.Specialized.BitSet.Set*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Set_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.Set(System.Int32)">
+  Set(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Sets the bit at the specified index to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, growing the storage as required.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Set(int index)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based index of the bit to set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">index</code> &lt; 0, or <code class="paramref">index</code> ≥ <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_MaxBitCount">MaxBitCount</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Set_" data-uid="Bodu.Collections.Specialized.BitSet.Set*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Set_System_Int32_System_Boolean_" data-uid="Bodu.Collections.Specialized.BitSet.Set(System.Int32,System.Boolean)">
+  Set(int, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Sets the bit at the specified index to the specified value, growing the storage as required.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Set(int index, bool value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based index of the bit to write.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to set the bit; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> to clear it.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_Set_System_Int32_System_Boolean__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Storage grows only when a bit beyond the current <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> is set to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>;
+writing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> to such a bit is a no-op (it is already conceptually clear) that does not
+invalidate in-flight enumerators.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">index</code> &lt; 0, or <code class="paramref">index</code> ≥ <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_MaxBitCount">MaxBitCount</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Set_" data-uid="Bodu.Collections.Specialized.BitSet.Set*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Set_System_Int32_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.Set(System.Int32,System.Int32)">
+  Set(int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Sets every bit in the half-open range [<code class="paramref">fromInclusive</code>, <code class="paramref">toExclusive</code>) to
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, growing the storage as required.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_ToString" data-uid="Bodu.Collections.Specialized.BitSet.ToString">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.ToString.html#Bodu_Collections_Specialized_BitSet_ToString">ToString()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a summary string describing the logical content of the set.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_Xor_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.Xor(Bodu.Collections.Specialized.BitSet)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.Xor.html#Bodu_Collections_Specialized_BitSet_Xor_Bodu_Collections_Specialized_BitSet_">Xor(BitSet)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Performs an in-place logical XOR with the specified set: a bit becomes set when it is set in exactly one of the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Set(int fromInclusive, int toExclusive)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fromInclusive</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The first bit index of the range.</p>
+</dd>
+    <dt><code>toExclusive</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The exclusive upper bound of the range.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_Set_System_Int32_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>An empty range (<code class="paramref">fromInclusive</code> equal to <code class="paramref">toExclusive</code>) is a no-op that does
+not invalidate in-flight enumerators.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">fromInclusive</code> &lt; 0, <code class="paramref">toExclusive</code> &lt; 0, or
+<code class="paramref">toExclusive</code> &gt; <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_MaxBitCount">MaxBitCount</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">fromInclusive</code> &gt; <code class="paramref">toExclusive</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_ToString_" data-uid="Bodu.Collections.Specialized.BitSet.ToString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_ToString" data-uid="Bodu.Collections.Specialized.BitSet.ToString">
+  ToString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a summary string describing the logical content of the set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A string of the form <code>BitSet(Cardinality = 5, Length = 65)</code> reporting <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Cardinality">Cardinality</a> and
+<a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Length">Length</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_ToString_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The summary form is deliberate — a set-builder listing could be arbitrarily large. Enumerate the instance to
+obtain the individual set-bit indices.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_Xor_" data-uid="Bodu.Collections.Specialized.BitSet.Xor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_Xor_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.Xor(Bodu.Collections.Specialized.BitSet)">
+  Xor(BitSet)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.Operations.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Performs an in-place logical XOR with the specified set: a bit becomes set when it is set in exactly one of the
 two operands (symmetric difference).</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="operators">Operators
-</h3>
-  <table class="table table-bordered table-condensed">
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Xor(BitSet other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a></dt>
+    <dd><p>The set to combine with. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Specialized_BitSet_Xor_Bodu_Collections_Specialized_BitSet__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The storage grows as required to accommodate <code class="paramref">other</code>'s logical <a class="xref" href="Bodu.Collections.Specialized.BitSet.html#Bodu_Collections_Specialized_BitSet_Length">Length</a>. Passing
+this instance as <code class="paramref">other</code> clears every bit.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">other</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_op_Equality_" data-uid="Bodu.Collections.Specialized.BitSet.op_Equality*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_op_Equality_Bodu_Collections_Specialized_BitSet_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.op_Equality(Bodu.Collections.Specialized.BitSet,Bodu.Collections.Specialized.BitSet)">
+  operator ==(BitSet?, BitSet?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.Operations.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether two <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> instances contain the same set bits.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(BitSet? left, BitSet? right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a></dt>
+    <dd><p>The first operand, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a></dt>
+    <dd><p>The second operand, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if both operands are <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or contain the same set bits; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_op_Inequality_" data-uid="Bodu.Collections.Specialized.BitSet.op_Inequality*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_op_Inequality_Bodu_Collections_Specialized_BitSet_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.op_Inequality(Bodu.Collections.Specialized.BitSet,Bodu.Collections.Specialized.BitSet)">
+  operator !=(BitSet?, BitSet?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.Operations.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether two <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> instances contain different set bits.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(BitSet? left, BitSet? right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a></dt>
+    <dd><p>The first operand, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a></dt>
+    <dd><p>The second operand, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the operands differ in at least one set bit (or exactly one is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>); otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="eii">Explicit Interface Implementations
+</h2>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_System_Collections_Generic_IEnumerable_System_Int32__GetEnumerator_" data-uid="Bodu.Collections.Specialized.BitSet.System#Collections#Generic#IEnumerable{System#Int32}#GetEnumerator*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_System_Collections_Generic_IEnumerable_System_Int32__GetEnumerator" data-uid="Bodu.Collections.Specialized.BitSet.System#Collections#Generic#IEnumerable{System#Int32}#GetEnumerator">
+  IEnumerable&lt;int&gt;.GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerator&lt;int&gt; IEnumerable&lt;int&gt;.GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerator-1">IEnumerator</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd><p>An enumerator that can be used to iterate through the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Specialized_BitSet_System_Collections_IEnumerable_GetEnumerator_" data-uid="Bodu.Collections.Specialized.BitSet.System#Collections#IEnumerable#GetEnumerator*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Specialized_BitSet_System_Collections_IEnumerable_GetEnumerator" data-uid="Bodu.Collections.Specialized.BitSet.System#Collections#IEnumerable#GetEnumerator">
+  IEnumerable.GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Specialized/BitSet.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through a collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerator IEnumerable.GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerator">IEnumerator</a></dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerator">IEnumerator</a> object that can be used to iterate through the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_op_Equality_Bodu_Collections_Specialized_BitSet_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.op_Equality(Bodu.Collections.Specialized.BitSet,Bodu.Collections.Specialized.BitSet)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.op_Equality.html#Bodu_Collections_Specialized_BitSet_op_Equality_Bodu_Collections_Specialized_BitSet_Bodu_Collections_Specialized_BitSet_">operator ==(BitSet?, BitSet?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> instances contain the same set bits.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Specialized_BitSet_op_Inequality_Bodu_Collections_Specialized_BitSet_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.op_Inequality(Bodu.Collections.Specialized.BitSet,Bodu.Collections.Specialized.BitSet)">
-          <a class="xref" href="Bodu.Collections.Specialized.BitSet.op_Inequality.html#Bodu_Collections_Specialized_BitSet_op_Inequality_Bodu_Collections_Specialized_BitSet_Bodu_Collections_Specialized_BitSet_">operator !=(BitSet?, BitSet?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> instances contain different set bits.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__System_Func___1___2__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.BatchPooled&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.BatchPooled&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Cache.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Cache__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Cache&lt;T&gt;(IEnumerable&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TFirst, TSecond, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Collections_Generic_IEqualityComparer___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, IEqualityComparer&lt;TKey&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Combinations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Combinations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Combinations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAll.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAll__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAll&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAny.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAny__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAny&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ForEach.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ForEach__1_System_Collections_Generic_IEnumerable___0__System_Action___0__">IEnumerableExtensions.ForEach&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Action&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Index.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Index__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Index&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Interleave.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Interleave__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0____">IEnumerableExtensions.Interleave&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, params IEnumerable&lt;TSource&gt;[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.IsNullOrEmpty.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_IsNullOrEmpty__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.IsNullOrEmpty&lt;TSource&gt;(IEnumerable&lt;TSource&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Pairwise&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__2_System_Collections_Generic_IEnumerable___0__System_Func___0___0___1__">IEnumerableExtensions.Pairwise&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Randomize.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Randomize__1_System_Collections_Generic_IEnumerable___0__Bodu_Collections_Generic_Extensions_RandomizationMode_Bodu_IRandomGenerator_System_Nullable_System_Int32__">IEnumerableExtensions.Randomize&lt;T&gt;(IEnumerable&lt;T&gt;, RandomizationMode, IRandomGenerator, int?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___">IEnumerableExtensions.RecursiveSelect&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__System_Func___0_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;, Func&lt;TSource, RecursiveSelectControl&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEqualityComparer&lt;TSource&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__System_Func___1___2__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.SplitWhen.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_SplitWhen__1_System_Collections_Generic_IEnumerable___0__System_Func___0___0_System_Boolean__">IEnumerableExtensions.SplitWhen&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, bool&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Windowed&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func_System_Collections_Generic_IReadOnlyList___0____1__">IEnumerableExtensions.Windowed&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;IReadOnlyList&lt;TSource&gt;, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_System_Func___0___1___2__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond, Func&lt;TFirst, TSecond, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.CountOrDefault.html#Bodu_Collections_Extensions_IEnumerableExtensions_CountOrDefault_System_Collections_IEnumerable_">IEnumerableExtensions.CountOrDefault(IEnumerable)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__System_Func_System_Object_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;, Func&lt;object, RecursiveSelectControl&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, object&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, object&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_IEnumerable__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&gt;)</a>
-  </div>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

@@ -1,99 +1,137 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class TomlSerializer | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class TomlSerializer | BODU ">
-    
-    <meta name="description" content="Provides static methods for serializing values to normalized TOML text and deserializing TOML back into values, mapping plain CLR objects to and from the format through configurable converters.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>TomlSerializer Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="TomlSerializer Class
+ | BODU ">
+      
+      <meta name="description" content="Provides static methods for serializing values to normalized TOML text and deserializing TOML back into values, mapping plain CLR objects to and from the format through configurable converters.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Toml.TomlSerializer">
+
+        <article data-uid="Bodu.Text.Toml.TomlSerializer">
 
 
 
-  <h1 id="Bodu_Text_Toml_TomlSerializer" data-uid="Bodu.Text.Toml.TomlSerializer" class="text-break">Class TomlSerializer</h1>
-  <div class="markdown level0 summary"><p>Provides static methods for serializing values to normalized TOML text and deserializing TOML back into values,
+
+  <h1 id="Bodu_Text_Toml_TomlSerializer" data-uid="Bodu.Text.Toml.TomlSerializer" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+TomlSerializer Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Toml/src/Text.Toml/TomlSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Text_Toml_TomlSerializer_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Toml.html">Toml</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Toml.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Toml">Bodu.Text.Toml</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Toml/src/Text.Toml/TomlSerializer.cs">TomlSerializer.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides static methods for serializing values to normalized TOML text and deserializing TOML back into values,
 mapping plain CLR objects to and from the format through configurable converters.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">TomlSerializer</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class TomlSerializer</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">TomlSerializer</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -115,19 +153,24 @@ mapping plain CLR objects to and from the format through configurable converters
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Toml.html">Toml</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Toml.dll</h6>
-  <h5 id="Bodu_Text_Toml_TomlSerializer_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class TomlSerializer</code></pre>
-  </div>
-  <h5 id="Bodu_Text_Toml_TomlSerializer_remarks"><strong>Remarks</strong></h5>
+    </dd>
+  </dl>
+
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Text_Toml_TomlSerializer_examples">Examples</h2>
+  <pre><code class="lang-csharp">string text = TomlSerializer.Serialize(new ServerConfig { Host = "localhost", Port = 8080 });
+ServerConfig config = TomlSerializer.Deserialize&lt;ServerConfig&gt;(text);</code></pre>
+
+
+  <h2 id="Bodu_Text_Toml_TomlSerializer_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 A TOML document's root is always a table, so the type serialized at the document root must map to an object or a
 string-keyed dictionary; serializing a top-level scalar or array throws <a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a>.
 Scalars map to the corresponding TOML kinds; enumerations to strings; a byte array to an array of integers or a
-Base64 string per <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.ByteArrayHandling.html#Bodu_Text_Toml_TomlSerializerOptions_ByteArrayHandling">ByteArrayHandling</a>; and TOML has no null, so a null member is
+Base64 string per <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.html#Bodu_Text_Toml_TomlSerializerOptions_ByteArrayHandling">ByteArrayHandling</a>; and TOML has no null, so a null member is
 omitted by default and a null array element is rejected.
 </p>
 <p>
@@ -141,117 +184,525 @@ is used. Reusing a single configured options object across many calls is the eff
 converters and type metadata are cached on it.
 </p>
 </div>
-  <h5 id="Bodu_Text_Toml_TomlSerializer_examples"><strong>Examples</strong></h5>
-  <pre><code class="lang-csharp">string text = TomlSerializer.Serialize(new ServerConfig { Host = "localhost", Port = 8080 });
-ServerConfig config = TomlSerializer.Deserialize&lt;ServerConfig&gt;(text);</code></pre>
 
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Toml_TomlSerializer_DeserializeAsync_" data-uid="Bodu.Text.Toml.TomlSerializer.DeserializeAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Toml_TomlSerializer_DeserializeAsync__1_System_IO_Stream_Bodu_Text_Toml_TomlSerializerOptions_System_Threading_CancellationToken_" data-uid="Bodu.Text.Toml.TomlSerializer.DeserializeAsync``1(System.IO.Stream,Bodu.Text.Toml.TomlSerializerOptions,System.Threading.CancellationToken)">
+  DeserializeAsync&lt;T&gt;(Stream, TomlSerializerOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Toml/src/Text.Toml/TomlSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Asynchronously deserializes a value of type <code class="typeparamref">T</code> by reading a stream of UTF-8 TOML bytes to
+its end.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;TOML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.&quot;)]
+[RequiresDynamicCode(&quot;TOML serialization and deserialization construct converters for collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.&quot;)]
+public static ValueTask&lt;T&gt; DeserializeAsync&lt;T&gt;(Stream source, TomlSerializerOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The readable stream containing the UTF-8 TOML bytes.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.html">TomlSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A token that can be used to cancel the read.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1">ValueTask</a>&lt;T&gt;</dt>
+    <dd><p>A task that yields the deserialized value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type to deserialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Toml_TomlSerializer_DeserializeAsync__1_System_IO_Stream_Bodu_Text_Toml_TomlSerializerOptions_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The stream is copied to an in-memory buffer in full before parsing begins: the method buffers the complete input
+rather than parsing incrementally, so peak memory includes the entire document. Cancellation applies to reading
+the stream, not to the parse and bind that follow.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">source</code> does not support reading.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a></dt>
+    <dd><p>Thrown when the stream contents are not a valid TOML document.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a></dt>
+    <dd><p>Thrown when the document cannot be bound to <code class="typeparamref">T</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Toml_TomlSerializer_Deserialize_" data-uid="Bodu.Text.Toml.TomlSerializer.Deserialize*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Toml_TomlSerializer_Deserialize__1_System_IO_Stream_Bodu_Text_Toml_TomlSerializerOptions_" data-uid="Bodu.Text.Toml.TomlSerializer.Deserialize``1(System.IO.Stream,Bodu.Text.Toml.TomlSerializerOptions)">
+  Deserialize&lt;T&gt;(Stream, TomlSerializerOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Toml/src/Text.Toml/TomlSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Deserializes a value of type <code class="typeparamref">T</code> by reading a stream of UTF-8 TOML bytes to its end.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;TOML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.&quot;)]
+[RequiresDynamicCode(&quot;TOML serialization and deserialization construct converters for collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.&quot;)]
+public static T Deserialize&lt;T&gt;(Stream source, TomlSerializerOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The readable stream containing the UTF-8 TOML bytes.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.html">TomlSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The deserialized value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type to deserialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Toml_TomlSerializer_Deserialize__1_System_IO_Stream_Bodu_Text_Toml_TomlSerializerOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The stream is read to its end into an in-memory buffer before parsing begins: the method buffers the complete
+input rather than parsing incrementally, so peak memory includes the entire document.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">source</code> does not support reading.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a></dt>
+    <dd><p>Thrown when the stream contents are not a valid TOML document.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a></dt>
+    <dd><p>Thrown when the document cannot be bound to <code class="typeparamref">T</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Toml_TomlSerializer_Deserialize_" data-uid="Bodu.Text.Toml.TomlSerializer.Deserialize*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Toml_TomlSerializer_Deserialize__1_System_ReadOnlySpan_System_Byte__Bodu_Text_Toml_TomlSerializerOptions_" data-uid="Bodu.Text.Toml.TomlSerializer.Deserialize``1(System.ReadOnlySpan{System.Byte},Bodu.Text.Toml.TomlSerializerOptions)">
+  Deserialize&lt;T&gt;(ReadOnlySpan&lt;byte&gt;, TomlSerializerOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Toml/src/Text.Toml/TomlSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Deserializes a value of type <code class="typeparamref">T</code> from the supplied UTF-8 TOML bytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;TOML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.&quot;)]
+[RequiresDynamicCode(&quot;TOML serialization and deserialization construct converters for collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.&quot;)]
+public static T Deserialize&lt;T&gt;(ReadOnlySpan&lt;byte&gt; utf8Toml, TomlSerializerOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Toml</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 TOML bytes to read.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.html">TomlSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The deserialized value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type to deserialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a></dt>
+    <dd><p>Thrown when the bytes are not a valid TOML document.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a></dt>
+    <dd><p>Thrown when the document cannot be bound to <code class="typeparamref">T</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Toml_TomlSerializer_Deserialize_" data-uid="Bodu.Text.Toml.TomlSerializer.Deserialize*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Toml_TomlSerializer_Deserialize__1_System_String_Bodu_Text_Toml_TomlSerializerOptions_" data-uid="Bodu.Text.Toml.TomlSerializer.Deserialize``1(System.String,Bodu.Text.Toml.TomlSerializerOptions)">
+  Deserialize&lt;T&gt;(string, TomlSerializerOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Toml/src/Text.Toml/TomlSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Deserializes a value of type <code class="typeparamref">T</code> from the supplied TOML text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;TOML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.&quot;)]
+[RequiresDynamicCode(&quot;TOML serialization and deserialization construct converters for collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.&quot;)]
+public static T Deserialize&lt;T&gt;(string text, TomlSerializerOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The TOML source text.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.html">TomlSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The deserialized value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type to deserialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">text</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a></dt>
+    <dd><p>Thrown when the text is not a valid TOML document.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a></dt>
+    <dd><p>Thrown when the document cannot be bound to <code class="typeparamref">T</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Toml_TomlSerializer_SerializeAsync_" data-uid="Bodu.Text.Toml.TomlSerializer.SerializeAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Toml_TomlSerializer_SerializeAsync__1_System_IO_Stream___0_Bodu_Text_Toml_TomlSerializerOptions_System_Threading_CancellationToken_" data-uid="Bodu.Text.Toml.TomlSerializer.SerializeAsync``1(System.IO.Stream,``0,Bodu.Text.Toml.TomlSerializerOptions,System.Threading.CancellationToken)">
+  SerializeAsync&lt;T&gt;(Stream, T, TomlSerializerOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Toml/src/Text.Toml/TomlSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Asynchronously serializes the specified value as UTF-8 TOML to the supplied stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;TOML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.&quot;)]
+[RequiresDynamicCode(&quot;TOML serialization and deserialization construct converters for collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.&quot;)]
+public static ValueTask SerializeAsync&lt;T&gt;(Stream destination, T value, TomlSerializerOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream that receives the UTF-8 TOML bytes.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to serialize.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.html">TomlSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A token that can be used to cancel the write.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a></dt>
+    <dd><p>A task that completes when the value has been written.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to serialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Toml_TomlSerializer_SerializeAsync__1_System_IO_Stream___0_Bodu_Text_Toml_TomlSerializerOptions_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The value is serialized into an in-memory buffer in full and then written to the stream in a single asynchronous
+operation: the method buffers the complete output rather than streaming it, so peak memory includes the entire
+rendered document. Cancellation applies to the final write, not to the serialization that precedes it.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> does not support writing.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a></dt>
+    <dd><p>Thrown when the value does not map to a table at the document root, or cannot be represented in TOML.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Toml_TomlSerializer_Serialize_" data-uid="Bodu.Text.Toml.TomlSerializer.Serialize*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Toml_TomlSerializer_Serialize__1_System_Buffers_IBufferWriter_System_Byte____0_Bodu_Text_Toml_TomlSerializerOptions_" data-uid="Bodu.Text.Toml.TomlSerializer.Serialize``1(System.Buffers.IBufferWriter{System.Byte},``0,Bodu.Text.Toml.TomlSerializerOptions)">
+  Serialize&lt;T&gt;(IBufferWriter&lt;byte&gt;, T, TomlSerializerOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Toml/src/Text.Toml/TomlSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes the specified value as UTF-8 TOML to the supplied buffer writer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;TOML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.&quot;)]
+[RequiresDynamicCode(&quot;TOML serialization and deserialization construct converters for collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.&quot;)]
+public static void Serialize&lt;T&gt;(IBufferWriter&lt;byte&gt; destination, T value, TomlSerializerOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The buffer writer that receives the UTF-8 TOML bytes.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to serialize.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.html">TomlSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+  </dl>
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to serialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when no converter is configured for a type that is encountered.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a></dt>
+    <dd><p>Thrown when the value does not map to a table at the document root, or cannot be represented in TOML.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Toml_TomlSerializer_Serialize_" data-uid="Bodu.Text.Toml.TomlSerializer.Serialize*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Toml_TomlSerializer_Serialize__1___0_Bodu_Text_Toml_TomlSerializerOptions_" data-uid="Bodu.Text.Toml.TomlSerializer.Serialize``1(``0,Bodu.Text.Toml.TomlSerializerOptions)">
+  Serialize&lt;T&gt;(T, TomlSerializerOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Toml/src/Text.Toml/TomlSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes the specified value to normalized TOML text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;TOML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.&quot;)]
+[RequiresDynamicCode(&quot;TOML serialization and deserialization construct converters for collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.&quot;)]
+public static string Serialize&lt;T&gt;(T value, TomlSerializerOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to serialize.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.html">TomlSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The TOML representation of <code class="paramref">value</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to serialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when no converter is configured for a type that is encountered.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a></dt>
+    <dd><p>Thrown when the value does not map to a table at the document root, or cannot be represented in TOML.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlSerializer_DeserializeAsync__1_System_IO_Stream_Bodu_Text_Toml_TomlSerializerOptions_System_Threading_CancellationToken_" data-uid="Bodu.Text.Toml.TomlSerializer.DeserializeAsync``1(System.IO.Stream,Bodu.Text.Toml.TomlSerializerOptions,System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.Text.Toml.TomlSerializer.DeserializeAsync.html#Bodu_Text_Toml_TomlSerializer_DeserializeAsync__1_System_IO_Stream_Bodu_Text_Toml_TomlSerializerOptions_System_Threading_CancellationToken_">DeserializeAsync&lt;T&gt;(Stream, TomlSerializerOptions?, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously deserializes a value of type <code class="typeparamref">T</code> by reading a stream of UTF-8 TOML bytes to
-its end.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlSerializer_Deserialize__1_System_IO_Stream_Bodu_Text_Toml_TomlSerializerOptions_" data-uid="Bodu.Text.Toml.TomlSerializer.Deserialize``1(System.IO.Stream,Bodu.Text.Toml.TomlSerializerOptions)">
-          <a class="xref" href="Bodu.Text.Toml.TomlSerializer.Deserialize.html#Bodu_Text_Toml_TomlSerializer_Deserialize__1_System_IO_Stream_Bodu_Text_Toml_TomlSerializerOptions_">Deserialize&lt;T&gt;(Stream, TomlSerializerOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Deserializes a value of type <code class="typeparamref">T</code> by reading a stream of UTF-8 TOML bytes to its end.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlSerializer_Deserialize__1_System_ReadOnlySpan_System_Byte__Bodu_Text_Toml_TomlSerializerOptions_" data-uid="Bodu.Text.Toml.TomlSerializer.Deserialize``1(System.ReadOnlySpan{System.Byte},Bodu.Text.Toml.TomlSerializerOptions)">
-          <a class="xref" href="Bodu.Text.Toml.TomlSerializer.Deserialize.html#Bodu_Text_Toml_TomlSerializer_Deserialize__1_System_ReadOnlySpan_System_Byte__Bodu_Text_Toml_TomlSerializerOptions_">Deserialize&lt;T&gt;(ReadOnlySpan&lt;byte&gt;, TomlSerializerOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Deserializes a value of type <code class="typeparamref">T</code> from the supplied UTF-8 TOML bytes.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlSerializer_Deserialize__1_System_String_Bodu_Text_Toml_TomlSerializerOptions_" data-uid="Bodu.Text.Toml.TomlSerializer.Deserialize``1(System.String,Bodu.Text.Toml.TomlSerializerOptions)">
-          <a class="xref" href="Bodu.Text.Toml.TomlSerializer.Deserialize.html#Bodu_Text_Toml_TomlSerializer_Deserialize__1_System_String_Bodu_Text_Toml_TomlSerializerOptions_">Deserialize&lt;T&gt;(string, TomlSerializerOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Deserializes a value of type <code class="typeparamref">T</code> from the supplied TOML text.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlSerializer_SerializeAsync__1_System_IO_Stream___0_Bodu_Text_Toml_TomlSerializerOptions_System_Threading_CancellationToken_" data-uid="Bodu.Text.Toml.TomlSerializer.SerializeAsync``1(System.IO.Stream,``0,Bodu.Text.Toml.TomlSerializerOptions,System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.Text.Toml.TomlSerializer.SerializeAsync.html#Bodu_Text_Toml_TomlSerializer_SerializeAsync__1_System_IO_Stream___0_Bodu_Text_Toml_TomlSerializerOptions_System_Threading_CancellationToken_">SerializeAsync&lt;T&gt;(Stream, T, TomlSerializerOptions?, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously serializes the specified value as UTF-8 TOML to the supplied stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlSerializer_Serialize__1_System_Buffers_IBufferWriter_System_Byte____0_Bodu_Text_Toml_TomlSerializerOptions_" data-uid="Bodu.Text.Toml.TomlSerializer.Serialize``1(System.Buffers.IBufferWriter{System.Byte},``0,Bodu.Text.Toml.TomlSerializerOptions)">
-          <a class="xref" href="Bodu.Text.Toml.TomlSerializer.Serialize.html#Bodu_Text_Toml_TomlSerializer_Serialize__1_System_Buffers_IBufferWriter_System_Byte____0_Bodu_Text_Toml_TomlSerializerOptions_">Serialize&lt;T&gt;(IBufferWriter&lt;byte&gt;, T, TomlSerializerOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Serializes the specified value as UTF-8 TOML to the supplied buffer writer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlSerializer_Serialize__1___0_Bodu_Text_Toml_TomlSerializerOptions_" data-uid="Bodu.Text.Toml.TomlSerializer.Serialize``1(``0,Bodu.Text.Toml.TomlSerializerOptions)">
-          <a class="xref" href="Bodu.Text.Toml.TomlSerializer.Serialize.html#Bodu_Text_Toml_TomlSerializer_Serialize__1___0_Bodu_Text_Toml_TomlSerializerOptions_">Serialize&lt;T&gt;(T, TomlSerializerOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Serializes the specified value to normalized TOML text.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
 
+
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

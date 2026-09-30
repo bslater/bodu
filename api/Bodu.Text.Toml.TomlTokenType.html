@@ -1,99 +1,265 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Enum TomlTokenType | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Enum TomlTokenType | BODU ">
-    
-    <meta name="description" content="Identifies the kind of token a forward-only TOML reader is positioned on.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>TomlTokenType Enum
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="TomlTokenType Enum
+ | BODU ">
+      
+      <meta name="description" content="Identifies the kind of token a forward-only TOML reader is positioned on.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Toml.TomlTokenType">
+
+        <article data-uid="Bodu.Text.Toml.TomlTokenType">
 
 
 
 
-  <h1 id="Bodu_Text_Toml_TomlTokenType" data-uid="Bodu.Text.Toml.TomlTokenType" class="text-break">Enum TomlTokenType</h1>
-  <div class="markdown level0 summary"><p>Identifies the kind of token a forward-only TOML reader is positioned on.</p>
+
+  <h1 id="Bodu_Text_Toml_TomlTokenType" data-uid="Bodu.Text.Toml.TomlTokenType" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+TomlTokenType Enum
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Toml/src/Text.Toml/TomlTokenType.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Text_Toml_TomlTokenType_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Toml.html">Toml</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Toml.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Toml">Bodu.Text.Toml</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Toml/src/Text.Toml/TomlTokenType.cs">TomlTokenType.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Identifies the kind of token a forward-only TOML reader is positioned on.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Toml.html">Toml</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Toml.dll</h6>
-  <h5 id="Bodu_Text_Toml_TomlTokenType_syntax">Syntax</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public enum TomlTokenType</code></pre>
   </div>
-  <h5 id="Bodu_Text_Toml_TomlTokenType_remarks"><strong>Remarks</strong></h5>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.BufferConverter.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;T&gt;(T, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+  <h2 id="fields">Fields
+</h2>
+  <dl class="parameters">
+    <dt id="Bodu_Text_Toml_TomlTokenType_None" data-bodu-frameworks="net8.0 net10.0"><code>None = 0</code></dt>
+  
+  <dd><p>No token; the reader is positioned before the first token or after the last.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_StartTable" data-bodu-frameworks="net8.0 net10.0"><code>StartTable = 1</code></dt>
+  
+  <dd><p>The start of a table in the normalized stream (a header-defined table, a dotted-key table, or an inline table).</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_EndTable" data-bodu-frameworks="net8.0 net10.0"><code>EndTable = 2</code></dt>
+  
+  <dd><p>The end of a table in the normalized stream.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_StartArray" data-bodu-frameworks="net8.0 net10.0"><code>StartArray = 3</code></dt>
+  
+  <dd><p>The start of an array, or — in the normalized stream — of an array-of-tables surfaced as an array whose elements
+are tables.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_EndArray" data-bodu-frameworks="net8.0 net10.0"><code>EndArray = 4</code></dt>
+  
+  <dd><p>The end of an array, or — in the normalized stream — of an array-of-tables surfaced as an array whose elements
+are tables.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_PropertyName" data-bodu-frameworks="net8.0 net10.0"><code>PropertyName = 5</code></dt>
+  
+  <dd><p>A key naming the value that follows, in the normalized stream.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_String" data-bodu-frameworks="net8.0 net10.0"><code>String = 6</code></dt>
+  
+  <dd><p>A string value.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_Integer" data-bodu-frameworks="net8.0 net10.0"><code>Integer = 7</code></dt>
+  
+  <dd><p>A 64-bit signed integer value.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_Float" data-bodu-frameworks="net8.0 net10.0"><code>Float = 8</code></dt>
+  
+  <dd><p>An IEEE 754 binary64 floating-point value.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_Boolean" data-bodu-frameworks="net8.0 net10.0"><code>Boolean = 9</code></dt>
+  
+  <dd><p>A Boolean value.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_OffsetDateTime" data-bodu-frameworks="net8.0 net10.0"><code>OffsetDateTime = 10</code></dt>
+  
+  <dd><p>An RFC 3339 date-time that carries an explicit time offset from UTC.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_LocalDateTime" data-bodu-frameworks="net8.0 net10.0"><code>LocalDateTime = 11</code></dt>
+  
+  <dd><p>A date-time without any offset or time-zone relation.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_LocalDate" data-bodu-frameworks="net8.0 net10.0"><code>LocalDate = 12</code></dt>
+  
+  <dd><p>A calendar date without any time-of-day, offset, or time-zone relation.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_LocalTime" data-bodu-frameworks="net8.0 net10.0"><code>LocalTime = 13</code></dt>
+  
+  <dd><p>A time of day without any date, offset, or time-zone relation.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_TableHeader" data-bodu-frameworks="net8.0 net10.0"><code>TableHeader = 14</code></dt>
+  
+  <dd><p>A <code>[table]</code> header in the source-order stream, emitted before the header's <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_Key">Key</a> segments.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_ArrayTableHeader" data-bodu-frameworks="net8.0 net10.0"><code>ArrayTableHeader = 15</code></dt>
+  
+  <dd><p>An <code>[[array-of-tables]]</code> header in the source-order stream, emitted before the header's <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_Key">Key</a>
+segments.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_Key" data-bodu-frameworks="net8.0 net10.0"><code>Key = 16</code></dt>
+  
+  <dd><p>One segment of a dotted key in the source-order stream, in a header or in a key/value pair.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_Comment" data-bodu-frameworks="net8.0 net10.0"><code>Comment = 17</code></dt>
+  
+  <dd><p>A comment in the source-order stream, from after the <code>#</code> to the end of the line.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_StartInlineTable" data-bodu-frameworks="net8.0 net10.0"><code>StartInlineTable = 18</code></dt>
+  
+  <dd><p>The start of an inline table value (<code>{</code>) in the source-order stream.</p>
+</dd>
+    <dt id="Bodu_Text_Toml_TomlTokenType_EndInlineTable" data-bodu-frameworks="net8.0 net10.0"><code>EndInlineTable = 19</code></dt>
+  
+  <dd><p>The end of an inline table value (<code>}</code>) in the source-order stream.</p>
+</dd>
+  </dl>
+
+
+  <h2 id="Bodu_Text_Toml_TomlTokenType_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 The vocabulary serves the library's two readers. <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> follows the
 document's surface syntax in source order: a header surfaces as <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_TableHeader">TableHeader</a> or
@@ -116,229 +282,36 @@ The scalar members are shared by both readers; the header, key, comment, and inl
 source-order stream, and the table and property-name members only in the normalized stream.
 </p>
 </div>
-  <h3 id="fields">Fields
-</h3>
-  <table class="table table-bordered table-condensed">
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    <thead>
-    </thead></thead><tbody>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_None">None</td>
-        <td><p>No token; the reader is positioned before the first token or after the last.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_StartTable">StartTable</td>
-        <td><p>The start of a table in the normalized stream (a header-defined table, a dotted-key table, or an inline table).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_EndTable">EndTable</td>
-        <td><p>The end of a table in the normalized stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_StartArray">StartArray</td>
-        <td><p>The start of an array, or — in the normalized stream — of an array-of-tables surfaced as an array whose elements
-are tables.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_EndArray">EndArray</td>
-        <td><p>The end of an array, or — in the normalized stream — of an array-of-tables surfaced as an array whose elements
-are tables.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_PropertyName">PropertyName</td>
-        <td><p>A key naming the value that follows, in the normalized stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_String">String</td>
-        <td><p>A string value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_Integer">Integer</td>
-        <td><p>A 64-bit signed integer value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_Float">Float</td>
-        <td><p>An IEEE 754 binary64 floating-point value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_Boolean">Boolean</td>
-        <td><p>A Boolean value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_OffsetDateTime">OffsetDateTime</td>
-        <td><p>An RFC 3339 date-time that carries an explicit time offset from UTC.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_LocalDateTime">LocalDateTime</td>
-        <td><p>A date-time without any offset or time-zone relation.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_LocalDate">LocalDate</td>
-        <td><p>A calendar date without any time-of-day, offset, or time-zone relation.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_LocalTime">LocalTime</td>
-        <td><p>A time of day without any date, offset, or time-zone relation.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_TableHeader">TableHeader</td>
-        <td><p>A <code>[table]</code> header in the source-order stream, emitted before the header's <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_Key">Key</a> segments.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_ArrayTableHeader">ArrayTableHeader</td>
-        <td><p>An <code>[[array-of-tables]]</code> header in the source-order stream, emitted before the header's <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_Key">Key</a>
-segments.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_Key">Key</td>
-        <td><p>One segment of a dotted key in the source-order stream, in a header or in a key/value pair.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_Comment">Comment</td>
-        <td><p>A comment in the source-order stream, from after the <code>#</code> to the end of the line.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_StartInlineTable">StartInlineTable</td>
-        <td><p>The start of an inline table value (<code>{</code>) in the source-order stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_TomlTokenType_EndInlineTable">EndInlineTable</td>
-        <td><p>The end of an inline table value (<code>}</code>) in the source-order stream.</p>
-</td>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;TomlTokenType&gt;(TomlTokenType, byte[], int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType, IComparer&lt;TomlTokenType&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType, IComparer&lt;TomlTokenType&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType?, TomlTokenType?, IComparer&lt;TomlTokenType&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType?, TomlTokenType?, IComparer&lt;TomlTokenType&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType, IComparer&lt;TomlTokenType&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType?, IComparer&lt;TomlTokenType&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType?, IComparer&lt;TomlTokenType&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType?, IComparer&lt;TomlTokenType&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType?, IComparer&lt;TomlTokenType&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType?, TomlTokenType?, IComparer&lt;TomlTokenType&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType, IComparer&lt;TomlTokenType&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType, IComparer&lt;TomlTokenType&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.ClearFlag.html#Bodu_Extensions_EnumExtensions_ClearFlag__1___0___0_">EnumExtensions.ClearFlag&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDescription.html#Bodu_Extensions_EnumExtensions_GetDescription__1___0_">EnumExtensions.GetDescription&lt;TomlTokenType&gt;(TomlTokenType)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDisplayName.html#Bodu_Extensions_EnumExtensions_GetDisplayName__1___0_">EnumExtensions.GetDisplayName&lt;TomlTokenType&gt;(TomlTokenType)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAllFlags.html#Bodu_Extensions_EnumExtensions_HasAllFlags__1___0___0_">EnumExtensions.HasAllFlags&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAnyFlag.html#Bodu_Extensions_EnumExtensions_HasAnyFlag__1___0___0_">EnumExtensions.HasAnyFlag&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.SetFlag.html#Bodu_Extensions_EnumExtensions_SetFlag__1___0___0_">EnumExtensions.SetFlag&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.ToggleFlag.html#Bodu_Extensions_EnumExtensions_ToggleFlag__1___0___0_">EnumExtensions.ToggleFlag&lt;TomlTokenType&gt;(TomlTokenType, TomlTokenType)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.TryGetDescription.html#Bodu_Extensions_EnumExtensions_TryGetDescription__1___0_System_String__">EnumExtensions.TryGetDescription&lt;TomlTokenType&gt;(TomlTokenType, out string)</a>
-  </div>
+
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

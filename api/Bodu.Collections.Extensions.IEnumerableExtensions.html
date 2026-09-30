@@ -1,100 +1,138 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class IEnumerableExtensions | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class IEnumerableExtensions | BODU ">
-    
-    <meta name="description" content="Provides operations over the non-generic  surface — counting without enumerating where the source is already a collection, and walking heterogeneous tree structures recursively — for code that has to deal with reflection-shaped or legacy sequences.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>IEnumerableExtensions Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="IEnumerableExtensions Class
+ | BODU ">
+      
+      <meta name="description" content="Provides operations over the non-generic  surface — counting without enumerating where the source is already a collection, and walking heterogeneous tree structures recursively — for code that has to deal with reflection-shaped or legacy sequences.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions">
+
+        <article data-uid="Bodu.Collections.Extensions.IEnumerableExtensions">
 
 
 
-  <h1 id="Bodu_Collections_Extensions_IEnumerableExtensions" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions" class="text-break">Class IEnumerableExtensions</h1>
-  <div class="markdown level0 summary"><p>Provides operations over the non-generic <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a> surface — counting without
+
+  <h1 id="Bodu_Collections_Extensions_IEnumerableExtensions" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+IEnumerableExtensions Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Extensions/IEnumerableExtensions.CountOrDefault.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Collections_Extensions_IEnumerableExtensions_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Collections.html">Collections</a>.<a class="xref" href="Bodu.Collections.Extensions.html">Extensions</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Extensions/IEnumerableExtensions.CountOrDefault.cs">IEnumerableExtensions.CountOrDefault.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides operations over the non-generic <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a> surface — counting without
 enumerating where the source is already a collection, and walking heterogeneous tree structures recursively — for
 code that has to deal with reflection-shaped or legacy sequences.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">IEnumerableExtensions</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class IEnumerableExtensions</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">IEnumerableExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -116,14 +154,15 @@ code that has to deal with reflection-shaped or legacy sequences.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Collections</span>.<a class="xref" href="Bodu.Collections.Extensions.html">Extensions</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
-  <h5 id="Bodu_Collections_Extensions_IEnumerableExtensions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class IEnumerableExtensions</code></pre>
-  </div>
-  <h5 id="Bodu_Collections_Extensions_IEnumerableExtensions_remarks"><strong>Remarks</strong></h5>
+    </dd>
+  </dl>
+
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Collections_Extensions_IEnumerableExtensions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Most modern code uses <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a>, but reflection, COM interop, ADO.NET, and older library
 boundaries still hand back the non-generic <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a>. The companion class in
@@ -153,108 +192,471 @@ foreach (object node in controls.RecursiveSelect(c =&gt; ((Control)c).GetChildre
     Console.WriteLine(node);</code></pre>
 </example>
 </div>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Collections_Extensions_IEnumerableExtensions_CountOrDefault_" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.CountOrDefault*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Extensions_IEnumerableExtensions_CountOrDefault_System_Collections_IEnumerable_" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.CountOrDefault(System.Collections.IEnumerable)">
+  CountOrDefault(IEnumerable)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Extensions/IEnumerableExtensions.CountOrDefault.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the number of elements in a non-generic <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a> sequence, using collection fast-paths
+where possible.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int CountOrDefault(this IEnumerable source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></dt>
+    <dd><p>The sequence to count. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of elements in the sequence.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Extensions_IEnumerableExtensions_CountOrDefault_System_Collections_IEnumerable__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When <code class="paramref">source</code> implements neither <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a> nor
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection&lt;T&gt;</a>, the sequence is fully enumerated to produce the count — a one-shot source
+is consumed by the call.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect(System.Collections.IEnumerable,System.Func{System.Object,System.Collections.Generic.IEnumerable{System.Object}},System.Func{System.Object,System.Int32,System.Int32,System.Object})">
+  RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Extensions/IEnumerableExtensions.RecursiveSelect.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Recursively flattens and projects a hierarchical structure, providing index and depth information to the
+selector.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable RecursiveSelect(this IEnumerable source, Func&lt;object, IEnumerable&lt;object&gt;&gt; childSelector, Func&lt;object, int, int, object&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></dt>
+    <dd><p>The root sequence to traverse recursively.</p>
+</dd>
+    <dt><code>childSelector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;&gt;</dt>
+    <dd><p>A delegate that returns child elements for a given item.</p>
+</dd>
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-4">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;</dt>
+    <dd><p>A projection that receives the element, its index, and its recursion depth.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></dt>
+    <dd><p>A flattened sequence of projected elements with access to structural context (index, depth).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object___examples">Examples</h4>
+  <pre><code class="lang-csharp">var root = new[]
+{
+    new Node { Name = "A", Children = { new Node { Name = "B" }, new Node { Name = "C" } } },
+    new Node { Name = "D" }
+};
+
+var structured = root.RecursiveSelect(n =&gt; ((Node)n).Children,
+    (n, i, depth) =&gt; new { ((Node)n).Name, Index = i, Depth = depth });
+
+// Yields:
+// { Name = "A", Index = 0, Depth = 0 }
+// { Name = "B", Index = 1, Depth = 1 }
+// { Name = "C", Index = 2, Depth = 1 }
+// { Name = "D", Index = 3, Depth = 0 }</code></pre>
+
+
+  <h4 class="section" id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use when formatting output that depends on the depth of the node in the hierarchy (e.g., indentation, styling).</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">source</code>, <code class="paramref">childSelector</code>, or <code class="paramref">selector</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__System_Func_System_Object_Bodu_Collections_Extensions_RecursiveSelectControl__" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect(System.Collections.IEnumerable,System.Func{System.Object,System.Collections.Generic.IEnumerable{System.Object}},System.Func{System.Object,System.Int32,System.Int32,System.Object},System.Func{System.Object,Bodu.Collections.Extensions.RecursiveSelectControl})">
+  RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;, Func&lt;object, RecursiveSelectControl&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Extensions/IEnumerableExtensions.RecursiveSelect.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Recursively flattens and projects a hierarchical structure, allowing control over whether to recurse into
+children.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable RecursiveSelect(this IEnumerable source, Func&lt;object, IEnumerable&lt;object&gt;&gt; childSelector, Func&lt;object, int, int, object&gt; selector, Func&lt;object, RecursiveSelectControl&gt; recursionControl)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></dt>
+    <dd><p>The root sequence to traverse recursively.</p>
+</dd>
+    <dt><code>childSelector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;&gt;</dt>
+    <dd><p>A delegate that returns child elements for a given item.</p>
+</dd>
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-4">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;</dt>
+    <dd><p>A projection that receives the element, its index, and its recursion depth.</p>
+</dd>
+    <dt><code>recursionControl</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>, <a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html">RecursiveSelectControl</a>&gt;</dt>
+    <dd><p>A delegate that determines how each element in the sequence should be handled during recursion. It returns a
+<a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html">RecursiveSelectControl</a> value indicating whether to yield the element, recurse into its children,
+skip it, or terminate the traversal entirely.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></dt>
+    <dd><p>A sequence of projected elements, where children are included only if <code class="paramref">recursionControl</code>
+returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__System_Func_System_Object_Bodu_Collections_Extensions_RecursiveSelectControl___examples">Examples</h4>
+  <pre><code class="lang-csharp">var root = new[]
+{
+    new Node { Name = "A", Children = { new Node { Name = "B" }, new Node { Name = "C" } } },
+    new Node { Name = "D" }
+};
+
+var pruned = root.RecursiveSelect(
+    n =&gt; ((Node)n).Children,
+    (n, i, d) =&gt; ((Node)n).Name,
+    n =&gt; ((Node)n).Name == "A"
+        ? RecursiveSelectControl.YieldAndRecurse
+        : RecursiveSelectControl.YieldOnly);
+
+// Yields: "A", "B", "C", "D"</code></pre>
+
+
+  <h4 class="section" id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__System_Func_System_Object_Bodu_Collections_Extensions_RecursiveSelectControl___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Useful when pruning the recursion tree - e.g., limiting depth, skipping inactive branches, or filtering by
+condition.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">source</code>, <code class="paramref">childSelector</code>, <code class="paramref">selector</code>, or
+<code class="paramref">recursionControl</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Object__" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect(System.Collections.IEnumerable,System.Func{System.Object,System.Collections.Generic.IEnumerable{System.Object}},System.Func{System.Object,System.Int32,System.Object})">
+  RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, object&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Extensions/IEnumerableExtensions.RecursiveSelect.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Recursively flattens and projects a hierarchical structure, passing the index of each element to the projection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable RecursiveSelect(this IEnumerable source, Func&lt;object, IEnumerable&lt;object&gt;&gt; childSelector, Func&lt;object, int, object&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></dt>
+    <dd><p>The root sequence to traverse recursively.</p>
+</dd>
+    <dt><code>childSelector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;&gt;</dt>
+    <dd><p>A delegate that returns child elements for a given item.</p>
+</dd>
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-3">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;</dt>
+    <dd><p>A projection that receives each element and its zero-based index.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></dt>
+    <dd><p>A depth-first, recursively flattened sequence with projected values using the element and its index.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Object___examples">Examples</h4>
+  <pre><code class="lang-csharp">var root = new[]
+{
+    new Node { Name = "A", Children = { new Node { Name = "B" }, new Node { Name = "C" } } },
+    new Node { Name = "D" }
+};
+
+var labeled = root.RecursiveSelect(n =&gt; ((Node)n).Children, (n, i) =&gt; $"{i}: {((Node)n).Name}");
+// Yields: "0: A", "1: B", "2: C", "3: D"</code></pre>
+
+
+  <h4 class="section" id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Object___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use this when you need both element content and positional context during recursion.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">source</code>, <code class="paramref">childSelector</code>, or <code class="paramref">selector</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Object__" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect(System.Collections.IEnumerable,System.Func{System.Object,System.Collections.Generic.IEnumerable{System.Object}},System.Func{System.Object,System.Object})">
+  RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, object&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Extensions/IEnumerableExtensions.RecursiveSelect.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Recursively flattens and projects a hierarchical structure into a linear sequence using a projection selector.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable RecursiveSelect(this IEnumerable source, Func&lt;object, IEnumerable&lt;object&gt;&gt; childSelector, Func&lt;object, object&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></dt>
+    <dd><p>The root sequence to traverse recursively.</p>
+</dd>
+    <dt><code>childSelector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;&gt;</dt>
+    <dd><p>A delegate that returns child elements for a given item.</p>
+</dd>
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;</dt>
+    <dd><p>A projection applied to each element.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></dt>
+    <dd><p>A depth-first, recursively flattened sequence of projected elements.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Object___examples">Examples</h4>
+  <pre><code class="lang-csharp">var root = new[]
+{
+    new Node { Name = "A", Children = { new Node { Name = "B" }, new Node { Name = "C" } } },
+    new Node { Name = "D" }
+};
+
+var names = root.RecursiveSelect(n =&gt; ((Node)n).Children, n =&gt; ((Node)n).Name);
+// Yields: "A", "B", "C", "D"</code></pre>
+
+
+  <h4 class="section" id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Object___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This overload is useful when you want to flatten and transform the hierarchy into a different shape or type.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">source</code>, <code class="paramref">childSelector</code>, or <code class="paramref">selector</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_IEnumerable__" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect(System.Collections.IEnumerable,System.Func{System.Object,System.Collections.IEnumerable})">
+  RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Extensions/IEnumerableExtensions.RecursiveSelect.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Recursively flattens a hierarchical or tree-like <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a> into a single linear sequence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable RecursiveSelect(this IEnumerable source, Func&lt;object, IEnumerable&gt; childSelector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></dt>
+    <dd><p>The root sequence to traverse recursively. Each element is expected to potentially contain child elements
+retrievable via the <code class="paramref">childSelector</code> delegate.</p>
+</dd>
+    <dt><code>childSelector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a>&gt;</dt>
+    <dd><p>A delegate that returns the child elements for a given item. This should return an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a>
+representing the recursive children of the current element, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> if none.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></dt>
+    <dd><p>A flattened <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a> that yields all elements in depth-first order, including their recursive
+children.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_IEnumerable___examples">Examples</h4>
+  <pre><code class="lang-csharp">var root = new[]
+{
+    new Node { Name = "A", Children = { new Node { Name = "B" }, new Node { Name = "C" } } },
+    new Node { Name = "D" }
+};
+
+var flattened = root.RecursiveSelect(n =&gt; ((Node)n).Children);
+// Yields: A, B, C, D</code></pre>
+
+
+  <h4 class="section" id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_IEnumerable___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This method is useful for navigating recursive structures like directory trees, category hierarchies, or comment
+threads.
+</p>
+<p>
+Execution is deferred and will only begin when the resulting sequence is enumerated.
+</p>
+<p>
+All elements are treated as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a> and may need casting to their actual types.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">source</code> or <code class="paramref">childSelector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Collections_Extensions_IEnumerableExtensions_CountOrDefault_System_Collections_IEnumerable_" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.CountOrDefault(System.Collections.IEnumerable)">
-          <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.CountOrDefault.html#Bodu_Collections_Extensions_IEnumerableExtensions_CountOrDefault_System_Collections_IEnumerable_">CountOrDefault(IEnumerable)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of elements in a non-generic <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a> sequence, using collection fast-paths
-where possible.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect(System.Collections.IEnumerable,System.Func{System.Object,System.Collections.Generic.IEnumerable{System.Object}},System.Func{System.Object,System.Int32,System.Int32,System.Object})">
-          <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__">RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Recursively flattens and projects a hierarchical structure, providing index and depth information to the
-selector.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__System_Func_System_Object_Bodu_Collections_Extensions_RecursiveSelectControl__" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect(System.Collections.IEnumerable,System.Func{System.Object,System.Collections.Generic.IEnumerable{System.Object}},System.Func{System.Object,System.Int32,System.Int32,System.Object},System.Func{System.Object,Bodu.Collections.Extensions.RecursiveSelectControl})">
-          <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__System_Func_System_Object_Bodu_Collections_Extensions_RecursiveSelectControl__">RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;, Func&lt;object, RecursiveSelectControl&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Recursively flattens and projects a hierarchical structure, allowing control over whether to recurse into
-children.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Object__" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect(System.Collections.IEnumerable,System.Func{System.Object,System.Collections.Generic.IEnumerable{System.Object}},System.Func{System.Object,System.Int32,System.Object})">
-          <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Object__">RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, object&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Recursively flattens and projects a hierarchical structure, passing the index of each element to the projection.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Object__" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect(System.Collections.IEnumerable,System.Func{System.Object,System.Collections.Generic.IEnumerable{System.Object}},System.Func{System.Object,System.Object})">
-          <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Object__">RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, object&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Recursively flattens and projects a hierarchical structure into a linear sequence using a projection selector.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_IEnumerable__" data-uid="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect(System.Collections.IEnumerable,System.Func{System.Object,System.Collections.IEnumerable})">
-          <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_IEnumerable__">RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Recursively flattens a hierarchical or tree-like <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a> into a single linear sequence.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
 
+
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

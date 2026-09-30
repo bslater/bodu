@@ -1,99 +1,137 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class SymmetricStreamAlgorithmExtensions | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class SymmetricStreamAlgorithmExtensions | BODU ">
-    
-    <meta name="description" content="Extends  with one-shot encrypt/decrypt of buffers and stream-to-stream pipelines, mirroring the convenience surface offered for block ciphers.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>SymmetricStreamAlgorithmExtensions Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="SymmetricStreamAlgorithmExtensions Class
+ | BODU ">
+      
+      <meta name="description" content="Extends  with one-shot encrypt/decrypt of buffers and stream-to-stream pipelines, mirroring the convenience surface offered for block ciphers.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions">
+
+        <article data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions">
 
 
 
-  <h1 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions" class="text-break">Class SymmetricStreamAlgorithmExtensions</h1>
-  <div class="markdown level0 summary"><p>Extends <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a> with one-shot encrypt/decrypt of buffers and stream-to-stream
+
+  <h1 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+SymmetricStreamAlgorithmExtensions Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/SymmetricStreamAlgorithmExtensions.Decrypt.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a>.<a class="xref" href="Bodu.Security.Cryptography.Extensions.html">Extensions</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/SymmetricStreamAlgorithmExtensions.Decrypt.cs">SymmetricStreamAlgorithmExtensions.Decrypt.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Extends <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a> with one-shot encrypt/decrypt of buffers and stream-to-stream
 pipelines, mirroring the convenience surface offered for block ciphers.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">SymmetricStreamAlgorithmExtensions</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class SymmetricStreamAlgorithmExtensions</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">SymmetricStreamAlgorithmExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -115,14 +153,15 @@ pipelines, mirroring the convenience surface offered for block ciphers.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a>.<a class="xref" href="Bodu.Security.Cryptography.Extensions.html">Extensions</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
-  <h5 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class SymmetricStreamAlgorithmExtensions</code></pre>
-  </div>
-  <h5 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_remarks"><strong>Remarks</strong></h5>
+    </dd>
+  </dl>
+
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a> exposes the building blocks — <code>CreateEncryptor</code>, <code>CreateDecryptor</code>
 , and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptostream">CryptoStream</a> interop — but stops short of the operations callers
@@ -133,7 +172,7 @@ overloads aligned to the input shape.
 <p>
 Because an additive stream cipher is self-inverse, <code>Encrypt</code> and <code>Decrypt</code> perform the identical XOR
 operation; the two names exist purely to make calling code read naturally. Every overload uses the algorithm's
-current <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.Key.html#Bodu_Security_Cryptography_SymmetricStreamAlgorithm_Key">Key</a> and <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.Nonce.html#Bodu_Security_Cryptography_SymmetricStreamAlgorithm_Nonce">Nonce</a>. Streams are
+current <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html#Bodu_Security_Cryptography_SymmetricStreamAlgorithm_Key">Key</a> and <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html#Bodu_Security_Cryptography_SymmetricStreamAlgorithm_Nonce">Nonce</a>. Streams are
 not disposed by these methods, and <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a> instances are not thread-safe; share them
 only behind explicit synchronization.
 </p>
@@ -149,165 +188,848 @@ byte[] ciphertext = chacha.Encrypt(plaintext);
 byte[] roundTrip  = chacha.Decrypt(ciphertext);</code></pre>
 </example>
 </div>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.Byte[])">
+  Decrypt(SymmetricStreamAlgorithm, byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/SymmetricStreamAlgorithmExtensions.Decrypt.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decrypts the entire contents of a byte array using the specified stream cipher.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Decrypt(this SymmetricStreamAlgorithm algorithm, byte[] array)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a></dt>
+    <dd><p>The stream cipher to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>array</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input byte array to decrypt. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the decrypted output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Because an additive stream cipher is self-inverse, this performs the identical XOR operation as
+<a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___">Encrypt(SymmetricStreamAlgorithm, byte[])</a>. Equivalent to calling
+<code>Decrypt(array, 0, array.Length)</code>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">algorithm</code> or <code class="paramref">array</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.Byte[],System.Int32)">
+  Decrypt(SymmetricStreamAlgorithm, byte[], int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/SymmetricStreamAlgorithmExtensions.Decrypt.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decrypts a portion of a byte array beginning at the specified offset and continuing to the end of the array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Decrypt(this SymmetricStreamAlgorithm algorithm, byte[] array, int offset)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a></dt>
+    <dd><p>The stream cipher to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>array</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input byte array to decrypt. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>offset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based byte offset in <code class="paramref">array</code> at which to begin reading.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the decrypted output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">algorithm</code> or <code class="paramref">array</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">offset</code> is negative or exceeds the length of <code class="paramref">array</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.Byte[],System.Int32,System.Int32)">
+  Decrypt(SymmetricStreamAlgorithm, byte[], int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/SymmetricStreamAlgorithmExtensions.Decrypt.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decrypts a contiguous region of a byte array using the specified stream cipher.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Decrypt(this SymmetricStreamAlgorithm algorithm, byte[] array, int offset, int count)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a></dt>
+    <dd><p>The stream cipher to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>array</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input byte array to decrypt. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>offset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based byte offset in <code class="paramref">array</code> at which to begin reading.</p>
+</dd>
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes to decrypt.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the decrypted output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">algorithm</code> or <code class="paramref">array</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">offset</code> or <code class="paramref">count</code> is negative, or the range defined by
+<code class="paramref">offset</code> and <code class="paramref">count</code> exceeds the bounds of <code class="paramref">array</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_IO_Stream_System_IO_Stream_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.IO.Stream,System.IO.Stream)">
+  Decrypt(SymmetricStreamAlgorithm, Stream, Stream)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/SymmetricStreamAlgorithmExtensions.Decrypt.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decrypts data read from a source stream and writes the decrypted output to a target stream, using the default
+buffer size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int Decrypt(this SymmetricStreamAlgorithm algorithm, Stream sourceStream, Stream targetStream)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a></dt>
+    <dd><p>The stream cipher to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>sourceStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to read ciphertext from. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>targetStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to write the decrypted output to. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The total number of ciphertext bytes read from <code class="paramref">sourceStream</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">algorithm</code>, <code class="paramref">sourceStream</code>, or <code class="paramref">targetStream</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_IO_Stream_System_IO_Stream_System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.IO.Stream,System.IO.Stream,System.Int32)">
+  Decrypt(SymmetricStreamAlgorithm, Stream, Stream, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/SymmetricStreamAlgorithmExtensions.Decrypt.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decrypts data read from a source stream and writes the decrypted output to a target stream, using the specified
+buffer size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int Decrypt(this SymmetricStreamAlgorithm algorithm, Stream sourceStream, Stream targetStream, int bufferSize)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a></dt>
+    <dd><p>The stream cipher to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>sourceStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to read ciphertext from. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>targetStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to write the decrypted output to. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>bufferSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The size, in bytes, of the read buffer.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The total number of ciphertext bytes read from <code class="paramref">sourceStream</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">algorithm</code>, <code class="paramref">sourceStream</code>, or <code class="paramref">targetStream</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">bufferSize</code> is less than or equal to zero.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_ReadOnlyMemory_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.ReadOnlyMemory{System.Byte})">
+  Decrypt(SymmetricStreamAlgorithm, ReadOnlyMemory&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/SymmetricStreamAlgorithmExtensions.Decrypt.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decrypts a read-only memory region using the specified stream cipher.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Decrypt(this SymmetricStreamAlgorithm algorithm, ReadOnlyMemory&lt;byte&gt; input)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a></dt>
+    <dd><p>The stream cipher to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The memory region containing the bytes to decrypt.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the decrypted output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_ReadOnlyMemory_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Delegates to <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_ReadOnlySpan_System_Byte__">Decrypt(SymmetricStreamAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.ReadOnlySpan{System.Byte})">
+  Decrypt(SymmetricStreamAlgorithm, ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/SymmetricStreamAlgorithmExtensions.Decrypt.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decrypts a read-only span of bytes using the specified stream cipher.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Decrypt(this SymmetricStreamAlgorithm algorithm, ReadOnlySpan&lt;byte&gt; input)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a></dt>
+    <dd><p>The stream cipher to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The span of input bytes to decrypt.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the decrypted output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.Byte[])">
+  Encrypt(SymmetricStreamAlgorithm, byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/SymmetricStreamAlgorithmExtensions.Encrypt.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encrypts the entire contents of a byte array using the specified stream cipher.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Encrypt(this SymmetricStreamAlgorithm algorithm, byte[] array)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a></dt>
+    <dd><p>The stream cipher to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>array</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input byte array to encrypt. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the encrypted output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Equivalent to calling <code>Encrypt(array, 0, array.Length)</code>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">algorithm</code> or <code class="paramref">array</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.Byte[],System.Int32)">
+  Encrypt(SymmetricStreamAlgorithm, byte[], int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/SymmetricStreamAlgorithmExtensions.Encrypt.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encrypts a portion of a byte array beginning at the specified offset and continuing to the end of the array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Encrypt(this SymmetricStreamAlgorithm algorithm, byte[] array, int offset)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a></dt>
+    <dd><p>The stream cipher to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>array</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input byte array to encrypt. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>offset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based byte offset in <code class="paramref">array</code> at which to begin reading.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the encrypted output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">algorithm</code> or <code class="paramref">array</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">offset</code> is negative or exceeds the length of <code class="paramref">array</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.Byte[],System.Int32,System.Int32)">
+  Encrypt(SymmetricStreamAlgorithm, byte[], int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/SymmetricStreamAlgorithmExtensions.Encrypt.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encrypts a contiguous region of a byte array using the specified stream cipher.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Encrypt(this SymmetricStreamAlgorithm algorithm, byte[] array, int offset, int count)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a></dt>
+    <dd><p>The stream cipher to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>array</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input byte array to encrypt. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>offset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based byte offset in <code class="paramref">array</code> at which to begin reading.</p>
+</dd>
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes to encrypt.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the encrypted output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">algorithm</code> or <code class="paramref">array</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">offset</code> or <code class="paramref">count</code> is negative, or the range defined by
+<code class="paramref">offset</code> and <code class="paramref">count</code> exceeds the bounds of <code class="paramref">array</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_IO_Stream_System_IO_Stream_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.IO.Stream,System.IO.Stream)">
+  Encrypt(SymmetricStreamAlgorithm, Stream, Stream)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/SymmetricStreamAlgorithmExtensions.Encrypt.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encrypts data read from a source stream and writes the encrypted output to a target stream, using the default
+buffer size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int Encrypt(this SymmetricStreamAlgorithm algorithm, Stream sourceStream, Stream targetStream)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a></dt>
+    <dd><p>The stream cipher to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>sourceStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to read plaintext from. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>targetStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to write the encrypted output to. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The total number of plaintext bytes read from <code class="paramref">sourceStream</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">algorithm</code>, <code class="paramref">sourceStream</code>, or <code class="paramref">targetStream</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_IO_Stream_System_IO_Stream_System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.IO.Stream,System.IO.Stream,System.Int32)">
+  Encrypt(SymmetricStreamAlgorithm, Stream, Stream, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/SymmetricStreamAlgorithmExtensions.Encrypt.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encrypts data read from a source stream and writes the encrypted output to a target stream, using the specified
+buffer size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int Encrypt(this SymmetricStreamAlgorithm algorithm, Stream sourceStream, Stream targetStream, int bufferSize)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a></dt>
+    <dd><p>The stream cipher to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>sourceStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to read plaintext from. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>targetStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to write the encrypted output to. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>bufferSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The size, in bytes, of the read buffer.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The total number of plaintext bytes read from <code class="paramref">sourceStream</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">algorithm</code>, <code class="paramref">sourceStream</code>, or <code class="paramref">targetStream</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">bufferSize</code> is less than or equal to zero.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_ReadOnlyMemory_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.ReadOnlyMemory{System.Byte})">
+  Encrypt(SymmetricStreamAlgorithm, ReadOnlyMemory&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/SymmetricStreamAlgorithmExtensions.Encrypt.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encrypts a read-only memory region using the specified stream cipher.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Encrypt(this SymmetricStreamAlgorithm algorithm, ReadOnlyMemory&lt;byte&gt; input)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a></dt>
+    <dd><p>The stream cipher to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The memory region containing the bytes to encrypt.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the encrypted output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_ReadOnlyMemory_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Delegates to <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_ReadOnlySpan_System_Byte__">Encrypt(SymmetricStreamAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.ReadOnlySpan{System.Byte})">
+  Encrypt(SymmetricStreamAlgorithm, ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/SymmetricStreamAlgorithmExtensions.Encrypt.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encrypts a read-only span of bytes using the specified stream cipher.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Encrypt(this SymmetricStreamAlgorithm algorithm, ReadOnlySpan&lt;byte&gt; input)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a></dt>
+    <dd><p>The stream cipher to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The span of input bytes to encrypt.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the encrypted output.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.Byte[])">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___">Decrypt(SymmetricStreamAlgorithm, byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decrypts the entire contents of a byte array using the specified stream cipher.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.Byte[],System.Int32)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___System_Int32_">Decrypt(SymmetricStreamAlgorithm, byte[], int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decrypts a portion of a byte array beginning at the specified offset and continuing to the end of the array.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.Byte[],System.Int32,System.Int32)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___System_Int32_System_Int32_">Decrypt(SymmetricStreamAlgorithm, byte[], int, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decrypts a contiguous region of a byte array using the specified stream cipher.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_IO_Stream_System_IO_Stream_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.IO.Stream,System.IO.Stream)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_IO_Stream_System_IO_Stream_">Decrypt(SymmetricStreamAlgorithm, Stream, Stream)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decrypts data read from a source stream and writes the decrypted output to a target stream, using the default
-buffer size.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_IO_Stream_System_IO_Stream_System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.IO.Stream,System.IO.Stream,System.Int32)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_IO_Stream_System_IO_Stream_System_Int32_">Decrypt(SymmetricStreamAlgorithm, Stream, Stream, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decrypts data read from a source stream and writes the decrypted output to a target stream, using the specified
-buffer size.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_ReadOnlyMemory_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.ReadOnlyMemory{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_ReadOnlyMemory_System_Byte__">Decrypt(SymmetricStreamAlgorithm, ReadOnlyMemory&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decrypts a read-only memory region using the specified stream cipher.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Decrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_ReadOnlySpan_System_Byte__">Decrypt(SymmetricStreamAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decrypts a read-only span of bytes using the specified stream cipher.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.Byte[])">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___">Encrypt(SymmetricStreamAlgorithm, byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encrypts the entire contents of a byte array using the specified stream cipher.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.Byte[],System.Int32)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___System_Int32_">Encrypt(SymmetricStreamAlgorithm, byte[], int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encrypts a portion of a byte array beginning at the specified offset and continuing to the end of the array.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.Byte[],System.Int32,System.Int32)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_Byte___System_Int32_System_Int32_">Encrypt(SymmetricStreamAlgorithm, byte[], int, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encrypts a contiguous region of a byte array using the specified stream cipher.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_IO_Stream_System_IO_Stream_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.IO.Stream,System.IO.Stream)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_IO_Stream_System_IO_Stream_">Encrypt(SymmetricStreamAlgorithm, Stream, Stream)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encrypts data read from a source stream and writes the encrypted output to a target stream, using the default
-buffer size.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_IO_Stream_System_IO_Stream_System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.IO.Stream,System.IO.Stream,System.Int32)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_IO_Stream_System_IO_Stream_System_Int32_">Encrypt(SymmetricStreamAlgorithm, Stream, Stream, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encrypts data read from a source stream and writes the encrypted output to a target stream, using the specified
-buffer size.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_ReadOnlyMemory_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.ReadOnlyMemory{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_ReadOnlyMemory_System_Byte__">Encrypt(SymmetricStreamAlgorithm, ReadOnlyMemory&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encrypts a read-only memory region using the specified stream cipher.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt(Bodu.Security.Cryptography.SymmetricStreamAlgorithm,System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricStreamAlgorithmExtensions_Encrypt_Bodu_Security_Cryptography_SymmetricStreamAlgorithm_System_ReadOnlySpan_System_Byte__">Encrypt(SymmetricStreamAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encrypts a read-only span of bytes using the specified stream cipher.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
 
+
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

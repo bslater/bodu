@@ -1,103 +1,143 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class FiscalWeekQuarterProvider | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class FiscalWeekQuarterProvider | BODU ">
-    
-    <meta name="description" content="Provides quarter boundary logic for a week-based retail fiscal calendar using a configurable  (5–4–4, 4–5–4, or 4–4–5 week distribution).">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>FiscalWeekQuarterProvider Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="FiscalWeekQuarterProvider Class
+ | BODU ">
+      
+      <meta name="description" content="Provides quarter boundary logic for a week-based retail fiscal calendar using a configurable  (5–4–4, 4–5–4, or 4–4–5 week distribution).">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider">
+
+        <article data-uid="Bodu.Extensions.FiscalWeekQuarterProvider">
 
 
 
-  <h1 id="Bodu_Extensions_FiscalWeekQuarterProvider" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider" class="text-break">Class FiscalWeekQuarterProvider</h1>
-  <div class="markdown level0 summary"><p>Provides quarter boundary logic for a week-based retail fiscal calendar using a configurable
+
+  <h1 id="Bodu_Extensions_FiscalWeekQuarterProvider" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+FiscalWeekQuarterProvider Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Extensions_FiscalWeekQuarterProvider_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs">FiscalWeekQuarterProvider.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides quarter boundary logic for a week-based retail fiscal calendar using a configurable
 <a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a> (5–4–4, 4–5–4, or 4–4–5 week distribution).</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">FiscalWeekQuarterProvider</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">FiscalWeekQuarterProvider</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -116,14 +156,35 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
-  <h5 id="Bodu_Extensions_FiscalWeekQuarterProvider_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Extensions_FiscalWeekQuarterProvider_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Extensions_FiscalWeekQuarterProvider_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 This provider describes a recurring fiscal calendar rule. Each quarter consists of exactly 13 weeks, divided into
 three fiscal periods according to the <a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a> supplied at construction. Quarters are
@@ -133,7 +194,7 @@ defined as contiguous 13-week blocks measured from the fiscal year start:
 <p>
 The <a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a> controls how the 13 weeks within each quarter are divided into three fiscal
 periods (fiscal months). It does not affect quarter start or end boundaries, but is exposed via the
-<a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.Pattern.html#Bodu_Extensions_FiscalWeekQuarterProvider_Pattern">Pattern</a> property for consumers that require intra-quarter period logic.
+<a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.html#Bodu_Extensions_FiscalWeekQuarterProvider_Pattern">Pattern</a> property for consumers that require intra-quarter period logic.
 </p>
 <p>
 A fiscal year may contain a 53rd week when the span between the computed fiscal year start and the equivalent start
@@ -145,216 +206,868 @@ values — the fiscal year start date, whether a given year contains 53 weeks, a
 on demand from either an explicit <code>fiscalYear</code> argument or from the input date itself.
 </p>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Extensions_FiscalWeekQuarterProvider__ctor_System_Int32_System_DayOfWeek_System_Boolean_System_Boolean_Bodu_Extensions_FiscalWeekPattern_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.#ctor(System.Int32,System.DayOfWeek,System.Boolean,System.Boolean,Bodu.Extensions.FiscalWeekPattern)">
-          <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.-ctor.html#Bodu_Extensions_FiscalWeekQuarterProvider__ctor_System_Int32_System_DayOfWeek_System_Boolean_System_Boolean_Bodu_Extensions_FiscalWeekPattern_">FiscalWeekQuarterProvider(int, DayOfWeek, bool, bool, FiscalWeekPattern)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.html">FiscalWeekQuarterProvider</a> class using the specified anchor
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Extensions_FiscalWeekQuarterProvider__ctor_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_FiscalWeekQuarterProvider__ctor_System_Int32_System_DayOfWeek_System_Boolean_System_Boolean_Bodu_Extensions_FiscalWeekPattern_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.#ctor(System.Int32,System.DayOfWeek,System.Boolean,System.Boolean,Bodu.Extensions.FiscalWeekPattern)">
+  FiscalWeekQuarterProvider(int, DayOfWeek, bool, bool, FiscalWeekPattern)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.html">FiscalWeekQuarterProvider</a> class using the specified anchor
 month and alignment options.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FiscalWeekQuarterProvider(int month, DayOfWeek dayOfWeek = DayOfWeek.Saturday, bool isFiscalYearEnd = true, bool useNearestDayOfWeek = true, FiscalWeekPattern pattern = FiscalWeekPattern.Weeks445)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>month</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The calendar month (1–12) of the fiscal year anchor.</p>
+</dd>
+    <dt><code>dayOfWeek</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a></dt>
+    <dd><p>The day of the week on which each fiscal week begins. Common values are <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek#system-dayofweek-sunday">Sunday</a> and
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek#system-dayofweek-saturday">Saturday</a>. Defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek#system-dayofweek-saturday">Saturday</a>.</p>
+</dd>
+    <dt><code>isFiscalYearEnd</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, <code class="paramref">month</code> identifies the fiscal year's closing month, and the
+actual fiscal start month is the one that follows. When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, <code class="paramref">month</code>
+identifies the fiscal year's opening month directly. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
+    <dt><code>useNearestDayOfWeek</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to align the fiscal year start to the occurrence of <code class="paramref">dayOfWeek</code>
+nearest to the computed anchor date; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> to align it to the occurrence of
+<code class="paramref">dayOfWeek</code> on or before the computed anchor date. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
+    <dt><code>pattern</code> <a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a></dt>
+    <dd><p>The week distribution pattern applied to the three fiscal periods within each quarter. Defaults to
+<a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html#Bodu_Extensions_FiscalWeekPattern_Weeks445">Weeks445</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_FiscalWeekQuarterProvider__ctor_System_Int32_System_DayOfWeek_System_Boolean_System_Boolean_Bodu_Extensions_FiscalWeekPattern__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The fiscal year start for a given <code>fiscalYear</code> is derived from the first day of the anchor month in that
+year, then aligned to the configured fiscal week start day using one of two strategies:
+</p>
+<ul><li>
+When <code class="paramref">useNearestDayOfWeek</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the start date is aligned to the
+occurrence of <code class="paramref">dayOfWeek</code> nearest to the computed anchor date.
+</li><li>
+When <code class="paramref">useNearestDayOfWeek</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, the start date is aligned to the
+occurrence of <code class="paramref">dayOfWeek</code> on or before the computed anchor date.
+</li></ul>
+<p>
+When <code class="paramref">isFiscalYearEnd</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the anchor is the first day of the month
+following <code class="paramref">month</code>. The fiscal year still begins on the occurrence of
+<code class="paramref">dayOfWeek</code> selected by <code class="paramref">useNearestDayOfWeek</code>, so the fiscal week boundary
+always coincides with <code class="paramref">dayOfWeek</code>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">month</code> is not in the range 1–12, -or- <code class="paramref">dayOfWeek</code> is not a
+defined <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> value, -or- <code class="paramref">pattern</code> is not a defined
+<a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a> value.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Extensions_FiscalWeekQuarterProvider_Pattern_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.Pattern*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_FiscalWeekQuarterProvider_Pattern" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.Pattern">
+  Pattern
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the week distribution pattern applied to the three fiscal periods within each quarter.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FiscalWeekPattern Pattern { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a></dt>
+    <dd><p>One of the <a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a> values that describes how the 13 weeks of each quarter are divided
+into fiscal periods.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Extensions_FiscalWeekQuarterProvider_GetFiscalYear_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetFiscalYear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_FiscalWeekQuarterProvider_GetFiscalYear_System_DateOnly_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetFiscalYear(System.DateOnly)">
+  GetFiscalYear(DateOnly)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the fiscal year that contains the supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int GetFiscalYear(DateOnly dateOnly)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dateOnly</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The date to identify.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The fiscal year number under the provider's conventions.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">dateOnly</code> cannot be mapped to any fiscal year known to the provider.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_FiscalWeekQuarterProvider_GetFiscalYear_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetFiscalYear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_FiscalWeekQuarterProvider_GetFiscalYear_System_DateTime_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetFiscalYear(System.DateTime)">
+  GetFiscalYear(DateTime)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the fiscal year that contains the supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int GetFiscalYear(DateTime dateTime)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dateTime</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The date to identify.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The fiscal year number under the provider's conventions.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_FiscalWeekQuarterProvider_GetFiscalYear_System_DateTime__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The default implementation probes the calendar years <code>dateTime.Year - 1</code>, <code>dateTime.Year</code>, and
+<code>dateTime.Year + 1</code>, returning the candidate whose Q1 start and Q4 end bracket <code class="paramref">dateTime</code>
+. This works for any provider whose fiscal year is contiguous and at most one calendar year away from the
+observed calendar year. Implementations may override with a more efficient or more precise computation.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">dateTime</code> cannot be mapped to any fiscal year known to the provider.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarter_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarter*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarter_System_DateOnly_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarter(System.DateOnly)">
+  GetQuarter(DateOnly)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the quarter number (1–4) that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int GetQuarter(DateOnly dateOnly)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dateOnly</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The input <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> for which to determine the quarter.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>An integer in the range 1 to 4 representing the quarter that includes <code class="paramref">dateOnly</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">dateOnly</code> cannot be mapped to a recognized fiscal year.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarter_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarter*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarter_System_DateTime_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarter(System.DateTime)">
+  GetQuarter(DateTime)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the quarter number (1–4) that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int GetQuarter(DateTime dateTime)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dateTime</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The input <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> for which to determine the quarter.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>An integer in the range 1 to 4 representing the quarter that includes <code class="paramref">dateTime</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">dateTime</code> cannot be mapped to a recognized fiscal year.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterEnd_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterEnd*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterEnd_System_DateTime_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterEnd(System.DateTime)">
+  GetQuarterEnd(DateTime)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the last day of the quarter that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTime GetQuarterEnd(DateTime dateTime)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dateTime</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The input <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> for which to determine the end of the quarter.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> set to midnight (00:00:00) on the final day of the quarter that includes
+<code class="paramref">dateTime</code>. The result preserves the original <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime.kind">Kind</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">dateTime</code> cannot be mapped to a recognized fiscal year.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterEnd_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterEnd*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterEnd_System_Int32_System_Int32_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterEnd(System.Int32,System.Int32)">
+  GetQuarterEnd(int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the last day of the specified quarter number (1–4) within the given fiscal year.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTime GetQuarterEnd(int quarter, int fiscalYear)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>quarter</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The quarter number (1–4).</p>
+</dd>
+    <dt><code>fiscalYear</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The fiscal year whose quarter boundary is being requested.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> set to midnight (00:00:00) on the last day of the specified quarter.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">quarter</code> is not between 1 and 4.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterEndDate_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterEndDate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterEndDate_System_DateOnly_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterEndDate(System.DateOnly)">
+  GetQuarterEndDate(DateOnly)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the last day of the quarter that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateOnly GetQuarterEndDate(DateOnly dateOnly)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dateOnly</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The input <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> for which to determine the end of the quarter.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> representing the final day of the quarter that includes <code class="paramref">dateOnly</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">dateOnly</code> cannot be mapped to a recognized fiscal year.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterEndDate_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterEndDate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterEndDate_System_Int32_System_Int32_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterEndDate(System.Int32,System.Int32)">
+  GetQuarterEndDate(int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the last day of the specified quarter number (1–4) within the given fiscal year.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateOnly GetQuarterEndDate(int quarter, int fiscalYear)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>quarter</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The quarter number (1–4).</p>
+</dd>
+    <dt><code>fiscalYear</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The fiscal year whose quarter boundary is being requested.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> representing the final day of the specified quarter.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">quarter</code> is not between 1 and 4.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterStart_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterStart*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterStart_System_DateTime_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterStart(System.DateTime)">
+  GetQuarterStart(DateTime)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the first day of the quarter that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTime GetQuarterStart(DateTime dateTime)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dateTime</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The input <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> for which to determine the start of the quarter.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> set to midnight (00:00:00) on the first day of the quarter that includes
+<code class="paramref">dateTime</code>. The result preserves the original <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime.kind">Kind</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">dateTime</code> cannot be mapped to a recognized fiscal year.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterStart_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterStart*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterStart_System_Int32_System_Int32_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterStart(System.Int32,System.Int32)">
+  GetQuarterStart(int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the first day of the specified quarter number (1–4) within the given fiscal year.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTime GetQuarterStart(int quarter, int fiscalYear)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>quarter</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The quarter number (1–4).</p>
+</dd>
+    <dt><code>fiscalYear</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The fiscal year whose quarter boundary is being requested.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> set to midnight (00:00:00) on the first day of the specified quarter.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">quarter</code> is not between 1 and 4.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterStartDate_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterStartDate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterStartDate_System_DateOnly_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterStartDate(System.DateOnly)">
+  GetQuarterStartDate(DateOnly)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the first day of the quarter that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateOnly GetQuarterStartDate(DateOnly dateOnly)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dateOnly</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The input <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> for which to determine the start of the quarter.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> representing the first day of the quarter that includes <code class="paramref">dateOnly</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">dateOnly</code> cannot be mapped to a recognized fiscal year.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterStartDate_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterStartDate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterStartDate_System_Int32_System_Int32_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterStartDate(System.Int32,System.Int32)">
+  GetQuarterStartDate(int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the first day of the specified quarter number (1–4) within the given fiscal year.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateOnly GetQuarterStartDate(int quarter, int fiscalYear)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>quarter</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The quarter number (1–4).</p>
+</dd>
+    <dt><code>fiscalYear</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The fiscal year whose quarter boundary is being requested.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> representing the first day of the specified quarter.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">quarter</code> is not between 1 and 4.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_FiscalWeekQuarterProvider_GetWeeksInFiscalYear_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetWeeksInFiscalYear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_FiscalWeekQuarterProvider_GetWeeksInFiscalYear_System_Int32_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetWeeksInFiscalYear(System.Int32)">
+  GetWeeksInFiscalYear(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the total number of weeks in the specified fiscal year.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int GetWeeksInFiscalYear(int fiscalYear)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fiscalYear</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The fiscal year to query.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>53 in a 53-week fiscal year; otherwise, 52.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_FiscalWeekQuarterProvider_Is53WeekFiscalYear_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.Is53WeekFiscalYear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_FiscalWeekQuarterProvider_Is53WeekFiscalYear_System_Int32_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.Is53WeekFiscalYear(System.Int32)">
+  Is53WeekFiscalYear(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/FiscalWeekQuarterProvider.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a value indicating whether the specified fiscal year contains 53 weeks rather than the standard 52.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Is53WeekFiscalYear(int fiscalYear)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fiscalYear</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The fiscal year to test.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the fiscal year spans 371 days (53 complete weeks); <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if it
+spans 364 days (52 complete weeks).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Extensions_FiscalWeekQuarterProvider_Pattern" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.Pattern">
-          <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.Pattern.html#Bodu_Extensions_FiscalWeekQuarterProvider_Pattern">Pattern</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the week distribution pattern applied to the three fiscal periods within each quarter.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Extensions_FiscalWeekQuarterProvider_GetFiscalYear_System_DateOnly_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetFiscalYear(System.DateOnly)">
-          <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.GetFiscalYear.html#Bodu_Extensions_FiscalWeekQuarterProvider_GetFiscalYear_System_DateOnly_">GetFiscalYear(DateOnly)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the fiscal year that contains the supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_FiscalWeekQuarterProvider_GetFiscalYear_System_DateTime_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetFiscalYear(System.DateTime)">
-          <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.GetFiscalYear.html#Bodu_Extensions_FiscalWeekQuarterProvider_GetFiscalYear_System_DateTime_">GetFiscalYear(DateTime)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the fiscal year that contains the supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarter_System_DateOnly_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarter(System.DateOnly)">
-          <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarter.html#Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarter_System_DateOnly_">GetQuarter(DateOnly)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the quarter number (1–4) that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarter_System_DateTime_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarter(System.DateTime)">
-          <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarter.html#Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarter_System_DateTime_">GetQuarter(DateTime)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the quarter number (1–4) that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterEnd_System_DateTime_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterEnd(System.DateTime)">
-          <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterEnd.html#Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterEnd_System_DateTime_">GetQuarterEnd(DateTime)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the last day of the quarter that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterEnd_System_Int32_System_Int32_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterEnd(System.Int32,System.Int32)">
-          <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterEnd.html#Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterEnd_System_Int32_System_Int32_">GetQuarterEnd(int, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the last day of the specified quarter number (1–4) within the given fiscal year.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterEndDate_System_DateOnly_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterEndDate(System.DateOnly)">
-          <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterEndDate.html#Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterEndDate_System_DateOnly_">GetQuarterEndDate(DateOnly)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the last day of the quarter that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterEndDate_System_Int32_System_Int32_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterEndDate(System.Int32,System.Int32)">
-          <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterEndDate.html#Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterEndDate_System_Int32_System_Int32_">GetQuarterEndDate(int, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the last day of the specified quarter number (1–4) within the given fiscal year.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterStart_System_DateTime_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterStart(System.DateTime)">
-          <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterStart.html#Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterStart_System_DateTime_">GetQuarterStart(DateTime)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the first day of the quarter that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterStart_System_Int32_System_Int32_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterStart(System.Int32,System.Int32)">
-          <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterStart.html#Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterStart_System_Int32_System_Int32_">GetQuarterStart(int, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the first day of the specified quarter number (1–4) within the given fiscal year.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterStartDate_System_DateOnly_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterStartDate(System.DateOnly)">
-          <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterStartDate.html#Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterStartDate_System_DateOnly_">GetQuarterStartDate(DateOnly)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the first day of the quarter that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterStartDate_System_Int32_System_Int32_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterStartDate(System.Int32,System.Int32)">
-          <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.GetQuarterStartDate.html#Bodu_Extensions_FiscalWeekQuarterProvider_GetQuarterStartDate_System_Int32_System_Int32_">GetQuarterStartDate(int, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the first day of the specified quarter number (1–4) within the given fiscal year.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_FiscalWeekQuarterProvider_GetWeeksInFiscalYear_System_Int32_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.GetWeeksInFiscalYear(System.Int32)">
-          <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.GetWeeksInFiscalYear.html#Bodu_Extensions_FiscalWeekQuarterProvider_GetWeeksInFiscalYear_System_Int32_">GetWeeksInFiscalYear(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the total number of weeks in the specified fiscal year.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_FiscalWeekQuarterProvider_Is53WeekFiscalYear_System_Int32_" data-uid="Bodu.Extensions.FiscalWeekQuarterProvider.Is53WeekFiscalYear(System.Int32)">
-          <a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.Is53WeekFiscalYear.html#Bodu_Extensions_FiscalWeekQuarterProvider_Is53WeekFiscalYear_System_Int32_">Is53WeekFiscalYear(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a value indicating whether the specified fiscal year contains 53 weeks rather than the standard 52.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

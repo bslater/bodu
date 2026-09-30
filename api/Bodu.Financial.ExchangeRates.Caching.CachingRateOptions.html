@@ -1,99 +1,137 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class CachingRateOptions | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class CachingRateOptions | BODU ">
-    
-    <meta name="description" content="Configures a : the on-disk cache location, the default time a cached rate stays fresh, and per-provider overrides of that default.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>CachingRateOptions Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="CachingRateOptions Class
+ | BODU ">
+      
+      <meta name="description" content="Configures a : the on-disk cache location, the default time a cached rate stays fresh, and per-provider overrides of that default.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions">
+
+        <article data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions">
 
 
 
-  <h1 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions" class="text-break">Class CachingRateOptions</h1>
-  <div class="markdown level0 summary"><p>Configures a <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html">CachingRateProvider</a>: the on-disk cache location, the default time a cached rate stays
+
+  <h1 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+CachingRateOptions Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.html">Caching</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Financial.ExchangeRates.Caching.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.ExchangeRates.Caching">Bodu.Financial.ExchangeRates.Caching</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs">CachingRateOptions.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Configures a <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html">CachingRateProvider</a>: the on-disk cache location, the default time a cached rate stays
 fresh, and per-provider overrides of that default.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">CachingRateOptions</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CachingRateOptions</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">CachingRateOptions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -112,28 +150,34 @@ fresh, and per-provider overrides of that default.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.html">Caching</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Financial.ExchangeRates.Caching.dll</h6>
-  <h5 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class CachingRateOptions</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-Every member carries a working default, so the options bind cleanly through <code>Microsoft.Extensions.Options</code> and
-require no configuration for the common case.
-</p>
-<p>
-The <code>Cache*LogLevel</code> members set the <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a> at which each cache diagnostic is logged, so
-consumers can re-tune verbosity per concern without category-wide log filters. The per-lookup hit and miss events
-default to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-information">Information</a> because they run on the read hot path; the range events default to
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-debug">Debug</a>. The per-serve <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.RateProvenanceLogLevel.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RateProvenanceLogLevel">RateProvenanceLogLevel</a> records the lineage of every
-served rate — live versus cache hit, the backend identity, and the served data's age — and also defaults to
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-debug">Debug</a>. Set any member to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-none">None</a> to suppress that event entirely.
-</p>
-</div>
-  <h5 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_examples"><strong>Examples</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_examples">Examples</h2>
   <pre><code class="lang-csharp">var options = new CachingRateOptions
 {
     CacheDirectory = "/var/cache/fx",        // null/blank -&gt; a bodu-exchange-rates temp folder
@@ -147,221 +191,813 @@ options.ProviderExpiry["Yahoo"] = TimeSpan.FromHours(1);
 TimeSpan rbaExpiry = options.GetExpiry("RBA");      // 7 days
 TimeSpan ecbExpiry = options.GetExpiry("ECB");      // 24 hours (the default)</code></pre>
 
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheDirectory" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheDirectory">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheDirectory.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheDirectory">CacheDirectory</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the directory used by the on-disk cache.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheHitLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheHitLogLevel">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheHitLogLevel.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheHitLogLevel">CacheHitLogLevel</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the level at which a single-date lookup served from the cache is logged.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheMissLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheMissLogLevel">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheMissLogLevel.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheMissLogLevel">CacheMissLogLevel</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the level at which a single-date cache miss resolved from a source and then cached is logged.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheRangeHitLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheRangeHitLogLevel">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheRangeHitLogLevel.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheRangeHitLogLevel">CacheRangeHitLogLevel</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the level at which a range lookup served entirely from the cache is logged.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheRangeRefetchLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheRangeRefetchLogLevel">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheRangeRefetchLogLevel.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheRangeRefetchLogLevel">CacheRangeRefetchLogLevel</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the level at which a range lookup refetched from a source and re-cached is logged.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_DefaultExpiry" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.DefaultExpiry">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.DefaultExpiry.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_DefaultExpiry">DefaultExpiry</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the default duration a cached rate stays fresh, applied to any provider without a specific override
-in <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.ProviderExpiry.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_ProviderExpiry">ProviderExpiry</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_DefaultLookupOptions" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.DefaultLookupOptions">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.DefaultLookupOptions.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_DefaultLookupOptions">DefaultLookupOptions</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the lookup options applied by the timeless <a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.GetRate.html#Bodu_Financial_ExchangeRates_IRateProvider_GetRate_System_String_System_String_">GetRate(string, string)</a>
+
+  <h2 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+Every member carries a working default, so the options bind cleanly through <code>Microsoft.Extensions.Options</code> and
+require no configuration for the common case.
+</p>
+<p>
+The <code>Cache*LogLevel</code> members set the <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a> at which each cache diagnostic is logged, so
+consumers can re-tune verbosity per concern without category-wide log filters. The per-lookup hit and miss events
+default to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-information">Information</a> because they run on the read hot path; the range events default to
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-debug">Debug</a>. The per-serve <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RateProvenanceLogLevel">RateProvenanceLogLevel</a> records the lineage of every
+served rate — live versus cache hit, the backend identity, and the served data's age — and also defaults to
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-debug">Debug</a>. Set any member to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-none">None</a> to suppress that event entirely.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions__ctor_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions__ctor" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.#ctor">
+  CachingRateOptions()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CachingRateOptions()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheDirectory_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheDirectory*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheDirectory" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheDirectory">
+  CacheDirectory
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the directory used by the on-disk cache.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? CacheDirectory { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The cache directory, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use a <code>bodu-exchange-rates</code> folder under the system
+temporary path.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheHitLogLevel_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheHitLogLevel*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheHitLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheHitLogLevel">
+  CacheHitLogLevel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the level at which a single-date lookup served from the cache is logged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LogLevel CacheHitLogLevel { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
+    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-information">Information</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheMissLogLevel_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheMissLogLevel*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheMissLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheMissLogLevel">
+  CacheMissLogLevel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the level at which a single-date cache miss resolved from a source and then cached is logged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LogLevel CacheMissLogLevel { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
+    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-information">Information</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheRangeHitLogLevel_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheRangeHitLogLevel*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheRangeHitLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheRangeHitLogLevel">
+  CacheRangeHitLogLevel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the level at which a range lookup served entirely from the cache is logged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LogLevel CacheRangeHitLogLevel { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
+    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-debug">Debug</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheRangeRefetchLogLevel_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheRangeRefetchLogLevel*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_CacheRangeRefetchLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.CacheRangeRefetchLogLevel">
+  CacheRangeRefetchLogLevel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the level at which a range lookup refetched from a source and re-cached is logged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LogLevel CacheRangeRefetchLogLevel { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
+    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-debug">Debug</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_DefaultExpiry_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.DefaultExpiry*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_DefaultExpiry" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.DefaultExpiry">
+  DefaultExpiry
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the default duration a cached rate stays fresh, applied to any provider without a specific override
+in <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_ProviderExpiry">ProviderExpiry</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeSpan DefaultExpiry { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd><p>The default caching duration; defaults to 24 hours.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_DefaultExpiry_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Validation requires only a strictly positive duration; there is no upper bound. This property and the
+<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_ProviderExpiry">ProviderExpiry</a> overrides accept an arbitrarily large value, so an extreme duration leaves cached
+rows fresh indefinitely and effectively disables expiry for the affected provider.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_DefaultLookupOptions_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.DefaultLookupOptions*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_DefaultLookupOptions" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.DefaultLookupOptions">
+  DefaultLookupOptions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the lookup options applied by the timeless <a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html#Bodu_Financial_ExchangeRates_IRateProvider_GetRate_System_String_System_String_">GetRate(string, string)</a>
 surface, which resolves the rate for the current UTC date.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_ExpiryJitter" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.ExpiryJitter">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.ExpiryJitter.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_ExpiryJitter">ExpiryJitter</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the maximum fraction of a pair's caching duration that is deterministically shaved off per pair, so
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RateLookupOptions DefaultLookupOptions { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.ExchangeRates.RateLookupOptions.html">RateLookupOptions</a></dt>
+    <dd><p>The lookup options used for timeless lookups; defaults to <a class="xref" href="Bodu.Financial.ExchangeRates.RateLookupOptions.html#Bodu_Financial_ExchangeRates_RateLookupOptions_Exact">Exact</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_ExpiryJitter_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.ExpiryJitter*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_ExpiryJitter" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.ExpiryJitter">
+  ExpiryJitter
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the maximum fraction of a pair's caching duration that is deterministically shaved off per pair, so
 entries warmed together do not all expire — and refetch — at the same instant.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_HistoryClampLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.HistoryClampLogLevel">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.HistoryClampLogLevel.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_HistoryClampLogLevel">HistoryClampLogLevel</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the level at which a fetch skipped or clamped because of the inner source's advertised history (see
-<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.RespectHistoryAvailability.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RespectHistoryAvailability">RespectHistoryAvailability</a>) is logged.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_ProviderExpiry" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.ProviderExpiry">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.ProviderExpiry.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_ProviderExpiry">ProviderExpiry</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the per-provider expiry overrides, keyed by the provider name supplied to the caching provider.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RateProvenanceLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.RateProvenanceLogLevel">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.RateProvenanceLogLevel.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RateProvenanceLogLevel">RateProvenanceLogLevel</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the level at which the provenance of every served rate is logged.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RefreshAheadFraction" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.RefreshAheadFraction">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.RefreshAheadFraction.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RefreshAheadFraction">RefreshAheadFraction</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the fraction of a pair's effective caching duration after which a cache hit, while still served
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double ExpiryJitter { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>A fraction in <code>[0, 1)</code>; defaults to <code>0</code>, which disables jitter and preserves the exact configured
+expiry.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_ExpiryJitter_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The reduction is derived from a stable hash of the provider and pair (not from randomness), so a given pair's
+effective expiry is identical across instances and processes and deterministic under test. Jitter only ever
+shortens the duration, never extends it, so no rate is served longer than the configured expiry allows; the
+trade-off is that a pair may refetch up to this fraction of its expiry early. Inverse-pair probes jitter by the
+inverse pair's own key, matching the data actually being read.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_HistoryClampLogLevel_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.HistoryClampLogLevel*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_HistoryClampLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.HistoryClampLogLevel">
+  HistoryClampLogLevel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the level at which a fetch skipped or clamped because of the inner source's advertised history (see
+<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RespectHistoryAvailability">RespectHistoryAvailability</a>) is logged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LogLevel HistoryClampLogLevel { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
+    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-debug">Debug</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_ProviderExpiry_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.ProviderExpiry*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_ProviderExpiry" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.ProviderExpiry">
+  ProviderExpiry
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the per-provider expiry overrides, keyed by the provider name supplied to the caching provider.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IDictionary&lt;string, TimeSpan&gt; ProviderExpiry { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a>&gt;</dt>
+    <dd><p>A map from provider name to the duration its cached rates stay fresh. Providers absent from the map use
+<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_DefaultExpiry">DefaultExpiry</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RateProvenanceLogLevel_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.RateProvenanceLogLevel*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RateProvenanceLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.RateProvenanceLogLevel">
+  RateProvenanceLogLevel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the level at which the provenance of every served rate is logged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LogLevel RateProvenanceLogLevel { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
+    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-debug">Debug</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RateProvenanceLogLevel_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This per-serve diagnostic records the lineage of each result — whether it was resolved live or from the cache,
+the cache backend that served it, and the served data's age — and so is richer than the per-concern hit and miss
+events on the read hot path. Set it to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-none">None</a> to suppress provenance entirely.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RefreshAheadFraction_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.RefreshAheadFraction*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RefreshAheadFraction" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.RefreshAheadFraction">
+  RefreshAheadFraction
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the fraction of a pair's effective caching duration after which a cache hit, while still served
 immediately, additionally schedules a single background refresh of the served data, so a hot pair is refetched
 before it expires and no caller ever absorbs the refetch latency.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RespectHistoryAvailability" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.RespectHistoryAvailability">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.RespectHistoryAvailability.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RespectHistoryAvailability">RespectHistoryAvailability</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets a value indicating whether the provider consults the inner source's advertised
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double RefreshAheadFraction { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>A fraction in <code>[0, 1)</code>; defaults to <code>0</code>, which disables refresh-ahead entirely and preserves the plain
+serve-until-expiry behaviour.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RefreshAheadFraction_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Refresh-ahead is access-triggered: no timers run, and only a lookup that is actually served from the cache can
+schedule a refresh. When a hit's served data is older than this fraction of the pair's effective (post-jitter)
+expiry, at most one background refresh per pair and window is started; concurrent aged hits for the same key
+join the pending refresh rather than duplicating it. Because the fraction is below <code>1</code>, the refresh always
+begins before the entry expires, so a continuously hot pair never surfaces a miss.
+</p>
+<p>
+A background refresh that fails is swallowed after logging — the hit it piggybacked on was already served — and
+the next aged hit schedules a fresh attempt. Single-date hits served from the inverse pair's rows evaluate the
+threshold against the requested pair's effective expiry, a deliberate approximation that keeps the trigger
+cheap. Disposing the provider prevents new refreshes from being scheduled and abandons pending ones without
+draining them.
+</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RespectHistoryAvailability_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.RespectHistoryAvailability*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RespectHistoryAvailability" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.RespectHistoryAvailability">
+  RespectHistoryAvailability
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether the provider consults the inner source's advertised
 <a class="xref" href="Bodu.Financial.ExchangeRates.RateHistoryAvailability.html">RateHistoryAvailability</a> before delegating a miss, skipping or clamping fetches for dates the
 source has declared it cannot serve.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_SkipInverseRangeProbeWhenDirectCovered" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.SkipInverseRangeProbeWhenDirectCovered">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.SkipInverseRangeProbeWhenDirectCovered.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_SkipInverseRangeProbeWhenDirectCovered">SkipInverseRangeProbeWhenDirectCovered</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets a value indicating whether a range lookup that misses the direct pair's coverage skips the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RespectHistoryAvailability { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to respect the advertised history; defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RespectHistoryAvailability_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The clamp applies only when the inner provider implements <a class="xref" href="Bodu.Financial.ExchangeRates.IHistoricalRateProvider.html">IHistoricalRateProvider</a>; a non-aware
+inner is treated as unbounded and never skipped. A skipped single-date lookup surfaces as an ordinary miss, and
+a range window that starts before the advertised earliest date is fetched from that earliest date while the
+whole requested window is still recorded as covered, so the unavailable prefix is not refetched until normal
+expiry. Disable this to forward every request to the inner source unchanged.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_SkipInverseRangeProbeWhenDirectCovered_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.SkipInverseRangeProbeWhenDirectCovered*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_SkipInverseRangeProbeWhenDirectCovered" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.SkipInverseRangeProbeWhenDirectCovered">
+  SkipInverseRangeProbeWhenDirectCovered
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether a range lookup that misses the direct pair's coverage skips the
 inverse-pair probe when the direct pair holds any fresh coverage at all, probing the inverse only when the
 direct pair's coverage is completely empty.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SkipInverseRangeProbeWhenDirectCovered { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to skip the inverse probe when the direct pair carries fresh coverage; defaults to
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, matching the historical behaviour of always probing the inverse on a direct miss.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_SkipInverseRangeProbeWhenDirectCovered_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>On a direct-coverage miss the provider normally issues a second backend read for the inverse pair. For a
+workload that only ever fetches one orientation — the common case — that probe is a guaranteed-empty read
+doubling backend I/O on every refetch. Enabling this option treats any fresh direct coverage as evidence the
+pair is actively fetched in the direct orientation and goes straight to the refetch, at the cost of a redundant
+refetch in the rare configuration where the inverse pair alone holds complete coverage for the window. The
+option has no effect when <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_DefaultLookupOptions">DefaultLookupOptions</a> disallows inverse serves.</p>
+</div>
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_GetExpiry_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.GetExpiry*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_GetExpiry_System_String_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.GetExpiry(System.String)">
+  GetExpiry(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Resolves the caching duration for a provider, returning its specific override when present and the default
+otherwise.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeSpan GetExpiry(string provider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The provider name.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd><p>The duration cached rates for <code class="paramref">provider</code> stay fresh.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_TryValidate_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.TryValidate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_TryValidate_System_String__" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.TryValidate(System.String@)">
+  TryValidate(out string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to validate the options without throwing, reporting the first invariant that is violated.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryValidate(out string? error)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>error</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, a message describing the first violated invariant; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when every invariant holds; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_TryValidate_System_String___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The throwing <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_Validate">Validate()</a> method is expressed in terms of this method, and the dependency-injection
+registration wires it into <code>ValidateOnStart</code> so misconfiguration fails fast at application startup.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_Validate_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.Validate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_Validate" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.Validate">
+  Validate()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/CachingRateOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Validates the option values, throwing when a rule is violated.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Validate()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_Validate_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This throwing form preserves the <code>ParamName</code> of the offending option, which callers rely on. The
+dependency-injection registration instead wires <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_TryValidate_System_String__">TryValidate(out string?)</a> into <code>ValidateOnStart</code>, which
+reports the same invariants without throwing.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_DefaultExpiry">DefaultExpiry</a> or any <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_ProviderExpiry">ProviderExpiry</a> entry is not strictly positive,
+when <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_ProviderExpiry">ProviderExpiry</a> or <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_DefaultLookupOptions">DefaultLookupOptions</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or when
+any <code>Cache*LogLevel</code>, <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_HistoryClampLogLevel">HistoryClampLogLevel</a>, or <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RateProvenanceLogLevel">RateProvenanceLogLevel</a> is not
+a defined <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_GetExpiry_System_String_" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.GetExpiry(System.String)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.GetExpiry.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_GetExpiry_System_String_">GetExpiry(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Resolves the caching duration for a provider, returning its specific override when present and the default
-otherwise.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_TryValidate_System_String__" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.TryValidate(System.String@)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.TryValidate.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_TryValidate_System_String__">TryValidate(out string?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to validate the options without throwing, reporting the first invariant that is violated.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_Validate" data-uid="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.Validate">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.Validate.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_Validate">Validate()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Validates the option values, throwing when a rule is violated.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

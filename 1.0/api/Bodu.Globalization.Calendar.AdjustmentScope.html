@@ -1,99 +1,137 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class AdjustmentScope | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class AdjustmentScope | BODU ">
-    
-    <meta name="description" content="Constrains where a reusable adjustment policy may apply: by territory, calendar, category, notable-date concept, or specific rule.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>AdjustmentScope Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="AdjustmentScope Class
+ | BODU ">
+      
+      <meta name="description" content="Constrains where a reusable adjustment policy may apply: by territory, calendar, category, notable-date concept, or specific rule.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Globalization.Calendar.AdjustmentScope">
+
+        <article data-uid="Bodu.Globalization.Calendar.AdjustmentScope">
 
 
 
-  <h1 id="Bodu_Globalization_Calendar_AdjustmentScope" data-uid="Bodu.Globalization.Calendar.AdjustmentScope" class="text-break">Class AdjustmentScope</h1>
-  <div class="markdown level0 summary"><p>Constrains where a reusable adjustment policy may apply: by territory, calendar, category, notable-date concept, or
+
+  <h1 id="Bodu_Globalization_Calendar_AdjustmentScope" data-uid="Bodu.Globalization.Calendar.AdjustmentScope" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+AdjustmentScope Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/AdjustmentScope.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Globalization_Calendar_AdjustmentScope_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/AdjustmentScope.cs">AdjustmentScope.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Constrains where a reusable adjustment policy may apply: by territory, calendar, category, notable-date concept, or
 specific rule.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">AdjustmentScope</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class AdjustmentScope</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">AdjustmentScope</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -112,207 +150,592 @@ specific rule.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Globalization</span>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Globalization.Calendar.dll</h6>
-  <h5 id="Bodu_Globalization_Calendar_AdjustmentScope_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class AdjustmentScope</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Globalization_Calendar_AdjustmentScope_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Globalization_Calendar_AdjustmentScope_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Each dimension is independent. A dimension with no entries imposes no restriction; a dimension with entries requires
 the candidate value to be one of them. An empty scope therefore matches every rule, while a populated scope must
 satisfy every populated dimension.
 </p>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Globalization_Calendar_AdjustmentScope__ctor_" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_AdjustmentScope__ctor_System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_Bodu_Globalization_Calendar_CalendarSystem__System_Collections_Generic_IEnumerable_Bodu_Globalization_Calendar_NotableDateCategory__System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_System_String__System_Nullable_System_Int32__System_Nullable_System_Int32__System_Collections_Generic_IEnumerable_System_Int32__System_Collections_Generic_IEnumerable_System_Int32__" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.#ctor(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{Bodu.Globalization.Calendar.CalendarSystem},System.Collections.Generic.IEnumerable{Bodu.Globalization.Calendar.NotableDateCategory},System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.Int32},System.Collections.Generic.IEnumerable{System.Int32})">
+  AdjustmentScope(IEnumerable&lt;string&gt;, IEnumerable&lt;CalendarSystem&gt;, IEnumerable&lt;NotableDateCategory&gt;, IEnumerable&lt;string&gt;, IEnumerable&lt;string&gt;, int?, int?, IEnumerable&lt;int&gt;?, IEnumerable&lt;int&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/AdjustmentScope.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.html">AdjustmentScope</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AdjustmentScope(IEnumerable&lt;string&gt; territories, IEnumerable&lt;CalendarSystem&gt; calendars, IEnumerable&lt;NotableDateCategory&gt; categories, IEnumerable&lt;string&gt; notableDateRefs, IEnumerable&lt;string&gt; ruleRefs, int? fromYear = null, int? toYear = null, IEnumerable&lt;int&gt;? onlyYears = null, IEnumerable&lt;int&gt;? exceptYears = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>territories</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The territories the policy is limited to, if any.</p>
+</dd>
+    <dt><code>calendars</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.CalendarSystem.html">CalendarSystem</a>&gt;</dt>
+    <dd><p>The calendar systems the policy is limited to, if any.</p>
+</dd>
+    <dt><code>categories</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.NotableDateCategory.html">NotableDateCategory</a>&gt;</dt>
+    <dd><p>The categories the policy is limited to, if any.</p>
+</dd>
+    <dt><code>notableDateRefs</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The notable-date concepts the policy is limited to, if any.</p>
+</dd>
+    <dt><code>ruleRefs</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The rules the policy is limited to, if any.</p>
+</dd>
+    <dt><code>fromYear</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The first year the policy applies, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for no lower bound.</p>
+</dd>
+    <dt><code>toYear</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The last year the policy applies, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for no upper bound.</p>
+</dd>
+    <dt><code>onlyYears</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd><p>The explicit inclusion years, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for no restriction.</p>
+</dd>
+    <dt><code>exceptYears</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd><p>The explicit exclusion years, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for no exclusions.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">territories</code>, <code class="paramref">calendars</code>, <code class="paramref">categories</code>,
+<code class="paramref">notableDateRefs</code>, or <code class="paramref">ruleRefs</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Globalization_Calendar_AdjustmentScope_Calendars_" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.Calendars*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_AdjustmentScope_Calendars" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.Calendars">
+  Calendars
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/AdjustmentScope.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the calendar systems the policy is limited to.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;CalendarSystem&gt; Calendars { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/CalendarSystem.cs">CalendarSystem</a>&gt;</dt>
+    <dd><p>The scoped calendar systems; empty when unrestricted.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_AdjustmentScope_Categories_" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.Categories*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_AdjustmentScope_Categories" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.Categories">
+  Categories
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/AdjustmentScope.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the categories the policy is limited to.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;NotableDateCategory&gt; Categories { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.NotableDateCategory.html">NotableDateCategory</a>&gt;</dt>
+    <dd><p>The scoped categories; empty when unrestricted.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_AdjustmentScope_ExceptYears_" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.ExceptYears*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_AdjustmentScope_ExceptYears" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.ExceptYears">
+  ExceptYears
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/AdjustmentScope.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the explicit exclusion years.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;int&gt; ExceptYears { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd><p>The years the policy is suppressed for; empty when there are none.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_AdjustmentScope_FromYear_" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.FromYear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_AdjustmentScope_FromYear" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.FromYear">
+  FromYear
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/AdjustmentScope.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the first year the policy applies.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? FromYear { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The lower year bound, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when unbounded.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_AdjustmentScope_Global_" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.Global*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_AdjustmentScope_Global" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.Global">
+  Global
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/AdjustmentScope.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a shared <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.html">AdjustmentScope</a> that imposes no restriction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static AdjustmentScope Global { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.html">AdjustmentScope</a></dt>
+    <dd><p>An empty, global scope.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_AdjustmentScope_NotableDateRefs_" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.NotableDateRefs*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_AdjustmentScope_NotableDateRefs" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.NotableDateRefs">
+  NotableDateRefs
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/AdjustmentScope.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the notable-date concepts the policy is limited to.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt; NotableDateRefs { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The scoped notable-date identifiers; empty when unrestricted.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_AdjustmentScope_OnlyYears_" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.OnlyYears*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_AdjustmentScope_OnlyYears" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.OnlyYears">
+  OnlyYears
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/AdjustmentScope.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the explicit inclusion years.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;int&gt; OnlyYears { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd><p>The years the policy is restricted to; empty when unrestricted.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_AdjustmentScope_RuleRefs_" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.RuleRefs*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_AdjustmentScope_RuleRefs" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.RuleRefs">
+  RuleRefs
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/AdjustmentScope.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the rules the policy is limited to.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt; RuleRefs { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The scoped rule identifiers; empty when unrestricted.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_AdjustmentScope_Territories_" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.Territories*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_AdjustmentScope_Territories" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.Territories">
+  Territories
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/AdjustmentScope.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the territories the policy is limited to.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt; Territories { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The scoped territory codes; empty when unrestricted.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Globalization_Calendar_AdjustmentScope_ToYear_" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.ToYear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_AdjustmentScope_ToYear" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.ToYear">
+  ToYear
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/AdjustmentScope.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the last year the policy applies.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? ToYear { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The upper year bound, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when unbounded.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Globalization_Calendar_AdjustmentScope_Matches_" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.Matches*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Globalization_Calendar_AdjustmentScope_Matches_System_String_Bodu_Globalization_Calendar_CalendarSystem_Bodu_Globalization_Calendar_NotableDateCategory_System_String_System_String_System_Int32_" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.Matches(System.String,Bodu.Globalization.Calendar.CalendarSystem,Bodu.Globalization.Calendar.NotableDateCategory,System.String,System.String,System.Int32)">
+  Matches(string, CalendarSystem, NotableDateCategory, string, string, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/AdjustmentScope.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the policy may apply to a rule with the supplied attributes in the supplied year.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Matches(string territory, CalendarSystem calendar, NotableDateCategory category, string notableDateId, string ruleId, int year)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The territory being resolved.</p>
+</dd>
+    <dt><code>calendar</code> <a class="xref" href="Bodu.Globalization.Calendar.CalendarSystem.html">CalendarSystem</a></dt>
+    <dd><p>The calendar system of the rule.</p>
+</dd>
+    <dt><code>category</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateCategory.html">NotableDateCategory</a></dt>
+    <dd><p>The effective category of the rule.</p>
+</dd>
+    <dt><code>notableDateId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the rule's notable-date concept.</p>
+</dd>
+    <dt><code>ruleId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the rule.</p>
+</dd>
+    <dt><code>year</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The Gregorian year of the occurrence the policy would adjust.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if every populated dimension is satisfied; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_AdjustmentScope_Matches_System_String_Bodu_Globalization_Calendar_CalendarSystem_Bodu_Globalization_Calendar_NotableDateCategory_System_String_System_String_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The year dimensions combine like a rule's applicability: <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.html#Bodu_Globalization_Calendar_AdjustmentScope_FromYear">FromYear</a> and <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.html#Bodu_Globalization_Calendar_AdjustmentScope_ToYear">ToYear</a> bound
+an inclusive range, <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.html#Bodu_Globalization_Calendar_AdjustmentScope_OnlyYears">OnlyYears</a> further restricts to an explicit set when non-empty, and
+<a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.html#Bodu_Globalization_Calendar_AdjustmentScope_ExceptYears">ExceptYears</a> removes individual years.</p>
+</div>
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_AdjustmentScope__ctor_System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_Bodu_Globalization_Calendar_CalendarSystem__System_Collections_Generic_IEnumerable_Bodu_Globalization_Calendar_NotableDateCategory__System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_System_String__System_Nullable_System_Int32__System_Nullable_System_Int32__System_Collections_Generic_IEnumerable_System_Int32__System_Collections_Generic_IEnumerable_System_Int32__" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.#ctor(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{Bodu.Globalization.Calendar.CalendarSystem},System.Collections.Generic.IEnumerable{Bodu.Globalization.Calendar.NotableDateCategory},System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.Int32},System.Collections.Generic.IEnumerable{System.Int32})">
-          <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.-ctor.html#Bodu_Globalization_Calendar_AdjustmentScope__ctor_System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_Bodu_Globalization_Calendar_CalendarSystem__System_Collections_Generic_IEnumerable_Bodu_Globalization_Calendar_NotableDateCategory__System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_System_String__System_Nullable_System_Int32__System_Nullable_System_Int32__System_Collections_Generic_IEnumerable_System_Int32__System_Collections_Generic_IEnumerable_System_Int32__">AdjustmentScope(IEnumerable&lt;string&gt;, IEnumerable&lt;CalendarSystem&gt;, IEnumerable&lt;NotableDateCategory&gt;, IEnumerable&lt;string&gt;, IEnumerable&lt;string&gt;, int?, int?, IEnumerable&lt;int&gt;?, IEnumerable&lt;int&gt;?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.html">AdjustmentScope</a> class.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_AdjustmentScope_Calendars" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.Calendars">
-          <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.Calendars.html#Bodu_Globalization_Calendar_AdjustmentScope_Calendars">Calendars</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the calendar systems the policy is limited to.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_AdjustmentScope_Categories" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.Categories">
-          <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.Categories.html#Bodu_Globalization_Calendar_AdjustmentScope_Categories">Categories</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the categories the policy is limited to.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_AdjustmentScope_ExceptYears" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.ExceptYears">
-          <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.ExceptYears.html#Bodu_Globalization_Calendar_AdjustmentScope_ExceptYears">ExceptYears</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the explicit exclusion years.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_AdjustmentScope_FromYear" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.FromYear">
-          <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.FromYear.html#Bodu_Globalization_Calendar_AdjustmentScope_FromYear">FromYear</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the first year the policy applies.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_AdjustmentScope_Global" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.Global">
-          <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.Global.html#Bodu_Globalization_Calendar_AdjustmentScope_Global">Global</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a shared <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.html">AdjustmentScope</a> that imposes no restriction.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_AdjustmentScope_NotableDateRefs" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.NotableDateRefs">
-          <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.NotableDateRefs.html#Bodu_Globalization_Calendar_AdjustmentScope_NotableDateRefs">NotableDateRefs</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the notable-date concepts the policy is limited to.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_AdjustmentScope_OnlyYears" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.OnlyYears">
-          <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.OnlyYears.html#Bodu_Globalization_Calendar_AdjustmentScope_OnlyYears">OnlyYears</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the explicit inclusion years.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_AdjustmentScope_RuleRefs" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.RuleRefs">
-          <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.RuleRefs.html#Bodu_Globalization_Calendar_AdjustmentScope_RuleRefs">RuleRefs</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the rules the policy is limited to.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_AdjustmentScope_Territories" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.Territories">
-          <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.Territories.html#Bodu_Globalization_Calendar_AdjustmentScope_Territories">Territories</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the territories the policy is limited to.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_AdjustmentScope_ToYear" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.ToYear">
-          <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.ToYear.html#Bodu_Globalization_Calendar_AdjustmentScope_ToYear">ToYear</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the last year the policy applies.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_AdjustmentScope_Matches_System_String_Bodu_Globalization_Calendar_CalendarSystem_Bodu_Globalization_Calendar_NotableDateCategory_System_String_System_String_System_Int32_" data-uid="Bodu.Globalization.Calendar.AdjustmentScope.Matches(System.String,Bodu.Globalization.Calendar.CalendarSystem,Bodu.Globalization.Calendar.NotableDateCategory,System.String,System.String,System.Int32)">
-          <a class="xref" href="Bodu.Globalization.Calendar.AdjustmentScope.Matches.html#Bodu_Globalization_Calendar_AdjustmentScope_Matches_System_String_Bodu_Globalization_Calendar_CalendarSystem_Bodu_Globalization_Calendar_NotableDateCategory_System_String_System_String_System_Int32_">Matches(string, CalendarSystem, NotableDateCategory, string, string, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the policy may apply to a rule with the supplied attributes in the supplied year.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <h3 id="seealso">See Also</h3>
+
+  <h2 id="seealso">See Also</h2>
   <div class="seealso">
       <div><a class="xref" href="Bodu.Globalization.Calendar.AdjustmentPolicy.html">AdjustmentPolicy</a></div>
       <div><span><a href="../guides/calendar/adjustment-rules.html">Observance adjustment
-    rules (guide)</a></span></div>
+            rules (guide)</a></span></div>
   </div>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

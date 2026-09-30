@@ -1,89 +1,95 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Hardware acceleration and the SIMD opt-out | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Hardware acceleration and the SIMD opt-out | BODU ">
-    
-    
-      <link rel="shortcut icon" href="../../images/favicon.svg">
-      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../../styles/docfx.css">
-      <link rel="stylesheet" href="../../styles/main.css">
-      <meta property="docfx:navrel" content="../../toc.html">
-      <meta property="docfx:tocrel" content="../toc.html">
-    
-    <meta property="docfx:rel" content="../../">
-    
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/cryptography/hardware-acceleration.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../../index.html">
-                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="">
+
+        <article data-uid="">
 <h1 id="hardware-acceleration-and-the-simd-opt-out">Hardware acceleration and the SIMD opt-out</h1>
 
-<p>Several primitives in <code>Bodu.Security.Cryptography</code> ship an AVX-512 vectorised kernel alongside their scalar reference implementation, and dispatch to it automatically when the host CPU supports the required instructions. This page documents exactly <em>which</em> algorithms are accelerated, <em>when</em> the fast path engages, and <em>how</em> to force the scalar path process-wide.</p>
+<p>Several primitives in <code>Bodu.Security.Cryptography</code> ship a vectorised kernel alongside their scalar reference implementation, and dispatch to it automatically when the host CPU supports the required instructions. This page documents exactly <em>which</em> algorithms are accelerated, <em>when</em> the fast path engages, and <em>how</em> to force the scalar path process-wide.</p>
 <h2 id="which-algorithms-are-accelerated">Which algorithms are accelerated</h2>
-<p>Every accelerated primitive has a scalar reference implementation and an AVX-512 kernel in a sibling <code>*.Avx512.cs</code> file. The dispatch is per-operation and transparent — the public API and output are identical either way.</p>
+<p>Every accelerated primitive has a scalar reference implementation and one or more vector kernels in sibling files — <code>*.Avx512.cs</code> for the AVX-512 kernels, <code>Blake2bCore.Vector256.cs</code> with its <code>Avx512</code> and <code>Avx2</code> shims and <code>Blake2bCore.Vector128.cs</code> over Argon2's 128-bit shims for BLAKE2b, <code>Blake2sCore.Vector128.cs</code> with its <code>Avx512</code>, <code>Ssse3</code> and <code>AdvSimd</code> shims for BLAKE2s, <code>Blake3Core.Vector512.cs</code>, <code>Blake3Core.Vector256.cs</code> with its <code>Avx512</code> and <code>Avx2</code> shims and <code>Blake3Core.Vector128.cs</code> over the BLAKE2s shims for BLAKE3, <code>Argon2Core.Avx2.cs</code>, <code>Argon2Core.Vector128.cs</code> with its <code>Ssse3</code> and <code>AdvSimd</code> shims for Argon2, <code>ScryptCore.Vector128.cs</code> with its <code>Sse2</code> and <code>AdvSimd</code> shims for scrypt, <code>ChaCha20Core.Vector512.cs</code>, <code>ChaCha20Core.Vector256.cs</code> with its <code>Avx512</code> and <code>Avx2</code> shims and <code>ChaCha20Core.Vector128.cs</code> with its <code>Avx512</code>, <code>Ssse3</code> and <code>AdvSimd</code> shims for ChaCha20, the matching <code>Salsa20Core.Vector*.cs</code> kernels over the same shims for Salsa20, <code>SerpentCore.Vector256.cs</code> and <code>SerpentCore.Vector128.cs</code> over ChaCha20's shims for Serpent-128, <code>CubeHashCore.Vector512.cs</code>, <code>CubeHashCore.Vector256.cs</code> and <code>CubeHashCore.Vector128.cs</code> over ChaCha20's shims for CubeHash, <code>Poly1305Core.Vector512.cs</code> and <code>Poly1305Core.Vector256.cs</code> for Poly1305, and <code>Ghash.Clmul.cs</code> with its <code>PclmulqdqIsa</code> and <code>PmullIsa</code> shims for GHASH and POLYVAL. The dispatch is per-operation and transparent — the public API and output are identical either way.</p>
 <table>
 <thead>
 <tr>
@@ -96,17 +102,17 @@
 <tr>
 <td><code>Blake2b</code></td>
 <td>Block compression</td>
-<td>AVX-512F + VL</td>
+<td>AVX-512F + VL, else AVX2, else SSSE3 (x64); AdvSimd (ARM64)</td>
 </tr>
 <tr>
 <td><code>Blake2s</code></td>
 <td>Block compression</td>
-<td>AVX-512F + VL</td>
+<td>AVX-512F + VL, else SSSE3 (x64); AdvSimd (ARM64)</td>
 </tr>
 <tr>
 <td><code>Blake3</code></td>
-<td>Compression function</td>
-<td>AVX-512F + VL</td>
+<td>Chunks and parents, many at once; single blocks</td>
+<td>AVX-512F where the runtime prefers 512-bit vectors (16 chunks at once), else AVX-512F + VL or AVX2 (8), else SSSE3 (x64); AdvSimd (ARM64) (4)</td>
 </tr>
 <tr>
 <td><code>Threefish256</code></td>
@@ -126,11 +132,47 @@
 <tr>
 <td><code>CubeHash</code></td>
 <td>Round permutation</td>
-<td>AVX-512F</td>
+<td>AVX-512F, else AVX2, else SSSE3 (x64); AdvSimd (ARM64)</td>
+</tr>
+<tr>
+<td><code>Argon2d</code> / <code>Argon2i</code> / <code>Argon2id</code></td>
+<td>Compression function <code>G</code></td>
+<td>AVX2, else SSSE3 (x64); AdvSimd (ARM64)</td>
+</tr>
+<tr>
+<td><code>Scrypt</code></td>
+<td><code>scryptBlockMix</code> (Salsa20/8)</td>
+<td>SSE2 (x64); AdvSimd (ARM64)</td>
+</tr>
+<tr>
+<td><code>ChaCha20</code> / <code>XChaCha20</code>, <code>XChaCha20Poly1305</code></td>
+<td>Keystream, many blocks at once</td>
+<td>AVX-512F where the runtime prefers 512-bit vectors (16 blocks at once), else AVX-512F + VL or AVX2 (8), else SSSE3 (x64); AdvSimd (ARM64) (4)</td>
+</tr>
+<tr>
+<td><code>Salsa20</code> / <code>XSalsa20</code>, <code>XSalsa20Poly1305</code> / <code>XSalsa20Poly1305Aead</code></td>
+<td>Keystream, many blocks at once</td>
+<td>As ChaCha20</td>
+</tr>
+<tr>
+<td><code>Serpent128Cipher</code> (and <code>Serpent128</code>)</td>
+<td><code>EncryptBlocks</code> / <code>DecryptBlocks</code>: many blocks at once</td>
+<td>AVX-512F + VL or AVX2 (8 blocks at once), else SSSE3 (x64); AdvSimd (ARM64) (4)</td>
+</tr>
+<tr>
+<td><code>Poly1305</code>, and the Poly1305 in <code>XChaCha20Poly1305</code> / <code>XSalsa20Poly1305</code> / <code>XSalsa20Poly1305Aead</code></td>
+<td>Runs of whole blocks, many at once, from 512 bytes</td>
+<td>AVX-512F where the runtime prefers 512-bit vectors (8 blocks at once, from 4 KiB), else AVX2 (4; two groups of four per step from 1 KiB where AVX-512VL is available) (x64)</td>
+</tr>
+<tr>
+<td><code>GcmModeTransform</code> / <code>GcmSivModeTransform</code></td>
+<td>GHASH / POLYVAL</td>
+<td>PCLMULQDQ + SSSE3 (x64); PMULL (ARM64)</td>
 </tr>
 </tbody>
 </table>
-<p>There are two gate forms. The 128- and 256-bit-lane kernels (BLAKE2b, BLAKE2s, BLAKE3, Threefish-256) require the AVX-512 <strong>Vector Length</strong> extension (<code>Avx512F.VL.IsSupported</code>); the 512-bit-lane kernels (Threefish-512/1024, CubeHash) require only AVX-512 <strong>Foundation</strong> (<code>Avx512F.IsSupported</code>). Separately from the AVX-512 kernels, the GHASH multiplication shared by <code>GcmModeTransform</code> and <code>GcmSivModeTransform</code> has a carry-less-multiply fast path built on <strong>PCLMULQDQ</strong> (with SSSE3 for the byte shuffles); it is gated by <code>Pclmulqdq.IsSupported &amp;&amp; Ssse3.IsSupported</code>, honours the same <code>DisableSimd</code> switch, and falls back to the constant-time scalar GF(2¹²⁸) reference otherwise. No other SIMD instruction set (AVX2, ARM AdvSimd) is used as a standalone fast path.</p>
+<p>There are two gate forms. The 128- and 256-bit-lane AVX-512 kernels (BLAKE2b, BLAKE2s, BLAKE3, ChaCha20, Salsa20, Serpent-128, Threefish-256) require the AVX-512 <strong>Vector Length</strong> extension (<code>Avx512F.VL.IsSupported</code>); the 512-bit-lane kernels (Threefish-512/1024, CubeHash) require only AVX-512 <strong>Foundation</strong> (<code>Avx512F.IsSupported</code>). The 512-bit kernels of BLAKE3, ChaCha20 and Salsa20 also wait for <code>Vector512.IsHardwareAccelerated</code>, which the runtime clears on processors whose clock drops under sustained 512-bit work; there their 256-bit AVX-512VL kernels run instead, and <code>DOTNET_PreferredVectorBitWidth=512</code> opts such a processor in. GHASH, which <code>GcmModeTransform</code> authenticates with, and POLYVAL, which <code>GcmSivModeTransform</code> does, share one carry-less kernel that folds four blocks into each reduction. It runs on <strong>PCLMULQDQ</strong> with SSSE3 for the byte shuffles on x64 (<code>Pclmulqdq.IsSupported &amp;&amp; Ssse3.IsSupported</code>) and on the cryptography extension's <strong>PMULL</strong> on ARM64 (<code>Aes.IsSupported</code>, which .NET uses to expose it); like Argon2's kernel it is written once and differs between the two architectures only in a small shim. Elsewhere, including ARM64 processors without the extension, a constant-time scalar multiply built from integer multiplications runs instead. Argon2 takes the widest of three kernels the processor offers: a 256-bit <strong>AVX2</strong> kernel, else a 128-bit kernel over <strong>SSSE3</strong> on x64 or <strong>AdvSimd</strong> on ARM64 (<code>AdvSimd.Arm64.IsSupported</code>); the 128-bit kernel is written once over portable <code>Vector128</code> arithmetic and differs between the two architectures only in five shim operations. Argon2 uses no AVX-512 kernel: its cost is dominated by memory, which wider registers do not help. BLAKE2b and BLAKE2s each write their kernel once over portable vectors and specialize it with a shim of rotations: BLAKE2b's 256-bit kernel runs with AVX-512VL's single-instruction rotations or, on AVX2, with byte shuffles and shifts, and a 128-bit kernel over Argon2's SSSE3 and AdvSimd shims covers the rest; BLAKE2s's whole state fits one 128-bit kernel, over AVX-512VL, SSSE3 or AdvSimd. Without any of them, BLAKE2's scalar kernels keep the working vector in registers with the message schedule resolved at compile time. BLAKE3's tree makes every chunk independent until its chaining value joins the tree, so its kernels compress many chunks at once, one to each lane of a vector: sixteen over 512 bits, eight over 256 bits with AVX-512VL's rotations or AVX2's byte shuffles, and four over 128 bits with BLAKE2s's SSSE3 and AdvSimd shims — BLAKE3's <code>G</code> is BLAKE2s's, rotations included — with transposes carrying message words in and chaining values out. Parent nodes are compressed many at once the same way, and single blocks, such as a message's last chunk, take BLAKE2s-style 128-bit or scalar kernels. The threads <code>Blake3.MaxDegreeOfParallelism</code> allows are separate from this dispatch: each thread runs the same kernels on its own part of the input. scrypt's <code>scryptBlockMix</code> runs the Salsa20/8 core on four 128-bit vectors, one per diagonal of its state, over <strong>SSE2</strong> on x64 — part of the x64 baseline, so every x64 processor takes it — or <strong>AdvSimd</strong> on ARM64; the two differ only in the three lane rotations the shim supplies. A BlockMix chain is sequential, so the kernel stays at 128 bits: one Salsa20/8 state fills a vector exactly, and nothing wider would have independent work to fill it. The ChaCha20 and Salsa20 keystreams, by contrast, are counter mode — every block independent — so their kernels produce many blocks at once, one to each lane: each vector holds one state word of sixteen, eight or four consecutive blocks, with the block counters in successive lanes, and a transpose carries the words back into block order as the keystream meets the data. Rotations are single instructions under AVX-512, byte shuffles for 16 and 8 bits elsewhere, and shift pairs otherwise; ChaCha20 and Salsa20 share the shims and the transposes. <code>StreamCipherTransform</code> hands every whole block to these kernels in one call; a partial last block, and runs of fewer than four blocks, take the scalar block function. The Poly1305 AEADs draw a message's keystream the same way unless a kernel is estimated to draw it faster: a short message can then take all of its keystream, the block that keys Poly1305 included, in one run of up to sixteen blocks through a buffer, rounded up to a whole group where that costs no more, and a longer message its last few blocks in one step of four. The estimates were measured per kernel: with AVX-512VL, a step of four or eight blocks takes about as long as the scalar function over one block, and without it about twice as long, because the kernels then spill from 16 registers. Serpent-128's <code>EncryptBlocks</code> and <code>DecryptBlocks</code> — which ECB, CTR, XTS, OCB and the other batched modes call — work the same way: each vector holds one word of eight or four blocks, the S-box circuits and the linear transform run on all of them at once, and transposes move the blocks in and out of word order. The rotations are AVX-512's single instruction or shift pairs, and the four-block kernels are the fallback for runs of four to seven blocks. A single <code>Encrypt</code>, as CBC encryption makes, and the wide-block Serpent variants run the scalar circuits. Poly1305's scalar loop runs on three 64-bit limbs, taking the high half of each 64-by-64-bit product from <code>mulx</code> on x64 with BMI2 or <code>umulh</code> on ARM64, and from three ordinary 64-bit multiplies on processors with neither, which the limbs' bounds make exact. That loop takes one block at a time, because each block's multiplication by <code>r</code> waits on the one before. Its vector kernels break that chain the way OpenSSL's and BoringSSL's do: each 64-bit lane takes every fourth (or eighth) block and multiplies by <code>r⁴</code> (or <code>r⁸</code>), and after the last group each lane multiplies by the power of <code>r</code> its last block needs, so the lanes sum to exactly the scalar loop's result. In the lanes the numbers are five 26-bit limbs, since the only vector multiply is 32 by 32 bits (<code>vpmuludq</code>); .NET exposes no AVX-512 IFMA. Each run computes its powers of <code>r</code> afresh, and its 256-bit multiplies can lower the processor's clock for the rest of an AEAD message, so the kernels start at 512 bytes: below that, the scalar loop finishes an AEAD message first. Where AVX-512VL gives the AVX2 kernel 32 registers, it takes two groups per step from 1 KiB, <code>(h + m)·r⁸ + m′·r⁴</code>, so the second group's products fill the multiplier while the first group's carries run; on AVX2 alone that loop spills from 16 registers, so it is not used there. ARM64 keeps the scalar loop until the AdvSimd kernel has been measured on hardware. The Curve25519 field arithmetic that <code>X25519</code> and <code>Ed25519</code> share works the same way on five 51-bit limbs, and forms the split from four ordinary 64-bit multiplies on processors with neither instruction. CubeHash's round is one long dependency chain over its 1024-bit state, so its kernels hold the whole state in registers — two 512-bit, four 256-bit or eight 128-bit — for a run of rounds rather than working on several inputs at once. The state's exchanges of words 8 or 4 apart move whole registers or register halves, which the narrower kernels write into which register each result lands in; its exchanges of words 2 or 1 apart are one in-lane shuffle each. The AVX2 kernel comes close to the AVX-512 one, since the chain, not the register width, bounds the round.</p>
+<p>The gates are evaluated where the code is compiled. Under the JIT that is the running processor; a NativeAOT application is compiled ahead of time for a baseline instruction set, which on x64 excludes AVX2 and AVX-512, so it takes the narrower kernels unless the project raises the target with <code>&lt;IlcInstructionSet&gt;</code> (for example <code>x86-64-v3</code> for AVX2) — only where every machine it will run on supports it.</p>
 <h2 id="when-the-fast-path-engages">When the fast path engages</h2>
 <p>By default the vectorised path is taken whenever the CPU reports the required instruction set. The check is a JIT intrinsic: on a host without AVX-512 it folds to a compile-time constant and the vectorised branch is eliminated entirely, so there is no runtime probing cost.</p>
 <h2 id="forcing-the-scalar-path">Forcing the scalar path</h2>
@@ -151,62 +193,41 @@
 <!-- compile -->
 <pre><code class="lang-csharp">AppContext.SetSwitch(&quot;Bodu.Security.Cryptography.DisableSimd&quot;, true);
 </code></pre>
-<p>As a coarser alternative, the .NET runtime's own knob <code>DOTNET_EnableAVX512F=0</code> (or <code>DOTNET_EnableHWIntrinsic=0</code>) makes <code>Avx512F.IsSupported</code> report <code>false</code>, which also forces the scalar path — but it affects the whole process including the BCL, not just this library. Prefer the library switch when you only want to pin <em>these</em> primitives.</p>
+<p>As a coarser alternative, the .NET runtime's own knobs make the intrinsics report <code>false</code>, which also forces the scalar paths — <code>DOTNET_EnableAVX512F=0</code> on .NET 8 or <code>DOTNET_EnableAVX512=0</code> on .NET 10 for the AVX-512 kernels (each runtime ignores the other's name, so set both where either may run), <code>DOTNET_EnableAVX2=0</code> to move Argon2, BLAKE2b, BLAKE3, ChaCha20, Salsa20 and Serpent-128 from AVX2 to SSSE3, or <code>DOTNET_EnableHWIntrinsic=0</code> for everything — but they affect the whole process including the BCL, not just this library. Prefer the library switch when you only want to pin <em>these</em> primitives.</p>
 <div class="NOTE">
 <h5>Note</h5>
-<p>The opt-out exists for <strong>determinism, reproducibility, and audit</strong>, not because the vectorised paths are unsafe. BLAKE2, BLAKE3, and Threefish are ARX constructions — addition, rotation, and XOR only, with no secret-dependent branches or table lookups — so the scalar and AVX-512 paths are both inherently constant-time and produce bit-identical output. The switch only selects which of two equivalent implementations runs; it makes no additional constant-time <em>guarantee</em> beyond what the algorithms already provide, and this library is not independently audited.</p>
+<p>The opt-out exists for <strong>determinism, reproducibility, and audit</strong>, not because the vectorised paths are unsafe. BLAKE2, BLAKE3, ChaCha20, Salsa20, and Threefish are ARX constructions — addition, rotation, and XOR only, with no secret-dependent branches or table lookups — so the scalar and vector paths are both inherently constant-time and produce bit-identical output; the byte shuffles that stand in for rotations index by constants, not data. Serpent's S-boxes are Boolean circuits and its linear transform rotations, shifts and XOR, so the same holds for it. Argon2's kernels add a 32-bit multiply, which has a fixed latency on every targeted processor, and byte shuffles whose indices are constants, not data; which blocks a derivation reads is decided outside the kernels, from public inputs in Argon2i and the first half of Argon2id's first pass. scrypt's kernels are Salsa20/8, again addition, rotation, and XOR, with lane rotations by constants; scrypt's own data-dependent read of <code>V[j]</code> is part of its design, made outside the kernels, and identical on both paths. The GHASH and POLYVAL kernels are carry-less or integer multiplications, shifts, and XORs, which likewise run in fixed time, with no branch on or index by the key or the data. The switch only selects which of two equivalent implementations runs; it makes no additional constant-time <em>guarantee</em> beyond what the algorithms already provide, and this library is not independently audited.</p>
 </div>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
 <li><a href="blake.html">Using BLAKE2 and BLAKE3</a></li>
+<li><a href="argon2.html">Using Argon2</a></li>
+<li><a href="scrypt.html">Using scrypt</a></li>
+<li><a href="stream-ciphers.html">Using stream ciphers</a> · <a href="stream-aead.html">Authenticated stream ciphers</a></li>
 <li><a href="threefish-256.html">Using Threefish-256</a> · <a href="threefish-512.html">Threefish-512</a> · <a href="threefish-1024.html">Threefish-1024</a></li>
 <li><a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography API reference</a></li>
 </ul>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../../styles/docfx.js"></script>
-    <script type="text/javascript" src="../../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

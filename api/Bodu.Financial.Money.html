@@ -1,105 +1,143 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Struct Money | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Struct Money | BODU ">
-    
-    <meta name="description" content="Represents an immutable monetary amount whose currency is identified at runtime by ISO 4217 code, in contrast to  where the currency is a type parameter.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>Money Struct
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Money Struct
+ | BODU ">
+      
+      <meta name="description" content="Represents an immutable monetary amount whose currency is identified at runtime by ISO 4217 code, in contrast to  where the currency is a type parameter.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Financial.Money">
+
+        <article data-uid="Bodu.Financial.Money">
 
 
 
-  <h1 id="Bodu_Financial_Money" data-uid="Bodu.Financial.Money" class="text-break">Struct Money</h1>
-  <div class="markdown level0 summary"><p>Represents an immutable monetary amount whose currency is identified at runtime by ISO 4217 code, in contrast to
+
+  <h1 id="Bodu_Financial_Money" data-uid="Bodu.Financial.Money" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+Money Struct
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Allocation.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Financial_Money_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Financial.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial">Bodu.Financial</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Allocation.cs">Money.Allocation.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents an immutable monetary amount whose currency is identified at runtime by ISO 4217 code, in contrast to
 <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> where the currency is a type parameter.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanformattable">ISpanFormattable</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformattable">IFormattable</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanformattable">IUtf8SpanFormattable</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Financial.Money.html">Money</a>&gt;</div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a class="xref" href="Bodu.Financial.Money.html">Money</a>&gt;</div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable">IComparable</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable</a>&lt;<a class="xref" href="Bodu.Financial.Money.html">Money</a>&gt;</div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1">IParsable</a>&lt;<a class="xref" href="Bodu.Financial.Money.html">Money</a>&gt;</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct Money : ISpanFormattable, IFormattable, IUtf8SpanFormattable, IEquatable&lt;Money&gt;, IComparable&lt;Money&gt;, IComparable, ISpanParsable&lt;Money&gt;, IParsable&lt;Money&gt;</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanformattable">ISpanFormattable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformattable">IFormattable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanformattable">IUtf8SpanFormattable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Financial.Money.html">Money</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a class="xref" href="Bodu.Financial.Money.html">Money</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable">IComparable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable</a>&lt;<a class="xref" href="Bodu.Financial.Money.html">Money</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1">IParsable</a>&lt;<a class="xref" href="Bodu.Financial.Money.html">Money</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
     </div>
@@ -109,14 +147,86 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.BufferConverter.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;T&gt;(T, byte[], int)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Financial.dll</h6>
-  <h5 id="Bodu_Financial_Money_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly struct Money : ISpanFormattable, IFormattable, IUtf8SpanFormattable, IEquatable&lt;Money&gt;, IComparable&lt;Money&gt;, IComparable, ISpanParsable&lt;Money&gt;, IParsable&lt;Money&gt;</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Financial_Money_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Financial.Extensions.MoneyCompactFormattingExtensions.html#Bodu_Financial_Extensions_MoneyCompactFormattingExtensions_ToCompactString_Bodu_Financial_Money_System_String_System_IFormatProvider_System_Int32_">MoneyCompactFormattingExtensions.ToCompactString(Money, string?, IFormatProvider?, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Financial.Extensions.MoneyExchangeRateExtensions.html#Bodu_Financial_Extensions_MoneyExchangeRateExtensions_ConvertTo_Bodu_Financial_Money_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_System_MidpointRounding_">MoneyExchangeRateExtensions.ConvertTo(Money, IDatedRateProvider, string, DateOnly, RateLookupOptions?, MidpointRounding)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Financial.Extensions.MoneyExchangeRateExtensions.html#Bodu_Financial_Extensions_MoneyExchangeRateExtensions_ConvertToWithRate_Bodu_Financial_Money_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_System_MidpointRounding_">MoneyExchangeRateExtensions.ConvertToWithRate(Money, IDatedRateProvider, string, DateOnly, RateLookupOptions?, MidpointRounding)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Financial.Extensions.MoneyExchangeRateExtensions.html#Bodu_Financial_Extensions_MoneyExchangeRateExtensions_ConvertTo__1_Bodu_Financial_Money_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_System_MidpointRounding_">MoneyExchangeRateExtensions.ConvertTo&lt;TTarget&gt;(Money, IDatedRateProvider, DateOnly, RateLookupOptions?, MidpointRounding)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Financial.Extensions.MoneyExtensions.html#Bodu_Financial_Extensions_MoneyExtensions_Abs_Bodu_Financial_Money_">MoneyExtensions.Abs(Money)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Financial.Extensions.MoneyExtensions.html#Bodu_Financial_Extensions_MoneyExtensions_IsNegative_Bodu_Financial_Money_">MoneyExtensions.IsNegative(Money)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Financial.Extensions.MoneyExtensions.html#Bodu_Financial_Extensions_MoneyExtensions_IsPositive_Bodu_Financial_Money_">MoneyExtensions.IsPositive(Money)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Financial.Extensions.MoneyExtensions.html#Bodu_Financial_Extensions_MoneyExtensions_IsZero_Bodu_Financial_Money_">MoneyExtensions.IsZero(Money)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Financial.Extensions.MoneyExtensions.html#Bodu_Financial_Extensions_MoneyExtensions_Sign_Bodu_Financial_Money_">MoneyExtensions.Sign(Money)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Financial_Money_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 <a class="xref" href="Bodu.Financial.Money.html">Money</a> is the runtime-tagged counterpart of <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>. Use it when the currency
 is data rather than part of the type — for example, when deserialising payloads that carry the currency code, or
@@ -151,638 +261,3186 @@ var euros = new Money(5m, CurrencyCode.EUR);
 // _ = total + euros;                               // throws InvalidOperationException</code></pre>
 </example>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_Money__ctor_System_Decimal_Bodu_Financial_Currencies_CurrencyCode_System_MidpointRounding_" data-uid="Bodu.Financial.Money.#ctor(System.Decimal,Bodu.Financial.Currencies.CurrencyCode,System.MidpointRounding)">
-          <a class="xref" href="Bodu.Financial.Money.-ctor.html#Bodu_Financial_Money__ctor_System_Decimal_Bodu_Financial_Currencies_CurrencyCode_System_MidpointRounding_">Money(decimal, CurrencyCode, MidpointRounding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.Money.html">Money</a> struct from an amount and currency, rounding the amount
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Financial_Money__ctor_" data-uid="Bodu.Financial.Money.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money__ctor_System_Decimal_Bodu_Financial_Currencies_CurrencyCode_System_MidpointRounding_" data-uid="Bodu.Financial.Money.#ctor(System.Decimal,Bodu.Financial.Currencies.CurrencyCode,System.MidpointRounding)">
+  Money(decimal, CurrencyCode, MidpointRounding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.Money.html">Money</a> struct from an amount and currency, rounding the amount
 to the currency's minor-unit precision using the supplied rule.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_Money_Amount" data-uid="Bodu.Financial.Money.Amount">
-          <a class="xref" href="Bodu.Financial.Money.Amount.html#Bodu_Financial_Money_Amount">Amount</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the rounded monetary amount in the major unit of the currency.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Code" data-uid="Bodu.Financial.Money.Code">
-          <a class="xref" href="Bodu.Financial.Money.Code.html#Bodu_Financial_Money_Code">Code</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the currency identifying this value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_HasCurrency" data-uid="Bodu.Financial.Money.HasCurrency">
-          <a class="xref" href="Bodu.Financial.Money.HasCurrency.html#Bodu_Financial_Money_HasCurrency">HasCurrency</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether this value carries a currency and can participate in financial operations.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_IsDefault" data-uid="Bodu.Financial.Money.IsDefault">
-          <a class="xref" href="Bodu.Financial.Money.IsDefault.html#Bodu_Financial_Money_IsDefault">IsDefault</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether this value is a default-initialised, currency-less <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_MinorUnits" data-uid="Bodu.Financial.Money.MinorUnits">
-          <a class="xref" href="Bodu.Financial.Money.MinorUnits.html#Bodu_Financial_Money_MinorUnits">MinorUnits</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the minor-unit precision of this value.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_Money_Allocate_System_Int32_" data-uid="Bodu.Financial.Money.Allocate(System.Int32)">
-          <a class="xref" href="Bodu.Financial.Money.Allocate.html#Bodu_Financial_Money_Allocate_System_Int32_">Allocate(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Distributes this amount as evenly as possible across <code class="paramref">parts</code> shares, summing exactly to the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Money(decimal amount, CurrencyCode code, MidpointRounding rounding = MidpointRounding.ToEven)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>amount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The monetary amount in the major unit.</p>
+</dd>
+    <dt><code>code</code> <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a></dt>
+    <dd><p>The currency identifying this value.</p>
+</dd>
+    <dt><code>rounding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding">MidpointRounding</a></dt>
+    <dd><p>The midpoint-rounding rule applied when normalising to the minor-unit precision.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">code</code> is <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html#Bodu_Financial_Currencies_CurrencyCode_None">None</a> or is not a defined <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a>
+member.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Financial_Money_Amount_" data-uid="Bodu.Financial.Money.Amount*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Amount" data-uid="Bodu.Financial.Money.Amount">
+  Amount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the rounded monetary amount in the major unit of the currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public decimal Amount { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The amount stored by this instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Code_" data-uid="Bodu.Financial.Money.Code*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Code" data-uid="Bodu.Financial.Money.Code">
+  Code
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the currency identifying this value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CurrencyCode Code { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a></dt>
+    <dd><p>The stored <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a>, or <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html#Bodu_Financial_Currencies_CurrencyCode_None">None</a> for a default-initialised value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_HasCurrency_" data-uid="Bodu.Financial.Money.HasCurrency*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_HasCurrency" data-uid="Bodu.Financial.Money.HasCurrency">
+  HasCurrency
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether this value carries a currency and can participate in financial operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasCurrency { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when this value carries an ISO code; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> for a
+default-initialised value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_IsDefault_" data-uid="Bodu.Financial.Money.IsDefault*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_IsDefault" data-uid="Bodu.Financial.Money.IsDefault">
+  IsDefault
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether this value is a default-initialised, currency-less <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsDefault { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when this value was produced by <code>default(Money)</code> and therefore carries no currency;
+otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Money_IsDefault_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A default-initialised <a class="xref" href="Bodu.Financial.Money.html">Money</a> is the unavoidable zero value of the struct, not a valid financial
+zero. It carries no currency and is rejected by every arithmetic, allocation, and conversion operation; use
+<a class="xref" href="Bodu.Financial.Money.html#Bodu_Financial_Money_Zero_Bodu_Financial_Currencies_CurrencyCode_">Zero(CurrencyCode)</a> to obtain a usable zero for a specific currency. Equality, hashing, and
+formatting remain safe to call so diagnostic surfaces do not throw.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_MinorUnits_" data-uid="Bodu.Financial.Money.MinorUnits*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_MinorUnits" data-uid="Bodu.Financial.Money.MinorUnits">
+  MinorUnits
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the minor-unit precision of this value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MinorUnits { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The explicit scale supplied at construction when this value carries one; otherwise the currency's minor-unit
+precision as reported by <a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.html">CurrencyRegistry</a>, or zero when the currency is unknown to the registry.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Money_MinorUnits_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A value materialised by the settlement path (<a class="xref" href="Bodu.Financial.CalculatedMoney.html#Bodu_Financial_CalculatedMoney_RoundToMoney_Bodu_Financial_MonetaryContext_">RoundToMoney(MonetaryContext?)</a>) at a
+precision other than the currency's registered minor units reports that explicit scale, keeping the stored
+precision and the reported minor units self-consistent. Ordinary construction always resolves the precision from
+the registry.</p>
+</div>
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Financial_Money_Allocate_" data-uid="Bodu.Financial.Money.Allocate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Allocate_System_Int32_" data-uid="Bodu.Financial.Money.Allocate(System.Int32)">
+  Allocate(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Allocation.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Distributes this amount as evenly as possible across <code class="paramref">parts</code> shares, summing exactly to the
 original.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Allocate_System_ReadOnlySpan_System_Decimal__" data-uid="Bodu.Financial.Money.Allocate(System.ReadOnlySpan{System.Decimal})">
-          <a class="xref" href="Bodu.Financial.Money.Allocate.html#Bodu_Financial_Money_Allocate_System_ReadOnlySpan_System_Decimal__">Allocate(ReadOnlySpan&lt;decimal&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Distributes this amount across the supplied non-negative ratios in proportion to their magnitudes.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_As__1" data-uid="Bodu.Financial.Money.As``1">
-          <a class="xref" href="Bodu.Financial.Money.As.html#Bodu_Financial_Money_As__1">As&lt;TCurrency&gt;()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts this <a class="xref" href="Bodu.Financial.Money.html">Money</a> to a strongly-typed <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> when the runtime currency
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Money[] Allocate(int parts)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>parts</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of shares to allocate.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a>[]</dt>
+    <dd><p>The per-share allocation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>This value is a default-initialised, currency-less <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">parts</code> is less than or equal to zero.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Allocate_" data-uid="Bodu.Financial.Money.Allocate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Allocate_System_ReadOnlySpan_System_Decimal__" data-uid="Bodu.Financial.Money.Allocate(System.ReadOnlySpan{System.Decimal})">
+  Allocate(ReadOnlySpan&lt;decimal&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Allocation.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Distributes this amount across the supplied non-negative ratios in proportion to their magnitudes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Money[] Allocate(ReadOnlySpan&lt;decimal&gt; ratios)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>ratios</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a>&gt;</dt>
+    <dd><p>The non-negative weights.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a>[]</dt>
+    <dd><p>The per-ratio allocation, whose sum equals this instance. Residual minor units are distributed by the <i>
+largest-remainder method</i> — each slot receives one extra unit in descending order of its fractional
+remainder, with ties broken by stable input order. Zero-ratio slots never receive residual.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>This value is a default-initialised, currency-less <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The ratios are empty, contain a negative value, or sum to zero.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_As_" data-uid="Bodu.Financial.Money.As*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_As__1" data-uid="Bodu.Financial.Money.As``1">
+  As&lt;TCurrency&gt;()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Converts this <a class="xref" href="Bodu.Financial.Money.html">Money</a> to a strongly-typed <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> when the runtime currency
 matches <code class="typeparamref">TCurrency</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_CompareTo_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.CompareTo(Bodu.Financial.Money)">
-          <a class="xref" href="Bodu.Financial.Money.CompareTo.html#Bodu_Financial_Money_CompareTo_Bodu_Financial_Money_">CompareTo(Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Compares this instance to another value of the same currency.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_CompareTo_System_Object_" data-uid="Bodu.Financial.Money.CompareTo(System.Object)">
-          <a class="xref" href="Bodu.Financial.Money.CompareTo.html#Bodu_Financial_Money_CompareTo_System_Object_">CompareTo(object?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Compares this instance to a boxed value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Convert_Bodu_Financial_ExchangeRates_ExchangeRate_Bodu_Financial_MonetaryContext_" data-uid="Bodu.Financial.Money.Convert(Bodu.Financial.ExchangeRates.ExchangeRate,Bodu.Financial.MonetaryContext)">
-          <a class="xref" href="Bodu.Financial.Money.Convert.html#Bodu_Financial_Money_Convert_Bodu_Financial_ExchangeRates_ExchangeRate_Bodu_Financial_MonetaryContext_">Convert(ExchangeRate, MonetaryContext?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts this amount using an auditable <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> quote, rounding to the target currency under
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Money&lt;TCurrency&gt; As&lt;TCurrency&gt;() where TCurrency : ICurrency</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money-1.html">Money</a>&lt;TCurrency&gt;</dt>
+    <dd><p>The strongly-typed monetary value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TCurrency</code></dt>
+    <dd><p>The target currency type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The instance's <a class="xref" href="Bodu.Financial.Money.html#Bodu_Financial_Money_Code">Code</a> does not match the currency of <code class="typeparamref">TCurrency</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_CompareTo_" data-uid="Bodu.Financial.Money.CompareTo*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_CompareTo_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.CompareTo(Bodu.Financial.Money)">
+  CompareTo(Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Compares this instance to another value of the same currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CompareTo(Money other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The value to compare against.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A negative, zero, or positive value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The operands have different currencies.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_CompareTo_" data-uid="Bodu.Financial.Money.CompareTo*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_CompareTo_System_Object_" data-uid="Bodu.Financial.Money.CompareTo(System.Object)">
+  CompareTo(object?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Compares this instance to a boxed value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CompareTo(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The boxed value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A negative, zero, or positive value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">obj</code> is not a <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Convert_" data-uid="Bodu.Financial.Money.Convert*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Convert_Bodu_Financial_ExchangeRates_ExchangeRate_Bodu_Financial_MonetaryContext_" data-uid="Bodu.Financial.Money.Convert(Bodu.Financial.ExchangeRates.ExchangeRate,Bodu.Financial.MonetaryContext)">
+  Convert(ExchangeRate, MonetaryContext?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Converts this amount using an auditable <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> quote, rounding to the target currency under
 <code class="paramref">context</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Convert_System_String_System_Decimal_" data-uid="Bodu.Financial.Money.Convert(System.String,System.Decimal)">
-          <a class="xref" href="Bodu.Financial.Money.Convert.html#Bodu_Financial_Money_Convert_System_String_System_Decimal_">Convert(string, decimal)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts this amount to a different currency at the supplied exchange rate, rounding to the target currency's
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Money Convert(ExchangeRate rate, MonetaryContext? context = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rate</code> <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a></dt>
+    <dd><p>The exchange-rate quote whose source currency must match this value's currency.</p>
+</dd>
+    <dt><code>context</code> <a class="xref" href="Bodu.Financial.MonetaryContext.html">MonetaryContext</a></dt>
+    <dd><p>The monetary context governing rounding; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> selects <a class="xref" href="Bodu.Financial.MonetaryContext.html#Bodu_Financial_MonetaryContext_Default">Default</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The converted <a class="xref" href="Bodu.Financial.Money.html">Money</a> in the rate's target currency.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Money_Convert_Bodu_Financial_ExchangeRates_ExchangeRate_Bodu_Financial_MonetaryContext__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Prefer this quote-first overload over the raw-decimal <a class="xref" href="Bodu.Financial.Money.html#Bodu_Financial_Money_Convert_System_String_System_Decimal_System_MidpointRounding_">Convert(string, decimal, MidpointRounding)</a>
+surface: it preserves the rate's direction, date, provider, and inversion metadata for downstream audit, and the
+companion <a class="xref" href="Bodu.Financial.Money.html#Bodu_Financial_Money_ConvertWithResult_Bodu_Financial_ExchangeRates_ExchangeRate_Bodu_Financial_MonetaryContext_">ConvertWithResult(ExchangeRate, MonetaryContext?)</a> returns that metadata alongside the
+rounding adjustment.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The rate's source currency does not match this value's <a class="xref" href="Bodu.Financial.Money.html#Bodu_Financial_Money_Code">Code</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Convert_" data-uid="Bodu.Financial.Money.Convert*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Convert_System_String_System_Decimal_" data-uid="Bodu.Financial.Money.Convert(System.String,System.Decimal)">
+  Convert(string, decimal)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Converts this amount to a different currency at the supplied exchange rate, rounding to the target currency's
 minor-unit precision.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Convert_System_String_System_Decimal_System_MidpointRounding_" data-uid="Bodu.Financial.Money.Convert(System.String,System.Decimal,System.MidpointRounding)">
-          <a class="xref" href="Bodu.Financial.Money.Convert.html#Bodu_Financial_Money_Convert_System_String_System_Decimal_System_MidpointRounding_">Convert(string, decimal, MidpointRounding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts this amount to a different currency at the supplied exchange rate, using the specified rounding rule.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_ConvertWithResult_Bodu_Financial_ExchangeRates_ExchangeRate_Bodu_Financial_MonetaryContext_" data-uid="Bodu.Financial.Money.ConvertWithResult(Bodu.Financial.ExchangeRates.ExchangeRate,Bodu.Financial.MonetaryContext)">
-          <a class="xref" href="Bodu.Financial.Money.ConvertWithResult.html#Bodu_Financial_Money_ConvertWithResult_Bodu_Financial_ExchangeRates_ExchangeRate_Bodu_Financial_MonetaryContext_">ConvertWithResult(ExchangeRate, MonetaryContext?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts this amount using an auditable <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> quote and returns the full conversion
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Money Convert(string targetIsoCode, decimal exchangeRate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>targetIsoCode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ISO 4217 code of the destination currency.</p>
+</dd>
+    <dt><code>exchangeRate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The rate, expressed as units of the destination per unit of the source.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The converted <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">targetIsoCode</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">targetIsoCode</code> is empty or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">exchangeRate</code> is negative.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Convert_" data-uid="Bodu.Financial.Money.Convert*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Convert_System_String_System_Decimal_System_MidpointRounding_" data-uid="Bodu.Financial.Money.Convert(System.String,System.Decimal,System.MidpointRounding)">
+  Convert(string, decimal, MidpointRounding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Converts this amount to a different currency at the supplied exchange rate, using the specified rounding rule.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Money Convert(string targetIsoCode, decimal exchangeRate, MidpointRounding rounding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>targetIsoCode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ISO 4217 code of the destination currency.</p>
+</dd>
+    <dt><code>exchangeRate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The rate, expressed as units of the destination per unit of the source.</p>
+</dd>
+    <dt><code>rounding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding">MidpointRounding</a></dt>
+    <dd><p>The midpoint-rounding rule applied at the target precision.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The converted <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">targetIsoCode</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">targetIsoCode</code> is empty or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">exchangeRate</code> is negative.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_ConvertWithResult_" data-uid="Bodu.Financial.Money.ConvertWithResult*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_ConvertWithResult_Bodu_Financial_ExchangeRates_ExchangeRate_Bodu_Financial_MonetaryContext_" data-uid="Bodu.Financial.Money.ConvertWithResult(Bodu.Financial.ExchangeRates.ExchangeRate,Bodu.Financial.MonetaryContext)">
+  ConvertWithResult(ExchangeRate, MonetaryContext?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Converts this amount using an auditable <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> quote and returns the full conversion
 result, including the rate, context, and rounding adjustment.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Convert__1_System_Decimal_" data-uid="Bodu.Financial.Money.Convert``1(System.Decimal)">
-          <a class="xref" href="Bodu.Financial.Money.Convert.html#Bodu_Financial_Money_Convert__1_System_Decimal_">Convert&lt;TTarget&gt;(decimal)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts this amount to a strongly-typed <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> at the supplied exchange rate.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Convert__1_System_Decimal_System_MidpointRounding_" data-uid="Bodu.Financial.Money.Convert``1(System.Decimal,System.MidpointRounding)">
-          <a class="xref" href="Bodu.Financial.Money.Convert.html#Bodu_Financial_Money_Convert__1_System_Decimal_System_MidpointRounding_">Convert&lt;TTarget&gt;(decimal, MidpointRounding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts this amount to a strongly-typed <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> at the supplied exchange rate, using the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MoneyConversionResult ConvertWithResult(ExchangeRate rate, MonetaryContext? context = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rate</code> <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a></dt>
+    <dd><p>The exchange-rate quote whose source currency must match this value's currency.</p>
+</dd>
+    <dt><code>context</code> <a class="xref" href="Bodu.Financial.MonetaryContext.html">MonetaryContext</a></dt>
+    <dd><p>The monetary context governing rounding; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> selects <a class="xref" href="Bodu.Financial.MonetaryContext.html#Bodu_Financial_MonetaryContext_Default">Default</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.MoneyConversionResult.html">MoneyConversionResult</a></dt>
+    <dd><p>The <a class="xref" href="Bodu.Financial.MoneyConversionResult.html">MoneyConversionResult</a> describing the conversion.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The rate's source currency does not match this value's <a class="xref" href="Bodu.Financial.Money.html#Bodu_Financial_Money_Code">Code</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Convert_" data-uid="Bodu.Financial.Money.Convert*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Convert__1_System_Decimal_" data-uid="Bodu.Financial.Money.Convert``1(System.Decimal)">
+  Convert&lt;TTarget&gt;(decimal)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Converts this amount to a strongly-typed <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> at the supplied exchange rate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Money&lt;TTarget&gt; Convert&lt;TTarget&gt;(decimal exchangeRate) where TTarget : ICurrency</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>exchangeRate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The rate, expressed as units of the destination per unit of the source.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money-1.html">Money</a>&lt;TTarget&gt;</dt>
+    <dd><p>The converted typed monetary value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TTarget</code></dt>
+    <dd><p>The destination currency type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">exchangeRate</code> is negative.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Convert_" data-uid="Bodu.Financial.Money.Convert*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Convert__1_System_Decimal_System_MidpointRounding_" data-uid="Bodu.Financial.Money.Convert``1(System.Decimal,System.MidpointRounding)">
+  Convert&lt;TTarget&gt;(decimal, MidpointRounding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Converts this amount to a strongly-typed <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> at the supplied exchange rate, using the
 specified rounding rule.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Divide_System_Decimal_" data-uid="Bodu.Financial.Money.Divide(System.Decimal)">
-          <a class="xref" href="Bodu.Financial.Money.Divide.html#Bodu_Financial_Money_Divide_System_Decimal_">Divide(decimal)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Divides this amount by <code class="paramref">divisor</code> using banker's rounding, identical to the <code>/</code> operator.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Divide_System_Decimal_System_MidpointRounding_" data-uid="Bodu.Financial.Money.Divide(System.Decimal,System.MidpointRounding)">
-          <a class="xref" href="Bodu.Financial.Money.Divide.html#Bodu_Financial_Money_Divide_System_Decimal_System_MidpointRounding_">Divide(decimal, MidpointRounding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Divides this amount by <code class="paramref">divisor</code> and rounds the result to the currency's minor-unit precision
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Money&lt;TTarget&gt; Convert&lt;TTarget&gt;(decimal exchangeRate, MidpointRounding rounding) where TTarget : ICurrency</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>exchangeRate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The rate, expressed as units of the destination per unit of the source.</p>
+</dd>
+    <dt><code>rounding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding">MidpointRounding</a></dt>
+    <dd><p>The midpoint-rounding rule.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money-1.html">Money</a>&lt;TTarget&gt;</dt>
+    <dd><p>The converted typed monetary value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TTarget</code></dt>
+    <dd><p>The destination currency type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">exchangeRate</code> is negative.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Divide_" data-uid="Bodu.Financial.Money.Divide*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Divide_System_Decimal_" data-uid="Bodu.Financial.Money.Divide(System.Decimal)">
+  Divide(decimal)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Divides this amount by <code class="paramref">divisor</code> using banker's rounding, identical to the <code>/</code> operator.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Money Divide(decimal divisor)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>divisor</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The scalar divisor.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The quotient, rounded to the currency's minor units using banker's rounding.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>This value is a default-initialised, currency-less <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dividebyzeroexception">DivideByZeroException</a></dt>
+    <dd><p><code class="paramref">divisor</code> is zero.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Divide_" data-uid="Bodu.Financial.Money.Divide*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Divide_System_Decimal_System_MidpointRounding_" data-uid="Bodu.Financial.Money.Divide(System.Decimal,System.MidpointRounding)">
+  Divide(decimal, MidpointRounding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Divides this amount by <code class="paramref">divisor</code> and rounds the result to the currency's minor-unit precision
 using the supplied rule.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Equals_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.Equals(Bodu.Financial.Money)">
-          <a class="xref" href="Bodu.Financial.Money.Equals.html#Bodu_Financial_Money_Equals_Bodu_Financial_Money_">Equals(Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two instances are equal in both currency and amount.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Equals_System_Object_" data-uid="Bodu.Financial.Money.Equals(System.Object)">
-          <a class="xref" href="Bodu.Financial.Money.Equals.html#Bodu_Financial_Money_Equals_System_Object_">Equals(object?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether this instance equals the boxed <code class="paramref">obj</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_From_System_Decimal_Bodu_Financial_Currencies_CurrencyCode_System_MidpointRounding_" data-uid="Bodu.Financial.Money.From(System.Decimal,Bodu.Financial.Currencies.CurrencyCode,System.MidpointRounding)">
-          <a class="xref" href="Bodu.Financial.Money.From.html#Bodu_Financial_Money_From_System_Decimal_Bodu_Financial_Currencies_CurrencyCode_System_MidpointRounding_">From(decimal, CurrencyCode, MidpointRounding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a runtime-tagged <a class="xref" href="Bodu.Financial.Money.html">Money</a> from the supplied amount and ISO 4217 enum value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_From_System_Decimal_Bodu_Financial_Currencies_CurrencyInfo_System_MidpointRounding_" data-uid="Bodu.Financial.Money.From(System.Decimal,Bodu.Financial.Currencies.CurrencyInfo,System.MidpointRounding)">
-          <a class="xref" href="Bodu.Financial.Money.From.html#Bodu_Financial_Money_From_System_Decimal_Bodu_Financial_Currencies_CurrencyInfo_System_MidpointRounding_">From(decimal, CurrencyInfo, MidpointRounding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a runtime-tagged <a class="xref" href="Bodu.Financial.Money.html">Money</a> from the supplied amount and currency metadata.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_FromExplicitScale_System_Decimal_Bodu_Financial_Currencies_CurrencyCode_System_Int32_System_MidpointRounding_" data-uid="Bodu.Financial.Money.FromExplicitScale(System.Decimal,Bodu.Financial.Currencies.CurrencyCode,System.Int32,System.MidpointRounding)">
-          <a class="xref" href="Bodu.Financial.Money.FromExplicitScale.html#Bodu_Financial_Money_FromExplicitScale_System_Decimal_Bodu_Financial_Currencies_CurrencyCode_System_Int32_System_MidpointRounding_">FromExplicitScale(decimal, CurrencyCode, int, MidpointRounding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Financial.Money.html">Money</a> that carries an explicit minor-unit scale, rounding the amount to that scale and
-reporting it from <a class="xref" href="Bodu.Financial.Money.MinorUnits.html#Bodu_Financial_Money_MinorUnits">MinorUnits</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_GetHashCode" data-uid="Bodu.Financial.Money.GetHashCode">
-          <a class="xref" href="Bodu.Financial.Money.GetHashCode.html#Bodu_Financial_Money_GetHashCode">GetHashCode()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a hash code combining the currency and amount.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Multiply_System_Decimal_" data-uid="Bodu.Financial.Money.Multiply(System.Decimal)">
-          <a class="xref" href="Bodu.Financial.Money.Multiply.html#Bodu_Financial_Money_Multiply_System_Decimal_">Multiply(decimal)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Multiplies this amount by <code class="paramref">multiplier</code> using banker's rounding, identical to the <code>*</code>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Money Divide(decimal divisor, MidpointRounding rounding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>divisor</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The scalar divisor.</p>
+</dd>
+    <dt><code>rounding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding">MidpointRounding</a></dt>
+    <dd><p>The midpoint-rounding rule applied to the quotient.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The quotient, rounded to the currency's minor units using <code class="paramref">rounding</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Money_Divide_System_Decimal_System_MidpointRounding__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use this overload when a non-default rounding rule must be applied. The <code>/</code> operator forces banker's
+rounding because operator signatures cannot accept a rounding-mode parameter.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>This value is a default-initialised, currency-less <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dividebyzeroexception">DivideByZeroException</a></dt>
+    <dd><p><code class="paramref">divisor</code> is zero.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Equals_" data-uid="Bodu.Financial.Money.Equals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Equals_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.Equals(Bodu.Financial.Money)">
+  Equals(Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether two instances are equal in both currency and amount.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(Money other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The other value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when both currency and amount match; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Money_Equals_Bodu_Financial_Money__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Equality is numeric and follows <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> semantics: the reported minor-unit scale is not part of
+the identity, so a settled <code>12.50 USD</code> equals a six-place unit price of <code>12.500000 USD</code> even though
+the two values format and serialize differently. (This is the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> convention rather than
+Java's scale-sensitive <code>BigDecimal.equals</code>.) Compare <a class="xref" href="Bodu.Financial.Money.html#Bodu_Financial_Money_MinorUnits">MinorUnits</a> explicitly when the
+precision itself is significant.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Equals_" data-uid="Bodu.Financial.Money.Equals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Equals_System_Object_" data-uid="Bodu.Financial.Money.Equals(System.Object)">
+  Equals(object?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether this instance equals the boxed <code class="paramref">obj</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to compare.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">obj</code> is a matching <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_From_" data-uid="Bodu.Financial.Money.From*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_From_System_Decimal_Bodu_Financial_Currencies_CurrencyCode_System_MidpointRounding_" data-uid="Bodu.Financial.Money.From(System.Decimal,Bodu.Financial.Currencies.CurrencyCode,System.MidpointRounding)">
+  From(decimal, CurrencyCode, MidpointRounding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Helpers.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a runtime-tagged <a class="xref" href="Bodu.Financial.Money.html">Money</a> from the supplied amount and ISO 4217 enum value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Money From(decimal amount, CurrencyCode code, MidpointRounding rounding = MidpointRounding.ToEven)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>amount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The monetary amount in the major unit.</p>
+</dd>
+    <dt><code>code</code> <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a></dt>
+    <dd><p>The ISO 4217 currency code.</p>
+</dd>
+    <dt><code>rounding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding">MidpointRounding</a></dt>
+    <dd><p>The midpoint-rounding rule applied when normalising to the minor-unit precision.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The constructed monetary value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">code</code> is <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html#Bodu_Financial_Currencies_CurrencyCode_None">None</a> or is not a defined <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a>
+member.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_From_" data-uid="Bodu.Financial.Money.From*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_From_System_Decimal_Bodu_Financial_Currencies_CurrencyInfo_System_MidpointRounding_" data-uid="Bodu.Financial.Money.From(System.Decimal,Bodu.Financial.Currencies.CurrencyInfo,System.MidpointRounding)">
+  From(decimal, CurrencyInfo, MidpointRounding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Helpers.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a runtime-tagged <a class="xref" href="Bodu.Financial.Money.html">Money</a> from the supplied amount and currency metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Money From(decimal amount, CurrencyInfo currency, MidpointRounding rounding = MidpointRounding.ToEven)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>amount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The monetary amount in the major unit.</p>
+</dd>
+    <dt><code>currency</code> <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a></dt>
+    <dd><p>The currency metadata identifying the result's currency.</p>
+</dd>
+    <dt><code>rounding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding">MidpointRounding</a></dt>
+    <dd><p>The midpoint-rounding rule applied when normalising to the minor-unit precision.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The constructed monetary value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">currency</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p><code class="paramref">currency</code>'s ISO code does not correspond to any <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> member.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_FromExplicitScale_" data-uid="Bodu.Financial.Money.FromExplicitScale*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_FromExplicitScale_System_Decimal_Bodu_Financial_Currencies_CurrencyCode_System_Int32_System_MidpointRounding_" data-uid="Bodu.Financial.Money.FromExplicitScale(System.Decimal,Bodu.Financial.Currencies.CurrencyCode,System.Int32,System.MidpointRounding)">
+  FromExplicitScale(decimal, CurrencyCode, int, MidpointRounding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Helpers.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Financial.Money.html">Money</a> that carries an explicit minor-unit scale, rounding the amount to that scale and
+reporting it from <a class="xref" href="Bodu.Financial.Money.html#Bodu_Financial_Money_MinorUnits">MinorUnits</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Money FromExplicitScale(decimal amount, CurrencyCode code, int minorUnits, MidpointRounding rounding = MidpointRounding.ToEven)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>amount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The monetary amount in the major unit.</p>
+</dd>
+    <dt><code>code</code> <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a></dt>
+    <dd><p>The currency identifying this value.</p>
+</dd>
+    <dt><code>minorUnits</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of fractional digits to round to and report as the value's minor units.</p>
+</dd>
+    <dt><code>rounding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding">MidpointRounding</a></dt>
+    <dd><p>The midpoint-rounding rule applied when normalising to <code class="paramref">minorUnits</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The constructed monetary value carrying an explicit scale.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Money_FromExplicitScale_System_Decimal_Bodu_Financial_Currencies_CurrencyCode_System_Int32_System_MidpointRounding__examples">Examples</h4>
+  <pre><code class="lang-csharp">using Bodu.Financial;
+
+// A share price quoted to six decimal places in two-decimal USD.
+Money price = Money.FromExplicitScale(145.678912m, CurrencyCode.USD, 6);
+
+price.MinorUnits;      // 6
+price.ToString("R");   // "USD 145.678912"</code></pre>
+
+
+  <h4 class="section" id="Bodu_Financial_Money_FromExplicitScale_System_Decimal_Bodu_Financial_Currencies_CurrencyCode_System_Int32_System_MidpointRounding__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This is the direct construction route for values whose precision is known up front and differs from the
+currency's registered minor units — typically unit prices such as a six-decimal-place share price in a
+two-decimal currency. The supplied scale is stored with the value: <a class="xref" href="Bodu.Financial.Money.html#Bodu_Financial_Money_MinorUnits">MinorUnits</a> reports it,
+formatting pads to it, arithmetic and allocation round intermediate results to it rather than to the registry
+precision, and the JSON converters persist it so a round-trip restores the same precision.
+</p>
+<p>
+For amounts that are <em>computed</em> rather than quoted, prefer accumulating in <a class="xref" href="Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a>
+and settling once through <a class="xref" href="Bodu.Financial.CalculatedMoney.html#Bodu_Financial_CalculatedMoney_RoundToMoney_Bodu_Financial_MonetaryContext_">RoundToMoney(MonetaryContext?)</a> with
+<a class="xref" href="Bodu.Financial.ScalePolicy.html#Bodu_Financial_ScalePolicy_Custom">Custom</a> — that path defers rounding to a single, explicit settlement decision and
+produces the same explicit-scale value.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">code</code> is not a defined currency, or <code class="paramref">minorUnits</code> is outside the range 0 to
+28.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_GetHashCode_" data-uid="Bodu.Financial.Money.GetHashCode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_GetHashCode" data-uid="Bodu.Financial.Money.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a hash code combining the currency and amount.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A 32-bit hash code.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Multiply_" data-uid="Bodu.Financial.Money.Multiply*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Multiply_System_Decimal_" data-uid="Bodu.Financial.Money.Multiply(System.Decimal)">
+  Multiply(decimal)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Multiplies this amount by <code class="paramref">multiplier</code> using banker's rounding, identical to the <code>*</code>
 operator.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Multiply_System_Decimal_System_MidpointRounding_" data-uid="Bodu.Financial.Money.Multiply(System.Decimal,System.MidpointRounding)">
-          <a class="xref" href="Bodu.Financial.Money.Multiply.html#Bodu_Financial_Money_Multiply_System_Decimal_System_MidpointRounding_">Multiply(decimal, MidpointRounding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Multiplies this amount by <code class="paramref">multiplier</code> and rounds the result to the currency's minor-unit
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Money Multiply(decimal multiplier)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>multiplier</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The scalar multiplier.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The product, rounded to the currency's minor units using banker's rounding.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>This value is a default-initialised, currency-less <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Multiply_" data-uid="Bodu.Financial.Money.Multiply*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Multiply_System_Decimal_System_MidpointRounding_" data-uid="Bodu.Financial.Money.Multiply(System.Decimal,System.MidpointRounding)">
+  Multiply(decimal, MidpointRounding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Multiplies this amount by <code class="paramref">multiplier</code> and rounds the result to the currency's minor-unit
 precision using the supplied rule.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Of__1_System_Decimal_" data-uid="Bodu.Financial.Money.Of``1(System.Decimal)">
-          <a class="xref" href="Bodu.Financial.Money.Of.html#Bodu_Financial_Money_Of__1_System_Decimal_">Of&lt;TCurrency&gt;(decimal)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> from the supplied amount, rounding to the currency's minor-unit
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Money Multiply(decimal multiplier, MidpointRounding rounding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>multiplier</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The scalar multiplier.</p>
+</dd>
+    <dt><code>rounding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding">MidpointRounding</a></dt>
+    <dd><p>The midpoint-rounding rule applied to the product.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The product, rounded to the currency's minor units using <code class="paramref">rounding</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Money_Multiply_System_Decimal_System_MidpointRounding__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use this overload when a non-default rounding rule (for example, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding#system-midpointrounding-awayfromzero">AwayFromZero</a>
+for retail-tax workflows) must be applied. The <code>*</code> operator forces banker's rounding because operator
+signatures cannot accept a rounding-mode parameter.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>This value is a default-initialised, currency-less <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Of_" data-uid="Bodu.Financial.Money.Of*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Of__1_System_Decimal_" data-uid="Bodu.Financial.Money.Of``1(System.Decimal)">
+  Of&lt;TCurrency&gt;(decimal)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Helpers.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> from the supplied amount, rounding to the currency's minor-unit
 precision using banker's rounding.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Of__1_System_Decimal_System_MidpointRounding_" data-uid="Bodu.Financial.Money.Of``1(System.Decimal,System.MidpointRounding)">
-          <a class="xref" href="Bodu.Financial.Money.Of.html#Bodu_Financial_Money_Of__1_System_Decimal_System_MidpointRounding_">Of&lt;TCurrency&gt;(decimal, MidpointRounding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> from the supplied amount and rounding rule.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Financial.Money.Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-          <a class="xref" href="Bodu.Financial.Money.Parse.html#Bodu_Financial_Money_Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_">Parse(ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Parses a <a class="xref" href="Bodu.Financial.Money.html">Money</a> from a span representation.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Parse_System_String_Bodu_Financial_MoneyParseOptions_" data-uid="Bodu.Financial.Money.Parse(System.String,Bodu.Financial.MoneyParseOptions)">
-          <a class="xref" href="Bodu.Financial.Money.Parse.html#Bodu_Financial_Money_Parse_System_String_Bodu_Financial_MoneyParseOptions_">Parse(string, MoneyParseOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Parses a <a class="xref" href="Bodu.Financial.Money.html">Money</a> using the supplied <code class="paramref">options</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Parse_System_String_System_IFormatProvider_" data-uid="Bodu.Financial.Money.Parse(System.String,System.IFormatProvider)">
-          <a class="xref" href="Bodu.Financial.Money.Parse.html#Bodu_Financial_Money_Parse_System_String_System_IFormatProvider_">Parse(string, IFormatProvider?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Parses a <a class="xref" href="Bodu.Financial.Money.html">Money</a> from <code>&quot;&lt;ISO&gt; &lt;amount&gt;&quot;</code> or <code>&quot;&lt;amount&gt; &lt;ISO&gt;&quot;</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Rescale_System_Int32_System_MidpointRounding_" data-uid="Bodu.Financial.Money.Rescale(System.Int32,System.MidpointRounding)">
-          <a class="xref" href="Bodu.Financial.Money.Rescale.html#Bodu_Financial_Money_Rescale_System_Int32_System_MidpointRounding_">Rescale(int, MidpointRounding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns this value re-expressed at the supplied minor-unit scale, rounding the amount when the new scale is
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Money&lt;TCurrency&gt; Of&lt;TCurrency&gt;(decimal amount) where TCurrency : ICurrency</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>amount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The monetary amount in the major unit of <code class="typeparamref">TCurrency</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money-1.html">Money</a>&lt;TCurrency&gt;</dt>
+    <dd><p>The constructed monetary value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TCurrency</code></dt>
+    <dd><p>The currency type identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Of_" data-uid="Bodu.Financial.Money.Of*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Of__1_System_Decimal_System_MidpointRounding_" data-uid="Bodu.Financial.Money.Of``1(System.Decimal,System.MidpointRounding)">
+  Of&lt;TCurrency&gt;(decimal, MidpointRounding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Helpers.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> from the supplied amount and rounding rule.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Money&lt;TCurrency&gt; Of&lt;TCurrency&gt;(decimal amount, MidpointRounding rounding) where TCurrency : ICurrency</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>amount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The monetary amount.</p>
+</dd>
+    <dt><code>rounding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding">MidpointRounding</a></dt>
+    <dd><p>The midpoint-rounding rule applied when normalizing to the minor-unit precision.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money-1.html">Money</a>&lt;TCurrency&gt;</dt>
+    <dd><p>The constructed monetary value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TCurrency</code></dt>
+    <dd><p>The currency type identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Parse_" data-uid="Bodu.Financial.Money.Parse*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Parse_System_String_Bodu_Financial_MoneyParseOptions_" data-uid="Bodu.Financial.Money.Parse(System.String,Bodu.Financial.MoneyParseOptions)">
+  Parse(string, MoneyParseOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.ParseOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Parses a <a class="xref" href="Bodu.Financial.Money.html">Money</a> using the supplied <code class="paramref">options</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Money Parse(string s, MoneyParseOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text to parse.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Financial.MoneyParseOptions.html">MoneyParseOptions</a></dt>
+    <dd><p>The parse options controlling mode and culture.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The parsed value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">s</code> or <code class="paramref">options</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>The input is not valid under <code class="paramref">options</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Rescale_" data-uid="Bodu.Financial.Money.Rescale*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Rescale_System_Int32_System_MidpointRounding_" data-uid="Bodu.Financial.Money.Rescale(System.Int32,System.MidpointRounding)">
+  Rescale(int, MidpointRounding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Helpers.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns this value re-expressed at the supplied minor-unit scale, rounding the amount when the new scale is
 coarser and padding the reported precision when it is finer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_ToCalculated" data-uid="Bodu.Financial.Money.ToCalculated">
-          <a class="xref" href="Bodu.Financial.Money.ToCalculated.html#Bodu_Financial_Money_ToCalculated">ToCalculated()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a high-precision <a class="xref" href="Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a> in the same currency, suitable for deferred-rounding
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Money Rescale(int minorUnits, MidpointRounding rounding = MidpointRounding.ToEven)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>minorUnits</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of fractional digits the result reports as its minor units.</p>
+</dd>
+    <dt><code>rounding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding">MidpointRounding</a></dt>
+    <dd><p>The midpoint-rounding rule applied when normalising to <code class="paramref">minorUnits</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The re-scaled monetary value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Money_Rescale_System_Int32_System_MidpointRounding__examples">Examples</h4>
+  <pre><code class="lang-csharp">using Bodu.Financial;
+
+Money price = Money.FromExplicitScale(145.678912m, CurrencyCode.USD, 6);
+
+price.Rescale(2);   // USD 145.68  (MinorUnits = 2)
+price.Rescale(8);   // USD 145.67891200 (MinorUnits = 8, amount unchanged)</code></pre>
+
+
+  <h4 class="section" id="Bodu_Financial_Money_Rescale_System_Int32_System_MidpointRounding__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Rescaling to a coarser precision drops sub-scale digits under <code class="paramref">rounding</code> — rescaling a
+six-place unit price to a currency's two registered minor units is a plain settlement of that single value.
+Rescaling finer is lossless: the amount is unchanged and only the reported precision (and therefore formatting
+and the serialized <code>scale</code>) widens. The equivalent operation is <code>transformScale</code> in dinero.js and
+<code>withScale</code> on Joda's <code>BigMoney</code>.
+</p>
+<p>
+For policy-aware settlement — cash-rounding increments, a <a class="xref" href="Bodu.Financial.ScalePolicy.html">ScalePolicy</a>, or a configured rounding
+strategy — settle through <a class="xref" href="Bodu.Financial.CalculatedMoney.html#Bodu_Financial_CalculatedMoney_RoundToMoney_Bodu_Financial_MonetaryContext_">RoundToMoney(MonetaryContext?)</a> instead; this method
+applies only the supplied midpoint rule.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>This value is a default-initialised, currency-less <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">minorUnits</code> is outside the range 0 to 28.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_ToCalculated_" data-uid="Bodu.Financial.Money.ToCalculated*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_ToCalculated" data-uid="Bodu.Financial.Money.ToCalculated">
+  ToCalculated()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a high-precision <a class="xref" href="Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a> in the same currency, suitable for deferred-rounding
 calculation chains.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_ToString" data-uid="Bodu.Financial.Money.ToString">
-          <a class="xref" href="Bodu.Financial.Money.ToString.html#Bodu_Financial_Money_ToString">ToString()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the default string representation: ISO code followed by the amount at the currency's minor-unit
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CalculatedMoney ToCalculated()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a></dt>
+    <dd><p>A <a class="xref" href="Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a> carrying this value's amount and currency.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>This value carries no currency (default-initialised).</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_ToString_" data-uid="Bodu.Financial.Money.ToString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_ToString" data-uid="Bodu.Financial.Money.ToString">
+  ToString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the default string representation: ISO code followed by the amount at the currency's minor-unit
 precision under the current culture.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_ToString_System_String_" data-uid="Bodu.Financial.Money.ToString(System.String)">
-          <a class="xref" href="Bodu.Financial.Money.ToString.html#Bodu_Financial_Money_ToString_System_String_">ToString(string?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a string representation using the supplied format specifier.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_ToString_System_String_System_IFormatProvider_" data-uid="Bodu.Financial.Money.ToString(System.String,System.IFormatProvider)">
-          <a class="xref" href="Bodu.Financial.Money.ToString.html#Bodu_Financial_Money_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a string representation using the supplied format specifier and culture.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_TrimScale" data-uid="Bodu.Financial.Money.TrimScale">
-          <a class="xref" href="Bodu.Financial.Money.TrimScale.html#Bodu_Financial_Money_TrimScale">TrimScale()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns this value with trailing-zero precision removed: the reported scale is reduced to the smallest scale
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The formatted string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_ToString_" data-uid="Bodu.Financial.Money.ToString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_ToString_System_String_" data-uid="Bodu.Financial.Money.ToString(System.String)">
+  ToString(string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a string representation using the supplied format specifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ToString(string? format)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The format specifier.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The formatted string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_ToString_" data-uid="Bodu.Financial.Money.ToString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_ToString_System_String_System_IFormatProvider_" data-uid="Bodu.Financial.Money.ToString(System.String,System.IFormatProvider)">
+  ToString(string?, IFormatProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a string representation using the supplied format specifier and culture.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ToString(string? format, IFormatProvider? formatProvider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The format specifier.</p>
+</dd>
+    <dt><code>formatProvider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>The culture used to render the numeric component.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The formatted string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_TrimScale_" data-uid="Bodu.Financial.Money.TrimScale*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_TrimScale" data-uid="Bodu.Financial.Money.TrimScale">
+  TrimScale()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Helpers.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns this value with trailing-zero precision removed: the reported scale is reduced to the smallest scale
 that still represents the amount exactly, but never below the currency's registered minor units.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_TryAs__1_Bodu_Financial_Money___0___" data-uid="Bodu.Financial.Money.TryAs``1(Bodu.Financial.Money{``0}@)">
-          <a class="xref" href="Bodu.Financial.Money.TryAs.html#Bodu_Financial_Money_TryAs__1_Bodu_Financial_Money___0___">TryAs&lt;TCurrency&gt;(out Money&lt;TCurrency&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to convert this <a class="xref" href="Bodu.Financial.Money.html">Money</a> to a strongly-typed <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Financial.Money.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-          <a class="xref" href="Bodu.Financial.Money.TryFormat.html#Bodu_Financial_Money_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_">TryFormat(Span&lt;byte&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to format this value into a UTF-8 byte span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Financial.Money.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-          <a class="xref" href="Bodu.Financial.Money.TryFormat.html#Bodu_Financial_Money_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_">TryFormat(Span&lt;char&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to format this value into a character span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_TryParse_System_ReadOnlySpan_System_Char__Bodu_Financial_MoneyParseOptions_Bodu_Financial_Money__" data-uid="Bodu.Financial.Money.TryParse(System.ReadOnlySpan{System.Char},Bodu.Financial.MoneyParseOptions,Bodu.Financial.Money@)">
-          <a class="xref" href="Bodu.Financial.Money.TryParse.html#Bodu_Financial_Money_TryParse_System_ReadOnlySpan_System_Char__Bodu_Financial_MoneyParseOptions_Bodu_Financial_Money__">TryParse(ReadOnlySpan&lt;char&gt;, MoneyParseOptions, out Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to parse a <a class="xref" href="Bodu.Financial.Money.html">Money</a> using the supplied <code class="paramref">options</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_Financial_Money__" data-uid="Bodu.Financial.Money.TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.Financial.Money@)">
-          <a class="xref" href="Bodu.Financial.Money.TryParse.html#Bodu_Financial_Money_TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_Financial_Money__">TryParse(ReadOnlySpan&lt;char&gt;, IFormatProvider?, out Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to parse a <a class="xref" href="Bodu.Financial.Money.html">Money</a> from a span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_TryParse_System_String_System_IFormatProvider_Bodu_Financial_Money__" data-uid="Bodu.Financial.Money.TryParse(System.String,System.IFormatProvider,Bodu.Financial.Money@)">
-          <a class="xref" href="Bodu.Financial.Money.TryParse.html#Bodu_Financial_Money_TryParse_System_String_System_IFormatProvider_Bodu_Financial_Money__">TryParse(string?, IFormatProvider?, out Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to parse a <a class="xref" href="Bodu.Financial.Money.html">Money</a> from a string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Zero_Bodu_Financial_Currencies_CurrencyCode_" data-uid="Bodu.Financial.Money.Zero(Bodu.Financial.Currencies.CurrencyCode)">
-          <a class="xref" href="Bodu.Financial.Money.Zero.html#Bodu_Financial_Money_Zero_Bodu_Financial_Currencies_CurrencyCode_">Zero(CurrencyCode)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a <a class="xref" href="Bodu.Financial.Money.html">Money</a> representing zero of the specified currency.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_Zero__1" data-uid="Bodu.Financial.Money.Zero``1">
-          <a class="xref" href="Bodu.Financial.Money.Zero.html#Bodu_Financial_Money_Zero__1">Zero&lt;TCurrency&gt;()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the zero value of <code class="typeparamref">TCurrency</code>.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="operators">Operators
-</h3>
-  <table class="table table-bordered table-condensed">
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Money TrimScale()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The trimmed monetary value, or this value unchanged when no trailing-zero scale can be removed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Money_TrimScale_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Trimming never changes the numeric amount — only the reported precision. A six-place <code>12.500000 USD</code> trims
+to the registered two places (<code>12.50</code>), a six-place <code>12.340010</code> trims to five, and a value whose
+finest digits are significant (<code>12.345678</code>) is returned unchanged. The registered minor units are the
+floor, so ordinary money is always a no-op. The equivalent operation is <code>trimScale</code> in dinero.js.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>This value is a default-initialised, currency-less <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_TryAs_" data-uid="Bodu.Financial.Money.TryAs*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_TryAs__1_Bodu_Financial_Money___0___" data-uid="Bodu.Financial.Money.TryAs``1(Bodu.Financial.Money{``0}@)">
+  TryAs&lt;TCurrency&gt;(out Money&lt;TCurrency&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Conversion.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to convert this <a class="xref" href="Bodu.Financial.Money.html">Money</a> to a strongly-typed <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryAs&lt;TCurrency&gt;(out Money&lt;TCurrency&gt; result) where TCurrency : ICurrency</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="Bodu.Financial.Money-1.html">Money</a>&lt;TCurrency&gt;</dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the strongly-typed value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the currencies match; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TCurrency</code></dt>
+    <dd><p>The target currency type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_TryFormat_" data-uid="Bodu.Financial.Money.TryFormat*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Financial.Money.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+  TryFormat(Span&lt;byte&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to format this value into a UTF-8 byte span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryFormat(Span&lt;byte&gt; utf8Destination, out int bytesWritten, ReadOnlySpan&lt;char&gt; format, IFormatProvider? provider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination UTF-8 span.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes written.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The format specifier.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>The culture provider.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the span was large enough.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_TryFormat_" data-uid="Bodu.Financial.Money.TryFormat*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Financial.Money.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+  TryFormat(Span&lt;char&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to format this value into a character span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryFormat(Span&lt;char&gt; destination, out int charsWritten, ReadOnlySpan&lt;char&gt; format, IFormatProvider? provider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The destination span.</p>
+</dd>
+    <dt><code>charsWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of characters written.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The format specifier.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>The culture provider.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the span was large enough.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_TryParse_" data-uid="Bodu.Financial.Money.TryParse*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_TryParse_System_ReadOnlySpan_System_Char__Bodu_Financial_MoneyParseOptions_Bodu_Financial_Money__" data-uid="Bodu.Financial.Money.TryParse(System.ReadOnlySpan{System.Char},Bodu.Financial.MoneyParseOptions,Bodu.Financial.Money@)">
+  TryParse(ReadOnlySpan&lt;char&gt;, MoneyParseOptions, out Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.ParseOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to parse a <a class="xref" href="Bodu.Financial.Money.html">Money</a> using the supplied <code class="paramref">options</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryParse(ReadOnlySpan&lt;char&gt; s, MoneyParseOptions options, out Money result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The text to parse.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Financial.MoneyParseOptions.html">MoneyParseOptions</a></dt>
+    <dd><p>The parse options controlling mode and culture.</p>
+</dd>
+    <dt><code>result</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the parsed value; otherwise the default.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on success.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">options</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">options</code>.<a class="xref" href="Bodu.Financial.MoneyParseOptions.html#Bodu_Financial_MoneyParseOptions_Mode">Mode</a> is not a defined value.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Zero_" data-uid="Bodu.Financial.Money.Zero*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Zero_Bodu_Financial_Currencies_CurrencyCode_" data-uid="Bodu.Financial.Money.Zero(Bodu.Financial.Currencies.CurrencyCode)">
+  Zero(CurrencyCode)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a <a class="xref" href="Bodu.Financial.Money.html">Money</a> representing zero of the specified currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Money Zero(CurrencyCode code)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>code</code> <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a></dt>
+    <dd><p>The currency identifying the zero value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>A zero <a class="xref" href="Bodu.Financial.Money.html">Money</a> in <code class="paramref">code</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">code</code> is <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html#Bodu_Financial_Currencies_CurrencyCode_None">None</a> or is not a defined <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a>
+member.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Zero_" data-uid="Bodu.Financial.Money.Zero*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Zero__1" data-uid="Bodu.Financial.Money.Zero``1">
+  Zero&lt;TCurrency&gt;()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Helpers.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the zero value of <code class="typeparamref">TCurrency</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Money&lt;TCurrency&gt; Zero&lt;TCurrency&gt;() where TCurrency : ICurrency</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money-1.html">Money</a>&lt;TCurrency&gt;</dt>
+    <dd><p>The zero monetary amount.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TCurrency</code></dt>
+    <dd><p>The currency type identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="Bodu_Financial_Money_op_Addition_" data-uid="Bodu.Financial.Money.op_Addition*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_op_Addition_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_Addition(Bodu.Financial.Money,Bodu.Financial.Money)">
+  operator +(Money, Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds two monetary values denominated in the same currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Money operator +(Money left, Money right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The first amount.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The second amount.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The sum of <code class="paramref">left</code> and <code class="paramref">right</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Money_op_Addition_Bodu_Financial_Money_Bodu_Financial_Money__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When the operands report different minor-unit scales — for example a two-decimal settled amount and a
+six-decimal unit price — the result carries the finer (maximum) of the two scales, mirroring
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> addition semantics. The sum is exact at that scale, so no rounding occurs and the
+reported precision is the same regardless of operand order.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The operands have different ISO codes.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a></dt>
+    <dd><p>The sum falls outside the range of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_op_Division_" data-uid="Bodu.Financial.Money.op_Division*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_op_Division_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_Division(Bodu.Financial.Money,Bodu.Financial.Money)">
+  operator /(Money, Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the dimensionless ratio of two monetary values in the same currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static decimal operator /(Money left, Money right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The dividend.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The divisor.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The ratio.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The operands have different ISO codes.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dividebyzeroexception">DivideByZeroException</a></dt>
+    <dd><p><code class="paramref">right</code> has an amount of zero.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_op_Division_" data-uid="Bodu.Financial.Money.op_Division*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_op_Division_Bodu_Financial_Money_System_Decimal_" data-uid="Bodu.Financial.Money.op_Division(Bodu.Financial.Money,System.Decimal)">
+  operator /(Money, decimal)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Divides a monetary value by a scalar, rounding the quotient to the currency's minor-unit precision using
+banker's rounding (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding#system-midpointrounding-toeven">ToEven</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Money operator /(Money left, decimal right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The amount.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The scalar divisor.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The quotient, rounded to the currency's minor units using banker's rounding.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Money_op_Division_Bodu_Financial_Money_System_Decimal__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use <a class="xref" href="Bodu.Financial.Money.html#Bodu_Financial_Money_Divide_System_Decimal_System_MidpointRounding_">Divide(decimal, MidpointRounding)</a> when a rounding rule other than banker's rounding is
+required; the operator cannot accept a rounding-mode parameter.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p><code class="paramref">left</code> is a default-initialised, currency-less <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dividebyzeroexception">DivideByZeroException</a></dt>
+    <dd><p><code class="paramref">right</code> is zero.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_op_Equality_" data-uid="Bodu.Financial.Money.op_Equality*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_op_Equality_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_Equality(Bodu.Financial.Money,Bodu.Financial.Money)">
+  operator ==(Money, Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether two values are equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(Money left, Money right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The first value.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The second value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when equal; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_op_GreaterThan_" data-uid="Bodu.Financial.Money.op_GreaterThan*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_op_GreaterThan_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_GreaterThan(Bodu.Financial.Money,Bodu.Financial.Money)">
+  operator &gt;(Money, Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Compares two amounts in the same currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator &gt;(Money left, Money right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The first amount.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The second amount.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">left</code> is greater than <code class="paramref">right</code>; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The operands have different ISO codes.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_op_GreaterThanOrEqual_" data-uid="Bodu.Financial.Money.op_GreaterThanOrEqual*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_op_GreaterThanOrEqual_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_GreaterThanOrEqual(Bodu.Financial.Money,Bodu.Financial.Money)">
+  operator &gt;=(Money, Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Compares two amounts in the same currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator &gt;=(Money left, Money right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The first amount.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The second amount.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">left</code> is greater than or equal to <code class="paramref">right</code>;
+otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The operands have different ISO codes.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_op_Inequality_" data-uid="Bodu.Financial.Money.op_Inequality*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_op_Inequality_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_Inequality(Bodu.Financial.Money,Bodu.Financial.Money)">
+  operator !=(Money, Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether two values differ.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(Money left, Money right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The first value.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The second value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when they differ; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_op_LessThan_" data-uid="Bodu.Financial.Money.op_LessThan*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_op_LessThan_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_LessThan(Bodu.Financial.Money,Bodu.Financial.Money)">
+  operator &lt;(Money, Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Compares two amounts in the same currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator &lt;(Money left, Money right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The first amount.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The second amount.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">left</code> is less than <code class="paramref">right</code>; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The operands have different ISO codes.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_op_LessThanOrEqual_" data-uid="Bodu.Financial.Money.op_LessThanOrEqual*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_op_LessThanOrEqual_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_LessThanOrEqual(Bodu.Financial.Money,Bodu.Financial.Money)">
+  operator &lt;=(Money, Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Compares two amounts in the same currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator &lt;=(Money left, Money right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The first amount.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The second amount.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">left</code> is less than or equal to <code class="paramref">right</code>;
+otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The operands have different ISO codes.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_op_Multiply_" data-uid="Bodu.Financial.Money.op_Multiply*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_op_Multiply_Bodu_Financial_Money_System_Decimal_" data-uid="Bodu.Financial.Money.op_Multiply(Bodu.Financial.Money,System.Decimal)">
+  operator *(Money, decimal)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Multiplies a monetary value by a scalar, rounding the product to the currency's minor-unit precision using
+banker's rounding (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding#system-midpointrounding-toeven">ToEven</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Money operator *(Money left, decimal right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The amount.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The scalar.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The product, rounded to the currency's minor units using banker's rounding.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Money_op_Multiply_Bodu_Financial_Money_System_Decimal__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use <a class="xref" href="Bodu.Financial.Money.html#Bodu_Financial_Money_Multiply_System_Decimal_System_MidpointRounding_">Multiply(decimal, MidpointRounding)</a> when a rounding rule other than banker's rounding is
+required; the operator cannot accept a rounding-mode parameter.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p><code class="paramref">left</code> is a default-initialised, currency-less <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_op_Multiply_" data-uid="Bodu.Financial.Money.op_Multiply*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_op_Multiply_System_Decimal_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_Multiply(System.Decimal,Bodu.Financial.Money)">
+  operator *(decimal, Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Multiplies a scalar by a monetary value, rounding the product to the currency's minor-unit precision using
+banker's rounding (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding#system-midpointrounding-toeven">ToEven</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Money operator *(decimal left, Money right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The scalar.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The amount.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The product, rounded to the currency's minor units using banker's rounding.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Money_op_Multiply_System_Decimal_Bodu_Financial_Money__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use <a class="xref" href="Bodu.Financial.Money.html#Bodu_Financial_Money_Multiply_System_Decimal_System_MidpointRounding_">Multiply(decimal, MidpointRounding)</a> when a rounding rule other than banker's rounding is
+required; the operator cannot accept a rounding-mode parameter.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p><code class="paramref">right</code> is a default-initialised, currency-less <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_op_Subtraction_" data-uid="Bodu.Financial.Money.op_Subtraction*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_op_Subtraction_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_Subtraction(Bodu.Financial.Money,Bodu.Financial.Money)">
+  operator -(Money, Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Subtracts one monetary value from another.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Money operator -(Money left, Money right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The minuend.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The subtrahend.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The difference.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Money_op_Subtraction_Bodu_Financial_Money_Bodu_Financial_Money__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When the operands report different minor-unit scales, the result carries the finer (maximum) of the two scales,
+mirroring <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> subtraction semantics; the difference is exact at that scale and the reported
+precision does not depend on operand order.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The operands have different ISO codes.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a></dt>
+    <dd><p>The difference falls outside the range of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_op_UnaryNegation_" data-uid="Bodu.Financial.Money.op_UnaryNegation*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_op_UnaryNegation_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_UnaryNegation(Bodu.Financial.Money)">
+  operator -(Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Negates a monetary value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Money operator -(Money value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The amount to negate.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>A <a class="xref" href="Bodu.Financial.Money.html">Money</a> with the same ISO code and negated amount.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p><code class="paramref">value</code> is a default-initialised, currency-less <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_op_UnaryPlus_" data-uid="Bodu.Financial.Money.op_UnaryPlus*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_op_UnaryPlus_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_UnaryPlus(Bodu.Financial.Money)">
+  operator +(Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the operand unchanged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Money operator +(Money value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The amount.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The unchanged value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="eii">Explicit Interface Implementations
+</h2>
+
+
+  <a id="Bodu_Financial_Money_Parse_" data-uid="Bodu.Financial.Money.Parse*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Financial.Money.Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+  Parse(ReadOnlySpan&lt;char&gt;, IFormatProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Parses a <a class="xref" href="Bodu.Financial.Money.html">Money</a> from a span representation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">static Money Parse(ReadOnlySpan&lt;char&gt; s, IFormatProvider? provider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The text to parse.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>The culture used to interpret the numeric component.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The parsed value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>The input is not a valid representation.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_Parse_" data-uid="Bodu.Financial.Money.Parse*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_Parse_System_String_System_IFormatProvider_" data-uid="Bodu.Financial.Money.Parse(System.String,System.IFormatProvider)">
+  Parse(string, IFormatProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Parses a <a class="xref" href="Bodu.Financial.Money.html">Money</a> from <code>&quot;&lt;ISO&gt; &lt;amount&gt;&quot;</code> or <code>&quot;&lt;amount&gt; &lt;ISO&gt;&quot;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">static Money Parse(string s, IFormatProvider? provider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text to parse.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>The culture used to interpret the numeric component.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The parsed value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Money_Parse_System_String_System_IFormatProvider__examples">Examples</h4>
+  <pre><code class="lang-csharp">using System.Globalization;
+using Bodu.Financial;
+
+// The ISO code may lead or trail the amount; it selects the runtime currency.
+var a = Money.Parse("USD 19.99", CultureInfo.InvariantCulture);
+var b = Money.Parse("19.99 USD", CultureInfo.InvariantCulture);   // equal to a
+
+// A bare amount has no currency and fails to parse.
+bool ok = Money.TryParse("19.99", CultureInfo.InvariantCulture, out _);   // false</code></pre>
+
+
+  <h4 class="section" id="Bodu_Financial_Money_Parse_System_String_System_IFormatProvider__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Text carrying more fractional digits than the currency's registered minor units — a unit price such as
+<code>&quot;USD 12.345678&quot;</code> — parses to a value reporting that finer scale from <a class="xref" href="Bodu.Financial.Money.html#Bodu_Financial_Money_MinorUnits">MinorUnits</a>, making
+this method the inverse of the round-trip (<code>&quot;R&quot;</code>) format. Text at or below the registered precision parses
+at the registry precision, unchanged from earlier behaviour.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">s</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>The input is not a valid <a class="xref" href="Bodu.Financial.Money.html">Money</a> representation.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_TryParse_" data-uid="Bodu.Financial.Money.TryParse*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_Financial_Money__" data-uid="Bodu.Financial.Money.TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.Financial.Money@)">
+  TryParse(ReadOnlySpan&lt;char&gt;, IFormatProvider?, out Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to parse a <a class="xref" href="Bodu.Financial.Money.html">Money</a> from a span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">static bool TryParse(ReadOnlySpan&lt;char&gt; s, IFormatProvider? provider, out Money result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The text to parse.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>The culture provider.</p>
+</dd>
+    <dt><code>result</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>The parsed value or default.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on success.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_Money_TryParse_" data-uid="Bodu.Financial.Money.TryParse*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_Money_TryParse_System_String_System_IFormatProvider_Bodu_Financial_Money__" data-uid="Bodu.Financial.Money.TryParse(System.String,System.IFormatProvider,Bodu.Financial.Money@)">
+  TryParse(string?, IFormatProvider?, out Money)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial/Money.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to parse a <a class="xref" href="Bodu.Financial.Money.html">Money</a> from a string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">static bool TryParse(string? s, IFormatProvider? provider, out Money result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text to parse.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>The culture provider.</p>
+</dd>
+    <dt><code>result</code> <a class="xref" href="Bodu.Financial.Money.html">Money</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the parsed value; otherwise the default.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on success.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Financial_Money_op_Addition_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_Addition(Bodu.Financial.Money,Bodu.Financial.Money)">
-          <a class="xref" href="Bodu.Financial.Money.op_Addition.html#Bodu_Financial_Money_op_Addition_Bodu_Financial_Money_Bodu_Financial_Money_">operator +(Money, Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Adds two monetary values denominated in the same currency.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_op_Division_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_Division(Bodu.Financial.Money,Bodu.Financial.Money)">
-          <a class="xref" href="Bodu.Financial.Money.op_Division.html#Bodu_Financial_Money_op_Division_Bodu_Financial_Money_Bodu_Financial_Money_">operator /(Money, Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the dimensionless ratio of two monetary values in the same currency.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_op_Division_Bodu_Financial_Money_System_Decimal_" data-uid="Bodu.Financial.Money.op_Division(Bodu.Financial.Money,System.Decimal)">
-          <a class="xref" href="Bodu.Financial.Money.op_Division.html#Bodu_Financial_Money_op_Division_Bodu_Financial_Money_System_Decimal_">operator /(Money, decimal)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Divides a monetary value by a scalar, rounding the quotient to the currency's minor-unit precision using
-banker's rounding (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding#system-midpointrounding-toeven">ToEven</a>).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_op_Equality_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_Equality(Bodu.Financial.Money,Bodu.Financial.Money)">
-          <a class="xref" href="Bodu.Financial.Money.op_Equality.html#Bodu_Financial_Money_op_Equality_Bodu_Financial_Money_Bodu_Financial_Money_">operator ==(Money, Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two values are equal.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_op_GreaterThan_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_GreaterThan(Bodu.Financial.Money,Bodu.Financial.Money)">
-          <a class="xref" href="Bodu.Financial.Money.op_GreaterThan.html#Bodu_Financial_Money_op_GreaterThan_Bodu_Financial_Money_Bodu_Financial_Money_">operator &gt;(Money, Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Compares two amounts in the same currency.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_op_GreaterThanOrEqual_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_GreaterThanOrEqual(Bodu.Financial.Money,Bodu.Financial.Money)">
-          <a class="xref" href="Bodu.Financial.Money.op_GreaterThanOrEqual.html#Bodu_Financial_Money_op_GreaterThanOrEqual_Bodu_Financial_Money_Bodu_Financial_Money_">operator &gt;=(Money, Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Compares two amounts in the same currency.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_op_Inequality_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_Inequality(Bodu.Financial.Money,Bodu.Financial.Money)">
-          <a class="xref" href="Bodu.Financial.Money.op_Inequality.html#Bodu_Financial_Money_op_Inequality_Bodu_Financial_Money_Bodu_Financial_Money_">operator !=(Money, Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two values differ.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_op_LessThan_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_LessThan(Bodu.Financial.Money,Bodu.Financial.Money)">
-          <a class="xref" href="Bodu.Financial.Money.op_LessThan.html#Bodu_Financial_Money_op_LessThan_Bodu_Financial_Money_Bodu_Financial_Money_">operator &lt;(Money, Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Compares two amounts in the same currency.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_op_LessThanOrEqual_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_LessThanOrEqual(Bodu.Financial.Money,Bodu.Financial.Money)">
-          <a class="xref" href="Bodu.Financial.Money.op_LessThanOrEqual.html#Bodu_Financial_Money_op_LessThanOrEqual_Bodu_Financial_Money_Bodu_Financial_Money_">operator &lt;=(Money, Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Compares two amounts in the same currency.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_op_Multiply_Bodu_Financial_Money_System_Decimal_" data-uid="Bodu.Financial.Money.op_Multiply(Bodu.Financial.Money,System.Decimal)">
-          <a class="xref" href="Bodu.Financial.Money.op_Multiply.html#Bodu_Financial_Money_op_Multiply_Bodu_Financial_Money_System_Decimal_">operator *(Money, decimal)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Multiplies a monetary value by a scalar, rounding the product to the currency's minor-unit precision using
-banker's rounding (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding#system-midpointrounding-toeven">ToEven</a>).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_op_Multiply_System_Decimal_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_Multiply(System.Decimal,Bodu.Financial.Money)">
-          <a class="xref" href="Bodu.Financial.Money.op_Multiply.html#Bodu_Financial_Money_op_Multiply_System_Decimal_Bodu_Financial_Money_">operator *(decimal, Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Multiplies a scalar by a monetary value, rounding the product to the currency's minor-unit precision using
-banker's rounding (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding#system-midpointrounding-toeven">ToEven</a>).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_op_Subtraction_Bodu_Financial_Money_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_Subtraction(Bodu.Financial.Money,Bodu.Financial.Money)">
-          <a class="xref" href="Bodu.Financial.Money.op_Subtraction.html#Bodu_Financial_Money_op_Subtraction_Bodu_Financial_Money_Bodu_Financial_Money_">operator -(Money, Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Subtracts one monetary value from another.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_op_UnaryNegation_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_UnaryNegation(Bodu.Financial.Money)">
-          <a class="xref" href="Bodu.Financial.Money.op_UnaryNegation.html#Bodu_Financial_Money_op_UnaryNegation_Bodu_Financial_Money_">operator -(Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Negates a monetary value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Money_op_UnaryPlus_Bodu_Financial_Money_" data-uid="Bodu.Financial.Money.op_UnaryPlus(Bodu.Financial.Money)">
-          <a class="xref" href="Bodu.Financial.Money.op_UnaryPlus.html#Bodu_Financial_Money_op_UnaryPlus_Bodu_Financial_Money_">operator +(Money)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the operand unchanged.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;T&gt;(T, byte[], int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_">ComparableExtensions.AtLeast&lt;T&gt;(T, T)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_">ComparableExtensions.AtMost&lt;T&gt;(T, T)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0___0___0_">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0___0_">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0___0_">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0___0_">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0___0_">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0___0___0_">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_">ComparableExtensions.Max&lt;T&gt;(T, T)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_">ComparableExtensions.Min&lt;T&gt;(T, T)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Financial.Extensions.MoneyCompactFormattingExtensions.ToCompactString.html#Bodu_Financial_Extensions_MoneyCompactFormattingExtensions_ToCompactString_Bodu_Financial_Money_System_String_System_IFormatProvider_System_Int32_">MoneyCompactFormattingExtensions.ToCompactString(Money, string?, IFormatProvider?, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Financial.Extensions.MoneyExchangeRateExtensions.ConvertTo.html#Bodu_Financial_Extensions_MoneyExchangeRateExtensions_ConvertTo_Bodu_Financial_Money_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_System_MidpointRounding_">MoneyExchangeRateExtensions.ConvertTo(Money, IDatedRateProvider, string, DateOnly, RateLookupOptions?, MidpointRounding)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Financial.Extensions.MoneyExchangeRateExtensions.ConvertToWithRate.html#Bodu_Financial_Extensions_MoneyExchangeRateExtensions_ConvertToWithRate_Bodu_Financial_Money_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_System_MidpointRounding_">MoneyExchangeRateExtensions.ConvertToWithRate(Money, IDatedRateProvider, string, DateOnly, RateLookupOptions?, MidpointRounding)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Financial.Extensions.MoneyExchangeRateExtensions.ConvertTo.html#Bodu_Financial_Extensions_MoneyExchangeRateExtensions_ConvertTo__1_Bodu_Financial_Money_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_System_MidpointRounding_">MoneyExchangeRateExtensions.ConvertTo&lt;TTarget&gt;(Money, IDatedRateProvider, DateOnly, RateLookupOptions?, MidpointRounding)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Financial.Extensions.MoneyExtensions.Abs.html#Bodu_Financial_Extensions_MoneyExtensions_Abs_Bodu_Financial_Money_">MoneyExtensions.Abs(Money)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Financial.Extensions.MoneyExtensions.IsNegative.html#Bodu_Financial_Extensions_MoneyExtensions_IsNegative_Bodu_Financial_Money_">MoneyExtensions.IsNegative(Money)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Financial.Extensions.MoneyExtensions.IsPositive.html#Bodu_Financial_Extensions_MoneyExtensions_IsPositive_Bodu_Financial_Money_">MoneyExtensions.IsPositive(Money)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Financial.Extensions.MoneyExtensions.IsZero.html#Bodu_Financial_Extensions_MoneyExtensions_IsZero_Bodu_Financial_Money_">MoneyExtensions.IsZero(Money)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Financial.Extensions.MoneyExtensions.Sign.html#Bodu_Financial_Extensions_MoneyExtensions_Sign_Bodu_Financial_Money_">MoneyExtensions.Sign(Money)</a>
-  </div>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

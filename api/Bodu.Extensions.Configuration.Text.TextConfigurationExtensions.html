@@ -1,101 +1,139 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class TextConfigurationExtensions | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class TextConfigurationExtensions | BODU ">
-    
-    <meta name="description" content="Provides convenience extension methods for adding a Bodu Text Configuration source to an . The overload set mirrors Microsoft.Extensions.Configuration.Json&#39;s AddJsonFile / AddJsonStream shape so that consumers familiar with the JSON provider can swap in this provider with no learning curve.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>TextConfigurationExtensions Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="TextConfigurationExtensions Class
+ | BODU ">
+      
+      <meta name="description" content="Provides convenience extension methods for adding a Bodu Text Configuration source to an . The overload set mirrors Microsoft.Extensions.Configuration.Json&#39;s AddJsonFile / AddJsonStream shape so that consumers familiar with the JSON provider can swap in this provider with no learning curve.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions">
+
+        <article data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions">
 
 
 
-  <h1 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions" class="text-break">Class TextConfigurationExtensions</h1>
-  <div class="markdown level0 summary"><p>Provides convenience extension methods for adding a Bodu Text Configuration source to an
+
+  <h1 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+TextConfigurationExtensions Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a>.<span class="xref">Configuration</span>.<a class="xref" href="Bodu.Extensions.Configuration.Text.html">Text</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Extensions.Configuration.Text.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Extensions.Configuration.Text">Bodu.Extensions.Configuration.Text</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs">TextConfigurationExtensions.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides convenience extension methods for adding a Bodu Text Configuration source to an
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a>. The overload set mirrors <code>Microsoft.Extensions.Configuration.Json</code>'s
 <code>AddJsonFile</code> / <code>AddJsonStream</code> shape so that consumers familiar with the JSON provider can swap in this
 provider with no learning curve.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">TextConfigurationExtensions</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class TextConfigurationExtensions</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">TextConfigurationExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -117,40 +155,14 @@ provider with no learning curve.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a>.<span class="xref">Configuration</span>.<a class="xref" href="Bodu.Extensions.Configuration.Text.html">Text</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Extensions.Configuration.Text.dll</h6>
-  <h5 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class TextConfigurationExtensions</code></pre>
-  </div>
-  <h5 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-Five overload shapes are available, mirroring the JSON provider's surface:
-<ul><li>File path with optional reload-on-change — the everyday production shape.</li><li>
-File path with an explicit <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.ifileprovider">IFileProvider</a> — useful when the file lives outside the default content
-root, in an embedded assembly resource, or under a virtual file system.
-</li><li>
-Lambda configure-source overload — the most flexible shape, exposes every <a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationSource.html">TextConfigurationSource</a>
-property.
-</li><li>
-Convention-discovery overload — probes for <code>.boduconfig</code>, then <code>bodu.config</code>, in that order.
-</li><li>
-Stream overload (and a lambda <a class="xref" href="Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource.html">TextStreamConfigurationSource</a> variant) — one-shot, no reload-on-change
-machinery; ideal for tests and synthetic configuration.
-</li></ul>
+    </dd>
+  </dl>
 
-<p>
-File-backed registrations honour the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.fileconfigurationsource">FileConfigurationSource</a> behaviours (reload-on-change,
-optional-file, exception wrapping) and resolve <code>path</code>-relative paths through the supplied or builder-default
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.ifileprovider">IFileProvider</a>. The convention overload uses the builder's default <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.ifileprovider">IFileProvider</a>; note
-that <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.ifileprovider">IFileProvider</a> implementations such as
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.physicalfileprovider">PhysicalFileProvider</a> filter out dot-prefixed files by default —
-see the remarks on <a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfiguration.html#Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfiguration_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Boolean_System_Boolean_">AddTextConfiguration(IConfigurationBuilder, bool, bool)</a> for the workaround
-required to surface <code>.boduconfig</code>.
-</p>
-</div>
-  <h5 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_examples"><strong>Examples</strong></h5>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_examples">Examples</h2>
   <pre><code class="lang-csharp">// 1. Canonical ASP.NET / Generic Host registration in Program.cs.
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration
@@ -182,122 +194,505 @@ builder.Configuration.AddTextConfigurationStream(ms);
 ConfigurationDocument doc = ConfigurationDocument.Parse(text);
 builder.Configuration.AddTextConfigurationDocument(doc, targetPath: "src/Foo.cs");</code></pre>
 
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfiguration_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Boolean_System_Boolean_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.Boolean,System.Boolean)">
-          <a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfiguration.html#Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfiguration_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Boolean_System_Boolean_">AddTextConfiguration(IConfigurationBuilder, bool, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Adds a Bodu Text Configuration source backed by the conventional file name <code>.boduconfig</code>, falling back to
+
+  <h2 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+Five overload shapes are available, mirroring the JSON provider's surface:
+<ul><li>File path with optional reload-on-change — the everyday production shape.</li><li>
+File path with an explicit <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.ifileprovider">IFileProvider</a> — useful when the file lives outside the default content
+root, in an embedded assembly resource, or under a virtual file system.
+</li><li>
+Lambda configure-source overload — the most flexible shape, exposes every <a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationSource.html">TextConfigurationSource</a>
+property.
+</li><li>
+Convention-discovery overload — probes for <code>.boduconfig</code>, then <code>bodu.config</code>, in that order.
+</li><li>
+Stream overload (and a lambda <a class="xref" href="Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource.html">TextStreamConfigurationSource</a> variant) — one-shot, no reload-on-change
+machinery; ideal for tests and synthetic configuration.
+</li></ul>
+
+<p>
+File-backed registrations honour the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.fileconfigurationsource">FileConfigurationSource</a> behaviours (reload-on-change,
+optional-file, exception wrapping) and resolve <code>path</code>-relative paths through the supplied or builder-default
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.ifileprovider">IFileProvider</a>. The convention overload uses the builder's default <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.ifileprovider">IFileProvider</a>; note
+that <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.ifileprovider">IFileProvider</a> implementations such as
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.physicalfileprovider">PhysicalFileProvider</a> filter out dot-prefixed files by default —
+see the remarks on <a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.html#Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfiguration_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Boolean_System_Boolean_">AddTextConfiguration(IConfigurationBuilder, bool, bool)</a> for the workaround
+required to surface <code>.boduconfig</code>.
+</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfiguration_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfiguration*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfiguration_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Boolean_System_Boolean_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.Boolean,System.Boolean)">
+  AddTextConfiguration(IConfigurationBuilder, bool, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds a Bodu Text Configuration source backed by the conventional file name <code>.boduconfig</code>, falling back to
 <code>bodu.config</code> when the dot-prefixed name is absent. The file is resolved against the builder's default file
 provider.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationDocument_Microsoft_Extensions_Configuration_IConfigurationBuilder_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationResolveOptions_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationDocument(Microsoft.Extensions.Configuration.IConfigurationBuilder,Bodu.Text.Configuration.IniDocumentBase,System.String,Bodu.Text.Configuration.ConfigurationResolveOptions)">
-          <a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationDocument.html#Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationDocument_Microsoft_Extensions_Configuration_IConfigurationBuilder_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationResolveOptions_">AddTextConfigurationDocument(IConfigurationBuilder, IniDocumentBase, string?, ConfigurationResolveOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Adds an already-parsed <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> (such as a <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a>) to the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IConfigurationBuilder AddTextConfiguration(this IConfigurationBuilder builder, bool optional = true, bool reloadOnChange = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>builder</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a></dt>
+    <dd><p>The configuration builder.</p>
+</dd>
+    <dt><code>optional</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> (the default), neither file is required to exist; when <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, at
+least one of the two conventional names must resolve.</p>
+</dd>
+    <dt><code>reloadOnChange</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the provider reloads the configuration when the underlying file changes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a></dt>
+    <dd><p>The supplied <code class="paramref">builder</code>, for chaining.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfiguration_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Boolean_System_Boolean__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The default <code>PhysicalFileProvider</code> filters out dot-prefixed files via its <code>ExclusionFilters</code> (
+<code>Sensitive</code> by default), so to make <code>.boduconfig</code> resolvable the caller must register a
+<code>PhysicalFileProvider</code> constructed with <code>ExclusionFilters.None</code>. The fallback <code>bodu.config</code> name
+is resolved by the default exclusion filters without further configuration.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">builder</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filenotfoundexception">FileNotFoundException</a></dt>
+    <dd><p>Both conventional files are absent and <code class="paramref">optional</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationDocument_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationDocument*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationDocument_Microsoft_Extensions_Configuration_IConfigurationBuilder_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationResolveOptions_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationDocument(Microsoft.Extensions.Configuration.IConfigurationBuilder,Bodu.Text.Configuration.IniDocumentBase,System.String,Bodu.Text.Configuration.ConfigurationResolveOptions)">
+  AddTextConfigurationDocument(IConfigurationBuilder, IniDocumentBase, string?, ConfigurationResolveOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds an already-parsed <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> (such as a <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a>) to the
 configuration. The document is resolved against <code class="paramref">targetPath</code> and the resulting key/value map
 is added via
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.memoryconfigurationbuilderextensions.addinmemorycollection#microsoft-extensions-configuration-memoryconfigurationbuilderextensions-addinmemorycollection(microsoft-extensions-configuration-iconfigurationbuilder-system-collections-generic-ienumerable((system-collections-generic-keyvaluepair((system-string-system-string)))))">AddInMemoryCollection(IConfigurationBuilder, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;)</a>
 .</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_Microsoft_Extensions_Configuration_IConfigurationBuilder_Microsoft_Extensions_FileProviders_IFileProvider_System_String_System_String_System_Boolean_System_Boolean_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationFile(Microsoft.Extensions.Configuration.IConfigurationBuilder,Microsoft.Extensions.FileProviders.IFileProvider,System.String,System.String,System.Boolean,System.Boolean)">
-          <a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationFile.html#Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_Microsoft_Extensions_Configuration_IConfigurationBuilder_Microsoft_Extensions_FileProviders_IFileProvider_System_String_System_String_System_Boolean_System_Boolean_">AddTextConfigurationFile(IConfigurationBuilder, IFileProvider?, string, string?, bool, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Adds a Bodu Text Configuration source backed by the file at <code class="paramref">path</code> using the supplied
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IConfigurationBuilder AddTextConfigurationDocument(this IConfigurationBuilder builder, IniDocumentBase document, string? targetPath = null, ConfigurationResolveOptions? resolveOptions = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>builder</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a></dt>
+    <dd><p>The configuration builder.</p>
+</dd>
+    <dt><code>document</code> <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a></dt>
+    <dd><p>The pre-parsed configuration document.</p>
+</dd>
+    <dt><code>targetPath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The optional target path used for glob-anchored resolution.</p>
+</dd>
+    <dt><code>resolveOptions</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html">ConfigurationResolveOptions</a></dt>
+    <dd><p>The resolve options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a></dt>
+    <dd><p>The supplied <code class="paramref">builder</code>, for chaining.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationDocument_Microsoft_Extensions_Configuration_IConfigurationBuilder_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationResolveOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This overload takes a <b>one-shot snapshot</b> of <code class="paramref">document</code> as it stands when called: the
+document is resolved immediately and the flattened values are added in-memory. Unlike the file-based overloads,
+it has <b>no reload-on-change</b> behaviour — subsequent edits to the document or its backing file are not
+reflected in the built configuration.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">builder</code> or <code class="paramref">document</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationFile*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_Microsoft_Extensions_Configuration_IConfigurationBuilder_Microsoft_Extensions_FileProviders_IFileProvider_System_String_System_String_System_Boolean_System_Boolean_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationFile(Microsoft.Extensions.Configuration.IConfigurationBuilder,Microsoft.Extensions.FileProviders.IFileProvider,System.String,System.String,System.Boolean,System.Boolean)">
+  AddTextConfigurationFile(IConfigurationBuilder, IFileProvider?, string, string?, bool, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds a Bodu Text Configuration source backed by the file at <code class="paramref">path</code> using the supplied
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.ifileprovider">IFileProvider</a>. Mirrors
 <code>AddJsonFile(IConfigurationBuilder, IFileProvider, string, bool, bool)</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Action_Bodu_Extensions_Configuration_Text_TextConfigurationSource__" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationFile(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.Action{Bodu.Extensions.Configuration.Text.TextConfigurationSource})">
-          <a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationFile.html#Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Action_Bodu_Extensions_Configuration_Text_TextConfigurationSource__">AddTextConfigurationFile(IConfigurationBuilder, Action&lt;TextConfigurationSource&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Adds a Bodu Text Configuration source configured via the supplied callback.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_String_System_String_System_Boolean_System_Boolean_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationFile(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.String,System.String,System.Boolean,System.Boolean)">
-          <a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationFile.html#Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_String_System_String_System_Boolean_System_Boolean_">AddTextConfigurationFile(IConfigurationBuilder, string, string?, bool, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Adds a Bodu Text Configuration source backed by the file at <code class="paramref">path</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationStream_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Action_Bodu_Extensions_Configuration_Text_TextStreamConfigurationSource__" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationStream(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.Action{Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource})">
-          <a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationStream.html#Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationStream_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Action_Bodu_Extensions_Configuration_Text_TextStreamConfigurationSource__">AddTextConfigurationStream(IConfigurationBuilder, Action&lt;TextStreamConfigurationSource&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Adds a Bodu Text Configuration stream source configured via the supplied callback.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationStream_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_IO_Stream_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_Bodu_Text_Configuration_ConfigurationResolveOptions_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationStream(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.IO.Stream,System.String,Bodu.Text.Configuration.ConfigurationParseOptions,Bodu.Text.Configuration.ConfigurationResolveOptions)">
-          <a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationStream.html#Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationStream_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_IO_Stream_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_Bodu_Text_Configuration_ConfigurationResolveOptions_">AddTextConfigurationStream(IConfigurationBuilder, Stream, string?, ConfigurationParseOptions?, ConfigurationResolveOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Adds a Bodu Text Configuration source backed by the supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a>. The stream is read once when
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IConfigurationBuilder AddTextConfigurationFile(this IConfigurationBuilder builder, IFileProvider? provider, string path, string? targetPath = null, bool optional = false, bool reloadOnChange = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>builder</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a></dt>
+    <dd><p>The configuration builder.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.fileproviders.ifileprovider">IFileProvider</a></dt>
+    <dd><p>The file provider that locates <code class="paramref">path</code>, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to defer to the builder's
+default file provider.</p>
+</dd>
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration file path, relative to <code class="paramref">provider</code>.</p>
+</dd>
+    <dt><code>targetPath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The optional target path used for glob-anchored resolution.</p>
+</dd>
+    <dt><code>optional</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the file is permitted to be missing.</p>
+</dd>
+    <dt><code>reloadOnChange</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the provider reloads the configuration when the underlying file changes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a></dt>
+    <dd><p>The supplied <code class="paramref">builder</code>, for chaining.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">builder</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or whitespace.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationFile*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Action_Bodu_Extensions_Configuration_Text_TextConfigurationSource__" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationFile(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.Action{Bodu.Extensions.Configuration.Text.TextConfigurationSource})">
+  AddTextConfigurationFile(IConfigurationBuilder, Action&lt;TextConfigurationSource&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds a Bodu Text Configuration source configured via the supplied callback.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IConfigurationBuilder AddTextConfigurationFile(this IConfigurationBuilder builder, Action&lt;TextConfigurationSource&gt; configureSource)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>builder</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a></dt>
+    <dd><p>The configuration builder.</p>
+</dd>
+    <dt><code>configureSource</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationSource.html">TextConfigurationSource</a>&gt;</dt>
+    <dd><p>A callback that configures the source.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a></dt>
+    <dd><p>The supplied <code class="paramref">builder</code>, for chaining.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">builder</code> or <code class="paramref">configureSource</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationFile*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationFile_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_String_System_String_System_Boolean_System_Boolean_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationFile(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.String,System.String,System.Boolean,System.Boolean)">
+  AddTextConfigurationFile(IConfigurationBuilder, string, string?, bool, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds a Bodu Text Configuration source backed by the file at <code class="paramref">path</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IConfigurationBuilder AddTextConfigurationFile(this IConfigurationBuilder builder, string path, string? targetPath = null, bool optional = false, bool reloadOnChange = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>builder</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a></dt>
+    <dd><p>The configuration builder.</p>
+</dd>
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration file path, relative to the builder's file provider.</p>
+</dd>
+    <dt><code>targetPath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The optional target path used for glob-anchored resolution.</p>
+</dd>
+    <dt><code>optional</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the file is permitted to be missing.</p>
+</dd>
+    <dt><code>reloadOnChange</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the provider reloads the configuration when the underlying file changes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a></dt>
+    <dd><p>The supplied <code class="paramref">builder</code>, for chaining.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">builder</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or whitespace.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationStream_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationStream*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationStream_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Action_Bodu_Extensions_Configuration_Text_TextStreamConfigurationSource__" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationStream(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.Action{Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource})">
+  AddTextConfigurationStream(IConfigurationBuilder, Action&lt;TextStreamConfigurationSource&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds a Bodu Text Configuration stream source configured via the supplied callback.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IConfigurationBuilder AddTextConfigurationStream(this IConfigurationBuilder builder, Action&lt;TextStreamConfigurationSource&gt; configureSource)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>builder</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a></dt>
+    <dd><p>The configuration builder.</p>
+</dd>
+    <dt><code>configureSource</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource.html">TextStreamConfigurationSource</a>&gt;</dt>
+    <dd><p>A callback that configures the source.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a></dt>
+    <dd><p>The supplied <code class="paramref">builder</code>, for chaining.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">builder</code> or <code class="paramref">configureSource</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationStream_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationStream*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_Configuration_Text_TextConfigurationExtensions_AddTextConfigurationStream_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_IO_Stream_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_Bodu_Text_Configuration_ConfigurationResolveOptions_" data-uid="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationStream(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.IO.Stream,System.String,Bodu.Text.Configuration.ConfigurationParseOptions,Bodu.Text.Configuration.ConfigurationResolveOptions)">
+  AddTextConfigurationStream(IConfigurationBuilder, Stream, string?, ConfigurationParseOptions?, ConfigurationResolveOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TextConfigurationExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds a Bodu Text Configuration source backed by the supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a>. The stream is read once when
 the configuration is built; no reload-on-change machinery is attached. Mirrors
 <code>AddJsonStream(IConfigurationBuilder, Stream)</code>.</p>
-</td>
-      </tr>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IConfigurationBuilder AddTextConfigurationStream(this IConfigurationBuilder builder, Stream stream, string? targetPath = null, ConfigurationParseOptions? parseOptions = null, ConfigurationResolveOptions? resolveOptions = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>builder</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a></dt>
+    <dd><p>The configuration builder.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream containing configuration text.</p>
+</dd>
+    <dt><code>targetPath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The optional target path used for glob-anchored resolution.</p>
+</dd>
+    <dt><code>parseOptions</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a></dt>
+    <dd><p>The parse options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the defaults.</p>
+</dd>
+    <dt><code>resolveOptions</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html">ConfigurationResolveOptions</a></dt>
+    <dd><p>The resolve options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a></dt>
+    <dd><p>The supplied <code class="paramref">builder</code>, for chaining.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">builder</code> or <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
 
+
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

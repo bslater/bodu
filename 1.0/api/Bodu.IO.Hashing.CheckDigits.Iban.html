@@ -1,109 +1,147 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class Iban | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class Iban | BODU ">
-    
-    <meta name="description" content="Computes the two-digit check sequence of an International Bank Account Number (IBAN) using the ISO 13616 algorithm atop ISO 7064 MOD 97-10. This class cannot be inherited.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>Iban Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Iban Class
+ | BODU ">
+      
+      <meta name="description" content="Computes the two-digit check sequence of an International Bank Account Number (IBAN) using the ISO 13616 algorithm atop ISO 7064 MOD 97-10. This class cannot be inherited.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.IO.Hashing.CheckDigits.Iban">
+
+        <article data-uid="Bodu.IO.Hashing.CheckDigits.Iban">
 
 
 
-  <h1 id="Bodu_IO_Hashing_CheckDigits_Iban" data-uid="Bodu.IO.Hashing.CheckDigits.Iban" class="text-break">Class Iban</h1>
-  <div class="markdown level0 summary"><p>Computes the two-digit check sequence of an International Bank Account Number (IBAN) using the ISO 13616 algorithm
+
+  <h1 id="Bodu_IO_Hashing_CheckDigits_Iban" data-uid="Bodu.IO.Hashing.CheckDigits.Iban" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+Iban Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Iban.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_IO_Hashing_CheckDigits_Iban_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Hashing.html">Hashing</a>.<a class="xref" href="Bodu.IO.Hashing.CheckDigits.html">CheckDigits</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Iban.cs">Iban.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Computes the two-digit check sequence of an International Bank Account Number (IBAN) using the ISO 13616 algorithm
 atop ISO 7064 MOD 97-10. This class cannot be inherited.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html">CheckValueAlgorithm</a></div>
-    <div class="level2"><a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html">MultiCharCheckDigitAlgorithm</a></div>
-    <div class="level3"><span class="xref">Iban</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class Iban : MultiCharCheckDigitAlgorithm</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html">CheckValueAlgorithm</a></div>
+      <div><a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html">MultiCharCheckDigitAlgorithm</a></div>
+      <div><span class="xref">Iban</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
-      <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.GetCurrentCheckDigits.html#Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_GetCurrentCheckDigits">MultiCharCheckDigitAlgorithm.GetCurrentCheckDigits()</a>
+      <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html#Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_GetCurrentCheckDigits">MultiCharCheckDigitAlgorithm.GetCurrentCheckDigits()</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.GetCurrentCheckValue.html#Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_GetCurrentCheckValue">MultiCharCheckDigitAlgorithm.GetCurrentCheckValue()</a>
+      <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html#Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_GetCurrentCheckValue">MultiCharCheckDigitAlgorithm.GetCurrentCheckValue()</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.Append.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Append_System_Char_">CheckValueAlgorithm.Append(char)</a>
+      <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Append_System_Char_">CheckValueAlgorithm.Append(char)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
@@ -123,36 +161,34 @@ atop ISO 7064 MOD 97-10. This class cannot be inherited.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Hashing.html">Hashing</a>.<a class="xref" href="Bodu.IO.Hashing.CheckDigits.html">CheckDigits</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.IO.Hashing.dll</h6>
-  <h5 id="Bodu_IO_Hashing_CheckDigits_Iban_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class Iban : MultiCharCheckDigitAlgorithm</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_IO_Hashing_CheckDigits_Iban_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-An IBAN takes the textual form <code>CCDDBBAN</code> where <code>CC</code> is a two-letter ISO 3166 country code, <code>DD</code> is a
-two-digit check, and <code>BBAN</code> is the Basic Bank Account Number specific to the issuing country. To compute or
-validate the check, the first four characters are moved to the end (<code>BBAN + CC + DD</code>), letters are expanded to
-their numeric value (<code>'A'</code>=10 … <code>'Z'</code>=35), and the resulting decimal string is evaluated under ISO 7064
-MOD 97-10.
-</p>
-<p>
-The streaming surface accepts a body comprising <code>CC + BBAN</code> — that is, the IBAN with the check placeholder <i>
-omitted</i> — and produces the two check digits via <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.GetCurrentCheckDigits.html#Bodu_IO_Hashing_CheckDigits_Iban_GetCurrentCheckDigits_System_Span_System_Char__">GetCurrentCheckDigits(Span&lt;char&gt;)</a>.
-<a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.IsValid.html#Bodu_IO_Hashing_CheckDigits_Iban_IsValid_System_ReadOnlySpan_System_Char__">IsValid(ReadOnlySpan&lt;char&gt;)</a> accepts the complete <code>CC + DD + BBAN</code> form; whitespace and other
-formatting characters are <b>not</b> tolerated, in keeping with ISO 13616 strict mode. Callers should normalize
-textual IBANs (for example, by removing spaces) before passing them in.
-</p>
-<p>
-<b>Worked example.</b> For the body <code>"GBWEST12345698765432"</code>, the computed check is <code>"82"</code>, and the
-resulting IBAN <code>"GB82WEST12345698765432"</code> is therefore valid.
-</p>
-<div class="IMPORTANT"><h5>important</h5><p>This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
-password hashing, digital signatures, or integrity validation in security-sensitive applications.</p></div>
-</div>
-  <h5 id="Bodu_IO_Hashing_CheckDigits_Iban_examples"><strong>Examples</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_IO_Hashing_CheckDigits_Iban_examples">Examples</h2>
   <pre><code class="lang-csharp">// Single-call computation — body is the country code followed by the BBAN.
 string check = Iban.Compute("GBWEST12345698765432");   // "82"
 
@@ -164,194 +200,517 @@ var algo = new Iban();
 algo.Append("GBWEST12345698765432");
 string code = algo.GetCurrentCheckDigits();            // "82"</code></pre>
 
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Hashing_CheckDigits_Iban__ctor" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.#ctor">
-          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.-ctor.html#Bodu_IO_Hashing_CheckDigits_Iban__ctor">Iban()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.html">Iban</a> class.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="fields">Fields
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Hashing_CheckDigits_Iban_CheckDigits" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.CheckDigits">
-          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.CheckDigits.html">CheckDigits</a>
-        </td>
-        <td class="markdown level1 summary"><p>The fixed check-code length of <code>2</code> decimal digits.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_CheckDigits_Iban_CountryCodeLength" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.CountryCodeLength">
-          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.CountryCodeLength.html">CountryCodeLength</a>
-        </td>
-        <td class="markdown level1 summary"><p>The length of the country-code prefix (<code>2</code> letters).</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Hashing_CheckDigits_Iban_AlgorithmName" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.AlgorithmName">
-          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.AlgorithmName.html#Bodu_IO_Hashing_CheckDigits_Iban_AlgorithmName">AlgorithmName</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the canonical name of the algorithm, suitable for diagnostic output and logging.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_CheckDigits_Iban_CheckLength" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.CheckLength">
-          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.CheckLength.html#Bodu_IO_Hashing_CheckDigits_Iban_CheckLength">CheckLength</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the fixed number of decimal-digit characters emitted as the trailing check code.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_CheckDigits_Iban_InputAlphabet" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.InputAlphabet">
-          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.InputAlphabet.html#Bodu_IO_Hashing_CheckDigits_Iban_InputAlphabet">InputAlphabet</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the subset of ASCII from which this algorithm accepts body characters.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Hashing_CheckDigits_Iban_Append_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.Append(System.ReadOnlySpan{System.Char})">
-          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.Append.html#Bodu_IO_Hashing_CheckDigits_Iban_Append_System_ReadOnlySpan_System_Char__">Append(ReadOnlySpan&lt;char&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Absorbs the supplied characters into the running check-value state.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_CheckDigits_Iban_Compute_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.Compute(System.ReadOnlySpan{System.Char})">
-          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.Compute.html#Bodu_IO_Hashing_CheckDigits_Iban_Compute_System_ReadOnlySpan_System_Char__">Compute(ReadOnlySpan&lt;char&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Computes the IBAN check digits for the supplied country-code-plus-BBAN body without allocating a streaming
+
+  <h2 id="Bodu_IO_Hashing_CheckDigits_Iban_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+An IBAN takes the textual form <code>CCDDBBAN</code> where <code>CC</code> is a two-letter ISO 3166 country code, <code>DD</code> is a
+two-digit check, and <code>BBAN</code> is the Basic Bank Account Number specific to the issuing country. To compute or
+validate the check, the first four characters are moved to the end (<code>BBAN + CC + DD</code>), letters are expanded to
+their numeric value (<code>'A'</code>=10 … <code>'Z'</code>=35), and the resulting decimal string is evaluated under ISO 7064
+MOD 97-10.
+</p>
+<p>
+The streaming surface accepts a body comprising <code>CC + BBAN</code> — that is, the IBAN with the check placeholder <i>
+omitted</i> — and produces the two check digits via <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.html#Bodu_IO_Hashing_CheckDigits_Iban_GetCurrentCheckDigits_System_Span_System_Char__">GetCurrentCheckDigits(Span&lt;char&gt;)</a>.
+<a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.html#Bodu_IO_Hashing_CheckDigits_Iban_IsValid_System_ReadOnlySpan_System_Char__">IsValid(ReadOnlySpan&lt;char&gt;)</a> accepts the complete <code>CC + DD + BBAN</code> form; whitespace and other
+formatting characters are <b>not</b> tolerated, in keeping with ISO 13616 strict mode. Callers should normalize
+textual IBANs (for example, by removing spaces) before passing them in.
+</p>
+<p>
+<b>Worked example.</b> For the body <code>"GBWEST12345698765432"</code>, the computed check is <code>"82"</code>, and the
+resulting IBAN <code>"GB82WEST12345698765432"</code> is therefore valid.
+</p>
+<div class="IMPORTANT"><h5>important</h5><p>This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
+password hashing, digital signatures, or integrity validation in security-sensitive applications.</p></div>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_IO_Hashing_CheckDigits_Iban__ctor_" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_CheckDigits_Iban__ctor" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.#ctor">
+  Iban()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Iban.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.html">Iban</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Iban()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_CheckDigits_Iban_CheckDigits" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.CheckDigits">
+  CheckDigits
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Iban.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>The fixed check-code length of <code>2</code> decimal digits.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int CheckDigits = 2</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  </section>
+
+
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_CheckDigits_Iban_CountryCodeLength" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.CountryCodeLength">
+  CountryCodeLength
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Iban.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>The length of the country-code prefix (<code>2</code> letters).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int CountryCodeLength = 2</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_IO_Hashing_CheckDigits_Iban_AlgorithmName_" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.AlgorithmName*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_CheckDigits_Iban_AlgorithmName" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.AlgorithmName">
+  AlgorithmName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Iban.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the canonical name of the algorithm, suitable for diagnostic output and logging.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string AlgorithmName { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A short, stable identifier such as <code>&quot;Luhn&quot;</code>, <code>&quot;IBAN&quot;</code>, or <code>&quot;ISO 7064 MOD 97-10&quot;</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_CheckDigits_Iban_CheckLength_" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.CheckLength*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_CheckDigits_Iban_CheckLength" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.CheckLength">
+  CheckLength
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Iban.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the fixed number of decimal-digit characters emitted as the trailing check code.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int CheckLength { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A positive integer; for example, <code>2</code> for ISO 7064 MOD 97-10.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_CheckDigits_Iban_InputAlphabet_" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.InputAlphabet*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_CheckDigits_Iban_InputAlphabet" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.InputAlphabet">
+  InputAlphabet
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Iban.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the subset of ASCII from which this algorithm accepts body characters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override CheckDigitInputAlphabet InputAlphabet { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckDigitInputAlphabet.html">CheckDigitInputAlphabet</a></dt>
+    <dd><p>The declared input alphabet.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_IO_Hashing_CheckDigits_Iban_Append_" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.Append*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_CheckDigits_Iban_Append_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.Append(System.ReadOnlySpan{System.Char})">
+  Append(ReadOnlySpan&lt;char&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Iban.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Absorbs the supplied characters into the running check-value state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Append(ReadOnlySpan&lt;char&gt; body)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>body</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The characters to append. Each element must belong to the algorithm's accepted input alphabet. An empty span is
+a permitted no-op.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">body</code> contains any character outside the algorithm's accepted input alphabet.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_CheckDigits_Iban_Compute_" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.Compute*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_CheckDigits_Iban_Compute_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.Compute(System.ReadOnlySpan{System.Char})">
+  Compute(ReadOnlySpan&lt;char&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Iban.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Computes the IBAN check digits for the supplied country-code-plus-BBAN body without allocating a streaming
 instance.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_CheckDigits_Iban_GetCurrentCheckDigits_System_Span_System_Char__" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.GetCurrentCheckDigits(System.Span{System.Char})">
-          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.GetCurrentCheckDigits.html#Bodu_IO_Hashing_CheckDigits_Iban_GetCurrentCheckDigits_System_Span_System_Char__">GetCurrentCheckDigits(Span&lt;char&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes the current check code into the supplied destination span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_CheckDigits_Iban_IsValid_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.IsValid(System.ReadOnlySpan{System.Char})">
-          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.IsValid.html#Bodu_IO_Hashing_CheckDigits_Iban_IsValid_System_ReadOnlySpan_System_Char__">IsValid(ReadOnlySpan&lt;char&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the supplied IBAN, in its contiguous (unspaced) canonical form, is consistent under ISO
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Compute(ReadOnlySpan&lt;char&gt; body)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>body</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The body characters — the complete IBAN minus its two-digit check sequence.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The check code as a two-character string of ASCII decimal digits.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">body</code> contains any character outside the alphanumeric uppercase alphabet.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_CheckDigits_Iban_GetCurrentCheckDigits_" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.GetCurrentCheckDigits*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_CheckDigits_Iban_GetCurrentCheckDigits_System_Span_System_Char__" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.GetCurrentCheckDigits(System.Span{System.Char})">
+  GetCurrentCheckDigits(Span&lt;char&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Iban.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Writes the current check code into the supplied destination span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetCurrentCheckDigits(Span&lt;char&gt; destination)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The span to receive the trailing check characters. Must be at least <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html#Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_CheckLength">CheckLength</a> in length.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of characters written, always equal to <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html#Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_CheckLength">CheckLength</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Hashing_CheckDigits_Iban_GetCurrentCheckDigits_System_Span_System_Char___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This call is non-destructive; the running state is unaffected and the method may be invoked any number of times
+with identical results between appends.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> is shorter than <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html#Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_CheckLength">CheckLength</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_CheckDigits_Iban_IsValid_" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.IsValid*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_CheckDigits_Iban_IsValid_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.IsValid(System.ReadOnlySpan{System.Char})">
+  IsValid(ReadOnlySpan&lt;char&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Iban.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the supplied IBAN, in its contiguous (unspaced) canonical form, is consistent under ISO
 13616.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_CheckDigits_Iban_Reset" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.Reset">
-          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.Reset.html#Bodu_IO_Hashing_CheckDigits_Iban_Reset">Reset()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Resets the algorithm to its initial state, discarding any characters previously absorbed.</p>
-</td>
-      </tr>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsValid(ReadOnlySpan&lt;char&gt; iban)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>iban</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The complete IBAN in canonical form — two-letter country code, two-digit check, then the BBAN — with no internal
+whitespace or formatting characters.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the IBAN is at least four characters long, alphanumeric, and its rearranged decimal
+expansion has remainder <code>1</code> modulo 97; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> — including the case where
+<code class="paramref">iban</code> is empty.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_CheckDigits_Iban_Reset_" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.Reset*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_CheckDigits_Iban_Reset" data-uid="Bodu.IO.Hashing.CheckDigits.Iban.Reset">
+  Reset()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/Iban.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Resets the algorithm to its initial state, discarding any characters previously absorbed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Reset()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Hashing_CheckDigits_Iban_Reset_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Equivalent in behavior to constructing a fresh instance of the same concrete type.</p>
+</div>
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

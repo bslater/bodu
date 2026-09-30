@@ -1,86 +1,103 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Namespace Bodu.Threading | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Namespace Bodu.Threading | BODU ">
-    
-    
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>Bodu.Threading Namespace
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bodu.Threading Namespace
+ | BODU ">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/apidoc/Bodu.Threading.md/#L2">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Threading">
 
-  <h1 id="Bodu_Threading" data-uid="Bodu.Threading" class="text-break">Namespace Bodu.Threading</h1>
+        <article data-uid="Bodu.Threading">
+
+
+  <h1 id="Bodu_Threading" data-uid="Bodu.Threading" class="text-break" data-bodu-frameworks="net8.0 net10.0">Bodu.Threading Namespace
+</h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+  <div class="facts text-secondary">
+    <dl class="bodu-package"><dt>Package</dt><dd>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.0</span>
+</div>
+    </dd></dl>
+  </div>
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-core.svg" alt="Bodu.Threading"></p>
@@ -156,111 +173,113 @@ public async Task DownloadAsync(Uri uri)
 </ul>
 </div>
   <div class="markdown level0 remarks"></div>
+
     <h3 id="classes">
 Classes
 </h3>
-      <h4><a class="xref" href="Bodu.Threading.AsyncAutoResetEvent.html">AsyncAutoResetEvent</a></h4>
-      <section><p>Provides an asynchronous auto-reset signaling primitive: each call to <a class="xref" href="Bodu.Threading.AsyncAutoResetEvent.Set.html#Bodu_Threading_AsyncAutoResetEvent_Set">Set()</a> releases exactly one waiter
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Threading.AsyncAutoResetEvent.html">AsyncAutoResetEvent</a></dt>
+      <dd><p>Provides an asynchronous auto-reset signaling primitive: each call to <a class="xref" href="Bodu.Threading.AsyncAutoResetEvent.html#Bodu_Threading_AsyncAutoResetEvent_Set">Set()</a> releases exactly one waiter
 and then automatically returns to the unsignaled state.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Threading.AsyncCountdownEvent.html">AsyncCountdownEvent</a></h4>
-      <section><p>Provides an asynchronous countdown synchronization primitive that becomes signaled once its count reaches zero,
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Threading.AsyncCountdownEvent.html">AsyncCountdownEvent</a></dt>
+      <dd><p>Provides an asynchronous countdown synchronization primitive that becomes signaled once its count reaches zero,
 releasing all waiters.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a></h4>
-      <section><p>Coalesces a rapid burst of triggers into a single asynchronous invocation that runs once a quiet period has elapsed
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a></dt>
+      <dd><p>Coalesces a rapid burst of triggers into a single asynchronous invocation that runs once a quiet period has elapsed
 since the most recent trigger.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Threading.AsyncLazy-1.html">AsyncLazy&lt;T&gt;</a></h4>
-      <section><p>Provides support for asynchronous lazy initialization: a value is produced at most once, on first access, and the
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Threading.AsyncLazy-1.html">AsyncLazy&lt;T&gt;</a></dt>
+      <dd><p>Provides support for asynchronous lazy initialization: a value is produced at most once, on first access, and the
 resulting task is cached and shared by every awaiter.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Threading.AsyncLock.html">AsyncLock</a></h4>
-      <section><p>Provides an asynchronous, non-reentrant mutual-exclusion primitive whose acquisition can be awaited without blocking
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Threading.AsyncLock.html">AsyncLock</a></dt>
+      <dd><p>Provides an asynchronous, non-reentrant mutual-exclusion primitive whose acquisition can be awaited without blocking
 a thread.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Threading.AsyncManualResetEvent.html">AsyncManualResetEvent</a></h4>
-      <section><p>Provides an asynchronous, manually reset signaling primitive: once set, every current and future waiter is released
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Threading.AsyncManualResetEvent.html">AsyncManualResetEvent</a></dt>
+      <dd><p>Provides an asynchronous, manually reset signaling primitive: once set, every current and future waiter is released
 until the event is explicitly reset.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a></h4>
-      <section><p>Provides an asynchronous, writer-preferring reader/writer lock whose acquisitions can be awaited without blocking a
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a></dt>
+      <dd><p>Provides an asynchronous, writer-preferring reader/writer lock whose acquisitions can be awaited without blocking a
 thread.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Threading.AsyncSemaphore.html">AsyncSemaphore</a></h4>
-      <section><p>Provides a lightweight asynchronous counting semaphore that admits a bounded number of concurrent holders and
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Threading.AsyncSemaphore.html">AsyncSemaphore</a></dt>
+      <dd><p>Provides a lightweight asynchronous counting semaphore that admits a bounded number of concurrent holders and
 releases waiters in strict first-in, first-out order.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Threading.RateGate.html">RateGate</a></h4>
-      <section><p>Provides a synchronous, leading-edge admission gate that admits at most one invocation per fixed interval, dropping
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Threading.RateGate.html">RateGate</a></dt>
+      <dd><p>Provides a synchronous, leading-edge admission gate that admits at most one invocation per fixed interval, dropping
 any calls that arrive while the cool-down window opened by the previous admitted call is still open.</p>
-</section>
+</dd>
+    </dl>
     <h3 id="structs">
 Structs
 </h3>
-      <h4><a class="xref" href="Bodu.Threading.AsyncLock.Releaser.html">AsyncLock.Releaser</a></h4>
-      <section><p>Represents an acquired <a class="xref" href="Bodu.Threading.AsyncLock.html">AsyncLock</a>. Disposing the releaser releases the lock.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.Releaser.html">AsyncReaderWriterLock.Releaser</a></h4>
-      <section><p>Represents acquired access to an <a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a>. Disposing the releaser releases the read
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Threading.AsyncLock.Releaser.html">AsyncLock.Releaser</a></dt>
+      <dd><p>Represents an acquired <a class="xref" href="Bodu.Threading.AsyncLock.html">AsyncLock</a>. Disposing the releaser releases the lock.</p>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.Releaser.html">AsyncReaderWriterLock.Releaser</a></dt>
+      <dd><p>Represents acquired access to an <a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a>. Disposing the releaser releases the read
 or write access it represents.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Threading.AsyncSemaphore.Releaser.html">AsyncSemaphore.Releaser</a></h4>
-      <section><p>Represents a permit taken from an <a class="xref" href="Bodu.Threading.AsyncSemaphore.html">AsyncSemaphore</a>. Disposing the releaser returns the permit.</p>
-</section>
+</dd>
+    </dl>
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Threading.AsyncSemaphore.Releaser.html">AsyncSemaphore.Releaser</a></dt>
+      <dd><p>Represents a permit taken from an <a class="xref" href="Bodu.Threading.AsyncSemaphore.html">AsyncSemaphore</a>. Disposing the releaser returns the permit.</p>
+</dd>
+    </dl>
     <h3 id="enums">
 Enums
 </h3>
-      <h4><a class="xref" href="Bodu.Threading.AsyncDebouncerExecutionPolicy.html">AsyncDebouncerExecutionPolicy</a></h4>
-      <section><p>Specifies how an <a class="xref" href="Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a> behaves when a debounced run becomes due while a previous callback
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
+      <dt><a class="xref" href="Bodu.Threading.AsyncDebouncerExecutionPolicy.html">AsyncDebouncerExecutionPolicy</a></dt>
+      <dd><p>Specifies how an <a class="xref" href="Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a> behaves when a debounced run becomes due while a previous callback
 invocation is still in flight.</p>
-</section>
+</dd>
+    </dl>
 
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

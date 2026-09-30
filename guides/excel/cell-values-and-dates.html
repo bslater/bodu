@@ -1,84 +1,90 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Cell values and dates | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Cell values and dates | BODU ">
-    
-    
-      <link rel="shortcut icon" href="../../images/favicon.svg">
-      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../../styles/docfx.css">
-      <link rel="stylesheet" href="../../styles/main.css">
-      <meta property="docfx:navrel" content="../../toc.html">
-      <meta property="docfx:tocrel" content="../toc.html">
-    
-    <meta property="docfx:rel" content="../../">
-    
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/excel/cell-values-and-dates.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../../index.html">
-                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="">
+
+        <article data-uid="">
 <h1 id="cell-values-and-dates">Cell values and dates</h1>
 
 <p>Every populated cell is surfaced as an immutable <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html">ExcelCell</a>. This guide covers reading its value by kind, handling a formula cell's cached result, detecting and converting date-formatted numbers, and converting between coordinates and A1 references.</p>
@@ -192,7 +198,7 @@ while (reader.TryReadCell(out ExcelCell cell))
     }
 }
 </code></pre>
-<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.IsDateFormatted.html#Bodu_Formats_Excel_ExcelCell_IsDateFormatted">IsDateFormatted</a> is set when the cell's number format is a date or time format (and date detection is enabled). <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelSerialDate.FromSerialDate.html#Bodu_Formats_Excel_ExcelSerialDate_FromSerialDate_System_Double_Bodu_Formats_Excel_ExcelDateSystem_">FromSerialDate(double, ExcelDateSystem)</a> converts the serial number to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>, discarding any fractional time-of-day; use <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelSerialDate.ToDateTime.html#Bodu_Formats_Excel_ExcelSerialDate_ToDateTime_System_Double_Bodu_Formats_Excel_ExcelDateSystem_">ToDateTime(double, ExcelDateSystem)</a> when you need the time of day, which it preserves from the fractional part. Both helpers also offer single-argument overloads that assume the 1900 system, but prefer the date-system overload and always pass the workbook's <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.DateSystem.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_DateSystem">DateSystem</a>: the 1900 (<code>1899-12-30</code>) and 1904 (<code>1904-01-01</code>) epochs differ by 1,462 days, so the wrong system lands a serial number four-plus years off.</p>
+<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html#Bodu_Formats_Excel_ExcelCell_IsDateFormatted">IsDateFormatted</a> is set when the cell's number format is a date or time format (and date detection is enabled). <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelSerialDate.html#Bodu_Formats_Excel_ExcelSerialDate_FromSerialDate_System_Double_Bodu_Formats_Excel_ExcelDateSystem_">FromSerialDate(double, ExcelDateSystem)</a> converts the serial number to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>, discarding any fractional time-of-day; use <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelSerialDate.html#Bodu_Formats_Excel_ExcelSerialDate_ToDateTime_System_Double_Bodu_Formats_Excel_ExcelDateSystem_">ToDateTime(double, ExcelDateSystem)</a> when you need the time of day, which it preserves from the fractional part. Both helpers also offer single-argument overloads that assume the 1900 system, but prefer the date-system overload and always pass the workbook's <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_DateSystem">DateSystem</a>: the 1900 (<code>1899-12-30</code>) and 1904 (<code>1904-01-01</code>) epochs differ by 1,462 days, so the wrong system lands a serial number four-plus years off.</p>
 <div class="IMPORTANT">
 <h5>Important</h5>
 <p>The 1900 epoch is <code>1899-12-30</code>, not <code>1900-01-01</code>. Excel deliberately keeps a historical bug that treats 1900 as a leap year, and <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelSerialDate.html">ExcelSerialDate</a> reproduces that arithmetic (it delegates to <code>DateTime.FromOADate</code>) so values round-trip with Excel for dates from <code>1900-03-01</code> onward. A serial number outside the representable OLE Automation date range raises <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>, so guard or catch when reading untrusted workbooks whose &quot;date&quot; column might hold an out-of-range number.</p>
@@ -203,8 +209,8 @@ while (reader.TryReadCell(out ExcelCell cell))
 DateTime? when = workbook.GetDateTime(cell);   // null for non-numeric cells
 string? formatCode = workbook.GetNumberFormatCode(cell.FormatIndex);
 </code></pre>
-<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.GetDateTime.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_GetDateTime_Bodu_Formats_Excel_ExcelCell_">GetDateTime(ExcelCell)</a> converts a numeric cell using the workbook's date system and returns <code>null</code> for any non-numeric cell, so it is safe to call on any cell. It applies the conversion to <em>every</em> numeric cell, not only date-formatted ones — inspect <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.IsDateFormatted.html#Bodu_Formats_Excel_ExcelCell_IsDateFormatted">IsDateFormatted</a> first when only date-formatted cells should be treated as dates, otherwise a plain count or amount comes back as a meaningless calendar value.</p>
-<p><code>GetNumberFormatCode</code> resolves a cell's <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.FormatIndex.html#Bodu_Formats_Excel_ExcelCell_FormatIndex">FormatIndex</a> to its format-code string (built-in or custom), or <code>null</code> when the index is unknown. A cell whose record carries no explicit format reports <code>FormatIndex</code> <code>0</code>, the General format. The format code is the same raw string Excel stores (for example <code>&quot;0.00&quot;</code> or <code>&quot;yyyy-mm-dd&quot;</code>); this reader does not render values through it.</p>
+<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_GetDateTime_Bodu_Formats_Excel_ExcelCell_">GetDateTime(ExcelCell)</a> converts a numeric cell using the workbook's date system and returns <code>null</code> for any non-numeric cell, so it is safe to call on any cell. It applies the conversion to <em>every</em> numeric cell, not only date-formatted ones — inspect <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html#Bodu_Formats_Excel_ExcelCell_IsDateFormatted">IsDateFormatted</a> first when only date-formatted cells should be treated as dates, otherwise a plain count or amount comes back as a meaningless calendar value.</p>
+<p><code>GetNumberFormatCode</code> resolves a cell's <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html#Bodu_Formats_Excel_ExcelCell_FormatIndex">FormatIndex</a> to its format-code string (built-in or custom), or <code>null</code> when the index is unknown. A cell whose record carries no explicit format reports <code>FormatIndex</code> <code>0</code>, the General format. The format code is the same raw string Excel stores (for example <code>&quot;0.00&quot;</code> or <code>&quot;yyyy-mm-dd&quot;</code>); this reader does not render values through it.</p>
 <h2 id="pattern-6--convert-coordinates-to-and-from-a1">Pattern 6 — convert coordinates to and from A1</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
@@ -226,49 +232,25 @@ if (ExcelCellReference.TryParseA1(&quot;AB10&quot;, out int row, out int column)
 </ul>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../../styles/docfx.js"></script>
-    <script type="text/javascript" src="../../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

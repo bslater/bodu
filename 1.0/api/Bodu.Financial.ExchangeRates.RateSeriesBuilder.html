@@ -1,99 +1,137 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class RateSeriesBuilder | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class RateSeriesBuilder | BODU ">
-    
-    <meta name="description" content="Provides a mutable construction and editing surface for an , maintaining strictly ascending unique observation dates and strictly positive rates while supporting single-observation edits and bulk import.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>RateSeriesBuilder Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="RateSeriesBuilder Class
+ | BODU ">
+      
+      <meta name="description" content="Provides a mutable construction and editing surface for an , maintaining strictly ascending unique observation dates and strictly positive rates while supporting single-observation edits and bulk import.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder">
+
+        <article data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder">
 
 
 
-  <h1 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder" class="text-break">Class RateSeriesBuilder</h1>
-  <div class="markdown level0 summary"><p>Provides a mutable construction and editing surface for an <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a>, maintaining strictly ascending
+
+  <h1 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+RateSeriesBuilder Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Financial.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial">Bodu.Financial</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs">RateSeriesBuilder.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides a mutable construction and editing surface for an <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a>, maintaining strictly ascending
 unique observation dates and strictly positive rates while supporting single-observation edits and bulk import.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">RateSeriesBuilder</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class RateSeriesBuilder</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">RateSeriesBuilder</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -112,17 +150,38 @@ unique observation dates and strictly positive rates while supporting single-obs
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Financial.dll</h6>
-  <h5 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class RateSeriesBuilder</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 The builder is the natural entry point for assembling rate observations imperatively (manual data entry, streaming
-import, merge with prior history). After mutations complete, call <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.ToSeries.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_ToSeries">ToSeries()</a> to produce an immutable
+import, merge with prior history). After mutations complete, call <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_ToSeries">ToSeries()</a> to produce an immutable
 <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a> snapshot for use in production lookup. Further mutations on the builder do not affect
 previously produced snapshots, and vice versa.
 </p>
@@ -143,257 +202,996 @@ builder.Upsert(new DateOnly(2024, 3, 15), 0.6582m);   // corrects the existing o
 RateSeries series = builder.ToSeries();</code></pre>
 </example>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder__ctor_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.#ctor(Bodu.Financial.ExchangeRates.CurrencyPair,System.String)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.-ctor.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder__ctor_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_">RateSeriesBuilder(CurrencyPair, string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.html">RateSeriesBuilder</a> class with no observations.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder__ctor_Bodu_Financial_ExchangeRates_RateSeries_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.#ctor(Bodu.Financial.ExchangeRates.RateSeries)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.-ctor.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder__ctor_Bodu_Financial_ExchangeRates_RateSeries_">RateSeriesBuilder(RateSeries)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.html">RateSeriesBuilder</a> class seeded from the supplied immutable
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder__ctor_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder__ctor_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.#ctor(Bodu.Financial.ExchangeRates.CurrencyPair,System.String)">
+  RateSeriesBuilder(CurrencyPair, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.html">RateSeriesBuilder</a> class with no observations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RateSeriesBuilder(CurrencyPair pair, string provider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pair</code> <a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a></dt>
+    <dd><p>The currency pair this builder is editing.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The non-empty identifier of the publishing source.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">provider</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if <code class="paramref">provider</code> is empty or white-space.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder__ctor_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder__ctor_Bodu_Financial_ExchangeRates_RateSeries_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.#ctor(Bodu.Financial.ExchangeRates.RateSeries)">
+  RateSeriesBuilder(RateSeries)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.html">RateSeriesBuilder</a> class seeded from the supplied immutable
 series.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Count" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Count">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Count.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_Count">Count</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of observations currently held.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_FetchedAtUtc" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.FetchedAtUtc">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.FetchedAtUtc.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_FetchedAtUtc">FetchedAtUtc</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the UTC instant at which the load that produced this series downloaded its source data, or
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RateSeriesBuilder(RateSeries series)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>series</code> <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a></dt>
+    <dd><p>The series to copy observations from.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">series</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Count_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Count*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Count" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Count">
+  Count
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the number of observations currently held.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A non-negative count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_FetchedAtUtc_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.FetchedAtUtc*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_FetchedAtUtc" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.FetchedAtUtc">
+  FetchedAtUtc
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the UTC instant at which the load that produced this series downloaded its source data, or
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when not tracked.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_IsEmpty" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.IsEmpty">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.IsEmpty.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_IsEmpty">IsEmpty</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the builder holds no observations.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Pair" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Pair">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Pair.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_Pair">Pair</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the currency pair this builder is editing.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Provider" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Provider">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Provider.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_Provider">Provider</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the identifier of the source the builder represents.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset? FetchedAtUtc { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a>?</dt>
+    <dd><p>The fetch instant when known; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_FetchedAtUtc_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The value is carried verbatim onto the <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a> produced by <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_ToSeries">ToSeries()</a> and from
+there onto every <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> the series materializes. Editing the observation buffer does not
+change it; assign it explicitly to stamp a fresh load instant.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_IsEmpty_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.IsEmpty*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_IsEmpty" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.IsEmpty">
+  IsEmpty
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the builder holds no observations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsEmpty { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the builder is empty; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Pair_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Pair*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Pair" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Pair">
+  Pair
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the currency pair this builder is editing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CurrencyPair Pair { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a></dt>
+    <dd><p>The series pair.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Provider_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Provider*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Provider" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Provider">
+  Provider
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the identifier of the source the builder represents.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Provider { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A non-empty provider identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Add_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Add*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Add_System_DateOnly_System_Decimal_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Add(System.DateOnly,System.Decimal)">
+  Add(DateOnly, decimal)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Inserts a new observation; throws if an observation already exists for <code class="paramref">date</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Add(DateOnly date, decimal rate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The observation date.</p>
+</dd>
+    <dt><code>rate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The observed rate.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if <code class="paramref">rate</code> is zero or negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if an observation already exists for <code class="paramref">date</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_AddRange_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.AddRange*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_AddRange_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_RateObservation__" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.AddRange(System.Collections.Generic.IEnumerable{Bodu.Financial.ExchangeRates.RateObservation})">
+  AddRange(IEnumerable&lt;RateObservation&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Inserts a batch of observations, rejecting duplicate dates inside the batch and dates already present in the
+builder. On any validation failure the builder remains unchanged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AddRange(IEnumerable&lt;RateObservation&gt; observations)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>observations</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Bodu.Financial.ExchangeRates.RateObservation.html">RateObservation</a>&gt;</dt>
+    <dd><p>The observations to insert.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">observations</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if any rate in <code class="paramref">observations</code> is zero or negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the batch contains a duplicate date or a date already present in the builder.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_AddRange_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.AddRange*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_AddRange_System_Collections_Generic_IEnumerable_System_ValueTuple_System_DateOnly_System_Decimal___" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.AddRange(System.Collections.Generic.IEnumerable{System.ValueTuple{System.DateOnly,System.Decimal}})">
+  AddRange(IEnumerable&lt;(DateOnly Date, decimal Rate)&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Tuple-shaped overload of <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_AddRange_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_RateObservation__">AddRange(IEnumerable&lt;RateObservation&gt;)</a> for import sources that hand the
+builder raw <code>(date, rate)</code> pairs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AddRange(IEnumerable&lt;(DateOnly Date, decimal Rate)&gt; rates)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rates</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;(<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-system.dateonly,system.decimal-.date">Date</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-system.dateonly,system.decimal-.rate">Rate</a>)&gt;</dt>
+    <dd><p>The observations to insert.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">rates</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if any rate in <code class="paramref">rates</code> is zero or negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the batch contains a duplicate date or a date already present in the builder.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_ContainsDate_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.ContainsDate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_ContainsDate_System_DateOnly_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.ContainsDate(System.DateOnly)">
+  ContainsDate(DateOnly)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Reports whether an observation exists for <code class="paramref">date</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ContainsDate(DateOnly date)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The observation date to query.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if an observation exists; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_GetObservations_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.GetObservations*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_GetObservations" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.GetObservations">
+  GetObservations()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Enumerates the observations in strictly ascending date order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;RateObservation&gt; GetObservations()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Bodu.Financial.ExchangeRates.RateObservation.html">RateObservation</a>&gt;</dt>
+    <dd><p>A lazy sequence of <a class="xref" href="Bodu.Financial.ExchangeRates.RateObservation.html">RateObservation</a> values.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Remove_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Remove*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Remove_System_DateOnly_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Remove(System.DateOnly)">
+  Remove(DateOnly)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Removes the observation for <code class="paramref">date</code> if present.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Remove(DateOnly date)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The observation date to remove.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if an observation was removed; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if none existed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Set_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Set*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Set_System_DateOnly_System_Decimal_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Set(System.DateOnly,System.Decimal)">
+  Set(DateOnly, decimal)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Updates the rate for an existing observation; throws if no observation exists for <code class="paramref">date</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Set(DateOnly date, decimal rate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The observation date to update.</p>
+</dd>
+    <dt><code>rate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The new rate.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if <code class="paramref">rate</code> is zero or negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></dt>
+    <dd><p>Thrown if no observation exists for <code class="paramref">date</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_ToSeries_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.ToSeries*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_ToSeries" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.ToSeries">
+  ToSeries()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Produces an immutable <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a> snapshot of the current observations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RateSeries ToSeries()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a> reflecting the builder's current state.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown if the builder is empty; an immutable series must contain at least one observation.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_TryAdd_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.TryAdd*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_TryAdd_System_DateOnly_System_Decimal_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.TryAdd(System.DateOnly,System.Decimal)">
+  TryAdd(DateOnly, decimal)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to insert a new observation; returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if one already exists for
+<code class="paramref">date</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryAdd(DateOnly date, decimal rate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The observation date.</p>
+</dd>
+    <dt><code>rate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The observed rate.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the observation was inserted; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if one already existed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if <code class="paramref">rate</code> is zero or negative.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_TryGetRate_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.TryGetRate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_TryGetRate_System_DateOnly_System_Decimal__" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.TryGetRate(System.DateOnly,System.Decimal@)">
+  TryGetRate(DateOnly, out decimal)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to retrieve the rate observed exactly on <code class="paramref">date</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetRate(DateOnly date, out decimal rate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The observation date to query.</p>
+</dd>
+    <dt><code>rate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the rate observed on <code class="paramref">date</code>; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/default">default</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if an observation exists; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_TrySet_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.TrySet*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_TrySet_System_DateOnly_System_Decimal_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.TrySet(System.DateOnly,System.Decimal)">
+  TrySet(DateOnly, decimal)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to update the rate for an existing observation; returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if none exists.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TrySet(DateOnly date, decimal rate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The observation date to update.</p>
+</dd>
+    <dt><code>rate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The new rate.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the rate was updated; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if no observation existed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if <code class="paramref">rate</code> is zero or negative.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Upsert_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Upsert*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Upsert_System_DateOnly_System_Decimal_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Upsert(System.DateOnly,System.Decimal)">
+  Upsert(DateOnly, decimal)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Inserts a new observation or replaces the rate of an existing one for <code class="paramref">date</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Upsert(DateOnly date, decimal rate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The observation date.</p>
+</dd>
+    <dt><code>rate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The rate to record.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if <code class="paramref">rate</code> is zero or negative.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_UpsertRange_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.UpsertRange*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_UpsertRange_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_RateObservation__" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.UpsertRange(System.Collections.Generic.IEnumerable{Bodu.Financial.ExchangeRates.RateObservation})">
+  UpsertRange(IEnumerable&lt;RateObservation&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Merges a batch of observations into the builder: inserts new dates and replaces rates for dates already present.
+Rejects duplicate dates within the batch. On any validation failure the builder remains unchanged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void UpsertRange(IEnumerable&lt;RateObservation&gt; observations)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>observations</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Bodu.Financial.ExchangeRates.RateObservation.html">RateObservation</a>&gt;</dt>
+    <dd><p>The observations to merge.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">observations</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if any rate in <code class="paramref">observations</code> is zero or negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the batch contains a duplicate date.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_UpsertRange_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.UpsertRange*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_UpsertRange_System_Collections_Generic_IEnumerable_System_ValueTuple_System_DateOnly_System_Decimal___" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.UpsertRange(System.Collections.Generic.IEnumerable{System.ValueTuple{System.DateOnly,System.Decimal}})">
+  UpsertRange(IEnumerable&lt;(DateOnly Date, decimal Rate)&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/RateSeriesBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Tuple-shaped overload of <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_UpsertRange_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_RateObservation__">UpsertRange(IEnumerable&lt;RateObservation&gt;)</a> for import sources that hand
+the builder raw <code>(date, rate)</code> pairs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void UpsertRange(IEnumerable&lt;(DateOnly Date, decimal Rate)&gt; rates)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rates</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;(<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-system.dateonly,system.decimal-.date">Date</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-system.dateonly,system.decimal-.rate">Rate</a>)&gt;</dt>
+    <dd><p>The observations to merge.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">rates</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if any rate in <code class="paramref">rates</code> is zero or negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the batch contains a duplicate date.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Add_System_DateOnly_System_Decimal_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Add(System.DateOnly,System.Decimal)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Add.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_Add_System_DateOnly_System_Decimal_">Add(DateOnly, decimal)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Inserts a new observation; throws if an observation already exists for <code class="paramref">date</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_AddRange_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_RateObservation__" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.AddRange(System.Collections.Generic.IEnumerable{Bodu.Financial.ExchangeRates.RateObservation})">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.AddRange.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_AddRange_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_RateObservation__">AddRange(IEnumerable&lt;RateObservation&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Inserts a batch of observations, rejecting duplicate dates inside the batch and dates already present in the
-builder. On any validation failure the builder remains unchanged.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_AddRange_System_Collections_Generic_IEnumerable_System_ValueTuple_System_DateOnly_System_Decimal___" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.AddRange(System.Collections.Generic.IEnumerable{System.ValueTuple{System.DateOnly,System.Decimal}})">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.AddRange.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_AddRange_System_Collections_Generic_IEnumerable_System_ValueTuple_System_DateOnly_System_Decimal___">AddRange(IEnumerable&lt;(DateOnly Date, decimal Rate)&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Tuple-shaped overload of <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.AddRange.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_AddRange_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_RateObservation__">AddRange(IEnumerable&lt;RateObservation&gt;)</a> for import sources that hand the
-builder raw <code>(date, rate)</code> pairs.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_ContainsDate_System_DateOnly_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.ContainsDate(System.DateOnly)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.ContainsDate.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_ContainsDate_System_DateOnly_">ContainsDate(DateOnly)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Reports whether an observation exists for <code class="paramref">date</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_GetObservations" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.GetObservations">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.GetObservations.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_GetObservations">GetObservations()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Enumerates the observations in strictly ascending date order.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Remove_System_DateOnly_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Remove(System.DateOnly)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Remove.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_Remove_System_DateOnly_">Remove(DateOnly)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Removes the observation for <code class="paramref">date</code> if present.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Set_System_DateOnly_System_Decimal_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Set(System.DateOnly,System.Decimal)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Set.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_Set_System_DateOnly_System_Decimal_">Set(DateOnly, decimal)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Updates the rate for an existing observation; throws if no observation exists for <code class="paramref">date</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_ToSeries" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.ToSeries">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.ToSeries.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_ToSeries">ToSeries()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Produces an immutable <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a> snapshot of the current observations.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_TryAdd_System_DateOnly_System_Decimal_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.TryAdd(System.DateOnly,System.Decimal)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.TryAdd.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_TryAdd_System_DateOnly_System_Decimal_">TryAdd(DateOnly, decimal)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to insert a new observation; returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if one already exists for
-<code class="paramref">date</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_TryGetRate_System_DateOnly_System_Decimal__" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.TryGetRate(System.DateOnly,System.Decimal@)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.TryGetRate.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_TryGetRate_System_DateOnly_System_Decimal__">TryGetRate(DateOnly, out decimal)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to retrieve the rate observed exactly on <code class="paramref">date</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_TrySet_System_DateOnly_System_Decimal_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.TrySet(System.DateOnly,System.Decimal)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.TrySet.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_TrySet_System_DateOnly_System_Decimal_">TrySet(DateOnly, decimal)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to update the rate for an existing observation; returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if none exists.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_Upsert_System_DateOnly_System_Decimal_" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Upsert(System.DateOnly,System.Decimal)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.Upsert.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_Upsert_System_DateOnly_System_Decimal_">Upsert(DateOnly, decimal)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Inserts a new observation or replaces the rate of an existing one for <code class="paramref">date</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_UpsertRange_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_RateObservation__" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.UpsertRange(System.Collections.Generic.IEnumerable{Bodu.Financial.ExchangeRates.RateObservation})">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.UpsertRange.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_UpsertRange_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_RateObservation__">UpsertRange(IEnumerable&lt;RateObservation&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Merges a batch of observations into the builder: inserts new dates and replaces rates for dates already present.
-Rejects duplicate dates within the batch. On any validation failure the builder remains unchanged.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_RateSeriesBuilder_UpsertRange_System_Collections_Generic_IEnumerable_System_ValueTuple_System_DateOnly_System_Decimal___" data-uid="Bodu.Financial.ExchangeRates.RateSeriesBuilder.UpsertRange(System.Collections.Generic.IEnumerable{System.ValueTuple{System.DateOnly,System.Decimal}})">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.UpsertRange.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_UpsertRange_System_Collections_Generic_IEnumerable_System_ValueTuple_System_DateOnly_System_Decimal___">UpsertRange(IEnumerable&lt;(DateOnly Date, decimal Rate)&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Tuple-shaped overload of <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.UpsertRange.html#Bodu_Financial_ExchangeRates_RateSeriesBuilder_UpsertRange_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_RateObservation__">UpsertRange(IEnumerable&lt;RateObservation&gt;)</a> for import sources that hand
-the builder raw <code>(date, rate)</code> pairs.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

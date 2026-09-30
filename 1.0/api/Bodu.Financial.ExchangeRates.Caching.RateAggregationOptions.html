@@ -1,99 +1,137 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class RateAggregationOptions | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class RateAggregationOptions | BODU ">
-    
-    <meta name="description" content="Configures an : the default combination strategy, the default child order, and per-currency-pair routing overrides.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>RateAggregationOptions Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="RateAggregationOptions Class
+ | BODU ">
+      
+      <meta name="description" content="Configures an : the default combination strategy, the default child order, and per-currency-pair routing overrides.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions">
+
+        <article data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions">
 
 
 
-  <h1 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions" class="text-break">Class RateAggregationOptions</h1>
-  <div class="markdown level0 summary"><p>Configures an <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html">AggregatingRateProvider</a>: the default combination strategy, the default child order, and
+
+  <h1 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+RateAggregationOptions Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateAggregationOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.html">Caching</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Financial.ExchangeRates.Caching.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.ExchangeRates.Caching">Bodu.Financial.ExchangeRates.Caching</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateAggregationOptions.cs">RateAggregationOptions.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Configures an <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html">AggregatingRateProvider</a>: the default combination strategy, the default child order, and
 per-currency-pair routing overrides.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">RateAggregationOptions</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class RateAggregationOptions</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">RateAggregationOptions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -112,174 +150,466 @@ per-currency-pair routing overrides.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.html">Caching</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Financial.ExchangeRates.Caching.dll</h6>
-  <h5 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class RateAggregationOptions</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>Every member carries a working default, so the options bind cleanly through <code>Microsoft.Extensions.Options</code>.
-Referenced child names are validated against the aggregator's actual children when the aggregator is constructed.</p>
-</div>
-  <h5 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_examples"><strong>Examples</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_examples">Examples</h2>
   <pre><code class="lang-csharp">var options = new RateAggregationOptions();
 options.Routes[new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { "RBA", "ECB" });
 options.Routes[new CurrencyPair(CurrencyCode.USD, CurrencyCode.GBP)] = new CurrencyPairRoute(new[] { "ECB", "RBA" });
 options.Routes[new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { "ECB", "RBA" }, new AverageStrategy());</code></pre>
 
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_DefaultLookupOptions" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.DefaultLookupOptions">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.DefaultLookupOptions.html#Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_DefaultLookupOptions">DefaultLookupOptions</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the lookup options applied by the timeless <a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.GetRate.html#Bodu_Financial_ExchangeRates_IRateProvider_GetRate_System_String_System_String_">GetRate(string, string)</a>
+
+  <h2 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Every member carries a working default, so the options bind cleanly through <code>Microsoft.Extensions.Options</code>.
+Referenced child names are validated against the aggregator's actual children when the aggregator is constructed.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions__ctor_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions__ctor" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.#ctor">
+  RateAggregationOptions()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateAggregationOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RateAggregationOptions()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_DefaultLookupOptions_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.DefaultLookupOptions*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_DefaultLookupOptions" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.DefaultLookupOptions">
+  DefaultLookupOptions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateAggregationOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the lookup options applied by the timeless <a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html#Bodu_Financial_ExchangeRates_IRateProvider_GetRate_System_String_System_String_">GetRate(string, string)</a>
 surface, which resolves the rate for the current UTC date.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_DefaultProviderOrder" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.DefaultProviderOrder">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.DefaultProviderOrder.html#Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_DefaultProviderOrder">DefaultProviderOrder</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the default order of child names consulted for pairs without a route.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_DefaultStrategy" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.DefaultStrategy">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.DefaultStrategy.html#Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_DefaultStrategy">DefaultStrategy</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the strategy used when a pair has no route-specific strategy.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_ResolvedLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.ResolvedLogLevel">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.ResolvedLogLevel.html#Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_ResolvedLogLevel">ResolvedLogLevel</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the level at which a successfully aggregated lookup is logged.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_RespectHistoryAvailability" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.RespectHistoryAvailability">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.RespectHistoryAvailability.html#Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_RespectHistoryAvailability">RespectHistoryAvailability</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets a value indicating whether the aggregator consults each child's advertised
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RateLookupOptions DefaultLookupOptions { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.ExchangeRates.RateLookupOptions.html">RateLookupOptions</a></dt>
+    <dd><p>The lookup options used for timeless lookups; defaults to <a class="xref" href="Bodu.Financial.ExchangeRates.RateLookupOptions.html#Bodu_Financial_ExchangeRates_RateLookupOptions_Exact">Exact</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_DefaultProviderOrder_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.DefaultProviderOrder*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_DefaultProviderOrder" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.DefaultProviderOrder">
+  DefaultProviderOrder
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateAggregationOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the default order of child names consulted for pairs without a route.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? DefaultProviderOrder { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The ordered child names, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to consult every child in the order supplied to the
+aggregator.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_DefaultStrategy_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.DefaultStrategy*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_DefaultStrategy" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.DefaultStrategy">
+  DefaultStrategy
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateAggregationOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the strategy used when a pair has no route-specific strategy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IRateAggregationStrategy DefaultStrategy { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy.html">IRateAggregationStrategy</a></dt>
+    <dd><p>The default strategy; defaults to <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.PriorityFallbackStrategy.html#Bodu_Financial_ExchangeRates_Caching_PriorityFallbackStrategy_Instance">Instance</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_ResolvedLogLevel_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.ResolvedLogLevel*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_ResolvedLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.ResolvedLogLevel">
+  ResolvedLogLevel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateAggregationOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the level at which a successfully aggregated lookup is logged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LogLevel ResolvedLogLevel { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
+    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-information">Information</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_RespectHistoryAvailability_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.RespectHistoryAvailability*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_RespectHistoryAvailability" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.RespectHistoryAvailability">
+  RespectHistoryAvailability
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateAggregationOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether the aggregator consults each child's advertised
 <a class="xref" href="Bodu.Financial.ExchangeRates.RateHistoryAvailability.html">RateHistoryAvailability</a> and drops candidates that have declared they cannot serve any part of the
 requested date or window, before the strategy runs.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_RouteSelectedLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.RouteSelectedLogLevel">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.RouteSelectedLogLevel.html#Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_RouteSelectedLogLevel">RouteSelectedLogLevel</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the level at which the selected route is logged.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_Routes" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.Routes">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.Routes.html#Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_Routes">Routes</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the per-currency-pair routing overrides.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_UnresolvedLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.UnresolvedLogLevel">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.UnresolvedLogLevel.html#Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_UnresolvedLogLevel">UnresolvedLogLevel</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the level at which a lookup that no candidate could satisfy is logged.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RespectHistoryAvailability { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to respect the advertised history; defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_RespectHistoryAvailability_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The filter applies only to children that implement <a class="xref" href="Bodu.Financial.ExchangeRates.IHistoricalRateProvider.html">IHistoricalRateProvider</a>; a non-aware child is
+treated as unbounded and always kept. A range keeps any child whose advertised history overlaps the window at
+all, since strategies already tolerate partial data. When every candidate is filtered out, the lookup reports
+the same miss it reports when every candidate fails. Disable this to offer every routed candidate to the
+strategy unchanged.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_RouteSelectedLogLevel_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.RouteSelectedLogLevel*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_RouteSelectedLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.RouteSelectedLogLevel">
+  RouteSelectedLogLevel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateAggregationOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the level at which the selected route is logged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LogLevel RouteSelectedLogLevel { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
+    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-information">Information</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_Routes_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.Routes*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_Routes" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.Routes">
+  Routes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateAggregationOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the per-currency-pair routing overrides.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IDictionary&lt;CurrencyPair, CurrencyPairRoute&gt; Routes { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.ExchangeRates/CurrencyPair.cs">CurrencyPair</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CurrencyPairRoute.html">CurrencyPairRoute</a>&gt;</dt>
+    <dd><p>A map from currency pair to the route that resolves it.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_UnresolvedLogLevel_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.UnresolvedLogLevel*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_UnresolvedLogLevel" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.UnresolvedLogLevel">
+  UnresolvedLogLevel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateAggregationOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the level at which a lookup that no candidate could satisfy is logged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LogLevel UnresolvedLogLevel { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
+    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-debug">Debug</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_Validate_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.Validate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_Validate" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.Validate">
+  Validate()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateAggregationOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Validates the structural option values, throwing when a rule is violated.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Validate()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.html#Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_DefaultStrategy">DefaultStrategy</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when a route is keyed by an invalid currency pair, a route value is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or a name in
+<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.html#Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_DefaultProviderOrder">DefaultProviderOrder</a> is blank.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_Validate" data-uid="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.Validate">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.Validate.html#Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_Validate">Validate()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Validates the structural option values, throwing when a rule is violated.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

@@ -1,99 +1,137 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class BencodeSerializer | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class BencodeSerializer | BODU ">
-    
-    <meta name="description" content="Provides static methods for serializing values to Bencode (BEP 3) bytes and deserializing Bencode bytes back into values, mapping plain CLR objects to and from the format through configurable converters.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>BencodeSerializer Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="BencodeSerializer Class
+ | BODU ">
+      
+      <meta name="description" content="Provides static methods for serializing values to Bencode (BEP 3) bytes and deserializing Bencode bytes back into values, mapping plain CLR objects to and from the format through configurable converters.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Bencode.BencodeSerializer">
+
+        <article data-uid="Bodu.Text.Bencode.BencodeSerializer">
 
 
 
-  <h1 id="Bodu_Text_Bencode_BencodeSerializer" data-uid="Bodu.Text.Bencode.BencodeSerializer" class="text-break">Class BencodeSerializer</h1>
-  <div class="markdown level0 summary"><p>Provides static methods for serializing values to Bencode (BEP 3) bytes and deserializing Bencode bytes back into
+
+  <h1 id="Bodu_Text_Bencode_BencodeSerializer" data-uid="Bodu.Text.Bencode.BencodeSerializer" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+BencodeSerializer Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Text_Bencode_BencodeSerializer_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Bencode.html">Bencode</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Bencode.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Bencode">Bodu.Text.Bencode</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializer.cs">BencodeSerializer.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides static methods for serializing values to Bencode (BEP 3) bytes and deserializing Bencode bytes back into
 values, mapping plain CLR objects to and from the format through configurable converters.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">BencodeSerializer</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class BencodeSerializer</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">BencodeSerializer</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -115,14 +153,19 @@ values, mapping plain CLR objects to and from the format through configurable co
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Bencode.html">Bencode</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Bencode.dll</h6>
-  <h5 id="Bodu_Text_Bencode_BencodeSerializer_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class BencodeSerializer</code></pre>
-  </div>
-  <h5 id="Bodu_Text_Bencode_BencodeSerializer_remarks"><strong>Remarks</strong></h5>
+    </dd>
+  </dl>
+
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Text_Bencode_BencodeSerializer_examples">Examples</h2>
+  <pre><code class="lang-csharp">byte[] bytes = BencodeSerializer.Serialize(new Torrent { Name = "demo", PieceLength = 262144 });
+Torrent torrent = BencodeSerializer.Deserialize&lt;Torrent&gt;(bytes);</code></pre>
+
+
+  <h2 id="Bodu_Text_Bencode_BencodeSerializer_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Each entry point accepts an optional <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a> that controls converters, the property
 naming policy, and the maximum nesting depth. When no options are supplied a default instance is used. Reusing a
@@ -134,144 +177,763 @@ Output is always canonical Bencode: dictionary entries are emitted in ascending 
 declaration order of the corresponding members.
 </p>
 </div>
-  <h5 id="Bodu_Text_Bencode_BencodeSerializer_examples"><strong>Examples</strong></h5>
-  <pre><code class="lang-csharp">byte[] bytes = BencodeSerializer.Serialize(new Torrent { Name = "demo", PieceLength = 262144 });
-Torrent torrent = BencodeSerializer.Deserialize&lt;Torrent&gt;(bytes);</code></pre>
 
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializer_DeserializeAsync_" data-uid="Bodu.Text.Bencode.BencodeSerializer.DeserializeAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Bencode_BencodeSerializer_DeserializeAsync__1_System_IO_Stream_Bodu_Text_Bencode_BencodeSerializerOptions_System_Threading_CancellationToken_" data-uid="Bodu.Text.Bencode.BencodeSerializer.DeserializeAsync``1(System.IO.Stream,Bodu.Text.Bencode.BencodeSerializerOptions,System.Threading.CancellationToken)">
+  DeserializeAsync&lt;T&gt;(Stream, BencodeSerializerOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Asynchronously deserializes a value of type <code class="typeparamref">T</code> from the supplied stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ValueTask&lt;T&gt; DeserializeAsync&lt;T&gt;(Stream source, BencodeSerializerOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to read the Bencode bytes from.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A token that can be used to cancel the read.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1">ValueTask</a>&lt;T&gt;</dt>
+    <dd><p>A task that yields the deserialized value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type to deserialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_BencodeSerializer_DeserializeAsync__1_System_IO_Stream_Bodu_Text_Bencode_BencodeSerializerOptions_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The stream is buffered in full before parsing — the span-based reader requires the complete document in memory —
+so only the buffering copy is asynchronous; parsing and binding run synchronously once the copy completes.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">source</code> does not support reading.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a></dt>
+    <dd><p>Thrown when the bytes are not valid Bencode.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a></dt>
+    <dd><p>Thrown when the document cannot be bound to <code class="typeparamref">T</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializer_Deserialize_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Deserialize*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Bencode_BencodeSerializer_Deserialize__1_Bodu_Text_Bencode_Nodes_BencodeNode_Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Deserialize``1(Bodu.Text.Bencode.Nodes.BencodeNode,Bodu.Text.Bencode.BencodeSerializerOptions)">
+  Deserialize&lt;T&gt;(BencodeNode, BencodeSerializerOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Deserializes a value of type <code class="typeparamref">T</code> from the supplied node tree.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T Deserialize&lt;T&gt;(BencodeNode node, BencodeSerializerOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>node</code> <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a></dt>
+    <dd><p>The node tree to bind.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The deserialized value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type to deserialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">node</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a></dt>
+    <dd><p>Thrown when the node tree cannot be bound to <code class="typeparamref">T</code>, or contains a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>
+entry, which has no Bencode representation.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when no converter is configured for a type that is encountered.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializer_Deserialize_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Deserialize*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Bencode_BencodeSerializer_Deserialize__1_System_Byte___Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Deserialize``1(System.Byte[],Bodu.Text.Bencode.BencodeSerializerOptions)">
+  Deserialize&lt;T&gt;(byte[], BencodeSerializerOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Deserializes a value of type <code class="typeparamref">T</code> from the supplied Bencode byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T Deserialize&lt;T&gt;(byte[] data, BencodeSerializerOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The Bencode bytes to read.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The deserialized value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type to deserialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">data</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a></dt>
+    <dd><p>Thrown when the bytes are not valid Bencode.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a></dt>
+    <dd><p>Thrown when the document cannot be bound to <code class="typeparamref">T</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when no converter is configured for a type that is encountered.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializer_Deserialize_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Deserialize*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Bencode_BencodeSerializer_Deserialize__1_System_IO_Stream_Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Deserialize``1(System.IO.Stream,Bodu.Text.Bencode.BencodeSerializerOptions)">
+  Deserialize&lt;T&gt;(Stream, BencodeSerializerOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Deserializes a value of type <code class="typeparamref">T</code> from the supplied stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T Deserialize&lt;T&gt;(Stream source, BencodeSerializerOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to read the Bencode bytes from.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The deserialized value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type to deserialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_BencodeSerializer_Deserialize__1_System_IO_Stream_Bodu_Text_Bencode_BencodeSerializerOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The stream is buffered in full before parsing — the span-based reader requires the complete document in memory —
+so the stream's length is bounded by the 2 GiB managed-array ceiling.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">source</code> does not support reading.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a></dt>
+    <dd><p>Thrown when the bytes are not valid Bencode.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a></dt>
+    <dd><p>Thrown when the document cannot be bound to <code class="typeparamref">T</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializer_Deserialize_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Deserialize*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Bencode_BencodeSerializer_Deserialize__1_System_ReadOnlySpan_System_Byte__Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Deserialize``1(System.ReadOnlySpan{System.Byte},Bodu.Text.Bencode.BencodeSerializerOptions)">
+  Deserialize&lt;T&gt;(ReadOnlySpan&lt;byte&gt;, BencodeSerializerOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Deserializes a value of type <code class="typeparamref">T</code> from the supplied Bencode bytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T Deserialize&lt;T&gt;(ReadOnlySpan&lt;byte&gt; data, BencodeSerializerOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The Bencode bytes to read.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The deserialized value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type to deserialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a></dt>
+    <dd><p>Thrown when the bytes are not valid Bencode.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a></dt>
+    <dd><p>Thrown when the document cannot be bound to <code class="typeparamref">T</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when no converter is configured for a type that is encountered.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializer_SerializeAsync_" data-uid="Bodu.Text.Bencode.BencodeSerializer.SerializeAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Bencode_BencodeSerializer_SerializeAsync__1_System_IO_Stream___0_Bodu_Text_Bencode_BencodeSerializerOptions_System_Threading_CancellationToken_" data-uid="Bodu.Text.Bencode.BencodeSerializer.SerializeAsync``1(System.IO.Stream,``0,Bodu.Text.Bencode.BencodeSerializerOptions,System.Threading.CancellationToken)">
+  SerializeAsync&lt;T&gt;(Stream, T, BencodeSerializerOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Asynchronously serializes the specified value as Bencode to the supplied stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ValueTask SerializeAsync&lt;T&gt;(Stream destination, T value, BencodeSerializerOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream that receives the Bencode bytes.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to serialize.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A token that can be used to cancel the write.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a></dt>
+    <dd><p>A task that completes when the value has been written.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to serialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> does not support writing.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializer_SerializeToDocument_" data-uid="Bodu.Text.Bencode.BencodeSerializer.SerializeToDocument*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Bencode_BencodeSerializer_SerializeToDocument__1___0_Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.SerializeToDocument``1(``0,Bodu.Text.Bencode.BencodeSerializerOptions)">
+  SerializeToDocument&lt;T&gt;(T, BencodeSerializerOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes the specified value into a read-only <a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static BencodeDocument SerializeToDocument&lt;T&gt;(T value, BencodeSerializerOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to serialize.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a></dt>
+    <dd><p>A document over the serialized value; dispose it when finished.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to serialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when no converter is configured for a type that is encountered.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a></dt>
+    <dd><p>Thrown when a value cannot be represented in Bencode.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializer_SerializeToNode_" data-uid="Bodu.Text.Bencode.BencodeSerializer.SerializeToNode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Bencode_BencodeSerializer_SerializeToNode__1___0_Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.SerializeToNode``1(``0,Bodu.Text.Bencode.BencodeSerializerOptions)">
+  SerializeToNode&lt;T&gt;(T, BencodeSerializerOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes the specified value into a mutable <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a> tree.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static BencodeNode? SerializeToNode&lt;T&gt;(T value, BencodeSerializerOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to serialize.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a></dt>
+    <dd><p>The root node of the serialized value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to serialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when no converter is configured for a type that is encountered.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a></dt>
+    <dd><p>Thrown when a value cannot be represented in Bencode.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializer_Serialize_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Serialize*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Bencode_BencodeSerializer_Serialize__1_System_Buffers_IBufferWriter_System_Byte____0_Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Serialize``1(System.Buffers.IBufferWriter{System.Byte},``0,Bodu.Text.Bencode.BencodeSerializerOptions)">
+  Serialize&lt;T&gt;(IBufferWriter&lt;byte&gt;, T, BencodeSerializerOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes the specified value as Bencode to the supplied buffer writer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Serialize&lt;T&gt;(IBufferWriter&lt;byte&gt; destination, T value, BencodeSerializerOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The buffer writer that receives the Bencode bytes.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to serialize.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+  </dl>
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to serialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_BencodeSerializer_Serialize__1_System_Buffers_IBufferWriter_System_Byte____0_Bodu_Text_Bencode_BencodeSerializerOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The value is written through the buffer writer directly, with no intermediate array. Dictionary content is
+buffered internally until each dictionary closes (canonical key ordering requires it), so a serialization
+failure part-way through a root-level list may leave that list's already-emitted bytes in the destination.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when no converter is configured for a type that is encountered.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a></dt>
+    <dd><p>Thrown when a value cannot be represented in Bencode.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializer_Serialize_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Serialize*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Bencode_BencodeSerializer_Serialize__1_System_IO_Stream___0_Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Serialize``1(System.IO.Stream,``0,Bodu.Text.Bencode.BencodeSerializerOptions)">
+  Serialize&lt;T&gt;(Stream, T, BencodeSerializerOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes the specified value as Bencode to the supplied stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Serialize&lt;T&gt;(Stream destination, T value, BencodeSerializerOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream that receives the Bencode bytes.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to serialize.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+  </dl>
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to serialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> does not support writing.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when no converter is configured for a type that is encountered.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a></dt>
+    <dd><p>Thrown when a value cannot be represented in Bencode.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializer_Serialize_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Serialize*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Bencode_BencodeSerializer_Serialize__1___0_Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Serialize``1(``0,Bodu.Text.Bencode.BencodeSerializerOptions)">
+  Serialize&lt;T&gt;(T, BencodeSerializerOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes the specified value to a new Bencode byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Serialize&lt;T&gt;(T value, BencodeSerializerOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to serialize.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a></dt>
+    <dd><p>The serializer options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The Bencode encoding of <code class="paramref">value</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to serialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when no converter is configured for a type that is encountered.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a></dt>
+    <dd><p>Thrown when a value cannot be represented in Bencode.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializer_DeserializeAsync__1_System_IO_Stream_Bodu_Text_Bencode_BencodeSerializerOptions_System_Threading_CancellationToken_" data-uid="Bodu.Text.Bencode.BencodeSerializer.DeserializeAsync``1(System.IO.Stream,Bodu.Text.Bencode.BencodeSerializerOptions,System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.DeserializeAsync.html#Bodu_Text_Bencode_BencodeSerializer_DeserializeAsync__1_System_IO_Stream_Bodu_Text_Bencode_BencodeSerializerOptions_System_Threading_CancellationToken_">DeserializeAsync&lt;T&gt;(Stream, BencodeSerializerOptions?, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously deserializes a value of type <code class="typeparamref">T</code> from the supplied stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializer_Deserialize__1_Bodu_Text_Bencode_Nodes_BencodeNode_Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Deserialize``1(Bodu.Text.Bencode.Nodes.BencodeNode,Bodu.Text.Bencode.BencodeSerializerOptions)">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.Deserialize.html#Bodu_Text_Bencode_BencodeSerializer_Deserialize__1_Bodu_Text_Bencode_Nodes_BencodeNode_Bodu_Text_Bencode_BencodeSerializerOptions_">Deserialize&lt;T&gt;(BencodeNode, BencodeSerializerOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Deserializes a value of type <code class="typeparamref">T</code> from the supplied node tree.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializer_Deserialize__1_System_Byte___Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Deserialize``1(System.Byte[],Bodu.Text.Bencode.BencodeSerializerOptions)">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.Deserialize.html#Bodu_Text_Bencode_BencodeSerializer_Deserialize__1_System_Byte___Bodu_Text_Bencode_BencodeSerializerOptions_">Deserialize&lt;T&gt;(byte[], BencodeSerializerOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Deserializes a value of type <code class="typeparamref">T</code> from the supplied Bencode byte array.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializer_Deserialize__1_System_IO_Stream_Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Deserialize``1(System.IO.Stream,Bodu.Text.Bencode.BencodeSerializerOptions)">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.Deserialize.html#Bodu_Text_Bencode_BencodeSerializer_Deserialize__1_System_IO_Stream_Bodu_Text_Bencode_BencodeSerializerOptions_">Deserialize&lt;T&gt;(Stream, BencodeSerializerOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Deserializes a value of type <code class="typeparamref">T</code> from the supplied stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializer_Deserialize__1_System_ReadOnlySpan_System_Byte__Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Deserialize``1(System.ReadOnlySpan{System.Byte},Bodu.Text.Bencode.BencodeSerializerOptions)">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.Deserialize.html#Bodu_Text_Bencode_BencodeSerializer_Deserialize__1_System_ReadOnlySpan_System_Byte__Bodu_Text_Bencode_BencodeSerializerOptions_">Deserialize&lt;T&gt;(ReadOnlySpan&lt;byte&gt;, BencodeSerializerOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Deserializes a value of type <code class="typeparamref">T</code> from the supplied Bencode bytes.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializer_SerializeAsync__1_System_IO_Stream___0_Bodu_Text_Bencode_BencodeSerializerOptions_System_Threading_CancellationToken_" data-uid="Bodu.Text.Bencode.BencodeSerializer.SerializeAsync``1(System.IO.Stream,``0,Bodu.Text.Bencode.BencodeSerializerOptions,System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.SerializeAsync.html#Bodu_Text_Bencode_BencodeSerializer_SerializeAsync__1_System_IO_Stream___0_Bodu_Text_Bencode_BencodeSerializerOptions_System_Threading_CancellationToken_">SerializeAsync&lt;T&gt;(Stream, T, BencodeSerializerOptions?, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously serializes the specified value as Bencode to the supplied stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializer_SerializeToDocument__1___0_Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.SerializeToDocument``1(``0,Bodu.Text.Bencode.BencodeSerializerOptions)">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.SerializeToDocument.html#Bodu_Text_Bencode_BencodeSerializer_SerializeToDocument__1___0_Bodu_Text_Bencode_BencodeSerializerOptions_">SerializeToDocument&lt;T&gt;(T, BencodeSerializerOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Serializes the specified value into a read-only <a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializer_SerializeToNode__1___0_Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.SerializeToNode``1(``0,Bodu.Text.Bencode.BencodeSerializerOptions)">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.SerializeToNode.html#Bodu_Text_Bencode_BencodeSerializer_SerializeToNode__1___0_Bodu_Text_Bencode_BencodeSerializerOptions_">SerializeToNode&lt;T&gt;(T, BencodeSerializerOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Serializes the specified value into a mutable <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a> tree.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializer_Serialize__1_System_Buffers_IBufferWriter_System_Byte____0_Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Serialize``1(System.Buffers.IBufferWriter{System.Byte},``0,Bodu.Text.Bencode.BencodeSerializerOptions)">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.Serialize.html#Bodu_Text_Bencode_BencodeSerializer_Serialize__1_System_Buffers_IBufferWriter_System_Byte____0_Bodu_Text_Bencode_BencodeSerializerOptions_">Serialize&lt;T&gt;(IBufferWriter&lt;byte&gt;, T, BencodeSerializerOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Serializes the specified value as Bencode to the supplied buffer writer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializer_Serialize__1_System_IO_Stream___0_Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Serialize``1(System.IO.Stream,``0,Bodu.Text.Bencode.BencodeSerializerOptions)">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.Serialize.html#Bodu_Text_Bencode_BencodeSerializer_Serialize__1_System_IO_Stream___0_Bodu_Text_Bencode_BencodeSerializerOptions_">Serialize&lt;T&gt;(Stream, T, BencodeSerializerOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Serializes the specified value as Bencode to the supplied stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializer_Serialize__1___0_Bodu_Text_Bencode_BencodeSerializerOptions_" data-uid="Bodu.Text.Bencode.BencodeSerializer.Serialize``1(``0,Bodu.Text.Bencode.BencodeSerializerOptions)">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.Serialize.html#Bodu_Text_Bencode_BencodeSerializer_Serialize__1___0_Bodu_Text_Bencode_BencodeSerializerOptions_">Serialize&lt;T&gt;(T, BencodeSerializerOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Serializes the specified value to a new Bencode byte array.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
 
+
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

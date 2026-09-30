@@ -1,119 +1,157 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class Blake2b | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class Blake2b | BODU ">
-    
-    <meta name="description" content="AVX-512 vectorised implementation of the BLAKE2b compression function. The 16-element working vector v is laid out as four  rows (a, b, c, d), so the four parallel G calls in each column step collapse into a single SIMD G operation. The diagonal step reuses the same kernel by shifting the b, c, d rows by 1/2/3 lanes via VPERMQ, running G, then shifting back — the canonical ChaCha-style vectorisation pattern Blake2 was designed around.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>Blake2b Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Blake2b Class
+ | BODU ">
+      
+      <meta name="description" content="Computes a hash using the BLAKE2b cryptographic hash algorithm, designed by Jean-Philippe Aumasson, Samuel Neves, Zooko Wilcox-O&#39;Hearn, and Christian Winnerlein. Supports output sizes of 128, 160, 192, 224, 256, 384, or 512 bits. This class cannot be inherited.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.Blake2b">
+
+        <article data-uid="Bodu.Security.Cryptography.Blake2b">
 
 
 
-  <h1 id="Bodu_Security_Cryptography_Blake2b" data-uid="Bodu.Security.Cryptography.Blake2b" class="text-break">Class Blake2b</h1>
-  <div class="markdown level0 summary"><p>AVX-512 vectorised implementation of the BLAKE2b compression function. The 16-element working vector <code>v</code> is
-laid out as four <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector256-1">Vector256&lt;T&gt;</a> rows (<code>a, b, c, d</code>), so the four parallel <code>G</code> calls in each
-column step collapse into a single SIMD <code>G</code> operation. The diagonal step reuses the same kernel by shifting the
-<code>b, c, d</code> rows by 1/2/3 lanes via <code>VPERMQ</code>, running <code>G</code>, then shifting back — the canonical
-ChaCha-style vectorisation pattern Blake2 was designed around.</p>
+
+  <h1 id="Bodu_Security_Cryptography_Blake2b" data-uid="Bodu.Security.Cryptography.Blake2b" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+Blake2b Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Security_Cryptography_Blake2b_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs">Blake2b.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Computes a hash using the <code>BLAKE2b</code> cryptographic hash algorithm, designed by Jean-Philippe Aumasson, Samuel
+Neves, Zooko Wilcox-O'Hearn, and Christian Winnerlein. Supports output sizes of 128, 160, 192, 224, 256, 384, or 512
+bits. This class cannot be inherited.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></div>
-    <div class="level2"><a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html">BufferedBlockHashAlgorithm</a></div>
-    <div class="level3"><a class="xref" href="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html">DeferredFinalBlockHashAlgorithm</a></div>
-    <div class="level4"><a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a></div>
-    <div class="level5"><span class="xref">Blake2b</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm, ICryptoTransform, IDisposable</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html">BufferedBlockHashAlgorithm</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html">DeferredFinalBlockHashAlgorithm</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a></div>
+      <div><span class="xref">Blake2b</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
-      <a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.MaximumKeySize.html#Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_MaximumKeySize">KeyedDeferredFinalBlockHashAlgorithm.MaximumKeySize</a>
+      <a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html#Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_Initialize">KeyedDeferredFinalBlockHashAlgorithm.Initialize()</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.Key.html#Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_Key">KeyedDeferredFinalBlockHashAlgorithm.Key</a>
+      <a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html#Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_MaximumKeySize">KeyedDeferredFinalBlockHashAlgorithm.MaximumKeySize</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.Initialize.html#Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_Initialize">KeyedDeferredFinalBlockHashAlgorithm.Initialize()</a>
+      <a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html#Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_Key">KeyedDeferredFinalBlockHashAlgorithm.Key</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.clear">HashAlgorithm.Clear()</a>
@@ -175,21 +213,154 @@ ChaCha-style vectorisation pattern Blake2 was designed around.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
-  <h5 id="Bodu_Security_Cryptography_Blake2b_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm, ICryptoTransform, IDisposable</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Security_Cryptography_Blake2b_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-Gated on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.x86.avx512f.vl.issupported">IsSupported</a> because the rotations use the AVX-512VL VPRORQ variant on
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector256-1">Vector256&lt;T&gt;</a>. Every modern Intel/AMD CPU that ships AVX-512F also ships VL, so the gate is
-effectively equivalent to "any AVX-512 host".
-</p>
-</div>
-  <h5 id="Bodu_Security_Cryptography_Blake2b_examples"><strong>Examples</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendData_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__">HashAlgorithmExtensions.AppendData(HashAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendDataAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">HashAlgorithmExtensions.AppendDataAsync(HashAlgorithm, Stream, int, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, byte[], byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, byte[], string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, Stream, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, Stream, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, string, Encoding, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, byte[], byte[], CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, byte[], string, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, Stream, byte[], CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, Stream, string, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, string, Encoding, byte[], CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, byte[], byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, byte[], string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, Stream, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, Stream, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, string, Encoding, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.VerifyHashAsync(HashAlgorithm, Stream, byte[], CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">HashAlgorithmExtensions.VerifyHashAsync(HashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_">HashAlgorithmExtensions.VerifyHashAsync(HashAlgorithm, Stream, string, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.Transform(ICryptoTransform, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_System_Int32_">ICryptoTransformExtensions.Transform(ICryptoTransform, byte[], int, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_">ICryptoTransformExtensions.Transform(ICryptoTransform, Stream, Stream, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">ICryptoTransformExtensions.TransformAsync(ICryptoTransform, Stream, Stream, int, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__System_Threading_CancellationToken_">ICryptoTransformExtensions.TransformAsync(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.TransformBlock(ICryptoTransform, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Security_Cryptography_Blake2b_examples">Examples</h2>
   <pre><code class="lang-csharp">// Unkeyed hash
 using var blake2b = new Blake2b(512);
 byte[] digest = blake2b.ComputeHash(message);
@@ -198,325 +369,553 @@ byte[] digest = blake2b.ComputeHash(message);
 using var mac = new Blake2b(512) { Key = myKey };
 byte[] tag = mac.ComputeHash(message);</code></pre>
 
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Blake2b__ctor" data-uid="Bodu.Security.Cryptography.Blake2b.#ctor">
-          <a class="xref" href="Bodu.Security.Cryptography.Blake2b.-ctor.html#Bodu_Security_Cryptography_Blake2b__ctor">Blake2b()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a> class with a 512-bit output hash size.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Blake2b__ctor_System_Int32_" data-uid="Bodu.Security.Cryptography.Blake2b.#ctor(System.Int32)">
-          <a class="xref" href="Bodu.Security.Cryptography.Blake2b.-ctor.html#Bodu_Security_Cryptography_Blake2b__ctor_System_Int32_">Blake2b(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a> class with the specified output size.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="fields">Fields
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Blake2b_MaxKeySize" data-uid="Bodu.Security.Cryptography.Blake2b.MaxKeySize">
-          <a class="xref" href="Bodu.Security.Cryptography.Blake2b.MaxKeySize.html">MaxKeySize</a>
-        </td>
-        <td class="markdown level1 summary"><p>Maximum accepted key length for the keyed <code>BLAKE2b-MAC</code> mode is 512 bits (64 bytes).</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Blake2b_AlgorithmName" data-uid="Bodu.Security.Cryptography.Blake2b.AlgorithmName">
-          <a class="xref" href="Bodu.Security.Cryptography.Blake2b.AlgorithmName.html#Bodu_Security_Cryptography_Blake2b_AlgorithmName">AlgorithmName</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the canonical, fully-qualified algorithm name for this instance, including any size or variant qualifiers
+
+  <h2 id="Bodu_Security_Cryptography_Blake2b_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+BLAKE2b is specified in <a href="https://www.rfc-editor.org/rfc/rfc7693">RFC 7693</a> and is optimized for
+64-bit platforms. It operates on 128-byte (1024-bit) blocks and maintains eight 64-bit state words, applying 12
+rounds of the BLAKE2 <code>G</code> mixing function per block.
+</p>
+<p>
+This implementation inherits its residual buffer, byte-counter and lookahead-buffering loop from
+<a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a>: the final message block is not compressed until
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.hashfinal">HashFinal()</a> is called, at which point the <code>finalization</code> flag is set and the output
+bytes are serialized in little-endian order then truncated to the configured output length.
+</p>
+<p>
+Supplying a non-empty <a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html#Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_Key">Key</a> switches the instance into the keyed
+<code>BLAKE2b-MAC</code> mode defined in RFC 7693 Section 2.8. The key (1–64 bytes) is zero-padded to 128 bytes and
+prepended as the first message block, and the key length is encoded into the parameter block so that keyed and
+unkeyed digests of the same message are always distinct.
+</p>
+<p>
+<strong>Parameters at a glance.</strong>
+</p>
+<ul><li>Output size: configurable — 128, 160, 192, 224, 256, 384, or 512 bits.</li><li>Block size: 128 bytes (1024 bits); 8 × 64-bit state words; 12 rounds.</li><li>Optional key: 1–64 bytes for BLAKE2b-MAC mode (RFC 7693 §2.8).</li><li>Specification: RFC 7693; optimized for 64-bit hosts.</li></ul>
+<p>
+<strong>When to choose BLAKE2b.</strong> The right pick on 64-bit platforms when SHA-2 / SHA-3 throughput matters
+but compatibility with those standards is not required — BLAKE2b is faster than SHA-512 in software while offering
+the same security level. Use <a class="xref" href="Bodu.Security.Cryptography.Blake2s.html">Blake2s</a> on 32-bit hosts or for output sizes up to 32 bytes. For
+tree-hashing or genuinely large parallel workloads <a class="xref" href="Bodu.Security.Cryptography.Blake3.html">Blake3</a> is faster again. As a keyed MAC,
+BLAKE2b-MAC is competitive with HMAC-SHA-256 / Poly1305 and avoids the double-hash overhead of HMAC.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_Blake2b__ctor_" data-uid="Bodu.Security.Cryptography.Blake2b.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Blake2b__ctor" data-uid="Bodu.Security.Cryptography.Blake2b.#ctor">
+  Blake2b()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a> class with a 512-bit output hash size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Blake2b()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Blake2b__ctor_" data-uid="Bodu.Security.Cryptography.Blake2b.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Blake2b__ctor_System_Int32_" data-uid="Bodu.Security.Cryptography.Blake2b.#ctor(System.Int32)">
+  Blake2b(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a> class with the specified output size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Blake2b(int hashSize)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hashSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The desired output size in bits. Must be one of 128, 160, 192, 224, 256, 384, or 512.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">hashSize</code> is not one of the supported output sizes.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Blake2b_MaxKeySize" data-uid="Bodu.Security.Cryptography.Blake2b.MaxKeySize">
+  MaxKeySize
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Maximum accepted key length for the keyed <code>BLAKE2b-MAC</code> mode is 512 bits (64 bytes).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int MaxKeySize = 512</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_Blake2b_AlgorithmName_" data-uid="Bodu.Security.Cryptography.Blake2b.AlgorithmName*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Blake2b_AlgorithmName" data-uid="Bodu.Security.Cryptography.Blake2b.AlgorithmName">
+  AlgorithmName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the canonical, fully-qualified algorithm name for this instance, including any size or variant qualifiers
 (for example, <code>&quot;Tiger/192&quot;</code>, <code>&quot;Skein-512-256&quot;</code>, <code>&quot;BLAKE2b-512&quot;</code>, <code>&quot;ASCON-HASH256&quot;</code>,
 <code>&quot;SipHash-2-4-64&quot;</code>).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Blake2b_CanReuseTransform" data-uid="Bodu.Security.Cryptography.Blake2b.CanReuseTransform">
-          <a class="xref" href="Bodu.Security.Cryptography.Blake2b.CanReuseTransform.html#Bodu_Security_Cryptography_Blake2b_CanReuseTransform">CanReuseTransform</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the current transform can be reused.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Blake2b_CanTransformMultipleBlocks" data-uid="Bodu.Security.Cryptography.Blake2b.CanTransformMultipleBlocks">
-          <a class="xref" href="Bodu.Security.Cryptography.Blake2b.CanTransformMultipleBlocks.html#Bodu_Security_Cryptography_Blake2b_CanTransformMultipleBlocks">CanTransformMultipleBlocks</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, gets a value indicating whether multiple blocks can be transformed.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Blake2b_HashSize" data-uid="Bodu.Security.Cryptography.Blake2b.HashSize">
-          <a class="xref" href="Bodu.Security.Cryptography.Blake2b.HashSize.html#Bodu_Security_Cryptography_Blake2b_HashSize">HashSize</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the size, in bits, of the final computed hash output.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Blake2b_Dispose_System_Boolean_" data-uid="Bodu.Security.Cryptography.Blake2b.Dispose(System.Boolean)">
-          <a class="xref" href="Bodu.Security.Cryptography.Blake2b.Dispose.html#Bodu_Security_Cryptography_Blake2b_Dispose_System_Boolean_">Dispose(bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Releases the unmanaged resources used by the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> and optionally releases the managed
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string AlgorithmName { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A string identifying the algorithm and its current configuration.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Blake2b_AlgorithmName_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Derived classes implement this property to expose a stable, consumer-facing identifier suitable for logging,
+telemetry, registry keys, or interop with hash-name catalogues. Implementations should be pure and
+side-effect-free — the value may be queried before any input has been consumed and after disposal as part of
+error reporting.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Blake2b_CanReuseTransform_" data-uid="Bodu.Security.Cryptography.Blake2b.CanReuseTransform*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Blake2b_CanReuseTransform" data-uid="Bodu.Security.Cryptography.Blake2b.CanReuseTransform">
+  CanReuseTransform
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the current transform can be reused.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool CanReuseTransform { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Always <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Blake2b_CanTransformMultipleBlocks_" data-uid="Bodu.Security.Cryptography.Blake2b.CanTransformMultipleBlocks*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Blake2b_CanTransformMultipleBlocks" data-uid="Bodu.Security.Cryptography.Blake2b.CanTransformMultipleBlocks">
+  CanTransformMultipleBlocks
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, gets a value indicating whether multiple blocks can be transformed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool CanTransformMultipleBlocks { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if multiple blocks can be transformed; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Blake2b_HashSize_" data-uid="Bodu.Security.Cryptography.Blake2b.HashSize*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Blake2b_HashSize" data-uid="Bodu.Security.Cryptography.Blake2b.HashSize">
+  HashSize
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the size, in bits, of the final computed hash output.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int HashSize { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The output size in bits; must be one of 128, 160, 192, 224, 256, 384, or 512.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Blake2b_HashSize_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The full BLAKE2b compression is always run using all 512 bits of internal state. Shorter output lengths are
+produced by truncating the serialized state after finalization. The property may only be changed before hashing
+has begun; once <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.transformblock">TransformBlock(byte[], int, int, byte[], int)</a> or a <code>ComputeHash</code> overload has been called,
+the value is immutable until <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.initialize">Initialize()</a> is called.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>The assigned value is not one of 128, 160, 192, 224, 256, 384, or 512.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The algorithm instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicunexpectedoperationexception">CryptographicUnexpectedOperationException</a></dt>
+    <dd><p>A hash computation is already in progress.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_Blake2b_Dispose_" data-uid="Bodu.Security.Cryptography.Blake2b.Dispose*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Blake2b_Dispose_System_Boolean_" data-uid="Bodu.Security.Cryptography.Blake2b.Dispose(System.Boolean)">
+  Dispose(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Releases the unmanaged resources used by the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> and optionally releases the managed
 resources.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Blake2b_InitializeHashState" data-uid="Bodu.Security.Cryptography.Blake2b.InitializeHashState">
-          <a class="xref" href="Bodu.Security.Cryptography.Blake2b.InitializeHashState.html#Bodu_Security_Cryptography_Blake2b_InitializeHashState">InitializeHashState()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Resets the algorithm-specific chaining variables to their initialization values and encodes any configuration
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void Dispose(bool disposing)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>disposing</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to release both managed and unmanaged resources; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> to release
+only unmanaged resources.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Blake2b_Dispose_System_Boolean__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Clears the chaining state, releases the framework <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.hashvalue">HashValue</a> array, and zeros
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.hashsizevalue">HashSizeValue</a> when <code class="paramref">disposing</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.
+</p>
+<p>
+Retained key material owned by <a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a> is cleared by the base
+implementation when this method delegates to <code>base.Dispose(disposing)</code>. The inherited residual buffer is
+cleared further down the dispose chain.
+</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Blake2b_InitializeHashState_" data-uid="Bodu.Security.Cryptography.Blake2b.InitializeHashState*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Blake2b_InitializeHashState" data-uid="Bodu.Security.Cryptography.Blake2b.InitializeHashState">
+  InitializeHashState()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Resets the algorithm-specific chaining variables to their initialization values and encodes any configuration
 parameters (such as digest length and key length) into the parameter block. Called by the sealed
-<a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.Initialize.html#Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_Initialize">Initialize()</a> before key-block injection.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Blake2b_ProcessBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Boolean_" data-uid="Bodu.Security.Cryptography.Blake2b.ProcessBlock(System.ReadOnlySpan{System.Byte},System.UInt64,System.Boolean)">
-          <a class="xref" href="Bodu.Security.Cryptography.Blake2b.ProcessBlock.html#Bodu_Security_Cryptography_Blake2b_ProcessBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Boolean_">ProcessBlock(ReadOnlySpan&lt;byte&gt;, ulong, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Compresses a single 128-byte block using the BLAKE2b <code>F</code> compression function. Invoked by
+<a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html#Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_Initialize">Initialize()</a> before key-block injection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void InitializeHashState()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Blake2b_InitializeHashState_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Implementations should read <a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html#Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_KeyValue">KeyValue</a> to determine the key length (<code>kk</code>) for parameter-block
+encoding, as <a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html#Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_KeyValue">KeyValue</a> is already updated to the new value before <a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html#Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_Initialize">Initialize()</a> runs.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Blake2b_ProcessBlock_" data-uid="Bodu.Security.Cryptography.Blake2b.ProcessBlock*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Blake2b_ProcessBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Boolean_" data-uid="Bodu.Security.Cryptography.Blake2b.ProcessBlock(System.ReadOnlySpan{System.Byte},System.UInt64,System.Boolean)">
+  ProcessBlock(ReadOnlySpan&lt;byte&gt;, ulong, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Compresses a single 128-byte block using the BLAKE2b <code>F</code> compression function. Invoked by
 <a class="xref" href="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html">DeferredFinalBlockHashAlgorithm</a> with <code class="paramref">isFinal</code> set to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>
 for the last call (which inverts the finalization flag word) and to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> otherwise.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Blake2b_ProcessFinalBlock" data-uid="Bodu.Security.Cryptography.Blake2b.ProcessFinalBlock">
-          <a class="xref" href="Bodu.Security.Cryptography.Blake2b.ProcessFinalBlock.html#Bodu_Security_Cryptography_Blake2b_ProcessFinalBlock">ProcessFinalBlock()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Extracts the digest from the algorithm's chaining variables after <a class="xref" href="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.ProcessBlock.html#Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm_ProcessBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Boolean_">ProcessBlock(ReadOnlySpan&lt;byte&gt;, ulong, bool)</a> has been called
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void ProcessBlock(ReadOnlySpan&lt;byte&gt; block, ulong totalBytesIncludingThisBlock, bool isFinal)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>block</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The 128-byte block to compress.</p>
+</dd>
+    <dt><code>totalBytesIncludingThisBlock</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a></dt>
+    <dd><p>The cumulative byte count <em>including</em> the bytes in <code class="paramref">block</code>. Used as the per-block
+counter (the BLAKE2 <code>t0</code> input).</p>
+</dd>
+    <dt><code>isFinal</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if this is the final block; causes the finalization flag word to be inverted.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Blake2b_ProcessBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Boolean__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Compression runs on the widest kernel <span class="xref">Bodu.Security.Cryptography.Blake2bCore</span> selects: AVX-512, then AVX2, then the scalar
+kernel, each gate honoring the process-wide SIMD opt-out.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Blake2b_ProcessFinalBlock_" data-uid="Bodu.Security.Cryptography.Blake2b.ProcessFinalBlock*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Blake2b_ProcessFinalBlock" data-uid="Bodu.Security.Cryptography.Blake2b.ProcessFinalBlock">
+  ProcessFinalBlock()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Extracts the digest from the algorithm's chaining variables after <a class="xref" href="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html#Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm_ProcessBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Boolean_">ProcessBlock(ReadOnlySpan&lt;byte&gt;, ulong, bool)</a> has been called
 with <code>isFinal: true</code> for the last time.</p>
-</td>
-      </tr>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override byte[] ProcessFinalBlock()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A byte array containing the final computed hash value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Blake2b_ProcessFinalBlock_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method is invoked once per <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.hashfinal">HashFinal()</a> call, immediately after the final
+compression. It reads from the internal hash state and serializes the result to a byte array in the format
+expected by consumers of the algorithm (typically little-endian for Blake-family hashes).</p>
+</div>
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.AppendData.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendData_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__">HashAlgorithmExtensions.AppendData(HashAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.AppendDataAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendDataAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">HashAlgorithmExtensions.AppendDataAsync(HashAlgorithm, Stream, int, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, byte[], byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, byte[], string)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, Stream, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, Stream, string)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, string, Encoding, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, byte[], byte[], CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, byte[], string, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, Stream, byte[], CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, Stream, string, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, string, Encoding, byte[], CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, byte[], byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, byte[], string)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, Stream, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, Stream, string)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, string, Encoding, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.VerifyHashAsync(HashAlgorithm, Stream, byte[], CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">HashAlgorithmExtensions.VerifyHashAsync(HashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_">HashAlgorithmExtensions.VerifyHashAsync(HashAlgorithm, Stream, string, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.Transform(ICryptoTransform, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_System_Int32_">ICryptoTransformExtensions.Transform(ICryptoTransform, byte[], int, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_">ICryptoTransformExtensions.Transform(ICryptoTransform, Stream, Stream, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformAsync.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">ICryptoTransformExtensions.TransformAsync(ICryptoTransform, Stream, Stream, int, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformAsync.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__System_Threading_CancellationToken_">ICryptoTransformExtensions.TransformAsync(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.TransformBlock(ICryptoTransform, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, byte[], int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
-  </div>
-  <h3 id="seealso">See Also</h3>
+
+  <h2 id="seealso">See Also</h2>
   <div class="seealso">
       <div><a class="xref" href="Bodu.Security.Cryptography.Blake2s.html">Blake2s</a></div>
       <div><a class="xref" href="Bodu.Security.Cryptography.Blake3.html">Blake3</a></div>
   </div>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

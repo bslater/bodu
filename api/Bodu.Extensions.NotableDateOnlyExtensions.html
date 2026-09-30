@@ -1,99 +1,137 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class NotableDateOnlyExtensions | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class NotableDateOnlyExtensions | BODU ">
-    
-    <meta name="description" content="Provides working-day, traversal, and notable-date query extension methods over , resolved through an explicit  for a requested territory.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>NotableDateOnlyExtensions Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="NotableDateOnlyExtensions Class
+ | BODU ">
+      
+      <meta name="description" content="Provides working-day, traversal, and notable-date query extension methods over , resolved through an explicit  for a requested territory.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.NotableDateOnlyExtensions">
+
+        <article data-uid="Bodu.Extensions.NotableDateOnlyExtensions">
 
 
 
-  <h1 id="Bodu_Extensions_NotableDateOnlyExtensions" data-uid="Bodu.Extensions.NotableDateOnlyExtensions" class="text-break">Class NotableDateOnlyExtensions</h1>
-  <div class="markdown level0 summary"><p>Provides working-day, traversal, and notable-date query extension methods over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>, resolved
+
+  <h1 id="Bodu_Extensions_NotableDateOnlyExtensions" data-uid="Bodu.Extensions.NotableDateOnlyExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+NotableDateOnlyExtensions Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.AddWorkingDays.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Extensions_NotableDateOnlyExtensions_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.AddWorkingDays.cs">NotableDateOnlyExtensions.AddWorkingDays.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides working-day, traversal, and notable-date query extension methods over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>, resolved
 through an explicit <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> for a requested territory.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">NotableDateOnlyExtensions</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class NotableDateOnlyExtensions</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">NotableDateOnlyExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -115,30 +153,14 @@ through an explicit <a class="xref" href="Bodu.Globalization.Calendar.INotableDa
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Globalization.Calendar.dll</h6>
-  <h5 id="Bodu_Extensions_NotableDateOnlyExtensions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class NotableDateOnlyExtensions</code></pre>
-  </div>
-  <h5 id="Bodu_Extensions_NotableDateOnlyExtensions_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-A working day is a day that is neither outside the working week nor a non-working notable date. The working week
-defaults to Monday through Friday and can be overridden with a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>. The traversal and
-counting methods resolve each candidate day through the service, so prefer the range-based
-<a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.EnumerateNotableDates.html#Bodu_Extensions_NotableDateOnlyExtensions_EnumerateNotableDates_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">EnumerateNotableDates(DateOnly, DateOnly, INotableDateService, string, NotableDateFilter?)</a> for large
-windows.
-</p>
-<p>
-<strong>Method groups.</strong> <code>IsWeekend</code> / <code>IsWorkingDay</code> / <code>IsNonWorkingDay</code> /
-<code>IsNotableDate</code> test a single day; <code>NextWorkingDay</code> / <code>PreviousWorkingDay</code> / <code>SnapToWorkingDay</code>
-(and the <code>NonWorkingDay</code> / <code>NotableDate</code> variants) traverse to a nearby day; <code>AddWorkingDays</code> /
-<code>WorkingDaysBetween</code> count working days; and <code>EnumerateWorkingDays</code> / <code>EnumerateNonWorkingDays</code> /
-<code>EnumerateNotableDates</code> stream a window.
-</p>
-</div>
-  <h5 id="Bodu_Extensions_NotableDateOnlyExtensions_examples"><strong>Examples</strong></h5>
+    </dd>
+  </dl>
+
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Extensions_NotableDateOnlyExtensions_examples">Examples</h2>
   <pre><code class="lang-csharp">INotableDateService service = AmericasCalendarData.CreateService("US");
 DateOnly date = new(2026, 7, 3); // Friday, observed Independence Day in the US
 
@@ -154,167 +176,1411 @@ DateOnly resume = date.SnapToWorkingDay(service, "US");
 // Every notable date in July 2026.
 IReadOnlyList&lt;NotableDate&gt; july = date.GetNotableDatesInMonth(service, "US");</code></pre>
 
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
+
+  <h2 id="Bodu_Extensions_NotableDateOnlyExtensions_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+A working day is a day that is neither outside the working week nor a non-working notable date. The working week
+defaults to Monday through Friday and can be overridden with a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>. The traversal and
+counting methods resolve each candidate day through the service, so prefer the range-based
+<a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.html#Bodu_Extensions_NotableDateOnlyExtensions_EnumerateNotableDates_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">EnumerateNotableDates(DateOnly, DateOnly, INotableDateService, string, NotableDateFilter?)</a> for large
+windows.
+</p>
+<p>
+<strong>Method groups.</strong> <code>IsWeekend</code> / <code>IsWorkingDay</code> / <code>IsNonWorkingDay</code> /
+<code>IsNotableDate</code> test a single day; <code>NextWorkingDay</code> / <code>PreviousWorkingDay</code> / <code>SnapToWorkingDay</code>
+(and the <code>NonWorkingDay</code> / <code>NotableDate</code> variants) traverse to a nearby day; <code>AddWorkingDays</code> /
+<code>WorkingDaysBetween</code> count working days; and <code>EnumerateWorkingDays</code> / <code>EnumerateNonWorkingDays</code> /
+<code>EnumerateNotableDates</code> stream a window.
+</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_AddWorkingDays_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.AddWorkingDays*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_AddWorkingDays_System_DateOnly_System_Int32_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.AddWorkingDays(System.DateOnly,System.Int32,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  AddWorkingDays(DateOnly, int, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.AddWorkingDays.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Advances the date by a signed number of working days.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateOnly AddWorkingDays(this DateOnly date, int count, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The starting date.</p>
+</dd>
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of working days to add; negative retreats, zero returns the date unchanged.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The resulting date.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_AddWorkingDays_System_DateOnly_System_Int32_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern___examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AmericasCalendarData.CreateService("US");
+
+// A T+2 settlement date that skips weekends and US holidays.
+DateOnly trade = new(2026, 7, 2);
+DateOnly settles = trade.AddWorkingDays(2, service, "US"); // jumps past July 4th observance</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_EnumerateNonWorkingDays_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.EnumerateNonWorkingDays*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_EnumerateNonWorkingDays_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.EnumerateNonWorkingDays(System.DateOnly,System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  EnumerateNonWorkingDays(DateOnly, DateOnly, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.EnumerateNonWorkingDays.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Lazily enumerates the non-working days in the inclusive range, in ascending order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;DateOnly&gt; EnumerateNonWorkingDays(this DateOnly start, DateOnly end, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The inclusive start date.</p>
+</dd>
+    <dt><code>end</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The inclusive end date.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>&gt;</dt>
+    <dd><p>The non-working days in the range.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_EnumerateNonWorkingDays_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern___examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+
+// Anzac week 2024: the weekend plus Anzac Day (Thursday 25 April).
+foreach (DateOnly closed in new DateOnly(2024, 4, 22).EnumerateNonWorkingDays(
+    new DateOnly(2024, 4, 28), service, "AU"))
+{
+    // 2024-04-25, 2024-04-27, 2024-04-28
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_EnumerateNotableDates_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.EnumerateNotableDates*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_EnumerateNotableDates_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.EnumerateNotableDates(System.DateOnly,System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
+  EnumerateNotableDates(DateOnly, DateOnly, INotableDateService, string, NotableDateFilter?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.EnumerateNotableDates.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Resolves the notable dates emitted within the inclusive range for the territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyList&lt;NotableDate&gt; EnumerateNotableDates(this DateOnly start, DateOnly end, INotableDateService service, string territory, NotableDateFilter? filter = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The inclusive start date.</p>
+</dd>
+    <dt><code>end</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The inclusive end date.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>An optional filter the occurrences must satisfy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDate.cs">NotableDate</a>&gt;</dt>
+    <dd><p>The emitted occurrences, ordered by date then identity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_EnumerateNotableDates_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter__examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+
+// Every public holiday in January 2026, eagerly materialized.
+IReadOnlyList&lt;NotableDate&gt; january = new DateOnly(2026, 1, 1).EnumerateNotableDates(
+    new DateOnly(2026, 1, 31), service, "AU",
+    NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday));</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_EnumerateWorkingDays_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.EnumerateWorkingDays*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_EnumerateWorkingDays_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.EnumerateWorkingDays(System.DateOnly,System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  EnumerateWorkingDays(DateOnly, DateOnly, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.EnumerateWorkingDays.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Lazily enumerates the working days in the inclusive range, in ascending order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;DateOnly&gt; EnumerateWorkingDays(this DateOnly start, DateOnly end, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The inclusive start date.</p>
+</dd>
+    <dt><code>end</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The inclusive end date.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>&gt;</dt>
+    <dd><p>The working days in the range.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_EnumerateWorkingDays_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern___examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AmericasCalendarData.CreateService("US");
+
+// Iterate the working days of July 2026, skipping weekends and holidays.
+foreach (DateOnly day in new DateOnly(2026, 7, 1).EnumerateWorkingDays(new DateOnly(2026, 7, 31), service, "US"))
+    Console.WriteLine(day);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_GetNotableDates_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.GetNotableDates*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_GetNotableDates_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.GetNotableDates(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
+  GetNotableDates(DateOnly, INotableDateService, string, NotableDateFilter?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.GetNotableDates.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the notable dates emitted on the date for the territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyList&lt;NotableDate&gt; GetNotableDates(this DateOnly date, INotableDateService service, string territory, NotableDateFilter? filter = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The date to resolve.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>An optional filter the occurrences must satisfy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDate.cs">NotableDate</a>&gt;</dt>
+    <dd><p>The emitted occurrences; empty when there are none.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_GetNotableDates_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter__examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AmericasCalendarData.CreateService("US");
+
+IReadOnlyList&lt;NotableDate&gt; occurrences = new DateOnly(2026, 12, 25).GetNotableDates(service, "US");
+foreach (NotableDate notable in occurrences)
+    Console.WriteLine(notable.DisplayName);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_GetNotableDatesInMonth_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.GetNotableDatesInMonth*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_GetNotableDatesInMonth_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.GetNotableDatesInMonth(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
+  GetNotableDatesInMonth(DateOnly, INotableDateService, string, NotableDateFilter?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.GetNotableDatesInMonth.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Resolves the notable dates emitted in the calendar month that contains the date for the territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyList&lt;NotableDate&gt; GetNotableDatesInMonth(this DateOnly date, INotableDateService service, string territory, NotableDateFilter? filter = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>A date within the month to resolve.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>An optional filter the occurrences must satisfy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDate.cs">NotableDate</a>&gt;</dt>
+    <dd><p>The emitted occurrences in the month, ordered by date then identity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_GetNotableDatesInMonth_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter__examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AmericasCalendarData.CreateService("US");
+
+// Every notable date in December 2026, derived from any date within the month.
+IReadOnlyList&lt;NotableDate&gt; month = new DateOnly(2026, 12, 15).GetNotableDatesInMonth(service, "US");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_GetNotableDatesInYear_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.GetNotableDatesInYear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_GetNotableDatesInYear_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.GetNotableDatesInYear(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
+  GetNotableDatesInYear(DateOnly, INotableDateService, string, NotableDateFilter?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.GetNotableDatesInYear.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Resolves the notable dates emitted in the calendar year that contains the date for the territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyList&lt;NotableDate&gt; GetNotableDatesInYear(this DateOnly date, INotableDateService service, string territory, NotableDateFilter? filter = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>A date within the year to resolve.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>An optional filter the occurrences must satisfy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDate.cs">NotableDate</a>&gt;</dt>
+    <dd><p>The emitted occurrences in the year, ordered by date then identity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_GetNotableDatesInYear_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter__examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AmericasCalendarData.CreateService("US");
+
+// Every notable date in 2026, derived from any date within the year.
+IReadOnlyList&lt;NotableDate&gt; year = new DateOnly(2026, 1, 1).GetNotableDatesInYear(service, "US");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_IsNonWorkingDay_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.IsNonWorkingDay*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_IsNonWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.IsNonWorkingDay(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  IsNonWorkingDay(DateOnly, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.IsNonWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the date is a non-working day: outside the working week, or a non-working notable date.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsNonWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The date to test.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the date is non-working; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_IsNonWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern___examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+
+bool anzacDay = new DateOnly(2024, 4, 25).IsNonWorkingDay(service, "AU");   // true (public holiday)
+bool friday = new DateOnly(2024, 4, 26).IsNonWorkingDay(service, "AU");     // false</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_IsNotableDate_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.IsNotableDate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_IsNotableDate_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.IsNotableDate(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
+  IsNotableDate(DateOnly, INotableDateService, string, NotableDateFilter?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.IsNotableDate.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether any notable date is emitted on the date for the territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsNotableDate(this DateOnly date, INotableDateService service, string territory, NotableDateFilter? filter = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The date to test.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>An optional filter the occurrence must satisfy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if at least one occurrence is emitted; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_IsNotableDate_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter__examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AmericasCalendarData.CreateService("US");
+
+bool isHoliday = new DateOnly(2026, 7, 4).IsNotableDate(service, "US"); // true (Independence Day)</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_IsWeekend_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.IsWeekend*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_IsWeekend_System_DateOnly_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.IsWeekend(System.DateOnly,System.Nullable{Bodu.WeekPattern})">
+  IsWeekend(DateOnly, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.IsWeekend.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the date falls outside the working week.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsWeekend(this DateOnly date, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The date to test.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the date is not a working-week day; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_IsWeekend_System_DateOnly_System_Nullable_Bodu_WeekPattern___examples">Examples</h4>
+  <pre><code class="lang-csharp">bool saturday = new DateOnly(2026, 1, 3).IsWeekend();   // true under the default Mon-Fri week
+
+// A Sunday-Thursday working week makes Friday the weekend instead.
+var sundayToThursday = new WeekPattern(
+    DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday);
+bool friday = new DateOnly(2026, 1, 2).IsWeekend(sundayToThursday);   // true</code></pre>
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_IsWorkingDay_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.IsWorkingDay*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_IsWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.IsWorkingDay(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  IsWorkingDay(DateOnly, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.IsWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the date is a working day.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The date to test.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the date is a working day; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_IsWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern___examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AmericasCalendarData.CreateService("US");
+
+bool labourDay = new DateOnly(2026, 9, 7).IsWorkingDay(service, "US");   // false (Labor Day)
+bool ordinary = new DateOnly(2026, 9, 8).IsWorkingDay(service, "US");    // true</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_NextNonWorkingDay_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.NextNonWorkingDay*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_NextNonWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.NextNonWorkingDay(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  NextNonWorkingDay(DateOnly, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.NextNonWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the first non-working day strictly after the date.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateOnly NextNonWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The starting date.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The next non-working day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_NextNonWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern___examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+
+// From Monday 22 April 2024 the next closed day is Anzac Day, before the weekend.
+DateOnly closed = new DateOnly(2024, 4, 22).NextNonWorkingDay(service, "AU");   // 2024-04-25</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>No non-working day is found within the traversal guard.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_NextNotableDate_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.NextNotableDate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_NextNotableDate_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.NextNotableDate(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
+  NextNotableDate(DateOnly, INotableDateService, string, NotableDateFilter?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.NextNotableDate.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the earliest notable date emitted strictly after the date for the territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDate? NextNotableDate(this DateOnly date, INotableDateService service, string territory, NotableDateFilter? filter = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The reference date.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>An optional filter the occurrence must satisfy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a></dt>
+    <dd><p>The next matching occurrence, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when none exists up to the maximum year.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_NextNotableDate_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter__examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AmericasCalendarData.CreateService("US");
+
+// The next public holiday after today.
+NotableDate? upcoming = DateOnly.FromDateTime(DateTime.Today).NextNotableDate(service, "US");
+if (upcoming is not null)
+    Console.WriteLine($"{upcoming.DisplayName} on {upcoming.Date}");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_NextWorkingDay_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.NextWorkingDay*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_NextWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.NextWorkingDay(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  NextWorkingDay(DateOnly, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.NextWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the first working day strictly after the date.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateOnly NextWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The starting date.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The next working day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_NextWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern___examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AmericasCalendarData.CreateService("US");
+
+// The first business day after a holiday weekend.
+DateOnly resume = new DateOnly(2026, 7, 3).NextWorkingDay(service, "US");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_PreviousNonWorkingDay_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.PreviousNonWorkingDay*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_PreviousNonWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.PreviousNonWorkingDay(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  PreviousNonWorkingDay(DateOnly, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.PreviousNonWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the first non-working day strictly before the date.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateOnly PreviousNonWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The starting date.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The previous non-working day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_PreviousNonWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern___examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+
+// From Monday 29 April 2024 the most recent closed day is the Sunday before.
+DateOnly closed = new DateOnly(2024, 4, 29).PreviousNonWorkingDay(service, "AU");   // 2024-04-28</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>No non-working day is found within the traversal guard.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_PreviousNotableDate_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.PreviousNotableDate*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_PreviousNotableDate_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.PreviousNotableDate(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
+  PreviousNotableDate(DateOnly, INotableDateService, string, NotableDateFilter?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.PreviousNotableDate.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the most recent notable date emitted strictly before the date for the territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDate? PreviousNotableDate(this DateOnly date, INotableDateService service, string territory, NotableDateFilter? filter = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The reference date.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>An optional filter the occurrence must satisfy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a></dt>
+    <dd><p>The previous matching occurrence, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when none exists down to the minimum year.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_PreviousNotableDate_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter__examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+
+// The most recent public holiday before 1 May 2024 is Anzac Day.
+NotableDate? previous = new DateOnly(2024, 5, 1).PreviousNotableDate(
+    service, "AU", NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday));
+// previous?.Date == 2024-04-25</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_PreviousWorkingDay_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.PreviousWorkingDay*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_PreviousWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.PreviousWorkingDay(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  PreviousWorkingDay(DateOnly, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.PreviousWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the first working day strictly before the date.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateOnly PreviousWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The starting date.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The previous working day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_PreviousWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern___examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+
+// From Friday 26 April 2024 the previous open day skips Anzac Day back to Wednesday.
+DateOnly open = new DateOnly(2024, 4, 26).PreviousWorkingDay(service, "AU");   // 2024-04-24</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_SnapToNearestWorkingDay_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.SnapToNearestWorkingDay*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_SnapToNearestWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.SnapToNearestWorkingDay(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  SnapToNearestWorkingDay(DateOnly, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.SnapToNearestWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the date if it is a working day; otherwise the nearest working day, preferring the forward direction on
+a tie.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateOnly SnapToNearestWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The date to snap.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The nearest working day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_SnapToNearestWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern___examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+
+// Saturday 27 April 2024 snaps back to Friday (one day) rather than forward to Monday (two).
+DateOnly nearest = new DateOnly(2024, 4, 27).SnapToNearestWorkingDay(service, "AU");   // 2024-04-26
+
+// A working day is returned unchanged.
+DateOnly noOp = new DateOnly(2024, 4, 23).SnapToNearestWorkingDay(service, "AU");      // 2024-04-23</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_SnapToWorkingDay_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.SnapToWorkingDay*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_SnapToWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.SnapToWorkingDay(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  SnapToWorkingDay(DateOnly, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.SnapToWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the date if it is a working day; otherwise the next working day.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateOnly SnapToWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The date to snap.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The date or the next working day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_SnapToWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern___examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AmericasCalendarData.CreateService("US");
+
+// Roll a scheduled due date forward to the next working day when it lands on a holiday.
+DateOnly due = new DateOnly(2026, 7, 4).SnapToWorkingDay(service, "US");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_SnapToWorkingDayBackward_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.SnapToWorkingDayBackward*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_SnapToWorkingDayBackward_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.SnapToWorkingDayBackward(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  SnapToWorkingDayBackward(DateOnly, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.SnapToWorkingDayBackward.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the date if it is a working day; otherwise the previous working day.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateOnly SnapToWorkingDayBackward(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The date to snap.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The date or the previous working day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_SnapToWorkingDayBackward_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern___examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+
+// A "no later than" contractual date falling on Anzac Day rolls back to Wednesday.
+DateOnly payday = new DateOnly(2024, 4, 25).SnapToWorkingDayBackward(service, "AU");   // 2024-04-24</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Extensions_NotableDateOnlyExtensions_WorkingDaysBetween_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.WorkingDaysBetween*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Extensions_NotableDateOnlyExtensions_WorkingDaysBetween_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.WorkingDaysBetween(System.DateOnly,System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  WorkingDaysBetween(DateOnly, DateOnly, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Extensions/NotableDateOnlyExtensions.WorkingDaysBetween.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Counts the working days in the inclusive range bounded by the two dates, regardless of their order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int WorkingDaysBetween(this DateOnly start, DateOnly end, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>One end of the range.</p>
+</dd>
+    <dt><code>end</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The other end of the range.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of working days in the inclusive range.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_NotableDateOnlyExtensions_WorkingDaysBetween_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern___examples">Examples</h4>
+  <pre><code class="lang-csharp">INotableDateService service = AmericasCalendarData.CreateService("US");
+
+// Billable working days across a project window, excluding weekends and holidays.
+int days = new DateOnly(2026, 7, 1).WorkingDaysBetween(new DateOnly(2026, 7, 31), service, "US");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_AddWorkingDays_System_DateOnly_System_Int32_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.AddWorkingDays(System.DateOnly,System.Int32,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.AddWorkingDays.html#Bodu_Extensions_NotableDateOnlyExtensions_AddWorkingDays_System_DateOnly_System_Int32_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">AddWorkingDays(DateOnly, int, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Advances the date by a signed number of working days.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_EnumerateNonWorkingDays_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.EnumerateNonWorkingDays(System.DateOnly,System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.EnumerateNonWorkingDays.html#Bodu_Extensions_NotableDateOnlyExtensions_EnumerateNonWorkingDays_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">EnumerateNonWorkingDays(DateOnly, DateOnly, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Lazily enumerates the non-working days in the inclusive range, in ascending order.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_EnumerateNotableDates_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.EnumerateNotableDates(System.DateOnly,System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.EnumerateNotableDates.html#Bodu_Extensions_NotableDateOnlyExtensions_EnumerateNotableDates_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">EnumerateNotableDates(DateOnly, DateOnly, INotableDateService, string, NotableDateFilter?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Resolves the notable dates emitted within the inclusive range for the territory.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_EnumerateWorkingDays_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.EnumerateWorkingDays(System.DateOnly,System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.EnumerateWorkingDays.html#Bodu_Extensions_NotableDateOnlyExtensions_EnumerateWorkingDays_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">EnumerateWorkingDays(DateOnly, DateOnly, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Lazily enumerates the working days in the inclusive range, in ascending order.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_GetNotableDates_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.GetNotableDates(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.GetNotableDates.html#Bodu_Extensions_NotableDateOnlyExtensions_GetNotableDates_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">GetNotableDates(DateOnly, INotableDateService, string, NotableDateFilter?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the notable dates emitted on the date for the territory.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_GetNotableDatesInMonth_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.GetNotableDatesInMonth(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.GetNotableDatesInMonth.html#Bodu_Extensions_NotableDateOnlyExtensions_GetNotableDatesInMonth_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">GetNotableDatesInMonth(DateOnly, INotableDateService, string, NotableDateFilter?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Resolves the notable dates emitted in the calendar month that contains the date for the territory.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_GetNotableDatesInYear_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.GetNotableDatesInYear(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.GetNotableDatesInYear.html#Bodu_Extensions_NotableDateOnlyExtensions_GetNotableDatesInYear_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">GetNotableDatesInYear(DateOnly, INotableDateService, string, NotableDateFilter?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Resolves the notable dates emitted in the calendar year that contains the date for the territory.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_IsNonWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.IsNonWorkingDay(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.IsNonWorkingDay.html#Bodu_Extensions_NotableDateOnlyExtensions_IsNonWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">IsNonWorkingDay(DateOnly, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the date is a non-working day: outside the working week, or a non-working notable date.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_IsNotableDate_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.IsNotableDate(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.IsNotableDate.html#Bodu_Extensions_NotableDateOnlyExtensions_IsNotableDate_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">IsNotableDate(DateOnly, INotableDateService, string, NotableDateFilter?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether any notable date is emitted on the date for the territory.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_IsWeekend_System_DateOnly_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.IsWeekend(System.DateOnly,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.IsWeekend.html#Bodu_Extensions_NotableDateOnlyExtensions_IsWeekend_System_DateOnly_System_Nullable_Bodu_WeekPattern__">IsWeekend(DateOnly, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the date falls outside the working week.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_IsWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.IsWorkingDay(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.IsWorkingDay.html#Bodu_Extensions_NotableDateOnlyExtensions_IsWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">IsWorkingDay(DateOnly, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the date is a working day.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_NextNonWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.NextNonWorkingDay(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.NextNonWorkingDay.html#Bodu_Extensions_NotableDateOnlyExtensions_NextNonWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">NextNonWorkingDay(DateOnly, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the first non-working day strictly after the date.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_NextNotableDate_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.NextNotableDate(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.NextNotableDate.html#Bodu_Extensions_NotableDateOnlyExtensions_NextNotableDate_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">NextNotableDate(DateOnly, INotableDateService, string, NotableDateFilter?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the earliest notable date emitted strictly after the date for the territory.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_NextWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.NextWorkingDay(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.NextWorkingDay.html#Bodu_Extensions_NotableDateOnlyExtensions_NextWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">NextWorkingDay(DateOnly, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the first working day strictly after the date.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_PreviousNonWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.PreviousNonWorkingDay(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.PreviousNonWorkingDay.html#Bodu_Extensions_NotableDateOnlyExtensions_PreviousNonWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">PreviousNonWorkingDay(DateOnly, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the first non-working day strictly before the date.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_PreviousNotableDate_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.PreviousNotableDate(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.PreviousNotableDate.html#Bodu_Extensions_NotableDateOnlyExtensions_PreviousNotableDate_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">PreviousNotableDate(DateOnly, INotableDateService, string, NotableDateFilter?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the most recent notable date emitted strictly before the date for the territory.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_PreviousWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.PreviousWorkingDay(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.PreviousWorkingDay.html#Bodu_Extensions_NotableDateOnlyExtensions_PreviousWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">PreviousWorkingDay(DateOnly, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the first working day strictly before the date.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_SnapToNearestWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.SnapToNearestWorkingDay(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.SnapToNearestWorkingDay.html#Bodu_Extensions_NotableDateOnlyExtensions_SnapToNearestWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">SnapToNearestWorkingDay(DateOnly, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the date if it is a working day; otherwise the nearest working day, preferring the forward direction on
-a tie.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_SnapToWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.SnapToWorkingDay(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.SnapToWorkingDay.html#Bodu_Extensions_NotableDateOnlyExtensions_SnapToWorkingDay_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">SnapToWorkingDay(DateOnly, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the date if it is a working day; otherwise the next working day.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_SnapToWorkingDayBackward_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.SnapToWorkingDayBackward(System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.SnapToWorkingDayBackward.html#Bodu_Extensions_NotableDateOnlyExtensions_SnapToWorkingDayBackward_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">SnapToWorkingDayBackward(DateOnly, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the date if it is a working day; otherwise the previous working day.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateOnlyExtensions_WorkingDaysBetween_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateOnlyExtensions.WorkingDaysBetween(System.DateOnly,System.DateOnly,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.WorkingDaysBetween.html#Bodu_Extensions_NotableDateOnlyExtensions_WorkingDaysBetween_System_DateOnly_System_DateOnly_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">WorkingDaysBetween(DateOnly, DateOnly, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Counts the working days in the inclusive range bounded by the two dates, regardless of their order.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="seealso">See Also</h3>
+
+  <h2 id="seealso">See Also</h2>
   <div class="seealso">
       <div><a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></div>
       <div><a class="xref" href="Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a></div>
@@ -324,49 +1590,24 @@ a tie.</p>
   </div>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

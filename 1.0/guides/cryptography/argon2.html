@@ -1,84 +1,90 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Using Argon2 | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Using Argon2 | BODU ">
-    
-    
-      <link rel="shortcut icon" href="../../images/favicon.svg">
-      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../../styles/docfx.css">
-      <link rel="stylesheet" href="../../styles/main.css">
-      <meta property="docfx:navrel" content="../../toc.html">
-      <meta property="docfx:tocrel" content="../toc.html">
-    
-    <meta property="docfx:rel" content="../../">
-    
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/cryptography/argon2.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../../index.html">
-                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="">
+
+        <article data-uid="">
 <h1 id="using-argon2">Using Argon2</h1>
 
 <p>Argon2 is the winner of the 2015 Password Hashing Competition and the algorithm RFC 9106 recommends for password storage and password-based key derivation. It is <strong>memory-hard</strong>: the work it imposes is dominated by filling a large block of RAM, which is exactly the resource that custom cracking hardware (GPUs, FPGAs, ASICs) finds expensive to scale. That makes it far more resistant to offline guessing attacks than a plain iterated hash.</p>
@@ -224,13 +230,26 @@ string stored = Argon2id.Hash(password, salt, parameters);
 
 bool ok = Argon2id.Verify(stored, candidate, pepper);   // pepper supplied at verify time
 </code></pre>
+<h2 id="threads-memory-and-hardware">Threads, memory, and hardware</h2>
+<p>A derivation divides its lanes among threads when they are large enough to be worth dividing — from about 1 MiB per lane, so <code>m=64 MiB, p=4</code> qualifies and <code>m=1 MiB, p=4</code> does not. It uses up to <code>Parallelism</code> threads, bounded by the processor count; the calling thread always takes part, so a derivation never waits on an idle thread pool. The tag never depends on the threads used: <code>p</code> is part of the result, the thread count is not.</p>
+<p>A service that already verifies many passwords at once gains nothing from spreading each derivation across every core, and can bound the threads per derivation instead:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+// Confine each derivation to the thread that calls it, as a busy login service might.
+var argon2 = new Argon2id(parameters, maxDegreeOfParallelism: 1);
+byte[] key = argon2.GetBytes(password, salt);
+
+bool ok = Argon2.Verify(stored, candidate, secret: [], maxDegreeOfParallelism: 1);
+</code></pre>
+<p><code>-1</code>, the default, lets the library choose; <code>1</code> confines a derivation to the calling thread; a larger value caps the threads. <code>0</code> or anything below <code>-1</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a>.</p>
+<p>The compression function runs on <strong>AVX2</strong> where the processor has it, on <strong>SSSE3</strong> on other x64 processors, on <strong>AdvSimd</strong> on ARM64, and on a portable scalar path otherwise. All four produce identical output, and the <code>Bodu.Security.Cryptography.DisableSimd</code> switch pins the scalar path — see <a href="hardware-acceleration.html">Hardware acceleration and the SIMD opt-out</a>. A NativeAOT application is compiled for a baseline x64 instruction set that excludes AVX2, so it takes the SSSE3 kernel unless the project raises the target, for example with <code>&lt;IlcInstructionSet&gt;x86-64-v3&lt;/IlcInstructionSet&gt;</code> — only where every machine it will run on has AVX2.</p>
+<p>The memory matrix lives in native memory, not on the managed heap, so a derivation allocates no large array and provokes no gen2 collection. So that a burst of logins does not map fresh pages every time, up to one buffer per processor (of up to 256 MiB each) stays reserved for 30 seconds after the last derivation — cleared, so what stays resident is zeros. The reserve is shared with <a href="scrypt.html">scrypt</a>, which keeps its working memory the same way. Setting the <code>AppContext</code> switch <code>Bodu.Security.Cryptography.Argon2.DisableMatrixReuse</code> releases each buffer as soon as its derivation ends instead, for both functions. Every block of the matrix, and every buffer that held a password-derived value, is cleared before it is released; values the JIT keeps in registers or its own stack slots are beyond the library's reach.</p>
 <h2 id="choosing-parameters">Choosing parameters</h2>
-<p>The right cost is &quot;as high as your latency budget allows.&quot; Pick a target verification time (say 250–500 ms on your server hardware), fix <code>p = 4</code> and <code>T = 32</code>, then raise <code>MemoryKiB</code> until you hit that budget; only drop to a smaller <code>m</code> with a higher <code>t</code> when memory is genuinely constrained. Measure on the hardware that will run the check — not a developer laptop.</p>
+<p>The right cost is &quot;as high as your latency budget allows.&quot; Pick a target verification time (say 250–500 ms on your server hardware), fix <code>p = 4</code> and <code>T = 32</code>, then raise <code>MemoryKiB</code> until you hit that budget; only drop to a smaller <code>m</code> with a higher <code>t</code> when memory is genuinely constrained. With <code>p = 4</code> a derivation can finish several times sooner on a machine with four or more cores; the work it demands of an attacker is unchanged. Measure on the hardware that will run the check — not a developer laptop — and under the concurrency it will see.</p>
 <h2 id="what-argon2-is-not">What Argon2 is not</h2>
 <ul>
 <li><strong>Not a general-purpose KDF for high-entropy inputs.</strong> If you are stretching an already-random key (not a password), <code>HKDF</code> (<code>System.Security.Cryptography.HKDF</code>) is the right, far cheaper tool.</li>
 <li><strong>Not a substitute for a salt.</strong> Always pass a unique, random salt per password. The <code>Hash(password)</code> overload generates one for you.</li>
-<li><strong>Not multi-threaded here.</strong> Lanes are computed sequentially; the result is identical to a threaded implementation for any <code>Parallelism</code>, but a high <code>p</code> does not buy wall-clock speed in this implementation.</li>
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
@@ -241,49 +260,25 @@ bool ok = Argon2id.Verify(stored, candidate, pepper);   // pepper supplied at ve
 </ul>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../../styles/docfx.js"></script>
-    <script type="text/javascript" src="../../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

@@ -1,101 +1,145 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class HyperLogLog&lt;T&gt; | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class HyperLogLog&lt;T&gt; | BODU ">
-    
-    <meta name="description" content="Represents a space-efficient probabilistic sketch that estimates the number of distinct elements added to it. The estimate is approximate: it carries a relative standard error of about 1.04/√m, where m is , but the sketch itself occupies only one byte per register regardless of how many elements are observed.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>HyperLogLog&lt;T&gt; Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="HyperLogLog&lt;T&gt; Class
+ | BODU ">
+      
+      <meta name="description" content="Represents a space-efficient probabilistic sketch that estimates the number of distinct elements added to it. The estimate is approximate: it carries a relative standard error of about 1.04/√m, where m is , but the sketch itself occupies only one byte per register regardless of how many elements are observed.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1">
+
+        <article data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1">
 
 
 
-  <h1 id="Bodu_Collections_Probabilistic_HyperLogLog_1" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1" class="text-break">Class HyperLogLog&lt;T&gt;</h1>
-  <div class="markdown level0 summary"><p>Represents a space-efficient probabilistic sketch that estimates the number of distinct elements added to it. The
+
+  <h1 id="Bodu_Collections_Probabilistic_HyperLogLog_1" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+HyperLogLog&lt;T&gt; Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Collections_Probabilistic_HyperLogLog_1_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Collections.html">Collections</a>.<a class="xref" href="Bodu.Collections.Probabilistic.html">Probabilistic</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Collections.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Collections">Bodu.Collections</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs">HyperLogLog{T}.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a space-efficient probabilistic sketch that estimates the number of distinct elements added to it. The
 estimate is approximate: it carries a relative standard error of about <code>1.04/√m</code>, where <code>m</code> is
-<a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.RegisterCount.html#Bodu_Collections_Probabilistic_HyperLogLog_1_RegisterCount">RegisterCount</a>, but the sketch itself occupies only one byte per register regardless of how many
+<a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_RegisterCount">RegisterCount</a>, but the sketch itself occupies only one byte per register regardless of how many
 elements are observed.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">HyperLogLog&lt;T&gt;</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class HyperLogLog&lt;T&gt; where T : notnull</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of elements counted by the sketch. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">HyperLogLog&lt;T&gt;</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -114,34 +158,48 @@ elements are observed.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Collections</span>.<a class="xref" href="Bodu.Collections.Probabilistic.html">Probabilistic</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Collections.dll</h6>
-  <h5 id="Bodu_Collections_Probabilistic_HyperLogLog_1_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class HyperLogLog&lt;T&gt; where T : notnull</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 class="typeParameters">Type Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="parametername">T</span></td>
-        <td><p>The type of elements counted by the sketch. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Bodu_Collections_Probabilistic_HyperLogLog_1_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Collections_Probabilistic_HyperLogLog_1_examples">Examples</h2>
+  <pre><code class="lang-csharp">// Count distinct visitor ids with ~0.81% standard error (2^14 = 16,384 one-byte registers).
+var distinct = new HyperLogLog&lt;int&gt;(precision: 14);
+
+for (var i = 0; i &lt; 100_000; i++)
+    distinct.Add(i % 25_000); // 25,000 distinct values, each added four times
+
+Console.WriteLine(distinct.EstimateCardinality()); // ~25,000</code></pre>
+
+
+  <h2 id="Bodu_Collections_Probabilistic_HyperLogLog_1_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 The sketch is sized by the <code>precision</code> constructor argument <code>b</code>: it allocates <code>m = 2^b</code> single-byte
-registers, and <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.EstimateCardinality.html#Bodu_Collections_Probabilistic_HyperLogLog_1_EstimateCardinality">EstimateCardinality()</a> carries a relative standard error of approximately <code>1.04/√m</code>
-(see <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.StandardError.html#Bodu_Collections_Probabilistic_HyperLogLog_1_StandardError">StandardError</a>). Each increment of <code>b</code> doubles the memory footprint and improves the error
+registers, and <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_EstimateCardinality">EstimateCardinality()</a> carries a relative standard error of approximately <code>1.04/√m</code>
+(see <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_StandardError">StandardError</a>). Each increment of <code>b</code> doubles the memory footprint and improves the error
 by a factor of <code>√2</code>: <code>b = 4</code> uses 16 registers at ~26% error, while <code>b = 14</code> uses 16,384 registers at
 ~0.81% error.
 </p>
@@ -162,7 +220,7 @@ process, so exported state for <a class="xref" href="https://learn.microsoft.com
 meaningful when re-imported within the same process, or when a custom comparer with a stable hash is used.
 </p>
 <p>
-<a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.EstimateCardinality.html#Bodu_Collections_Probabilistic_HyperLogLog_1_EstimateCardinality">EstimateCardinality()</a> applies the standard HyperLogLog small-range correction (linear counting) while
+<a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_EstimateCardinality">EstimateCardinality()</a> applies the standard HyperLogLog small-range correction (linear counting) while
 any register is still zero and the raw estimate is at most <code>2.5·m</code>. The classic large-range correction from the
 original paper — which compensates for hash collisions as the true cardinality approaches the size of the hash space
 — is not applied. Although the register pipeline is 64-bit, all of its entropy derives from the 32-bit comparer hash
@@ -172,13 +230,13 @@ near <code>2³²</code> (about 4.3 billion) — beyond that point additional dis
 estimate.
 </p>
 <p>
-<a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.MergeWith.html#Bodu_Collections_Probabilistic_HyperLogLog_1_MergeWith_Bodu_Collections_Probabilistic_HyperLogLog__0__">MergeWith(HyperLogLog&lt;T&gt;)</a> combines two compatible sketches by register-wise maximum, after which this sketch
+<a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_MergeWith_Bodu_Collections_Probabilistic_HyperLogLog__0__">MergeWith(HyperLogLog&lt;T&gt;)</a> combines two compatible sketches by register-wise maximum, after which this sketch
 estimates the number of distinct elements in the union of both source streams. Merging is lossless — merging
 sketches of two streams yields exactly the sketch that observing the concatenated stream would have produced — and
 elements present in both streams are not double-counted.
 </p>
 <p>
-The export format produced by <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.TryExport.html#Bodu_Collections_Probabilistic_HyperLogLog_1_TryExport_System_Span_System_Byte__System_Int32__">TryExport(Span&lt;byte&gt;, out int)</a> / <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.Export.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Export_System_Span_System_Byte__">Export(Span&lt;byte&gt;)</a> and consumed by <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.Import.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Import_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IEqualityComparer__0__">Import(ReadOnlySpan&lt;byte&gt;, IEqualityComparer&lt;T&gt;?)</a>
+The export format produced by <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_TryExport_System_Span_System_Byte__System_Int32__">TryExport(Span&lt;byte&gt;, out int)</a> / <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Export_System_Span_System_Byte__">Export(Span&lt;byte&gt;)</a> and consumed by <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Import_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IEqualityComparer__0__">Import(ReadOnlySpan&lt;byte&gt;, IEqualityComparer&lt;T&gt;?)</a>
 is an opaque, version-checked snapshot, not a wire contract; its layout may change between library versions with a
 corresponding version-byte bump.
 </p>
@@ -186,218 +244,685 @@ corresponding version-byte bump.
 <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a> is not thread-safe. Concurrent reads and writes require external synchronization.
 </p>
 </div>
-  <h5 id="Bodu_Collections_Probabilistic_HyperLogLog_1_examples"><strong>Examples</strong></h5>
-  <pre><code class="lang-csharp">// Count distinct visitor ids with ~0.81% standard error (2^14 = 16,384 one-byte registers).
-var distinct = new HyperLogLog&lt;int&gt;(precision: 14);
 
-for (var i = 0; i &lt; 100_000; i++)
-    distinct.Add(i % 25_000); // 25,000 distinct values, each added four times
 
-Console.WriteLine(distinct.EstimateCardinality()); // ~25,000</code></pre>
+  <h2 class="section" id="constructors">Constructors
+</h2>
 
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Collections_Probabilistic_HyperLogLog_1__ctor_System_Int32_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.#ctor(System.Int32)">
-          <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.-ctor.html#Bodu_Collections_Probabilistic_HyperLogLog_1__ctor_System_Int32_">HyperLogLog(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a> class with the specified precision, using the
+
+  <a id="Bodu_Collections_Probabilistic_HyperLogLog_1__ctor_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1__ctor_System_Int32_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.#ctor(System.Int32)">
+  HyperLogLog(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a> class with the specified precision, using the
 default equality comparer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Probabilistic_HyperLogLog_1__ctor_System_Int32_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
-          <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.-ctor.html#Bodu_Collections_Probabilistic_HyperLogLog_1__ctor_System_Int32_System_Collections_Generic_IEqualityComparer__0__">HyperLogLog(int, IEqualityComparer&lt;T&gt;?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a> class with the specified precision, using the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HyperLogLog(int precision)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>precision</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The precision (<code>b</code>): the sketch allocates <code>2^b</code> one-byte registers.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Probabilistic_HyperLogLog_1__ctor_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Precision trades memory for accuracy: the sketch uses <code>m = 2^b</code> registers and the estimate's relative
+standard error is approximately <code>1.04/√m</code>, so each extra bit of precision doubles the footprint and
+improves the error by <code>√2</code>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">precision</code> is outside the inclusive interval [4, 18].</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Probabilistic_HyperLogLog_1__ctor_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1__ctor_System_Int32_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+  HyperLogLog(int, IEqualityComparer&lt;T&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a> class with the specified precision, using the
 specified equality comparer.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Collections_Probabilistic_HyperLogLog_1_Comparer" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Comparer">
-          <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.Comparer.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Comparer">Comparer</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the equality comparer whose hash codes drive register selection.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Probabilistic_HyperLogLog_1_Precision" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Precision">
-          <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.Precision.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Precision">Precision</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the precision (<code>b</code>): the number of hash bits used to select a register.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Probabilistic_HyperLogLog_1_RegisterCount" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.RegisterCount">
-          <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.RegisterCount.html#Bodu_Collections_Probabilistic_HyperLogLog_1_RegisterCount">RegisterCount</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of registers (<code>m</code>) backing the sketch.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Probabilistic_HyperLogLog_1_StandardError" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.StandardError">
-          <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.StandardError.html#Bodu_Collections_Probabilistic_HyperLogLog_1_StandardError">StandardError</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the relative standard error of <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.EstimateCardinality.html#Bodu_Collections_Probabilistic_HyperLogLog_1_EstimateCardinality">EstimateCardinality()</a> implied by the precision.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Collections_Probabilistic_HyperLogLog_1_Add__0_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Add(`0)">
-          <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.Add.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Add__0_">Add(T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Adds an element to the sketch. Adding an element that hashes identically to one already observed leaves the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HyperLogLog(int precision, IEqualityComparer&lt;T&gt;? comparer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>precision</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The precision (<code>b</code>): the sketch allocates <code>2^b</code> one-byte registers.</p>
+</dd>
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer</a>&lt;T&gt;</dt>
+    <dd><p>The equality comparer whose hash codes drive register selection. If <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the default
+equality comparer for <code class="typeparamref">T</code> is used.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Probabilistic_HyperLogLog_1__ctor_System_Int32_System_Collections_Generic_IEqualityComparer__0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Precision trades memory for accuracy: the sketch uses <code>m = 2^b</code> registers and the estimate's relative
+standard error is approximately <code>1.04/√m</code>, so each extra bit of precision doubles the footprint and
+improves the error by <code>√2</code>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">precision</code> is outside the inclusive interval [4, 18].</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Collections_Probabilistic_HyperLogLog_1_Comparer_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Comparer*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_Comparer" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Comparer">
+  Comparer
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the equality comparer whose hash codes drive register selection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEqualityComparer&lt;T&gt; Comparer { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer</a>&lt;T&gt;</dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer&lt;T&gt;</a> instance supplied at construction, or the default comparer.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Probabilistic_HyperLogLog_1_Precision_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Precision*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_Precision" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Precision">
+  Precision
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the precision (<code>b</code>): the number of hash bits used to select a register.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Precision { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The <code>precision</code> constructor argument; always within the inclusive interval [4, 18].</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Probabilistic_HyperLogLog_1_RegisterCount_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.RegisterCount*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_RegisterCount" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.RegisterCount">
+  RegisterCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the number of registers (<code>m</code>) backing the sketch.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int RegisterCount { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p><code>2^b</code> where <code>b</code> is <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Precision">Precision</a>; each register occupies one byte.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Probabilistic_HyperLogLog_1_StandardError_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.StandardError*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_StandardError" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.StandardError">
+  StandardError
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the relative standard error of <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_EstimateCardinality">EstimateCardinality()</a> implied by the precision.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double StandardError { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p><code>1.04/√m</code> where <code>m</code> is <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_RegisterCount">RegisterCount</a> — approximately 0.26 at precision 4 and 0.0081 at
+precision 14.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Probabilistic_HyperLogLog_1_StandardError_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is the asymptotic one-sigma relative error of the HyperLogLog estimator; roughly 65% of estimates fall
+within one standard error of the true cardinality and roughly 99% within three.</p>
+</div>
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Collections_Probabilistic_HyperLogLog_1_Add_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Add*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_Add__0_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Add(`0)">
+  Add(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds an element to the sketch. Adding an element that hashes identically to one already observed leaves the
 sketch unchanged.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Probabilistic_HyperLogLog_1_Clear" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Clear">
-          <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.Clear.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Clear">Clear()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Removes all state from the sketch by zeroing every register, after which <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.EstimateCardinality.html#Bodu_Collections_Probabilistic_HyperLogLog_1_EstimateCardinality">EstimateCardinality()</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Add(T item)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <span class="xref">T</span></dt>
+    <dd><p>The element to count. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">item</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Probabilistic_HyperLogLog_1_Clear_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Clear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_Clear" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Clear">
+  Clear()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Removes all state from the sketch by zeroing every register, after which <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_EstimateCardinality">EstimateCardinality()</a>
 returns 0.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Probabilistic_HyperLogLog_1_EstimateCardinality" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.EstimateCardinality">
-          <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.EstimateCardinality.html#Bodu_Collections_Probabilistic_HyperLogLog_1_EstimateCardinality">EstimateCardinality()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Estimates the number of distinct elements added to the sketch.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Probabilistic_HyperLogLog_1_Export_System_Span_System_Byte__" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Export(System.Span{System.Byte})">
-          <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.Export.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Export_System_Span_System_Byte__">Export(Span&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes the sketch state to <code class="paramref">destination</code>, which must be at least
-<a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.GetExportByteCount.html#Bodu_Collections_Probabilistic_HyperLogLog_1_GetExportByteCount">GetExportByteCount()</a> bytes long.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Probabilistic_HyperLogLog_1_GetExportByteCount" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.GetExportByteCount">
-          <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.GetExportByteCount.html#Bodu_Collections_Probabilistic_HyperLogLog_1_GetExportByteCount">GetExportByteCount()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the number of bytes required to export the sketch state via <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.TryExport.html#Bodu_Collections_Probabilistic_HyperLogLog_1_TryExport_System_Span_System_Byte__System_Int32__">TryExport(Span&lt;byte&gt;, out int)</a> or
-<a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.Export.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Export_System_Span_System_Byte__">Export(Span&lt;byte&gt;)</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Probabilistic_HyperLogLog_1_Import_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Import(System.ReadOnlySpan{System.Byte},System.Collections.Generic.IEqualityComparer{`0})">
-          <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.Import.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Import_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IEqualityComparer__0__">Import(ReadOnlySpan&lt;byte&gt;, IEqualityComparer&lt;T&gt;?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a> from state previously produced by <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.TryExport.html#Bodu_Collections_Probabilistic_HyperLogLog_1_TryExport_System_Span_System_Byte__System_Int32__">TryExport(Span&lt;byte&gt;, out int)</a> or
-<a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.Export.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Export_System_Span_System_Byte__">Export(Span&lt;byte&gt;)</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Probabilistic_HyperLogLog_1_MergeWith_Bodu_Collections_Probabilistic_HyperLogLog__0__" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.MergeWith(Bodu.Collections.Probabilistic.HyperLogLog{`0})">
-          <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.MergeWith.html#Bodu_Collections_Probabilistic_HyperLogLog_1_MergeWith_Bodu_Collections_Probabilistic_HyperLogLog__0__">MergeWith(HyperLogLog&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Merges another compatible sketch into this one by taking the register-wise maximum, so that this sketch
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Clear()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Probabilistic_HyperLogLog_1_EstimateCardinality_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.EstimateCardinality*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_EstimateCardinality" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.EstimateCardinality">
+  EstimateCardinality()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Estimates the number of distinct elements added to the sketch.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double EstimateCardinality()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>The estimated distinct-element count: the bias-corrected harmonic mean <code>α·m²/Σ2^(−reg)</code>, or the linear
+counting estimate <code>m·ln(m/V)</code> (<code>V</code> = number of zero registers) when the raw estimate is at most
+<code>2.5·m</code> and at least one register is still zero. An empty sketch returns exactly 0.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Probabilistic_HyperLogLog_1_EstimateCardinality_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The estimate is unbiased with a relative standard error of approximately <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_StandardError">StandardError</a>. It is not
+monotonic in the true cardinality at fine granularity — adding one element can move the estimate by more or less
+than one — but it converges on the true count as the stream grows.
+</p>
+<p>
+The original algorithm's large-range correction is not applied. Because the 64-bit ranking pipeline draws all of
+its entropy from the 32-bit comparer hash (expanded through a bijective mixer), the effective hash space is
+<code>2³²</code>: the estimate progressively falls below the true cardinality from roughly <code>10⁸</code> distinct
+elements onward and saturates near <code>2³²</code>. See the class remarks for details.
+</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Probabilistic_HyperLogLog_1_Export_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Export*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_Export_System_Span_System_Byte__" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Export(System.Span{System.Byte})">
+  Export(Span&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Writes the sketch state to <code class="paramref">destination</code>, which must be at least
+<a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_GetExportByteCount">GetExportByteCount()</a> bytes long.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Export(Span&lt;byte&gt; destination)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The buffer that receives the exported state.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">destination</code> is shorter than <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_GetExportByteCount">GetExportByteCount()</a> bytes.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Probabilistic_HyperLogLog_1_GetExportByteCount_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.GetExportByteCount*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_GetExportByteCount" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.GetExportByteCount">
+  GetExportByteCount()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the number of bytes required to export the sketch state via <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_TryExport_System_Span_System_Byte__System_Int32__">TryExport(Span&lt;byte&gt;, out int)</a> or
+<a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Export_System_Span_System_Byte__">Export(Span&lt;byte&gt;)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int GetExportByteCount()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The exact export size in bytes for this sketch's configuration.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Probabilistic_HyperLogLog_1_Import_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Import*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_Import_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Import(System.ReadOnlySpan{System.Byte},System.Collections.Generic.IEqualityComparer{`0})">
+  Import(ReadOnlySpan&lt;byte&gt;, IEqualityComparer&lt;T&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a> from state previously produced by <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_TryExport_System_Span_System_Byte__System_Int32__">TryExport(Span&lt;byte&gt;, out int)</a> or
+<a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Export_System_Span_System_Byte__">Export(Span&lt;byte&gt;)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HyperLogLog&lt;T&gt; Import(ReadOnlySpan&lt;byte&gt; source, IEqualityComparer&lt;T&gt;? comparer = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The exported sketch state.</p>
+</dd>
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer</a>&lt;T&gt;</dt>
+    <dd><p>The equality comparer to associate with the imported sketch. Must be the comparer (or an equal comparer) the
+exporting sketch used, or estimates are undefined. If <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the default equality comparer for
+<code class="typeparamref">T</code> is used.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog</a>&lt;T&gt;</dt>
+    <dd><p>A new sketch whose register state matches the exported sketch.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Probabilistic_HyperLogLog_1_Import_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IEqualityComparer__0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The comparer is not part of the exported state; the caller must re-supply it. For element types with
+process-randomized hash codes (notably <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> under the default comparer), an export is only
+meaningful within the process that produced it.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">source</code> is truncated, carries an unsupported format version, or does not describe a valid
+sketch.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Probabilistic_HyperLogLog_1_MergeWith_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.MergeWith*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_MergeWith_Bodu_Collections_Probabilistic_HyperLogLog__0__" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.MergeWith(Bodu.Collections.Probabilistic.HyperLogLog{`0})">
+  MergeWith(HyperLogLog&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Merges another compatible sketch into this one by taking the register-wise maximum, so that this sketch
 subsequently estimates the number of distinct elements in the union of both source streams.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Probabilistic_HyperLogLog_1_TryExport_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.TryExport(System.Span{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.TryExport.html#Bodu_Collections_Probabilistic_HyperLogLog_1_TryExport_System_Span_System_Byte__System_Int32__">TryExport(Span&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to write the sketch state to <code class="paramref">destination</code>.</p>
-</td>
-      </tr>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void MergeWith(HyperLogLog&lt;T&gt; other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog</a>&lt;T&gt;</dt>
+    <dd><p>The sketch to merge into this one. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Probabilistic_HyperLogLog_1_MergeWith_Bodu_Collections_Probabilistic_HyperLogLog__0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Compatibility requires an identical <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Precision">Precision</a> and the same or an equal comparer instance — in
+practice, sketches constructed with the same parameters. The other sketch is not modified. The merge is lossless
+and idempotent: elements observed by both sketches are not double-counted, and merging a sketch with itself
+leaves it unchanged.
+</p>
+<p>
+Comparer identity is decided by <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">Equals(object)</a> (after a reference check). Two distinct
+instances of a custom comparer type that does not override <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">Equals(object)</a> compare unequal
+even when behaviourally identical, and the merge is rejected. Share a single comparer instance between sketches
+that will be merged, or override <code>Equals</code> (and <code>GetHashCode</code>) on the comparer type.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">other</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">other</code> is incompatible: its <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Precision">Precision</a> or comparer differs from this sketch's.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Probabilistic_HyperLogLog_1_TryExport_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.TryExport*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_TryExport_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.TryExport(System.Span{System.Byte},System.Int32@)">
+  TryExport(Span&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to write the sketch state to <code class="paramref">destination</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryExport(Span&lt;byte&gt; destination, out int bytesWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The buffer that receives the exported state.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When the method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the number of bytes written (always
+<a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_GetExportByteCount">GetExportByteCount()</a>); otherwise 0.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">destination</code> is large enough and the state was written;
+otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

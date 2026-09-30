@@ -1,90 +1,96 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Using Serpent | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Using Serpent | BODU ">
-    
-    
-      <link rel="shortcut icon" href="../../images/favicon.svg">
-      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../../styles/docfx.css">
-      <link rel="stylesheet" href="../../styles/main.css">
-      <meta property="docfx:navrel" content="../../toc.html">
-      <meta property="docfx:tocrel" content="../toc.html">
-    
-    <meta property="docfx:rel" content="../../">
-    
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/cryptography/serpent.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../../index.html">
-                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="">
+
+        <article data-uid="">
 <h1 id="using-serpent">Using Serpent</h1>
 
 <p>Serpent is the AES finalist by Anderson, Biham, and Knudsen: a 32-round substitution–permutation network over a 128-bit block with 128-, 192-, or 256-bit keys. <code>Bodu.Security.Cryptography</code> ships it in two very different forms. <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent128.html">Serpent128</a> is the standard cipher, verified against the NESSIE submission vectors. <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent256.html">Serpent256</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent512.html">Serpent512</a>, and <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent1024.html">Serpent1024</a> are <strong>Bodu-defined, non-standard, tweakable wide-block constructions</strong> that reuse Serpent's S-boxes over a wider state — they interoperate with nothing but themselves.</p>
 <div class="NOTE">
 <h5>Note</h5>
-<p>Like the rest of the library, these implementations are not independently audited and offer best-effort, not guaranteed, side-channel resistance. The source states that control flow is constant-time but each 4-bit S-box substitution reads a 16-byte table at a data-dependent index, so the implementation is <strong>not</strong> hardened against cache-timing attacks.</p>
+<p>Like the rest of the library, these implementations are not independently audited and offer best-effort, not guaranteed, side-channel resistance. Each S-box is computed as a Boolean circuit (Osvik's) and the linear transform with rotations, shifts and XOR, so no table is read and no branch depends on the key or the data.</p>
 </div>
 <h2 id="the-family-at-a-glance">The family at a glance</h2>
 <table>
@@ -167,6 +173,7 @@ keyed.Encrypt(Convert.FromHexString(&quot;33B3DC87EDDD9B0F6A1F407D14919365&quot;
 // 00112233445566778899AABBCCDDEEFF  (NESSIE set 1 vector 9)
 </code></pre>
 <p>An engine validates lengths strictly: a key that is not 16, 24, or 32 bytes throws <code>ArgumentException</code> (<code>key</code>), and <code>Encrypt</code> / <code>Decrypt</code> throw <code>ArgumentException</code> unless both spans are exactly 16 bytes.</p>
+<p>Runs of independent blocks go faster through <code>IBlockCipher.EncryptBlocks</code> / <code>DecryptBlocks</code>, which the ECB, CTR, XTS and OCB modes already use: <code>Serpent128Cipher</code> processes eight or four blocks at once there on processors with vector instructions (see <a href="hardware-acceleration.html">Hardware acceleration</a>), and one at a time elsewhere, with identical output.</p>
 <h2 id="pattern-2--serpent-128-through-the-wrapper">Pattern 2 — Serpent-128 through the wrapper</h2>
 <p><code>Serpent128</code> behaves like every other <a class="xref" href="../../api/Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html">ExtendedSymmetricAlgorithm</a>: set <code>Key</code>, <code>IV</code>, <code>BlockMode</code>, and <code>Padding</code>, then use <code>CreateEncryptor</code> / <code>CryptoStream</code> or the one-shot extensions. <code>Serpent128.Create()</code> is the factory-style equivalent of <code>new Serpent128()</code>. The default key size is 128 bits; set <code>KeySize</code> <strong>before</strong> assigning or generating a longer key.</p>
 <!-- compile -->
@@ -281,54 +288,30 @@ ctr.Transform(plaintext, ciphertext, encrypt: true);                 // 0BC34B78
 <li><a href="aes-family.html">AES-family block ciphers</a> — Serpent-128 beside AES, Twofish, and Camellia.</li>
 <li><a href="threefish-256.html">Using Threefish-256</a> — the reviewed tweakable alternative.</li>
 <li><a href="cipher-composition-reference.html">Modes, transforms, and factories</a> — what the wrappers and engines plug into.</li>
-<li><a href="security-posture.html">Security guarantees and limitations</a> — the table-lookup timing caveat in context.</li>
+<li><a href="security-posture.html">Security guarantees and limitations</a> — the constant-time claims by primitive.</li>
 <li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../../styles/docfx.js"></script>
-    <script type="text/javascript" src="../../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

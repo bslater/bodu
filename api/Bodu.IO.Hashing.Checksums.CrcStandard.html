@@ -1,104 +1,144 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class CrcStandard | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class CrcStandard | BODU ">
-    
-    <meta name="description" content="Immutable parameter bundle that fully describes a CRC variant — width, polynomial, initial value, input/output bit reflection, and final XOR — and serves as the lookup key into the RevEng catalogue used by .">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>CrcStandard Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="CrcStandard Class
+ | BODU ">
+      
+      <meta name="description" content="Immutable parameter bundle that fully describes a CRC variant — width, polynomial, initial value, input/output bit reflection, and final XOR — and serves as the lookup key into the RevEng catalogue used by .">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard">
+
+        <article data-uid="Bodu.IO.Hashing.Checksums.CrcStandard">
 
 
 
-  <h1 id="Bodu_IO_Hashing_Checksums_CrcStandard" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard" class="text-break">Class CrcStandard</h1>
-  <div class="markdown level0 summary"><p>Immutable parameter bundle that fully describes a CRC variant — width, polynomial, initial value, input/output bit
+
+  <h1 id="Bodu_IO_Hashing_Checksums_CrcStandard" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+CrcStandard Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_IO_Hashing_Checksums_CrcStandard_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Hashing.html">Hashing</a>.<a class="xref" href="Bodu.IO.Hashing.Checksums.html">Checksums</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs">CrcStandard.Catalog.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Immutable parameter bundle that fully describes a CRC variant — width, polynomial, initial value, input/output bit
 reflection, and final XOR — and serves as the lookup key into the RevEng catalogue used by <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">CrcStandard</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CrcStandard : ISerializable, IEquatable&lt;CrcStandard&gt;</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable">ISerializable</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a>&gt;</div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">CrcStandard</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable">ISerializable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
     </div>
@@ -111,63 +151,34 @@ reflection, and final XOR — and serves as the lookup key into the RevEng catal
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Hashing.html">Hashing</a>.<a class="xref" href="Bodu.IO.Hashing.Checksums.html">Checksums</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.IO.Hashing.dll</h6>
-  <h5 id="Bodu_IO_Hashing_Checksums_CrcStandard_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[Serializable]
-public sealed class CrcStandard : ISerializable, IEquatable&lt;CrcStandard&gt;</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_IO_Hashing_Checksums_CrcStandard_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-Every CRC variant in the wild differs from every other along the same five dimensions — the polynomial, the initial
-register value, whether input bits are reflected as they enter the register, whether the final register is reflected
-on the way out, and what value the register is XOR-ed with at the end. <code>CRC-32/ISO-HDLC</code> and
-<code>CRC-32/BZIP2</code> share a polynomial but disagree on reflection; <code>CRC-16/MODBUS</code> and <code>CRC-16/USB</code> share
-nearly everything but the initial value. <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> captures one such parameter bundle as an
-immutable, equatable, serializable value, decoupling the choice of variant from the engine that runs it.
-</p>
-<p>
-<strong>Three ways to obtain a standard.</strong>
-</p>
-<ul><li><span class="term">Catalogue properties</span>
-<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_ISOHDLC.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISOHDLC">CRC32_ISOHDLC</a>, <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_ISCSI.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISCSI">CRC32_ISCSI</a>, <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_MODBUS.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_MODBUS">CRC16_MODBUS</a>, <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_KERMIT.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_KERMIT">CRC16_KERMIT</a>,
-<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC64_XZ.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC64_XZ">CRC64_XZ</a>, … — direct named accessors for the common entries that return the canonical, cached
-<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> instance.
-</li><li><span class="term"><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.Get.html#Bodu_IO_Hashing_Checksums_CrcStandard_Get_Bodu_IO_Hashing_Checksums_CrcStandards_">Get(CrcStandards)</a></span>
-Materializes any catalogue entry from its <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html">CrcStandards</a> enum value — useful when the choice is
-data-driven (e.g. read from configuration).
-</li><li><span class="term"><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.FromName.html#Bodu_IO_Hashing_Checksums_CrcStandard_FromName_System_String_">FromName(string)</a></span>
-Resolves canonical names <em>and</em> published aliases — <code>"CRC-32"</code>, <code>"PKZIP"</code>, <code>"CRC-32/XZ"</code>,
-<code>"CRC-32/ADCCP"</code> all return the same <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_ISOHDLC.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISOHDLC">CRC32_ISOHDLC</a> instance.
-</li><li><span class="term">Direct construction</span>
-The <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.-ctor.html#Bodu_IO_Hashing_Checksums_CrcStandard__ctor_System_String_System_Int32_System_UInt64_System_UInt64_System_Boolean_System_Boolean_System_UInt64_">CrcStandard(string, int, ulong, ulong, bool, bool, ulong)</a> constructor accepts custom parameters
-for variants that are not in the RevEng catalogue. Width must lie within <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.MinSize.html">MinSize</a>..
-<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.MaxSize.html">MaxSize</a>.
-</li></ul>
-<p>
-<strong>How it pairs with <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>.</strong> The hash engine reads <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.Polynomial.html#Bodu_IO_Hashing_Checksums_CrcStandard_Polynomial">Polynomial</a> and
-<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.ReflectIn.html#Bodu_IO_Hashing_Checksums_CrcStandard_ReflectIn">ReflectIn</a> to fetch (or build) a precomputed lookup table from <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableCache.html">CrcLookupTableCache</a>,
-seeds the running register with <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.InitialValue.html#Bodu_IO_Hashing_Checksums_CrcStandard_InitialValue">InitialValue</a>, and applies <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.ReflectOut.html#Bodu_IO_Hashing_Checksums_CrcStandard_ReflectOut">ReflectOut</a> +
-<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.XOrOut.html#Bodu_IO_Hashing_Checksums_CrcStandard_XOrOut">XOrOut</a> when emitting the final digest. Multiple <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> instances configured with the same
-<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> share the same lookup table, so creating fresh engines for the same standard is
-inexpensive.
-</p>
-<p>
-<strong>Equality and serialization.</strong> <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> is a value-style type: two instances are
-equal iff every parameter matches (the <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.Name.html#Bodu_IO_Hashing_Checksums_CrcStandard_Name">Name</a> is informational only and does not affect identity).
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable">ISerializable</a> support is provided so a chosen standard can survive
-process boundaries unchanged.
-</p>
-<p>
-<strong>Coverage and limits.</strong> Sizes are constrained to <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.MinSize.html">MinSize</a>..<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.MaxSize.html">MaxSize</a> bits;
-any wider variant in the RevEng catalogue (currently only <code>CRC-82/DARC</code>) is intentionally omitted because it
-will not fit in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a>-backed register. Instances are immutable and therefore safe to share across
-threads.
-</p>
-</div>
-  <h5 id="Bodu_IO_Hashing_Checksums_CrcStandard_examples"><strong>Examples</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_IO_Hashing_Checksums_CrcStandard_examples">Examples</h2>
   <pre><code class="lang-csharp">using Bodu.IO.Hashing.Checksums;
 
 // 1. Direct named accessor — most callers want exactly this.
@@ -191,287 +202,1375 @@ var custom = new CrcStandard(
     reflectOut:   false,
     xOrOut:       0x000);</code></pre>
 
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard__ctor_System_String_System_Int32_System_UInt64_System_UInt64_System_Boolean_System_Boolean_System_UInt64_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.#ctor(System.String,System.Int32,System.UInt64,System.UInt64,System.Boolean,System.Boolean,System.UInt64)">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.-ctor.html#Bodu_IO_Hashing_Checksums_CrcStandard__ctor_System_String_System_Int32_System_UInt64_System_UInt64_System_Boolean_System_Boolean_System_UInt64_">CrcStandard(string, int, ulong, ulong, bool, bool, ulong)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> class with the specified parameters.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="fields">Fields
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_MaxSize" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.MaxSize">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.MaxSize.html">MaxSize</a>
-        </td>
-        <td class="markdown level1 summary"><p>The maximum size allowed for a CRC standard (in bits).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_MinSize" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.MinSize">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.MinSize.html">MinSize</a>
-        </td>
-        <td class="markdown level1 summary"><p>The minimum size allowed for a CRC standard (in bits).</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_All" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.All">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.All.html#Bodu_IO_Hashing_Checksums_CrcStandard_All">All</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a snapshot of every supported CRC standard in the catalogue, in declaration order.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_ARC" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_ARC">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_ARC.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_ARC">CRC16_ARC</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the <code>CRC-16/ARC</code> CRC standard (aliases include <code>CRC-16</code>, <code>CRC-IBM</code>, <code>CRC-16/LHA</code>). The
+
+  <h2 id="Bodu_IO_Hashing_Checksums_CrcStandard_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+Every CRC variant in the wild differs from every other along the same five dimensions — the polynomial, the initial
+register value, whether input bits are reflected as they enter the register, whether the final register is reflected
+on the way out, and what value the register is XOR-ed with at the end. <code>CRC-32/ISO-HDLC</code> and
+<code>CRC-32/BZIP2</code> share a polynomial but disagree on reflection; <code>CRC-16/MODBUS</code> and <code>CRC-16/USB</code> share
+nearly everything but the initial value. <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> captures one such parameter bundle as an
+immutable, equatable, serializable value, decoupling the choice of variant from the engine that runs it.
+</p>
+<p>
+<strong>Three ways to obtain a standard.</strong>
+</p>
+<ul><li><span class="term">Catalogue properties</span>
+<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISOHDLC">CRC32_ISOHDLC</a>, <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISCSI">CRC32_ISCSI</a>, <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_MODBUS">CRC16_MODBUS</a>, <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_KERMIT">CRC16_KERMIT</a>,
+<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC64_XZ">CRC64_XZ</a>, … — direct named accessors for the common entries that return the canonical, cached
+<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> instance.
+</li><li><span class="term"><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_Get_Bodu_IO_Hashing_Checksums_CrcStandards_">Get(CrcStandards)</a></span>
+Materializes any catalogue entry from its <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html">CrcStandards</a> enum value — useful when the choice is
+data-driven (e.g. read from configuration).
+</li><li><span class="term"><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_FromName_System_String_">FromName(string)</a></span>
+Resolves canonical names <em>and</em> published aliases — <code>"CRC-32"</code>, <code>"PKZIP"</code>, <code>"CRC-32/XZ"</code>,
+<code>"CRC-32/ADCCP"</code> all return the same <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISOHDLC">CRC32_ISOHDLC</a> instance.
+</li><li><span class="term">Direct construction</span>
+The <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard__ctor_System_String_System_Int32_System_UInt64_System_UInt64_System_Boolean_System_Boolean_System_UInt64_">CrcStandard(string, int, ulong, ulong, bool, bool, ulong)</a> constructor accepts custom parameters
+for variants that are not in the RevEng catalogue. Width must lie within <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_MinSize">MinSize</a>..
+<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_MaxSize">MaxSize</a>.
+</li></ul>
+<p>
+<strong>How it pairs with <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>.</strong> The hash engine reads <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_Polynomial">Polynomial</a> and
+<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_ReflectIn">ReflectIn</a> to fetch (or build) a precomputed lookup table from <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableCache.html">CrcLookupTableCache</a>,
+seeds the running register with <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_InitialValue">InitialValue</a>, and applies <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_ReflectOut">ReflectOut</a> +
+<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_XOrOut">XOrOut</a> when emitting the final digest. Multiple <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> instances configured with the same
+<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> share the same lookup table, so creating fresh engines for the same standard is
+inexpensive.
+</p>
+<p>
+<strong>Equality and serialization.</strong> <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> is a value-style type: two instances are
+equal iff every parameter matches (the <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_Name">Name</a> is informational only and does not affect identity).
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable">ISerializable</a> support is provided so a chosen standard can survive
+process boundaries unchanged.
+</p>
+<p>
+<strong>Coverage and limits.</strong> Sizes are constrained to <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_MinSize">MinSize</a>..<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_MaxSize">MaxSize</a> bits;
+any wider variant in the RevEng catalogue (currently only <code>CRC-82/DARC</code>) is intentionally omitted because it
+will not fit in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a>-backed register. Instances are immutable and therefore safe to share across
+threads.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard__ctor_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard__ctor_System_String_System_Int32_System_UInt64_System_UInt64_System_Boolean_System_Boolean_System_UInt64_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.#ctor(System.String,System.Int32,System.UInt64,System.UInt64,System.Boolean,System.Boolean,System.UInt64)">
+  CrcStandard(string, int, ulong, ulong, bool, bool, ulong)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> class with the specified parameters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CrcStandard(string name, int size, ulong polynomial, ulong initialValue, bool reflectIn, bool reflectOut, ulong xOrOut)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the CRC standard.</p>
+</dd>
+    <dt><code>size</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The size, in bits, of the CRC checksum.</p>
+</dd>
+    <dt><code>polynomial</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a></dt>
+    <dd><p>The CRC polynomial value.</p>
+</dd>
+    <dt><code>initialValue</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a></dt>
+    <dd><p>The initial value used for the CRC calculation.</p>
+</dd>
+    <dt><code>reflectIn</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Indicates whether to reflect the input during the CRC calculation.</p>
+</dd>
+    <dt><code>reflectOut</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Indicates whether to reflect the output during the CRC calculation.</p>
+</dd>
+    <dt><code>xOrOut</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a></dt>
+    <dd><p>The value to XOR the final output with.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or empty.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">size</code> is less than <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_MinSize">MinSize</a> or greater than <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_MaxSize">MaxSize</a>; or
+<code class="paramref">polynomial</code>, <code class="paramref">initialValue</code>, or <code class="paramref">xOrOut</code> does not fit in
+<code class="paramref">size</code> bits.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_MaxSize" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.MaxSize">
+  MaxSize
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>The maximum size allowed for a CRC standard (in bits).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int MaxSize = 64</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  </section>
+
+
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_MinSize" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.MinSize">
+  MinSize
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>The minimum size allowed for a CRC standard (in bits).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int MinSize = 1</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_All_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.All*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_All" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.All">
+  All
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a snapshot of every supported CRC standard in the catalogue, in declaration order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyList&lt;CrcStandard&gt; All { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a>&gt;</dt>
+    <dd><p>A read-only list containing one <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> per canonical entry.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Hashing_Checksums_CrcStandard_All_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The backing array is built lazily on first access and then memoised, so merely loading this type does not construct any
+<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> instances. Aliases are not included as separate entries; use <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_FromName_System_String_">FromName(string)</a> to
+resolve an alias to its canonical instance.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_ARC_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_ARC*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_ARC" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_ARC">
+  CRC16_ARC
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the <code>CRC-16/ARC</code> CRC standard (aliases include <code>CRC-16</code>, <code>CRC-IBM</code>, <code>CRC-16/LHA</code>). The
 de-facto generic 16-bit CRC.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_IBM3740" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_IBM3740">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_IBM3740.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_IBM3740">CRC16_IBM3740</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the <code>CRC-16/IBM-3740</code> CRC standard (aliases <code>CRC-16/AUTOSAR</code>, <code>CRC-16/CCITT-FALSE</code>). The
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CrcStandard CRC16_ARC { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html#Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_ARC">CRC16_ARC</a></div>
+    </dd>
+  </dl>
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_IBM3740_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_IBM3740*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_IBM3740" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_IBM3740">
+  CRC16_IBM3740
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the <code>CRC-16/IBM-3740</code> CRC standard (aliases <code>CRC-16/AUTOSAR</code>, <code>CRC-16/CCITT-FALSE</code>). The
 widely-used &quot;CCITT-false&quot; variant.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_KERMIT" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_KERMIT">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_KERMIT.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_KERMIT">CRC16_KERMIT</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the <code>CRC-16/KERMIT</code> CRC standard (aliases <code>CRC-16/BLUETOOTH</code>, <code>CRC-16/CCITT</code>,
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CrcStandard CRC16_IBM3740 { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html#Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_IBM3740">CRC16_IBM3740</a></div>
+    </dd>
+  </dl>
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_KERMIT_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_KERMIT*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_KERMIT" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_KERMIT">
+  CRC16_KERMIT
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the <code>CRC-16/KERMIT</code> CRC standard (aliases <code>CRC-16/BLUETOOTH</code>, <code>CRC-16/CCITT</code>,
 <code>CRC-CCITT</code>). Used by Kermit and Bluetooth.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_MODBUS" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_MODBUS">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_MODBUS.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_MODBUS">CRC16_MODBUS</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the <code>CRC-16/MODBUS</code> CRC standard (alias <code>MODBUS</code>). Used by Modbus RTU over serial.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_XMODEM" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_XMODEM">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_XMODEM.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_XMODEM">CRC16_XMODEM</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the <code>CRC-16/XMODEM</code> CRC standard (aliases <code>CRC-16/ACORN</code>, <code>XMODEM</code>, <code>ZMODEM</code>). Used by
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CrcStandard CRC16_KERMIT { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html#Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_KERMIT">CRC16_KERMIT</a></div>
+    </dd>
+  </dl>
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_MODBUS_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_MODBUS*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_MODBUS" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_MODBUS">
+  CRC16_MODBUS
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the <code>CRC-16/MODBUS</code> CRC standard (alias <code>MODBUS</code>). Used by Modbus RTU over serial.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CrcStandard CRC16_MODBUS { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html#Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_MODBUS">CRC16_MODBUS</a></div>
+    </dd>
+  </dl>
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_XMODEM_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_XMODEM*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC16_XMODEM" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC16_XMODEM">
+  CRC16_XMODEM
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the <code>CRC-16/XMODEM</code> CRC standard (aliases <code>CRC-16/ACORN</code>, <code>XMODEM</code>, <code>ZMODEM</code>). Used by
 XMODEM and ZMODEM.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_BZIP2" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_BZIP2">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_BZIP2.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_BZIP2">CRC32_BZIP2</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the <code>CRC-32/BZIP2</code> CRC standard (aliases <code>CRC-32/AAL5</code>, <code>CRC-32/DECT-B</code>, <code>B-CRC-32</code>).
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CrcStandard CRC16_XMODEM { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html#Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_XMODEM">CRC16_XMODEM</a></div>
+    </dd>
+  </dl>
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_BZIP2_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_BZIP2*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_BZIP2" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_BZIP2">
+  CRC32_BZIP2
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the <code>CRC-32/BZIP2</code> CRC standard (aliases <code>CRC-32/AAL5</code>, <code>CRC-32/DECT-B</code>, <code>B-CRC-32</code>).
 Used by bzip2 and AAL5.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISCSI" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_ISCSI">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_ISCSI.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISCSI">CRC32_ISCSI</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the <code>CRC-32/ISCSI</code> CRC standard (aliases <code>CRC-32C</code>, <code>CRC-32/CASTAGNOLI</code>, <code>CRC-32/NVME</code>,
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CrcStandard CRC32_BZIP2 { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html#Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_BZIP2">CRC32_BZIP2</a></div>
+    </dd>
+  </dl>
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISCSI_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_ISCSI*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISCSI" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_ISCSI">
+  CRC32_ISCSI
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the <code>CRC-32/ISCSI</code> CRC standard (aliases <code>CRC-32C</code>, <code>CRC-32/CASTAGNOLI</code>, <code>CRC-32/NVME</code>,
 <code>CRC-32/BASE91-C</code>, <code>CRC-32/INTERLAKEN</code>). Castagnoli polynomial used by iSCSI, SCTP, Btrfs, ext4, NVMe,
 and many modern protocols.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISOHDLC" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_ISOHDLC">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_ISOHDLC.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISOHDLC">CRC32_ISOHDLC</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the <code>CRC-32/ISO-HDLC</code> CRC standard (aliases <code>CRC-32</code>, <code>PKZIP</code>, <code>CRC-32/XZ</code>,
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CrcStandard CRC32_ISCSI { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html#Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_ISCSI">CRC32_ISCSI</a></div>
+    </dd>
+  </dl>
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISOHDLC_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_ISOHDLC*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISOHDLC" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC32_ISOHDLC">
+  CRC32_ISOHDLC
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the <code>CRC-32/ISO-HDLC</code> CRC standard (aliases <code>CRC-32</code>, <code>PKZIP</code>, <code>CRC-32/XZ</code>,
 <code>CRC-32/ADCCP</code>, <code>CRC-32/V-42</code>). The canonical CRC-32 used by zlib, PNG, Ethernet, PKZIP, and the
-default standard used by <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.-ctor.html#Bodu_IO_Hashing_Checksums_Crc__ctor">Crc()</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC64_ECMA182" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC64_ECMA182">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC64_ECMA182.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC64_ECMA182">CRC64_ECMA182</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the <code>CRC-64/ECMA-182</code> CRC standard (alias <code>CRC-64</code>). Specified by ECMA-182 for DLT tape formats.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC64_XZ" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC64_XZ">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC64_XZ.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC64_XZ">CRC64_XZ</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the <code>CRC-64/XZ</code> CRC standard (alias <code>CRC-64/GO-ECMA</code>). Used by the XZ compressed file format and
+default standard used by <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html#Bodu_IO_Hashing_Checksums_Crc__ctor">Crc()</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CrcStandard CRC32_ISOHDLC { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC32_ISOHDLC_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Width 32, polynomial <code>0x04C11DB7</code>, initial value <code>0xFFFFFFFF</code>, reflected input and output, final XOR
+<code>0xFFFFFFFF</code>.
+</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html#Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_ISOHDLC">CRC32_ISOHDLC</a></div>
+    </dd>
+  </dl>
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC64_ECMA182_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC64_ECMA182*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC64_ECMA182" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC64_ECMA182">
+  CRC64_ECMA182
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the <code>CRC-64/ECMA-182</code> CRC standard (alias <code>CRC-64</code>). Specified by ECMA-182 for DLT tape formats.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CrcStandard CRC64_ECMA182 { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html#Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_ECMA182">CRC64_ECMA182</a></div>
+    </dd>
+  </dl>
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC64_XZ_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC64_XZ*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC64_XZ" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC64_XZ">
+  CRC64_XZ
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the <code>CRC-64/XZ</code> CRC standard (alias <code>CRC-64/GO-ECMA</code>). Used by the XZ compressed file format and
 the Go <code>crc64</code> ECMA table.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC8_MAXIMDOW" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC8_MAXIMDOW">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC8_MAXIMDOW.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC8_MAXIMDOW">CRC8_MAXIMDOW</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the <code>CRC-8/MAXIM-DOW</code> CRC standard (aliases <code>CRC-8/MAXIM</code>, <code>DOW-CRC</code>). Used by Maxim /
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CrcStandard CRC64_XZ { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html#Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_XZ">CRC64_XZ</a></div>
+    </dd>
+  </dl>
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC8_MAXIMDOW_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC8_MAXIMDOW*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC8_MAXIMDOW" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC8_MAXIMDOW">
+  CRC8_MAXIMDOW
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the <code>CRC-8/MAXIM-DOW</code> CRC standard (aliases <code>CRC-8/MAXIM</code>, <code>DOW-CRC</code>). Used by Maxim /
 Dallas 1-Wire devices.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC8_SMBUS" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC8_SMBUS">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.CRC8_SMBUS.html#Bodu_IO_Hashing_Checksums_CrcStandard_CRC8_SMBUS">CRC8_SMBUS</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the <code>CRC-8/SMBUS</code> CRC standard (alias <code>CRC-8</code>). Width 8, polynomial <code>0x07</code>, initial value
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CrcStandard CRC8_MAXIMDOW { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html#Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_MAXIMDOW">CRC8_MAXIMDOW</a></div>
+    </dd>
+  </dl>
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC8_SMBUS_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC8_SMBUS*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC8_SMBUS" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.CRC8_SMBUS">
+  CRC8_SMBUS
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the <code>CRC-8/SMBUS</code> CRC standard (alias <code>CRC-8</code>). Width 8, polynomial <code>0x07</code>, initial value
 <code>0x00</code>, no reflection, XOR out <code>0x00</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_InitialValue" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.InitialValue">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.InitialValue.html#Bodu_IO_Hashing_Checksums_CrcStandard_InitialValue">InitialValue</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the initial value used in the CRC calculation.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_Name" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Name">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.Name.html#Bodu_IO_Hashing_Checksums_CrcStandard_Name">Name</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the name of the CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_Polynomial" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Polynomial">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.Polynomial.html#Bodu_IO_Hashing_Checksums_CrcStandard_Polynomial">Polynomial</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the polynomial used in the CRC calculation.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_ReflectIn" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.ReflectIn">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.ReflectIn.html#Bodu_IO_Hashing_Checksums_CrcStandard_ReflectIn">ReflectIn</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the input data is reflected during the CRC calculation.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_ReflectOut" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.ReflectOut">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.ReflectOut.html#Bodu_IO_Hashing_Checksums_CrcStandard_ReflectOut">ReflectOut</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the CRC result is reflected before XORing with <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.XOrOut.html#Bodu_IO_Hashing_Checksums_CrcStandard_XOrOut">XOrOut</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_Size" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Size">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.Size.html#Bodu_IO_Hashing_Checksums_CrcStandard_Size">Size</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the size, in bits, of the CRC checksum.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_XOrOut" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.XOrOut">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.XOrOut.html#Bodu_IO_Hashing_Checksums_CrcStandard_XOrOut">XOrOut</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the value to XOR the final CRC result with.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CrcStandard CRC8_SMBUS { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Hashing_Checksums_CrcStandard_CRC8_SMBUS_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The canonical &quot;CRC-8&quot; used by SMBus (System Management Bus) and the de-facto generic 8-bit CRC.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html#Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_SMBUS">CRC8_SMBUS</a></div>
+    </dd>
+  </dl>
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_InitialValue_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.InitialValue*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_InitialValue" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.InitialValue">
+  InitialValue
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the initial value used in the CRC calculation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ulong InitialValue { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a></dt>
+    <dd><p>The initial value for the CRC calculation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_Name_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Name*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_Name" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Name">
+  Name
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the name of the CRC standard.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Name { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the CRC algorithm.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_Polynomial_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Polynomial*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_Polynomial" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Polynomial">
+  Polynomial
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the polynomial used in the CRC calculation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ulong Polynomial { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a></dt>
+    <dd><p>The polynomial value used in the CRC calculation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_ReflectIn_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.ReflectIn*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_ReflectIn" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.ReflectIn">
+  ReflectIn
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the input data is reflected during the CRC calculation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ReflectIn { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if input data is reflected; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_ReflectOut_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.ReflectOut*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_ReflectOut" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.ReflectOut">
+  ReflectOut
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the CRC result is reflected before XORing with <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_XOrOut">XOrOut</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ReflectOut { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the result is reflected; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_Size_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Size*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_Size" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Size">
+  Size
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the size, in bits, of the CRC checksum.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Size { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The size of the CRC in bits.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_XOrOut_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.XOrOut*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_XOrOut" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.XOrOut">
+  XOrOut
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the value to XOR the final CRC result with.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ulong XOrOut { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a></dt>
+    <dd><p>The XOR value for the final CRC result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_Equals_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Equals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_Equals_Bodu_IO_Hashing_Checksums_CrcStandard_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Equals(Bodu.IO.Hashing.Checksums.CrcStandard)">
+  Equals(CrcStandard?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the current <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> object is equal to another <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a>
+object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(CrcStandard? other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
+    <dd><p>The other <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> object to compare.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">other</code> has the same identity-bearing parameters (
+<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_Size">Size</a>, <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_Polynomial">Polynomial</a>, <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_InitialValue">InitialValue</a>, <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_ReflectIn">ReflectIn</a>,
+<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_ReflectOut">ReflectOut</a>, and <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_XOrOut">XOrOut</a>); otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_Name">Name</a>
+is informational and is intentionally excluded from equality.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_Equals_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Equals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_Equals_System_Object_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Equals(System.Object)">
+  Equals(object?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the specified object is equal to the current object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to compare with the current object.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the specified object  is equal to the current object; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_FromName_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.FromName*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_FromName_System_String_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.FromName(System.String)">
+  FromName(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Resolves a catalogue entry by its canonical name or any of its published aliases.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CrcStandard FromName(string name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The canonical CRC standard name, or an alias. Comparison is ordinal and case-sensitive.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
+    <dd><p>The shared <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> instance for <code class="paramref">name</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></dt>
+    <dd><p>No catalogue entry matching <code class="paramref">name</code> exists.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_Get_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Get*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_Get_Bodu_IO_Hashing_Checksums_CrcStandards_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Get(Bodu.IO.Hashing.Checksums.CrcStandards)">
+  Get(CrcStandards)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Materialises — or retrieves from cache — the <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> identified by the given enum value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CrcStandard Get(CrcStandards standard)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>standard</code> <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html">CrcStandards</a></dt>
+    <dd><p>The catalogue entry to resolve. Must be a defined <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html">CrcStandards</a> value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
+    <dd><p>The shared <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> instance for <code class="paramref">standard</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Hashing_Checksums_CrcStandard_Get_Bodu_IO_Hashing_Checksums_CrcStandards__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The first call for a given value constructs a new <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> from the packed catalogue data and races
+to publish it into the per-entry cache. Subsequent calls — including concurrent calls — return the same instance, so
+reference equality is stable.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">standard</code> is not a defined enum value.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_GetHashCode_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.GetHashCode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_GetHashCode" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serves as the default hash function.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A hash code for the current object.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_TryFromName_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.TryFromName*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_TryFromName_System_String_Bodu_IO_Hashing_Checksums_CrcStandard__" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.TryFromName(System.String,Bodu.IO.Hashing.Checksums.CrcStandard@)">
+  TryFromName(string?, out CrcStandard?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.Catalog.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to resolve a catalogue entry by its canonical name or alias without throwing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryFromName(string? name, out CrcStandard? standard)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The canonical CRC standard name or alias to look up.</p>
+</dd>
+    <dt><code>standard</code> <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
+    <dd><p>When this method returns, contains the matching <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> if found; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if a catalogue entry was found; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="eii">Explicit Interface Implementations
+</h2>
+
+
+  <a id="Bodu_IO_Hashing_Checksums_CrcStandard_System_Runtime_Serialization_ISerializable_GetObjectData_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.System#Runtime#Serialization#ISerializable#GetObjectData*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Hashing_Checksums_CrcStandard_System_Runtime_Serialization_ISerializable_GetObjectData_System_Runtime_Serialization_SerializationInfo_System_Runtime_Serialization_StreamingContext_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+  ISerializable.GetObjectData(SerializationInfo, StreamingContext)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandard.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Populates a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.serialization.serializationinfo">SerializationInfo</a> with the data needed to serialize the target object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>info</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.serialization.serializationinfo">SerializationInfo</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.serialization.serializationinfo">SerializationInfo</a> to populate with data.</p>
+</dd>
+    <dt><code>context</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.serialization.streamingcontext">StreamingContext</a></dt>
+    <dd><p>The destination (see <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.serialization.streamingcontext">StreamingContext</a>) for this serialization.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.securityexception">SecurityException</a></dt>
+    <dd><p>The caller does not have the required permission.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_Equals_Bodu_IO_Hashing_Checksums_CrcStandard_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Equals(Bodu.IO.Hashing.Checksums.CrcStandard)">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.Equals.html#Bodu_IO_Hashing_Checksums_CrcStandard_Equals_Bodu_IO_Hashing_Checksums_CrcStandard_">Equals(CrcStandard?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the current <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> object is equal to another <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a>
-object.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_Equals_System_Object_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Equals(System.Object)">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.Equals.html#Bodu_IO_Hashing_Checksums_CrcStandard_Equals_System_Object_">Equals(object?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the specified object is equal to the current object.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_FromName_System_String_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.FromName(System.String)">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.FromName.html#Bodu_IO_Hashing_Checksums_CrcStandard_FromName_System_String_">FromName(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Resolves a catalogue entry by its canonical name or any of its published aliases.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_Get_Bodu_IO_Hashing_Checksums_CrcStandards_" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.Get(Bodu.IO.Hashing.Checksums.CrcStandards)">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.Get.html#Bodu_IO_Hashing_Checksums_CrcStandard_Get_Bodu_IO_Hashing_Checksums_CrcStandards_">Get(CrcStandards)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Materialises — or retrieves from cache — the <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> identified by the given enum value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_GetHashCode" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.GetHashCode">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.GetHashCode.html#Bodu_IO_Hashing_Checksums_CrcStandard_GetHashCode">GetHashCode()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Serves as the default hash function.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandard_TryFromName_System_String_Bodu_IO_Hashing_Checksums_CrcStandard__" data-uid="Bodu.IO.Hashing.Checksums.CrcStandard.TryFromName(System.String,Bodu.IO.Hashing.Checksums.CrcStandard@)">
-          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.TryFromName.html#Bodu_IO_Hashing_Checksums_CrcStandard_TryFromName_System_String_Bodu_IO_Hashing_Checksums_CrcStandard__">TryFromName(string?, out CrcStandard?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to resolve a catalogue entry by its canonical name or alias without throwing.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <h3 id="seealso">See Also</h3>
+
+  <h2 id="seealso">See Also</h2>
   <div class="seealso">
       <div><a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a></div>
       <div><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html">CrcStandards</a></div>
@@ -479,49 +1578,24 @@ object.</p>
   </div>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

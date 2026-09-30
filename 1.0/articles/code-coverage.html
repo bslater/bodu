@@ -1,84 +1,90 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Code coverage strategy | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Code coverage strategy | BODU ">
-    
-    
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/articles/code-coverage.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="">
+
+        <article data-uid="">
 <h1 id="code-coverage-strategy">Code coverage strategy</h1>
 
 <p>This guide describes how Bodu measures test coverage, how to reproduce the
@@ -155,8 +161,9 @@ author the shape; do not bank easier lines from elsewhere in the same package.</
 </ul>
 <h2 id="hardware-gated-simd-paths-the-avx512-split">Hardware-gated SIMD paths (the AVX512 split)</h2>
 <p><code>Bodu.Security.Cryptography</code> ships hardware-accelerated implementations
-(<code>ThreefishBlockCipher.{256,512,1024}.Avx512.cs</code>, <code>Blake2b/2s/3.Avx512.cs</code>,
-…) alongside scalar fallbacks. The JIT selects exactly one path per process
+(<code>ThreefishBlockCipher.{256,512,1024}.Avx512.cs</code>, the <code>Blake2bCore</code> /
+<code>Blake2sCore</code> / <code>Blake3Core</code> <code>.Avx512.cs</code> shims, BLAKE3's 512-bit
+<code>Blake3Core.Vector512.cs</code>, …) alongside scalar fallbacks. The JIT selects exactly one path per process
 based on the CPU, so <strong>no single machine can cover both</strong>:</p>
 <ul>
 <li>On an <strong>AVX512-capable</strong> host the existing known-answer tests drive the
@@ -213,7 +220,9 @@ authoring new vectors.</p>
 bld/collect-coverage.sh --project Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj --scalar
 bld/merge-coverage.sh
 </code></pre>
-<p><code>--scalar</code> re-runs the suite with <code>DOTNET_EnableAVX512F=0 DOTNET_EnableAVX2=0 DOTNET_EnableHWIntrinsic=0</code> into a parallel <code>&lt;Name&gt;.scalar</code> directory.
+<p><code>--scalar</code> re-runs the suite with <code>DOTNET_EnableAVX512F=0 DOTNET_EnableAVX512=0 DOTNET_EnableAVX2=0 DOTNET_EnableHWIntrinsic=0</code> into a parallel <code>&lt;Name&gt;.scalar</code>
+directory. The two AVX-512 names are .NET 8's and .NET 10's; each runtime ignores
+the other's.
 ReportGenerator takes the maximum hit count per line, so merging the two yields
 the union rather than either half. <code>.github/workflows/coverage.yml</code> runs the
 scalar pass automatically in whichever job collected the crypto suite.</p>
@@ -247,9 +256,43 @@ it is the only one that needs this; disabling intrinsics elsewhere would cost
 wall clock for nothing.</p>
 <p><strong>This does not retire the <code>n/a (hardware-gated)</code> classification</strong> in
 <code>tools/New-CoverageMatrix.ps1</code>. A single-pass local run on a machine without
-AVX-512 still cannot execute the intrinsic files, and reporting them as 0% there
-would be wrong. The classification stays for that case; after a dual pass it
+AVX-512 still cannot execute the intrinsic files — every <code>*.Avx512.cs</code>, and the
+512-bit <code>*.Vector512.cs</code> kernels, which the script classifies with them — and
+reporting them as 0% there would be wrong. The classification stays for that case; after a dual pass it
 simply never triggers, because neither path is unreachable any more.</p>
+<h3 id="arm64-the-advsimd-and-pmull-files">ARM64: the AdvSimd and PMULL files</h3>
+<p>Argon2's 128-bit compression kernel is written once over portable <code>Vector128</code>
+arithmetic and specialized by a five-member instruction-set shim, so nearly all
+of it runs on x64. On an AVX2 host the kernel-sweep test drives the AVX2, SSSE3
+and scalar kernels explicitly, whichever one dispatch picks, so one native pass
+covers all three. Only the ARM64 shim, <code>Argon2Core.AdvSimd.cs</code>, cannot run
+there: each of its members is an AdvSimd instruction.</p>
+<p>The GHASH and POLYVAL kernel behind GCM follows the same pattern. The carry-less
+kernel is written once against a shim, and the GHASH tests drive every kernel
+the processor supports, so an x64 pass covers the kernel, its PCLMULQDQ shim and
+the scalar kernel. Only the ARM64 shim, <code>Ghash.PmullIsa.cs</code>, built on the
+cryptography extension's <code>PMULL</code>, cannot run there.</p>
+<p>scrypt's BlockMix kernel and the BLAKE2 compression kernels follow it too. Its 128-bit kernel is written once
+over <code>Vector128</code> and specialized by a shim of three lane rotations; the scrypt
+tests drive the SSE2 and scalar kernels explicitly on x64, so only the ARM64 shim,
+<code>ScryptCore.AdvSimd.cs</code>, cannot run there. The BLAKE2 core tests likewise drive every
+x64 kernel explicitly; BLAKE2b's 128-bit kernel reuses Argon2's shims, so its ARM64
+shim is <code>Argon2Core.AdvSimd.cs</code> again, and BLAKE2s's is <code>Blake2sCore.AdvSimd.cs</code>.
+BLAKE3's 128-bit kernels reuse the BLAKE2s shims, so on ARM64 they too run through
+<code>Blake2sCore.AdvSimd.cs</code>; its 256- and 512-bit kernels are x64-only, and the
+512-bit one, <code>Blake3Core.Vector512.cs</code>, is classified with the AVX-512 files.</p>
+<p><code>tools/New-CoverageMatrix.ps1</code> therefore treats <code>*.AdvSimd.cs</code> and
+<code>*.PmullIsa.cs</code> as hardware-gated whenever no collecting host is ARM64 — judged
+from the <code>arch</code> field every collection manifest records — and reports them as
+<code>n/a (hardware-gated)</code> rather than 0%. As with the AVX-512 files, the rule
+applies only on positive evidence: a collection with no recorded architecture
+reports the files as measured. The shims are not untested: the ARM64 job in
+<code>.github/workflows/build-test.yml</code> runs both cryptography suites on GitHub's
+hosted ARM64 runner, where the Argon2 shim tests hold each member to its scalar
+definition, the vector corpus runs through the AdvSimd kernel, the GHASH
+tests hold the PMULL kernel to the RFC 8452 values and to a bit-serial reference,
+and the scrypt tests hold the AdvSimd BlockMix kernel to RFC 7914's vectors and to
+the scalar kernel.</p>
 <h3 id="the-switch-itself">The switch itself</h3>
 <p>The dual pass closes the numbers but does not exercise the shipped <code>DisableSimd</code>
 feature, which is a product contract rather than a coverage figure.
@@ -263,9 +306,10 @@ deliberately excluded: <code>KatCensusTests</code> rewrites the committed <code>
 and a second writer in a second assembly would corrupt it.</p>
 <p>Run on its own, that assembly executes the scalar implementations at 87–95% and
 every Threefish <code>*.Avx512.cs</code> file at <strong>0%</strong> — measured proof that the switch is
-engaged and the intrinsic path is not running. The BLAKE intrinsic files show
-four lines of their static constructor, which initialize the rotation constants
-whenever the type is touched; no intrinsic compute code executes.</p>
+engaged and the intrinsic path is not running. The BLAKE intrinsic files of the
+time showed four lines of their static constructor, which initialized rotation
+constants whenever the type was touched; no intrinsic compute code executed. The
+BLAKE kernels have since moved to shim structs with no static state.</p>
 <p>Adding it changed the package figure not at all, which is the point: it buys
 confidence in the feature, and a second independent source of scalar coverage
 should the environment-variable pass ever be removed.</p>
@@ -420,49 +464,25 @@ established home; prefer data-driven <code>[DataRow]</code>/<code>[DynamicData]<
 happy, edge, and exception cases together.</p>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

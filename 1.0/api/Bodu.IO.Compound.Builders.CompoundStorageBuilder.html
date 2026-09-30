@@ -1,133 +1,173 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class CompoundStorageBuilder | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class CompoundStorageBuilder | BODU ">
-    
-    <meta name="description" content="Represents a storage entry in a mutable compound-file object model — a named container of child storages and streams.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>CompoundStorageBuilder Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="CompoundStorageBuilder Class
+ | BODU ">
+      
+      <meta name="description" content="Represents a storage entry in a mutable compound-file object model — a named container of child storages and streams.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder">
+
+        <article data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder">
 
 
 
-  <h1 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder" class="text-break">Class CompoundStorageBuilder</h1>
-  <div class="markdown level0 summary"><p>Represents a storage entry in a mutable compound-file object model — a named container of child storages and
+
+  <h1 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+CompoundStorageBuilder Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.Serialization.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a>.<a class="xref" href="Bodu.IO.Compound.Builders.html">Builders</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.IO.Compound.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Compound">Bodu.IO.Compound</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.Serialization.cs">CompoundStorageBuilder.Serialization.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a storage entry in a mutable compound-file object model — a named container of child storages and
 streams.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a></div>
-    <div class="level2"><span class="xref">CompoundStorageBuilder</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CompoundStorageBuilder : CompoundEntryBuilder, IDictionary&lt;string, CompoundEntryBuilder&gt;, ICollection&lt;KeyValuePair&lt;string, CompoundEntryBuilder&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, CompoundEntryBuilder&gt;&gt;, IEnumerable</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a>&gt;</div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a>&gt;&gt;</div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a>&gt;&gt;</div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a></div>
+      <div><span class="xref">CompoundStorageBuilder</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a>&gt;&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a>&gt;&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.Name.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_Name">CompoundEntryBuilder.Name</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_AsStorage">CompoundEntryBuilder.AsStorage()</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.Parent.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_Parent">CompoundEntryBuilder.Parent</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_AsStream">CompoundEntryBuilder.AsStream()</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.Root.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_Root">CompoundEntryBuilder.Root</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_Name">CompoundEntryBuilder.Name</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.ClassId.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_ClassId">CompoundEntryBuilder.ClassId</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_Parent">CompoundEntryBuilder.Parent</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.CreationTime.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_CreationTime">CompoundEntryBuilder.CreationTime</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_Root">CompoundEntryBuilder.Root</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.ModifiedTime.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_ModifiedTime">CompoundEntryBuilder.ModifiedTime</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_ClassId">CompoundEntryBuilder.ClassId</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.StateBits.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_StateBits">CompoundEntryBuilder.StateBits</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_CreationTime">CompoundEntryBuilder.CreationTime</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.AsStorage.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_AsStorage">CompoundEntryBuilder.AsStorage()</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_ModifiedTime">CompoundEntryBuilder.ModifiedTime</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.AsStream.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_AsStream">CompoundEntryBuilder.AsStream()</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_StateBits">CompoundEntryBuilder.StateBits</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
@@ -147,511 +187,1801 @@ streams.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a>.<a class="xref" href="Bodu.IO.Compound.Builders.html">Builders</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.IO.Compound.dll</h6>
-  <h5 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class CompoundStorageBuilder : CompoundEntryBuilder, IDictionary&lt;string, CompoundEntryBuilder&gt;, ICollection&lt;KeyValuePair&lt;string, CompoundEntryBuilder&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, CompoundEntryBuilder&gt;&gt;, IEnumerable</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 This is the authoring counterpart of <a class="xref" href="Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a> and the compound-file analogue of a
 <code>JsonObject</code>: children are keyed by name and a node belongs to at most one storage at a time. A storage with no
-parent is the root of a document; serialize a tree with its <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.ToArray.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_ToArray_Bodu_IO_Compound_Builders_CompoundBuildOptions_">ToArray(CompoundBuildOptions)</a> /
-<a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.WriteTo.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_WriteTo_System_IO_Stream_Bodu_IO_Compound_Builders_CompoundBuildOptions_">WriteTo(Stream, CompoundBuildOptions)</a> members.
+parent is the root of a document; serialize a tree with its <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_ToArray_Bodu_IO_Compound_Builders_CompoundBuildOptions_">ToArray(CompoundBuildOptions)</a> /
+<a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_WriteTo_System_IO_Stream_Bodu_IO_Compound_Builders_CompoundBuildOptions_">WriteTo(Stream, CompoundBuildOptions)</a> members.
 </p>
 <p>
 Names are compared per <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilderOptions.html">CompoundStorageBuilderOptions</a> (case-insensitive by default, matching the
 compound-file format). The serialization order of children is determined by the builder, not by insertion order.
 </p>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder__ctor_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder__ctor" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.#ctor">
+  CompoundStorageBuilder()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> class with default options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CompoundStorageBuilder()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder__ctor_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder__ctor_Bodu_IO_Compound_Builders_CompoundStorageBuilderOptions_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.#ctor(Bodu.IO.Compound.Builders.CompoundStorageBuilderOptions)">
+  CompoundStorageBuilder(CompoundStorageBuilderOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> class with the specified options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CompoundStorageBuilder(CompoundStorageBuilderOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilderOptions.html">CompoundStorageBuilderOptions</a></dt>
+    <dd><p>The options controlling name comparison.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Count_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Count*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Count" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Count">
+  Count
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the number of elements contained in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of elements contained in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_EntryType_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.EntryType*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_EntryType" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.EntryType">
+  EntryType
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the kind of entry this node represents.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override CompoundEntryType EntryType { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundEntryType.html">CompoundEntryType</a></dt>
+    <dd><p>The <a class="xref" href="Bodu.IO.Compound.CompoundEntryType.html">CompoundEntryType</a> of the node.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Item_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Item*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Item_System_String_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Item(System.String)">
+  this[string]
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the element with the specified key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CompoundEntryBuilder this[string key] { get; set; }</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key of the element to get or set.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a></dt>
+    <dd><p>The element with the specified key.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></dt>
+    <dd><p>The property is retrieved and <code class="paramref">key</code> is not found.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The property is set and the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a> is read-only.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when the key or value is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when the name is invalid.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Keys_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Keys*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Keys" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Keys">
+  Keys
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> containing the keys of the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ICollection&lt;string&gt; Keys { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> containing the keys of the object that implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Values_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Values*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Values" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Values">
+  Values
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> containing the values in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ICollection&lt;CompoundEntryBuilder&gt; Values { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection</a>&lt;<a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> containing the values in the object that implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Add_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Add*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Add_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Add(System.String,Bodu.IO.Compound.Builders.CompoundEntryBuilder)">
+  Add(string, CompoundEntryBuilder)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds an element with the provided key and value to the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Add(string key, CompoundEntryBuilder value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The object to use as the key of the element to add.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a></dt>
+    <dd><p>The object to use as the value of the element to add.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>An element with the same key already exists in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a> is read-only.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when the name is invalid or already present.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_AddStorage_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.AddStorage*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_AddStorage_System_String_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.AddStorage(System.String)">
+  AddStorage(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds a new child storage with the specified name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CompoundStorageBuilder AddStorage(string name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The storage name.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a></dt>
+    <dd><p>The created <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when the name is invalid or already present.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_AddStream_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.AddStream*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_AddStream_System_String_System_Func_System_IO_Stream__System_Int64_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.AddStream(System.String,System.Func{System.IO.Stream},System.Int64)">
+  AddStream(string, Func&lt;Stream&gt;, long)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds a new deferred child stream whose payload is read on demand from a re-openable source.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CompoundStreamBuilder AddStream(string name, Func&lt;Stream&gt; openRead, long length)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The stream name.</p>
+</dd>
+    <dt><code>openRead</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-1">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a>&gt;</dt>
+    <dd><p>A factory that opens a readable stream over the payload each time it is invoked.</p>
+</dd>
+    <dt><code>length</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>The payload length, in bytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a></dt>
+    <dd><p>The created <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when the name is invalid or already present.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_AddStream_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.AddStream*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_AddStream_System_String_System_ReadOnlyMemory_System_Byte__" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.AddStream(System.String,System.ReadOnlyMemory{System.Byte})">
+  AddStream(string, ReadOnlyMemory&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds a new child stream with the specified name and payload.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CompoundStreamBuilder AddStream(string name, ReadOnlyMemory&lt;byte&gt; content)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The stream name.</p>
+</dd>
+    <dt><code>content</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The payload bytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a></dt>
+    <dd><p>The created <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when the name is invalid or already present.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_AddStreamFromFile_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.AddStreamFromFile*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_AddStreamFromFile_System_String_System_String_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.AddStreamFromFile(System.String,System.String)">
+  AddStreamFromFile(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds a new deferred child stream whose payload is read on demand from a file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CompoundStreamBuilder AddStreamFromFile(string name, string path)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The stream name.</p>
+</dd>
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path of the file providing the payload.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a></dt>
+    <dd><p>The created <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when the name is invalid or already present.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Clear_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Clear*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Clear" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Clear">
+  Clear()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Removes all items from the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Clear()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> is read-only.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_ContainsKey_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.ContainsKey*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_ContainsKey_System_String_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.ContainsKey(System.String)">
+  ContainsKey(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a> contains an element with the specified key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ContainsKey(string key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key to locate in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a> contains an element with the key; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_ContainsName_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.ContainsName*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_ContainsName_System_String_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.ContainsName(System.String)">
+  ContainsName(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the storage contains a child with the specified name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ContainsName(string name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name to look up.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a child with the name exists; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_CreateRoot_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.CreateRoot*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_CreateRoot" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.CreateRoot">
+  CreateRoot()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a new, detached root storage node named <code>Root Entry</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundStorageBuilder CreateRoot()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a></dt>
+    <dd><p>A root <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> ready for authoring.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_CreateRoot_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.CreateRoot*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_CreateRoot_Bodu_IO_Compound_Builders_CompoundStorageBuilderOptions_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.CreateRoot(Bodu.IO.Compound.Builders.CompoundStorageBuilderOptions)">
+  CreateRoot(CompoundStorageBuilderOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a new, detached root storage node with the specified options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundStorageBuilder CreateRoot(CompoundStorageBuilderOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilderOptions.html">CompoundStorageBuilderOptions</a></dt>
+    <dd><p>The options controlling name comparison.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a></dt>
+    <dd><p>A root <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> ready for authoring.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_DeepClone_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.DeepClone*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_DeepClone" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.DeepClone">
+  DeepClone()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a deep, detached copy of this node and its descendants.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override CompoundEntryBuilder DeepClone()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a></dt>
+    <dd><p>An independent copy with no parent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_EnumerateStorages_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.EnumerateStorages*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_EnumerateStorages" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.EnumerateStorages">
+  EnumerateStorages()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Enumerates the direct child storages of this storage.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;CompoundStorageBuilder&gt; EnumerateStorages()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a>&gt;</dt>
+    <dd><p>The child storages.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_EnumerateStreams_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.EnumerateStreams*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_EnumerateStreams" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.EnumerateStreams">
+  EnumerateStreams()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Enumerates the direct child streams of this storage.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;CompoundStreamBuilder&gt; EnumerateStreams()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a>&gt;</dt>
+    <dd><p>The child streams.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_FromFile_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.FromFile*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_FromFile_Bodu_IO_Compound_CompoundFile_System_Boolean_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.FromFile(Bodu.IO.Compound.CompoundFile,System.Boolean)">
+  FromFile(CompoundFile, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.Serialization.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a root storage tree that mirrors the contents of an open compound file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundStorageBuilder FromFile(CompoundFile file, bool lazy = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>file</code> <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a></dt>
+    <dd><p>The compound file to copy.</p>
+</dd>
+    <dt><code>lazy</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> (the default) to copy every stream payload into memory, producing a fully detached
+tree; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to build deferred stream nodes that read their payloads on demand from
+<code class="paramref">file</code>. When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> the file must remain open for as long as the tree (or any
+clone of its nodes) is read or serialized.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a></dt>
+    <dd><p>A root <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> that mirrors the file's contents.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">file</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
+    <dd><p>Thrown when a stream's sector chain is malformed.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_GetEnumerator_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.GetEnumerator*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_GetEnumerator" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.GetEnumerator">
+  GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerator&lt;KeyValuePair&lt;string, CompoundEntryBuilder&gt;&gt; GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerator-1">IEnumerator</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a>&gt;&gt;</dt>
+    <dd><p>An enumerator that can be used to iterate through the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Load_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Load*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Load_System_IO_Stream_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Load(System.IO.Stream)">
+  Load(Stream)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.Serialization.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a root storage tree that mirrors the contents of a compound file read from a stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundStorageBuilder Load(Stream source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream containing the compound file; read from its current position to the end.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a></dt>
+    <dd><p>A root <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> that mirrors the file's contents.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
+    <dd><p>Thrown when the stream is not a well-formed compound file.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Remove_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Remove*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Remove_System_String_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Remove(System.String)">
+  Remove(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Removes the element with the specified key from the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Remove(string key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key of the element to remove.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the element is successfully removed; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.  This method also returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if <code class="paramref">key</code> was not found in the original <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a> is read-only.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Rename_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Rename*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Rename_System_String_System_String_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Rename(System.String,System.String)">
+  Rename(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Renames a child entry.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Rename(string oldName, string newName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>oldName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The current name of the child.</p>
+</dd>
+    <dt><code>newName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The new name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when <code class="paramref">newName</code> is invalid or already present, or when no child named
+<code class="paramref">oldName</code> exists.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Save_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Save*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Save_System_String_Bodu_IO_Compound_Builders_CompoundBuildOptions_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Save(System.String,Bodu.IO.Compound.Builders.CompoundBuildOptions)">
+  Save(string, CompoundBuildOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.Serialization.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes this storage tree to a new file at the supplied path, overwriting any existing file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Save(string path, CompoundBuildOptions options = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path of the file to create.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.IO.Compound.Builders.CompoundBuildOptions.html">CompoundBuildOptions</a></dt>
+    <dd><p>The options controlling the output layout.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when the tree cannot be represented.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_ToArray_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.ToArray*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_ToArray_Bodu_IO_Compound_Builders_CompoundBuildOptions_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.ToArray(Bodu.IO.Compound.Builders.CompoundBuildOptions)">
+  ToArray(CompoundBuildOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.Serialization.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes this storage tree to a compound-file byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] ToArray(CompoundBuildOptions options = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="Bodu.IO.Compound.Builders.CompoundBuildOptions.html">CompoundBuildOptions</a></dt>
+    <dd><p>The options controlling the output layout.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The complete compound-file content.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when the tree cannot be represented.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_TryGetStorage_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.TryGetStorage*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_TryGetStorage_System_String_Bodu_IO_Compound_Builders_CompoundStorageBuilder__" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.TryGetStorage(System.String,Bodu.IO.Compound.Builders.CompoundStorageBuilder@)">
+  TryGetStorage(string, out CompoundStorageBuilder)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to get the child storage with the specified name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetStorage(string name, out CompoundStorageBuilder storage)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The storage name.</p>
+</dd>
+    <dt><code>storage</code> <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the matching storage; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a child storage with the name exists; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_TryGetStream_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.TryGetStream*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_TryGetStream_System_String_Bodu_IO_Compound_Builders_CompoundStreamBuilder__" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.TryGetStream(System.String,Bodu.IO.Compound.Builders.CompoundStreamBuilder@)">
+  TryGetStream(string, out CompoundStreamBuilder)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to get the child stream with the specified name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetStream(string name, out CompoundStreamBuilder stream)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The stream name.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the matching stream; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a child stream with the name exists; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_TryGetValue_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.TryGetValue*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_TryGetValue_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder__" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.TryGetValue(System.String,Bodu.IO.Compound.Builders.CompoundEntryBuilder@)">
+  TryGetValue(string, out CompoundEntryBuilder)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the value associated with the specified key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetValue(string key, out CompoundEntryBuilder value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key whose value to get.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a></dt>
+    <dd><p>When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the <code class="paramref">value</code> parameter. This parameter is passed uninitialized.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the object that implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a> contains an element with the specified key; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_WriteTo_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.WriteTo*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_WriteTo_System_Buffers_IBufferWriter_System_Byte__Bodu_IO_Compound_Builders_CompoundBuildOptions_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.WriteTo(System.Buffers.IBufferWriter{System.Byte},Bodu.IO.Compound.Builders.CompoundBuildOptions)">
+  WriteTo(IBufferWriter&lt;byte&gt;, CompoundBuildOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.Serialization.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes this storage tree to the supplied buffer writer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void WriteTo(IBufferWriter&lt;byte&gt; output, CompoundBuildOptions options = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>output</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The buffer writer to write the compound file to.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.IO.Compound.Builders.CompoundBuildOptions.html">CompoundBuildOptions</a></dt>
+    <dd><p>The options controlling the output layout.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">output</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when the tree cannot be represented.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_WriteTo_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.WriteTo*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_WriteTo_System_IO_Stream_Bodu_IO_Compound_Builders_CompoundBuildOptions_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.WriteTo(System.IO.Stream,Bodu.IO.Compound.Builders.CompoundBuildOptions)">
+  WriteTo(Stream, CompoundBuildOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.Serialization.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Serializes this storage tree to the supplied stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void WriteTo(Stream destination, CompoundBuildOptions options = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to write the compound file to.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.IO.Compound.Builders.CompoundBuildOptions.html">CompoundBuildOptions</a></dt>
+    <dd><p>The options controlling the output layout.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when the tree cannot be represented.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="eii">Explicit Interface Implementations
+</h2>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_System_Collections_Generic_ICollection_System_Collections_Generic_KeyValuePair_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder___Add_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,Bodu#IO#Compound#Builders#CompoundEntryBuilder}}#Add*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_System_Collections_Generic_ICollection_System_Collections_Generic_KeyValuePair_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder___Add_System_Collections_Generic_KeyValuePair_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder__" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,Bodu#IO#Compound#Builders#CompoundEntryBuilder}}#Add(System.Collections.Generic.KeyValuePair{System.String,Bodu.IO.Compound.Builders.CompoundEntryBuilder})">
+  ICollection&lt;KeyValuePair&lt;string, CompoundEntryBuilder&gt;&gt;.Add(KeyValuePair&lt;string, CompoundEntryBuilder&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds an item to the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void ICollection&lt;KeyValuePair&lt;string, CompoundEntryBuilder&gt;&gt;.Add(KeyValuePair&lt;string, CompoundEntryBuilder&gt; item)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a>&gt;</dt>
+    <dd><p>The object to add to the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> is read-only.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_System_Collections_Generic_ICollection_System_Collections_Generic_KeyValuePair_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder___Contains_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,Bodu#IO#Compound#Builders#CompoundEntryBuilder}}#Contains*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_System_Collections_Generic_ICollection_System_Collections_Generic_KeyValuePair_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder___Contains_System_Collections_Generic_KeyValuePair_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder__" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,Bodu#IO#Compound#Builders#CompoundEntryBuilder}}#Contains(System.Collections.Generic.KeyValuePair{System.String,Bodu.IO.Compound.Builders.CompoundEntryBuilder})">
+  ICollection&lt;KeyValuePair&lt;string, CompoundEntryBuilder&gt;&gt;.Contains(KeyValuePair&lt;string, CompoundEntryBuilder&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> contains a specific value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool ICollection&lt;KeyValuePair&lt;string, CompoundEntryBuilder&gt;&gt;.Contains(KeyValuePair&lt;string, CompoundEntryBuilder&gt; item)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a>&gt;</dt>
+    <dd><p>The object to locate in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">item</code> is found in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_System_Collections_Generic_ICollection_System_Collections_Generic_KeyValuePair_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder___CopyTo_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,Bodu#IO#Compound#Builders#CompoundEntryBuilder}}#CopyTo*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_System_Collections_Generic_ICollection_System_Collections_Generic_KeyValuePair_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder___CopyTo_System_Collections_Generic_KeyValuePair_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder____System_Int32_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,Bodu#IO#Compound#Builders#CompoundEntryBuilder}}#CopyTo(System.Collections.Generic.KeyValuePair{System.String,Bodu.IO.Compound.Builders.CompoundEntryBuilder}[],System.Int32)">
+  ICollection&lt;KeyValuePair&lt;string, CompoundEntryBuilder&gt;&gt;.CopyTo(KeyValuePair&lt;string, CompoundEntryBuilder&gt;[], int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Copies the elements of the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> to an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a>, starting at a particular <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void ICollection&lt;KeyValuePair&lt;string, CompoundEntryBuilder&gt;&gt;.CopyTo(KeyValuePair&lt;string, CompoundEntryBuilder&gt;[] array, int arrayIndex)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>array</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a>&gt;[]</dt>
+    <dd><p>The one-dimensional <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> that is the destination of the elements copied from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>. The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> must have zero-based indexing.</p>
+</dd>
+    <dt><code>arrayIndex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based index in <code class="paramref">array</code> at which copying begins.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">array</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">arrayIndex</code> is less than 0.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The number of elements in the source <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> is greater than the available space from <code class="paramref">arrayIndex</code> to the end of the destination <code class="paramref">array</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_System_Collections_Generic_ICollection_System_Collections_Generic_KeyValuePair_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder___IsReadOnly_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,Bodu#IO#Compound#Builders#CompoundEntryBuilder}}#IsReadOnly*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_System_Collections_Generic_ICollection_System_Collections_Generic_KeyValuePair_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder___IsReadOnly" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,Bodu#IO#Compound#Builders#CompoundEntryBuilder}}#IsReadOnly">
+  ICollection&lt;KeyValuePair&lt;string, CompoundEntryBuilder&gt;&gt;.IsReadOnly
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> is read-only.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool ICollection&lt;KeyValuePair&lt;string, CompoundEntryBuilder&gt;&gt;.IsReadOnly { get; }</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> is read-only; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_System_Collections_Generic_ICollection_System_Collections_Generic_KeyValuePair_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder___Remove_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,Bodu#IO#Compound#Builders#CompoundEntryBuilder}}#Remove*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_System_Collections_Generic_ICollection_System_Collections_Generic_KeyValuePair_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder___Remove_System_Collections_Generic_KeyValuePair_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder__" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,Bodu#IO#Compound#Builders#CompoundEntryBuilder}}#Remove(System.Collections.Generic.KeyValuePair{System.String,Bodu.IO.Compound.Builders.CompoundEntryBuilder})">
+  ICollection&lt;KeyValuePair&lt;string, CompoundEntryBuilder&gt;&gt;.Remove(KeyValuePair&lt;string, CompoundEntryBuilder&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Removes the first occurrence of a specific object from the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool ICollection&lt;KeyValuePair&lt;string, CompoundEntryBuilder&gt;&gt;.Remove(KeyValuePair&lt;string, CompoundEntryBuilder&gt; item)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a>&gt;</dt>
+    <dd><p>The object to remove from the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">item</code> was successfully removed from the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. This method also returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if <code class="paramref">item</code> is not found in the original <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> is read-only.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_System_Collections_IEnumerable_GetEnumerator_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.System#Collections#IEnumerable#GetEnumerator*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_System_Collections_IEnumerable_GetEnumerator" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.System#Collections#IEnumerable#GetEnumerator">
+  IEnumerable.GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStorageBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through a collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerator IEnumerable.GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerator">IEnumerator</a></dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerator">IEnumerator</a> object that can be used to iterate through the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder__ctor" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.#ctor">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.-ctor.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder__ctor">CompoundStorageBuilder()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> class with default options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder__ctor_Bodu_IO_Compound_Builders_CompoundStorageBuilderOptions_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.#ctor(Bodu.IO.Compound.Builders.CompoundStorageBuilderOptions)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.-ctor.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder__ctor_Bodu_IO_Compound_Builders_CompoundStorageBuilderOptions_">CompoundStorageBuilder(CompoundStorageBuilderOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> class with the specified options.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Count" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Count">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Count.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_Count">Count</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of elements contained in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_EntryType" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.EntryType">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.EntryType.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_EntryType">EntryType</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the kind of entry this node represents.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Item_System_String_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Item(System.String)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Item.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_Item_System_String_">this[string]</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the element with the specified key.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Keys" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Keys">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Keys.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_Keys">Keys</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> containing the keys of the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Values" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Values">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Values.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_Values">Values</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> containing the values in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Add_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Add(System.String,Bodu.IO.Compound.Builders.CompoundEntryBuilder)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Add.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_Add_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder_">Add(string, CompoundEntryBuilder)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Adds an element with the provided key and value to the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_AddStorage_System_String_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.AddStorage(System.String)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.AddStorage.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_AddStorage_System_String_">AddStorage(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Adds a new child storage with the specified name.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_AddStream_System_String_System_Func_System_IO_Stream__System_Int64_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.AddStream(System.String,System.Func{System.IO.Stream},System.Int64)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.AddStream.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_AddStream_System_String_System_Func_System_IO_Stream__System_Int64_">AddStream(string, Func&lt;Stream&gt;, long)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Adds a new deferred child stream whose payload is read on demand from a re-openable source.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_AddStream_System_String_System_ReadOnlyMemory_System_Byte__" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.AddStream(System.String,System.ReadOnlyMemory{System.Byte})">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.AddStream.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_AddStream_System_String_System_ReadOnlyMemory_System_Byte__">AddStream(string, ReadOnlyMemory&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Adds a new child stream with the specified name and payload.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_AddStreamFromFile_System_String_System_String_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.AddStreamFromFile(System.String,System.String)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.AddStreamFromFile.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_AddStreamFromFile_System_String_System_String_">AddStreamFromFile(string, string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Adds a new deferred child stream whose payload is read on demand from a file.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Clear" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Clear">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Clear.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_Clear">Clear()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Removes all items from the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_ContainsKey_System_String_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.ContainsKey(System.String)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.ContainsKey.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_ContainsKey_System_String_">ContainsKey(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a> contains an element with the specified key.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_ContainsName_System_String_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.ContainsName(System.String)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.ContainsName.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_ContainsName_System_String_">ContainsName(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the storage contains a child with the specified name.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_CreateRoot" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.CreateRoot">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.CreateRoot.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_CreateRoot">CreateRoot()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a new, detached root storage node named <code>Root Entry</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_CreateRoot_Bodu_IO_Compound_Builders_CompoundStorageBuilderOptions_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.CreateRoot(Bodu.IO.Compound.Builders.CompoundStorageBuilderOptions)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.CreateRoot.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_CreateRoot_Bodu_IO_Compound_Builders_CompoundStorageBuilderOptions_">CreateRoot(CompoundStorageBuilderOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a new, detached root storage node with the specified options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_DeepClone" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.DeepClone">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.DeepClone.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_DeepClone">DeepClone()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a deep, detached copy of this node and its descendants.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_EnumerateStorages" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.EnumerateStorages">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.EnumerateStorages.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_EnumerateStorages">EnumerateStorages()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Enumerates the direct child storages of this storage.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_EnumerateStreams" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.EnumerateStreams">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.EnumerateStreams.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_EnumerateStreams">EnumerateStreams()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Enumerates the direct child streams of this storage.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_FromFile_Bodu_IO_Compound_CompoundFile_System_Boolean_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.FromFile(Bodu.IO.Compound.CompoundFile,System.Boolean)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.FromFile.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_FromFile_Bodu_IO_Compound_CompoundFile_System_Boolean_">FromFile(CompoundFile, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a root storage tree that mirrors the contents of an open compound file.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_GetEnumerator" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.GetEnumerator">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.GetEnumerator.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_GetEnumerator">GetEnumerator()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Load_System_IO_Stream_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Load(System.IO.Stream)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Load.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_Load_System_IO_Stream_">Load(Stream)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a root storage tree that mirrors the contents of a compound file read from a stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Remove_System_String_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Remove(System.String)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Remove.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_Remove_System_String_">Remove(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Removes the element with the specified key from the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Rename_System_String_System_String_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Rename(System.String,System.String)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Rename.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_Rename_System_String_System_String_">Rename(string, string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Renames a child entry.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_Save_System_String_Bodu_IO_Compound_Builders_CompoundBuildOptions_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Save(System.String,Bodu.IO.Compound.Builders.CompoundBuildOptions)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.Save.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_Save_System_String_Bodu_IO_Compound_Builders_CompoundBuildOptions_">Save(string, CompoundBuildOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Serializes this storage tree to a new file at the supplied path, overwriting any existing file.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_ToArray_Bodu_IO_Compound_Builders_CompoundBuildOptions_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.ToArray(Bodu.IO.Compound.Builders.CompoundBuildOptions)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.ToArray.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_ToArray_Bodu_IO_Compound_Builders_CompoundBuildOptions_">ToArray(CompoundBuildOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Serializes this storage tree to a compound-file byte array.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_TryGetStorage_System_String_Bodu_IO_Compound_Builders_CompoundStorageBuilder__" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.TryGetStorage(System.String,Bodu.IO.Compound.Builders.CompoundStorageBuilder@)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.TryGetStorage.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_TryGetStorage_System_String_Bodu_IO_Compound_Builders_CompoundStorageBuilder__">TryGetStorage(string, out CompoundStorageBuilder)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to get the child storage with the specified name.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_TryGetStream_System_String_Bodu_IO_Compound_Builders_CompoundStreamBuilder__" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.TryGetStream(System.String,Bodu.IO.Compound.Builders.CompoundStreamBuilder@)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.TryGetStream.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_TryGetStream_System_String_Bodu_IO_Compound_Builders_CompoundStreamBuilder__">TryGetStream(string, out CompoundStreamBuilder)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to get the child stream with the specified name.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_TryGetValue_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder__" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.TryGetValue(System.String,Bodu.IO.Compound.Builders.CompoundEntryBuilder@)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.TryGetValue.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_TryGetValue_System_String_Bodu_IO_Compound_Builders_CompoundEntryBuilder__">TryGetValue(string, out CompoundEntryBuilder)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the value associated with the specified key.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_WriteTo_System_Buffers_IBufferWriter_System_Byte__Bodu_IO_Compound_Builders_CompoundBuildOptions_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.WriteTo(System.Buffers.IBufferWriter{System.Byte},Bodu.IO.Compound.Builders.CompoundBuildOptions)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.WriteTo.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_WriteTo_System_Buffers_IBufferWriter_System_Byte__Bodu_IO_Compound_Builders_CompoundBuildOptions_">WriteTo(IBufferWriter&lt;byte&gt;, CompoundBuildOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Serializes this storage tree to the supplied buffer writer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStorageBuilder_WriteTo_System_IO_Stream_Bodu_IO_Compound_Builders_CompoundBuildOptions_" data-uid="Bodu.IO.Compound.Builders.CompoundStorageBuilder.WriteTo(System.IO.Stream,Bodu.IO.Compound.Builders.CompoundBuildOptions)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.WriteTo.html#Bodu_IO_Compound_Builders_CompoundStorageBuilder_WriteTo_System_IO_Stream_Bodu_IO_Compound_Builders_CompoundBuildOptions_">WriteTo(Stream, CompoundBuildOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Serializes this storage tree to the supplied stream.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IDictionaryExtensions.AddOrUpdate.html#Bodu_Collections_Generic_Extensions_IDictionaryExtensions_AddOrUpdate__2_System_Collections_Generic_IDictionary___0___1____0___1_">IDictionaryExtensions.AddOrUpdate&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, TValue)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IDictionaryExtensions.GetOrAdd.html#Bodu_Collections_Generic_Extensions_IDictionaryExtensions_GetOrAdd__2_System_Collections_Generic_IDictionary___0___1____0___1_">IDictionaryExtensions.GetOrAdd&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, TValue)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IDictionaryExtensions.GetOrAdd.html#Bodu_Collections_Generic_Extensions_IDictionaryExtensions_GetOrAdd__2_System_Collections_Generic_IDictionary___0___1____0_System_Func___0___1__">IDictionaryExtensions.GetOrAdd&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, Func&lt;TKey, TValue&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__System_Func___1___2__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.BatchPooled&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.BatchPooled&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Cache.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Cache__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Cache&lt;T&gt;(IEnumerable&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TFirst, TSecond, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Collections_Generic_IEqualityComparer___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, IEqualityComparer&lt;TKey&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Combinations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Combinations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Combinations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAll.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAll__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAll&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAny.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAny__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAny&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ForEach.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ForEach__1_System_Collections_Generic_IEnumerable___0__System_Action___0__">IEnumerableExtensions.ForEach&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Action&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Index.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Index__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Index&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Interleave.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Interleave__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0____">IEnumerableExtensions.Interleave&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, params IEnumerable&lt;TSource&gt;[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.IsNullOrEmpty.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_IsNullOrEmpty__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.IsNullOrEmpty&lt;TSource&gt;(IEnumerable&lt;TSource&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Pairwise&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__2_System_Collections_Generic_IEnumerable___0__System_Func___0___0___1__">IEnumerableExtensions.Pairwise&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Randomize.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Randomize__1_System_Collections_Generic_IEnumerable___0__Bodu_Collections_Generic_Extensions_RandomizationMode_Bodu_IRandomGenerator_System_Nullable_System_Int32__">IEnumerableExtensions.Randomize&lt;T&gt;(IEnumerable&lt;T&gt;, RandomizationMode, IRandomGenerator, int?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___">IEnumerableExtensions.RecursiveSelect&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__System_Func___0_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;, Func&lt;TSource, RecursiveSelectControl&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEqualityComparer&lt;TSource&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__System_Func___1___2__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.SplitWhen.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_SplitWhen__1_System_Collections_Generic_IEnumerable___0__System_Func___0___0_System_Boolean__">IEnumerableExtensions.SplitWhen&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, bool&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Windowed&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func_System_Collections_Generic_IReadOnlyList___0____1__">IEnumerableExtensions.Windowed&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;IReadOnlyList&lt;TSource&gt;, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_System_Func___0___1___2__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond, Func&lt;TFirst, TSecond, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.CountOrDefault.html#Bodu_Collections_Extensions_IEnumerableExtensions_CountOrDefault_System_Collections_IEnumerable_">IEnumerableExtensions.CountOrDefault(IEnumerable)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__System_Func_System_Object_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;, Func&lt;object, RecursiveSelectControl&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, object&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, object&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_IEnumerable__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&gt;)</a>
-  </div>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

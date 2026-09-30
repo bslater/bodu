@@ -1,103 +1,143 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class AsyncDebouncer | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class AsyncDebouncer | BODU ">
-    
-    <meta name="description" content="Coalesces a rapid burst of triggers into a single asynchronous invocation that runs once a quiet period has elapsed since the most recent trigger.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>AsyncDebouncer Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="AsyncDebouncer Class
+ | BODU ">
+      
+      <meta name="description" content="Coalesces a rapid burst of triggers into a single asynchronous invocation that runs once a quiet period has elapsed since the most recent trigger.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Threading.AsyncDebouncer">
+
+        <article data-uid="Bodu.Threading.AsyncDebouncer">
 
 
 
-  <h1 id="Bodu_Threading_AsyncDebouncer" data-uid="Bodu.Threading.AsyncDebouncer" class="text-break">Class AsyncDebouncer</h1>
-  <div class="markdown level0 summary"><p>Coalesces a rapid burst of triggers into a single asynchronous invocation that runs once a quiet period has elapsed
+
+  <h1 id="Bodu_Threading_AsyncDebouncer" data-uid="Bodu.Threading.AsyncDebouncer" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+AsyncDebouncer Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Threading/AsyncDebouncer.Run.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Threading_AsyncDebouncer_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Threading.html">Threading</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Threading/AsyncDebouncer.Run.cs">AsyncDebouncer.Run.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Coalesces a rapid burst of triggers into a single asynchronous invocation that runs once a quiet period has elapsed
 since the most recent trigger.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">AsyncDebouncer</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class AsyncDebouncer : IDisposable</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">AsyncDebouncer</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -116,19 +156,48 @@ since the most recent trigger.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Threading.html">Threading</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
-  <h5 id="Bodu_Threading_AsyncDebouncer_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class AsyncDebouncer : IDisposable</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Threading_AsyncDebouncer_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Threading_AsyncDebouncer_examples">Examples</h2>
+  <pre><code class="lang-csharp">var debouncer = new AsyncDebouncer(
+    TimeSpan.FromMilliseconds(300),
+    async ct =&gt; await SaveAsync(ct));
+
+// Called on every keystroke; SaveAsync runs once, 300 ms after typing stops.
+textBox.TextChanged += (_, _) =&gt; debouncer.Invoke();</code></pre>
+
+
+  <h2 id="Bodu_Threading_AsyncDebouncer_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-Each call to <a class="xref" href="Bodu.Threading.AsyncDebouncer.Invoke.html#Bodu_Threading_AsyncDebouncer_Invoke">Invoke()</a> (re)starts a quiet timer of the configured delay. The callback runs only when the
-timer elapses with no intervening <a class="xref" href="Bodu.Threading.AsyncDebouncer.Invoke.html#Bodu_Threading_AsyncDebouncer_Invoke">Invoke()</a>, so a flurry of triggers results in a single execution.
-<a class="xref" href="Bodu.Threading.AsyncDebouncer.FlushAsync.html#Bodu_Threading_AsyncDebouncer_FlushAsync_System_Threading_CancellationToken_">FlushAsync(CancellationToken)</a> runs a pending invocation immediately and awaits any work in flight, and
-<a class="xref" href="Bodu.Threading.AsyncDebouncer.Cancel.html#Bodu_Threading_AsyncDebouncer_Cancel">Cancel()</a> discards a pending invocation and cancels any in-flight callback.
+Each call to <a class="xref" href="Bodu.Threading.AsyncDebouncer.html#Bodu_Threading_AsyncDebouncer_Invoke">Invoke()</a> (re)starts a quiet timer of the configured delay. The callback runs only when the
+timer elapses with no intervening <a class="xref" href="Bodu.Threading.AsyncDebouncer.html#Bodu_Threading_AsyncDebouncer_Invoke">Invoke()</a>, so a flurry of triggers results in a single execution.
+<a class="xref" href="Bodu.Threading.AsyncDebouncer.html#Bodu_Threading_AsyncDebouncer_FlushAsync_System_Threading_CancellationToken_">FlushAsync(CancellationToken)</a> runs a pending invocation immediately and awaits any work in flight, and
+<a class="xref" href="Bodu.Threading.AsyncDebouncer.html#Bodu_Threading_AsyncDebouncer_Cancel">Cancel()</a> discards a pending invocation and cancels any in-flight callback.
 </p>
 <p>
 <b>Execution policy.</b> When a run becomes due while a previous callback is still running, behavior is governed by
@@ -141,194 +210,452 @@ the configured <a class="xref" href="Bodu.Threading.AsyncDebouncerExecutionPolic
 <p>
 Timing uses the supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider">TimeProvider</a> (defaulting to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider.system">System</a>), which
 allows deterministic testing with a controllable provider. Exceptions thrown by the callback (other than the
-cancellation triggered by <a class="xref" href="Bodu.Threading.AsyncDebouncer.Cancel.html#Bodu_Threading_AsyncDebouncer_Cancel">Cancel()</a>, <a class="xref" href="Bodu.Threading.AsyncDebouncer.Dispose.html#Bodu_Threading_AsyncDebouncer_Dispose">Dispose()</a>, or a restart) are surfaced through the
-<a class="xref" href="Bodu.Threading.AsyncDebouncer.CallbackFailed.html">CallbackFailed</a> event rather than being silently lost; <a class="xref" href="Bodu.Threading.AsyncDebouncer.CurrentExecution.html#Bodu_Threading_AsyncDebouncer_CurrentExecution">CurrentExecution</a> exposes the
+cancellation triggered by <a class="xref" href="Bodu.Threading.AsyncDebouncer.html#Bodu_Threading_AsyncDebouncer_Cancel">Cancel()</a>, <a class="xref" href="Bodu.Threading.AsyncDebouncer.html#Bodu_Threading_AsyncDebouncer_Dispose">Dispose()</a>, or a restart) are surfaced through the
+<a class="xref" href="Bodu.Threading.AsyncDebouncer.html#Bodu_Threading_AsyncDebouncer_CallbackFailed">CallbackFailed</a> event rather than being silently lost; <a class="xref" href="Bodu.Threading.AsyncDebouncer.html#Bodu_Threading_AsyncDebouncer_CurrentExecution">CurrentExecution</a> exposes the
 most recently started callback task.
 </p>
 </div>
-  <h5 id="Bodu_Threading_AsyncDebouncer_examples"><strong>Examples</strong></h5>
-  <pre><code class="lang-csharp">var debouncer = new AsyncDebouncer(
-    TimeSpan.FromMilliseconds(300),
-    async ct =&gt; await SaveAsync(ct));
 
-// Called on every keystroke; SaveAsync runs once, 300 ms after typing stops.
-textBox.TextChanged += (_, _) =&gt; debouncer.Invoke();</code></pre>
 
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Threading_AsyncDebouncer__ctor_System_TimeSpan_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_ValueTask__Bodu_Threading_AsyncDebouncerExecutionPolicy_System_TimeProvider_" data-uid="Bodu.Threading.AsyncDebouncer.#ctor(System.TimeSpan,System.Func{System.Threading.CancellationToken,System.Threading.Tasks.ValueTask},Bodu.Threading.AsyncDebouncerExecutionPolicy,System.TimeProvider)">
-          <a class="xref" href="Bodu.Threading.AsyncDebouncer.-ctor.html#Bodu_Threading_AsyncDebouncer__ctor_System_TimeSpan_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_ValueTask__Bodu_Threading_AsyncDebouncerExecutionPolicy_System_TimeProvider_">AsyncDebouncer(TimeSpan, Func&lt;CancellationToken, ValueTask&gt;, AsyncDebouncerExecutionPolicy, TimeProvider?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a> class.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Threading_AsyncDebouncer_CurrentExecution" data-uid="Bodu.Threading.AsyncDebouncer.CurrentExecution">
-          <a class="xref" href="Bodu.Threading.AsyncDebouncer.CurrentExecution.html#Bodu_Threading_AsyncDebouncer_CurrentExecution">CurrentExecution</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the most recently started callback task, if one is currently active.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Threading_AsyncDebouncer_ExecutionPolicy" data-uid="Bodu.Threading.AsyncDebouncer.ExecutionPolicy">
-          <a class="xref" href="Bodu.Threading.AsyncDebouncer.ExecutionPolicy.html#Bodu_Threading_AsyncDebouncer_ExecutionPolicy">ExecutionPolicy</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the execution policy that governs overlapping runs.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Threading_AsyncDebouncer_Cancel" data-uid="Bodu.Threading.AsyncDebouncer.Cancel">
-          <a class="xref" href="Bodu.Threading.AsyncDebouncer.Cancel.html#Bodu_Threading_AsyncDebouncer_Cancel">Cancel()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Discards a pending invocation and cancels the token passed to any in-flight callback.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Threading_AsyncDebouncer_Dispose" data-uid="Bodu.Threading.AsyncDebouncer.Dispose">
-          <a class="xref" href="Bodu.Threading.AsyncDebouncer.Dispose.html#Bodu_Threading_AsyncDebouncer_Dispose">Dispose()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Releases the resources used by the debouncer, discarding any pending invocation and canceling any in-flight
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Threading_AsyncDebouncer__ctor_" data-uid="Bodu.Threading.AsyncDebouncer.#ctor*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Threading_AsyncDebouncer__ctor_System_TimeSpan_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_ValueTask__Bodu_Threading_AsyncDebouncerExecutionPolicy_System_TimeProvider_" data-uid="Bodu.Threading.AsyncDebouncer.#ctor(System.TimeSpan,System.Func{System.Threading.CancellationToken,System.Threading.Tasks.ValueTask},Bodu.Threading.AsyncDebouncerExecutionPolicy,System.TimeProvider)">
+  AsyncDebouncer(TimeSpan, Func&lt;CancellationToken, ValueTask&gt;, AsyncDebouncerExecutionPolicy, TimeProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Threading/AsyncDebouncer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AsyncDebouncer(TimeSpan delay, Func&lt;CancellationToken, ValueTask&gt; callback, AsyncDebouncerExecutionPolicy executionPolicy = AsyncDebouncerExecutionPolicy.QueueOneTrailingRun, TimeProvider? timeProvider = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>delay</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd><p>The quiet period that must elapse after the last trigger before the callback runs.</p>
+</dd>
+    <dt><code>callback</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a>&gt;</dt>
+    <dd><p>The asynchronous callback invoked when the quiet period elapses.</p>
+</dd>
+    <dt><code>executionPolicy</code> <a class="xref" href="Bodu.Threading.AsyncDebouncerExecutionPolicy.html">AsyncDebouncerExecutionPolicy</a></dt>
+    <dd><p>The policy governing behavior when a run becomes due while a callback is in flight.</p>
+</dd>
+    <dt><code>timeProvider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider">TimeProvider</a></dt>
+    <dd><p>The time provider used to schedule the delay, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider.system">System</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">callback</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">delay</code> is negative, or <code class="paramref">executionPolicy</code> is not a defined value.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Threading_AsyncDebouncer_CurrentExecution_" data-uid="Bodu.Threading.AsyncDebouncer.CurrentExecution*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Threading_AsyncDebouncer_CurrentExecution" data-uid="Bodu.Threading.AsyncDebouncer.CurrentExecution">
+  CurrentExecution
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Threading/AsyncDebouncer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the most recently started callback task, if one is currently active.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task? CurrentExecution { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>The latest in-flight callback <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when no run is currently active —
+either because none has started yet or because every started run has already completed and been removed from the
+active set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Threading_AsyncDebouncer_ExecutionPolicy_" data-uid="Bodu.Threading.AsyncDebouncer.ExecutionPolicy*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Threading_AsyncDebouncer_ExecutionPolicy" data-uid="Bodu.Threading.AsyncDebouncer.ExecutionPolicy">
+  ExecutionPolicy
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Threading/AsyncDebouncer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the execution policy that governs overlapping runs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AsyncDebouncerExecutionPolicy ExecutionPolicy { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Threading.AsyncDebouncerExecutionPolicy.html">AsyncDebouncerExecutionPolicy</a></dt>
+    <dd><p>The configured <a class="xref" href="Bodu.Threading.AsyncDebouncerExecutionPolicy.html">AsyncDebouncerExecutionPolicy</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Threading_AsyncDebouncer_Cancel_" data-uid="Bodu.Threading.AsyncDebouncer.Cancel*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Threading_AsyncDebouncer_Cancel" data-uid="Bodu.Threading.AsyncDebouncer.Cancel">
+  Cancel()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Threading/AsyncDebouncer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Discards a pending invocation and cancels the token passed to any in-flight callback.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Cancel()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Threading_AsyncDebouncer_Cancel_examples">Examples</h4>
+  <pre><code class="lang-csharp">// Drop any queued invocation and signal in-flight callback work to stop.
+debouncer.Cancel();</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The debouncer has been disposed.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Threading_AsyncDebouncer_Dispose_" data-uid="Bodu.Threading.AsyncDebouncer.Dispose*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Threading_AsyncDebouncer_Dispose" data-uid="Bodu.Threading.AsyncDebouncer.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Threading/AsyncDebouncer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Releases the resources used by the debouncer, discarding any pending invocation and canceling any in-flight
 callbacks.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Threading_AsyncDebouncer_DrainAsync_System_Threading_CancellationToken_" data-uid="Bodu.Threading.AsyncDebouncer.DrainAsync(System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.Threading.AsyncDebouncer.DrainAsync.html#Bodu_Threading_AsyncDebouncer_DrainAsync_System_Threading_CancellationToken_">DrainAsync(CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Awaits all callback work currently in flight, including the trailing run queued under
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Threading_AsyncDebouncer_DrainAsync_" data-uid="Bodu.Threading.AsyncDebouncer.DrainAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Threading_AsyncDebouncer_DrainAsync_System_Threading_CancellationToken_" data-uid="Bodu.Threading.AsyncDebouncer.DrainAsync(System.Threading.CancellationToken)">
+  DrainAsync(CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Threading/AsyncDebouncer.Run.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Awaits all callback work currently in flight, including the trailing run queued under
 <a class="xref" href="Bodu.Threading.AsyncDebouncerExecutionPolicy.html#Bodu_Threading_AsyncDebouncerExecutionPolicy_QueueOneTrailingRun">QueueOneTrailingRun</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Threading_AsyncDebouncer_FlushAsync_System_Threading_CancellationToken_" data-uid="Bodu.Threading.AsyncDebouncer.FlushAsync(System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.Threading.AsyncDebouncer.FlushAsync.html#Bodu_Threading_AsyncDebouncer_FlushAsync_System_Threading_CancellationToken_">FlushAsync(CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Runs a pending invocation immediately, bypassing the remaining quiet period, and awaits any callback work in
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask DrainAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A token used to cancel only this caller's wait.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a></dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a> that completes when no callback work remains in flight.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Threading_AsyncDebouncer_DrainAsync_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Once the debouncer has been disposed this method returns immediately — it does not throw
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a> — even when cooperatively-cancelled callbacks are still running their
+final iterations. Callers that must observe the end of that residual work should await the task obtained from
+<a class="xref" href="Bodu.Threading.AsyncDebouncer.html#Bodu_Threading_AsyncDebouncer_CurrentExecution">CurrentExecution</a> before disposal instead.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a></dt>
+    <dd><p><code class="paramref">cancellationToken</code> was canceled before the work drained.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Threading_AsyncDebouncer_FlushAsync_" data-uid="Bodu.Threading.AsyncDebouncer.FlushAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Threading_AsyncDebouncer_FlushAsync_System_Threading_CancellationToken_" data-uid="Bodu.Threading.AsyncDebouncer.FlushAsync(System.Threading.CancellationToken)">
+  FlushAsync(CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Threading/AsyncDebouncer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Runs a pending invocation immediately, bypassing the remaining quiet period, and awaits any callback work in
 flight.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Threading_AsyncDebouncer_Invoke" data-uid="Bodu.Threading.AsyncDebouncer.Invoke">
-          <a class="xref" href="Bodu.Threading.AsyncDebouncer.Invoke.html#Bodu_Threading_AsyncDebouncer_Invoke">Invoke()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Registers a trigger, (re)starting the quiet period after which the callback runs.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="events">Events
-</h3>
-  <table class="table table-bordered table-condensed">
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask FlushAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A token used to cancel only this caller's wait for the in-flight work to drain.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a></dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a> that completes when the triggered and in-flight callbacks have completed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Threading_AsyncDebouncer_FlushAsync_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Run the pending callback now instead of waiting out the quiet period (e.g. on shutdown).
+await debouncer.FlushAsync();</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The debouncer has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a></dt>
+    <dd><p><code class="paramref">cancellationToken</code> was canceled before the work drained.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Threading_AsyncDebouncer_Invoke_" data-uid="Bodu.Threading.AsyncDebouncer.Invoke*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Threading_AsyncDebouncer_Invoke" data-uid="Bodu.Threading.AsyncDebouncer.Invoke">
+  Invoke()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Threading/AsyncDebouncer.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Registers a trigger, (re)starting the quiet period after which the callback runs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Invoke()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The debouncer has been disposed.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 class="section" id="events">Events
+</h2>
+
+
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Threading_AsyncDebouncer_CallbackFailed" data-uid="Bodu.Threading.AsyncDebouncer.CallbackFailed">
+  CallbackFailed
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Threading/AsyncDebouncer.Run.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Occurs when a callback invocation faults with an exception other than its own cancellation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;Exception&gt;? CallbackFailed</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.exception">Exception</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="Bodu_Threading_AsyncDebouncer_CallbackFailed_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The handler runs outside the debouncer's internal gate on the thread that observed the failure.</p>
+</div>
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Threading_AsyncDebouncer_CallbackFailed" data-uid="Bodu.Threading.AsyncDebouncer.CallbackFailed">
-          <a class="xref" href="Bodu.Threading.AsyncDebouncer.CallbackFailed.html">CallbackFailed</a>
-        </td>
-        <td class="markdown level1 summary"><p>Occurs when a callback invocation faults with an exception other than its own cancellation.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

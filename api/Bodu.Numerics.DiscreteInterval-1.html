@@ -1,101 +1,145 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Struct DiscreteInterval&lt;T&gt; | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Struct DiscreteInterval&lt;T&gt; | BODU ">
-    
-    <meta name="description" content="Represents an immutable interval over a discrete integer domain — a set of consecutive integers of type T — with successor/predecessor-aware emptiness and adjacency.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>DiscreteInterval&lt;T&gt; Struct
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="DiscreteInterval&lt;T&gt; Struct
+ | BODU ">
+      
+      <meta name="description" content="Represents an immutable interval over a discrete integer domain — a set of consecutive integers of type T — with successor/predecessor-aware emptiness and adjacency.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Numerics.DiscreteInterval`1">
+
+        <article data-uid="Bodu.Numerics.DiscreteInterval`1">
 
 
 
-  <h1 id="Bodu_Numerics_DiscreteInterval_1" data-uid="Bodu.Numerics.DiscreteInterval`1" class="text-break">Struct DiscreteInterval&lt;T&gt;</h1>
-  <div class="markdown level0 summary"><p>Represents an immutable interval over a discrete integer domain — a set of consecutive integers of type
+
+  <h1 id="Bodu_Numerics_DiscreteInterval_1" data-uid="Bodu.Numerics.DiscreteInterval`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+DiscreteInterval&lt;T&gt; Struct
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Conversions.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Numerics_DiscreteInterval_1_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Numerics.html">Numerics</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Numerics.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Numerics">Bodu.Numerics</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Conversions.cs">DiscreteInterval{T}.Conversions.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents an immutable interval over a discrete integer domain — a set of consecutive integers of type
 <code class="typeparamref">T</code> — with successor/predecessor-aware emptiness and adjacency.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanformattable">ISpanFormattable</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformattable">IFormattable</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanformattable">IUtf8SpanFormattable</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;&gt;</div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct DiscreteInterval&lt;T&gt; : ISpanFormattable, IFormattable, IUtf8SpanFormattable, IEquatable&lt;DiscreteInterval&lt;T&gt;&gt; where T : IBinaryInteger&lt;T&gt;</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The integer type used for the interval's endpoints.</p>
+</dd>
+  </dl>
+
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanformattable">ISpanFormattable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformattable">IFormattable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanformattable">IUtf8SpanFormattable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;&gt;</div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
     </div>
@@ -105,30 +149,67 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Numerics.html">Numerics</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Numerics.dll</h6>
-  <h5 id="Bodu_Numerics_DiscreteInterval_1_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly struct DiscreteInterval&lt;T&gt; : ISpanFormattable, IFormattable, IUtf8SpanFormattable, IEquatable&lt;DiscreteInterval&lt;T&gt;&gt; where T : IBinaryInteger&lt;T&gt;</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 class="typeParameters">Type Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="parametername">T</span></td>
-        <td><p>The integer type used for the interval's endpoints.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Bodu_Numerics_DiscreteInterval_1_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Numerics_DiscreteInterval_1_examples">Examples</h2>
+  <pre><code class="lang-csharp">using Bodu.Numerics;
+
+DiscreteInterval&lt;int&gt;.Open(1, 2).IsEmpty;                 // True — no integer strictly between 1 and 2
+
+var a = DiscreteInterval&lt;int&gt;.Closed(1, 2);
+var b = DiscreteInterval&lt;int&gt;.Closed(3, 4);
+a.TryUnion(b, out var run);                               // run = [1, 4], result = true (successor-adjacent)
+
+DiscreteInterval&lt;int&gt;.Closed(1, 10).Count;                // 10</code></pre>
+
+
+  <h2 id="Bodu_Numerics_DiscreteInterval_1_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a> is the discrete counterpart to the continuous <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a>. Where
 <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> models a continuum of real coordinates, <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a> models the set
@@ -146,7 +227,7 @@ the same bounds.
 Every interval is canonicalized to inclusive <code>[First, Last]</code> integer bounds at construction (an open bound is
 shifted inward by one), so all equal integer sets share one representation and the default value is the empty set.
 Unbounded and half-bounded intervals (<code>[a, +∞)</code>, <code>(-∞, b]</code>, <code>(-∞, +∞)</code>)
-are supported through the <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.AtLeast.html#Bodu_Numerics_DiscreteInterval_1_AtLeast__0_">AtLeast(T)</a>, <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.AtMost.html#Bodu_Numerics_DiscreteInterval_1_AtMost__0_">AtMost(T)</a>, and <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.All.html#Bodu_Numerics_DiscreteInterval_1_All">All</a> factory
+are supported through the <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html#Bodu_Numerics_DiscreteInterval_1_AtLeast__0_">AtLeast(T)</a>, <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html#Bodu_Numerics_DiscreteInterval_1_AtMost__0_">AtMost(T)</a>, and <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html#Bodu_Numerics_DiscreteInterval_1_All">All</a> factory
 family.
 </p>
 <p>
@@ -156,402 +237,1617 @@ values, or a custom successor domain are out of scope. For a disconnected result
 <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a>.
 </p>
 </div>
-  <h5 id="Bodu_Numerics_DiscreteInterval_1_examples"><strong>Examples</strong></h5>
-  <pre><code class="lang-csharp">using Bodu.Numerics;
 
-DiscreteInterval&lt;int&gt;.Open(1, 2).IsEmpty;                 // True — no integer strictly between 1 and 2
 
-var a = DiscreteInterval&lt;int&gt;.Closed(1, 2);
-var b = DiscreteInterval&lt;int&gt;.Closed(3, 4);
-a.TryUnion(b, out var run);                               // run = [1, 4], result = true (successor-adjacent)
+  <h2 class="section" id="properties">Properties
+</h2>
 
-DiscreteInterval&lt;int&gt;.Closed(1, 10).Count;                // 10</code></pre>
 
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_All" data-uid="Bodu.Numerics.DiscreteInterval`1.All">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.All.html#Bodu_Numerics_DiscreteInterval_1_All">All</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the unbounded interval <code>(-∞, +∞)</code> — every integer of <code class="typeparamref">T</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_Count" data-uid="Bodu.Numerics.DiscreteInterval`1.Count">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.Count.html#Bodu_Numerics_DiscreteInterval_1_Count">Count</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of integers in the interval.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_Empty" data-uid="Bodu.Numerics.DiscreteInterval`1.Empty">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.Empty.html#Bodu_Numerics_DiscreteInterval_1_Empty">Empty</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the canonical empty interval — the interval that contains no integer. Equal to every other empty
+  <a id="Bodu_Numerics_DiscreteInterval_1_All_" data-uid="Bodu.Numerics.DiscreteInterval`1.All*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_All" data-uid="Bodu.Numerics.DiscreteInterval`1.All">
+  All
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the unbounded interval <code>(-∞, +∞)</code> — every integer of <code class="typeparamref">T</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DiscreteInterval&lt;T&gt; All { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>An interval unbounded on both sides.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_Count_" data-uid="Bodu.Numerics.DiscreteInterval`1.Count*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_Count" data-uid="Bodu.Numerics.DiscreteInterval`1.Count">
+  Count
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the number of integers in the interval.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T Count { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The inclusive count <code>Last - First + 1</code>, or zero when empty.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The interval is unbounded, so its count is infinite.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a></dt>
+    <dd><p>The count does not fit in <code class="typeparamref">T</code> — a full-domain interval has one more member than the type
+can represent.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_Empty_" data-uid="Bodu.Numerics.DiscreteInterval`1.Empty*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_Empty" data-uid="Bodu.Numerics.DiscreteInterval`1.Empty">
+  Empty
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the canonical empty interval — the interval that contains no integer. Equal to every other empty
 <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a> and to the default value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_First" data-uid="Bodu.Numerics.DiscreteInterval`1.First">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.First.html#Bodu_Numerics_DiscreteInterval_1_First">First</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the inclusive lower bound. Meaningful only for a non-empty, lower-bounded interval.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_IsBounded" data-uid="Bodu.Numerics.DiscreteInterval`1.IsBounded">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.IsBounded.html#Bodu_Numerics_DiscreteInterval_1_IsBounded">IsBounded</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether both sides are bounded by a finite integer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_IsEmpty" data-uid="Bodu.Numerics.DiscreteInterval`1.IsEmpty">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.IsEmpty.html#Bodu_Numerics_DiscreteInterval_1_IsEmpty">IsEmpty</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the interval contains no integer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_Last" data-uid="Bodu.Numerics.DiscreteInterval`1.Last">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.Last.html#Bodu_Numerics_DiscreteInterval_1_Last">Last</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the inclusive upper bound. Meaningful only for a non-empty, upper-bounded interval.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_LowerUnbounded" data-uid="Bodu.Numerics.DiscreteInterval`1.LowerUnbounded">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.LowerUnbounded.html#Bodu_Numerics_DiscreteInterval_1_LowerUnbounded">LowerUnbounded</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the lower side is unbounded (extends to <code>-∞</code>).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_UpperUnbounded" data-uid="Bodu.Numerics.DiscreteInterval`1.UpperUnbounded">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.UpperUnbounded.html#Bodu_Numerics_DiscreteInterval_1_UpperUnbounded">UpperUnbounded</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the upper side is unbounded (extends to <code>+∞</code>).</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_AtLeast__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.AtLeast(`0)">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.AtLeast.html#Bodu_Numerics_DiscreteInterval_1_AtLeast__0_">AtLeast(T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates the lower-bounded interval <code>[lower, +∞)</code> — every integer greater than or equal to
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DiscreteInterval&lt;T&gt; Empty { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>An interval whose <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html#Bodu_Numerics_DiscreteInterval_1_IsEmpty">IsEmpty</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_First_" data-uid="Bodu.Numerics.DiscreteInterval`1.First*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_First" data-uid="Bodu.Numerics.DiscreteInterval`1.First">
+  First
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the inclusive lower bound. Meaningful only for a non-empty, lower-bounded interval.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T First { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The smallest integer in the interval.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_IsBounded_" data-uid="Bodu.Numerics.DiscreteInterval`1.IsBounded*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_IsBounded" data-uid="Bodu.Numerics.DiscreteInterval`1.IsBounded">
+  IsBounded
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether both sides are bounded by a finite integer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsBounded { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when neither side is unbounded; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_IsEmpty_" data-uid="Bodu.Numerics.DiscreteInterval`1.IsEmpty*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_IsEmpty" data-uid="Bodu.Numerics.DiscreteInterval`1.IsEmpty">
+  IsEmpty
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the interval contains no integer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsEmpty { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when empty; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_Last_" data-uid="Bodu.Numerics.DiscreteInterval`1.Last*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_Last" data-uid="Bodu.Numerics.DiscreteInterval`1.Last">
+  Last
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the inclusive upper bound. Meaningful only for a non-empty, upper-bounded interval.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T Last { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The largest integer in the interval.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_LowerUnbounded_" data-uid="Bodu.Numerics.DiscreteInterval`1.LowerUnbounded*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_LowerUnbounded" data-uid="Bodu.Numerics.DiscreteInterval`1.LowerUnbounded">
+  LowerUnbounded
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the lower side is unbounded (extends to <code>-∞</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool LowerUnbounded { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when lower-unbounded; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_UpperUnbounded_" data-uid="Bodu.Numerics.DiscreteInterval`1.UpperUnbounded*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_UpperUnbounded" data-uid="Bodu.Numerics.DiscreteInterval`1.UpperUnbounded">
+  UpperUnbounded
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the upper side is unbounded (extends to <code>+∞</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool UpperUnbounded { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when upper-unbounded; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_AtLeast_" data-uid="Bodu.Numerics.DiscreteInterval`1.AtLeast*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_AtLeast__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.AtLeast(`0)">
+  AtLeast(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates the lower-bounded interval <code>[lower, +∞)</code> — every integer greater than or equal to
 <code class="paramref">lower</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_AtMost__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.AtMost(`0)">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.AtMost.html#Bodu_Numerics_DiscreteInterval_1_AtMost__0_">AtMost(T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates the upper-bounded interval <code>(-∞, upper]</code> — every integer less than or equal to
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DiscreteInterval&lt;T&gt; AtLeast(T lower)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>lower</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive lower bound.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>An upper-unbounded interval.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_AtMost_" data-uid="Bodu.Numerics.DiscreteInterval`1.AtMost*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_AtMost__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.AtMost(`0)">
+  AtMost(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates the upper-bounded interval <code>(-∞, upper]</code> — every integer less than or equal to
 <code class="paramref">upper</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_Closed__0__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.Closed(`0,`0)">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.Closed.html#Bodu_Numerics_DiscreteInterval_1_Closed__0__0_">Closed(T, T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates the closed interval <code>[lower, upper]</code> — every integer from <code class="paramref">lower</code> to
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DiscreteInterval&lt;T&gt; AtMost(T upper)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>upper</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive upper bound.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>A lower-unbounded interval.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_Closed_" data-uid="Bodu.Numerics.DiscreteInterval`1.Closed*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_Closed__0__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.Closed(`0,`0)">
+  Closed(T, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates the closed interval <code>[lower, upper]</code> — every integer from <code class="paramref">lower</code> to
 <code class="paramref">upper</code> inclusive.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_ClosedOpen__0__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.ClosedOpen(`0,`0)">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.ClosedOpen.html#Bodu_Numerics_DiscreteInterval_1_ClosedOpen__0__0_">ClosedOpen(T, T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates the closed-open interval <code>[lower, upper)</code> — every integer from <code class="paramref">lower</code> inclusive
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DiscreteInterval&lt;T&gt; Closed(T lower, T upper)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>lower</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive lower bound.</p>
+</dd>
+    <dt><code>upper</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive upper bound.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>The interval, or <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html#Bodu_Numerics_DiscreteInterval_1_Empty">Empty</a> when <code class="paramref">lower</code> exceeds <code class="paramref">upper</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_ClosedOpen_" data-uid="Bodu.Numerics.DiscreteInterval`1.ClosedOpen*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_ClosedOpen__0__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.ClosedOpen(`0,`0)">
+  ClosedOpen(T, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates the closed-open interval <code>[lower, upper)</code> — every integer from <code class="paramref">lower</code> inclusive
 up to but excluding <code class="paramref">upper</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_Contains__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.Contains(`0)">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.Contains.html#Bodu_Numerics_DiscreteInterval_1_Contains__0_">Contains(T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether <code class="paramref">value</code> is an integer of this interval.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_Difference_Bodu_Numerics_DiscreteInterval__0__" data-uid="Bodu.Numerics.DiscreteInterval`1.Difference(Bodu.Numerics.DiscreteInterval{`0})">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.Difference.html#Bodu_Numerics_DiscreteInterval_1_Difference_Bodu_Numerics_DiscreteInterval__0__">Difference(DiscreteInterval&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns this interval with the integers of <code class="paramref">other</code> removed — the set difference
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DiscreteInterval&lt;T&gt; ClosedOpen(T lower, T upper)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>lower</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive lower bound.</p>
+</dd>
+    <dt><code>upper</code> <span class="xref">T</span></dt>
+    <dd><p>The exclusive upper bound.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>The canonicalized interval.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_Contains_" data-uid="Bodu.Numerics.DiscreteInterval`1.Contains*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_Contains__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.Contains(`0)">
+  Contains(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether <code class="paramref">value</code> is an integer of this interval.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Contains(T value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The integer to test.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the interval contains <code class="paramref">value</code>; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_Difference_" data-uid="Bodu.Numerics.DiscreteInterval`1.Difference*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_Difference_Bodu_Numerics_DiscreteInterval__0__" data-uid="Bodu.Numerics.DiscreteInterval`1.Difference(Bodu.Numerics.DiscreteInterval{`0})">
+  Difference(DiscreteInterval&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Difference.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns this interval with the integers of <code class="paramref">other</code> removed — the set difference
 <code>this \ other</code> — as zero, one, or two disjoint intervals.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_Equals_Bodu_Numerics_DiscreteInterval__0__" data-uid="Bodu.Numerics.DiscreteInterval`1.Equals(Bodu.Numerics.DiscreteInterval{`0})">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.Equals.html#Bodu_Numerics_DiscreteInterval_1_Equals_Bodu_Numerics_DiscreteInterval__0__">Equals(DiscreteInterval&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether this interval equals <code class="paramref">other</code> as a set of integers. Because every interval
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DiscreteIntervalPair&lt;T&gt; Difference(DiscreteInterval&lt;T&gt; other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>The interval whose integers are removed from this one.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.DiscreteIntervalPair-1.html">DiscreteIntervalPair</a>&lt;T&gt;</dt>
+    <dd><p>The remaining integers as a <a class="xref" href="Bodu.Numerics.DiscreteIntervalPair-1.html">DiscreteIntervalPair&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Numerics_DiscreteInterval_1_Difference_Bodu_Numerics_DiscreteInterval__0___examples">Examples</h4>
+  <pre><code class="lang-csharp">DiscreteInterval&lt;int&gt;.Closed(0, 10).Difference(DiscreteInterval&lt;int&gt;.Closed(3, 5));   // [0, 2] ∪ [6, 10]</code></pre>
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_Equals_" data-uid="Bodu.Numerics.DiscreteInterval`1.Equals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_Equals_Bodu_Numerics_DiscreteInterval__0__" data-uid="Bodu.Numerics.DiscreteInterval`1.Equals(Bodu.Numerics.DiscreteInterval{`0})">
+  Equals(DiscreteInterval&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether this interval equals <code class="paramref">other</code> as a set of integers. Because every interval
 is canonicalized to a single representation, equal sets compare equal by their stored fields.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_Equals_System_Object_" data-uid="Bodu.Numerics.DiscreteInterval`1.Equals(System.Object)">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.Equals.html#Bodu_Numerics_DiscreteInterval_1_Equals_System_Object_">Equals(object?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether this interval equals the boxed <code class="paramref">obj</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_FromInterval_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.DiscreteInterval`1.FromInterval(Bodu.Numerics.Interval{`0})">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.FromInterval.html#Bodu_Numerics_DiscreteInterval_1_FromInterval_Bodu_Numerics_Interval__0__">FromInterval(Interval&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates the discrete interval containing exactly the integers of <code class="paramref">interval</code>, snapping open
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(DiscreteInterval&lt;T&gt; other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>The interval to compare against.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the two describe the same integer set; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_Equals_" data-uid="Bodu.Numerics.DiscreteInterval`1.Equals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_Equals_System_Object_" data-uid="Bodu.Numerics.DiscreteInterval`1.Equals(System.Object)">
+  Equals(object?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether this interval equals the boxed <code class="paramref">obj</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to compare against.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">obj</code> is an equal <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a>; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_FromInterval_" data-uid="Bodu.Numerics.DiscreteInterval`1.FromInterval*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_FromInterval_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.DiscreteInterval`1.FromInterval(Bodu.Numerics.Interval{`0})">
+  FromInterval(Interval&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Conversions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates the discrete interval containing exactly the integers of <code class="paramref">interval</code>, snapping open
 bounds inward to the nearest contained integer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_GetHashCode" data-uid="Bodu.Numerics.DiscreteInterval`1.GetHashCode">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.GetHashCode.html#Bodu_Numerics_DiscreteInterval_1_GetHashCode">GetHashCode()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a hash code consistent with <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.Equals.html#Bodu_Numerics_DiscreteInterval_1_Equals_Bodu_Numerics_DiscreteInterval__0__">Equals(DiscreteInterval&lt;T&gt;)</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_GreaterThan__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.GreaterThan(`0)">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.GreaterThan.html#Bodu_Numerics_DiscreteInterval_1_GreaterThan__0_">GreaterThan(T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates the lower-bounded interval <code>(lower, +∞)</code> — every integer greater than
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DiscreteInterval&lt;T&gt; FromInterval(Interval&lt;T&gt; interval)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>interval</code> <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval</a>&lt;T&gt;</dt>
+    <dd><p>The continuous interval to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>The discrete interval of the integers within <code class="paramref">interval</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_GetHashCode_" data-uid="Bodu.Numerics.DiscreteInterval`1.GetHashCode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_GetHashCode" data-uid="Bodu.Numerics.DiscreteInterval`1.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a hash code consistent with <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html#Bodu_Numerics_DiscreteInterval_1_Equals_Bodu_Numerics_DiscreteInterval__0__">Equals(DiscreteInterval&lt;T&gt;)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A 32-bit hash code.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_GreaterThan_" data-uid="Bodu.Numerics.DiscreteInterval`1.GreaterThan*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_GreaterThan__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.GreaterThan(`0)">
+  GreaterThan(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates the lower-bounded interval <code>(lower, +∞)</code> — every integer greater than
 <code class="paramref">lower</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_Intersect_Bodu_Numerics_DiscreteInterval__0__" data-uid="Bodu.Numerics.DiscreteInterval`1.Intersect(Bodu.Numerics.DiscreteInterval{`0})">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.Intersect.html#Bodu_Numerics_DiscreteInterval_1_Intersect_Bodu_Numerics_DiscreteInterval__0__">Intersect(DiscreteInterval&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the intersection of this interval with <code class="paramref">other</code> — the integers in both.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_LessThan__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.LessThan(`0)">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.LessThan.html#Bodu_Numerics_DiscreteInterval_1_LessThan__0_">LessThan(T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates the upper-bounded interval <code>(-∞, upper)</code> — every integer less than <code class="paramref">upper</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_Open__0__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.Open(`0,`0)">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.Open.html#Bodu_Numerics_DiscreteInterval_1_Open__0__0_">Open(T, T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates the open interval <code>(lower, upper)</code> — every integer strictly between the bounds. Adjacent integer
-bounds (for example <code>(1, 2)</code>) admit no integer and yield <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.Empty.html#Bodu_Numerics_DiscreteInterval_1_Empty">Empty</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_OpenClosed__0__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.OpenClosed(`0,`0)">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.OpenClosed.html#Bodu_Numerics_DiscreteInterval_1_OpenClosed__0__0_">OpenClosed(T, T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates the open-closed interval <code>(lower, upper]</code> — every integer above <code class="paramref">lower</code> up to and
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DiscreteInterval&lt;T&gt; GreaterThan(T lower)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>lower</code> <span class="xref">T</span></dt>
+    <dd><p>The exclusive lower bound.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>An upper-unbounded interval, or <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html#Bodu_Numerics_DiscreteInterval_1_Empty">Empty</a> when <code class="paramref">lower</code> is the domain maximum and no
+integer lies above it.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_Intersect_" data-uid="Bodu.Numerics.DiscreteInterval`1.Intersect*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_Intersect_Bodu_Numerics_DiscreteInterval__0__" data-uid="Bodu.Numerics.DiscreteInterval`1.Intersect(Bodu.Numerics.DiscreteInterval{`0})">
+  Intersect(DiscreteInterval&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the intersection of this interval with <code class="paramref">other</code> — the integers in both.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DiscreteInterval&lt;T&gt; Intersect(DiscreteInterval&lt;T&gt; other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>The interval to intersect with.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>The intersection, or <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html#Bodu_Numerics_DiscreteInterval_1_Empty">Empty</a> when the two share no integer.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_LessThan_" data-uid="Bodu.Numerics.DiscreteInterval`1.LessThan*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_LessThan__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.LessThan(`0)">
+  LessThan(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates the upper-bounded interval <code>(-∞, upper)</code> — every integer less than <code class="paramref">upper</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DiscreteInterval&lt;T&gt; LessThan(T upper)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>upper</code> <span class="xref">T</span></dt>
+    <dd><p>The exclusive upper bound.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>A lower-unbounded interval, or <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html#Bodu_Numerics_DiscreteInterval_1_Empty">Empty</a> when <code class="paramref">upper</code> is the domain minimum and no
+integer lies below it.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_Open_" data-uid="Bodu.Numerics.DiscreteInterval`1.Open*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_Open__0__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.Open(`0,`0)">
+  Open(T, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates the open interval <code>(lower, upper)</code> — every integer strictly between the bounds. Adjacent integer
+bounds (for example <code>(1, 2)</code>) admit no integer and yield <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html#Bodu_Numerics_DiscreteInterval_1_Empty">Empty</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DiscreteInterval&lt;T&gt; Open(T lower, T upper)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>lower</code> <span class="xref">T</span></dt>
+    <dd><p>The exclusive lower bound.</p>
+</dd>
+    <dt><code>upper</code> <span class="xref">T</span></dt>
+    <dd><p>The exclusive upper bound.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>The canonicalized interval.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_OpenClosed_" data-uid="Bodu.Numerics.DiscreteInterval`1.OpenClosed*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_OpenClosed__0__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.OpenClosed(`0,`0)">
+  OpenClosed(T, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates the open-closed interval <code>(lower, upper]</code> — every integer above <code class="paramref">lower</code> up to and
 including <code class="paramref">upper</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_Overlaps_Bodu_Numerics_DiscreteInterval__0__" data-uid="Bodu.Numerics.DiscreteInterval`1.Overlaps(Bodu.Numerics.DiscreteInterval{`0})">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.Overlaps.html#Bodu_Numerics_DiscreteInterval_1_Overlaps_Bodu_Numerics_DiscreteInterval__0__">Overlaps(DiscreteInterval&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether this interval shares any integer with <code class="paramref">other</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_Singleton__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.Singleton(`0)">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.Singleton.html#Bodu_Numerics_DiscreteInterval_1_Singleton__0_">Singleton(T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates the single-integer interval <code>[value, value]</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_SymmetricDifference_Bodu_Numerics_DiscreteInterval__0__" data-uid="Bodu.Numerics.DiscreteInterval`1.SymmetricDifference(Bodu.Numerics.DiscreteInterval{`0})">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.SymmetricDifference.html#Bodu_Numerics_DiscreteInterval_1_SymmetricDifference_Bodu_Numerics_DiscreteInterval__0__">SymmetricDifference(DiscreteInterval&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the symmetric difference of this interval and <code class="paramref">other</code> — the integers in exactly one of
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DiscreteInterval&lt;T&gt; OpenClosed(T lower, T upper)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>lower</code> <span class="xref">T</span></dt>
+    <dd><p>The exclusive lower bound.</p>
+</dd>
+    <dt><code>upper</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive upper bound.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>The canonicalized interval.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_Overlaps_" data-uid="Bodu.Numerics.DiscreteInterval`1.Overlaps*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_Overlaps_Bodu_Numerics_DiscreteInterval__0__" data-uid="Bodu.Numerics.DiscreteInterval`1.Overlaps(Bodu.Numerics.DiscreteInterval{`0})">
+  Overlaps(DiscreteInterval&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether this interval shares any integer with <code class="paramref">other</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Overlaps(DiscreteInterval&lt;T&gt; other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>The interval to test for overlap.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the two share at least one integer; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_Singleton_" data-uid="Bodu.Numerics.DiscreteInterval`1.Singleton*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_Singleton__0_" data-uid="Bodu.Numerics.DiscreteInterval`1.Singleton(`0)">
+  Singleton(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates the single-integer interval <code>[value, value]</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DiscreteInterval&lt;T&gt; Singleton(T value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The single integer the interval contains.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>A one-element interval.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_SymmetricDifference_" data-uid="Bodu.Numerics.DiscreteInterval`1.SymmetricDifference*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_SymmetricDifference_Bodu_Numerics_DiscreteInterval__0__" data-uid="Bodu.Numerics.DiscreteInterval`1.SymmetricDifference(Bodu.Numerics.DiscreteInterval{`0})">
+  SymmetricDifference(DiscreteInterval&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Difference.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the symmetric difference of this interval and <code class="paramref">other</code> — the integers in exactly one of
 the two — as zero, one, or two disjoint intervals.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_ToInterval" data-uid="Bodu.Numerics.DiscreteInterval`1.ToInterval">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.ToInterval.html#Bodu_Numerics_DiscreteInterval_1_ToInterval">ToInterval()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the continuous <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> covering the same bounds, in canonical closed form.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_ToString" data-uid="Bodu.Numerics.DiscreteInterval`1.ToString">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.ToString.html#Bodu_Numerics_DiscreteInterval_1_ToString">ToString()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the canonical bracket-notation string representation — always closed on a finite side, using the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DiscreteIntervalPair&lt;T&gt; SymmetricDifference(DiscreteInterval&lt;T&gt; other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>The interval to symmetric-difference with.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.DiscreteIntervalPair-1.html">DiscreteIntervalPair</a>&lt;T&gt;</dt>
+    <dd><p>The integers covered by exactly one operand as a <a class="xref" href="Bodu.Numerics.DiscreteIntervalPair-1.html">DiscreteIntervalPair&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Numerics_DiscreteInterval_1_SymmetricDifference_Bodu_Numerics_DiscreteInterval__0___examples">Examples</h4>
+  <pre><code class="lang-csharp">DiscreteInterval&lt;int&gt;.Closed(0, 5).SymmetricDifference(DiscreteInterval&lt;int&gt;.Closed(3, 8));   // [0, 2] ∪ [6, 8]</code></pre>
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_ToInterval_" data-uid="Bodu.Numerics.DiscreteInterval`1.ToInterval*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_ToInterval" data-uid="Bodu.Numerics.DiscreteInterval`1.ToInterval">
+  ToInterval()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Conversions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the continuous <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> covering the same bounds, in canonical closed form.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Interval&lt;T&gt; ToInterval()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.Interval-1.html">Interval</a>&lt;T&gt;</dt>
+    <dd><p>The equivalent continuous interval.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Numerics_DiscreteInterval_1_ToInterval_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The result is a continuous interval over the same integer endpoints; it contains the non-integer coordinates
+between them as well, so it is a superset of this discrete interval's integer members.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_ToString_" data-uid="Bodu.Numerics.DiscreteInterval`1.ToString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_ToString" data-uid="Bodu.Numerics.DiscreteInterval`1.ToString">
+  ToString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the canonical bracket-notation string representation — always closed on a finite side, using the
 infinity glyphs on an unbounded side, and the empty-set glyph for the empty interval.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_ToString_System_String_" data-uid="Bodu.Numerics.DiscreteInterval`1.ToString(System.String)">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.ToString.html#Bodu_Numerics_DiscreteInterval_1_ToString_System_String_">ToString(string?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a string representation of this interval using the endpoint format specifier <code class="paramref">format</code>
-applied to <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.First.html#Bodu_Numerics_DiscreteInterval_1_First">First</a> and <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.Last.html#Bodu_Numerics_DiscreteInterval_1_Last">Last</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_ToString_System_String_System_IFormatProvider_" data-uid="Bodu.Numerics.DiscreteInterval`1.ToString(System.String,System.IFormatProvider)">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.ToString.html#Bodu_Numerics_DiscreteInterval_1_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a string representation of this interval using the supplied endpoint format and culture.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.DiscreteInterval`1.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.TryFormat.html#Bodu_Numerics_DiscreteInterval_1_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_">TryFormat(Span&lt;byte&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to format this interval into the provided UTF-8 byte span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.DiscreteInterval`1.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.TryFormat.html#Bodu_Numerics_DiscreteInterval_1_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_">TryFormat(Span&lt;char&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to format this interval into the provided character span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_TryUnion_Bodu_Numerics_DiscreteInterval__0__Bodu_Numerics_DiscreteInterval__0___" data-uid="Bodu.Numerics.DiscreteInterval`1.TryUnion(Bodu.Numerics.DiscreteInterval{`0},Bodu.Numerics.DiscreteInterval{`0}@)">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.TryUnion.html#Bodu_Numerics_DiscreteInterval_1_TryUnion_Bodu_Numerics_DiscreteInterval__0__Bodu_Numerics_DiscreteInterval__0___">TryUnion(DiscreteInterval&lt;T&gt;, out DiscreteInterval&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to compute the union of this interval with <code class="paramref">other</code> as a single contiguous run of
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p><code>&quot;[first, last]&quot;</code> for a bounded interval, <code>&quot;[first, +∞)&quot;</code> / <code>&quot;(-∞, last]&quot;</code> /
+<code>&quot;(-∞, +∞)&quot;</code> for unbounded shapes, or <code>&quot;∅&quot;</code> when empty.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Numerics_DiscreteInterval_1_ToString_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>All formatting delegates to the equivalent continuous <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> (via <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html#Bodu_Numerics_DiscreteInterval_1_ToInterval">ToInterval()</a>),
+whose canonical closed form over the same endpoints renders identically.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_ToString_" data-uid="Bodu.Numerics.DiscreteInterval`1.ToString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_ToString_System_String_" data-uid="Bodu.Numerics.DiscreteInterval`1.ToString(System.String)">
+  ToString(string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a string representation of this interval using the endpoint format specifier <code class="paramref">format</code>
+applied to <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html#Bodu_Numerics_DiscreteInterval_1_First">First</a> and <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html#Bodu_Numerics_DiscreteInterval_1_Last">Last</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ToString(string? format)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A format specifier accepted by <code class="typeparamref">T</code> (e.g. <code>&quot;D4&quot;</code>, <code>&quot;N0&quot;</code>).</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The interval text with each endpoint formatted by <code class="paramref">format</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_ToString_" data-uid="Bodu.Numerics.DiscreteInterval`1.ToString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_ToString_System_String_System_IFormatProvider_" data-uid="Bodu.Numerics.DiscreteInterval`1.ToString(System.String,System.IFormatProvider)">
+  ToString(string?, IFormatProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns a string representation of this interval using the supplied endpoint format and culture.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ToString(string? format, IFormatProvider? formatProvider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A format specifier accepted by <code class="typeparamref">T</code>.</p>
+</dd>
+    <dt><code>formatProvider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>The culture used to render each endpoint.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The interval text with each endpoint formatted by <code class="paramref">format</code> under
+<code class="paramref">formatProvider</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_TryFormat_" data-uid="Bodu.Numerics.DiscreteInterval`1.TryFormat*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.DiscreteInterval`1.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+  TryFormat(Span&lt;byte&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to format this interval into the provided UTF-8 byte span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryFormat(Span&lt;byte&gt; utf8Destination, out int bytesWritten, ReadOnlySpan&lt;char&gt; format, IFormatProvider? provider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The span that receives the formatted UTF-8 bytes.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of bytes written.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The endpoint format specifier.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>The culture used to render each endpoint.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if formatting succeeded; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_TryFormat_" data-uid="Bodu.Numerics.DiscreteInterval`1.TryFormat*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.DiscreteInterval`1.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+  TryFormat(Span&lt;char&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to format this interval into the provided character span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryFormat(Span&lt;char&gt; destination, out int charsWritten, ReadOnlySpan&lt;char&gt; format, IFormatProvider? provider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The span that receives the formatted characters.</p>
+</dd>
+    <dt><code>charsWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of characters written.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The endpoint format specifier.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>The culture used to render each endpoint.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if formatting succeeded; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_TryUnion_" data-uid="Bodu.Numerics.DiscreteInterval`1.TryUnion*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_TryUnion_Bodu_Numerics_DiscreteInterval__0__Bodu_Numerics_DiscreteInterval__0___" data-uid="Bodu.Numerics.DiscreteInterval`1.TryUnion(Bodu.Numerics.DiscreteInterval{`0},Bodu.Numerics.DiscreteInterval{`0}@)">
+  TryUnion(DiscreteInterval&lt;T&gt;, out DiscreteInterval&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to compute the union of this interval with <code class="paramref">other</code> as a single contiguous run of
 integers, treating successor-adjacent intervals (no integer between them) as contiguous.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="operators">Operators
-</h3>
-  <table class="table table-bordered table-condensed">
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryUnion(DiscreteInterval&lt;T&gt; other, out DiscreteInterval&lt;T&gt; result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>The interval to union with.</p>
+</dd>
+    <dt><code>result</code> <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the contiguous union; otherwise <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html#Bodu_Numerics_DiscreteInterval_1_Empty">Empty</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the two intervals overlap or are successor-adjacent; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when
+an integer gap separates them so their union needs two runs.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Numerics_DiscreteInterval_1_TryUnion_Bodu_Numerics_DiscreteInterval__0__Bodu_Numerics_DiscreteInterval__0____examples">Examples</h4>
+  <pre><code class="lang-csharp">DiscreteInterval&lt;int&gt;.Closed(1, 2).TryUnion(DiscreteInterval&lt;int&gt;.Closed(3, 4), out var run);
+// run == [1, 4], result == true (no integer lies between 2 and 3)</code></pre>
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_op_Equality_" data-uid="Bodu.Numerics.DiscreteInterval`1.op_Equality*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_op_Equality_Bodu_Numerics_DiscreteInterval__0__Bodu_Numerics_DiscreteInterval__0__" data-uid="Bodu.Numerics.DiscreteInterval`1.op_Equality(Bodu.Numerics.DiscreteInterval{`0},Bodu.Numerics.DiscreteInterval{`0})">
+  operator ==(DiscreteInterval&lt;T&gt;, DiscreteInterval&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether two intervals are equal as sets.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(DiscreteInterval&lt;T&gt; left, DiscreteInterval&lt;T&gt; right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>The first interval.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>The second interval.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when equal; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Numerics_DiscreteInterval_1_op_Inequality_" data-uid="Bodu.Numerics.DiscreteInterval`1.op_Inequality*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Numerics_DiscreteInterval_1_op_Inequality_Bodu_Numerics_DiscreteInterval__0__Bodu_Numerics_DiscreteInterval__0__" data-uid="Bodu.Numerics.DiscreteInterval`1.op_Inequality(Bodu.Numerics.DiscreteInterval{`0},Bodu.Numerics.DiscreteInterval{`0})">
+  operator !=(DiscreteInterval&lt;T&gt;, DiscreteInterval&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/DiscreteInterval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether two intervals are not equal as sets.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(DiscreteInterval&lt;T&gt; left, DiscreteInterval&lt;T&gt; right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>The first interval.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval</a>&lt;T&gt;</dt>
+    <dd><p>The second interval.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when they differ; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_op_Equality_Bodu_Numerics_DiscreteInterval__0__Bodu_Numerics_DiscreteInterval__0__" data-uid="Bodu.Numerics.DiscreteInterval`1.op_Equality(Bodu.Numerics.DiscreteInterval{`0},Bodu.Numerics.DiscreteInterval{`0})">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.op_Equality.html#Bodu_Numerics_DiscreteInterval_1_op_Equality_Bodu_Numerics_DiscreteInterval__0__Bodu_Numerics_DiscreteInterval__0__">operator ==(DiscreteInterval&lt;T&gt;, DiscreteInterval&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two intervals are equal as sets.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_DiscreteInterval_1_op_Inequality_Bodu_Numerics_DiscreteInterval__0__Bodu_Numerics_DiscreteInterval__0__" data-uid="Bodu.Numerics.DiscreteInterval`1.op_Inequality(Bodu.Numerics.DiscreteInterval{`0},Bodu.Numerics.DiscreteInterval{`0})">
-          <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.op_Inequality.html#Bodu_Numerics_DiscreteInterval_1_op_Inequality_Bodu_Numerics_DiscreteInterval__0__Bodu_Numerics_DiscreteInterval__0__">operator !=(DiscreteInterval&lt;T&gt;, DiscreteInterval&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two intervals are not equal as sets.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

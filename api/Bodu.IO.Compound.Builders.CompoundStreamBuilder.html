@@ -1,126 +1,164 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class CompoundStreamBuilder | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class CompoundStreamBuilder | BODU ">
-    
-    <meta name="description" content="Represents a stream entry in a mutable compound-file object model — a named, file-like node carrying an opaque byte payload.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>CompoundStreamBuilder Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="CompoundStreamBuilder Class
+ | BODU ">
+      
+      <meta name="description" content="Represents a stream entry in a mutable compound-file object model — a named, file-like node carrying an opaque byte payload.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder">
+
+        <article data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder">
 
 
 
-  <h1 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder" class="text-break">Class CompoundStreamBuilder</h1>
-  <div class="markdown level0 summary"><p>Represents a stream entry in a mutable compound-file object model — a named, file-like node carrying an opaque byte
+
+  <h1 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+CompoundStreamBuilder Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStreamBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a>.<a class="xref" href="Bodu.IO.Compound.Builders.html">Builders</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.IO.Compound.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Compound">Bodu.IO.Compound</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStreamBuilder.cs">CompoundStreamBuilder.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a stream entry in a mutable compound-file object model — a named, file-like node carrying an opaque byte
 payload.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a></div>
-    <div class="level2"><span class="xref">CompoundStreamBuilder</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CompoundStreamBuilder : CompoundEntryBuilder</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a></div>
+      <div><span class="xref">CompoundStreamBuilder</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.Name.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_Name">CompoundEntryBuilder.Name</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_AsStorage">CompoundEntryBuilder.AsStorage()</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.Parent.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_Parent">CompoundEntryBuilder.Parent</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_AsStream">CompoundEntryBuilder.AsStream()</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.Root.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_Root">CompoundEntryBuilder.Root</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_Name">CompoundEntryBuilder.Name</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.ClassId.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_ClassId">CompoundEntryBuilder.ClassId</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_Parent">CompoundEntryBuilder.Parent</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.CreationTime.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_CreationTime">CompoundEntryBuilder.CreationTime</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_Root">CompoundEntryBuilder.Root</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.ModifiedTime.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_ModifiedTime">CompoundEntryBuilder.ModifiedTime</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_ClassId">CompoundEntryBuilder.ClassId</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.StateBits.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_StateBits">CompoundEntryBuilder.StateBits</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_CreationTime">CompoundEntryBuilder.CreationTime</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.AsStorage.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_AsStorage">CompoundEntryBuilder.AsStorage()</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_ModifiedTime">CompoundEntryBuilder.ModifiedTime</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.AsStream.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_AsStream">CompoundEntryBuilder.AsStream()</a>
+      <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html#Bodu_IO_Compound_Builders_CompoundEntryBuilder_StateBits">CompoundEntryBuilder.StateBits</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
@@ -140,14 +178,35 @@ payload.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+    </dd>
+  </dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a>.<a class="xref" href="Bodu.IO.Compound.Builders.html">Builders</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.IO.Compound.dll</h6>
-  <h5 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class CompoundStreamBuilder : CompoundEntryBuilder</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 This is the authoring counterpart of <a class="xref" href="Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> and the compound-file analogue of a
 <code>JsonValue</code> leaf.
@@ -155,172 +214,566 @@ This is the authoring counterpart of <a class="xref" href="Bodu.IO.Compound.Comp
 <p>
 A stream node is either <em>in-memory</em>, holding its bytes directly, or <em>deferred</em>, holding a re-openable
 source (a file or a stream factory) of a known length. A deferred node lets large payloads be streamed straight to
-the output during serialization without ever being held in memory; reading <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Content.html#Bodu_IO_Compound_Builders_CompoundStreamBuilder_Content">Content</a> on such a node
+the output during serialization without ever being held in memory; reading <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html#Bodu_IO_Compound_Builders_CompoundStreamBuilder_Content">Content</a> on such a node
 materializes it.
 </p>
 </div>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Content_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Content*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Content" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Content">
+  Content
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStreamBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the byte payload of the stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ReadOnlyMemory&lt;byte&gt; Content { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The stream's content.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Content_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Reading this property on a deferred node opens and reads its source fully into memory; thereafter the node is
+in-memory. Setting the property replaces the payload and makes the node in-memory.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_EntryType_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.EntryType*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_EntryType" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.EntryType">
+  EntryType
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStreamBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the kind of entry this node represents.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override CompoundEntryType EntryType { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundEntryType.html">CompoundEntryType</a></dt>
+    <dd><p>The <a class="xref" href="Bodu.IO.Compound.CompoundEntryType.html">CompoundEntryType</a> of the node.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Length_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Length*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Length" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Length">
+  Length
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStreamBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the length, in bytes, of the stream payload.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long Length { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>The payload length; reported without opening a deferred source.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Create_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Create*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Create_System_String_System_Func_System_IO_Stream__System_Int64_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Create(System.String,System.Func{System.IO.Stream},System.Int64)">
+  Create(string, Func&lt;Stream&gt;, long)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStreamBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a deferred stream node whose payload is read on demand from a re-openable source.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundStreamBuilder Create(string name, Func&lt;Stream&gt; openRead, long length)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The entry name.</p>
+</dd>
+    <dt><code>openRead</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-1">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a>&gt;</dt>
+    <dd><p>A factory that opens a readable stream over the payload each time it is invoked.</p>
+</dd>
+    <dt><code>length</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>The payload length, in bytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a></dt>
+    <dd><p>A new deferred <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">openRead</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">length</code> is negative.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is invalid.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Create_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Create*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Create_System_String_System_IO_Stream_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Create(System.String,System.IO.Stream)">
+  Create(string, Stream)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStreamBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a stream node whose payload is read from the supplied stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundStreamBuilder Create(string name, Stream source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The entry name.</p>
+</dd>
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to read to its end.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is invalid.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Create_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Create*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Create_System_String_System_ReadOnlyMemory_System_Byte__" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Create(System.String,System.ReadOnlyMemory{System.Byte})">
+  Create(string, ReadOnlyMemory&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStreamBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a stream node with the specified name and payload.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundStreamBuilder Create(string name, ReadOnlyMemory&lt;byte&gt; content)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The entry name.</p>
+</dd>
+    <dt><code>content</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The payload bytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is invalid.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Create_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Create*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Create_System_String_System_String_System_Text_Encoding_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Create(System.String,System.String,System.Text.Encoding)">
+  Create(string, string, Encoding?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStreamBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a stream node whose payload is the encoded form of the supplied text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundStreamBuilder Create(string name, string text, Encoding? encoding = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The entry name.</p>
+</dd>
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text to encode.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The encoding to apply; defaults to UTF-8.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">text</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is invalid.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_CreateFromFile_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.CreateFromFile*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_CreateFromFile_System_String_System_String_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.CreateFromFile(System.String,System.String)">
+  CreateFromFile(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStreamBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a deferred stream node whose payload is read on demand from a file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundStreamBuilder CreateFromFile(string name, string path)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The entry name.</p>
+</dd>
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path of the file providing the payload.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a></dt>
+    <dd><p>A new deferred <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is invalid.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_DeepClone_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.DeepClone*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_DeepClone" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.DeepClone">
+  DeepClone()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStreamBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a deep, detached copy of this node and its descendants.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override CompoundEntryBuilder DeepClone()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a></dt>
+    <dd><p>An independent copy with no parent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_SetContent_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.SetContent*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_SetContent_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.SetContent(System.ReadOnlySpan{System.Byte})">
+  SetContent(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStreamBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Replaces the stream payload with the supplied bytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetContent(ReadOnlySpan&lt;byte&gt; content)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>content</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The new payload, copied into the node.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_SetContent_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.SetContent*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_SetContent_System_String_System_Text_Encoding_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.SetContent(System.String,System.Text.Encoding)">
+  SetContent(string, Encoding?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Compound/src/IO.Compound.Builders/CompoundStreamBuilder.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Replaces the stream payload with the encoded form of the supplied text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetContent(string text, Encoding? encoding = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text to encode.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The encoding to apply; defaults to UTF-8.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">text</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Content" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Content">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Content.html#Bodu_IO_Compound_Builders_CompoundStreamBuilder_Content">Content</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the byte payload of the stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_EntryType" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.EntryType">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.EntryType.html#Bodu_IO_Compound_Builders_CompoundStreamBuilder_EntryType">EntryType</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the kind of entry this node represents.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Length" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Length">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Length.html#Bodu_IO_Compound_Builders_CompoundStreamBuilder_Length">Length</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the length, in bytes, of the stream payload.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Create_System_String_System_Func_System_IO_Stream__System_Int64_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Create(System.String,System.Func{System.IO.Stream},System.Int64)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Create.html#Bodu_IO_Compound_Builders_CompoundStreamBuilder_Create_System_String_System_Func_System_IO_Stream__System_Int64_">Create(string, Func&lt;Stream&gt;, long)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a deferred stream node whose payload is read on demand from a re-openable source.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Create_System_String_System_IO_Stream_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Create(System.String,System.IO.Stream)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Create.html#Bodu_IO_Compound_Builders_CompoundStreamBuilder_Create_System_String_System_IO_Stream_">Create(string, Stream)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a stream node whose payload is read from the supplied stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Create_System_String_System_ReadOnlyMemory_System_Byte__" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Create(System.String,System.ReadOnlyMemory{System.Byte})">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Create.html#Bodu_IO_Compound_Builders_CompoundStreamBuilder_Create_System_String_System_ReadOnlyMemory_System_Byte__">Create(string, ReadOnlyMemory&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a stream node with the specified name and payload.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_Create_System_String_System_String_System_Text_Encoding_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Create(System.String,System.String,System.Text.Encoding)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.Create.html#Bodu_IO_Compound_Builders_CompoundStreamBuilder_Create_System_String_System_String_System_Text_Encoding_">Create(string, string, Encoding?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a stream node whose payload is the encoded form of the supplied text.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_CreateFromFile_System_String_System_String_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.CreateFromFile(System.String,System.String)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.CreateFromFile.html#Bodu_IO_Compound_Builders_CompoundStreamBuilder_CreateFromFile_System_String_System_String_">CreateFromFile(string, string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a deferred stream node whose payload is read on demand from a file.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_DeepClone" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.DeepClone">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.DeepClone.html#Bodu_IO_Compound_Builders_CompoundStreamBuilder_DeepClone">DeepClone()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a deep, detached copy of this node and its descendants.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_SetContent_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.SetContent(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.SetContent.html#Bodu_IO_Compound_Builders_CompoundStreamBuilder_SetContent_System_ReadOnlySpan_System_Byte__">SetContent(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Replaces the stream payload with the supplied bytes.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_Builders_CompoundStreamBuilder_SetContent_System_String_System_Text_Encoding_" data-uid="Bodu.IO.Compound.Builders.CompoundStreamBuilder.SetContent(System.String,System.Text.Encoding)">
-          <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.SetContent.html#Bodu_IO_Compound_Builders_CompoundStreamBuilder_SetContent_System_String_System_Text_Encoding_">SetContent(string, Encoding?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Replaces the stream payload with the encoded form of the supplied text.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

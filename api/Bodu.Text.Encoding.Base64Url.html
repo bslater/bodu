@@ -1,100 +1,138 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class Base64Url | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class Base64Url | BODU ">
-    
-    <meta name="description" content="Provides the RFC 4648 &#167;5 URL- and filename-safe Base64 encoding as a first-class type, mirroring the shape of System.Buffers.Text.Base64Url introduced in .NET 9. URL-safe Base64 swaps + and / for - and _, and conventionally omits trailing = padding (matching JWT and OAuth practice).">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>Base64Url Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Base64Url Class
+ | BODU ">
+      
+      <meta name="description" content="Provides the RFC 4648 &#167;5 URL- and filename-safe Base64 encoding as a first-class type, mirroring the shape of System.Buffers.Text.Base64Url introduced in .NET 9. URL-safe Base64 swaps + and / for - and _, and conventionally omits trailing = padding (matching JWT and OAuth practice).">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Encoding.Base64Url">
+
+        <article data-uid="Bodu.Text.Encoding.Base64Url">
 
 
 
-  <h1 id="Bodu_Text_Encoding_Base64Url" data-uid="Bodu.Text.Encoding.Base64Url" class="text-break">Class Base64Url</h1>
-  <div class="markdown level0 summary"><p>Provides the RFC 4648 §5 URL- and filename-safe Base64 encoding as a first-class type, mirroring the shape of
+
+  <h1 id="Bodu_Text_Encoding_Base64Url" data-uid="Bodu.Text.Encoding.Base64Url" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+Base64Url Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base64Url.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Text_Encoding_Base64Url_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Encoding.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Encoding">Bodu.Text.Encoding</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base64Url.cs">Base64Url.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides the RFC 4648 §5 URL- and filename-safe Base64 encoding as a first-class type, mirroring the shape of
 <code>System.Buffers.Text.Base64Url</code> introduced in .NET 9. URL-safe Base64 swaps <code>+</code> and <code>/</code> for <code>-</code>
 and <code>_</code>, and conventionally omits trailing <code>=</code> padding (matching JWT and OAuth practice).</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">Base64Url</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class Base64Url</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">Base64Url</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -116,19 +154,14 @@ and <code>_</code>, and conventionally omits trailing <code>=</code> padding (ma
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Encoding.dll</h6>
-  <h5 id="Bodu_Text_Encoding_Base64Url_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class Base64Url</code></pre>
-  </div>
-  <h5 id="Bodu_Text_Encoding_Base64Url_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>This is a convenience wrapper over <a class="xref" href="Bodu.Text.Encoding.Base64.html">Base64</a> with <a class="xref" href="Bodu.Text.Encoding.Base64Variant.html#Bodu_Text_Encoding_Base64Variant_UrlSafe">UrlSafe</a> pre-bound. Code
-that knows it wants URL-safe Base64 should prefer this type over passing the variant explicitly to every call. Both
-forms produce identical output.</p>
-</div>
-  <h5 id="Bodu_Text_Encoding_Base64Url_examples"><strong>Examples</strong></h5>
+    </dd>
+  </dl>
+
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Text_Encoding_Base64Url_examples">Examples</h2>
   <pre><code class="lang-csharp">// Encode a JWT segment — URL-safe alphabet, no padding.
 byte[] header   = "{\"alg\":\"HS256\",\"typ\":\"JWT\"}"u8.ToArray();
 string segment  = Base64Url.Encode(header);                                  // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
@@ -137,150 +170,612 @@ string segment  = Base64Url.Encode(header);                                  // 
 byte[] roundtrip = Base64Url.Decode(segment);
 byte[] padded    = Base64Url.Decode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9==");</code></pre>
 
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
+
+  <h2 id="Bodu_Text_Encoding_Base64Url_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>This is a convenience wrapper over <a class="xref" href="Bodu.Text.Encoding.Base64.html">Base64</a> with <a class="xref" href="Bodu.Text.Encoding.Base64Variant.html#Bodu_Text_Encoding_Base64Variant_UrlSafe">UrlSafe</a> pre-bound. Code
+that knows it wants URL-safe Base64 should prefer this type over passing the variant explicitly to every call. Both
+forms produce identical output.</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Encoding_Base64Url_Decode_" data-uid="Bodu.Text.Encoding.Base64Url.Decode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base64Url_Decode_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base64Url.Decode(System.ReadOnlySpan{System.Byte})">
+  Decode(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base64Url.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes UTF-8 URL-safe Base64 bytes into a byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Decode(ReadOnlySpan&lt;byte&gt; utf8Source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 URL-safe Base64 source.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The decoded byte array.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input is not valid URL-safe Base64.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base64Url_Decode_" data-uid="Bodu.Text.Encoding.Base64Url.Decode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base64Url_Decode_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Encoding.Base64Url.Decode(System.ReadOnlySpan{System.Char})">
+  Decode(ReadOnlySpan&lt;char&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base64Url.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes <code class="paramref">chars</code> as a URL-safe Base64 character span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Decode(ReadOnlySpan&lt;char&gt; chars)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>chars</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The URL-safe Base64 character span.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The decoded byte array.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input is not valid URL-safe Base64.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base64Url_Decode_" data-uid="Bodu.Text.Encoding.Base64Url.Decode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base64Url_Decode_System_String_" data-uid="Bodu.Text.Encoding.Base64Url.Decode(System.String)">
+  Decode(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base64Url.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes <code class="paramref">s</code> as a URL-safe Base64 string. Accepts inputs both with and without trailing
+<code>=</code> padding (the JWT / OAuth convention is to omit it).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Decode(string s)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URL-safe Base64 input.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The decoded byte array.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">s</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input is not valid URL-safe Base64.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base64Url_Encode_" data-uid="Bodu.Text.Encoding.Base64Url.Encode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base64Url_Encode_System_Byte___" data-uid="Bodu.Text.Encoding.Base64Url.Encode(System.Byte[])">
+  Encode(byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base64Url.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into a URL-safe Base64 string without padding.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Encode(byte[] bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URL-safe Base64 string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">bytes</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base64Url_Encode_" data-uid="Bodu.Text.Encoding.Base64Url.Encode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base64Url_Encode_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base64Url.Encode(System.ReadOnlySpan{System.Byte})">
+  Encode(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base64Url.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into a URL-safe Base64 string without padding.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Encode(ReadOnlySpan&lt;byte&gt; bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URL-safe Base64 string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base64Url_EncodeToUtf8_" data-uid="Bodu.Text.Encoding.Base64Url.EncodeToUtf8*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base64Url_EncodeToUtf8_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base64Url.EncodeToUtf8(System.ReadOnlySpan{System.Byte})">
+  EncodeToUtf8(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base64Url.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> into a UTF-8 byte array using the URL-safe Base64 alphabet.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] EncodeToUtf8(ReadOnlySpan&lt;byte&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The UTF-8 encoded URL-safe Base64 bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base64Url_GetEncodedLength_" data-uid="Bodu.Text.Encoding.Base64Url.GetEncodedLength*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base64Url_GetEncodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base64Url.GetEncodedLength(System.Int32)">
+  GetEncodedLength(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base64Url.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the maximum number of characters required to encode <code class="paramref">byteCount</code> bytes in URL-safe
+Base64 (without padding by default).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetEncodedLength(int byteCount)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>byteCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The input byte count.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The encoded character count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base64Url_GetMaxDecodedLength_" data-uid="Bodu.Text.Encoding.Base64Url.GetMaxDecodedLength*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base64Url_GetMaxDecodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base64Url.GetMaxDecodedLength(System.Int32)">
+  GetMaxDecodedLength(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base64Url.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the maximum number of bytes that decoding <code class="paramref">charCount</code> characters can produce.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetMaxDecodedLength(int charCount)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>charCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The input character count.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The maximum decoded byte count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base64Url_IsValid_" data-uid="Bodu.Text.Encoding.Base64Url.IsValid*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base64Url_IsValid_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Encoding.Base64Url.IsValid(System.ReadOnlySpan{System.Char})">
+  IsValid(ReadOnlySpan&lt;char&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base64Url.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is a valid URL-safe Base64 input.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsValid(ReadOnlySpan&lt;char&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The input characters.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the input would decode cleanly; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base64Url_TryDecode_" data-uid="Bodu.Text.Encoding.Base64Url.TryDecode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base64Url_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.Base64Url.TryDecode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@)">
+  TryDecode(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base64Url.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to decode <code class="paramref">chars</code> as URL-safe Base64 into <code class="paramref">destination</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryDecode(ReadOnlySpan&lt;char&gt; chars, Span&lt;byte&gt; destination, out int bytesWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>chars</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The URL-safe Base64 character span.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination byte span.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of bytes written.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on success; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> on malformed input or undersized destination.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base64Url_TryEncode_" data-uid="Bodu.Text.Encoding.Base64Url.TryEncode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base64Url_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__" data-uid="Bodu.Text.Encoding.Base64Url.TryEncode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@)">
+  TryEncode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base64Url.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into <code class="paramref">destination</code> as URL-safe Base64.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryEncode(ReadOnlySpan&lt;byte&gt; source, Span&lt;char&gt; destination, out int charsWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The destination span.</p>
+</dd>
+    <dt><code>charsWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of characters written.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on success; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when the destination is too small.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_Base64Url_TryEncodeToUtf8_" data-uid="Bodu.Text.Encoding.Base64Url.TryEncodeToUtf8*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_Base64Url_TryEncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.Base64Url.TryEncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
+  TryEncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/Base64Url.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into <code class="paramref">destination</code> as URL-safe Base64 UTF-8
+bytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryEncodeToUtf8(ReadOnlySpan&lt;byte&gt; source, Span&lt;byte&gt; destination, out int bytesWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination UTF-8 byte span.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of bytes written.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on success; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when the destination is too small.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base64Url_Decode_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base64Url.Decode(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Encoding.Base64Url.Decode.html#Bodu_Text_Encoding_Base64Url_Decode_System_ReadOnlySpan_System_Byte__">Decode(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes UTF-8 URL-safe Base64 bytes into a byte array.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base64Url_Decode_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Encoding.Base64Url.Decode(System.ReadOnlySpan{System.Char})">
-          <a class="xref" href="Bodu.Text.Encoding.Base64Url.Decode.html#Bodu_Text_Encoding_Base64Url_Decode_System_ReadOnlySpan_System_Char__">Decode(ReadOnlySpan&lt;char&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes <code class="paramref">chars</code> as a URL-safe Base64 character span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base64Url_Decode_System_String_" data-uid="Bodu.Text.Encoding.Base64Url.Decode(System.String)">
-          <a class="xref" href="Bodu.Text.Encoding.Base64Url.Decode.html#Bodu_Text_Encoding_Base64Url_Decode_System_String_">Decode(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes <code class="paramref">s</code> as a URL-safe Base64 string. Accepts inputs both with and without trailing
-<code>=</code> padding (the JWT / OAuth convention is to omit it).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base64Url_Encode_System_Byte___" data-uid="Bodu.Text.Encoding.Base64Url.Encode(System.Byte[])">
-          <a class="xref" href="Bodu.Text.Encoding.Base64Url.Encode.html#Bodu_Text_Encoding_Base64Url_Encode_System_Byte___">Encode(byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into a URL-safe Base64 string without padding.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base64Url_Encode_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base64Url.Encode(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Encoding.Base64Url.Encode.html#Bodu_Text_Encoding_Base64Url_Encode_System_ReadOnlySpan_System_Byte__">Encode(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into a URL-safe Base64 string without padding.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base64Url_EncodeToUtf8_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base64Url.EncodeToUtf8(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Encoding.Base64Url.EncodeToUtf8.html#Bodu_Text_Encoding_Base64Url_EncodeToUtf8_System_ReadOnlySpan_System_Byte__">EncodeToUtf8(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> into a UTF-8 byte array using the URL-safe Base64 alphabet.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base64Url_GetEncodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base64Url.GetEncodedLength(System.Int32)">
-          <a class="xref" href="Bodu.Text.Encoding.Base64Url.GetEncodedLength.html#Bodu_Text_Encoding_Base64Url_GetEncodedLength_System_Int32_">GetEncodedLength(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the maximum number of characters required to encode <code class="paramref">byteCount</code> bytes in URL-safe
-Base64 (without padding by default).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base64Url_GetMaxDecodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base64Url.GetMaxDecodedLength(System.Int32)">
-          <a class="xref" href="Bodu.Text.Encoding.Base64Url.GetMaxDecodedLength.html#Bodu_Text_Encoding_Base64Url_GetMaxDecodedLength_System_Int32_">GetMaxDecodedLength(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the maximum number of bytes that decoding <code class="paramref">charCount</code> characters can produce.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base64Url_IsValid_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Encoding.Base64Url.IsValid(System.ReadOnlySpan{System.Char})">
-          <a class="xref" href="Bodu.Text.Encoding.Base64Url.IsValid.html#Bodu_Text_Encoding_Base64Url_IsValid_System_ReadOnlySpan_System_Char__">IsValid(ReadOnlySpan&lt;char&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is a valid URL-safe Base64 input.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base64Url_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.Base64Url.TryDecode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Text.Encoding.Base64Url.TryDecode.html#Bodu_Text_Encoding_Base64Url_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__">TryDecode(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to decode <code class="paramref">chars</code> as URL-safe Base64 into <code class="paramref">destination</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base64Url_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__" data-uid="Bodu.Text.Encoding.Base64Url.TryEncode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@)">
-          <a class="xref" href="Bodu.Text.Encoding.Base64Url.TryEncode.html#Bodu_Text_Encoding_Base64Url_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__">TryEncode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into <code class="paramref">destination</code> as URL-safe Base64.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Base64Url_TryEncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.Base64Url.TryEncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Text.Encoding.Base64Url.TryEncodeToUtf8.html#Bodu_Text_Encoding_Base64Url_TryEncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__">TryEncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into <code class="paramref">destination</code> as URL-safe Base64 UTF-8
-bytes.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
 
+
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

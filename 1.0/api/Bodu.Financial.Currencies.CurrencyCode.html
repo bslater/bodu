@@ -1,1159 +1,1152 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Enum CurrencyCode | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Enum CurrencyCode | BODU ">
-    
-    <meta name="description" content="Source-generated enumeration of the ISO 4217 currencies shipped with Bodu.Financial.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>CurrencyCode Enum
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="CurrencyCode Enum
+ | BODU ">
+      
+      <meta name="description" content="Source-generated enumeration of the ISO 4217 currencies shipped with Bodu.Financial.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Financial.Currencies.CurrencyCode">
+
+        <article data-uid="Bodu.Financial.Currencies.CurrencyCode">
 
 
 
 
-  <h1 id="Bodu_Financial_Currencies_CurrencyCode" data-uid="Bodu.Financial.Currencies.CurrencyCode" class="text-break">Enum CurrencyCode</h1>
-  <div class="markdown level0 summary"><p>Source-generated enumeration of the ISO 4217 currencies shipped with Bodu.Financial.</p>
+
+  <h1 id="Bodu_Financial_Currencies_CurrencyCode" data-uid="Bodu.Financial.Currencies.CurrencyCode" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+CurrencyCode Enum
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.Currencies/CurrencyCode.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Financial_Currencies_CurrencyCode_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.Currencies.html">Currencies</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Financial.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial">Bodu.Financial</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial/src/Financial.Currencies/CurrencyCode.cs">CurrencyCode.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Source-generated enumeration of the ISO 4217 currencies shipped with Bodu.Financial.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.Currencies.html">Currencies</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Financial.dll</h6>
-  <h5 id="Bodu_Financial_Currencies_CurrencyCode_syntax">Syntax</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public enum CurrencyCode</code></pre>
   </div>
-  <h5 id="Bodu_Financial_Currencies_CurrencyCode_remarks"><strong>Remarks</strong></h5>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.BufferConverter.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;T&gt;(T, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Financial.Currencies.CurrencyCodeExtensions.html#Bodu_Financial_Currencies_CurrencyCodeExtensions_GetStatus_Bodu_Financial_Currencies_CurrencyCode_">CurrencyCodeExtensions.GetStatus(CurrencyCode)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Financial.Currencies.CurrencyCodeExtensions.html#Bodu_Financial_Currencies_CurrencyCodeExtensions_IsActive_Bodu_Financial_Currencies_CurrencyCode_">CurrencyCodeExtensions.IsActive(CurrencyCode)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Financial.Currencies.CurrencyCodeExtensions.html#Bodu_Financial_Currencies_CurrencyCodeExtensions_IsHistoric_Bodu_Financial_Currencies_CurrencyCode_">CurrencyCodeExtensions.IsHistoric(CurrencyCode)</a>
+  </div>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
+
+  <h2 id="fields">Fields
+</h2>
+  <dl class="parameters">
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_None" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.None)]
+None = 0</code></dt>
+  
+  <dd><p>No currency; sentinel for a currency-less or default-initialized value.</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_AED" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+AED = 784</code></dt>
+  
+  <dd><p>United Arab Emirates Dirham (numeric 784).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_AFN" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+AFN = 971</code></dt>
+  
+  <dd><p>Afghani (numeric 971).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_ALL" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+ALL = 8</code></dt>
+  
+  <dd><p>Lek (numeric 8).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_AMD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+AMD = 51</code></dt>
+  
+  <dd><p>Armenian Dram (numeric 51).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_ANG" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+ANG = 532</code></dt>
+  
+  <dd><p>Netherlands Antillean Guilder (numeric 532).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_AOA" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+AOA = 973</code></dt>
+  
+  <dd><p>Kwanza (numeric 973).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_ARS" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+ARS = 32</code></dt>
+  
+  <dd><p>Argentine Peso (numeric 32).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_AUD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+AUD = 36</code></dt>
+  
+  <dd><p>Australian Dollar (numeric 36).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_AWG" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+AWG = 533</code></dt>
+  
+  <dd><p>Aruban Florin (numeric 533).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_AZN" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+AZN = 944</code></dt>
+  
+  <dd><p>Azerbaijan Manat (numeric 944).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_BAM" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+BAM = 977</code></dt>
+  
+  <dd><p>Convertible Mark (numeric 977).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_BBD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+BBD = 52</code></dt>
+  
+  <dd><p>Barbados Dollar (numeric 52).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_BDT" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+BDT = 50</code></dt>
+  
+  <dd><p>Taka (numeric 50).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_BGN" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+BGN = 975</code></dt>
+  
+  <dd><p>Bulgarian Lev (numeric 975).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_BHD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+BHD = 48</code></dt>
+  
+  <dd><p>Bahraini Dinar (numeric 48).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_BIF" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+BIF = 108</code></dt>
+  
+  <dd><p>Burundi Franc (numeric 108).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_BMD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+BMD = 60</code></dt>
+  
+  <dd><p>Bermudian Dollar (numeric 60).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_BND" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+BND = 96</code></dt>
+  
+  <dd><p>Brunei Dollar (numeric 96).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_BOB" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+BOB = 68</code></dt>
+  
+  <dd><p>Boliviano (numeric 68).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_BRL" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+BRL = 986</code></dt>
+  
+  <dd><p>Brazilian Real (numeric 986).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_BSD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+BSD = 44</code></dt>
+  
+  <dd><p>Bahamian Dollar (numeric 44).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_BTN" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+BTN = 64</code></dt>
+  
+  <dd><p>Ngultrum (numeric 64).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_BWP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+BWP = 72</code></dt>
+  
+  <dd><p>Pula (numeric 72).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_BYN" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+BYN = 933</code></dt>
+  
+  <dd><p>Belarusian Ruble (numeric 933).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_BZD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+BZD = 84</code></dt>
+  
+  <dd><p>Belize Dollar (numeric 84).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_CAD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+CAD = 124</code></dt>
+  
+  <dd><p>Canadian Dollar (numeric 124).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_CDF" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+CDF = 976</code></dt>
+  
+  <dd><p>Congolese Franc (numeric 976).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_CHF" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+CHF = 756</code></dt>
+  
+  <dd><p>Swiss Franc (numeric 756).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_CLP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+CLP = 152</code></dt>
+  
+  <dd><p>Chilean Peso (numeric 152).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_CNY" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+CNY = 156</code></dt>
+  
+  <dd><p>Yuan Renminbi (numeric 156).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_COP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+COP = 170</code></dt>
+  
+  <dd><p>Colombian Peso (numeric 170).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_CRC" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+CRC = 188</code></dt>
+  
+  <dd><p>Costa Rican Colon (numeric 188).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_CUP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+CUP = 192</code></dt>
+  
+  <dd><p>Cuban Peso (numeric 192).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_CVE" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+CVE = 132</code></dt>
+  
+  <dd><p>Cabo Verde Escudo (numeric 132).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_CZK" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+CZK = 203</code></dt>
+  
+  <dd><p>Czech Koruna (numeric 203).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_DJF" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+DJF = 262</code></dt>
+  
+  <dd><p>Djibouti Franc (numeric 262).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_DKK" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+DKK = 208</code></dt>
+  
+  <dd><p>Danish Krone (numeric 208).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_DOP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+DOP = 214</code></dt>
+  
+  <dd><p>Dominican Peso (numeric 214).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_DZD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+DZD = 12</code></dt>
+  
+  <dd><p>Algerian Dinar (numeric 12).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_EGP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+EGP = 818</code></dt>
+  
+  <dd><p>Egyptian Pound (numeric 818).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_ERN" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+ERN = 232</code></dt>
+  
+  <dd><p>Nakfa (numeric 232).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_ETB" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+ETB = 230</code></dt>
+  
+  <dd><p>Ethiopian Birr (numeric 230).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_EUR" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+EUR = 978</code></dt>
+  
+  <dd><p>Euro (numeric 978).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_FJD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+FJD = 242</code></dt>
+  
+  <dd><p>Fiji Dollar (numeric 242).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_FKP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+FKP = 238</code></dt>
+  
+  <dd><p>Falkland Islands Pound (numeric 238).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_GBP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+GBP = 826</code></dt>
+  
+  <dd><p>Pound Sterling (numeric 826).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_GEL" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+GEL = 981</code></dt>
+  
+  <dd><p>Lari (numeric 981).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_GHS" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+GHS = 936</code></dt>
+  
+  <dd><p>Ghana Cedi (numeric 936).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_GIP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+GIP = 292</code></dt>
+  
+  <dd><p>Gibraltar Pound (numeric 292).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_GMD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+GMD = 270</code></dt>
+  
+  <dd><p>Dalasi (numeric 270).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_GNF" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+GNF = 324</code></dt>
+  
+  <dd><p>Guinean Franc (numeric 324).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_GTQ" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+GTQ = 320</code></dt>
+  
+  <dd><p>Quetzal (numeric 320).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_GYD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+GYD = 328</code></dt>
+  
+  <dd><p>Guyana Dollar (numeric 328).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_HKD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+HKD = 344</code></dt>
+  
+  <dd><p>Hong Kong Dollar (numeric 344).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_HNL" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+HNL = 340</code></dt>
+  
+  <dd><p>Lempira (numeric 340).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_HTG" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+HTG = 332</code></dt>
+  
+  <dd><p>Gourde (numeric 332).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_HUF" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+HUF = 348</code></dt>
+  
+  <dd><p>Forint (numeric 348).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_IDR" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+IDR = 360</code></dt>
+  
+  <dd><p>Rupiah (numeric 360).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_ILS" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+ILS = 376</code></dt>
+  
+  <dd><p>New Israeli Sheqel (numeric 376).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_INR" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+INR = 356</code></dt>
+  
+  <dd><p>Indian Rupee (numeric 356).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_IQD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+IQD = 368</code></dt>
+  
+  <dd><p>Iraqi Dinar (numeric 368).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_IRR" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+IRR = 364</code></dt>
+  
+  <dd><p>Iranian Rial (numeric 364).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_ISK" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+ISK = 352</code></dt>
+  
+  <dd><p>Iceland Krona (numeric 352).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_JMD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+JMD = 388</code></dt>
+  
+  <dd><p>Jamaican Dollar (numeric 388).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_JOD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+JOD = 400</code></dt>
+  
+  <dd><p>Jordanian Dinar (numeric 400).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_JPY" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+JPY = 392</code></dt>
+  
+  <dd><p>Yen (numeric 392).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_KES" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+KES = 404</code></dt>
+  
+  <dd><p>Kenyan Shilling (numeric 404).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_KGS" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+KGS = 417</code></dt>
+  
+  <dd><p>Som (numeric 417).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_KHR" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+KHR = 116</code></dt>
+  
+  <dd><p>Riel (numeric 116).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_KMF" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+KMF = 174</code></dt>
+  
+  <dd><p>Comorian Franc (numeric 174).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_KPW" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+KPW = 408</code></dt>
+  
+  <dd><p>North Korean Won (numeric 408).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_KRW" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+KRW = 410</code></dt>
+  
+  <dd><p>Won (numeric 410).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_KWD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+KWD = 414</code></dt>
+  
+  <dd><p>Kuwaiti Dinar (numeric 414).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_KYD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+KYD = 136</code></dt>
+  
+  <dd><p>Cayman Islands Dollar (numeric 136).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_KZT" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+KZT = 398</code></dt>
+  
+  <dd><p>Tenge (numeric 398).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_LAK" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+LAK = 418</code></dt>
+  
+  <dd><p>Lao Kip (numeric 418).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_LBP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+LBP = 422</code></dt>
+  
+  <dd><p>Lebanese Pound (numeric 422).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_LKR" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+LKR = 144</code></dt>
+  
+  <dd><p>Sri Lanka Rupee (numeric 144).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_LRD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+LRD = 430</code></dt>
+  
+  <dd><p>Liberian Dollar (numeric 430).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_LSL" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+LSL = 426</code></dt>
+  
+  <dd><p>Loti (numeric 426).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_LYD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+LYD = 434</code></dt>
+  
+  <dd><p>Libyan Dinar (numeric 434).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_MAD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+MAD = 504</code></dt>
+  
+  <dd><p>Moroccan Dirham (numeric 504).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_MDL" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+MDL = 498</code></dt>
+  
+  <dd><p>Moldovan Leu (numeric 498).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_MGA" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+MGA = 969</code></dt>
+  
+  <dd><p>Malagasy Ariary (numeric 969).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_MKD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+MKD = 807</code></dt>
+  
+  <dd><p>Denar (numeric 807).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_MMK" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+MMK = 104</code></dt>
+  
+  <dd><p>Kyat (numeric 104).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_MNT" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+MNT = 496</code></dt>
+  
+  <dd><p>Tugrik (numeric 496).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_MOP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+MOP = 446</code></dt>
+  
+  <dd><p>Pataca (numeric 446).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_MRU" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+MRU = 929</code></dt>
+  
+  <dd><p>Ouguiya (numeric 929).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_MUR" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+MUR = 480</code></dt>
+  
+  <dd><p>Mauritius Rupee (numeric 480).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_MVR" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+MVR = 462</code></dt>
+  
+  <dd><p>Rufiyaa (numeric 462).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_MWK" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+MWK = 454</code></dt>
+  
+  <dd><p>Malawi Kwacha (numeric 454).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_MXN" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+MXN = 484</code></dt>
+  
+  <dd><p>Mexican Peso (numeric 484).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_MYR" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+MYR = 458</code></dt>
+  
+  <dd><p>Malaysian Ringgit (numeric 458).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_MZN" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+MZN = 943</code></dt>
+  
+  <dd><p>Mozambique Metical (numeric 943).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_NAD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+NAD = 516</code></dt>
+  
+  <dd><p>Namibia Dollar (numeric 516).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_NGN" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+NGN = 566</code></dt>
+  
+  <dd><p>Naira (numeric 566).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_NIO" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+NIO = 558</code></dt>
+  
+  <dd><p>Cordoba Oro (numeric 558).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_NOK" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+NOK = 578</code></dt>
+  
+  <dd><p>Norwegian Krone (numeric 578).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_NPR" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+NPR = 524</code></dt>
+  
+  <dd><p>Nepalese Rupee (numeric 524).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_NZD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+NZD = 554</code></dt>
+  
+  <dd><p>New Zealand Dollar (numeric 554).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_OMR" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+OMR = 512</code></dt>
+  
+  <dd><p>Rial Omani (numeric 512).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_PAB" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+PAB = 590</code></dt>
+  
+  <dd><p>Balboa (numeric 590).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_PEN" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+PEN = 604</code></dt>
+  
+  <dd><p>Sol (numeric 604).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_PGK" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+PGK = 598</code></dt>
+  
+  <dd><p>Kina (numeric 598).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_PHP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+PHP = 608</code></dt>
+  
+  <dd><p>Philippine Peso (numeric 608).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_PKR" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+PKR = 586</code></dt>
+  
+  <dd><p>Pakistan Rupee (numeric 586).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_PLN" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+PLN = 985</code></dt>
+  
+  <dd><p>Zloty (numeric 985).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_PYG" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+PYG = 600</code></dt>
+  
+  <dd><p>Guarani (numeric 600).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_QAR" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+QAR = 634</code></dt>
+  
+  <dd><p>Qatari Rial (numeric 634).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_RON" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+RON = 946</code></dt>
+  
+  <dd><p>Romanian Leu (numeric 946).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_RSD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+RSD = 941</code></dt>
+  
+  <dd><p>Serbian Dinar (numeric 941).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_RUB" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+RUB = 643</code></dt>
+  
+  <dd><p>Russian Ruble (numeric 643).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_RWF" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+RWF = 646</code></dt>
+  
+  <dd><p>Rwanda Franc (numeric 646).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SAR" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+SAR = 682</code></dt>
+  
+  <dd><p>Saudi Riyal (numeric 682).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SBD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+SBD = 90</code></dt>
+  
+  <dd><p>Solomon Islands Dollar (numeric 90).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SCR" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+SCR = 690</code></dt>
+  
+  <dd><p>Seychelles Rupee (numeric 690).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SDG" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+SDG = 938</code></dt>
+  
+  <dd><p>Sudanese Pound (numeric 938).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SEK" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+SEK = 752</code></dt>
+  
+  <dd><p>Swedish Krona (numeric 752).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SGD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+SGD = 702</code></dt>
+  
+  <dd><p>Singapore Dollar (numeric 702).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SHP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+SHP = 654</code></dt>
+  
+  <dd><p>Saint Helena Pound (numeric 654).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SLE" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+SLE = 925</code></dt>
+  
+  <dd><p>Leone (numeric 925).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SOS" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+SOS = 706</code></dt>
+  
+  <dd><p>Somali Shilling (numeric 706).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SRD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+SRD = 968</code></dt>
+  
+  <dd><p>Surinam Dollar (numeric 968).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SSP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+SSP = 728</code></dt>
+  
+  <dd><p>South Sudanese Pound (numeric 728).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_STN" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+STN = 930</code></dt>
+  
+  <dd><p>Dobra (numeric 930).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SVC" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+SVC = 222</code></dt>
+  
+  <dd><p>El Salvador Colon (numeric 222).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SYP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+SYP = 760</code></dt>
+  
+  <dd><p>Syrian Pound (numeric 760).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SZL" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+SZL = 748</code></dt>
+  
+  <dd><p>Lilangeni (numeric 748).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_THB" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+THB = 764</code></dt>
+  
+  <dd><p>Baht (numeric 764).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_TJS" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+TJS = 972</code></dt>
+  
+  <dd><p>Somoni (numeric 972).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_TMT" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+TMT = 934</code></dt>
+  
+  <dd><p>Turkmenistan New Manat (numeric 934).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_TND" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+TND = 788</code></dt>
+  
+  <dd><p>Tunisian Dinar (numeric 788).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_TOP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+TOP = 776</code></dt>
+  
+  <dd><p>Pa’anga (numeric 776).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_TRY" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+TRY = 949</code></dt>
+  
+  <dd><p>Turkish Lira (numeric 949).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_TTD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+TTD = 780</code></dt>
+  
+  <dd><p>Trinidad and Tobago Dollar (numeric 780).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_TWD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+TWD = 901</code></dt>
+  
+  <dd><p>New Taiwan Dollar (numeric 901).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_TZS" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+TZS = 834</code></dt>
+  
+  <dd><p>Tanzanian Shilling (numeric 834).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_UAH" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+UAH = 980</code></dt>
+  
+  <dd><p>Hryvnia (numeric 980).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_UGX" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+UGX = 800</code></dt>
+  
+  <dd><p>Uganda Shilling (numeric 800).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_USD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+USD = 840</code></dt>
+  
+  <dd><p>US Dollar (numeric 840).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_UYU" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+UYU = 858</code></dt>
+  
+  <dd><p>Peso Uruguayo (numeric 858).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_UZS" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+UZS = 860</code></dt>
+  
+  <dd><p>Uzbekistan Sum (numeric 860).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_VES" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+VES = 928</code></dt>
+  
+  <dd><p>Bolivar Soberano (numeric 928).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_VND" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+VND = 704</code></dt>
+  
+  <dd><p>Dong (numeric 704).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_VUV" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+VUV = 548</code></dt>
+  
+  <dd><p>Vatu (numeric 548).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_WST" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+WST = 882</code></dt>
+  
+  <dd><p>Tala (numeric 882).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_XAF" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+XAF = 950</code></dt>
+  
+  <dd><p>CFA Franc BEAC (numeric 950).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_XCD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+XCD = 951</code></dt>
+  
+  <dd><p>East Caribbean Dollar (numeric 951).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_XOF" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+XOF = 952</code></dt>
+  
+  <dd><p>CFA Franc BCEAO (numeric 952).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_XPF" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+XPF = 953</code></dt>
+  
+  <dd><p>CFP Franc (numeric 953).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_YER" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+YER = 886</code></dt>
+  
+  <dd><p>Yemeni Rial (numeric 886).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_ZAR" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+ZAR = 710</code></dt>
+  
+  <dd><p>Rand (numeric 710).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_ZMW" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+ZMW = 967</code></dt>
+  
+  <dd><p>Zambian Kwacha (numeric 967).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_ZWG" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Active)]
+ZWG = 924</code></dt>
+  
+  <dd><p>Zimbabwe Gold (numeric 924).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_ATS" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+ATS = 40</code></dt>
+  
+  <dd><p>Austrian Schilling (numeric 40; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_AZM" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+AZM = 31</code></dt>
+  
+  <dd><p>Old Azerbaijan Manat (numeric 31; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_BEF" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+BEF = 56</code></dt>
+  
+  <dd><p>Belgian Franc (numeric 56; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_CYP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+CYP = 196</code></dt>
+  
+  <dd><p>Cypriot Pound (numeric 196; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_DEM" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+DEM = 276</code></dt>
+  
+  <dd><p>Deutsche Mark (numeric 276; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_EEK" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+EEK = 233</code></dt>
+  
+  <dd><p>Estonian Kroon (numeric 233; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_ESP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+ESP = 724</code></dt>
+  
+  <dd><p>Spanish Peseta (numeric 724; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_FIM" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+FIM = 246</code></dt>
+  
+  <dd><p>Finnish Markka (numeric 246; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_FRF" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+FRF = 250</code></dt>
+  
+  <dd><p>French Franc (numeric 250; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_GHC" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+GHC = 288</code></dt>
+  
+  <dd><p>Old Ghana Cedi (numeric 288; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_GRD" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+GRD = 300</code></dt>
+  
+  <dd><p>Greek Drachma (numeric 300; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_HRK" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+HRK = 191</code></dt>
+  
+  <dd><p>Croatian Kuna (numeric 191; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_IEP" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+IEP = 372</code></dt>
+  
+  <dd><p>Irish Pound (numeric 372; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_ITL" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+ITL = 380</code></dt>
+  
+  <dd><p>Italian Lira (numeric 380; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_LTL" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+LTL = 440</code></dt>
+  
+  <dd><p>Lithuanian Litas (numeric 440; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_LUF" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+LUF = 442</code></dt>
+  
+  <dd><p>Luxembourg Franc (numeric 442; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_LVL" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+LVL = 428</code></dt>
+  
+  <dd><p>Latvian Lats (numeric 428; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_MTL" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+MTL = 470</code></dt>
+  
+  <dd><p>Maltese Lira (numeric 470; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_MZM" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+MZM = 508</code></dt>
+  
+  <dd><p>Old Mozambican Metical (numeric 508; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_NLG" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+NLG = 528</code></dt>
+  
+  <dd><p>Netherlands Guilder (numeric 528; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_PTE" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+PTE = 620</code></dt>
+  
+  <dd><p>Portuguese Escudo (numeric 620; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_ROL" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+ROL = 642</code></dt>
+  
+  <dd><p>Old Romanian Leu (numeric 642; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SIT" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+SIT = 705</code></dt>
+  
+  <dd><p>Slovenian Tolar (numeric 705; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SKK" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+SKK = 703</code></dt>
+  
+  <dd><p>Slovak Koruna (numeric 703; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_SRG" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+SRG = 740</code></dt>
+  
+  <dd><p>Suriname Guilder (numeric 740; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_TMM" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+TMM = 795</code></dt>
+  
+  <dd><p>Old Turkmenistan Manat (numeric 795; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_VEB" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+VEB = 862</code></dt>
+  
+  <dd><p>Venezuelan Bolívar (numeric 862; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_VEF" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+VEF = 937</code></dt>
+  
+  <dd><p>Venezuelan Bolívar Fuerte (numeric 937; historic).</p>
+</dd>
+    <dt id="Bodu_Financial_Currencies_CurrencyCode_ZWL" data-bodu-frameworks="net8.0 net10.0"><code>[CurrencyStatus(CurrencyStatus.Historic)]
+ZWL = 932</code></dt>
+  
+  <dd><p>Zimbabwe Dollar (numeric 932; historic).</p>
+</dd>
+  </dl>
+
+
+  <h2 id="Bodu_Financial_Currencies_CurrencyCode_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>Each member name is the three-letter ISO 4217 alphabetic code; each member value is the
 corresponding ISO 4217 numeric code. Both active and historic / demonetized currencies are
 included; a member's lifecycle is declared by its <a class="xref" href="Bodu.Financial.Currencies.CurrencyStatusAttribute.html">CurrencyStatusAttribute</a> and
-can be queried via <a class="xref" href="Bodu.Financial.Currencies.CurrencyCodeExtensions.GetStatus.html#Bodu_Financial_Currencies_CurrencyCodeExtensions_GetStatus_Bodu_Financial_Currencies_CurrencyCode_">GetStatus(CurrencyCode)</a>. The
+can be queried via <a class="xref" href="Bodu.Financial.Currencies.CurrencyCodeExtensions.html#Bodu_Financial_Currencies_CurrencyCodeExtensions_GetStatus_Bodu_Financial_Currencies_CurrencyCode_">GetStatus(CurrencyCode)</a>. The
 <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html#Bodu_Financial_Currencies_CurrencyCode_None">None</a> sentinel (value 0) represents the absence of a currency.</p>
 </div>
-  <h3 id="fields">Fields
-</h3>
-  <table class="table table-bordered table-condensed">
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    <thead>
-    </thead></thead><tbody>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_None">None</td>
-        <td><p>No currency; sentinel for a currency-less or default-initialized value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_AED">AED</td>
-        <td><p>United Arab Emirates Dirham (numeric 784).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_AFN">AFN</td>
-        <td><p>Afghani (numeric 971).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_ALL">ALL</td>
-        <td><p>Lek (numeric 8).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_AMD">AMD</td>
-        <td><p>Armenian Dram (numeric 51).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_ANG">ANG</td>
-        <td><p>Netherlands Antillean Guilder (numeric 532).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_AOA">AOA</td>
-        <td><p>Kwanza (numeric 973).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_ARS">ARS</td>
-        <td><p>Argentine Peso (numeric 32).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_AUD">AUD</td>
-        <td><p>Australian Dollar (numeric 36).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_AWG">AWG</td>
-        <td><p>Aruban Florin (numeric 533).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_AZN">AZN</td>
-        <td><p>Azerbaijan Manat (numeric 944).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_BAM">BAM</td>
-        <td><p>Convertible Mark (numeric 977).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_BBD">BBD</td>
-        <td><p>Barbados Dollar (numeric 52).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_BDT">BDT</td>
-        <td><p>Taka (numeric 50).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_BGN">BGN</td>
-        <td><p>Bulgarian Lev (numeric 975).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_BHD">BHD</td>
-        <td><p>Bahraini Dinar (numeric 48).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_BIF">BIF</td>
-        <td><p>Burundi Franc (numeric 108).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_BMD">BMD</td>
-        <td><p>Bermudian Dollar (numeric 60).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_BND">BND</td>
-        <td><p>Brunei Dollar (numeric 96).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_BOB">BOB</td>
-        <td><p>Boliviano (numeric 68).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_BRL">BRL</td>
-        <td><p>Brazilian Real (numeric 986).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_BSD">BSD</td>
-        <td><p>Bahamian Dollar (numeric 44).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_BTN">BTN</td>
-        <td><p>Ngultrum (numeric 64).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_BWP">BWP</td>
-        <td><p>Pula (numeric 72).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_BYN">BYN</td>
-        <td><p>Belarusian Ruble (numeric 933).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_BZD">BZD</td>
-        <td><p>Belize Dollar (numeric 84).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_CAD">CAD</td>
-        <td><p>Canadian Dollar (numeric 124).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_CDF">CDF</td>
-        <td><p>Congolese Franc (numeric 976).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_CHF">CHF</td>
-        <td><p>Swiss Franc (numeric 756).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_CLP">CLP</td>
-        <td><p>Chilean Peso (numeric 152).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_CNY">CNY</td>
-        <td><p>Yuan Renminbi (numeric 156).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_COP">COP</td>
-        <td><p>Colombian Peso (numeric 170).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_CRC">CRC</td>
-        <td><p>Costa Rican Colon (numeric 188).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_CUP">CUP</td>
-        <td><p>Cuban Peso (numeric 192).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_CVE">CVE</td>
-        <td><p>Cabo Verde Escudo (numeric 132).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_CZK">CZK</td>
-        <td><p>Czech Koruna (numeric 203).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_DJF">DJF</td>
-        <td><p>Djibouti Franc (numeric 262).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_DKK">DKK</td>
-        <td><p>Danish Krone (numeric 208).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_DOP">DOP</td>
-        <td><p>Dominican Peso (numeric 214).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_DZD">DZD</td>
-        <td><p>Algerian Dinar (numeric 12).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_EGP">EGP</td>
-        <td><p>Egyptian Pound (numeric 818).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_ERN">ERN</td>
-        <td><p>Nakfa (numeric 232).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_ETB">ETB</td>
-        <td><p>Ethiopian Birr (numeric 230).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_EUR">EUR</td>
-        <td><p>Euro (numeric 978).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_FJD">FJD</td>
-        <td><p>Fiji Dollar (numeric 242).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_FKP">FKP</td>
-        <td><p>Falkland Islands Pound (numeric 238).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_GBP">GBP</td>
-        <td><p>Pound Sterling (numeric 826).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_GEL">GEL</td>
-        <td><p>Lari (numeric 981).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_GHS">GHS</td>
-        <td><p>Ghana Cedi (numeric 936).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_GIP">GIP</td>
-        <td><p>Gibraltar Pound (numeric 292).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_GMD">GMD</td>
-        <td><p>Dalasi (numeric 270).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_GNF">GNF</td>
-        <td><p>Guinean Franc (numeric 324).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_GTQ">GTQ</td>
-        <td><p>Quetzal (numeric 320).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_GYD">GYD</td>
-        <td><p>Guyana Dollar (numeric 328).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_HKD">HKD</td>
-        <td><p>Hong Kong Dollar (numeric 344).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_HNL">HNL</td>
-        <td><p>Lempira (numeric 340).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_HTG">HTG</td>
-        <td><p>Gourde (numeric 332).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_HUF">HUF</td>
-        <td><p>Forint (numeric 348).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_IDR">IDR</td>
-        <td><p>Rupiah (numeric 360).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_ILS">ILS</td>
-        <td><p>New Israeli Sheqel (numeric 376).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_INR">INR</td>
-        <td><p>Indian Rupee (numeric 356).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_IQD">IQD</td>
-        <td><p>Iraqi Dinar (numeric 368).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_IRR">IRR</td>
-        <td><p>Iranian Rial (numeric 364).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_ISK">ISK</td>
-        <td><p>Iceland Krona (numeric 352).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_JMD">JMD</td>
-        <td><p>Jamaican Dollar (numeric 388).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_JOD">JOD</td>
-        <td><p>Jordanian Dinar (numeric 400).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_JPY">JPY</td>
-        <td><p>Yen (numeric 392).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_KES">KES</td>
-        <td><p>Kenyan Shilling (numeric 404).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_KGS">KGS</td>
-        <td><p>Som (numeric 417).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_KHR">KHR</td>
-        <td><p>Riel (numeric 116).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_KMF">KMF</td>
-        <td><p>Comorian Franc (numeric 174).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_KPW">KPW</td>
-        <td><p>North Korean Won (numeric 408).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_KRW">KRW</td>
-        <td><p>Won (numeric 410).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_KWD">KWD</td>
-        <td><p>Kuwaiti Dinar (numeric 414).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_KYD">KYD</td>
-        <td><p>Cayman Islands Dollar (numeric 136).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_KZT">KZT</td>
-        <td><p>Tenge (numeric 398).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_LAK">LAK</td>
-        <td><p>Lao Kip (numeric 418).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_LBP">LBP</td>
-        <td><p>Lebanese Pound (numeric 422).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_LKR">LKR</td>
-        <td><p>Sri Lanka Rupee (numeric 144).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_LRD">LRD</td>
-        <td><p>Liberian Dollar (numeric 430).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_LSL">LSL</td>
-        <td><p>Loti (numeric 426).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_LYD">LYD</td>
-        <td><p>Libyan Dinar (numeric 434).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_MAD">MAD</td>
-        <td><p>Moroccan Dirham (numeric 504).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_MDL">MDL</td>
-        <td><p>Moldovan Leu (numeric 498).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_MGA">MGA</td>
-        <td><p>Malagasy Ariary (numeric 969).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_MKD">MKD</td>
-        <td><p>Denar (numeric 807).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_MMK">MMK</td>
-        <td><p>Kyat (numeric 104).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_MNT">MNT</td>
-        <td><p>Tugrik (numeric 496).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_MOP">MOP</td>
-        <td><p>Pataca (numeric 446).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_MRU">MRU</td>
-        <td><p>Ouguiya (numeric 929).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_MUR">MUR</td>
-        <td><p>Mauritius Rupee (numeric 480).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_MVR">MVR</td>
-        <td><p>Rufiyaa (numeric 462).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_MWK">MWK</td>
-        <td><p>Malawi Kwacha (numeric 454).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_MXN">MXN</td>
-        <td><p>Mexican Peso (numeric 484).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_MYR">MYR</td>
-        <td><p>Malaysian Ringgit (numeric 458).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_MZN">MZN</td>
-        <td><p>Mozambique Metical (numeric 943).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_NAD">NAD</td>
-        <td><p>Namibia Dollar (numeric 516).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_NGN">NGN</td>
-        <td><p>Naira (numeric 566).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_NIO">NIO</td>
-        <td><p>Cordoba Oro (numeric 558).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_NOK">NOK</td>
-        <td><p>Norwegian Krone (numeric 578).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_NPR">NPR</td>
-        <td><p>Nepalese Rupee (numeric 524).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_NZD">NZD</td>
-        <td><p>New Zealand Dollar (numeric 554).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_OMR">OMR</td>
-        <td><p>Rial Omani (numeric 512).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_PAB">PAB</td>
-        <td><p>Balboa (numeric 590).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_PEN">PEN</td>
-        <td><p>Sol (numeric 604).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_PGK">PGK</td>
-        <td><p>Kina (numeric 598).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_PHP">PHP</td>
-        <td><p>Philippine Peso (numeric 608).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_PKR">PKR</td>
-        <td><p>Pakistan Rupee (numeric 586).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_PLN">PLN</td>
-        <td><p>Zloty (numeric 985).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_PYG">PYG</td>
-        <td><p>Guarani (numeric 600).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_QAR">QAR</td>
-        <td><p>Qatari Rial (numeric 634).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_RON">RON</td>
-        <td><p>Romanian Leu (numeric 946).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_RSD">RSD</td>
-        <td><p>Serbian Dinar (numeric 941).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_RUB">RUB</td>
-        <td><p>Russian Ruble (numeric 643).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_RWF">RWF</td>
-        <td><p>Rwanda Franc (numeric 646).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SAR">SAR</td>
-        <td><p>Saudi Riyal (numeric 682).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SBD">SBD</td>
-        <td><p>Solomon Islands Dollar (numeric 90).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SCR">SCR</td>
-        <td><p>Seychelles Rupee (numeric 690).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SDG">SDG</td>
-        <td><p>Sudanese Pound (numeric 938).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SEK">SEK</td>
-        <td><p>Swedish Krona (numeric 752).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SGD">SGD</td>
-        <td><p>Singapore Dollar (numeric 702).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SHP">SHP</td>
-        <td><p>Saint Helena Pound (numeric 654).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SLE">SLE</td>
-        <td><p>Leone (numeric 925).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SOS">SOS</td>
-        <td><p>Somali Shilling (numeric 706).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SRD">SRD</td>
-        <td><p>Surinam Dollar (numeric 968).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SSP">SSP</td>
-        <td><p>South Sudanese Pound (numeric 728).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_STN">STN</td>
-        <td><p>Dobra (numeric 930).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SVC">SVC</td>
-        <td><p>El Salvador Colon (numeric 222).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SYP">SYP</td>
-        <td><p>Syrian Pound (numeric 760).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SZL">SZL</td>
-        <td><p>Lilangeni (numeric 748).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_THB">THB</td>
-        <td><p>Baht (numeric 764).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_TJS">TJS</td>
-        <td><p>Somoni (numeric 972).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_TMT">TMT</td>
-        <td><p>Turkmenistan New Manat (numeric 934).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_TND">TND</td>
-        <td><p>Tunisian Dinar (numeric 788).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_TOP">TOP</td>
-        <td><p>Pa’anga (numeric 776).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_TRY">TRY</td>
-        <td><p>Turkish Lira (numeric 949).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_TTD">TTD</td>
-        <td><p>Trinidad and Tobago Dollar (numeric 780).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_TWD">TWD</td>
-        <td><p>New Taiwan Dollar (numeric 901).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_TZS">TZS</td>
-        <td><p>Tanzanian Shilling (numeric 834).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_UAH">UAH</td>
-        <td><p>Hryvnia (numeric 980).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_UGX">UGX</td>
-        <td><p>Uganda Shilling (numeric 800).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_USD">USD</td>
-        <td><p>US Dollar (numeric 840).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_UYU">UYU</td>
-        <td><p>Peso Uruguayo (numeric 858).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_UZS">UZS</td>
-        <td><p>Uzbekistan Sum (numeric 860).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_VES">VES</td>
-        <td><p>Bolivar Soberano (numeric 928).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_VND">VND</td>
-        <td><p>Dong (numeric 704).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_VUV">VUV</td>
-        <td><p>Vatu (numeric 548).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_WST">WST</td>
-        <td><p>Tala (numeric 882).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_XAF">XAF</td>
-        <td><p>CFA Franc BEAC (numeric 950).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_XCD">XCD</td>
-        <td><p>East Caribbean Dollar (numeric 951).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_XOF">XOF</td>
-        <td><p>CFA Franc BCEAO (numeric 952).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_XPF">XPF</td>
-        <td><p>CFP Franc (numeric 953).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_YER">YER</td>
-        <td><p>Yemeni Rial (numeric 886).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_ZAR">ZAR</td>
-        <td><p>Rand (numeric 710).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_ZMW">ZMW</td>
-        <td><p>Zambian Kwacha (numeric 967).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_ZWG">ZWG</td>
-        <td><p>Zimbabwe Gold (numeric 924).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_ATS">ATS</td>
-        <td><p>Austrian Schilling (numeric 40; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_AZM">AZM</td>
-        <td><p>Old Azerbaijan Manat (numeric 31; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_BEF">BEF</td>
-        <td><p>Belgian Franc (numeric 56; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_CYP">CYP</td>
-        <td><p>Cypriot Pound (numeric 196; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_DEM">DEM</td>
-        <td><p>Deutsche Mark (numeric 276; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_EEK">EEK</td>
-        <td><p>Estonian Kroon (numeric 233; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_ESP">ESP</td>
-        <td><p>Spanish Peseta (numeric 724; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_FIM">FIM</td>
-        <td><p>Finnish Markka (numeric 246; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_FRF">FRF</td>
-        <td><p>French Franc (numeric 250; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_GHC">GHC</td>
-        <td><p>Old Ghana Cedi (numeric 288; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_GRD">GRD</td>
-        <td><p>Greek Drachma (numeric 300; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_HRK">HRK</td>
-        <td><p>Croatian Kuna (numeric 191; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_IEP">IEP</td>
-        <td><p>Irish Pound (numeric 372; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_ITL">ITL</td>
-        <td><p>Italian Lira (numeric 380; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_LTL">LTL</td>
-        <td><p>Lithuanian Litas (numeric 440; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_LUF">LUF</td>
-        <td><p>Luxembourg Franc (numeric 442; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_LVL">LVL</td>
-        <td><p>Latvian Lats (numeric 428; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_MTL">MTL</td>
-        <td><p>Maltese Lira (numeric 470; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_MZM">MZM</td>
-        <td><p>Old Mozambican Metical (numeric 508; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_NLG">NLG</td>
-        <td><p>Netherlands Guilder (numeric 528; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_PTE">PTE</td>
-        <td><p>Portuguese Escudo (numeric 620; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_ROL">ROL</td>
-        <td><p>Old Romanian Leu (numeric 642; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SIT">SIT</td>
-        <td><p>Slovenian Tolar (numeric 705; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SKK">SKK</td>
-        <td><p>Slovak Koruna (numeric 703; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_SRG">SRG</td>
-        <td><p>Suriname Guilder (numeric 740; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_TMM">TMM</td>
-        <td><p>Old Turkmenistan Manat (numeric 795; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_VEB">VEB</td>
-        <td><p>Venezuelan Bolívar (numeric 862; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_VEF">VEF</td>
-        <td><p>Venezuelan Bolívar Fuerte (numeric 937; historic).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyCode_ZWL">ZWL</td>
-        <td><p>Zimbabwe Dollar (numeric 932; historic).</p>
-</td>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;CurrencyCode&gt;(CurrencyCode, byte[], int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode, IComparer&lt;CurrencyCode&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode, IComparer&lt;CurrencyCode&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode?, CurrencyCode?, IComparer&lt;CurrencyCode&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode?, CurrencyCode?, IComparer&lt;CurrencyCode&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode, IComparer&lt;CurrencyCode&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode?, IComparer&lt;CurrencyCode&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode?, IComparer&lt;CurrencyCode&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode?, IComparer&lt;CurrencyCode&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode?, IComparer&lt;CurrencyCode&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode?, CurrencyCode?, IComparer&lt;CurrencyCode&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode, IComparer&lt;CurrencyCode&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode, IComparer&lt;CurrencyCode&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.ClearFlag.html#Bodu_Extensions_EnumExtensions_ClearFlag__1___0___0_">EnumExtensions.ClearFlag&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDescription.html#Bodu_Extensions_EnumExtensions_GetDescription__1___0_">EnumExtensions.GetDescription&lt;CurrencyCode&gt;(CurrencyCode)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDisplayName.html#Bodu_Extensions_EnumExtensions_GetDisplayName__1___0_">EnumExtensions.GetDisplayName&lt;CurrencyCode&gt;(CurrencyCode)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAllFlags.html#Bodu_Extensions_EnumExtensions_HasAllFlags__1___0___0_">EnumExtensions.HasAllFlags&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAnyFlag.html#Bodu_Extensions_EnumExtensions_HasAnyFlag__1___0___0_">EnumExtensions.HasAnyFlag&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.SetFlag.html#Bodu_Extensions_EnumExtensions_SetFlag__1___0___0_">EnumExtensions.SetFlag&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.ToggleFlag.html#Bodu_Extensions_EnumExtensions_ToggleFlag__1___0___0_">EnumExtensions.ToggleFlag&lt;CurrencyCode&gt;(CurrencyCode, CurrencyCode)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.TryGetDescription.html#Bodu_Extensions_EnumExtensions_TryGetDescription__1___0_System_String__">EnumExtensions.TryGetDescription&lt;CurrencyCode&gt;(CurrencyCode, out string)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Financial.Currencies.CurrencyCodeExtensions.GetStatus.html#Bodu_Financial_Currencies_CurrencyCodeExtensions_GetStatus_Bodu_Financial_Currencies_CurrencyCode_">CurrencyCodeExtensions.GetStatus(CurrencyCode)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Financial.Currencies.CurrencyCodeExtensions.IsActive.html#Bodu_Financial_Currencies_CurrencyCodeExtensions_IsActive_Bodu_Financial_Currencies_CurrencyCode_">CurrencyCodeExtensions.IsActive(CurrencyCode)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Financial.Currencies.CurrencyCodeExtensions.IsHistoric.html#Bodu_Financial_Currencies_CurrencyCodeExtensions_IsHistoric_Bodu_Financial_Currencies_CurrencyCode_">CurrencyCodeExtensions.IsHistoric(CurrencyCode)</a>
-  </div>
+
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

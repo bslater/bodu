@@ -1,99 +1,137 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class HashAlgorithmExtensions | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class HashAlgorithmExtensions | BODU ">
-    
-    <meta name="description" content="Extends  with incremental input, async hashing of streams, and constant-time verification against expected digests supplied as bytes, spans, memory, or hex strings.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>HashAlgorithmExtensions Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="HashAlgorithmExtensions Class
+ | BODU ">
+      
+      <meta name="description" content="Extends  with incremental input, async hashing of streams, and constant-time verification against expected digests supplied as bytes, spans, memory, or hex strings.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions">
+
+        <article data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions">
 
 
 
-  <h1 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions" class="text-break">Class HashAlgorithmExtensions</h1>
-  <div class="markdown level0 summary"><p>Extends <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> with incremental input, async hashing of streams, and constant-time
+
+  <h1 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+HashAlgorithmExtensions Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.AppendData.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a>.<a class="xref" href="Bodu.Security.Cryptography.Extensions.html">Extensions</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.AppendData.cs">HashAlgorithmExtensions.AppendData.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Extends <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> with incremental input, async hashing of streams, and constant-time
 verification against expected digests supplied as bytes, spans, memory, or hex strings.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">HashAlgorithmExtensions</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class HashAlgorithmExtensions</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">HashAlgorithmExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -115,14 +153,15 @@ verification against expected digests supplied as bytes, spans, memory, or hex s
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a>.<a class="xref" href="Bodu.Security.Cryptography.Extensions.html">Extensions</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
-  <h5 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class HashAlgorithmExtensions</code></pre>
-  </div>
-  <h5 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_remarks"><strong>Remarks</strong></h5>
+    </dd>
+  </dl>
+
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> base type exposes a low-level API: <code>TransformBlock</code> /
 <code>TransformFinalBlock</code> for incremental input, and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.computehash#system-security-cryptography-hashalgorithm-computehash(system-byte())">ComputeHash(byte[])</a> for one-shot
@@ -184,246 +223,1657 @@ await using Stream net = response.Content.ReadAsStream();
 bool verified = await sha.VerifyHashAsync(net, expected, cancellationToken);</code></pre>
 </example>
 </div>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendData_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.AppendData*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendData_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.AppendData(System.Security.Cryptography.HashAlgorithm,System.ReadOnlySpan{System.Byte})">
+  AppendData(HashAlgorithm, ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.AppendData.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Feeds a span of bytes into the ongoing hash computation of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> without
+finalizing it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void AppendData(this HashAlgorithm algorithm, ReadOnlySpan&lt;byte&gt; data)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance receiving the data. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The span of bytes to feed into the hash computation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendData_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This method is intended for use in incremental hashing scenarios where data is supplied in multiple segments.
+The caller is responsible for calling <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.transformfinalblock">TransformFinalBlock(byte[], int, int)</a> to complete the hash and
+obtain the result.
+</p>
+<p>
+An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.arraypool-1">ArrayPool&lt;T&gt;</a> buffer is used internally to bridge the span into the array-based
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.transformblock">TransformBlock(byte[], int, int, byte[], int)</a> API. The buffer is cleared and returned to the pool in a
+<code>finally</code> block so the input data cannot be observed by a subsequent pool consumer even if
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.transformblock">TransformBlock(byte[], int, int, byte[], int)</a> throws.
+</p>
+<p>
+If <code class="paramref">data</code> is empty, this method returns without performing any work.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendDataAsync_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.AppendDataAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendDataAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Int32_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.AppendDataAsync(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+  AppendDataAsync(HashAlgorithm, Stream, int, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.AppendData.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Asynchronously reads all bytes from <code class="paramref">source</code> and feeds them into the hash accumulator via
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.transformblock">TransformBlock(byte[], int, int, byte[], int)</a>, without finalizing the computation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task AppendDataAsync(this HashAlgorithm algorithm, Stream source, int bufferSize = 4096, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The hash algorithm to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream whose bytes are appended to the current hash state. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>bufferSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes read per iteration. Must be greater than zero. Defaults to 4096.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Token used to cancel the read loop. When signaled, the current
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.readasync#system-io-stream-readasync(system-memory((system-byte))-system-threading-cancellationtoken)">ReadAsync(Memory&lt;byte&gt;, CancellationToken)</a> is canceled and
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a> is propagated to the caller.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a> that completes when all bytes have been fed into the accumulator.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendDataAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Int32_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This method is the asynchronous counterpart to
+<a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendData_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__">AppendData(HashAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>. It allows large or streaming sources to be
+incorporated into an incremental hash computation without blocking the calling thread.
+</p>
+<p>
+Because only <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.transformblock">TransformBlock(byte[], int, int, byte[], int)</a> is called, the hash state is not finalized after this
+method returns. The caller is responsible for calling <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.transformfinalblock">TransformFinalBlock(byte[], int, int)</a> when all
+data has been supplied.
+</p>
+<p>
+Multiple <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendDataAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">AppendDataAsync(HashAlgorithm, Stream, int, CancellationToken)</a> calls — and calls interleaved with the synchronous
+<a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendData_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__">AppendData(HashAlgorithm, ReadOnlySpan&lt;byte&gt;)</a> — accumulate correctly because all of them
+delegate to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.transformblock">TransformBlock(byte[], int, int, byte[], int)</a>.
+</p>
+<p>
+The read buffer is rented from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.arraypool-1.shared">Shared</a> and returned — with its contents zeroed — in
+all exit paths, including cancellation and exception propagation.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">algorithm</code> or <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">bufferSize</code> is less than or equal to zero.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a></dt>
+    <dd><p><code class="paramref">cancellationToken</code> was signaled before or during the read loop.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.ioexception">IOException</a></dt>
+    <dd><p><code class="paramref">source</code> threw an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.ioexception">IOException</a> during a read.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash(System.Security.Cryptography.HashAlgorithm,System.Byte[],System.Byte[])">
+  TryVerifyHash(HashAlgorithm, byte[], byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.TryVerifyHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to compute and verify the hash of a byte array against the expected hash value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryVerifyHash(this HashAlgorithm algorithm, byte[] input, byte[] expectedHash)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input data to hash. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the method to return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>expectedHash</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The expected hash value to compare against. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the method to return
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash matches <code class="paramref">expectedHash</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash(System.Security.Cryptography.HashAlgorithm,System.Byte[],System.String)">
+  TryVerifyHash(HashAlgorithm, byte[], string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.TryVerifyHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to compute and verify the hash of a byte array against an expected hexadecimal hash string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryVerifyHash(this HashAlgorithm algorithm, byte[] input, string expectedHex)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input data to hash. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the method to return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>expectedHex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The expected hash as a hexadecimal string. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the method to return
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash matches <code class="paramref">expectedHex</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if <code class="paramref">expectedHex</code> is not a valid
+hexadecimal string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.Byte[])">
+  TryVerifyHash(HashAlgorithm, Stream, byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.TryVerifyHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to compute and verify the hash of a stream against the expected hash value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryVerifyHash(this HashAlgorithm algorithm, Stream stream, byte[] expectedHash)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The input stream to read and hash. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the method to return
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>expectedHash</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The expected hash value as a byte array. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the method to return
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the stream produces a matching hash; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.String)">
+  TryVerifyHash(HashAlgorithm, Stream, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.TryVerifyHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to compute and verify the hash of a stream against the expected hexadecimal hash string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryVerifyHash(this HashAlgorithm algorithm, Stream stream, string expectedHex)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The input stream to read and hash. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the method to return
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>expectedHex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The expected hash value as a hexadecimal string. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the method to return
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the stream hash matches <code class="paramref">expectedHex</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if <code class="paramref">expectedHex</code> is not a valid
+hexadecimal string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash(System.Security.Cryptography.HashAlgorithm,System.ReadOnlyMemory{System.Byte},System.Byte[])">
+  TryVerifyHash(HashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.TryVerifyHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to compute and verify the hash of a memory buffer against the expected hash value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryVerifyHash(this HashAlgorithm algorithm, ReadOnlyMemory&lt;byte&gt; input, byte[] expectedHash)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The memory buffer containing the input data to hash.</p>
+</dd>
+    <dt><code>expectedHash</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The expected hash value as a byte array. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the method to return
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash matches <code class="paramref">expectedHash</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash(System.Security.Cryptography.HashAlgorithm,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+  TryVerifyHash(HashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.TryVerifyHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to compute and verify the hash of a span of bytes against the expected hash span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryVerifyHash(this HashAlgorithm algorithm, ReadOnlySpan&lt;byte&gt; input, ReadOnlySpan&lt;byte&gt; expectedHash)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The span of input bytes to hash.</p>
+</dd>
+    <dt><code>expectedHash</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The expected hash as a read-only byte span.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash matches <code class="paramref">expectedHash</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash(System.Security.Cryptography.HashAlgorithm,System.String,System.Text.Encoding,System.Byte[])">
+  TryVerifyHash(HashAlgorithm, string, Encoding, byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.TryVerifyHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to compute and verify the hash of an encoded string against the expected hash value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryVerifyHash(this HashAlgorithm algorithm, string input, Encoding encoding, byte[] expectedHash)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The plain-text string to encode and hash. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the method to return
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The encoding used to convert <code class="paramref">input</code> to bytes. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the
+method to return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>expectedHash</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The expected hash value as a byte array. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the method to return
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash matches <code class="paramref">expectedHash</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.Byte[],System.Byte[],System.Threading.CancellationToken)">
+  TryVerifyHashAsync(HashAlgorithm, byte[], byte[], CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.TryVerifyHashAsync.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to verify the hash of a byte array against the expected hash value, exposed as a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task&lt;TResult&gt;</a> for API symmetry with the stream-based asynchronous overloads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;bool&gt; TryVerifyHashAsync(this HashAlgorithm algorithm, byte[] input, byte[] expectedHash, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input data to hash. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the task to resolve to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>expectedHash</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The expected hash value as a byte array. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the task to resolve to
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Pre-checked before delegation. If already canceled, the task resolves to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>; the
+synchronous delegate cannot otherwise observe the token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd><p>A task that evaluates to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash matches <code class="paramref">expectedHash</code>;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This overload performs no I/O. It delegates to <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___">TryVerifyHash(HashAlgorithm, byte[], byte[])</a> and
+wraps the result in a completed <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task&lt;TResult&gt;</a>, so the operation completes synchronously.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.Byte[],System.String,System.Threading.CancellationToken)">
+  TryVerifyHashAsync(HashAlgorithm, byte[], string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.TryVerifyHashAsync.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to verify the hash of a byte array against the expected hexadecimal hash string, exposed as a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task&lt;TResult&gt;</a> for API symmetry with the stream-based asynchronous overloads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;bool&gt; TryVerifyHashAsync(this HashAlgorithm algorithm, byte[] input, string expectedHex, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input data to hash. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the task to resolve to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>expectedHex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The expected hash as a hexadecimal string. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the task to resolve to
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Pre-checked before delegation. If already canceled, the task resolves to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>; the
+synchronous delegate cannot otherwise observe the token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd><p>A task that evaluates to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash matches <code class="paramref">expectedHex</code>;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if <code class="paramref">expectedHex</code> is not
+a valid hexadecimal string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This overload performs no I/O. It delegates to <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_">TryVerifyHash(HashAlgorithm, byte[], string)</a> and
+wraps the result in a completed <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task&lt;TResult&gt;</a>, so the operation completes synchronously.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.Byte[],System.Threading.CancellationToken)">
+  TryVerifyHashAsync(HashAlgorithm, Stream, byte[], CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.AppendData.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to asynchronously compute and verify the hash of a stream against the expected hash value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;bool&gt; TryVerifyHashAsync(this HashAlgorithm algorithm, Stream stream, byte[] expectedHash, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to read and hash. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the task to resolve to
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>expectedHash</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The expected hash value as a byte array. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the task to resolve to
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd><p>A task that evaluates to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash matches <code class="paramref">expectedHash</code>;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
+  TryVerifyHashAsync(HashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.AppendData.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to asynchronously compute and verify the hash of a stream against the expected hash value held in a
+memory buffer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;bool&gt; TryVerifyHashAsync(this HashAlgorithm algorithm, Stream stream, ReadOnlyMemory&lt;byte&gt; expectedHash, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to read and hash asynchronously. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the task to resolve to
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>expectedHash</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The expected hash value as a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory&lt;T&gt;</a> of bytes.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd><p>A task that evaluates to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash matches <code class="paramref">expectedHash</code>;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.String,System.Threading.CancellationToken)">
+  TryVerifyHashAsync(HashAlgorithm, Stream, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.AppendData.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to asynchronously compute and verify the hash of a stream against the expected hexadecimal hash string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;bool&gt; TryVerifyHashAsync(this HashAlgorithm algorithm, Stream stream, string expectedHex, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The readable stream to hash asynchronously. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the task to resolve to
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>expectedHex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The expected hash as a hexadecimal string. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the task to resolve to
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd><p>A task that evaluates to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash matches <code class="paramref">expectedHex</code>;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if <code class="paramref">expectedHex</code> is not
+a valid hexadecimal string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.String,System.Text.Encoding,System.Byte[],System.Threading.CancellationToken)">
+  TryVerifyHashAsync(HashAlgorithm, string, Encoding, byte[], CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.TryVerifyHashAsync.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to verify the hash of an encoded string against the expected hash value, exposed as a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task&lt;TResult&gt;</a> for API symmetry with the stream-based asynchronous overloads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;bool&gt; TryVerifyHashAsync(this HashAlgorithm algorithm, string input, Encoding encoding, byte[] expectedHash, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The input string to encode and hash. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the task to resolve to
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The character encoding used to convert <code class="paramref">input</code> to bytes. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value
+causes the task to resolve to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>expectedHash</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The expected hash value as a byte array. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value causes the task to resolve to
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Pre-checked before delegation. If already canceled, the task resolves to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>; the
+synchronous delegate cannot otherwise observe the token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd><p>A task that evaluates to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash matches <code class="paramref">expectedHash</code>;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This overload performs no I/O. It delegates to
+<a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___">TryVerifyHash(HashAlgorithm, string, Encoding, byte[])</a> and wraps the result in a completed
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task&lt;TResult&gt;</a>, so the operation completes synchronously.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash(System.Security.Cryptography.HashAlgorithm,System.Byte[],System.Byte[])">
+  VerifyHash(HashAlgorithm, byte[], byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.VerifyHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Verifies that the computed hash of the input data matches the expected hash value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool VerifyHash(this HashAlgorithm algorithm, byte[] input, byte[] expectedHash)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input byte array whose hash will be computed. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>expectedHash</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The expected hash value as a byte array. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash equals <code class="paramref">expectedHash</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Comparison is performed using <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicoperations.fixedtimeequals">FixedTimeEquals(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> to mitigate timing
+side-channel attacks.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code>, <code class="paramref">input</code>, or <code class="paramref">expectedHash</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash(System.Security.Cryptography.HashAlgorithm,System.Byte[],System.String)">
+  VerifyHash(HashAlgorithm, byte[], string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.VerifyHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Verifies that the computed hash of the input data matches the expected hash value expressed as a hexadecimal
+string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool VerifyHash(this HashAlgorithm algorithm, byte[] input, string expectedHex)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input byte array whose hash will be computed. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>expectedHex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The expected hash value as a hexadecimal string. Case-insensitive. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash matches <code class="paramref">expectedHex</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if <code class="paramref">expectedHex</code> is not a valid
+hexadecimal string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+<code class="paramref">expectedHex</code> is decoded to bytes before comparison. The comparison is then performed using
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicoperations.fixedtimeequals">FixedTimeEquals(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> to mitigate timing side-channel attacks.
+</p>
+<p>
+A malformed <code class="paramref">expectedHex</code> string (one that cannot be decoded) is treated as a non-match and
+returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code>, <code class="paramref">input</code>, or <code class="paramref">expectedHex</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.Byte[])">
+  VerifyHash(HashAlgorithm, Stream, byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.VerifyHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Verifies that the computed hash of the stream matches the expected hash value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool VerifyHash(this HashAlgorithm algorithm, Stream stream, byte[] expectedHash)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The input stream to read and hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> and must be readable.</p>
+</dd>
+    <dt><code>expectedHash</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The expected hash value as a byte array. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the hash of the stream matches <code class="paramref">expectedHash</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Comparison is performed using <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicoperations.fixedtimeequals">FixedTimeEquals(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> to mitigate timing
+side-channel attacks.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code>, <code class="paramref">stream</code>, or <code class="paramref">expectedHash</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.String)">
+  VerifyHash(HashAlgorithm, Stream, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.VerifyHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Verifies that the computed hash of the stream matches the expected hash value expressed as a hexadecimal string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool VerifyHash(this HashAlgorithm algorithm, Stream stream, string expectedHex)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The input stream to read and hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> and must be readable.</p>
+</dd>
+    <dt><code>expectedHex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The expected hash value as a hexadecimal string. Case-insensitive. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the hash of the stream matches <code class="paramref">expectedHex</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if <code class="paramref">expectedHex</code> is not a valid
+hexadecimal string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+<code class="paramref">expectedHex</code> is decoded to bytes before comparison. The comparison is then performed using
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicoperations.fixedtimeequals">FixedTimeEquals(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> to mitigate timing side-channel attacks.
+</p>
+<p>
+A malformed <code class="paramref">expectedHex</code> string is treated as a non-match and returns
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code>, <code class="paramref">stream</code>, or <code class="paramref">expectedHex</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash(System.Security.Cryptography.HashAlgorithm,System.ReadOnlyMemory{System.Byte},System.Byte[])">
+  VerifyHash(HashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.VerifyHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Verifies that the computed hash of the input memory block matches the expected hash value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool VerifyHash(this HashAlgorithm algorithm, ReadOnlyMemory&lt;byte&gt; input, byte[] expectedHash)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The memory buffer containing the input data to hash.</p>
+</dd>
+    <dt><code>expectedHash</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The expected hash value as a byte array. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the hash of <code class="paramref">input</code> equals <code class="paramref">expectedHash</code>;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Delegates to the <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">VerifyHash(HashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> overload.
+Comparison is performed using <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicoperations.fixedtimeequals">FixedTimeEquals(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> to mitigate timing
+side-channel attacks.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> or <code class="paramref">expectedHash</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash(System.Security.Cryptography.HashAlgorithm,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+  VerifyHash(HashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.VerifyHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Verifies that the computed hash of the input span matches the expected hash span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool VerifyHash(this HashAlgorithm algorithm, ReadOnlySpan&lt;byte&gt; input, ReadOnlySpan&lt;byte&gt; expectedHash)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The input span of bytes to hash.</p>
+</dd>
+    <dt><code>expectedHash</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The expected hash as a read-only span of bytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash equals <code class="paramref">expectedHash</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This overload uses <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.trycomputehash">TryComputeHash(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)</a> with an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.arraypool-1">ArrayPool&lt;T&gt;</a>-backed output
+buffer to avoid heap allocation for the computed hash. The buffer is cleared before being returned to the pool.
+</p>
+<p>
+Comparison is performed using <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicoperations.fixedtimeequals">FixedTimeEquals(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> to mitigate timing
+side-channel attacks.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash(System.Security.Cryptography.HashAlgorithm,System.String,System.Text.Encoding,System.Byte[])">
+  VerifyHash(HashAlgorithm, string, Encoding, byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.VerifyHash.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Verifies that the computed hash of the encoded string matches the expected hash value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool VerifyHash(this HashAlgorithm algorithm, string text, Encoding encoding, byte[] expectedHash)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The input string to encode and hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The encoding used to convert <code class="paramref">text</code> to bytes. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>expectedHash</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The expected hash as a byte array. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the hash of the encoded string equals <code class="paramref">expectedHash</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Comparison is performed using <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicoperations.fixedtimeequals">FixedTimeEquals(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> to mitigate timing
+side-channel attacks.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code>, <code class="paramref">text</code>, <code class="paramref">encoding</code>, or
+<code class="paramref">expectedHash</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.Byte[],System.Threading.CancellationToken)">
+  VerifyHashAsync(HashAlgorithm, Stream, byte[], CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.AppendData.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Asynchronously verifies that the computed hash of a stream matches the expected hash value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;bool&gt; VerifyHashAsync(this HashAlgorithm algorithm, Stream stream, byte[] expectedHash, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to read and hash asynchronously. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> and must be readable.</p>
+</dd>
+    <dt><code>expectedHash</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The expected hash value as a byte array. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd><p>A task that evaluates to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash equals <code class="paramref">expectedHash</code>;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Comparison is performed using <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicoperations.fixedtimeequals">FixedTimeEquals(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> to mitigate timing
+side-channel attacks.
+</p>
+<p>
+If <code class="paramref">cancellationToken</code> is already canceled on entry, an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a> is thrown immediately before any I/O begins.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code>, <code class="paramref">stream</code>, or <code class="paramref">expectedHash</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
+  VerifyHashAsync(HashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.AppendData.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Asynchronously verifies that the computed hash of a stream matches the expected hash value held in a memory
+buffer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;bool&gt; VerifyHashAsync(this HashAlgorithm algorithm, Stream stream, ReadOnlyMemory&lt;byte&gt; expectedHash, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The readable stream to hash asynchronously. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>expectedHash</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The expected hash value as a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory&lt;T&gt;</a> of bytes.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd><p>A task that evaluates to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash equals <code class="paramref">expectedHash</code>;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This overload supports allocation-reduced verification when the expected hash is already held in a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory&lt;T&gt;</a> buffer. Comparison is performed using
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicoperations.fixedtimeequals">FixedTimeEquals(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> to mitigate timing side-channel attacks.
+</p>
+<p>
+If <code class="paramref">cancellationToken</code> is already canceled on entry, an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a> is thrown immediately before any I/O begins.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code> or <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.String,System.Threading.CancellationToken)">
+  VerifyHashAsync(HashAlgorithm, Stream, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/HashAlgorithmExtensions.AppendData.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Asynchronously verifies that the computed hash of a stream matches the expected hexadecimal hash string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;bool&gt; VerifyHashAsync(this HashAlgorithm algorithm, Stream stream, string expectedHex, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>algorithm</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instance used to compute the hash. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The readable stream to hash asynchronously. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>expectedHex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The expected hash as a hexadecimal string. Case-insensitive. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd><p>A task that evaluates to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the computed hash matches <code class="paramref">expectedHex</code>;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if <code class="paramref">expectedHex</code> is not
+a valid hexadecimal string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+<code class="paramref">expectedHex</code> is decoded to bytes before comparison. The comparison is then performed using
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicoperations.fixedtimeequals">FixedTimeEquals(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> to mitigate timing side-channel attacks.
+</p>
+<p>
+A malformed <code class="paramref">expectedHex</code> string is treated as a non-match and returns
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.
+</p>
+<p>
+If <code class="paramref">cancellationToken</code> is already canceled on entry, an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a> is thrown immediately before any I/O begins.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">algorithm</code>, <code class="paramref">stream</code>, or <code class="paramref">expectedHex</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendData_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.AppendData(System.Security.Cryptography.HashAlgorithm,System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.AppendData.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendData_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__">AppendData(HashAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Feeds a span of bytes into the ongoing hash computation of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> without
-finalizing it.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendDataAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Int32_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.AppendDataAsync(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.AppendDataAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendDataAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">AppendDataAsync(HashAlgorithm, Stream, int, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously reads all bytes from <code class="paramref">source</code> and feeds them into the hash accumulator via
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.transformblock">TransformBlock(byte[], int, int, byte[], int)</a>, without finalizing the computation.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash(System.Security.Cryptography.HashAlgorithm,System.Byte[],System.Byte[])">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___">TryVerifyHash(HashAlgorithm, byte[], byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to compute and verify the hash of a byte array against the expected hash value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash(System.Security.Cryptography.HashAlgorithm,System.Byte[],System.String)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_">TryVerifyHash(HashAlgorithm, byte[], string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to compute and verify the hash of a byte array against an expected hexadecimal hash string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.Byte[])">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___">TryVerifyHash(HashAlgorithm, Stream, byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to compute and verify the hash of a stream against the expected hash value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.String)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_">TryVerifyHash(HashAlgorithm, Stream, string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to compute and verify the hash of a stream against the expected hexadecimal hash string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash(System.Security.Cryptography.HashAlgorithm,System.ReadOnlyMemory{System.Byte},System.Byte[])">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___">TryVerifyHash(HashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to compute and verify the hash of a memory buffer against the expected hash value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash(System.Security.Cryptography.HashAlgorithm,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">TryVerifyHash(HashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to compute and verify the hash of a span of bytes against the expected hash span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash(System.Security.Cryptography.HashAlgorithm,System.String,System.Text.Encoding,System.Byte[])">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___">TryVerifyHash(HashAlgorithm, string, Encoding, byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to compute and verify the hash of an encoded string against the expected hash value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.Byte[],System.Byte[],System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___System_Threading_CancellationToken_">TryVerifyHashAsync(HashAlgorithm, byte[], byte[], CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to verify the hash of a byte array against the expected hash value, exposed as a
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task&lt;TResult&gt;</a> for API symmetry with the stream-based asynchronous overloads.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.Byte[],System.String,System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_System_Threading_CancellationToken_">TryVerifyHashAsync(HashAlgorithm, byte[], string, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to verify the hash of a byte array against the expected hexadecimal hash string, exposed as a
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task&lt;TResult&gt;</a> for API symmetry with the stream-based asynchronous overloads.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.Byte[],System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_">TryVerifyHashAsync(HashAlgorithm, Stream, byte[], CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to asynchronously compute and verify the hash of a stream against the expected hash value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">TryVerifyHashAsync(HashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to asynchronously compute and verify the hash of a stream against the expected hash value held in a
-memory buffer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.String,System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_">TryVerifyHashAsync(HashAlgorithm, Stream, string, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to asynchronously compute and verify the hash of a stream against the expected hexadecimal hash string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.String,System.Text.Encoding,System.Byte[],System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___System_Threading_CancellationToken_">TryVerifyHashAsync(HashAlgorithm, string, Encoding, byte[], CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to verify the hash of an encoded string against the expected hash value, exposed as a
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task&lt;TResult&gt;</a> for API symmetry with the stream-based asynchronous overloads.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash(System.Security.Cryptography.HashAlgorithm,System.Byte[],System.Byte[])">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___">VerifyHash(HashAlgorithm, byte[], byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Verifies that the computed hash of the input data matches the expected hash value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash(System.Security.Cryptography.HashAlgorithm,System.Byte[],System.String)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_">VerifyHash(HashAlgorithm, byte[], string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Verifies that the computed hash of the input data matches the expected hash value expressed as a hexadecimal
-string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.Byte[])">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___">VerifyHash(HashAlgorithm, Stream, byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Verifies that the computed hash of the stream matches the expected hash value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.String)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_">VerifyHash(HashAlgorithm, Stream, string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Verifies that the computed hash of the stream matches the expected hash value expressed as a hexadecimal string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash(System.Security.Cryptography.HashAlgorithm,System.ReadOnlyMemory{System.Byte},System.Byte[])">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___">VerifyHash(HashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Verifies that the computed hash of the input memory block matches the expected hash value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash(System.Security.Cryptography.HashAlgorithm,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">VerifyHash(HashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Verifies that the computed hash of the input span matches the expected hash span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash(System.Security.Cryptography.HashAlgorithm,System.String,System.Text.Encoding,System.Byte[])">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___">VerifyHash(HashAlgorithm, string, Encoding, byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Verifies that the computed hash of the encoded string matches the expected hash value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.Byte[],System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_">VerifyHashAsync(HashAlgorithm, Stream, byte[], CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously verifies that the computed hash of a stream matches the expected hash value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">VerifyHashAsync(HashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously verifies that the computed hash of a stream matches the expected hash value held in a memory
-buffer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync(System.Security.Cryptography.HashAlgorithm,System.IO.Stream,System.String,System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_">VerifyHashAsync(HashAlgorithm, Stream, string, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously verifies that the computed hash of a stream matches the expected hexadecimal hash string.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
 
+
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

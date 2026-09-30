@@ -1,99 +1,137 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class BinaryEncodingExtensions | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class BinaryEncodingExtensions | BODU ">
-    
-    <meta name="description" content="Provides fluent extension methods on  arrays,  of byte and , and  that route through the canonical encoding implementations.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>BinaryEncodingExtensions Class
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="BinaryEncodingExtensions Class
+ | BODU ">
+      
+      <meta name="description" content="Provides fluent extension methods on  arrays,  of byte and , and  that route through the canonical encoding implementations.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions">
+
+        <article data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions">
 
 
 
-  <h1 id="Bodu_Text_Encoding_BinaryEncodingExtensions" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions" class="text-break">Class BinaryEncodingExtensions</h1>
-  <div class="markdown level0 summary"><p>Provides fluent extension methods on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> arrays, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> of byte and
+
+  <h1 id="Bodu_Text_Encoding_BinaryEncodingExtensions" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+BinaryEncodingExtensions Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Text_Encoding_BinaryEncodingExtensions_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Encoding.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Encoding">Bodu.Text.Encoding</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs">BinaryEncodingExtensions.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides fluent extension methods on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> arrays, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> of byte and
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>, and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> that route through the canonical encoding implementations.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">BinaryEncodingExtensions</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class BinaryEncodingExtensions</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">BinaryEncodingExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -115,27 +153,14 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Encoding.dll</h6>
-  <h5 id="Bodu_Text_Encoding_BinaryEncodingExtensions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class BinaryEncodingExtensions</code></pre>
-  </div>
-  <h5 id="Bodu_Text_Encoding_BinaryEncodingExtensions_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-These extensions exist purely for ergonomic discoverability — typing <code>bytes.</code> in an editor brings up
-<code>ToBase16String</code>, <code>ToBase64String</code>, <code>ToBase58String</code>, and so on. They delegate without overhead to
-the static <a class="xref" href="Bodu.Text.Encoding.Base16.html">Base16</a>, <a class="xref" href="Bodu.Text.Encoding.Base32.html">Base32</a>, <a class="xref" href="Bodu.Text.Encoding.Base64.html">Base64</a>, <a class="xref" href="Bodu.Text.Encoding.Base58.html">Base58</a>, and
-<a class="xref" href="Bodu.Text.Encoding.Base85.html">Base85</a> classes.
-</p>
-<p>
-The generic <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.Encode.html#Bodu_Text_Encoding_BinaryEncodingExtensions_Encode_System_Byte___Bodu_Text_Encoding_IBinaryEncoding_">Encode(byte[], IBinaryEncoding)</a> and <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.Decode.html#Bodu_Text_Encoding_BinaryEncodingExtensions_Decode_System_String_Bodu_Text_Encoding_IBinaryEncoding_">Decode(string, IBinaryEncoding)</a>
-overloads route through <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a> so that runtime-selected encodings work with the same
-extension surface.
-</p>
-</div>
-  <h5 id="Bodu_Text_Encoding_BinaryEncodingExtensions_examples"><strong>Examples</strong></h5>
+    </dd>
+  </dl>
+
+
+  <div class="markdown conceptual"></div>
+
+
+  <h2 id="Bodu_Text_Encoding_BinaryEncodingExtensions_examples">Examples</h2>
   <pre><code class="lang-csharp">byte[] data = "hello"u8.ToArray();
 
 // Direct shortcuts — discoverable from IntelliSense via the byte[] receiver.
@@ -152,230 +177,1184 @@ IBinaryEncoding chosen = BinaryEncodings.Get(appConfig["encoding"] ?? "base64");
 string encoded = data.Encode(chosen);
 byte[] decoded = encoded.Decode(chosen);</code></pre>
 
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
+
+  <h2 id="Bodu_Text_Encoding_BinaryEncodingExtensions_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+These extensions exist purely for ergonomic discoverability — typing <code>bytes.</code> in an editor brings up
+<code>ToBase16String</code>, <code>ToBase64String</code>, <code>ToBase58String</code>, and so on. They delegate without overhead to
+the static <a class="xref" href="Bodu.Text.Encoding.Base16.html">Base16</a>, <a class="xref" href="Bodu.Text.Encoding.Base32.html">Base32</a>, <a class="xref" href="Bodu.Text.Encoding.Base64.html">Base64</a>, <a class="xref" href="Bodu.Text.Encoding.Base58.html">Base58</a>, and
+<a class="xref" href="Bodu.Text.Encoding.Base85.html">Base85</a> classes.
+</p>
+<p>
+The generic <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.html#Bodu_Text_Encoding_BinaryEncodingExtensions_Encode_System_Byte___Bodu_Text_Encoding_IBinaryEncoding_">Encode(byte[], IBinaryEncoding)</a> and <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.html#Bodu_Text_Encoding_BinaryEncodingExtensions_Decode_System_String_Bodu_Text_Encoding_IBinaryEncoding_">Decode(string, IBinaryEncoding)</a>
+overloads route through <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a> so that runtime-selected encodings work with the same
+extension surface.
+</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_Decode_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.Decode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_Decode_System_String_Bodu_Text_Encoding_IBinaryEncoding_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.Decode(System.String,Bodu.Text.Encoding.IBinaryEncoding)">
+  Decode(string, IBinaryEncoding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes <code class="paramref">encoded</code> using <code class="paramref">encoding</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Decode(this string encoded, IBinaryEncoding encoding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>encoded</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The encoded string.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a></dt>
+    <dd><p>The encoding to use.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The decoded bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when either argument is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input is not valid for the chosen encoding.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_Encode_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.Encode*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_Encode_System_Byte___Bodu_Text_Encoding_IBinaryEncoding_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.Encode(System.Byte[],Bodu.Text.Encoding.IBinaryEncoding)">
+  Encode(byte[], IBinaryEncoding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using <code class="paramref">encoding</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Encode(this byte[] bytes, IBinaryEncoding encoding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a></dt>
+    <dd><p>The encoding to use.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The encoded string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when either argument is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase16String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase16String*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase16String_System_String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase16String(System.String)">
+  FromBase16String(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes a Base16 hexadecimal string into a byte array using strict parsing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] FromBase16String(this string hex)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The hex input.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The decoded bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">hex</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input is not valid hexadecimal.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase32String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase32String*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase32String_System_String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase32String(System.String)">
+  FromBase32String(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes a Standard RFC 4648 Base32 string into a byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] FromBase32String(this string base32)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>base32</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The Base32 input.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The decoded bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">base32</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input is not valid Base32.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase58String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase58String*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase58String_System_String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase58String(System.String)">
+  FromBase58String(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes a Bitcoin/Flickr Base58 string into a byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] FromBase58String(this string base58)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>base58</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The Base58 input.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The decoded bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">base58</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input is not valid Bitcoin/Flickr Base58.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase64String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase64String*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase64String_System_String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase64String(System.String)">
+  FromBase64String(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes a Standard RFC 4648 Base64 string into a byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] FromBase64String(this string base64)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>base64</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The Base64 input.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The decoded bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">base64</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input is not valid Base64.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase85String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase85String*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase85String_System_String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase85String(System.String)">
+  FromBase85String(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes an Adobe Ascii85 string into a byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] FromBase85String(this string ascii85)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>ascii85</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The Ascii85 input.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The decoded bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">ascii85</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input is not valid Ascii85.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_GetBase64EncodedLength_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.GetBase64EncodedLength*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_GetBase64EncodedLength_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.GetBase64EncodedLength(System.ReadOnlySpan{System.Byte})">
+  GetBase64EncodedLength(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the exact number of standard RFC 4648 Base64 characters required to encode <code class="paramref">bytes</code>,
+including any trailing <code>=</code> padding.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetBase64EncodedLength(this ReadOnlySpan&lt;byte&gt; bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The byte span whose encoded length is computed.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The encoded length in characters.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase16String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase16String*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase16String_System_Byte___" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase16String(System.Byte[])">
+  ToBase16String(byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> to lower-case hexadecimal (the default Bodu Base16 form).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToBase16String(this byte[] bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The lower-case hex string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">bytes</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase16String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase16String*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase16String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase16String(System.ReadOnlySpan{System.Byte})">
+  ToBase16String(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> to lower-case hexadecimal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToBase16String(this ReadOnlySpan&lt;byte&gt; bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The lower-case hex string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase32String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase32String*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase32String_System_Byte___" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase32String(System.Byte[])">
+  ToBase32String(byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using the Standard RFC 4648 Base32 alphabet.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToBase32String(this byte[] bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The Base32 string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">bytes</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase32String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase32String*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase32String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase32String(System.ReadOnlySpan{System.Byte})">
+  ToBase32String(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using the Standard RFC 4648 Base32 alphabet.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToBase32String(this ReadOnlySpan&lt;byte&gt; bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The Base32 string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase58String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase58String*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase58String_System_Byte___" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase58String(System.Byte[])">
+  ToBase58String(byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using the Bitcoin/Flickr Base58 alphabet.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToBase58String(this byte[] bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The Base58 string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">bytes</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase58String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase58String*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase58String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase58String(System.ReadOnlySpan{System.Byte})">
+  ToBase58String(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using the Bitcoin/Flickr Base58 alphabet.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToBase58String(this ReadOnlySpan&lt;byte&gt; bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The Base58 string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase64String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase64String*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase64String_System_Byte___" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase64String(System.Byte[])">
+  ToBase64String(byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using the Standard RFC 4648 Base64 alphabet.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToBase64String(this byte[] bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The Base64 string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">bytes</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase64String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase64String*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase64String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase64String(System.ReadOnlySpan{System.Byte})">
+  ToBase64String(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using the Standard RFC 4648 Base64 alphabet.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToBase64String(this ReadOnlySpan&lt;byte&gt; bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The Base64 string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase64UrlString_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase64UrlString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase64UrlString_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase64UrlString(System.ReadOnlySpan{System.Byte})">
+  ToBase64UrlString(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using the URL- and filename-safe Base64 alphabet (RFC 4648 §5), conventionally
+omitting trailing <code>=</code> padding (the JWT and OAuth convention).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToBase64UrlString(this ReadOnlySpan&lt;byte&gt; bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URL-safe Base64 string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase85String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase85String*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase85String_System_Byte___" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase85String(System.Byte[])">
+  ToBase85String(byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using Adobe Ascii85.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToBase85String(this byte[] bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The Ascii85 string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">bytes</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase85String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase85String*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase85String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase85String(System.ReadOnlySpan{System.Byte})">
+  ToBase85String(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using Adobe Ascii85.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToBase85String(this ReadOnlySpan&lt;byte&gt; bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The Ascii85 string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryDecodeBase64FromUtf8_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.TryDecodeBase64FromUtf8*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryDecodeBase64FromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.TryDecodeBase64FromUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
+  TryDecodeBase64FromUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes a UTF-8 (ASCII) encoded standard RFC 4648 Base64 byte sequence into <code class="paramref">destination</code>
+without throwing when the destination is too small.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryDecodeBase64FromUtf8(this ReadOnlySpan&lt;byte&gt; utf8, Span&lt;byte&gt; destination, out int bytesWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 Base64 source bytes.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination buffer that receives the decoded bytes.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, contains the number of decoded bytes written; otherwise zero.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when decoding completed successfully; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when
+<code class="paramref">destination</code> is too small or when <code class="paramref">utf8</code> contains invalid input.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryDecodeBase64UrlFromUtf8_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.TryDecodeBase64UrlFromUtf8*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryDecodeBase64UrlFromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.TryDecodeBase64UrlFromUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
+  TryDecodeBase64UrlFromUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Decodes a UTF-8 (ASCII) encoded URL-safe Base64 byte sequence (RFC 4648 §5) into <code class="paramref">destination</code>
+without throwing when the destination is too small.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryDecodeBase64UrlFromUtf8(this ReadOnlySpan&lt;byte&gt; utf8, Span&lt;byte&gt; destination, out int bytesWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 URL-safe Base64 source bytes.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination buffer that receives the decoded bytes.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, contains the number of decoded bytes written; otherwise zero.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when decoding completed successfully; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when
+<code class="paramref">destination</code> is too small or when <code class="paramref">utf8</code> contains invalid input.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryDecodeBase64UrlFromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Accepts inputs both with and without trailing <code>=</code> padding to match the JWT and OAuth conventions where
+padding is typically omitted.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryEncodeBase64ToUtf8_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.TryEncodeBase64ToUtf8*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryEncodeBase64ToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.TryEncodeBase64ToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
+  TryEncodeBase64ToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into <code class="paramref">destination</code> as standard RFC 4648 Base64 in UTF-8
+(ASCII) encoded form without throwing when the destination is too small.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryEncodeBase64ToUtf8(this ReadOnlySpan&lt;byte&gt; bytes, Span&lt;byte&gt; destination, out int bytesWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination buffer that receives the UTF-8 Base64 bytes.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, contains the number of UTF-8 Base64 bytes written; otherwise
+zero.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the destination was large enough; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> otherwise.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryEncodeBase64ToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The output is byte-identical to <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.html#Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase64String_System_ReadOnlySpan_System_Byte__">ToBase64String(ReadOnlySpan&lt;byte&gt;)</a> after passing the resulting
+bytes through <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding.ascii">ASCII</a>.<code>GetString</code>. Use this overload to avoid the
+intermediate <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> allocation when the consumer accepts UTF-8 bytes directly (network writers,
+file streams, log sinks).</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryEncodeBase64UrlToUtf8_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.TryEncodeBase64UrlToUtf8*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryEncodeBase64UrlToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.TryEncodeBase64UrlToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
+  TryEncodeBase64UrlToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into <code class="paramref">destination</code> as URL-safe Base64 (RFC 4648 §5) in UTF-8
+(ASCII) encoded form without throwing when the destination is too small.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryEncodeBase64UrlToUtf8(this ReadOnlySpan&lt;byte&gt; bytes, Span&lt;byte&gt; destination, out int bytesWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination buffer that receives the UTF-8 URL-safe Base64 bytes.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, contains the number of UTF-8 bytes written; otherwise zero.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the destination was large enough; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> otherwise.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_Decode_System_String_Bodu_Text_Encoding_IBinaryEncoding_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.Decode(System.String,Bodu.Text.Encoding.IBinaryEncoding)">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.Decode.html#Bodu_Text_Encoding_BinaryEncodingExtensions_Decode_System_String_Bodu_Text_Encoding_IBinaryEncoding_">Decode(string, IBinaryEncoding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes <code class="paramref">encoded</code> using <code class="paramref">encoding</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_Encode_System_Byte___Bodu_Text_Encoding_IBinaryEncoding_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.Encode(System.Byte[],Bodu.Text.Encoding.IBinaryEncoding)">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.Encode.html#Bodu_Text_Encoding_BinaryEncodingExtensions_Encode_System_Byte___Bodu_Text_Encoding_IBinaryEncoding_">Encode(byte[], IBinaryEncoding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using <code class="paramref">encoding</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase16String_System_String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase16String(System.String)">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase16String.html#Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase16String_System_String_">FromBase16String(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a Base16 hexadecimal string into a byte array using strict parsing.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase32String_System_String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase32String(System.String)">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase32String.html#Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase32String_System_String_">FromBase32String(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a Standard RFC 4648 Base32 string into a byte array.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase58String_System_String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase58String(System.String)">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase58String.html#Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase58String_System_String_">FromBase58String(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a Bitcoin/Flickr Base58 string into a byte array.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase64String_System_String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase64String(System.String)">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase64String.html#Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase64String_System_String_">FromBase64String(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a Standard RFC 4648 Base64 string into a byte array.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase85String_System_String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase85String(System.String)">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase85String.html#Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase85String_System_String_">FromBase85String(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes an Adobe Ascii85 string into a byte array.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_GetBase64EncodedLength_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.GetBase64EncodedLength(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.GetBase64EncodedLength.html#Bodu_Text_Encoding_BinaryEncodingExtensions_GetBase64EncodedLength_System_ReadOnlySpan_System_Byte__">GetBase64EncodedLength(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the exact number of standard RFC 4648 Base64 characters required to encode <code class="paramref">bytes</code>,
-including any trailing <code>=</code> padding.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase16String_System_Byte___" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase16String(System.Byte[])">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase16String.html#Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase16String_System_Byte___">ToBase16String(byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> to lower-case hexadecimal (the default Bodu Base16 form).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase16String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase16String(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase16String.html#Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase16String_System_ReadOnlySpan_System_Byte__">ToBase16String(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> to lower-case hexadecimal.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase32String_System_Byte___" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase32String(System.Byte[])">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase32String.html#Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase32String_System_Byte___">ToBase32String(byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using the Standard RFC 4648 Base32 alphabet.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase32String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase32String(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase32String.html#Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase32String_System_ReadOnlySpan_System_Byte__">ToBase32String(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using the Standard RFC 4648 Base32 alphabet.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase58String_System_Byte___" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase58String(System.Byte[])">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase58String.html#Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase58String_System_Byte___">ToBase58String(byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using the Bitcoin/Flickr Base58 alphabet.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase58String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase58String(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase58String.html#Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase58String_System_ReadOnlySpan_System_Byte__">ToBase58String(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using the Bitcoin/Flickr Base58 alphabet.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase64String_System_Byte___" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase64String(System.Byte[])">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase64String.html#Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase64String_System_Byte___">ToBase64String(byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using the Standard RFC 4648 Base64 alphabet.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase64String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase64String(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase64String.html#Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase64String_System_ReadOnlySpan_System_Byte__">ToBase64String(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using the Standard RFC 4648 Base64 alphabet.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase64UrlString_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase64UrlString(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase64UrlString.html#Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase64UrlString_System_ReadOnlySpan_System_Byte__">ToBase64UrlString(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using the URL- and filename-safe Base64 alphabet (RFC 4648 §5), conventionally
-omitting trailing <code>=</code> padding (the JWT and OAuth convention).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase85String_System_Byte___" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase85String(System.Byte[])">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase85String.html#Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase85String_System_Byte___">ToBase85String(byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using Adobe Ascii85.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase85String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase85String(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase85String.html#Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase85String_System_ReadOnlySpan_System_Byte__">ToBase85String(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> using Adobe Ascii85.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryDecodeBase64FromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.TryDecodeBase64FromUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.TryDecodeBase64FromUtf8.html#Bodu_Text_Encoding_BinaryEncodingExtensions_TryDecodeBase64FromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__">TryDecodeBase64FromUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a UTF-8 (ASCII) encoded standard RFC 4648 Base64 byte sequence into <code class="paramref">destination</code>
-without throwing when the destination is too small.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryDecodeBase64UrlFromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.TryDecodeBase64UrlFromUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.TryDecodeBase64UrlFromUtf8.html#Bodu_Text_Encoding_BinaryEncodingExtensions_TryDecodeBase64UrlFromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__">TryDecodeBase64UrlFromUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a UTF-8 (ASCII) encoded URL-safe Base64 byte sequence (RFC 4648 §5) into <code class="paramref">destination</code>
-without throwing when the destination is too small.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryEncodeBase64ToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.TryEncodeBase64ToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.TryEncodeBase64ToUtf8.html#Bodu_Text_Encoding_BinaryEncodingExtensions_TryEncodeBase64ToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__">TryEncodeBase64ToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into <code class="paramref">destination</code> as standard RFC 4648 Base64 in UTF-8
-(ASCII) encoded form without throwing when the destination is too small.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryEncodeBase64UrlToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.TryEncodeBase64UrlToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.TryEncodeBase64UrlToUtf8.html#Bodu_Text_Encoding_BinaryEncodingExtensions_TryEncodeBase64UrlToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__">TryEncodeBase64UrlToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into <code class="paramref">destination</code> as URL-safe Base64 (RFC 4648 §5) in UTF-8
-(ASCII) encoded form without throwing when the destination is too small.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
 
+
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

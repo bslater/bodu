@@ -1,94 +1,130 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Struct BiffFontRecord | BODU </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Struct BiffFontRecord | BODU ">
-    
-    <meta name="description" content="Represents a decoded FONT record: size, style attributes, color, character set, and face name. The name is an 8-bit-length string in both versions — a Unicode string in BIFF8, a code-page byte string in BIFF5.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      <title>BiffFontRecord Struct
+ | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="BiffFontRecord Struct
+ | BODU ">
+      
+      <meta name="description" content="Represents a decoded FONT record: size, style attributes, color, character set, and face name. The name is an 8-bit-length string in both versions — a Unicode string in BIFF8, a code-page byte string in BIFF5.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.IO.Biff.BiffFontRecord">
+
+        <article data-uid="Bodu.IO.Biff.BiffFontRecord">
 
 
 
-  <h1 id="Bodu_IO_Biff_BiffFontRecord" data-uid="Bodu.IO.Biff.BiffFontRecord" class="text-break">Struct BiffFontRecord</h1>
-  <div class="markdown level0 summary"><p>Represents a decoded <code>FONT</code> record: size, style attributes, color, character set, and face name. The name is an
+
+  <h1 id="Bodu_IO_Biff_BiffFontRecord" data-uid="Bodu.IO.Biff.BiffFontRecord" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+BiffFontRecord Struct
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffFontRecord.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_IO_Biff_BiffFontRecord_definition" class="bodu-definition">Definition</h2>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Biff.html">Biff</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.IO.Biff.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Biff">Bodu.IO.Biff</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffFontRecord.cs">BiffFontRecord.cs</a></dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a decoded <code>FONT</code> record: size, style attributes, color, character set, and face name. The name is an
 8-bit-length string in both versions — a Unicode string in BIFF8, a code-page byte string in BIFF5.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly ref struct BiffFontRecord</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.equals">ValueType.Equals(object)</a>
     </div>
@@ -107,166 +143,506 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Biff.html">Biff</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.IO.Biff.dll</h6>
-  <h5 id="Bodu_IO_Biff_BiffFontRecord_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly ref struct BiffFontRecord</code></pre>
-  </div>
-  <h5 id="Bodu_IO_Biff_BiffFontRecord_remarks"><strong>Remarks</strong></h5>
+    </dd>
+  </dl>
+
+
+  <div class="markdown conceptual"></div>
+
+
+
+  <h2 id="Bodu_IO_Biff_BiffFontRecord_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>The record identifier is <a class="xref" href="Bodu.IO.Biff.BiffRecordType.html#Bodu_IO_Biff_BiffRecordType_Font">Font</a>. The payload is fourteen fixed bytes — height, attribute
 flags, color index, weight, escapement, underline, family, character set, and a reserved byte — followed by the
-name. Font indices used by <a class="xref" href="Bodu.IO.Biff.BiffXfRecord.FontIndex.html#Bodu_IO_Biff_BiffXfRecord_FontIndex">FontIndex</a> count these records in stream order, skipping index
+name. Font indices used by <a class="xref" href="Bodu.IO.Biff.BiffXfRecord.html#Bodu_IO_Biff_BiffXfRecord_FontIndex">FontIndex</a> count these records in stream order, skipping index
 4, which Excel never writes.</p>
 </div>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_IO_Biff_BiffFontRecord_Attributes_" data-uid="Bodu.IO.Biff.BiffFontRecord.Attributes*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Biff_BiffFontRecord_Attributes" data-uid="Bodu.IO.Biff.BiffFontRecord.Attributes">
+  Attributes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffFontRecord.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the raw attribute flags: italic (bit 1), strikeout (bit 3), outline (bit 4), shadow (bit 5).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ushort Attributes { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a></dt>
+    <dd><p>The flags.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Biff_BiffFontRecord_CharacterSet_" data-uid="Bodu.IO.Biff.BiffFontRecord.CharacterSet*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Biff_BiffFontRecord_CharacterSet" data-uid="Bodu.IO.Biff.BiffFontRecord.CharacterSet">
+  CharacterSet
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffFontRecord.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the character set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte CharacterSet { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a></dt>
+    <dd><p>The Windows character set code.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Biff_BiffFontRecord_ColorIndex_" data-uid="Bodu.IO.Biff.BiffFontRecord.ColorIndex*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Biff_BiffFontRecord_ColorIndex" data-uid="Bodu.IO.Biff.BiffFontRecord.ColorIndex">
+  ColorIndex
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffFontRecord.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the index of the font color in the workbook palette.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ushort ColorIndex { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a></dt>
+    <dd><p>The color index; <code>0x7FFF</code> selects the automatic color.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Biff_BiffFontRecord_Escapement_" data-uid="Bodu.IO.Biff.BiffFontRecord.Escapement*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Biff_BiffFontRecord_Escapement" data-uid="Bodu.IO.Biff.BiffFontRecord.Escapement">
+  Escapement
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffFontRecord.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the escapement type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ushort Escapement { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a></dt>
+    <dd><p>0 none, 1 superscript, 2 subscript.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Biff_BiffFontRecord_Family_" data-uid="Bodu.IO.Biff.BiffFontRecord.Family*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Biff_BiffFontRecord_Family" data-uid="Bodu.IO.Biff.BiffFontRecord.Family">
+  Family
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffFontRecord.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the font family.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte Family { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a></dt>
+    <dd><p>The Windows font family code.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Biff_BiffFontRecord_Height_" data-uid="Bodu.IO.Biff.BiffFontRecord.Height*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Biff_BiffFontRecord_Height" data-uid="Bodu.IO.Biff.BiffFontRecord.Height">
+  Height
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffFontRecord.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the font height in twips (twentieths of a point).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ushort Height { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a></dt>
+    <dd><p>The height.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Biff_BiffFontRecord_IsBold_" data-uid="Bodu.IO.Biff.BiffFontRecord.IsBold*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Biff_BiffFontRecord_IsBold" data-uid="Bodu.IO.Biff.BiffFontRecord.IsBold">
+  IsBold
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffFontRecord.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the font is bold.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsBold { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <a class="xref" href="Bodu.IO.Biff.BiffFontRecord.html#Bodu_IO_Biff_BiffFontRecord_Weight">Weight</a> is at least 700.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Biff_BiffFontRecord_IsItalic_" data-uid="Bodu.IO.Biff.BiffFontRecord.IsItalic*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Biff_BiffFontRecord_IsItalic" data-uid="Bodu.IO.Biff.BiffFontRecord.IsItalic">
+  IsItalic
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffFontRecord.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the font is italic.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsItalic { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when bit 1 of <a class="xref" href="Bodu.IO.Biff.BiffFontRecord.html#Bodu_IO_Biff_BiffFontRecord_Attributes">Attributes</a> is set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Biff_BiffFontRecord_IsStrikeout_" data-uid="Bodu.IO.Biff.BiffFontRecord.IsStrikeout*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Biff_BiffFontRecord_IsStrikeout" data-uid="Bodu.IO.Biff.BiffFontRecord.IsStrikeout">
+  IsStrikeout
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffFontRecord.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the font is struck out.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsStrikeout { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when bit 3 of <a class="xref" href="Bodu.IO.Biff.BiffFontRecord.html#Bodu_IO_Biff_BiffFontRecord_Attributes">Attributes</a> is set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Biff_BiffFontRecord_Name_" data-uid="Bodu.IO.Biff.BiffFontRecord.Name*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Biff_BiffFontRecord_Name" data-uid="Bodu.IO.Biff.BiffFontRecord.Name">
+  Name
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffFontRecord.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the face name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BiffString Name { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Biff.BiffString.html">BiffString</a></dt>
+    <dd><p>The name as a span-backed view.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Biff_BiffFontRecord_Underline_" data-uid="Bodu.IO.Biff.BiffFontRecord.Underline*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Biff_BiffFontRecord_Underline" data-uid="Bodu.IO.Biff.BiffFontRecord.Underline">
+  Underline
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffFontRecord.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the underline type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte Underline { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a></dt>
+    <dd><p>0 none, 1 single, 2 double, 0x21 single accounting, 0x22 double accounting.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_IO_Biff_BiffFontRecord_Weight_" data-uid="Bodu.IO.Biff.BiffFontRecord.Weight*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_IO_Biff_BiffFontRecord_Weight" data-uid="Bodu.IO.Biff.BiffFontRecord.Weight">
+  Weight
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffFontRecord.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the font weight.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ushort Weight { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a></dt>
+    <dd><p>The weight on the Windows scale: 400 normal, 700 bold.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td id="Bodu_IO_Biff_BiffFontRecord_Attributes" data-uid="Bodu.IO.Biff.BiffFontRecord.Attributes">
-          <a class="xref" href="Bodu.IO.Biff.BiffFontRecord.Attributes.html#Bodu_IO_Biff_BiffFontRecord_Attributes">Attributes</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the raw attribute flags: italic (bit 1), strikeout (bit 3), outline (bit 4), shadow (bit 5).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Biff_BiffFontRecord_CharacterSet" data-uid="Bodu.IO.Biff.BiffFontRecord.CharacterSet">
-          <a class="xref" href="Bodu.IO.Biff.BiffFontRecord.CharacterSet.html#Bodu_IO_Biff_BiffFontRecord_CharacterSet">CharacterSet</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the character set.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Biff_BiffFontRecord_ColorIndex" data-uid="Bodu.IO.Biff.BiffFontRecord.ColorIndex">
-          <a class="xref" href="Bodu.IO.Biff.BiffFontRecord.ColorIndex.html#Bodu_IO_Biff_BiffFontRecord_ColorIndex">ColorIndex</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the index of the font color in the workbook palette.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Biff_BiffFontRecord_Escapement" data-uid="Bodu.IO.Biff.BiffFontRecord.Escapement">
-          <a class="xref" href="Bodu.IO.Biff.BiffFontRecord.Escapement.html#Bodu_IO_Biff_BiffFontRecord_Escapement">Escapement</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the escapement type.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Biff_BiffFontRecord_Family" data-uid="Bodu.IO.Biff.BiffFontRecord.Family">
-          <a class="xref" href="Bodu.IO.Biff.BiffFontRecord.Family.html#Bodu_IO_Biff_BiffFontRecord_Family">Family</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the font family.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Biff_BiffFontRecord_Height" data-uid="Bodu.IO.Biff.BiffFontRecord.Height">
-          <a class="xref" href="Bodu.IO.Biff.BiffFontRecord.Height.html#Bodu_IO_Biff_BiffFontRecord_Height">Height</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the font height in twips (twentieths of a point).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Biff_BiffFontRecord_IsBold" data-uid="Bodu.IO.Biff.BiffFontRecord.IsBold">
-          <a class="xref" href="Bodu.IO.Biff.BiffFontRecord.IsBold.html#Bodu_IO_Biff_BiffFontRecord_IsBold">IsBold</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the font is bold.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Biff_BiffFontRecord_IsItalic" data-uid="Bodu.IO.Biff.BiffFontRecord.IsItalic">
-          <a class="xref" href="Bodu.IO.Biff.BiffFontRecord.IsItalic.html#Bodu_IO_Biff_BiffFontRecord_IsItalic">IsItalic</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the font is italic.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Biff_BiffFontRecord_IsStrikeout" data-uid="Bodu.IO.Biff.BiffFontRecord.IsStrikeout">
-          <a class="xref" href="Bodu.IO.Biff.BiffFontRecord.IsStrikeout.html#Bodu_IO_Biff_BiffFontRecord_IsStrikeout">IsStrikeout</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the font is struck out.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Biff_BiffFontRecord_Name" data-uid="Bodu.IO.Biff.BiffFontRecord.Name">
-          <a class="xref" href="Bodu.IO.Biff.BiffFontRecord.Name.html#Bodu_IO_Biff_BiffFontRecord_Name">Name</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the face name.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Biff_BiffFontRecord_Underline" data-uid="Bodu.IO.Biff.BiffFontRecord.Underline">
-          <a class="xref" href="Bodu.IO.Biff.BiffFontRecord.Underline.html#Bodu_IO_Biff_BiffFontRecord_Underline">Underline</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the underline type.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Biff_BiffFontRecord_Weight" data-uid="Bodu.IO.Biff.BiffFontRecord.Weight">
-          <a class="xref" href="Bodu.IO.Biff.BiffFontRecord.Weight.html#Bodu_IO_Biff_BiffFontRecord_Weight">Weight</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the font weight.</p>
-</td>
-      </tr>
+      <tr><td>.NET</td><td>8, 10</td></tr>
     </tbody>
   </table>
-  <h3 id="seealso">See Also</h3>
+
+  <h2 id="seealso">See Also</h2>
   <div class="seealso">
-      <div><a class="xref" href="Bodu.IO.Biff.BiffReader.GetFont.html#Bodu_IO_Biff_BiffReader_GetFont">GetFont</a>()</div>
-      <div><a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteFont.html#Bodu_IO_Biff_BiffWriter_WriteFont_System_UInt16_System_UInt16_System_UInt16_System_UInt16_System_UInt16_System_Byte_System_Byte_System_Byte_System_ReadOnlySpan_System_Char__">WriteFont</a>(<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>, scoped <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;)</div>
+      <div><a class="xref" href="Bodu.IO.Biff.BiffReader.html#Bodu_IO_Biff_BiffReader_GetFont">GetFont</a>()</div>
+      <div><a class="xref" href="Bodu.IO.Biff.BiffWriter.html#Bodu_IO_Biff_BiffWriter_WriteFont_System_UInt16_System_UInt16_System_UInt16_System_UInt16_System_UInt16_System_Byte_System_Byte_System_Byte_System_ReadOnlySpan_System_Char__">WriteFont</a>(<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>, scoped <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;)</div>
       <div><a class="xref" href="Bodu.IO.Biff.BiffXfRecord.html">BiffXfRecord</a></div>
   </div>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

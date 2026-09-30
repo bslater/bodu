@@ -1,0 +1,139 @@
+/*
+ * Bodu overlay on the DocFX modern template.
+ *
+ * Colours come from Bootstrap's theme variables (--bs-*), which the modern template switches between
+ * light and dark, so nothing here needs a dark-mode variant of its own.
+ */
+
+/* ------------------------------------------------------------------------------------ navbar */
+
+/* The navbar logo is the Bodu mark (images/favicon.svg), which has no intrinsic size; the name
+   beside it is the theme-coloured _appName text. */
+.navbar-brand #logo {
+  width: 2rem;
+  height: 2rem;
+  margin-right: .5rem;
+}
+
+/* ------------------------------------------------------------------ API page: Definition section */
+
+/* The Definition heading anchors the section in "In this article"; the page title above already
+   names the API, so the heading itself stays quiet. */
+article h2.bodu-definition {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  color: var(--bs-secondary-color);
+}
+
+/* Member signatures in the type-relation lists (inheritance, inherited members, extension methods)
+   are long and unbroken; they wrap rather than widen the page on a narrow screen. */
+article dl.typelist dd,
+article dl.typelist dd *,
+article .facts dd,
+article .facts dd * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* A namespace can span several packages, listed one per line; the label stays beside the first. */
+.facts > dl.bodu-package > dt,
+.facts > dl.bodu-package > dd {
+  vertical-align: top;
+}
+
+.facts .bodu-package-version {
+  font-family: var(--bs-font-monospace);
+  font-size: .9em;
+}
+
+.facts .bodu-package-note {
+  font-size: .85em;
+  font-style: italic;
+}
+
+/* --------------------------------------------------------------------------- Applies to */
+
+table.bodu-applies-to {
+  width: auto;
+  min-width: min(100%, 22rem);
+  margin-bottom: 1.5rem;
+}
+
+table.bodu-applies-to th,
+table.bodu-applies-to td {
+  padding: .4rem 1.5rem .4rem .5rem;
+}
+
+/* ------------------------------------------------------------------ framework availability */
+
+.bodu-availability-line {
+  margin: -.25rem 0 .5rem;
+}
+
+.badge.bodu-availability {
+  font-size: .7rem;
+  font-weight: 500;
+  vertical-align: middle;
+  color: var(--bs-body-color);
+  background-color: var(--bs-tertiary-bg);
+  border: 1px solid var(--bs-border-color);
+}
+
+/* An API the selected framework does not have is shown, but receded, with a note naming the
+   framework (set by public/main.js). */
+.bodu-unavailable {
+  opacity: .55;
+}
+
+[data-bodu-unavailable-note]::after {
+  content: attr(data-bodu-unavailable-note);
+  display: inline-block;
+  margin-left: .5rem;
+  font-size: .75rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--bs-secondary-color);
+}
+
+.bodu-framework-banner {
+  margin: .5rem 0 1rem;
+}
+
+/* ------------------------------------------------------------------------ framework picker */
+
+.bodu-framework-picker {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-left: auto;
+  font-size: .875rem;
+}
+
+.bodu-framework-picker select {
+  width: auto;
+}
+
+/* ----------------------------------------------------------------------------------- footer */
+
+footer .docs-build-meta {
+  display: inline-block;
+  margin-top: .25rem;
+  font-size: .8rem;
+}
+
+/* ------------------------------------------------------------------------------- home page */
+
+.bodu-hero { margin: 1.5rem 0 2.5rem; }
+.bodu-hero h1 { margin: 0 0 .25rem; font-size: clamp(1.75rem, 1.3rem + 2vw, 2.6rem); letter-spacing: .5px; }
+.bodu-hero p.tagline { font-size: clamp(1rem, .92rem + .4vw, 1.25rem); line-height: 1.5; opacity: .85; margin: 0 0 .5rem; max-width: 56rem; }
+.bodu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.bodu-card { border: 1px solid var(--bs-border-color); border-radius: 10px; padding: 1rem 1.1rem; background: var(--bs-tertiary-bg); }
+.bodu-card h3 { margin: 0 0 .4rem; font-size: clamp(1rem, .96rem + .2vw, 1.15rem); overflow-wrap: anywhere; }
+.bodu-card p { margin: 0 0 .6rem; opacity: .9; font-size: clamp(.9rem, .87rem + .15vw, 1rem); line-height: 1.55; }
+.bodu-card code { overflow-wrap: anywhere; }
+.bodu-card .bodu-card-links a { margin-right: .9rem; font-size: clamp(.85rem, .83rem + .1vw, .95rem); }
+.bodu-card img { display: block; width: 100%; height: auto; aspect-ratio: 480 / 220; border-radius: 6px; margin-bottom: .6rem; }
+.bodu-topic > p.bodu-topic-lede { margin: .25rem 0 0; opacity: .85; max-width: 56rem; font-size: clamp(.95rem, .9rem + .25vw, 1.1rem); line-height: 1.5; }
+.bodu-install pre { margin: .25rem 0; }
+.bodu-nav { display: flex; flex-wrap: wrap; gap: .5rem 1.2rem; margin: 1rem 0 0; font-size: clamp(.9rem, .87rem + .15vw, 1rem); }
