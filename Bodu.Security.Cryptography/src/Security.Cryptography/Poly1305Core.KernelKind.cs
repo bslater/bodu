@@ -46,17 +46,5 @@ internal partial struct Poly1305Core
         /// two per step.
         /// </summary>
         AdvSimd,
-
-        /// <summary>
-        /// The <see cref="AdvSimd" /> kernel with its step's constants formed once, before the loop. Temporary: F11 of
-        /// the follow-up plan measures it against <see cref="AdvSimd" />.
-        /// </summary>
-        AdvSimdHoisted,
-
-        /// <summary>
-        /// <see cref="AdvSimdHoisted" /> splitting each step's four blocks into limbs in general registers. Temporary,
-        /// as <see cref="AdvSimdHoisted" /> is.
-        /// </summary>
-        AdvSimdIntegerSplit,
     }
 }

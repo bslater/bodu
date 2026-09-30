@@ -37,7 +37,7 @@ internal partial struct Poly1305Core
     /// faster than taking one group per step at every length where either beat the scalar loop.
     /// </para>
     /// </remarks>
-    private static partial class Vector128Kernel
+    private static class Vector128Kernel
     {
         /// <summary>The number of blocks in a group: one for each 64-bit lane.</summary>
         private const int Lanes = 2;

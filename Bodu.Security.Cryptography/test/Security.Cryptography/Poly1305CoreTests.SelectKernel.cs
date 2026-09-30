@@ -250,7 +250,5 @@ public sealed partial class Poly1305CoreTests
         Assert.AreEqual(System.Runtime.Intrinsics.X86.Avx2.IsSupported, Poly1305Core.IsSupported(Poly1305Core.KernelKind.Avx2Paired));
         Assert.AreEqual(System.Runtime.Intrinsics.X86.Avx512F.IsSupported, Poly1305Core.IsSupported(Poly1305Core.KernelKind.Avx512));
         Assert.AreEqual(System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported, Poly1305Core.IsSupported(Poly1305Core.KernelKind.AdvSimd));
-        Assert.AreEqual(System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported, Poly1305Core.IsSupported(Poly1305Core.KernelKind.AdvSimdHoisted));
-        Assert.AreEqual(System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported, Poly1305Core.IsSupported(Poly1305Core.KernelKind.AdvSimdIntegerSplit));
     }
 }
