@@ -2,9 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Struct BencodeElement | BODU </title>
+      <title>BencodeElement Struct
+ | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Struct BencodeElement | BODU ">
+      <meta name="title" content="BencodeElement Struct
+ | BODU ">
       
       <meta name="description" content="Represents a single read-only value within a . The element is a lightweight view — a pair of the owning document and a row index — so copying it is cheap and never materializes a node.">
       <link rel="icon" href="../images/favicon.svg">
@@ -16,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Text_Bencode_Document_BencodeElement.md&amp;value=---%0Auid%3A%20Bodu.Text.Bencode.Document.BencodeElement%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -44,7 +46,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../index.html">
-            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
             BODU
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,23 +90,31 @@
 
 
 
-  <h1 id="Bodu_Text_Bencode_Document_BencodeElement" data-uid="Bodu.Text.Bencode.Document.BencodeElement" class="text-break">
-Struct BencodeElement  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.ObjectEnumerator.cs/#L11"><i class="bi bi-code-slash"></i></a>
+
+  <h1 id="Bodu_Text_Bencode_Document_BencodeElement" data-uid="Bodu.Text.Bencode.Document.BencodeElement" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+BencodeElement Struct
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.ArrayEnumerator.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Text_Bencode_Document_BencodeElement_definition" class="bodu-definition">Definition</h2>
 
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Bencode.html">Bencode</a>.<a class="xref" href="Bodu.Text.Bencode.Document.html">Document</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Text.Bencode.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Bencode">Bodu.Text.Bencode</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.ArrayEnumerator.cs">BencodeElement.ArrayEnumerator.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents a single read-only value within a <a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a>. The element is a lightweight view — a
 pair of the owning document and a row index — so copying it is cheap and never materializes a node.</p>
 </div>
-  <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public readonly struct BencodeElement</code></pre>
   </div>
+
 
 
 
@@ -130,7 +140,8 @@ pair of the owning document and a row index — so copying it is cheap and never
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
-  </dd></dl>
+    </dd>
+  </dl>
 
   <dl class="typelist extensionMethods">
     <dt>Extension Methods</dt>
@@ -171,7 +182,10 @@ pair of the owning document and a row index — so copying it is cheap and never
   <div>
       <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  </dd></dl>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
 
 
 
@@ -204,10 +218,12 @@ byte[] pieces = info.GetProperty("pieces").GetBytes();   // raw byte string</cod
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_Item_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.Item*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_Item_System_Int32_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.Item(System.Int32)">
   this[int]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L235"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the element at the supplied index within this array element.</p>
 </div>
@@ -252,13 +268,17 @@ byte[] pieces = info.GetProperty("pieces").GetBytes();   // raw byte string</cod
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_ValueKind_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.ValueKind*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_ValueKind" data-uid="Bodu.Text.Bencode.Document.BencodeElement.ValueKind">
   ValueKind
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the kind of this element.</p>
 </div>
@@ -291,6 +311,8 @@ byte[] pieces = info.GetProperty("pieces").GetBytes();   // raw byte string</cod
   </dl>
 
 
+  </section>
+
 
   <h2 class="section" id="methods">Methods
 </h2>
@@ -298,10 +320,12 @@ byte[] pieces = info.GetProperty("pieces").GetBytes();   // raw byte string</cod
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_Clone_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.Clone*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_Clone" data-uid="Bodu.Text.Bencode.Document.BencodeElement.Clone">
   Clone()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L209"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Creates an independent copy of this element whose lifetime is not tied to the owning document.</p>
 </div>
@@ -334,13 +358,17 @@ byte[] pieces = info.GetProperty("pieces").GetBytes();   // raw byte string</cod
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_EnumerateArray_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.EnumerateArray*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_EnumerateArray" data-uid="Bodu.Text.Bencode.Document.BencodeElement.EnumerateArray">
   EnumerateArray()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L302"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Returns an enumerator that iterates the elements of this array element in order.</p>
 </div>
@@ -376,13 +404,17 @@ byte[] pieces = info.GetProperty("pieces").GetBytes();   // raw byte string</cod
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_EnumerateObject_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.EnumerateObject*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_EnumerateObject" data-uid="Bodu.Text.Bencode.Document.BencodeElement.EnumerateObject">
   EnumerateObject()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L316"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Returns an enumerator that iterates the key/value pairs of this object element in stored order.</p>
 </div>
@@ -418,13 +450,17 @@ byte[] pieces = info.GetProperty("pieces").GetBytes();   // raw byte string</cod
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_GetArrayLength_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetArrayLength*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_GetArrayLength" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetArrayLength">
   GetArrayLength()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L220"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the number of elements in this array element.</p>
 </div>
@@ -460,13 +496,17 @@ byte[] pieces = info.GetProperty("pieces").GetBytes();   // raw byte string</cod
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_GetBytes_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetBytes*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_GetBytes" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetBytes">
   GetBytes()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L166"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Copies this byte-string element's content to a new array.</p>
 </div>
@@ -502,13 +542,17 @@ byte[] pieces = info.GetProperty("pieces").GetBytes();   // raw byte string</cod
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_GetInt64_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetInt64*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_GetInt64" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetInt64">
   GetInt64()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the value of this integer element as a 64-bit signed integer.</p>
 </div>
@@ -548,13 +592,17 @@ values in the upper unsigned 64-bit range.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_GetProperty_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetProperty*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_GetProperty_System_String_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetProperty(System.String)">
   GetProperty(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L253"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the value of the property with the supplied name within this object element.</p>
 </div>
@@ -602,13 +650,17 @@ values in the upper unsigned 64-bit range.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_GetRawBytes_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetRawBytes*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_GetRawBytes" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetRawBytes">
   GetRawBytes()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L180"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Copies the complete encoded form of this element to a new array. For a byte string the result includes the
 length prefix, for an integer the <code>i…e</code> framing, and for a container both delimiters and every child.</p>
@@ -647,13 +699,17 @@ torrent's info-hash from the <code>info</code> dictionary's element — and for 
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_GetString_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetString*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_GetString" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetString">
   GetString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L155"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes this byte-string element as UTF-8 text.</p>
 </div>
@@ -692,13 +748,17 @@ torrent's info-hash from the <code>info</code> dictionary's element — and for 
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_GetUInt64_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetUInt64*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_GetUInt64" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetUInt64">
   GetUInt64()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L112"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the value of this integer element as a 64-bit unsigned integer, accepting any value in [0,
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64.maxvalue">MaxValue</a> ].</p>
@@ -743,13 +803,17 @@ this accessor reads such values without loss, mirroring <a class="xref" href="Bo
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_ToString_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.ToString*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_ToString" data-uid="Bodu.Text.Bencode.Document.BencodeElement.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L334"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Returns a textual representation of this element.</p>
 </div>
@@ -787,13 +851,17 @@ allocation-light.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_TryGetInt64_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.TryGetInt64*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_TryGetInt64_System_Int64__" data-uid="Bodu.Text.Bencode.Document.BencodeElement.TryGetInt64(System.Int64@)">
   TryGetInt64(out long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to get the value of this integer element as a 64-bit signed integer.</p>
 </div>
@@ -836,13 +904,17 @@ readable only through <a class="xref" href="Bodu.Text.Bencode.Document.BencodeEl
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_TryGetProperty_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.TryGetProperty*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_TryGetProperty_System_String_Bodu_Text_Bencode_Document_BencodeElement__" data-uid="Bodu.Text.Bencode.Document.BencodeElement.TryGetProperty(System.String,Bodu.Text.Bencode.Document.BencodeElement@)">
   TryGetProperty(string, out BencodeElement)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L280"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to get the value of the property with the supplied name within this object element.</p>
 </div>
@@ -890,13 +962,17 @@ readable only through <a class="xref" href="Bodu.Text.Bencode.Document.BencodeEl
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_TryGetUInt64_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.TryGetUInt64*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_TryGetUInt64_System_UInt64__" data-uid="Bodu.Text.Bencode.Document.BencodeElement.TryGetUInt64(System.UInt64@)">
   TryGetUInt64(out ulong)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to get the value of this integer element as a 64-bit unsigned integer.</p>
 </div>
@@ -938,13 +1014,17 @@ readable only through <a class="xref" href="Bodu.Text.Bencode.Document.BencodeEl
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Document_BencodeElement_WriteTo_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.WriteTo*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeElement_WriteTo_Bodu_Text_Bencode_Writer_Utf8BencodeWriter_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.WriteTo(Bodu.Text.Bencode.Writer.Utf8BencodeWriter)">
   WriteTo(Utf8BencodeWriter)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L196"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes the complete encoded form of this element to the supplied writer.</p>
 </div>
@@ -985,6 +1065,18 @@ does not permit a value at the current position.</p>
   </dl>
 
 
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
 
 
 </article>
@@ -1003,7 +1095,7 @@ does not permit a value at the current position.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57c0ab2 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: aa16ed3 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

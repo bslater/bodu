@@ -2,9 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Class ComparableExtensions | BODU </title>
+      <title>ComparableExtensions Class
+ | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Class ComparableExtensions | BODU ">
+      <meta name="title" content="ComparableExtensions Class
+ | BODU ">
       
       <meta name="description" content="Provides predicate, clamping, and selection operations over any  value, turning common &amp;quot;is this within the expected window?&amp;quot; and &amp;quot;pick the better candidate&amp;quot; decisions into one-liners that read naturally.">
       <link rel="icon" href="../images/favicon.svg">
@@ -16,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Extensions_ComparableExtensions.md&amp;value=---%0Auid%3A%20Bodu.Extensions.ComparableExtensions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -44,7 +46,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../index.html">
-            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
             BODU
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,19 +90,26 @@
 
 
 
-  <h1 id="Bodu_Extensions_ComparableExtensions" data-uid="Bodu.Extensions.ComparableExtensions" class="text-break">
-Class ComparableExtensions  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.Min.cs/#L9"><i class="bi bi-code-slash"></i></a>
+
+  <h1 id="Bodu_Extensions_ComparableExtensions" data-uid="Bodu.Extensions.ComparableExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+ComparableExtensions Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.AtLeast.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Extensions_ComparableExtensions_definition" class="bodu-definition">Definition</h2>
 
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.AtLeast.cs">ComparableExtensions.AtLeast.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides predicate, clamping, and selection operations over any <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a> value, turning common
 &quot;is this within the expected window?&quot; and &quot;pick the better candidate&quot; decisions into one-liners that read naturally.</p>
 </div>
-  <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public static class ComparableExtensions</code></pre>
@@ -116,6 +125,7 @@ Class ComparableExtensions  <a class="header-action link-secondary" title="View 
       <div><span class="xref">ComparableExtensions</span></div>
     </dd>
   </dl>
+
 
 
 
@@ -143,8 +153,11 @@ Class ComparableExtensions  <a class="header-action link-secondary" title="View 
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </dd></dl>
+    </dd>
+  </dl>
 
+
+  <div class="markdown conceptual"></div>
 
 
 
@@ -199,10 +212,12 @@ bool inCountdown = 5.IsBetween(10, 1, descending); // =&gt; true</code></pre>
 
   <a id="Bodu_Extensions_ComparableExtensions_AtLeast_" data-uid="Bodu.Extensions.ComparableExtensions.AtLeast*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.AtLeast``1(``0,``0)">
   AtLeast&lt;T&gt;(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.AtLeast.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.AtLeast.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Raises a value to a specified inclusive lower bound, returning the bound when the value falls below it.</p>
 </div>
@@ -249,13 +264,17 @@ Equivalent to <code>Math.Max(value, min)</code> for numeric types.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_AtLeast_" data-uid="Bodu.Extensions.ComparableExtensions.AtLeast*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.AtLeast``1(``0,``0,System.Collections.Generic.IComparer{``0})">
   AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.AtLeast.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.AtLeast.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Raises a value to a specified inclusive lower bound using a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
 </div>
@@ -311,13 +330,17 @@ required.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_AtMost_" data-uid="Bodu.Extensions.ComparableExtensions.AtMost*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.AtMost``1(``0,``0)">
   AtMost&lt;T&gt;(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.AtMost.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.AtMost.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Lowers a value to a specified inclusive upper bound, returning the bound when the value exceeds it.</p>
 </div>
@@ -364,13 +387,17 @@ Equivalent to <code>Math.Min(value, max)</code> for numeric types.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_AtMost_" data-uid="Bodu.Extensions.ComparableExtensions.AtMost*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.AtMost``1(``0,``0,System.Collections.Generic.IComparer{``0})">
   AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.AtMost.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.AtMost.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Lowers a value to a specified inclusive upper bound using a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
 </div>
@@ -426,13 +453,17 @@ required.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_Clamp_" data-uid="Bodu.Extensions.ComparableExtensions.Clamp*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__" data-uid="Bodu.Extensions.ComparableExtensions.Clamp``1(``0,System.Nullable{``0},System.Nullable{``0})">
   Clamp&lt;T&gt;(T, T?, T?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.Clamp.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.Clamp.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Restricts a value to lie within a specified inclusive range.</p>
 </div>
@@ -490,13 +521,17 @@ matching the behavior of <a class="xref" href="https://learn.microsoft.com/dotne
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_Clamp_" data-uid="Bodu.Extensions.ComparableExtensions.Clamp*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.Clamp``1(``0,System.Nullable{``0},System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
   Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.Clamp.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.Clamp.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Restricts a value to lie within a specified inclusive range using a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
 </div>
@@ -562,13 +597,17 @@ to <code class="paramref">comparer</code>.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_IsBetween_" data-uid="Bodu.Extensions.ComparableExtensions.IsBetween*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsBetween``1(``0,System.Nullable{``0},System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
   IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsBetween.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.IsBetween.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Determines whether a value falls inclusively between two specified boundaries using a custom
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
@@ -633,13 +672,17 @@ The order of <code class="paramref">value1</code> and <code class="paramref">val
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_IsBetween_" data-uid="Bodu.Extensions.ComparableExtensions.IsBetween*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_IsBetween__1___0___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsBetween``1(``0,``0,``0)">
   IsBetween&lt;T&gt;(T, T?, T?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsBetween.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.IsBetween.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Determines whether a value falls inclusively between two specified boundaries.</p>
 </div>
@@ -693,13 +736,17 @@ The order of <code class="paramref">value1</code> and <code class="paramref">val
 
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_IsEqualTo_" data-uid="Bodu.Extensions.ComparableExtensions.IsEqualTo*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsEqualTo``1(``0,``0,System.Collections.Generic.IComparer{``0})">
   IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsEqualTo.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.IsEqualTo.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Determines whether two values are equal under the ordering defined by a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
 </div>
@@ -758,13 +805,17 @@ use <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.e
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual_" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual``1(``0,System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
   IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsGreaterThanOrEqual.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.IsGreaterThanOrEqual.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Determines whether a value is greater than or equal to a specified reference value using a custom
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
@@ -820,13 +871,17 @@ on the specified comparer; otherwise, <a href="https://learn.microsoft.com/dotne
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual_" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual``1(``0,``0)">
   IsGreaterThanOrEqual&lt;T&gt;(T, T?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsGreaterThanOrEqual.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.IsGreaterThanOrEqual.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Determines whether a value is greater than or equal to a specified reference value.</p>
 </div>
@@ -872,13 +927,17 @@ otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference
 
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_IsGreaterThan_" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThan*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThan``1(``0,System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
   IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsGreaterThan.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.IsGreaterThan.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Determines whether a value is strictly greater than a specified reference value using a custom
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
@@ -934,13 +993,17 @@ the specified comparer; otherwise, <a href="https://learn.microsoft.com/dotnet/c
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_IsGreaterThan_" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThan*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThan``1(``0,``0)">
   IsGreaterThan&lt;T&gt;(T, T?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsGreaterThan.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.IsGreaterThan.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Determines whether a value is strictly greater than a specified reference value.</p>
 </div>
@@ -986,13 +1049,17 @@ otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference
 
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual_" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual``1(``0,System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
   IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsLessThanOrEqual.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.IsLessThanOrEqual.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Determines whether a value is less than or equal to a specified reference value using a custom
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
@@ -1048,13 +1115,17 @@ the specified comparer; otherwise, <a href="https://learn.microsoft.com/dotnet/c
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual_" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual``1(``0,``0)">
   IsLessThanOrEqual&lt;T&gt;(T, T?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsLessThanOrEqual.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.IsLessThanOrEqual.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Determines whether a value is less than or equal to a specified reference value.</p>
 </div>
@@ -1100,13 +1171,17 @@ otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference
 
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_IsLessThan_" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThan*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThan``1(``0,System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
   IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsLessThan.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.IsLessThan.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Determines whether a value is strictly less than a specified reference value using a custom
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
@@ -1162,13 +1237,17 @@ the specified comparer; otherwise, <a href="https://learn.microsoft.com/dotnet/c
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_IsLessThan_" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThan*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_IsLessThan__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThan``1(``0,``0)">
   IsLessThan&lt;T&gt;(T, T?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsLessThan.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.IsLessThan.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Determines whether a value is strictly less than a specified reference value.</p>
 </div>
@@ -1214,13 +1293,17 @@ the specified comparer; otherwise, <a href="https://learn.microsoft.com/dotnet/c
 
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_IsOutside_" data-uid="Bodu.Extensions.ComparableExtensions.IsOutside*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsOutside``1(``0,System.Nullable{``0},System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
   IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsOutside.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.IsOutside.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Determines whether a value falls outside the inclusive range defined by two specified boundaries using a custom
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
@@ -1284,13 +1367,17 @@ The order of <code class="paramref">value1</code> and <code class="paramref">val
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_IsOutside_" data-uid="Bodu.Extensions.ComparableExtensions.IsOutside*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_IsOutside__1___0___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsOutside``1(``0,``0,``0)">
   IsOutside&lt;T&gt;(T, T?, T?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsOutside.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.IsOutside.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Determines whether a value falls outside the inclusive range defined by two specified boundaries.</p>
 </div>
@@ -1344,13 +1431,17 @@ The order of <code class="paramref">value1</code> and <code class="paramref">val
 
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_Max_" data-uid="Bodu.Extensions.ComparableExtensions.Max*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_Max__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.Max``1(``0,``0)">
   Max&lt;T&gt;(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.Max.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.Max.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Returns the larger of two values using their natural ordering.</p>
 </div>
@@ -1396,13 +1487,17 @@ The order of <code class="paramref">value1</code> and <code class="paramref">val
 
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_Max_" data-uid="Bodu.Extensions.ComparableExtensions.Max*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.Max``1(``0,``0,System.Collections.Generic.IComparer{``0})">
   Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.Max.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.Max.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Returns the larger of two values using a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
 </div>
@@ -1457,13 +1552,17 @@ comparer; otherwise, <code class="paramref">other</code>.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_Min_" data-uid="Bodu.Extensions.ComparableExtensions.Min*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_Min__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.Min``1(``0,``0)">
   Min&lt;T&gt;(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.Min.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.Min.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Returns the smaller of two values using their natural ordering.</p>
 </div>
@@ -1509,13 +1608,17 @@ comparer; otherwise, <code class="paramref">other</code>.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Extensions_ComparableExtensions_Min_" data-uid="Bodu.Extensions.ComparableExtensions.Min*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.Min``1(``0,``0,System.Collections.Generic.IComparer{``0})">
   Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.Min.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Core/src/Extensions/ComparableExtensions.Min.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Returns the smaller of two values using a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
 </div>
@@ -1570,6 +1673,18 @@ comparer; otherwise, <code class="paramref">other</code>.</p>
   </dl>
 
 
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
 
 
 </article>
@@ -1588,7 +1703,7 @@ comparer; otherwise, <code class="paramref">other</code>.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57c0ab2 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: aa16ed3 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

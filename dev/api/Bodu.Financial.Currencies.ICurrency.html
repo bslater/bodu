@@ -2,9 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Interface ICurrency | BODU </title>
+      <title>ICurrency Interface
+ | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Interface ICurrency | BODU ">
+      <meta name="title" content="ICurrency Interface
+ | BODU ">
       
       <meta name="description" content="Identifies a currency at the type-system level, supplying the ISO 4217 code, minor-unit precision, and optional cash-rounding and historicity metadata used by .">
       <link rel="icon" href="../images/favicon.svg">
@@ -16,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Financial_Currencies_ICurrency.md&amp;value=---%0Auid%3A%20Bodu.Financial.Currencies.ICurrency%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -44,7 +46,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../index.html">
-            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
             BODU
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,19 +90,26 @@
 
 
 
-  <h1 id="Bodu_Financial_Currencies_ICurrency" data-uid="Bodu.Financial.Currencies.ICurrency" class="text-break">
-Interface ICurrency  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/ICurrency.cs/#L49"><i class="bi bi-code-slash"></i></a>
+
+  <h1 id="Bodu_Financial_Currencies_ICurrency" data-uid="Bodu.Financial.Currencies.ICurrency" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+ICurrency Interface
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Financial_Currencies_ICurrency_definition" class="bodu-definition">Definition</h2>
 
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.Currencies.html">Currencies</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Financial.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial">Bodu.Financial</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.Currencies/ICurrency.cs">ICurrency.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Identifies a currency at the type-system level, supplying the ISO 4217 code, minor-unit precision, and optional
 cash-rounding and historicity metadata used by <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>.</p>
 </div>
-  <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public interface ICurrency</code></pre>
@@ -113,6 +122,9 @@ cash-rounding and historicity metadata used by <a class="xref" href="Bodu.Financ
 
 
 
+
+
+  <div class="markdown conceptual"></div>
 
 
 
@@ -156,10 +168,12 @@ static string DescribeCurrency&lt;TCurrency&gt;() where TCurrency : ICurrency =&
 
   <a id="Bodu_Financial_Currencies_ICurrency_CashRoundingIncrement_" data-uid="Bodu.Financial.Currencies.ICurrency.CashRoundingIncrement*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Currencies_ICurrency_CashRoundingIncrement" data-uid="Bodu.Financial.Currencies.ICurrency.CashRoundingIncrement">
   CashRoundingIncrement
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/ICurrency.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the smallest cash denomination of the currency, expressed in the major unit.</p>
 </div>
@@ -194,13 +208,17 @@ cash totals; electronic transactions retain the full <a class="xref" href="Bodu.
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_Currencies_ICurrency_DemonetizedOn_" data-uid="Bodu.Financial.Currencies.ICurrency.DemonetizedOn*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Currencies_ICurrency_DemonetizedOn" data-uid="Bodu.Financial.Currencies.ICurrency.DemonetizedOn">
   DemonetizedOn
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/ICurrency.cs/#L117"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the date the currency was withdrawn from circulation, if known.</p>
 </div>
@@ -227,13 +245,17 @@ cash totals; electronic transactions retain the full <a class="xref" href="Bodu.
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_Currencies_ICurrency_EnglishName_" data-uid="Bodu.Financial.Currencies.ICurrency.EnglishName*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Currencies_ICurrency_EnglishName" data-uid="Bodu.Financial.Currencies.ICurrency.EnglishName">
   EnglishName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/ICurrency.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the English-language name of the currency.</p>
 </div>
@@ -268,13 +290,17 @@ form rather than emitting a trailing space with no name.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_Currencies_ICurrency_IsHistoric_" data-uid="Bodu.Financial.Currencies.ICurrency.IsHistoric*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Currencies_ICurrency_IsHistoric" data-uid="Bodu.Financial.Currencies.ICurrency.IsHistoric">
   IsHistoric
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/ICurrency.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether the currency has been demonetized and is no longer in active circulation.</p>
 </div>
@@ -306,13 +332,17 @@ currencies replaced in 2002, or <code>ZWL</code> since its 2024 demonetization);
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_Currencies_ICurrency_IsoCode_" data-uid="Bodu.Financial.Currencies.ICurrency.IsoCode*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Currencies_ICurrency_IsoCode" data-uid="Bodu.Financial.Currencies.ICurrency.IsoCode">
   IsoCode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/ICurrency.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the ISO 4217 three-letter alphabetic code that identifies the currency.</p>
 </div>
@@ -339,13 +369,17 @@ currencies replaced in 2002, or <code>ZWL</code> since its 2024 demonetization);
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_Currencies_ICurrency_MinorUnits_" data-uid="Bodu.Financial.Currencies.ICurrency.MinorUnits*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Currencies_ICurrency_MinorUnits" data-uid="Bodu.Financial.Currencies.ICurrency.MinorUnits">
   MinorUnits
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/ICurrency.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the number of fractional digits in the currency's minor unit — the precision
 <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> rounds to on construction and formats by default.</p>
@@ -374,13 +408,17 @@ zero (for <code>JPY</code>, <code>KRW</code>, <code>CLP</code>), or three (for <
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_Currencies_ICurrency_NumericCode_" data-uid="Bodu.Financial.Currencies.ICurrency.NumericCode*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Currencies_ICurrency_NumericCode" data-uid="Bodu.Financial.Currencies.ICurrency.NumericCode">
   NumericCode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/ICurrency.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the ISO 4217 three-digit numeric code that identifies the currency.</p>
 </div>
@@ -414,13 +452,17 @@ canonical ISO numeric value.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_Currencies_ICurrency_SuccessorIsoCode_" data-uid="Bodu.Financial.Currencies.ICurrency.SuccessorIsoCode*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_Currencies_ICurrency_SuccessorIsoCode" data-uid="Bodu.Financial.Currencies.ICurrency.SuccessorIsoCode">
   SuccessorIsoCode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/ICurrency.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.Currencies/ICurrency.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the ISO 4217 alphabetic code of the currency that replaced this one, when applicable.</p>
 </div>
@@ -448,6 +490,18 @@ currencies), or <a href="https://learn.microsoft.com/dotnet/csharp/language-refe
 
 
 
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
 
 
 </article>
@@ -466,7 +520,7 @@ currencies), or <a href="https://learn.microsoft.com/dotnet/csharp/language-refe
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57c0ab2 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: aa16ed3 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

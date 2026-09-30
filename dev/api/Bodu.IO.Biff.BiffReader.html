@@ -2,9 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Struct BiffReader | BODU </title>
+      <title>BiffReader Struct
+ | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Struct BiffReader | BODU ">
+      <meta name="title" content="BiffReader Struct
+ | BODU ">
       
       <meta name="description" content="Provides a forward-only, allocation-free reader over a BIFF5 or BIFF8 record stream. The reader is a ref struct over the supplied bytes: each call to  advances to the next physical record and exposes its identifier, length, and payload slice, and typed accessors decode the records the codec names.">
       <link rel="icon" href="../images/favicon.svg">
@@ -16,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_IO_Biff_BiffReader.md&amp;value=---%0Auid%3A%20Bodu.IO.Biff.BiffReader%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -44,7 +46,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../index.html">
-            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
             BODU
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,13 +90,21 @@
 
 
 
-  <h1 id="Bodu_IO_Biff_BiffReader" data-uid="Bodu.IO.Biff.BiffReader" class="text-break">
-Struct BiffReader  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L9"><i class="bi bi-code-slash"></i></a>
+
+  <h1 id="Bodu_IO_Biff_BiffReader" data-uid="Bodu.IO.Biff.BiffReader" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+BiffReader Struct
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_IO_Biff_BiffReader_definition" class="bodu-definition">Definition</h2>
 
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Biff.html">Biff</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.IO.Biff.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Biff">Bodu.IO.Biff</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs">BiffReader.Records.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides a forward-only, allocation-free reader over a BIFF5 or BIFF8 record stream. The reader is a
@@ -102,11 +112,11 @@ Struct BiffReader  <a class="header-action link-secondary" title="View source" h
 physical record and exposes its identifier, length, and payload slice, and typed accessors decode the records the
 codec names.</p>
 </div>
-  <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public ref struct BiffReader</code></pre>
   </div>
+
 
 
 
@@ -135,8 +145,11 @@ codec names.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
-  </dd></dl>
+    </dd>
+  </dl>
 
+
+  <div class="markdown conceptual"></div>
 
 
 
@@ -189,10 +202,12 @@ while (reader.Read())
 
   <a id="Bodu_IO_Biff_BiffReader__ctor_" data-uid="Bodu.IO.Biff.BiffReader.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader__ctor_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Biff.BiffReader.#ctor(System.ReadOnlySpan{System.Byte})">
   BiffReader(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Biff.BiffReader.html">BiffReader</a> struct over the supplied bytes, which hold the
 complete stream.</p>
@@ -220,13 +235,17 @@ complete stream.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader__ctor_" data-uid="Bodu.IO.Biff.BiffReader.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader__ctor_System_ReadOnlySpan_System_Byte__Bodu_IO_Biff_BiffReaderOptions_" data-uid="Bodu.IO.Biff.BiffReader.#ctor(System.ReadOnlySpan{System.Byte},Bodu.IO.Biff.BiffReaderOptions)">
   BiffReader(ReadOnlySpan&lt;byte&gt;, BiffReaderOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L114"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Biff.BiffReader.html">BiffReader</a> struct over the supplied bytes using the supplied
 options.</p>
@@ -257,13 +276,17 @@ options.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader__ctor_" data-uid="Bodu.IO.Biff.BiffReader.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader__ctor_System_ReadOnlySpan_System_Byte__System_Boolean_Bodu_IO_Biff_BiffReaderState_" data-uid="Bodu.IO.Biff.BiffReader.#ctor(System.ReadOnlySpan{System.Byte},System.Boolean,Bodu.IO.Biff.BiffReaderState)">
   BiffReader(ReadOnlySpan&lt;byte&gt;, bool, BiffReaderState)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Biff.BiffReader.html">BiffReader</a> struct over a block of a stream, continuing from a
 previously captured state.</p>
@@ -298,6 +321,8 @@ trailing record is left unconsumed rather than rejected.</p>
 
 
 
+  </section>
+
 
   <h2 class="section" id="properties">Properties
 </h2>
@@ -305,10 +330,12 @@ trailing record is left unconsumed rather than rejected.</p>
 
   <a id="Bodu_IO_Biff_BiffReader_BytesConsumed_" data-uid="Bodu.IO.Biff.BiffReader.BytesConsumed*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_BytesConsumed" data-uid="Bodu.IO.Biff.BiffReader.BytesConsumed">
   BytesConsumed
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L146"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the number of bytes consumed so far: the offset of the next record header.</p>
 </div>
@@ -335,13 +362,17 @@ trailing record is left unconsumed rather than rejected.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_CodePage_" data-uid="Bodu.IO.Biff.BiffReader.CodePage*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_CodePage" data-uid="Bodu.IO.Biff.BiffReader.CodePage">
   CodePage
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L176"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the code page in effect for byte strings.</p>
 </div>
@@ -369,13 +400,17 @@ trailing record is left unconsumed rather than rejected.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_CurrentState_" data-uid="Bodu.IO.Biff.BiffReader.CurrentState*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_CurrentState" data-uid="Bodu.IO.Biff.BiffReader.CurrentState">
   CurrentState
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L152"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the state needed to continue the stream in a new reader.</p>
 </div>
@@ -402,13 +437,17 @@ trailing record is left unconsumed rather than rejected.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_HasRecord_" data-uid="Bodu.IO.Biff.BiffReader.HasRecord*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_HasRecord" data-uid="Bodu.IO.Biff.BiffReader.HasRecord">
   HasRecord
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L182"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether a record is current.</p>
 </div>
@@ -435,13 +474,17 @@ trailing record is left unconsumed rather than rejected.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_Header_" data-uid="Bodu.IO.Biff.BiffReader.Header*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_Header" data-uid="Bodu.IO.Biff.BiffReader.Header">
   Header
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L215"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the header of the current record.</p>
 </div>
@@ -468,13 +511,17 @@ trailing record is left unconsumed rather than rejected.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_IsContinuation_" data-uid="Bodu.IO.Biff.BiffReader.IsContinuation*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_IsContinuation" data-uid="Bodu.IO.Biff.BiffReader.IsContinuation">
   IsContinuation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L228"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether the current record is a <code>CONTINUE</code> record carrying the overflow of the
 record before it.</p>
@@ -502,13 +549,17 @@ record before it.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_IsFinalBlock_" data-uid="Bodu.IO.Biff.BiffReader.IsFinalBlock*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_IsFinalBlock" data-uid="Bodu.IO.Biff.BiffReader.IsFinalBlock">
   IsFinalBlock
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L158"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether the supplied bytes hold the end of the stream.</p>
 </div>
@@ -535,13 +586,17 @@ record before it.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_RecordId_" data-uid="Bodu.IO.Biff.BiffReader.RecordId*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_RecordId" data-uid="Bodu.IO.Biff.BiffReader.RecordId">
   RecordId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L188"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the 16-bit identifier of the current record.</p>
 </div>
@@ -568,13 +623,17 @@ record before it.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_RecordLength_" data-uid="Bodu.IO.Biff.BiffReader.RecordLength*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_RecordLength" data-uid="Bodu.IO.Biff.BiffReader.RecordLength">
   RecordLength
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L203"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the length of the current record's payload, in bytes.</p>
 </div>
@@ -601,13 +660,17 @@ record before it.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_RecordStartIndex_" data-uid="Bodu.IO.Biff.BiffReader.RecordStartIndex*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_RecordStartIndex" data-uid="Bodu.IO.Biff.BiffReader.RecordStartIndex">
   RecordStartIndex
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L209"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the byte offset of the current record's header within the supplied bytes.</p>
 </div>
@@ -634,13 +697,17 @@ record before it.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_RecordType_" data-uid="Bodu.IO.Biff.BiffReader.RecordType*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_RecordType" data-uid="Bodu.IO.Biff.BiffReader.RecordType">
   RecordType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L197"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the identifier of the current record as a <a class="xref" href="Bodu.IO.Biff.BiffRecordType.html">BiffRecordType</a>.</p>
 </div>
@@ -668,13 +735,17 @@ to a defined member when the record is one the codec does not name.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_ValueSpan_" data-uid="Bodu.IO.Biff.BiffReader.ValueSpan*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_ValueSpan" data-uid="Bodu.IO.Biff.BiffReader.ValueSpan">
   ValueSpan
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L221"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the payload of the current record as a slice of the supplied bytes.</p>
 </div>
@@ -701,13 +772,17 @@ to a defined member when the record is one the codec does not name.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_Version_" data-uid="Bodu.IO.Biff.BiffReader.Version*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_Version" data-uid="Bodu.IO.Biff.BiffReader.Version">
   Version
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L167"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the BIFF version of the stream.</p>
 </div>
@@ -735,6 +810,8 @@ before either.</p>
 
 
 
+  </section>
+
 
   <h2 class="section" id="methods">Methods
 </h2>
@@ -742,10 +819,12 @@ before either.</p>
 
   <a id="Bodu_IO_Biff_BiffReader_GetBlank_" data-uid="Bodu.IO.Biff.BiffReader.GetBlank*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetBlank" data-uid="Bodu.IO.Biff.BiffReader.GetBlank">
   GetBlank()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L187"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>BLANK</code> record.</p>
 </div>
@@ -781,13 +860,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetBof_" data-uid="Bodu.IO.Biff.BiffReader.GetBof*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetBof" data-uid="Bodu.IO.Biff.BiffReader.GetBof">
   GetBof()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>BOF</code> record.</p>
 </div>
@@ -823,13 +906,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetBoolErr_" data-uid="Bodu.IO.Biff.BiffReader.GetBoolErr*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetBoolErr" data-uid="Bodu.IO.Biff.BiffReader.GetBoolErr">
   GetBoolErr()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L172"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>BOOLERR</code> record.</p>
 </div>
@@ -865,13 +952,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetBoundSheet_" data-uid="Bodu.IO.Biff.BiffReader.GetBoundSheet*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetBoundSheet" data-uid="Bodu.IO.Biff.BiffReader.GetBoundSheet">
   GetBoundSheet()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>BOUNDSHEET</code> record.</p>
 </div>
@@ -907,13 +998,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetCodePage_" data-uid="Bodu.IO.Biff.BiffReader.GetCodePage*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetCodePage" data-uid="Bodu.IO.Biff.BiffReader.GetCodePage">
   GetCodePage()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L295"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>CODEPAGE</code> record.</p>
 </div>
@@ -949,13 +1044,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetDateMode_" data-uid="Bodu.IO.Biff.BiffReader.GetDateMode*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetDateMode" data-uid="Bodu.IO.Biff.BiffReader.GetDateMode">
   GetDateMode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L310"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>DATEMODE</code> record.</p>
 </div>
@@ -991,13 +1090,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetDimensions_" data-uid="Bodu.IO.Biff.BiffReader.GetDimensions*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetDimensions" data-uid="Bodu.IO.Biff.BiffReader.GetDimensions">
   GetDimensions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>DIMENSIONS</code> record.</p>
 </div>
@@ -1033,13 +1136,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetFilePass_" data-uid="Bodu.IO.Biff.BiffReader.GetFilePass*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetFilePass" data-uid="Bodu.IO.Biff.BiffReader.GetFilePass">
   GetFilePass()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L325"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>FILEPASS</code> record.</p>
 </div>
@@ -1075,13 +1182,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetFont_" data-uid="Bodu.IO.Biff.BiffReader.GetFont*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetFont" data-uid="Bodu.IO.Biff.BiffReader.GetFont">
   GetFont()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L279"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>FONT</code> record.</p>
 </div>
@@ -1117,13 +1228,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetFormat_" data-uid="Bodu.IO.Biff.BiffReader.GetFormat*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetFormat" data-uid="Bodu.IO.Biff.BiffReader.GetFormat">
   GetFormat()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L263"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>FORMAT</code> record.</p>
 </div>
@@ -1159,13 +1274,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetFormula_" data-uid="Bodu.IO.Biff.BiffReader.GetFormula*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetFormula" data-uid="Bodu.IO.Biff.BiffReader.GetFormula">
   GetFormula()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L217"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>FORMULA</code> record.</p>
 </div>
@@ -1201,13 +1320,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetLabel_" data-uid="Bodu.IO.Biff.BiffReader.GetLabel*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetLabel" data-uid="Bodu.IO.Biff.BiffReader.GetLabel">
   GetLabel()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>LABEL</code> record.</p>
 </div>
@@ -1243,13 +1366,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetLabelSst_" data-uid="Bodu.IO.Biff.BiffReader.GetLabelSst*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetLabelSst" data-uid="Bodu.IO.Biff.BiffReader.GetLabelSst">
   GetLabelSst()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L157"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>LABELSST</code> record.</p>
 </div>
@@ -1285,13 +1412,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetMulBlank_" data-uid="Bodu.IO.Biff.BiffReader.GetMulBlank*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetMulBlank" data-uid="Bodu.IO.Biff.BiffReader.GetMulBlank">
   GetMulBlank()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L202"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>MULBLANK</code> record.</p>
 </div>
@@ -1327,13 +1458,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetMulRk_" data-uid="Bodu.IO.Biff.BiffReader.GetMulRk*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetMulRk" data-uid="Bodu.IO.Biff.BiffReader.GetMulRk">
   GetMulRk()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L111"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>MULRK</code> record.</p>
 </div>
@@ -1369,13 +1504,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetNumber_" data-uid="Bodu.IO.Biff.BiffReader.GetNumber*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetNumber" data-uid="Bodu.IO.Biff.BiffReader.GetNumber">
   GetNumber()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>NUMBER</code> record.</p>
 </div>
@@ -1411,13 +1550,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetRString_" data-uid="Bodu.IO.Biff.BiffReader.GetRString*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetRString" data-uid="Bodu.IO.Biff.BiffReader.GetRString">
   GetRString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>RSTRING</code> record, the BIFF5 rich-text label cell.</p>
 </div>
@@ -1453,13 +1596,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetRk_" data-uid="Bodu.IO.Biff.BiffReader.GetRk*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetRk" data-uid="Bodu.IO.Biff.BiffReader.GetRk">
   GetRk()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>RK</code> record.</p>
 </div>
@@ -1495,13 +1642,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetRow_" data-uid="Bodu.IO.Biff.BiffReader.GetRow*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetRow" data-uid="Bodu.IO.Biff.BiffReader.GetRow">
   GetRow()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>ROW</code> record.</p>
 </div>
@@ -1537,13 +1688,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetSstHeader_" data-uid="Bodu.IO.Biff.BiffReader.GetSstHeader*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetSstHeader" data-uid="Bodu.IO.Biff.BiffReader.GetSstHeader">
   GetSstHeader()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L342"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the counts at the head of the current <code>SST</code> record. The strings themselves are read through
 <a class="xref" href="Bodu.IO.Biff.BiffSstReader.html">BiffSstReader</a>.</p>
@@ -1580,13 +1735,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetString_" data-uid="Bodu.IO.Biff.BiffReader.GetString*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetString" data-uid="Bodu.IO.Biff.BiffReader.GetString">
   GetString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L232"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>STRING</code> record, the cached text result of the preceding formula.</p>
 </div>
@@ -1622,13 +1781,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_GetXf_" data-uid="Bodu.IO.Biff.BiffReader.GetXf*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_GetXf" data-uid="Bodu.IO.Biff.BiffReader.GetXf">
   GetXf()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs/#L248"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.Records.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Decodes the current <code>XF</code> record.</p>
 </div>
@@ -1664,13 +1827,17 @@ before either.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_Read_" data-uid="Bodu.IO.Biff.BiffReader.Read*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_Read" data-uid="Bodu.IO.Biff.BiffReader.Read">
   Read()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L247"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Advances to the next physical record.</p>
 </div>
@@ -1711,13 +1878,17 @@ BIFF2, BIFF3, or BIFF4 beginning-of-file record.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_IO_Biff_BiffReader_TryReadContinuation_" data-uid="Bodu.IO.Biff.BiffReader.TryReadContinuation*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReader_TryReadContinuation_System_ReadOnlySpan_System_Byte___" data-uid="Bodu.IO.Biff.BiffReader.TryReadContinuation(System.ReadOnlySpan{System.Byte}@)">
   TryReadContinuation(out ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs/#L271"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.IO.Biff/src/IO.Biff/BiffReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Consumes the record that follows the current one when, and only when, it is a <code>CONTINUE</code> record, making it
 current and exposing its payload.</p>
@@ -1758,6 +1929,18 @@ record is any other kind, the stream has ended, or more data is needed.</p>
   </dl>
 
 
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
 
 
 </article>
@@ -1776,7 +1959,7 @@ record is any other kind, the stream has ended, or more data is needed.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57c0ab2 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: aa16ed3 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

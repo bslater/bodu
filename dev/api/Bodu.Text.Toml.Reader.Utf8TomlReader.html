@@ -2,9 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Struct Utf8TomlReader | BODU </title>
+      <title>Utf8TomlReader Struct
+ | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Struct Utf8TomlReader | BODU ">
+      <meta name="title" content="Utf8TomlReader Struct
+ | BODU ">
       
       <meta name="description" content="Provides a forward-only, source-order reader for UTF-8 TOML bytes: a ref struct that holds the input span and scans it incrementally. Each  advances to the next lexical token in document order — for example [server.tls] surfaces as  followed by a  per dotted segment, and ports = [1, 2] as a key, then , two integers, and .">
       <link rel="icon" href="../images/favicon.svg">
@@ -16,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Text_Toml_Reader_Utf8TomlReader.md&amp;value=---%0Auid%3A%20Bodu.Text.Toml.Reader.Utf8TomlReader%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -44,7 +46,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../index.html">
-            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
             BODU
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,13 +90,21 @@
 
 
 
-  <h1 id="Bodu_Text_Toml_Reader_Utf8TomlReader" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader" class="text-break">
-Struct Utf8TomlReader  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L11"><i class="bi bi-code-slash"></i></a>
+
+  <h1 id="Bodu_Text_Toml_Reader_Utf8TomlReader" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+Utf8TomlReader Struct
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.DateTimes.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Text_Toml_Reader_Utf8TomlReader_definition" class="bodu-definition">Definition</h2>
 
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Toml.html">Toml</a>.<a class="xref" href="Bodu.Text.Toml.Reader.html">Reader</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Text.Toml.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Toml">Bodu.Text.Toml</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.DateTimes.cs">Utf8TomlReader.DateTimes.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides a forward-only, source-order reader for UTF-8 TOML bytes: a <code>ref struct</code> that holds the
@@ -103,11 +113,11 @@ input span and scans it incrementally. Each <a class="xref" href="Bodu.Text.Toml
 <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_Key">Key</a> per dotted segment, and <code>ports = [1, 2]</code> as a key, then
 <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_StartArray">StartArray</a>, two integers, and <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_EndArray">EndArray</a>.</p>
 </div>
-  <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public ref struct Utf8TomlReader</code></pre>
   </div>
+
 
 
 
@@ -136,8 +146,11 @@ input span and scans it incrementally. Each <a class="xref" href="Bodu.Text.Toml
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
-  </dd></dl>
+    </dd>
+  </dl>
 
+
+  <div class="markdown conceptual"></div>
 
 
 
@@ -182,10 +195,12 @@ while (reader.Read())
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_Buffers_ReadOnlySequence_System_Byte___" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor(System.Buffers.ReadOnlySequence{System.Byte}@)">
   Utf8TomlReader(in ReadOnlySequence&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L170"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> struct over the supplied sequence, enforcing
 strict TOML v1.0.0.</p>
@@ -217,13 +232,17 @@ before reading.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_Buffers_ReadOnlySequence_System_Byte___Bodu_Text_Toml_Reader_TomlReaderOptions_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor(System.Buffers.ReadOnlySequence{System.Byte}@,Bodu.Text.Toml.Reader.TomlReaderOptions)">
   Utf8TomlReader(in ReadOnlySequence&lt;byte&gt;, TomlReaderOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L205"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> struct over the supplied sequence using the
 supplied options.</p>
@@ -258,13 +277,17 @@ before reading.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_Buffers_ReadOnlySequence_System_Byte___System_Boolean_Bodu_Text_Toml_Reader_TomlReaderState_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor(System.Buffers.ReadOnlySequence{System.Byte}@,System.Boolean,Bodu.Text.Toml.Reader.TomlReaderState)">
   Utf8TomlReader(in ReadOnlySequence&lt;byte&gt;, bool, TomlReaderState)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L260"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> struct over one block of a document supplied as
 a sequence, resuming from the state captured at the end of the previous block.</p>
@@ -304,13 +327,17 @@ before reading.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor(System.ReadOnlySpan{System.Byte})">
   Utf8TomlReader(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L156"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> struct over the supplied bytes, enforcing strict
 TOML v1.0.0.</p>
@@ -338,13 +365,17 @@ TOML v1.0.0.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_ReadOnlySpan_System_Byte__Bodu_Text_Toml_Reader_TomlReaderOptions_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor(System.ReadOnlySpan{System.Byte},Bodu.Text.Toml.Reader.TomlReaderOptions)">
   Utf8TomlReader(ReadOnlySpan&lt;byte&gt;, TomlReaderOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L188"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> struct over the supplied bytes using the
 supplied options, skipping a leading byte-order mark when present.</p>
@@ -380,13 +411,17 @@ limit throws <a class="xref" href="Bodu.Text.Toml.TomlFormatException.html">Toml
 
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_ReadOnlySpan_System_Byte__System_Boolean_Bodu_Text_Toml_Reader_TomlReaderState_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor(System.ReadOnlySpan{System.Byte},System.Boolean,Bodu.Text.Toml.Reader.TomlReaderState)">
   Utf8TomlReader(ReadOnlySpan&lt;byte&gt;, bool, TomlReaderState)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L225"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> struct over one block of a document, resuming
 from the state captured at the end of the previous block.</p>
@@ -422,6 +457,8 @@ from the state captured at the end of the previous block.</p>
 
 
 
+  </section>
+
 
   <h2 class="section" id="properties">Properties
 </h2>
@@ -429,10 +466,12 @@ from the state captured at the end of the previous block.</p>
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_BytesConsumed_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.BytesConsumed*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_BytesConsumed" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.BytesConsumed">
   BytesConsumed
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L272"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the number of bytes of the current block the reader has fully processed.</p>
 </div>
@@ -460,13 +499,17 @@ offset onward into the next block's buffer when resuming.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_ColumnNumber_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.ColumnNumber*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_ColumnNumber" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.ColumnNumber">
   ColumnNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L278"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the 1-based byte column at which the current token begins.</p>
 </div>
@@ -493,13 +536,17 @@ offset onward into the next block's buffer when resuming.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_CurrentDepth_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.CurrentDepth*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_CurrentDepth" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.CurrentDepth">
   CurrentDepth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L293"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the current bracket nesting depth: the number of arrays and inline tables open around the current token.</p>
 </div>
@@ -533,13 +580,17 @@ structural — not lexical — nesting, so they do not contribute; the normalize
 
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_CurrentState_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.CurrentState*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_CurrentState" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.CurrentState">
   CurrentState
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L308"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the resumable state to construct the next block's reader from.</p>
 </div>
@@ -566,13 +617,17 @@ structural — not lexical — nesting, so they do not contribute; the normalize
 
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_HasEscapes_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.HasEscapes*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_HasEscapes" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.HasEscapes">
   HasEscapes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L326"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether the current string token contains escape sequences or line-ending backslashes,
 so that <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetString">GetString()</a> cannot return the raw bytes by direct transcoding.</p>
@@ -600,13 +655,17 @@ so that <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html#Bodu_Tex
 
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_IsFinalBlock_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.IsFinalBlock*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_IsFinalBlock" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.IsFinalBlock">
   IsFinalBlock
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L335"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether the supplied bytes contain the final block of the document.</p>
 </div>
@@ -634,13 +693,17 @@ so that <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html#Bodu_Tex
 
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_IsFinalKeySegment_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.IsFinalKeySegment*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_IsFinalKeySegment" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.IsFinalKeySegment">
   IsFinalKeySegment
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L345"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether the current <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_Key">Key</a> token is the final segment of its
 dotted path.</p>
@@ -669,13 +732,17 @@ key/value path.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_LineNumber_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.LineNumber*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_LineNumber" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.LineNumber">
   LineNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L351"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the 1-based line on which the current token begins.</p>
 </div>
@@ -702,13 +769,17 @@ key/value path.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_TokenStartIndex_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TokenStartIndex*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_TokenStartIndex" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TokenStartIndex">
   TokenStartIndex
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L357"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the byte offset at which the current token begins, including any delimiters.</p>
 </div>
@@ -735,13 +806,17 @@ key/value path.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_TokenType_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TokenType*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_TokenType" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TokenType">
   TokenType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L365"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the kind of the current token.</p>
 </div>
@@ -768,13 +843,17 @@ key/value path.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_ValueSpan_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueSpan*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_ValueSpan" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueSpan">
   ValueSpan
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L375"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the raw UTF-8 bytes of the current token's text content, excluding delimiters.</p>
 </div>
@@ -803,6 +882,8 @@ literal. Empty for structural tokens.</p>
 
 
 
+  </section>
+
 
   <h2 class="section" id="methods">Methods
 </h2>
@@ -810,10 +891,12 @@ literal. Empty for structural tokens.</p>
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetBoolean_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetBoolean*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetBoolean" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetBoolean">
   GetBoolean()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L409"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as a Boolean.</p>
 </div>
@@ -846,13 +929,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetByte_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetByte*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetByte" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetByte">
   GetByte()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L21"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as an 8-bit unsigned integer.</p>
 </div>
@@ -888,13 +975,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetComment_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetComment*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetComment" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetComment">
   GetComment()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L419"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as a comment, returning the text after the <code>#</code> to the end of the line.</p>
 </div>
@@ -927,13 +1018,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetDateOnly_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDateOnly*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetDateOnly" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDateOnly">
   GetDateOnly()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L429"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as a local date.</p>
 </div>
@@ -966,13 +1061,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetDateTime_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDateTime*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetDateTime" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDateTime">
   GetDateTime()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L442"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as a local date-time.</p>
 </div>
@@ -1006,13 +1105,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetDateTimeOffset_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDateTimeOffset*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetDateTimeOffset" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDateTimeOffset">
   GetDateTimeOffset()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L452"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as an offset date-time.</p>
 </div>
@@ -1045,13 +1148,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetDecimal_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDecimal*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetDecimal" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDecimal">
   GetDecimal()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L303"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as a decimal, parsed exactly from the raw float literal.</p>
 </div>
@@ -1088,13 +1195,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetDouble_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDouble*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetDouble" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDouble">
   GetDouble()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L462"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as an IEEE 754 binary64 floating-point value.</p>
 </div>
@@ -1127,13 +1238,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetGuid_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetGuid*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetGuid" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetGuid">
   GetGuid()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L344"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a>, parsed from a string token in the 36-character hyphenated (
 <code>D</code>) format.</p>
@@ -1170,13 +1285,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetInt16_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetInt16*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetInt16" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetInt16">
   GetInt16()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L89"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as a 16-bit signed integer.</p>
 </div>
@@ -1212,13 +1331,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetInt32_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetInt32*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetInt32" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetInt32">
   GetInt32()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L123"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as a 32-bit signed integer.</p>
 </div>
@@ -1254,13 +1377,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetInt64_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetInt64*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetInt64" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetInt64">
   GetInt64()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L472"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as a 64-bit signed integer.</p>
 </div>
@@ -1293,13 +1420,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetSByte_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetSByte*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetSByte" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetSByte">
   GetSByte()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as an 8-bit signed integer.</p>
 </div>
@@ -1335,13 +1466,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetSingle_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetSingle*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetSingle" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetSingle">
   GetSingle()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L262"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as an IEEE 754 binary32 floating-point value, parsed from the raw float literal.</p>
 </div>
@@ -1374,13 +1509,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetString_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetString*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetString" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetString">
   GetString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L483"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token's text as a string, decoding escape sequences when present.</p>
 </div>
@@ -1414,13 +1553,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetTimeOnly_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetTimeOnly*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetTimeOnly" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetTimeOnly">
   GetTimeOnly()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L501"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as a local time.</p>
 </div>
@@ -1453,13 +1596,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetUInt16_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetUInt16*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetUInt16" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetUInt16">
   GetUInt16()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L157"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as a 16-bit unsigned integer.</p>
 </div>
@@ -1495,13 +1642,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetUInt32_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetUInt32*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetUInt32" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetUInt32">
   GetUInt32()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L191"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as a 32-bit unsigned integer.</p>
 </div>
@@ -1537,13 +1688,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetUInt64_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetUInt64*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetUInt64" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetUInt64">
   GetUInt64()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L225"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reads the current token as a 64-bit unsigned integer.</p>
 </div>
@@ -1579,13 +1734,17 @@ literal. Empty for structural tokens.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_Read_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.Read*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_Read" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.Read">
   Read()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L518"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Advances the reader to the next token.</p>
 </div>
@@ -1625,13 +1784,17 @@ constructing a new reader over the remaining bytes plus new data, passing <a cla
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_Skip_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.Skip*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_Skip" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.Skip">
   Skip()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L545"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Skips the current value in source order.</p>
 </div>
@@ -1668,13 +1831,17 @@ no effect.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetByte_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetByte*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetByte_System_Byte__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetByte(System.Byte@)">
   TryGetByte(out byte)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to read the current token as an 8-bit unsigned integer.</p>
 </div>
@@ -1713,13 +1880,17 @@ no effect.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetDecimal_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetDecimal*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetDecimal_System_Decimal__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetDecimal(System.Decimal@)">
   TryGetDecimal(out decimal)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L320"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to read the current token as a decimal, parsed exactly from the raw float literal.</p>
 </div>
@@ -1762,13 +1933,17 @@ that binary64 cannot represent exactly are preserved.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetGuid_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetGuid*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetGuid_System_Guid__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetGuid(System.Guid@)">
   TryGetGuid(out Guid)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L357"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to read the current token as a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a> in the 36-character hyphenated (<code>D</code>) format.</p>
 </div>
@@ -1807,13 +1982,17 @@ that binary64 cannot represent exactly are preserved.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetInt16_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetInt16*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetInt16_System_Int16__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetInt16(System.Int16@)">
   TryGetInt16(out short)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to read the current token as a 16-bit signed integer.</p>
 </div>
@@ -1852,13 +2031,17 @@ that binary64 cannot represent exactly are preserved.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetInt32_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetInt32*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetInt32_System_Int32__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetInt32(System.Int32@)">
   TryGetInt32(out int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to read the current token as a 32-bit signed integer.</p>
 </div>
@@ -1897,13 +2080,17 @@ that binary64 cannot represent exactly are preserved.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetSByte_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetSByte*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetSByte_System_SByte__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetSByte(System.SByte@)">
   TryGetSByte(out sbyte)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to read the current token as an 8-bit signed integer.</p>
 </div>
@@ -1942,13 +2129,17 @@ that binary64 cannot represent exactly are preserved.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetSingle_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetSingle*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetSingle_System_Single__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetSingle(System.Single@)">
   TryGetSingle(out float)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L276"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to read the current token as an IEEE 754 binary32 floating-point value.</p>
 </div>
@@ -1988,13 +2179,17 @@ rounds to an infinity.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetUInt16_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetUInt16*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetUInt16_System_UInt16__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetUInt16(System.UInt16@)">
   TryGetUInt16(out ushort)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L170"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to read the current token as a 16-bit unsigned integer.</p>
 </div>
@@ -2033,13 +2228,17 @@ rounds to an infinity.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetUInt32_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetUInt32*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetUInt32_System_UInt32__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetUInt32(System.UInt32@)">
   TryGetUInt32(out uint)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L204"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to read the current token as a 32-bit unsigned integer.</p>
 </div>
@@ -2078,13 +2277,17 @@ rounds to an infinity.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetUInt64_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetUInt64*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetUInt64_System_UInt64__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetUInt64(System.UInt64@)">
   TryGetUInt64(out ulong)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs/#L242"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.TryGet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to read the current token as a 64-bit unsigned integer.</p>
 </div>
@@ -2127,13 +2330,17 @@ a negative value fails the conversion.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_TrySkip_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TrySkip*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_TrySkip" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TrySkip">
   TrySkip()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L579"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to skip the current value in source order.</p>
 </div>
@@ -2171,13 +2378,17 @@ value on a non-final block, in which case the reader is restored to its position
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_ValueTextEquals_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueTextEquals*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_ValueTextEquals_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueTextEquals(System.ReadOnlySpan{System.Byte})">
   ValueTextEquals(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L632"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Compares the current string or key token to the supplied UTF-8 text without allocating when the token is
 escape-free.</p>
@@ -2217,13 +2428,17 @@ escape-free.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_ValueTextEquals_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueTextEquals*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_ValueTextEquals_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueTextEquals(System.ReadOnlySpan{System.Char})">
   ValueTextEquals(ReadOnlySpan&lt;char&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L681"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Compares the current string or key token to the supplied text without allocating when the token is escape-free
 and the text is small.</p>
@@ -2263,13 +2478,17 @@ and the text is small.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Toml_Reader_Utf8TomlReader_ValueTextEquals_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueTextEquals*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Reader_Utf8TomlReader_ValueTextEquals_System_String_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueTextEquals(System.String)">
   ValueTextEquals(string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs/#L669"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Toml/src/Text.Toml.Reader/Utf8TomlReader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Compares the current string or key token to the supplied text.</p>
 </div>
@@ -2311,6 +2530,18 @@ and the text is small.</p>
   </dl>
 
 
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
 
 
 </article>
@@ -2329,7 +2560,7 @@ and the text is small.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57c0ab2 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: aa16ed3 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -2,9 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Class EvictingDictionary&lt;TKey, TValue&gt; | BODU </title>
+      <title>EvictingDictionary&lt;TKey, TValue&gt; Class
+ | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Class EvictingDictionary&lt;TKey, TValue&gt; | BODU ">
+      <meta name="title" content="EvictingDictionary&lt;TKey, TValue&gt; Class
+ | BODU ">
       
       <meta name="description" content="Represents a fixed-capacity dictionary that automatically removes entries based on a chosen eviction policy, such as First-In-First-Out (FirstInFirstOut), Least Recently Used (LeastRecentlyUsed), or Least Frequently Used (LeastFrequentlyUsed).">
       <link rel="icon" href="../images/favicon.svg">
@@ -16,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Collections_Generic_EvictingDictionary_2.md&amp;value=---%0Auid%3A%20Bodu.Collections.Generic.EvictingDictionary%602%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -44,7 +46,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../index.html">
-            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
             BODU
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,20 +90,27 @@
 
 
 
-  <h1 id="Bodu_Collections_Generic_EvictingDictionary_2" data-uid="Bodu.Collections.Generic.EvictingDictionary`2" class="text-break">
-Class EvictingDictionary&lt;TKey, TValue&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.ValueCollection.cs/#L13"><i class="bi bi-code-slash"></i></a>
+
+  <h1 id="Bodu_Collections_Generic_EvictingDictionary_2" data-uid="Bodu.Collections.Generic.EvictingDictionary`2" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+EvictingDictionary&lt;TKey, TValue&gt; Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.DictionaryEnumerator.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Collections_Generic_EvictingDictionary_2_definition" class="bodu-definition">Definition</h2>
 
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Collections.html">Collections</a>.<a class="xref" href="Bodu.Collections.Generic.html">Generic</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Collections.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Collections">Bodu.Collections</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.DictionaryEnumerator.cs">EvictingDictionary{T,T}.DictionaryEnumerator.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents a fixed-capacity dictionary that automatically removes entries based on a chosen eviction policy, such as
 First-In-First-Out (FirstInFirstOut), Least Recently Used (LeastRecentlyUsed), or Least Frequently Used
 (LeastFrequentlyUsed).</p>
 </div>
-  <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public class EvictingDictionary&lt;TKey, TValue&gt; : IDictionary&lt;TKey, TValue&gt;, ICollection&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, IDictionary, ICollection, IEnumerable where TKey : notnull</code></pre>
@@ -140,6 +149,7 @@ First-In-First-Out (FirstInFirstOut), Least Recently Used (LeastRecentlyUsed), o
   </dl>
 
 
+
   <dl class="typelist inheritedMembers">
     <dt>Inherited Members</dt>
     <dd>
@@ -164,7 +174,8 @@ First-In-First-Out (FirstInFirstOut), Least Recently Used (LeastRecentlyUsed), o
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </dd></dl>
+    </dd>
+  </dl>
 
   <dl class="typelist extensionMethods">
     <dt>Extension Methods</dt>
@@ -184,172 +195,10 @@ First-In-First-Out (FirstInFirstOut), Least Recently Used (LeastRecentlyUsed), o
   <div>
       <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IDictionaryExtensions.html#Bodu_Collections_Generic_Extensions_IDictionaryExtensions_AddOrUpdate__2_System_Collections_Generic_IDictionary___0___1____0___1_">IDictionaryExtensions.AddOrUpdate&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, TValue)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IDictionaryExtensions.html#Bodu_Collections_Generic_Extensions_IDictionaryExtensions_GetOrAdd__2_System_Collections_Generic_IDictionary___0___1____0_System_Func___0___1__">IDictionaryExtensions.GetOrAdd&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, Func&lt;TKey, TValue&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IDictionaryExtensions.html#Bodu_Collections_Generic_Extensions_IDictionaryExtensions_GetOrAdd__2_System_Collections_Generic_IDictionary___0___1____0___1_">IDictionaryExtensions.GetOrAdd&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, TValue)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__System_Func___1___2__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.BatchPooled&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.BatchPooled&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Cache__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Cache&lt;T&gt;(IEnumerable&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TFirst, TSecond, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Collections_Generic_IEqualityComparer___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, IEqualityComparer&lt;TKey&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Combinations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Combinations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAll__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAll&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAny__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAny&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ForEach__1_System_Collections_Generic_IEnumerable___0__System_Action___0__">IEnumerableExtensions.ForEach&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Action&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Index__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Index&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Interleave__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0____">IEnumerableExtensions.Interleave&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, params IEnumerable&lt;TSource&gt;[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_IsNullOrEmpty__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.IsNullOrEmpty&lt;TSource&gt;(IEnumerable&lt;TSource&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Pairwise&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__2_System_Collections_Generic_IEnumerable___0__System_Func___0___0___1__">IEnumerableExtensions.Pairwise&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Randomize__1_System_Collections_Generic_IEnumerable___0__Bodu_Collections_Generic_Extensions_RandomizationMode_Bodu_IRandomGenerator_System_Nullable_System_Int32__">IEnumerableExtensions.Randomize&lt;T&gt;(IEnumerable&lt;T&gt;, RandomizationMode, IRandomGenerator, int?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___">IEnumerableExtensions.RecursiveSelect&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__System_Func___0_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;, Func&lt;TSource, RecursiveSelectControl&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEqualityComparer&lt;TSource&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__System_Func___1___2__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_SplitWhen__1_System_Collections_Generic_IEnumerable___0__System_Func___0___0_System_Boolean__">IEnumerableExtensions.SplitWhen&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, bool&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Windowed&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func_System_Collections_Generic_IReadOnlyList___0____1__">IEnumerableExtensions.Windowed&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;IReadOnlyList&lt;TSource&gt;, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_System_Func___0___1___2__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond, Func&lt;TFirst, TSecond, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html#Bodu_Collections_Extensions_IEnumerableExtensions_CountOrDefault_System_Collections_IEnumerable_">IEnumerableExtensions.CountOrDefault(IEnumerable)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__System_Func_System_Object_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;, Func&lt;object, RecursiveSelectControl&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, object&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, object&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_IEnumerable__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&gt;)</a>
-  </div>
-  </dd></dl>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
 
 
 
@@ -418,10 +267,12 @@ foreach (var kvp in cache)
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2__ctor" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor">
   EvictingDictionary()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L133"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> class, with the default
 capacity and eviction policy.</p>
@@ -441,20 +292,24 @@ capacity and eviction policy.</p>
 
 
   <h4 class="section" id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Creates an empty dictionary with a capacity of <span class="xref">Bodu.Collections.Generic.EvictingDictionary&lt;TKey, TValue&gt;.DefaultCapacity</span> items, using
-<span class="xref">Bodu.Collections.Generic.EvictingDictionary&lt;TKey, TValue&gt;.DefaultPolicy</span> for eviction when capacity is exceeded, and the default key comparer (
+  <div class="markdown level1 remarks"><p>Creates an empty dictionary with a capacity of <span class="xref">Bodu.Collections.Generic.EvictingDictionary`2.DefaultCapacity</span> items, using
+<span class="xref">Bodu.Collections.Generic.EvictingDictionary`2.DefaultPolicy</span> for eviction when capacity is exceeded, and the default key comparer (
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.equalitycomparer-1.default">Default</a>).</p>
 </div>
 
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}})">
   EvictingDictionary(IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L325"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> class, with elements copied
 from the specified sequence, using the default capacity and eviction policy.</p>
@@ -484,7 +339,7 @@ from the specified sequence, using the default capacity and eviction policy.</p>
 Creates a dictionary containing the elements from <code class="paramref">source</code>.
 </p>
 <p>
-Uses a capacity of <span class="xref">Bodu.Collections.Generic.EvictingDictionary&lt;TKey, TValue&gt;.DefaultCapacity</span>, <span class="xref">Bodu.Collections.Generic.EvictingDictionary&lt;TKey, TValue&gt;.DefaultPolicy</span> for eviction, and the default
+Uses a capacity of <span class="xref">Bodu.Collections.Generic.EvictingDictionary`2.DefaultCapacity</span>, <span class="xref">Bodu.Collections.Generic.EvictingDictionary`2.DefaultPolicy</span> for eviction, and the default
 key comparer. If more elements are provided than the capacity allows, entries are evicted according to the
 policy.
 </p>
@@ -498,13 +353,17 @@ policy.
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},Bodu.Collections.Generic.EvictingDictionaryPolicy)">
   EvictingDictionary(IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, EvictingDictionaryPolicy)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L363"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> class, with elements copied
 from the specified sequence, using the default capacity and the specified eviction policy.</p>
@@ -533,7 +392,7 @@ from the specified sequence, using the default capacity and the specified evicti
 
 
   <h4 class="section" id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Uses a capacity of <span class="xref">Bodu.Collections.Generic.EvictingDictionary&lt;TKey, TValue&gt;.DefaultCapacity</span>, the specified eviction policy, and the default key comparer.
+  <div class="markdown level1 remarks"><p>Uses a capacity of <span class="xref">Bodu.Collections.Generic.EvictingDictionary`2.DefaultCapacity</span>, the specified eviction policy, and the default key comparer.
 If more elements are provided than the capacity allows, entries are evicted according to the policy.</p>
 </div>
 
@@ -545,13 +404,17 @@ If more elements are provided than the capacity allows, entries are evicted acco
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Int32_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor(System.Int32)">
   EvictingDictionary(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L150"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> class, with the specified
 capacity and the default eviction policy.</p>
@@ -577,7 +440,7 @@ capacity and the default eviction policy.</p>
 
 
   <h4 class="section" id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Int32__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Creates an empty dictionary with the specified capacity, using <span class="xref">Bodu.Collections.Generic.EvictingDictionary&lt;TKey, TValue&gt;.DefaultPolicy</span> for eviction when
+  <div class="markdown level1 remarks"><p>Creates an empty dictionary with the specified capacity, using <span class="xref">Bodu.Collections.Generic.EvictingDictionary`2.DefaultPolicy</span> for eviction when
 capacity is exceeded, and the default key comparer ( <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.equalitycomparer-1.default">Default</a>).</p>
 </div>
 
@@ -589,13 +452,17 @@ capacity is exceeded, and the default key comparer ( <a class="xref" href="https
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryExpiration_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor(System.Int32,Bodu.Collections.Generic.EvictingDictionaryExpiration)">
   EvictingDictionary(int, EvictingDictionaryExpiration?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L236"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> class, with the specified
 capacity and time-based expiration, using the default eviction policy and key comparer.</p>
@@ -625,7 +492,7 @@ capacity and time-based expiration, using the default eviction policy and key co
 
   <h4 class="section" id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryExpiration__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Creates an empty dictionary with the specified capacity and expiration configuration, using
-<span class="xref">Bodu.Collections.Generic.EvictingDictionary&lt;TKey, TValue&gt;.DefaultPolicy</span> for eviction when capacity is exceeded and the default key comparer.</p>
+<span class="xref">Bodu.Collections.Generic.EvictingDictionary`2.DefaultPolicy</span> for eviction when capacity is exceeded and the default key comparer.</p>
 </div>
 
   <h4 class="section">Exceptions</h4>
@@ -636,13 +503,17 @@ capacity and time-based expiration, using the default eviction policy and key co
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryPolicy_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor(System.Int32,Bodu.Collections.Generic.EvictingDictionaryPolicy)">
   EvictingDictionary(int, EvictingDictionaryPolicy)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> class, with the specified
 capacity and eviction policy.</p>
@@ -683,13 +554,17 @@ key comparer ( <a class="xref" href="https://learn.microsoft.com/dotnet/api/syst
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryPolicy_Bodu_Collections_Generic_EvictingDictionaryExpiration_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor(System.Int32,Bodu.Collections.Generic.EvictingDictionaryPolicy,Bodu.Collections.Generic.EvictingDictionaryExpiration)">
   EvictingDictionary(int, EvictingDictionaryPolicy, EvictingDictionaryExpiration?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L257"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> class, with the specified
 capacity, eviction policy, and time-based expiration, using the default key comparer.</p>
@@ -733,13 +608,17 @@ the default key comparer ( <a class="xref" href="https://learn.microsoft.com/dot
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryPolicy_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor(System.Int32,Bodu.Collections.Generic.EvictingDictionaryPolicy,System.Collections.Generic.IEqualityComparer{`0})">
   EvictingDictionary(int, EvictingDictionaryPolicy, IEqualityComparer&lt;TKey&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L216"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> class, with the specified
 capacity, eviction policy, and key comparer.</p>
@@ -789,13 +668,17 @@ RandomReplacement does not require additional tracking.
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryPolicy_System_Collections_Generic_IEqualityComparer__0__Bodu_Collections_Generic_EvictingDictionaryExpiration_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor(System.Int32,Bodu.Collections.Generic.EvictingDictionaryPolicy,System.Collections.Generic.IEqualityComparer{`0},Bodu.Collections.Generic.EvictingDictionaryExpiration)">
   EvictingDictionary(int, EvictingDictionaryPolicy, IEqualityComparer&lt;TKey&gt;?, EvictingDictionaryExpiration?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L289"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> class, with the specified
 capacity, eviction policy, key comparer, and time-based expiration.</p>
@@ -850,13 +733,17 @@ RandomReplacement does not require additional tracking. When <code class="paramr
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}})">
   EvictingDictionary(int, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L349"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> class, with elements copied
 from the specified sequence, using the specified capacity and the default eviction policy.</p>
@@ -889,7 +776,7 @@ from the specified sequence, using the specified capacity and the default evicti
 Creates a dictionary containing the elements from <code class="paramref">source</code>.
 </p>
 <p>
-Uses the specified capacity, <span class="xref">Bodu.Collections.Generic.EvictingDictionary&lt;TKey, TValue&gt;.DefaultPolicy</span> for eviction, and the default key comparer. If more
+Uses the specified capacity, <span class="xref">Bodu.Collections.Generic.EvictingDictionary`2.DefaultPolicy</span> for eviction, and the default key comparer. If more
 elements are provided than the capacity allows, entries are evicted according to the policy.
 </p>
 </div>
@@ -905,13 +792,17 @@ elements are provided than the capacity allows, entries are evicted according to
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},Bodu.Collections.Generic.EvictingDictionaryPolicy)">
   EvictingDictionary(int, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, EvictingDictionaryPolicy)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L383"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> class, with elements copied
 from the specified sequence, using the specified capacity and eviction policy.</p>
@@ -958,13 +849,17 @@ provided than the capacity allows, entries are evicted according to the policy.<
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},Bodu.Collections.Generic.EvictingDictionaryPolicy,System.Collections.Generic.IEqualityComparer{`0})">
   EvictingDictionary(int, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, EvictingDictionaryPolicy, IEqualityComparer&lt;TKey&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L407"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> class, with elements copied
 from the specified sequence, using the specified capacity, eviction policy, and key comparer.</p>
@@ -1015,13 +910,17 @@ more elements are provided than the capacity allows, entries are evicted accordi
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy_System_Collections_Generic_IEqualityComparer__0__Bodu_Collections_Generic_EvictingDictionaryExpiration_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},Bodu.Collections.Generic.EvictingDictionaryPolicy,System.Collections.Generic.IEqualityComparer{`0},Bodu.Collections.Generic.EvictingDictionaryExpiration)">
   EvictingDictionary(int, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, EvictingDictionaryPolicy, IEqualityComparer&lt;TKey&gt;?, EvictingDictionaryExpiration?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L435"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> class, with elements copied
 from the specified sequence, using the specified capacity, eviction policy, key comparer, and time-based
@@ -1076,13 +975,17 @@ provided than the capacity allows, entries are evicted according to the policy.<
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
   EvictingDictionary(int, IEqualityComparer&lt;TKey&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L189"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> class, with the specified
 capacity, using the default eviction policy and the specified key comparer.</p>
@@ -1111,7 +1014,7 @@ capacity, using the default eviction policy and the specified key comparer.</p>
 
 
   <h4 class="section" id="Bodu_Collections_Generic_EvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEqualityComparer__0___remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Creates an empty dictionary with the specified capacity, using <span class="xref">Bodu.Collections.Generic.EvictingDictionary&lt;TKey, TValue&gt;.DefaultPolicy</span> for eviction when
+  <div class="markdown level1 remarks"><p>Creates an empty dictionary with the specified capacity, using <span class="xref">Bodu.Collections.Generic.EvictingDictionary`2.DefaultPolicy</span> for eviction when
 capacity is exceeded, and the specified key comparer (or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.equalitycomparer-1.default">Default</a> if
 <code class="paramref">comparer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>).</p>
 </div>
@@ -1124,6 +1027,8 @@ capacity is exceeded, and the specified key comparer (or <a class="xref" href="h
   </dl>
 
 
+  </section>
+
 
   <h2 class="section" id="properties">Properties
 </h2>
@@ -1131,10 +1036,12 @@ capacity is exceeded, and the specified key comparer (or <a class="xref" href="h
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_Capacity_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Capacity*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_Capacity" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Capacity">
   Capacity
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L509"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the maximum number of items that can be stored in the dictionary before eviction occurs.</p>
 </div>
@@ -1160,13 +1067,17 @@ capacity is exceeded, and the specified key comparer (or <a class="xref" href="h
 
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_Count_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Count*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_Count" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Count">
   Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.IDictionary.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the number of key/value pairs physically stored in the dictionary.</p>
 </div>
@@ -1206,13 +1117,17 @@ always identical.
 
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_EvictionCount_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.EvictionCount*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_EvictionCount" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.EvictionCount">
   EvictionCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L514"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the total number of items evicted from the dictionary since creation.</p>
 </div>
@@ -1238,13 +1153,17 @@ always identical.
 
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_Expiration_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Expiration*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_Expiration" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Expiration">
   Expiration
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.Expiration.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.Expiration.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the time-based expiration configuration for this dictionary, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when expiration is
 disabled.</p>
@@ -1274,13 +1193,17 @@ behaves as a capacity-only cache.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_IsReadOnly_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.IsReadOnly*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_IsReadOnly" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.IsReadOnly">
   IsReadOnly
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.IDictionary.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> is read-only.</p>
 </div>
@@ -1307,13 +1230,17 @@ behaves as a capacity-only cache.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_Item_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Item*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_Item__0_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Item(`0)">
   this[TKey]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.IDictionary.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets or sets the element with the specified key.</p>
 </div>
@@ -1358,13 +1285,17 @@ behaves as a capacity-only cache.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_Keys_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Keys*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_Keys" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Keys">
   Keys
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.IDictionary.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> containing the keys of the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
 </div>
@@ -1396,13 +1327,17 @@ repeated reads of <a class="xref" href="Bodu.Collections.Generic.EvictingDiction
 
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_Policy_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Policy*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_Policy" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Policy">
   Policy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L519"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the eviction policy configured for this dictionary.</p>
 </div>
@@ -1428,13 +1363,17 @@ repeated reads of <a class="xref" href="Bodu.Collections.Generic.EvictingDiction
 
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_TotalTouches_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.TotalTouches*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_TotalTouches" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.TotalTouches">
   TotalTouches
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L524"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the total number of times any key has been accessed or touched.</p>
 </div>
@@ -1460,13 +1399,17 @@ repeated reads of <a class="xref" href="Bodu.Collections.Generic.EvictingDiction
 
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_Values_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Values*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_Values" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Values">
   Values
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.IDictionary.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> containing the values in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
 </div>
@@ -1498,6 +1441,8 @@ repeated reads of <a class="xref" href="Bodu.Collections.Generic.EvictingDiction
 
 
 
+  </section>
+
 
   <h2 class="section" id="methods">Methods
 </h2>
@@ -1505,10 +1450,12 @@ repeated reads of <a class="xref" href="Bodu.Collections.Generic.EvictingDiction
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_Add_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Add*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_Add_System_Collections_Generic_KeyValuePair__0__1__" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Add(System.Collections.Generic.KeyValuePair{`0,`1})">
   Add(KeyValuePair&lt;TKey, TValue&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.IDictionary.cs/#L183"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Adds the specified key/value pair to the dictionary. If the dictionary has reached its capacity, an existing
 entry will be evicted according to the configured <a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html">EvictingDictionaryPolicy</a>.</p>
@@ -1542,13 +1489,17 @@ entry will be evicted according to the configured <a class="xref" href="Bodu.Col
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_Add_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Add*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_Add__0__1_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Add(`0,`1)">
   Add(TKey, TValue)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.IDictionary.cs/#L125"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Adds the specified key and value to the dictionary, or replaces the value if the key already exists. If the
 dictionary has reached its capacity and the key is new, an existing entry will be evicted according to the
@@ -1606,13 +1557,17 @@ On capacity pressure, expired entries are purged before the policy selects a vic
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_Add_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Add*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_Add__0__1_System_TimeSpan_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Add(`0,`1,System.TimeSpan)">
   Add(TKey, TValue, TimeSpan)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.Expiration.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.Expiration.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Adds the specified key and value to the dictionary with an explicit time-to-live, or replaces the value and
 restarts the lifetime if the key already exists. If the dictionary has reached its capacity and the key is new,
@@ -1674,13 +1629,17 @@ events) and the new entry is added with fresh eviction metadata.
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_Clear_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Clear*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_Clear" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Clear">
   Clear()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.IDictionary.cs/#L197"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Removes all entries from the dictionary and resets internal tracking counters.</p>
 </div>
@@ -1713,13 +1672,17 @@ and MostRecentlyUsed), frequency tracking (for LeastFrequentlyUsed), and counter
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_Contains_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Contains*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_Contains_System_Collections_Generic_KeyValuePair__0__1__" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
   Contains(KeyValuePair&lt;TKey, TValue&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.IDictionary.cs/#L212"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Determines whether the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> contains a specific value.</p>
 </div>
@@ -1757,13 +1720,17 @@ order go through <a class="xref" href="Bodu.Collections.Generic.EvictingDictiona
 
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_ContainsKey_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.ContainsKey*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_ContainsKey__0_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.ContainsKey(`0)">
   ContainsKey(TKey)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.IDictionary.cs/#L223"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Determines whether the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a> contains an element with the specified key.</p>
 </div>
@@ -1809,13 +1776,17 @@ Use <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html#Bod
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_CopyTo_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.CopyTo*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_CopyTo_System_Collections_Generic_KeyValuePair__0__1____System_Int32_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
   CopyTo(KeyValuePair&lt;TKey, TValue&gt;[], int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.IDictionary.cs/#L232"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Copies the elements of the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> to an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a>, starting at a particular <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> index.</p>
 </div>
@@ -1863,13 +1834,17 @@ call <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html#Bo
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_GetEnumerator_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.GetEnumerator*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_GetEnumerator" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.Enumerator.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the dictionary in the order defined by the current
 <a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html">EvictingDictionaryPolicy</a>.</p>
@@ -1902,13 +1877,17 @@ and never refreshes sliding deadlines.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_PeekEvictionCandidate_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.PeekEvictionCandidate*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_PeekEvictionCandidate" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.PeekEvictionCandidate">
   PeekEvictionCandidate()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L562"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Returns the key that would be evicted next based on the current eviction policy and internal state.</p>
 </div>
@@ -1946,13 +1925,17 @@ expired-but-unpurged key, even though capacity pressure purges expired entries b
 
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_Remove_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Remove*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_Remove_System_Collections_Generic_KeyValuePair__0__1__" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
   Remove(KeyValuePair&lt;TKey, TValue&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.IDictionary.cs/#L273"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Removes the first occurrence of a specific object from the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>.</p>
 </div>
@@ -1991,13 +1974,17 @@ expired-but-unpurged key, even though capacity pressure purges expired entries b
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_Remove_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Remove*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_Remove__0_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Remove(`0)">
   Remove(TKey)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.IDictionary.cs/#L258"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Removes the element with the specified key from the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
 </div>
@@ -2047,13 +2034,17 @@ events (consistent with <a class="xref" href="Bodu.Collections.Generic.EvictingD
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_RemoveExpired_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.RemoveExpired*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_RemoveExpired" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.RemoveExpired">
   RemoveExpired()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.Expiration.cs/#L137"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.Expiration.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Removes every expired entry from the dictionary and returns the number of entries removed.</p>
 </div>
@@ -2098,13 +2089,17 @@ entries. Call it periodically for caches that can sit idle for long periods.
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_Touch_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Touch*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_Touch__0_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.Touch(`0)">
   Touch(TKey)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L579"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Marks the specified key as recently accessed without retrieving its value. If the eviction policy involves usage
 tracking, this updates the internal usage metadata.</p>
@@ -2144,13 +2139,17 @@ the indexer getter) to slide. Like <a class="xref" href="Bodu.Collections.Generi
 
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_TouchOrThrow_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.TouchOrThrow*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_TouchOrThrow__0_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.TouchOrThrow(`0)">
   TouchOrThrow(TKey)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L603"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Marks the specified key as recently accessed without retrieving its value, and throws an exception if the key
 does not exist in the dictionary.</p>
@@ -2188,13 +2187,17 @@ does not exist in the dictionary.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_TryAdd_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.TryAdd*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_TryAdd__0__1_System_TimeSpan_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.TryAdd(`0,`1,System.TimeSpan)">
   TryAdd(TKey, TValue, TimeSpan)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.Expiration.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.Expiration.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to add the specified key and value to the dictionary with an explicit time-to-live, without replacing
 an existing live entry.</p>
@@ -2255,13 +2258,17 @@ capacity, expired entries are purged first and, when none exist, an entry is evi
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Collections_Generic_EvictingDictionary_2_TryGetValue_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.TryGetValue*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_TryGetValue__0__1__" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.TryGetValue(`0,`1@)">
   TryGetValue(TKey, out TValue)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.IDictionary.cs/#L307"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to retrieve the value associated with the specified key.</p>
 </div>
@@ -2319,16 +2326,20 @@ eviction events) and <a href="https://learn.microsoft.com/dotnet/csharp/language
 
 
 
+  </section>
+
 
   <h2 class="section" id="events">Events
 </h2>
 
 
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_ItemEvicted" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.ItemEvicted">
   ItemEvicted
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L473"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.DictionaryEnumerator.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Occurs immediately <b>after</b> an item is evicted from the <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> due
 to capacity limits.</p>
@@ -2376,12 +2387,16 @@ key and value provided are no longer present in the dictionary.
 
 
 
+  </section>
 
 
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_ItemEvicting" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.ItemEvicting">
   ItemEvicting
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic/EvictingDictionary{T,T}.cs/#L504"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.DictionaryEnumerator.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Occurs immediately <b>before</b> an item is evicted from the <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> due
 to capacity limits.</p>
@@ -2429,6 +2444,698 @@ and cannot cancel or delay eviction.
 
 
 
+  </section>
+
+
+  <h2 class="section" id="eii">Explicit Interface Implementations
+</h2>
+
+
+  <a id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_TKey_TValue___GetEnumerator_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{TKey,TValue}}#GetEnumerator*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_TKey_TValue___GetEnumerator" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{TKey,TValue}}#GetEnumerator">
+  IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;.GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerator&lt;KeyValuePair&lt;TKey, TValue&gt;&gt; IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;.GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerator-1">IEnumerator</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;TKey, TValue&gt;&gt;</dt>
+    <dd><p>An enumerator that can be used to iterate through the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_ICollection_CopyTo_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#ICollection#CopyTo*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_ICollection_CopyTo_System_Array_System_Int32_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+  ICollection.CopyTo(Array, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Copies the elements of the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a> to an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a>, starting at a particular <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void ICollection.CopyTo(Array array, int index)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>array</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a></dt>
+    <dd><p>The one-dimensional <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> that is the destination of the elements copied from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a>. The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> must have zero-based indexing.</p>
+</dd>
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based index in <code class="paramref">array</code> at which copying begins.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">array</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">index</code> is less than zero.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">array</code> is multidimensional.</p>
+<p>-or-</p>
+<p>The number of elements in the source <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a> is greater than the available space from <code class="paramref">index</code> to the end of the destination <code class="paramref">array</code>.</p>
+<p>-or-</p>
+<p>The type of the source <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a> cannot be cast automatically to the type of the destination <code class="paramref">array</code>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_ICollection_IsSynchronized_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#ICollection#IsSynchronized*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_ICollection_IsSynchronized" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#ICollection#IsSynchronized">
+  ICollection.IsSynchronized
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether access to the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a> is synchronized (thread safe).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool ICollection.IsSynchronized { get; }</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if access to the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a> is synchronized (thread safe); otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_ICollection_SyncRoot_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#ICollection#SyncRoot*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_ICollection_SyncRoot" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#ICollection#SyncRoot">
+  ICollection.SyncRoot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets an object that can be used to synchronize access to the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">object ICollection.SyncRoot { get; }</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>An object that can be used to synchronize access to the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_Add_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#Add*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_Add_System_Object_System_Object_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)">
+  IDictionary.Add(object, object)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Adds an element with the provided key and value to the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void IDictionary.Add(object key, object value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a> to use as the key of the element to add.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a> to use as the value of the element to add.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>An element with the same key already exists in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> is read-only.</p>
+<p>-or-</p>
+<p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> has a fixed size.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_Contains_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#Contains*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_Contains_System_Object_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#Contains(System.Object)">
+  IDictionary.Contains(object)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object contains an element with the specified key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool IDictionary.Contains(object key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The key to locate in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> contains an element with the key; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_GetEnumerator_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#GetEnumerator*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_GetEnumerator" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#GetEnumerator">
+  IDictionary.GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionaryenumerator">IDictionaryEnumerator</a> object for the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IDictionaryEnumerator IDictionary.GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionaryenumerator">IDictionaryEnumerator</a></dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionaryenumerator">IDictionaryEnumerator</a> object for the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_IsFixedSize_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#IsFixedSize*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_IsFixedSize" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#IsFixedSize">
+  IDictionary.IsFixedSize
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object has a fixed size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool IDictionary.IsFixedSize { get; }</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object has a fixed size; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_IsReadOnly_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#IsReadOnly*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_IsReadOnly" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#IsReadOnly">
+  IDictionary.IsReadOnly
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object is read-only.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool IDictionary.IsReadOnly { get; }</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object is read-only; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_Item_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#Item*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_Item_System_Object_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#Item(System.Object)">
+  IDictionary.Item[object]
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the element with the specified key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">object? IDictionary.Item[object key] { get; set; }</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The key of the element to get or set.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The element with the specified key, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> if the key does not exist.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_Item_System_Object__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Following the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary&lt;TKey, TValue&gt;</a> contract for
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">this[object]</a>, the getter throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> for a
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> key and returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for a non-null key of an incompatible type.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The property is set and the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object is read-only.</p>
+<p>-or-</p>
+<p>The property is set, <code class="paramref">key</code> does not exist in the collection, and the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> has a fixed size.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_Keys_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#Keys*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_Keys" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#Keys">
+  IDictionary.Keys
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a> object containing the keys of the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICollection IDictionary.Keys { get; }</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a></dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a> object containing the keys of the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_Remove_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#Remove*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_Remove_System_Object_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#Remove(System.Object)">
+  IDictionary.Remove(object)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Removes the element with the specified key from the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void IDictionary.Remove(object key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The key of the element to remove.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object is read-only.</p>
+<p>-or-</p>
+<p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> has a fixed size.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_Values_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#Values*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_Values" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#Values">
+  IDictionary.Values
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a> object containing the values in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ICollection IDictionary.Values { get; }</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a></dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a> object containing the values in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a> object.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_get_Item_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#get_Item*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_get_Item_System_Object_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#get_Item(System.Object)">
+  IDictionary.get_Item(object)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">object IDictionary.get_Item(object key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_set_Item_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#set_Item*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IDictionary_set_Item_System_Object_System_Object_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IDictionary#set_Item(System.Object,System.Object)">
+  IDictionary.set_Item(object, object)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void IDictionary.set_Item(object key, object value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd></dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IEnumerable_GetEnumerator_" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IEnumerable#GetEnumerator*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Collections_Generic_EvictingDictionary_2_System_Collections_IEnumerable_GetEnumerator" data-uid="Bodu.Collections.Generic.EvictingDictionary`2.System#Collections#IEnumerable#GetEnumerator">
+  IEnumerable.GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Collections/src/Collections.Generic/EvictingDictionary%7BT%2CT%7D.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through a collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerator IEnumerable.GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerator">IEnumerator</a></dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerator">IEnumerator</a> object that can be used to iterate through the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
 
 
 </article>
@@ -2447,7 +3154,7 @@ and cannot cancel or delay eviction.
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57c0ab2 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: aa16ed3 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

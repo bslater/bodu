@@ -2,9 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Namespace Bodu.Globalization.Calendar.Caching | BODU </title>
+      <title>Bodu.Globalization.Calendar.Caching Namespace
+ | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Namespace Bodu.Globalization.Calendar.Caching | BODU ">
+      <meta name="title" content="Bodu.Globalization.Calendar.Caching Namespace
+ | BODU ">
       
       
       <link rel="icon" href="../images/favicon.svg">
@@ -44,7 +46,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../index.html">
-            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
             BODU
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +88,20 @@
 
         <article data-uid="Bodu.Globalization.Calendar.Caching">
 
-  <h1 id="Bodu_Globalization_Calendar_Caching" data-uid="Bodu.Globalization.Calendar.Caching" class="text-break">Namespace Bodu.Globalization.Calendar.Caching</h1>
+
+  <h1 id="Bodu_Globalization_Calendar_Caching" data-uid="Bodu.Globalization.Calendar.Caching" class="text-break" data-bodu-frameworks="net8.0 net10.0">Bodu.Globalization.Calendar.Caching Namespace
+</h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+  <div class="facts text-secondary">
+    <dl class="bodu-package"><dt>Packages</dt><dd>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar.Caching">Bodu.Globalization.Calendar.Caching</a> <span class="bodu-package-version">1.0.0</span>
+</div>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar.Caching.Distributed">Bodu.Globalization.Calendar.Caching.Distributed</a> <span class="bodu-package-version">1.0.0</span>
+</div>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar.Caching.Sqlite">Bodu.Globalization.Calendar.Caching.Sqlite</a> <span class="bodu-package-version">1.0.0</span>
+</div>
+    </dd></dl>
+  </div>
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-calendar-caching.svg" alt="Bodu.Globalization.Calendar.Caching"></p>
@@ -228,120 +243,120 @@ read-modify-write; entries are recomputable, so this is acceptable for a best-ef
     <h3 id="classes">
 Classes
 </h3>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.html">CachingNotableDateService</a></dt>
       <dd><p>An <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> decorator that serves notable-date resolutions from an
 <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a>, recomputing and caching a whole civil year on a miss and refreshing on a
 time-to-live or a resource-version change.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.DistributedNotableDateCache.html">DistributedNotableDateCache</a></dt>
       <dd><p>An <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> that persists computed years in any <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.caching.distributed.idistributedcache">IDistributedCache</a> — Redis,
 SQL Server, or an in-memory distributed cache — as one JSON blob per territory, expiring them through the same
 freshness and version mechanism as the other backends.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.DistributedNotableDateCacheOptions.html">DistributedNotableDateCacheOptions</a></dt>
       <dd><p>Configures a distributed <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a>: the optional key prefix its per-territory blobs are
 namespaced under. The backing store itself is supplied through dependency injection as an
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.caching.distributed.idistributedcache">IDistributedCache</a>.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.FileNotableDateCacheBase.html">FileNotableDateCacheBase</a></dt>
       <dd><p>Provides the file-storage mechanism for an <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a>: one file per territory under a cache
 directory, atomic temp-and-move writes, a last-write-time parse memo, and best-effort degradation on storage
 failures. Derived types implement only the file extension and the serialization of a territory's entry list.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.FileNotableDateCacheOptions.html">FileNotableDateCacheOptions</a></dt>
       <dd><p>The options for a file-backed <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a>, adding the storage directory to the storage-agnostic
 base.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.html">InMemoryNotableDateCache</a></dt>
       <dd><p>An <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> that stores computed years in memory for the lifetime of the instance, expiring
 them through the same freshness and version mechanism as the file caches.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.JsonNotableDateCache.html">JsonNotableDateCache</a></dt>
       <dd><p>An <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> that persists computed years as JSON files, one file per territory.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheBase-1.html">NotableDateCacheBase&lt;TOptions&gt;</a></dt>
       <dd><p>Provides the storage-agnostic mechanism for an <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a>: territory normalization, read-time
 freshness and version filtering, and write-time merge-and-prune of per-year entries. Derived types implement only
 the persistence of a territory's entry list; this base prescribes no physical storage structure.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheEntry.html">NotableDateCacheEntry</a></dt>
       <dd><p>Represents one cached unit of notable-date resolution: every occurrence emitted within a single civil year for a
 single territory under a single resource version, together with the UTC instant the year was computed, which drives
 expiry.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheFile.html">NotableDateCacheFile</a></dt>
       <dd><p>The root table for a persisted notable-date cache file, holding one territory's cached years as a flat pair of
 arrays: the per-year entry metadata and the occurrences that belong to those years.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheOccurrenceRow.html">NotableDateCacheOccurrenceRow</a></dt>
       <dd><p>The persisted, flattened form of a single <a class="xref" href="Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a> occurrence, carrying its associating year and
 resource version alongside every field needed to reconstruct the record.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheOptions.html">NotableDateCacheOptions</a></dt>
       <dd><p>Provides the storage-agnostic options shared by every <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a>. Storage-specific option
 types derive from this base to add their own location settings.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheWarmupOptions.html">NotableDateCacheWarmupOptions</a></dt>
       <dd><p>Configures the startup cache warm-up registered through <code>AddNotableDateCacheWarmup</code>: the territories to warm
 and the span of civil years they are warmed over.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheYearRow.html">NotableDateCacheYearRow</a></dt>
       <dd><p>The persisted metadata for one cached civil year: the year, the resource version it was computed under, and the UTC
 instant it was computed.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCachingOptions.html">NotableDateCachingOptions</a></dt>
       <dd><p>Configures a <a class="xref" href="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.html">CachingNotableDateService</a>: how long a computed year stays fresh, the resource-version
 token used when no resource provider is observed, the on-disk cache location, and the log levels of the per-lookup
 hit and miss diagnostics.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.NullNotableDateCache.html">NullNotableDateCache</a></dt>
       <dd><p>An <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> that stores nothing, used when caching is disabled.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.SqliteNotableDateCache.html">SqliteNotableDateCache</a></dt>
       <dd><p>An <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> that persists computed years in a SQLite database, expiring them through the
 same freshness and version mechanism as the in-memory and file caches.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.SqliteNotableDateCacheOptions.html">SqliteNotableDateCacheOptions</a></dt>
       <dd><p>Configures a SQLite-backed <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a>: the location of the database computed years are
 persisted in and the connection-level concurrency settings applied on open.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.TomlNotableDateCache.html">TomlNotableDateCache</a></dt>
       <dd><p>An <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> that persists computed years as TOML files, one file per territory.</p>
 </dd>
@@ -349,7 +364,7 @@ persisted in and the connection-level concurrency settings applied on open.</p>
     <h3 id="interfaces">
 Interfaces
 </h3>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a></dt>
       <dd><p>Persists computed notable-date resolutions so an expensive per-year resolution need not be recomputed while it
 remains fresh, keyed by territory, civil year, and resource version.</p>
@@ -358,7 +373,7 @@ remains fresh, keyed by territory, civil year, and resource version.</p>
     <h3 id="enums">
 Enums
 </h3>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheWriteStatus.html">NotableDateCacheWriteStatus</a></dt>
       <dd><p>Reports the outcome of an
 <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html#Bodu_Globalization_Calendar_Caching_INotableDateCache_StoreYear_Bodu_Globalization_Calendar_Caching_NotableDateCacheEntry_System_TimeSpan_System_DateTimeOffset_">StoreYear(NotableDateCacheEntry, TimeSpan, DateTimeOffset)</a> write, distinguishing a
@@ -383,7 +398,7 @@ durable success from a swallowed storage failure and from a deliberate no-op cac
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57c0ab2 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: aa16ed3 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

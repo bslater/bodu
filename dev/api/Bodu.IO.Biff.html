@@ -2,9 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Namespace Bodu.IO.Biff | BODU </title>
+      <title>Bodu.IO.Biff Namespace
+ | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Namespace Bodu.IO.Biff | BODU ">
+      <meta name="title" content="Bodu.IO.Biff Namespace
+ | BODU ">
       
       
       <link rel="icon" href="../images/favicon.svg">
@@ -44,7 +46,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../index.html">
-            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
             BODU
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +88,16 @@
 
         <article data-uid="Bodu.IO.Biff">
 
-  <h1 id="Bodu_IO_Biff" data-uid="Bodu.IO.Biff" class="text-break">Namespace Bodu.IO.Biff</h1>
+
+  <h1 id="Bodu_IO_Biff" data-uid="Bodu.IO.Biff" class="text-break" data-bodu-frameworks="net8.0 net10.0">Bodu.IO.Biff Namespace
+</h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+  <div class="facts text-secondary">
+    <dl class="bodu-package"><dt>Package</dt><dd>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Biff">Bodu.IO.Biff</a> <span class="bodu-package-version">1.0.0</span>
+</div>
+    </dd></dl>
+  </div>
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-io-biff.svg" alt="Bodu.IO.Biff"></p>
@@ -164,24 +175,24 @@ while (reader.Read())
     <h3 id="classes">
 Classes
 </h3>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffFormatException.html">BiffFormatException</a></dt>
       <dd><p>The exception thrown when BIFF data is structurally invalid: a record header is truncated, a declared payload runs
 past the available data, or a known record's payload does not match its documented layout.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffLimits.html">BiffLimits</a></dt>
       <dd><p>Defines the structural limits of the BIFF record format.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffRk.html">BiffRk</a></dt>
       <dd><p>Encodes and decodes the RK number representation: a 32-bit value whose two low bits select between a signed 30-bit
 integer and the high 30 bits of an IEEE 754 double, optionally divided by 100.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffUnsupportedVersionException.html">BiffUnsupportedVersionException</a></dt>
       <dd><p>The exception thrown when a stream is well-formed BIFF but encoded in a version the codec does not process: a BIFF2,
 BIFF3, or BIFF4 beginning-of-file record, or a <code>BOF</code> whose version field is neither BIFF5 nor BIFF8.</p>
@@ -190,103 +201,103 @@ BIFF3, or BIFF4 beginning-of-file record, or a <code>BOF</code> whose version fi
     <h3 id="structs">
 Structs
 </h3>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffBlankRecord.html">BiffBlankRecord</a></dt>
       <dd><p>Represents a decoded <code>BLANK</code> record: a formatted cell carrying no value.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffBofRecord.html">BiffBofRecord</a></dt>
       <dd><p>Represents a decoded <code>BOF</code> record: the version marker, the kind of substream being opened, and the build
 information of the application that wrote it.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffBoolErrRecord.html">BiffBoolErrRecord</a></dt>
       <dd><p>Represents a decoded <code>BOOLERR</code> record: a cell holding either a boolean or an error code.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffBoundSheetRecord.html">BiffBoundSheetRecord</a></dt>
       <dd><p>Represents a decoded <code>BOUNDSHEET</code> record: one entry of the sheet directory in the workbook globals, giving a
 sheet's name, visibility, kind, and the absolute stream offset of its substream.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffCodePageRecord.html">BiffCodePageRecord</a></dt>
       <dd><p>Represents a decoded <code>CODEPAGE</code> record: the code page byte strings in the stream are encoded in.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffDateModeRecord.html">BiffDateModeRecord</a></dt>
       <dd><p>Represents a decoded <code>DATEMODE</code> record: whether serial dates in the workbook count from 1 January 1904 rather
 than from the 1900 date system.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffDimensionsRecord.html">BiffDimensionsRecord</a></dt>
       <dd><p>Represents a decoded <code>DIMENSIONS</code> record: the used row and column extent of a sheet.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffFilePassRecord.html">BiffFilePassRecord</a></dt>
       <dd><p>Represents a decoded <code>FILEPASS</code> record: the protection scheme applied to the records that follow it. The codec
 reports the scheme and the XOR parameters; it does not decrypt.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffFontRecord.html">BiffFontRecord</a></dt>
       <dd><p>Represents a decoded <code>FONT</code> record: size, style attributes, color, character set, and face name. The name is an
 8-bit-length string in both versions — a Unicode string in BIFF8, a code-page byte string in BIFF5.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffFormatRecord.html">BiffFormatRecord</a></dt>
       <dd><p>Represents a decoded <code>FORMAT</code> record: a number-format index and its format code. The code is a 16-bit-length
 Unicode string in BIFF8 and an 8-bit-length code-page byte string in BIFF5.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffFormulaRecord.html">BiffFormulaRecord</a></dt>
       <dd><p>Represents a decoded <code>FORMULA</code> record: the cell's position and format, the cached result of its last
 calculation, its option flags, and the parsed-expression tokens, which the codec exposes as raw bytes.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffLabelRecord.html">BiffLabelRecord</a></dt>
       <dd><p>Represents a decoded <code>LABEL</code> record: a cell holding an inline text value. The text is a 16-bit-length Unicode
 string in BIFF8 and a 16-bit-length code-page byte string in BIFF5.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffLabelSstRecord.html">BiffLabelSstRecord</a></dt>
       <dd><p>Represents a decoded <code>LABELSST</code> record: a cell whose text is an entry of the shared string table (BIFF8).</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffMulBlankRecord.html">BiffMulBlankRecord</a></dt>
       <dd><p>Represents a decoded <code>MULBLANK</code> record: a run of adjacent blank (formatted, valueless) cells in one row,
 exposed by index without materializing an array.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffMulRkRecord.html">BiffMulRkRecord</a></dt>
       <dd><p>Represents a decoded <code>MULRK</code> record: a run of adjacent RK-encoded number cells in one row, exposed by index
 without materializing an array.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffNumberRecord.html">BiffNumberRecord</a></dt>
       <dd><p>Represents a decoded <code>NUMBER</code> record: a cell holding an IEEE 754 double-precision value.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffRStringRecord.html">BiffRStringRecord</a></dt>
       <dd><p>Represents a decoded <code>RSTRING</code> record: a BIFF5 rich-text label cell — a 16-bit-length code-page byte string
 followed by a run table of two-byte entries (character index, font index).</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffReader.html">BiffReader</a></dt>
       <dd><p>Provides a forward-only, allocation-free reader over a BIFF5 or BIFF8 record stream. The reader is a
 <code>ref struct</code> over the supplied bytes: each call to <a class="xref" href="Bodu.IO.Biff.BiffReader.html#Bodu_IO_Biff_BiffReader_Read">Read()</a> advances to the next
@@ -294,76 +305,76 @@ physical record and exposes its identifier, length, and payload slice, and typed
 codec names.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffReaderOptions.html">BiffReaderOptions</a></dt>
       <dd><p>Defines the customizations a <a class="xref" href="Bodu.IO.Biff.BiffReader.html">BiffReader</a> is created with.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffReaderState.html">BiffReaderState</a></dt>
       <dd><p>Carries the state a <a class="xref" href="Bodu.IO.Biff.BiffReader.html">BiffReader</a> needs to continue a stream across buffers: the established BIFF
 version and the active code page.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffRecordHeader.html">BiffRecordHeader</a></dt>
       <dd><p>Represents the four-byte header that precedes every BIFF record: a 16-bit little-endian record identifier followed
 by the 16-bit little-endian length of the payload that follows.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffRkCell.html">BiffRkCell</a></dt>
       <dd><p>Represents one cell of a <code>MULRK</code> run: its extended-format index and RK-encoded value.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffRkRecord.html">BiffRkRecord</a></dt>
       <dd><p>Represents a decoded <code>RK</code> record: a cell holding a number in the compact RK encoding.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffRowRecord.html">BiffRowRecord</a></dt>
       <dd><p>Represents a decoded <code>ROW</code> record: a row's used column extent, height, option flags, and default format.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffSstHeader.html">BiffSstHeader</a></dt>
       <dd><p>Represents the counts at the head of an <code>SST</code> record: the total number of string references in the workbook and
 the number of unique strings the table holds.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffSstReader.html">BiffSstReader</a></dt>
       <dd><p>Reads the strings of a BIFF8 shared string table (<code>SST</code>) one at a time, pulling the <code>CONTINUE</code> records
 that carry the table's overflow from the parent <a class="xref" href="Bodu.IO.Biff.BiffReader.html">BiffReader</a> as they are needed.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffString.html">BiffString</a></dt>
       <dd><p>Provides a span-backed view over a text value embedded in a BIFF record — a BIFF8 Unicode string (16-bit or
 compressed 8-bit characters with option flags, rich-text runs, and extended data) or a BIFF5 code-page byte string —
 without materializing a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> until the caller asks for one.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffStringRecord.html">BiffStringRecord</a></dt>
       <dd><p>Represents a decoded <code>STRING</code> record: the cached text result of the <code>FORMULA</code> record that precedes it. The
 text is a 16-bit-length Unicode string in BIFF8 and a 16-bit-length code-page byte string in BIFF5.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffWriter.html">BiffWriter</a></dt>
       <dd><p>Provides a forward-only writer that emits BIFF5 or BIFF8 records to an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>. Raw records
 are written from an identifier and payload; the records the codec names are written from typed values in the layout
 the selected version requires.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffWriterOptions.html">BiffWriterOptions</a></dt>
       <dd><p>Defines the customizations a <a class="xref" href="Bodu.IO.Biff.BiffWriter.html">BiffWriter</a> is created with.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffXfRecord.html">BiffXfRecord</a></dt>
       <dd><p>Represents the leading fields of a decoded <code>XF</code> (extended format) record: the font and number-format indices
 and the protection and style flags. Alignment, border, and fill fields that follow are not interpreted.</p>
@@ -372,38 +383,38 @@ and the protection and style flags. Alignment, border, and fill fields that foll
     <h3 id="enums">
 Enums
 </h3>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffCachedResultKind.html">BiffCachedResultKind</a></dt>
       <dd><p>Identifies the kind of cached result a <code>FORMULA</code> record carries in its eight-byte result field.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffEncryptionType.html">BiffEncryptionType</a></dt>
       <dd><p>Identifies the protection scheme a <code>FILEPASS</code> record declares.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffRecordType.html">BiffRecordType</a></dt>
       <dd><p>Identifies the BIFF record types the codec names. Values are the 16-bit record identifiers defined by the Excel
 binary file format and are shared by BIFF5 and BIFF8 except where a member's documentation says otherwise.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffSheetState.html">BiffSheetState</a></dt>
       <dd><p>Identifies the visibility a <code>BOUNDSHEET</code> record declares for its sheet.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffSheetType.html">BiffSheetType</a></dt>
       <dd><p>Identifies the kind of sheet a <code>BOUNDSHEET</code> record describes.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffSubstreamType.html">BiffSubstreamType</a></dt>
       <dd><p>Identifies the kind of substream a beginning-of-file record opens.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Biff.BiffVersion.html">BiffVersion</a></dt>
       <dd><p>Identifies the version of the Binary Interchange File Format (BIFF) a record stream is encoded in.</p>
 </dd>
@@ -426,7 +437,7 @@ binary file format and are shared by BIFF5 and BIFF8 except where a member's doc
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57c0ab2 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: aa16ed3 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -2,9 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Class RateTableBuilder | BODU </title>
+      <title>RateTableBuilder Class
+ | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Class RateTableBuilder | BODU ">
+      <meta name="title" content="RateTableBuilder Class
+ | BODU ">
       
       <meta name="description" content="Provides a mutable collection of  instances keyed by currency pair and provider, intended for assembling rate observations across many series before producing immutable snapshots.">
       <link rel="icon" href="../images/favicon.svg">
@@ -16,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Financial_ExchangeRates_RateTableBuilder.md&amp;value=---%0Auid%3A%20Bodu.Financial.ExchangeRates.RateTableBuilder%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -44,7 +46,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../index.html">
-            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
             BODU
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,19 +90,26 @@
 
 
 
-  <h1 id="Bodu_Financial_ExchangeRates_RateTableBuilder" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder" class="text-break">
-Class RateTableBuilder  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs/#L44"><i class="bi bi-code-slash"></i></a>
+
+  <h1 id="Bodu_Financial_ExchangeRates_RateTableBuilder" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+RateTableBuilder Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Financial_ExchangeRates_RateTableBuilder_definition" class="bodu-definition">Definition</h2>
 
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Financial.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial">Bodu.Financial</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs">RateTableBuilder.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides a mutable collection of <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.html">RateSeriesBuilder</a> instances keyed by currency pair and provider,
 intended for assembling rate observations across many series before producing immutable snapshots.</p>
 </div>
-  <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public sealed class RateTableBuilder</code></pre>
@@ -116,6 +125,7 @@ intended for assembling rate observations across many series before producing im
       <div><span class="xref">RateTableBuilder</span></div>
     </dd>
   </dl>
+
 
 
 
@@ -140,7 +150,8 @@ intended for assembling rate observations across many series before producing im
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </dd></dl>
+    </dd>
+  </dl>
 
   <dl class="typelist extensionMethods">
     <dt>Extension Methods</dt>
@@ -160,7 +171,10 @@ intended for assembling rate observations across many series before producing im
   <div>
       <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  </dd></dl>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
 
 
 
@@ -199,10 +213,12 @@ RateLookupResult usd = rates.GetRate("AUD", "USD", new DateOnly(2024, 3, 15));</
 
   <a id="Bodu_Financial_ExchangeRates_RateTableBuilder__ctor_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_RateTableBuilder__ctor" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.#ctor">
   RateTableBuilder()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.html">RateTableBuilder</a> class with no series.</p>
 </div>
@@ -223,6 +239,8 @@ RateLookupResult usd = rates.GetRate("AUD", "USD", new DateOnly(2024, 3, 15));</
 
 
 
+  </section>
+
 
   <h2 class="section" id="properties">Properties
 </h2>
@@ -230,10 +248,12 @@ RateLookupResult usd = rates.GetRate("AUD", "USD", new DateOnly(2024, 3, 15));</
 
   <a id="Bodu_Financial_ExchangeRates_RateTableBuilder_Count_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.Count*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_RateTableBuilder_Count" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.Count">
   Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the number of series currently tracked.</p>
 </div>
@@ -260,13 +280,17 @@ RateLookupResult usd = rates.GetRate("AUD", "USD", new DateOnly(2024, 3, 15));</
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_ExchangeRates_RateTableBuilder_Keys_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.Keys*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_RateTableBuilder_Keys" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.Keys">
   Keys
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the set of keys currently tracked.</p>
 </div>
@@ -293,6 +317,8 @@ RateLookupResult usd = rates.GetRate("AUD", "USD", new DateOnly(2024, 3, 15));</
 
 
 
+  </section>
+
 
   <h2 class="section" id="methods">Methods
 </h2>
@@ -300,10 +326,12 @@ RateLookupResult usd = rates.GetRate("AUD", "USD", new DateOnly(2024, 3, 15));</
 
   <a id="Bodu_Financial_ExchangeRates_RateTableBuilder_ContainsSeries_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.ContainsSeries*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_RateTableBuilder_ContainsSeries_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.ContainsSeries(Bodu.Financial.ExchangeRates.CurrencyPair,System.String)">
   ContainsSeries(CurrencyPair, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs/#L155"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reports whether the table tracks a series for the supplied pair and provider.</p>
 </div>
@@ -348,13 +376,17 @@ RateLookupResult usd = rates.GetRate("AUD", "USD", new DateOnly(2024, 3, 15));</
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Financial_ExchangeRates_RateTableBuilder_GetOrAddSeries_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.GetOrAddSeries*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_RateTableBuilder_GetOrAddSeries_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.GetOrAddSeries(Bodu.Financial.ExchangeRates.CurrencyPair,System.String)">
   GetOrAddSeries(CurrencyPair, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Returns the builder for the supplied pair and provider, creating an empty one if it does not yet exist.</p>
 </div>
@@ -399,13 +431,17 @@ RateLookupResult usd = rates.GetRate("AUD", "USD", new DateOnly(2024, 3, 15));</
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Financial_ExchangeRates_RateTableBuilder_Remove_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.Remove*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_RateTableBuilder_Remove_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.Remove(Bodu.Financial.ExchangeRates.CurrencyPair,System.String)">
   Remove(CurrencyPair, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs/#L137"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Removes the entire series for the supplied pair and provider.</p>
 </div>
@@ -450,13 +486,17 @@ RateLookupResult usd = rates.GetRate("AUD", "USD", new DateOnly(2024, 3, 15));</
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Financial_ExchangeRates_RateTableBuilder_ToBook_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.ToBook*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_RateTableBuilder_ToBook" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.ToBook">
   ToBook()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs/#L245"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Produces an immutable <a class="xref" href="Bodu.Financial.ExchangeRates.RateBook.html">RateBook</a> snapshot containing one series per non-empty builder.</p>
 </div>
@@ -488,13 +528,17 @@ when feeding rates into a provider facade.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_ExchangeRates_RateTableBuilder_ToSeries_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.ToSeries*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_RateTableBuilder_ToSeries" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.ToSeries">
   ToSeries()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs/#L222"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Produces immutable snapshots for every non-empty series in the table.</p>
 </div>
@@ -522,13 +566,17 @@ immutable series must contain at least one observation.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_ExchangeRates_RateTableBuilder_TryGetBuilder_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.TryGetBuilder*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_RateTableBuilder_TryGetBuilder_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_Bodu_Financial_ExchangeRates_RateSeriesBuilder__" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.TryGetBuilder(Bodu.Financial.ExchangeRates.CurrencyPair,System.String,Bodu.Financial.ExchangeRates.RateSeriesBuilder@)">
   TryGetBuilder(CurrencyPair, string, out RateSeriesBuilder?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs/#L176"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to retrieve the builder for the supplied pair and provider without creating one.</p>
 </div>
@@ -576,13 +624,17 @@ immutable series must contain at least one observation.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Financial_ExchangeRates_RateTableBuilder_TryGetSeries_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.TryGetSeries*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_RateTableBuilder_TryGetSeries_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_Bodu_Financial_ExchangeRates_RateSeries__" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.TryGetSeries(Bodu.Financial.ExchangeRates.CurrencyPair,System.String,Bodu.Financial.ExchangeRates.RateSeries@)">
   TryGetSeries(CurrencyPair, string, out RateSeries?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs/#L200"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Attempts to retrieve an immutable snapshot of the series for the supplied pair and provider.</p>
 </div>
@@ -631,13 +683,17 @@ existed or it held no observations.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Financial_ExchangeRates_RateTableBuilder_Upsert_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.Upsert*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_RateTableBuilder_Upsert_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_System_DateOnly_System_Decimal_System_Nullable_System_DateTimeOffset__" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.Upsert(Bodu.Financial.ExchangeRates.CurrencyPair,System.String,System.DateOnly,System.Decimal,System.Nullable{System.DateTimeOffset})">
   Upsert(CurrencyPair, string, DateOnly, decimal, DateTimeOffset?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial/src/Financial.ExchangeRates/RateTableBuilder.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Upserts an observation into the series identified by <code class="paramref">pair</code> and <code class="paramref">provider</code>,
 creating the series if it does not yet exist.</p>
@@ -696,6 +752,18 @@ recorded instant in place.</p>
   </dl>
 
 
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
 
 
 </article>
@@ -714,7 +782,7 @@ recorded instant in place.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57c0ab2 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: aa16ed3 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

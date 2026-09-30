@@ -2,9 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Class DeferredFinalBlockHashAlgorithm | BODU </title>
+      <title>DeferredFinalBlockHashAlgorithm Class
+ | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Class DeferredFinalBlockHashAlgorithm | BODU ">
+      <meta name="title" content="DeferredFinalBlockHashAlgorithm Class
+ | BODU ">
       
       <meta name="description" content="Base class for hash algorithms that defer compression of the final full block until  so that a finalization flag may be raised on the last compression call (the Blake-family shape). Owns the defer-on-full-block buffering loop and the zero-pad-then-finalize orchestration; the residual buffer, running byte counter, and disposal latch are inherited from .">
       <link rel="icon" href="../images/favicon.svg">
@@ -16,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm.md&amp;value=---%0Auid%3A%20Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -44,7 +46,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../index.html">
-            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
             BODU
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,13 +90,21 @@
 
 
 
-  <h1 id="Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm" data-uid="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm" class="text-break">
-Class DeferredFinalBlockHashAlgorithm  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/DeferredFinalBlockHashAlgorithm.cs/#L85"><i class="bi bi-code-slash"></i></a>
+
+  <h1 id="Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm" data-uid="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+DeferredFinalBlockHashAlgorithm Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Security.Cryptography/src/Security.Cryptography/DeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm_definition" class="bodu-definition">Definition</h2>
 
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Security.Cryptography/src/Security.Cryptography/DeferredFinalBlockHashAlgorithm.cs">DeferredFinalBlockHashAlgorithm.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Base class for hash algorithms that defer compression of the final full block until
@@ -103,7 +113,6 @@ Blake-family shape). Owns the defer-on-full-block buffering loop and the zero-pa
 residual buffer, running byte counter, and disposal latch are inherited from
 <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html">BufferedBlockHashAlgorithm</a>.</p>
 </div>
-  <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public abstract class DeferredFinalBlockHashAlgorithm : BufferedBlockHashAlgorithm, ICryptoTransform, IDisposable</code></pre>
@@ -138,12 +147,10 @@ residual buffer, running byte counter, and disposal latch are inherited from
     </dd>
   </dl>
 
+
   <dl class="typelist inheritedMembers">
     <dt>Inherited Members</dt>
     <dd>
-    <div>
-      <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_AlgorithmName">BufferedBlockHashAlgorithm.AlgorithmName</a>
-    </div>
     <div>
       <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_BlockSize">BufferedBlockHashAlgorithm.BlockSize</a>
     </div>
@@ -157,13 +164,16 @@ residual buffer, running byte counter, and disposal latch are inherited from
       <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_HashCore_System_Byte___System_Int32_System_Int32_">BufferedBlockHashAlgorithm.HashCore(byte[], int, int)</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_IsDisposed">BufferedBlockHashAlgorithm.IsDisposed</a>
-    </div>
-    <div>
       <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_ThrowIfDisposed">BufferedBlockHashAlgorithm.ThrowIfDisposed()</a>
     </div>
     <div>
       <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_ThrowIfInvalidState">BufferedBlockHashAlgorithm.ThrowIfInvalidState()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_AlgorithmName">BufferedBlockHashAlgorithm.AlgorithmName</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_IsDisposed">BufferedBlockHashAlgorithm.IsDisposed</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.hashsizevalue">HashAlgorithm.HashSizeValue</a>
@@ -249,7 +259,8 @@ residual buffer, running byte counter, and disposal latch are inherited from
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </dd></dl>
+    </dd>
+  </dl>
 
   <dl class="typelist extensionMethods">
     <dt>Extension Methods</dt>
@@ -389,7 +400,10 @@ residual buffer, running byte counter, and disposal latch are inherited from
   <div>
       <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
   </div>
-  </dd></dl>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
 
 
   <h2 id="Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm_examples">Examples</h2>
@@ -452,10 +466,12 @@ base. For Merkle–Damgård hashes (SHA-2, Tiger, Whirlpool) use <a class="xref"
 
   <a id="Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm__ctor_" data-uid="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm__ctor_System_Int32_" data-uid="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.#ctor(System.Int32)">
   DeferredFinalBlockHashAlgorithm(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/DeferredFinalBlockHashAlgorithm.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Security.Cryptography/src/Security.Cryptography/DeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html">DeferredFinalBlockHashAlgorithm</a> class with the specified input
 block size.</p>
@@ -489,6 +505,8 @@ block size.</p>
   </dl>
 
 
+  </section>
+
 
   <h2 class="section" id="methods">Methods
 </h2>
@@ -496,10 +514,12 @@ block size.</p>
 
   <a id="Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm_HashCore_" data-uid="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.HashCore*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm_HashCore_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.HashCore(System.ReadOnlySpan{System.Byte})">
   HashCore(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/DeferredFinalBlockHashAlgorithm.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Security.Cryptography/src/Security.Cryptography/DeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Consumes the supplied input span using the deferred-final-block buffering rule. At the start of every iteration
 of the inner loop, if the residual buffer is already full and the caller has supplied at least one more byte,
@@ -540,13 +560,17 @@ input.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm_HashFinal_" data-uid="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.HashFinal*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm_HashFinal" data-uid="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.HashFinal">
   HashFinal()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/DeferredFinalBlockHashAlgorithm.cs/#L172"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Security.Cryptography/src/Security.Cryptography/DeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Finalizes the hash computation. Zero-pads the residual buffer (if not already full) up to the block size,
 performs the final compression with <code>isFinal: true</code> and a counter equal to the total bytes consumed (
@@ -585,13 +609,17 @@ produced by <a class="xref" href="Bodu.Security.Cryptography.DeferredFinalBlockH
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm_ProcessBlock_" data-uid="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.ProcessBlock*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm_ProcessBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Boolean_" data-uid="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.ProcessBlock(System.ReadOnlySpan{System.Byte},System.UInt64,System.Boolean)">
   ProcessBlock(ReadOnlySpan&lt;byte&gt;, ulong, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/DeferredFinalBlockHashAlgorithm.cs/#L209"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Security.Cryptography/src/Security.Cryptography/DeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Compresses a single full block of input using the algorithm's internal compression function.</p>
 </div>
@@ -634,13 +662,17 @@ is the inherited residual buffer and may be overwritten by subsequent input.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm_ProcessFinalBlock_" data-uid="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.ProcessFinalBlock*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm_ProcessFinalBlock" data-uid="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.ProcessFinalBlock">
   ProcessFinalBlock()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/DeferredFinalBlockHashAlgorithm.cs/#L221"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Security.Cryptography/src/Security.Cryptography/DeferredFinalBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Extracts the digest from the algorithm's chaining variables after <a class="xref" href="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html#Bodu_Security_Cryptography_DeferredFinalBlockHashAlgorithm_ProcessBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Boolean_">ProcessBlock(ReadOnlySpan&lt;byte&gt;, ulong, bool)</a> has been called
 with <code>isFinal: true</code> for the last time.</p>
@@ -673,6 +705,18 @@ expected by consumers of the algorithm (typically little-endian for Blake-family
 
 
 
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
 
   <h2 id="seealso">See Also</h2>
   <div class="seealso">
@@ -698,7 +742,7 @@ expected by consumers of the algorithm (typically little-endian for Blake-family
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57c0ab2 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: aa16ed3 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

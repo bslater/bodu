@@ -2,9 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Namespace Bodu.Text.Serialization | BODU </title>
+      <title>Bodu.Text.Serialization Namespace
+ | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Namespace Bodu.Text.Serialization | BODU ">
+      <meta name="title" content="Bodu.Text.Serialization Namespace
+ | BODU ">
       
       
       <link rel="icon" href="../images/favicon.svg">
@@ -44,7 +46,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../index.html">
-            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
             BODU
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +88,16 @@
 
         <article data-uid="Bodu.Text.Serialization">
 
-  <h1 id="Bodu_Text_Serialization" data-uid="Bodu.Text.Serialization" class="text-break">Namespace Bodu.Text.Serialization</h1>
+
+  <h1 id="Bodu_Text_Serialization" data-uid="Bodu.Text.Serialization" class="text-break" data-bodu-frameworks="net8.0 net10.0">Bodu.Text.Serialization Namespace
+</h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+  <div class="facts text-secondary">
+    <dl class="bodu-package"><dt>Package</dt><dd>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Serialization">Bodu.Text.Serialization</a> <span class="bodu-package-version">1.0.0</span>
+</div>
+    </dd></dl>
+  </div>
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-text-serialization.svg" alt="Bodu.Text.Serialization"></p>
@@ -174,86 +185,86 @@ string yaml = YamlSerializer.Serialize(profile);   // display_name: Billing API 
     <h3 id="classes">
 Classes
 </h3>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.ConstructorAttribute.html">ConstructorAttribute</a></dt>
       <dd><p>Marks the constructor the serializer uses to instantiate a type during deserialization, resolving the ambiguity when
 a type declares more than one constructor.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.ConverterAttribute.html">ConverterAttribute</a></dt>
       <dd><p>Specifies the converter to use for a property, field, or type, taking precedence over the converters configured on
 the serializer options.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.ExtensionDataAttribute.html">ExtensionDataAttribute</a></dt>
       <dd><p>Designates a property or field that captures dictionary entries which do not map to any other member during
 deserialization, and whose entries are written back out during serialization.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a></dt>
       <dd><p>Excludes a property or field from serialization, either unconditionally or under the condition given by
 <a class="xref" href="Bodu.Text.Serialization.IgnoreAttribute.html#Bodu_Text_Serialization_IgnoreAttribute_Condition">Condition</a>.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.IncludeAttribute.html">IncludeAttribute</a></dt>
       <dd><p>Forces a member to participate in serialization: a property's non-public accessors are bound (allowing members such
 as <code>{ get; private set; }</code> or <code>{ get; init; }</code> with a non-public setter to be read and written), and a
 public field is surfaced even when the serializer options' <code>IncludeFields</code> setting is disabled.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a></dt>
       <dd><p>Determines how a member's CLR name is translated to the key used in serialized output, exposing the common casing
 conventions as ready-made policies.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.NamingPolicyAttribute.html">NamingPolicyAttribute</a></dt>
       <dd><p>Specifies the <a class="xref" href="Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a> applied to the annotated type's members,
 overriding the serializer-wide property naming policy for that type.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.ObjectCreationHandlingAttribute.html">ObjectCreationHandlingAttribute</a></dt>
       <dd><p>Specifies, for the annotated type or member, whether the serializer replaces the value with a freshly created
 instance or populates the value already held during deserialization, overriding the serializer-wide preferred
 object-creation handling.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a></dt>
       <dd><p>Specifies the key used for a property or field when it is serialized, overriding the member's CLR name and any
 configured naming policy.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.PropertyOrderAttribute.html">PropertyOrderAttribute</a></dt>
       <dd><p>Specifies the relative order in which a property or field is written, allowing the order members are emitted to the
 writer to differ from the order in which they are declared.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.RequiredAttribute.html">RequiredAttribute</a></dt>
       <dd><p>Marks a property or field as required, so deserialization fails when the corresponding key is absent from the input.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.SerializationAttribute.html">SerializationAttribute</a></dt>
       <dd><p>Serves as the base class for the attributes that customize how a type or member is mapped to and from a text format
 by the serializer.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.StringEnumMemberNameAttribute.html">StringEnumMemberNameAttribute</a></dt>
       <dd><p>Specifies the string name used for an individual enumeration member when the enumeration is serialized by name,
 overriding both the member's CLR name and any naming policy applied to the enumeration.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.UnmappedMemberHandlingAttribute.html">UnmappedMemberHandlingAttribute</a></dt>
       <dd><p>Specifies, for the annotated type, how the serializer treats a dictionary key that maps to no member during
 deserialization, overriding the serializer-wide unmapped-member handling.</p>
@@ -262,25 +273,25 @@ deserialization, overriding the serializer-wide unmapped-member handling.</p>
     <h3 id="interfaces">
 Interfaces
 </h3>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a></dt>
       <dd><p>Defines a callback that the serializer invokes on a value immediately after all of its members have been populated
 from the input, letting the value validate or finalize its state.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a></dt>
       <dd><p>Defines a callback that the serializer invokes on a freshly constructed value immediately before its members are
 populated from the input, letting the value initialize default state.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a></dt>
       <dd><p>Defines a callback that the serializer invokes on a value immediately after its members have been written, letting
 the value restore or release any state prepared for serialization.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a></dt>
       <dd><p>Defines a callback that the serializer invokes on a value immediately before its members are written, letting the
 value prepare its state for serialization.</p>
@@ -289,25 +300,25 @@ value prepare its state for serialization.</p>
     <h3 id="enums">
 Enums
 </h3>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.IgnoreCondition.html">IgnoreCondition</a></dt>
       <dd><p>Specifies the condition under which a member is excluded from serialization, whether through
 <a class="xref" href="Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a> on the member or through the serializer-wide default ignore condition.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.KnownNamingPolicy.html">KnownNamingPolicy</a></dt>
       <dd><p>Identifies one of the built-in <a class="xref" href="Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a> singletons by name, so a type can select a naming policy
 declaratively through <a class="xref" href="Bodu.Text.Serialization.NamingPolicyAttribute.html">NamingPolicyAttribute</a>.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.ObjectCreationHandling.html">ObjectCreationHandling</a></dt>
       <dd><p>Specifies whether the serializer replaces a member's value with a freshly created instance or populates the value
 already held by the member during deserialization.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Serialization.UnmappedMemberHandling.html">UnmappedMemberHandling</a></dt>
       <dd><p>Specifies how the serializer treats a dictionary key that maps to no member of the target type during
 deserialization.</p>
@@ -331,7 +342,7 @@ deserialization.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57c0ab2 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: aa16ed3 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

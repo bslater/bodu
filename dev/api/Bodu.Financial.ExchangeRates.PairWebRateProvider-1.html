@@ -2,9 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Class PairWebRateProvider&lt;TSeries&gt; | BODU </title>
+      <title>PairWebRateProvider&lt;TSeries&gt; Class
+ | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Class PairWebRateProvider&lt;TSeries&gt; | BODU ">
+      <meta name="title" content="PairWebRateProvider&lt;TSeries&gt; Class
+ | BODU ">
       
       <meta name="description" content="Provides the shared machinery for a  that fetches one currency pair per request from a remote feed — per-pair coverage tracking, single-flight request coalescing, the fetch-and-accumulate orchestration, and the diagnostic logging — leaving a derived type to supply only the feed identity and the feed-specific exception text. The actual fetch and parse are delegated to an .">
       <link rel="icon" href="../images/favicon.svg">
@@ -16,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Financial_ExchangeRates_PairWebRateProvider_1.md&amp;value=---%0Auid%3A%20Bodu.Financial.ExchangeRates.PairWebRateProvider%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -44,7 +46,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../index.html">
-            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
             BODU
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,13 +90,21 @@
 
 
 
-  <h1 id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1" class="text-break">
-Class PairWebRateProvider&lt;TSeries&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider{T}.cs/#L56"><i class="bi bi-code-slash"></i></a>
+
+  <h1 id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+PairWebRateProvider&lt;TSeries&gt; Class
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_definition" class="bodu-definition">Definition</h2>
 
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Financial.ExchangeRates.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.ExchangeRates">Bodu.Financial.ExchangeRates</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider%7BT%7D.cs">PairWebRateProvider{T}.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides the shared machinery for a <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html">WebRateProvider</a> that fetches one currency pair per request from a
@@ -102,7 +112,6 @@ remote feed — per-pair coverage tracking, single-flight request coalescing, th
 and the diagnostic logging — leaving a derived type to supply only the feed identity and the feed-specific exception
 text. The actual fetch and parse are delegated to an <a class="xref" href="Bodu.Financial.ExchangeRates.IPairRateSource-1.html">IPairRateSource&lt;TSeries&gt;</a>.</p>
 </div>
-  <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public abstract class PairWebRateProvider&lt;TSeries&gt; : WebRateProvider, IDatedRateProvider, IRateProvider, IPairRateLoader, IHistoricalRateProvider, IDisposable</code></pre>
@@ -150,18 +159,10 @@ text. The actual fetch and parse are delegated to an <a class="xref" href="Bodu.
     </dd>
   </dl>
 
+
   <dl class="typelist inheritedMembers">
     <dt>Inherited Members</dt>
     <dd>
-    <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_ProviderId">WebRateProvider.ProviderId</a>
-    </div>
-    <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_SyncRoot">WebRateProvider.SyncRoot</a>
-    </div>
-    <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_TimeProvider">WebRateProvider.TimeProvider</a>
-    </div>
     <div>
       <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRate_System_String_System_String_Bodu_Financial_ExchangeRates_RateLookupOptions_">WebRateProvider.GetRate(string, string, RateLookupOptions)</a>
     </div>
@@ -196,6 +197,9 @@ text. The actual fetch and parse are delegated to an <a class="xref" href="Bodu.
       <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetLoadedSnapshot">WebRateProvider.GetLoadedSnapshot()</a>
     </div>
     <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_Bodu_Financial_ExchangeRates_IRateProvider_GetRate_System_String_System_String_">WebRateProvider.IRateProvider.GetRate(string, string)</a>
+    </div>
+    <div>
       <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_Dispose">WebRateProvider.Dispose()</a>
     </div>
     <div>
@@ -220,6 +224,15 @@ text. The actual fetch and parse are delegated to an <a class="xref" href="Bodu.
       <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_Dispose_System_Boolean_">WebRateProvider.Dispose(bool)</a>
     </div>
     <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_ProviderId">WebRateProvider.ProviderId</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_SyncRoot">WebRateProvider.SyncRoot</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_TimeProvider">WebRateProvider.TimeProvider</a>
+    </div>
+    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
     <div>
@@ -240,14 +253,12 @@ text. The actual fetch and parse are delegated to an <a class="xref" href="Bodu.
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </dd></dl>
+    </dd>
+  </dl>
 
   <dl class="typelist extensionMethods">
     <dt>Extension Methods</dt>
     <dd>
-  <div>
-      <a class="xref" href="Bodu.Financial.Extensions.DatedRateProviderExtensions.html#Bodu_Financial_Extensions_DatedRateProviderExtensions_ToFixedProviderAsync_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_CurrencyPair__System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">DatedRateProviderExtensions.ToFixedProviderAsync(IDatedRateProvider, IEnumerable&lt;CurrencyPair&gt;, DateOnly, DateOnly, CancellationToken)</a>
-  </div>
   <div>
       <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
@@ -263,7 +274,10 @@ text. The actual fetch and parse are delegated to an <a class="xref" href="Bodu.
   <div>
       <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  </dd></dl>
+    </dd>
+  </dl>
+
+  <div class="markdown conceptual"></div>
 
 
 
@@ -306,10 +320,12 @@ public sealed class MyFeedRateProvider : PairWebRateProvider&lt;MyFeedSeriesInfo
 
   <a id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1__ctor_" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1__ctor_Bodu_Financial_ExchangeRates_IPairRateSource__0__Bodu_Financial_ExchangeRates_WebRateProviderOptions_Microsoft_Extensions_Logging_ILogger_System_Net_Http_HttpClient_System_TimeProvider_" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.#ctor(Bodu.Financial.ExchangeRates.IPairRateSource{`0},Bodu.Financial.ExchangeRates.WebRateProviderOptions,Microsoft.Extensions.Logging.ILogger,System.Net.Http.HttpClient,System.TimeProvider)">
   PairWebRateProvider(IPairRateSource&lt;TSeries&gt;, WebRateProviderOptions, ILogger?, HttpClient?, TimeProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider{T}.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a> class.</p>
 </div>
@@ -360,6 +376,8 @@ caller-supplied.</p>
   </dl>
 
 
+  </section>
+
 
   <h2 class="section" id="properties">Properties
 </h2>
@@ -367,10 +385,12 @@ caller-supplied.</p>
 
   <a id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_AllowSynchronousNetworkAccess_" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.AllowSynchronousNetworkAccess*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_AllowSynchronousNetworkAccess" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.AllowSynchronousNetworkAccess">
   AllowSynchronousNetworkAccess
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider{T}.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether a synchronous lookup may block to fetch a missing window on demand.</p>
 </div>
@@ -404,13 +424,17 @@ a thread-pool thread (or use the asynchronous API).</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_DefaultLookback_" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.DefaultLookback*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_DefaultLookback" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.DefaultLookback">
   DefaultLookback
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider{T}.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the look-back window used when a single-rate lookup must fetch on demand; the provider fetches the window
 ending on the requested date and spanning this duration.</p>
@@ -438,13 +462,17 @@ ending on the requested date and spanning this duration.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_HistoryAvailability_" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.HistoryAvailability*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_HistoryAvailability" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.HistoryAvailability">
   HistoryAvailability
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider{T}.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the history depth this provider advertises: how far back it can serve rates.</p>
 </div>
@@ -472,6 +500,8 @@ whose feed publishes only a bounded window overrides this to declare it.</p>
 
 
 
+  </section>
+
 
   <h2 class="section" id="methods">Methods
 </h2>
@@ -479,10 +509,12 @@ whose feed publishes only a bounded window overrides this to declare it.</p>
 
   <a id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_EnsureLoadedAsync_" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.EnsureLoadedAsync*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_EnsureLoadedAsync_Bodu_Financial_ExchangeRates_CurrencyPair_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.EnsureLoadedAsync(Bodu.Financial.ExchangeRates.CurrencyPair,System.DateOnly,System.DateOnly,System.Threading.CancellationToken)">
   EnsureLoadedAsync(CurrencyPair, DateOnly, DateOnly, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider{T}.cs/#L134"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Ensures the inclusive window for a pair has been fetched and accumulated, idempotently. Implementations perform
 their own coverage check, request coalescing, fetch, and accumulation (via
@@ -527,13 +559,17 @@ under <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bo
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_FormatPairForLog_" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.FormatPairForLog*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_FormatPairForLog_Bodu_Financial_ExchangeRates_CurrencyPair_" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.FormatPairForLog(Bodu.Financial.ExchangeRates.CurrencyPair)">
   FormatPairForLog(CurrencyPair)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider{T}.cs/#L181"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Formats the label used for a pair in the download log messages. The default returns the <code>FROM/TO</code> ISO-code
 pair; a derived type may override it to log a feed-specific identifier such as a ticker.</p>
@@ -567,13 +603,17 @@ pair; a derived type may override it to log a feed-specific identifier such as a
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_GetAvailablePairs_" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.GetAvailablePairs*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_GetAvailablePairs" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.GetAvailablePairs">
   GetAvailablePairs()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider{T}.cs/#L125"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the currency pairs fetched so far.</p>
 </div>
@@ -600,13 +640,17 @@ pair; a derived type may override it to log a feed-specific identifier such as a
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_IsLoaded_" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.IsLoaded*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_IsLoaded_Bodu_Financial_ExchangeRates_CurrencyPair_System_DateOnly_System_DateOnly_" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.IsLoaded(Bodu.Financial.ExchangeRates.CurrencyPair,System.DateOnly,System.DateOnly)">
   IsLoaded(CurrencyPair, DateOnly, DateOnly)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider{T}.cs/#L152"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Reports whether the inclusive window for a pair has already been fetched, so the synchronous lookup path can
 skip a redundant blocking fetch.</p>
@@ -646,13 +690,17 @@ skip a redundant blocking fetch.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_OnObservationIngested_" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.OnObservationIngested*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_OnObservationIngested_Bodu_Financial_ExchangeRates_ExchangeRate_" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.OnObservationIngested(Bodu.Financial.ExchangeRates.ExchangeRate)">
   OnObservationIngested(ExchangeRate)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider{T}.cs/#L161"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Called once per observation as it is ingested, for derived-type diagnostics. The default does nothing.</p>
 </div>
@@ -679,13 +727,17 @@ skip a redundant blocking fetch.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_OnSynchronousNetworkFetch_" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.OnSynchronousNetworkFetch*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_PairWebRateProvider_1_OnSynchronousNetworkFetch_System_DateOnly_" data-uid="Bodu.Financial.ExchangeRates.PairWebRateProvider`1.OnSynchronousNetworkFetch(System.DateOnly)">
   OnSynchronousNetworkFetch(DateOnly)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider{T}.cs/#L172"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Financial.ExchangeRates/src/Financial.ExchangeRates/PairWebRateProvider%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Called after a synchronous lookup blocks to fetch on demand, for derived-type diagnostics. The default does
 nothing.</p>
@@ -713,6 +765,18 @@ nothing.</p>
 
 
 
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
 
 
 </article>
@@ -731,7 +795,7 @@ nothing.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57c0ab2 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: aa16ed3 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

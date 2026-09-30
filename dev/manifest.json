@@ -6761,62 +6761,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests<TProvider>",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.yml\" sourcestartlinenumber=\"1\">Provides the shared contract every <xref href=\"Bodu.Financial.ExchangeRates.IDatedRateProvider\" data-throw-if-not-resolved=\"false\"></xref> must satisfy, so a cache-fronted\nprovider is indistinguishable from a direct one at the API surface. A test project asserts the contract for a\nconcrete provider by deriving a <a href=\"https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/sealed\">sealed</a> <code>[TestClass]</code> from this base and supplying the seed\nknowledge through the abstract members.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests-2.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests-2.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests<TProvider, TSeries>",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests-2.yml\" sourcestartlinenumber=\"1\">Provides the shared contract every pair-based web provider built on\n<xref href=\"Bodu.Financial.ExchangeRates.PairWebRateProvider%601\" data-throw-if-not-resolved=\"false\"></xref> must satisfy, layered on top of the general\n<xref href=\"Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests%601\" data-throw-if-not-resolved=\"false\"></xref>. It exercises the per-pair warm-up surface —\n<xref href=\"Bodu.Financial.ExchangeRates.WebRateProvider.LoadPairAsync(System.String%2cSystem.String%2cSystem.DateOnly%2cSystem.DateOnly%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref> and\n<xref href=\"Bodu.Financial.ExchangeRates.PairWebRateProvider%601.GetAvailablePairs\" data-throw-if-not-resolved=\"false\"></xref> — that the shared base contributes, so each\nconcrete source (Yahoo, OFX, …) proves the inherited machinery against its own fixture by deriving a\n<a href=\"https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/sealed\">sealed</a> <code>[TestClass]</code> from this base.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.Financial.ExchangeRates.Testing.StubHttpMessageHandler.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.Financial.ExchangeRates.Testing.StubHttpMessageHandler.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.Financial.ExchangeRates.Testing.StubHttpMessageHandler",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.Testing.StubHttpMessageHandler.yml\" sourcestartlinenumber=\"1\">A test message handler that returns fixed content for every request and records what it received.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.Financial.ExchangeRates.Testing.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.Financial.ExchangeRates.Testing.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.Financial.ExchangeRates.Testing",
-      "Summary": null
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.Financial.ExchangeRates.WebRateProvider.yml",
       "output": {
         ".html": {

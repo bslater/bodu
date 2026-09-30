@@ -2,9 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Struct Utf8BencodeWriter | BODU </title>
+      <title>Utf8BencodeWriter Struct
+ | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Struct Utf8BencodeWriter | BODU ">
+      <meta name="title" content="Utf8BencodeWriter Struct
+ | BODU ">
       
       <meta name="description" content="Provides a forward-only writer that emits canonical Bencode (BEP 3) bytes to an . Because the grammar requires dictionary keys in ascending bytewise order, the writer buffers each dictionary&#39;s entries and sorts them when the dictionary is closed; values at the root and inside lists stream directly to the destination.">
       <link rel="icon" href="../images/favicon.svg">
@@ -16,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Text_Bencode_Writer_Utf8BencodeWriter.md&amp;value=---%0Auid%3A%20Bodu.Text.Bencode.Writer.Utf8BencodeWriter%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -44,7 +46,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../index.html">
-            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
             BODU
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,13 +90,21 @@
 
 
 
-  <h1 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter" class="text-break">
-Struct Utf8BencodeWriter  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L57"><i class="bi bi-code-slash"></i></a>
+
+  <h1 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter" class="text-break" data-bodu-frameworks="net8.0 net10.0">
+Utf8BencodeWriter Struct
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+
+  <h2 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_definition" class="bodu-definition">Definition</h2>
 
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Bencode.html">Bencode</a>.<a class="xref" href="Bodu.Text.Bencode.Writer.html">Writer</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Text.Bencode.dll</dd></dl>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Bencode">Bodu.Text.Bencode</a> <span class="bodu-package-version">1.0.0</span>
+</dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs">Utf8BencodeWriter.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides a forward-only writer that emits canonical Bencode (BEP 3) bytes to an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>.
@@ -102,11 +112,11 @@ Because the grammar requires dictionary keys in ascending bytewise order, the wr
 entries and sorts them when the dictionary is closed; values at the root and inside lists stream directly to the
 destination.</p>
 </div>
-  <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public ref struct Utf8BencodeWriter</code></pre>
   </div>
+
 
 
 
@@ -135,8 +145,11 @@ destination.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
-  </dd></dl>
+    </dd>
+  </dl>
 
+
+  <div class="markdown conceptual"></div>
 
 
 
@@ -179,10 +192,12 @@ writer.WriteEndDictionary();
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter__ctor_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter__ctor_System_Buffers_IBufferWriter_System_Byte__" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.#ctor(System.Buffers.IBufferWriter{System.Byte})">
   Utf8BencodeWriter(IBufferWriter&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a> struct.</p>
 </div>
@@ -215,13 +230,17 @@ writer.WriteEndDictionary();
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter__ctor_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.#ctor*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter__ctor_System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Bencode_Writer_BencodeWriterOptions_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.#ctor(System.Buffers.IBufferWriter{System.Byte},Bodu.Text.Bencode.Writer.BencodeWriterOptions)">
   Utf8BencodeWriter(IBufferWriter&lt;byte&gt;, BencodeWriterOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a> struct using the supplied options.</p>
 </div>
@@ -263,6 +282,8 @@ depth throws <a class="xref" href="Bodu.Text.Bencode.BencodeSerializationExcepti
   </dl>
 
 
+  </section>
+
 
   <h2 class="section" id="properties">Properties
 </h2>
@@ -270,10 +291,12 @@ depth throws <a class="xref" href="Bodu.Text.Bencode.BencodeSerializationExcepti
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_CurrentDepth_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.CurrentDepth*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_CurrentDepth" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.CurrentDepth">
   CurrentDepth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L133"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the current container nesting depth.</p>
 </div>
@@ -305,13 +328,17 @@ manually can assert this property is zero before consuming the destination.</p>
 
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_Options_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.Options*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_Options" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.Options">
   Options
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L143"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Gets the customizations the writer was created with.</p>
 </div>
@@ -339,6 +366,8 @@ a zero placeholder.</p>
 
 
 
+  </section>
+
 
   <h2 class="section" id="methods">Methods
 </h2>
@@ -346,10 +375,12 @@ a zero placeholder.</p>
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteByteString_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteByteString*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteByteString_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteByteString(System.ReadOnlySpan{System.Byte})">
   WriteByteString(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L423"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes a byte-string value.</p>
 </div>
@@ -384,13 +415,17 @@ not set.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteByteString_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteByteString*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteByteString_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteByteString(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
   WriteByteString(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L620"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes a property name and a byte-string value in one call.</p>
 </div>
@@ -427,13 +462,17 @@ still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteByteString_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteByteString*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteByteString_System_String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteByteString(System.String,System.ReadOnlySpan{System.Byte})">
   WriteByteString(string, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L605"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes a property name and a byte-string value in one call.</p>
 </div>
@@ -473,13 +512,17 @@ still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteEndDictionary_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteEndDictionary*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteEndDictionary" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteEndDictionary">
   WriteEndDictionary()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L248"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes the end of the current dictionary, emitting its entries in ascending bytewise key order.</p>
 </div>
@@ -510,13 +553,17 @@ is still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteEndList_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteEndList*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteEndList" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteEndList">
   WriteEndList()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L202"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes the end of the current list.</p>
 </div>
@@ -543,13 +590,17 @@ is still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_Int64_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger(System.Int64)">
   WriteInteger(long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L377"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes an integer value.</p>
 </div>
@@ -584,13 +635,17 @@ not set.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_ReadOnlySpan_System_Byte__System_Int64_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger(System.ReadOnlySpan{System.Byte},System.Int64)">
   WriteInteger(ReadOnlySpan&lt;byte&gt;, long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L552"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes a property name and an integer value in one call.</p>
 </div>
@@ -627,13 +682,17 @@ still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_ReadOnlySpan_System_Byte__System_UInt64_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger(System.ReadOnlySpan{System.Byte},System.UInt64)">
   WriteInteger(ReadOnlySpan&lt;byte&gt;, ulong)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L587"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes a property name and an unsigned integer value in one call, permitting the full <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a>
 range.</p>
@@ -671,13 +730,17 @@ still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_String_System_Int64_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger(System.String,System.Int64)">
   WriteInteger(string, long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L537"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes a property name and an integer value in one call.</p>
 </div>
@@ -717,13 +780,17 @@ still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_String_System_UInt64_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger(System.String,System.UInt64)">
   WriteInteger(string, ulong)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L571"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes a property name and an unsigned integer value in one call, permitting the full <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a>
 range.</p>
@@ -764,13 +831,17 @@ still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_UInt64_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger(System.UInt64)">
   WriteInteger(ulong)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L403"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes an unsigned integer value, permitting the full <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> range.</p>
 </div>
@@ -811,13 +882,17 @@ not set.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WritePropertyName_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WritePropertyName*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WritePropertyName_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WritePropertyName(System.ReadOnlySpan{System.Byte})">
   WritePropertyName(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L300"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes the name of the dictionary key whose value follows.</p>
 </div>
@@ -851,13 +926,17 @@ still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WritePropertyName_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WritePropertyName*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WritePropertyName_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WritePropertyName(System.ReadOnlySpan{System.Char})">
   WritePropertyName(ReadOnlySpan&lt;char&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L336"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes the name of the dictionary key whose value follows, encoding the characters as UTF-8.</p>
 </div>
@@ -891,13 +970,17 @@ still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WritePropertyName_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WritePropertyName*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WritePropertyName_System_String_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WritePropertyName(System.String)">
   WritePropertyName(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L322"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes the name of the dictionary key whose value follows, encoding the name as UTF-8.</p>
 </div>
@@ -934,13 +1017,17 @@ still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteRawValue_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteRawValue*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteRawValue_System_ReadOnlySpan_System_Byte__System_Boolean_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteRawValue(System.ReadOnlySpan{System.Byte},System.Boolean)">
   WriteRawValue(ReadOnlySpan&lt;byte&gt;, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L689"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes a pre-encoded Bencode value verbatim. Supports round-tripping verified slices such as a torrent's
 <code>info</code> dictionary without re-encoding.</p>
@@ -989,13 +1076,17 @@ not set.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartDictionary_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartDictionary*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartDictionary" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartDictionary">
   WriteStartDictionary()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L229"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes the start of a dictionary.</p>
 </div>
@@ -1031,13 +1122,17 @@ when a complete root value has already been written and
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartDictionary_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartDictionary*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartDictionary_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartDictionary(System.ReadOnlySpan{System.Byte})">
   WriteStartDictionary(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L519"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes a property name and the start of a dictionary as its value.</p>
 </div>
@@ -1074,13 +1169,17 @@ still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartDictionary_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartDictionary*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartDictionary_System_String_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartDictionary(System.String)">
   WriteStartDictionary(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L502"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes a property name and the start of a dictionary as its value, combining
 <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WritePropertyName_System_String_">WritePropertyName(string)</a> and <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartDictionary">WriteStartDictionary()</a>.</p>
@@ -1121,13 +1220,17 @@ still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartList_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartList*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartList" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartList">
   WriteStartList()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L185"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes the start of a list.</p>
 </div>
@@ -1159,13 +1262,17 @@ not set.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartList_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartList*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartList_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartList(System.ReadOnlySpan{System.Byte})">
   WriteStartList(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L481"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes a property name and the start of a list as its value.</p>
 </div>
@@ -1202,13 +1309,17 @@ still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartList_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartList*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartList_System_String_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartList(System.String)">
   WriteStartList(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L464"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes a property name and the start of a list as its value, combining <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WritePropertyName_System_String_">WritePropertyName(string)</a>
 and <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartList">WriteStartList()</a>.</p>
@@ -1249,13 +1360,17 @@ still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteString_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteString*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteString_System_ReadOnlySpan_System_Byte__System_String_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteString(System.ReadOnlySpan{System.Byte},System.String)">
   WriteString(ReadOnlySpan&lt;byte&gt;, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L658"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes a property name and a string value in one call, encoding the value as UTF-8.</p>
 </div>
@@ -1295,13 +1410,17 @@ still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteString_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteString*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteString_System_String_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteString(System.String)">
   WriteString(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L443"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes a string value, encoding it as a UTF-8 byte string.</p>
 </div>
@@ -1339,13 +1458,17 @@ not set.</p>
   </dl>
 
 
+  </section>
+
 
   <a id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteString_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteString*"></a>
 
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteString_System_String_System_String_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteString(System.String,System.String)">
   WriteString(string, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs/#L638"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/aa16ed3a7b34d0f515212c87363e4d4b0466a6d7/Bodu.Text.Bencode/src/Text.Bencode.Writer/Utf8BencodeWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
+
 
   <div class="markdown level1 summary"><p>Writes a property name and a string value in one call, encoding both as UTF-8.</p>
 </div>
@@ -1385,6 +1508,18 @@ still awaiting its value.</p>
   </dl>
 
 
+  </section>
+
+
+  <h2 id="appliesto" class="bodu-applies-to-heading">Applies to</h2>
+  <table class="table bodu-applies-to" data-bodu-frameworks="net8.0 net10.0">
+    <thead>
+      <tr><th scope="col">Product</th><th scope="col">Versions</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>.NET</td><td>8, 10</td></tr>
+    </tbody>
+  </table>
 
 
 </article>
@@ -1403,7 +1538,7 @@ still awaiting its value.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57c0ab2 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: aa16ed3 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>

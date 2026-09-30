@@ -2,9 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Namespace Bodu.Globalization.Calendar.Plugins | BODU </title>
+      <title>Bodu.Globalization.Calendar.Plugins Namespace
+ | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Namespace Bodu.Globalization.Calendar.Plugins | BODU ">
+      <meta name="title" content="Bodu.Globalization.Calendar.Plugins Namespace
+ | BODU ">
       
       
       <link rel="icon" href="../images/favicon.svg">
@@ -44,7 +46,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../index.html">
-            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
             BODU
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +88,16 @@
 
         <article data-uid="Bodu.Globalization.Calendar.Plugins">
 
-  <h1 id="Bodu_Globalization_Calendar_Plugins" data-uid="Bodu.Globalization.Calendar.Plugins" class="text-break">Namespace Bodu.Globalization.Calendar.Plugins</h1>
+
+  <h1 id="Bodu_Globalization_Calendar_Plugins" data-uid="Bodu.Globalization.Calendar.Plugins" class="text-break" data-bodu-frameworks="net8.0 net10.0">Bodu.Globalization.Calendar.Plugins Namespace
+</h1>
+<div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
+  <div class="facts text-secondary">
+    <dl class="bodu-package"><dt>Package</dt><dd>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar.Plugins">Bodu.Globalization.Calendar.Plugins</a> <span class="bodu-package-version">1.0.0</span>
+</div>
+    </dd></dl>
+  </div>
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-calendar-plugins.svg" alt="Bodu.Globalization.Calendar.Plugins"></p>
@@ -147,87 +158,87 @@ int registered = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry);
     <h3 id="classes">
 Classes
 </h3>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.AllowAllPluginTrustPolicy.html">AllowAllPluginTrustPolicy</a></dt>
       <dd><p>A trust policy that trusts every candidate assembly.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.CompositePluginTrustPolicy.html">CompositePluginTrustPolicy</a></dt>
       <dd><p>A trust policy that trusts a candidate only when every composed policy trusts it; the first rejection short-circuits
 and its reason is surfaced. An empty policy set fails closed — it rejects every candidate rather than vacuously
 trusting it — so a misconfigured composite cannot silently disable the trust gate.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.DelegatingPluginTrustPolicy.html">DelegatingPluginTrustPolicy</a></dt>
       <dd><p>A trust policy that delegates the decision to a caller-supplied function, suitable for runtime state, configuration,
 or remote attestation.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.FileHashPluginTrustPolicy.html">FileHashPluginTrustPolicy</a></dt>
       <dd><p>A trust policy that admits plugin assemblies whose SHA-256 file hash matches a digest pinned by the consumer under
 the candidate's assembly name.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginAttribute.html">NotableDatePluginAttribute</a></dt>
       <dd><p>Declares, at assembly level, the entry-point type the plugin loader activates to obtain the assembly's
 <a class="xref" href="Bodu.Globalization.Calendar.Plugins.INotableDatePlugin.html">INotableDatePlugin</a>.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginException.html">NotableDatePluginException</a></dt>
       <dd><p>The base exception for failures encountered while loading a notable-date plugin.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginHandle.html">NotableDatePluginHandle</a></dt>
       <dd><p>Owns an activated plugin together with its dedicated <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.loader.assemblyloadcontext">AssemblyLoadContext</a>, so the plugin's assemblies
 can be unloaded when the handle is disposed.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.html">NotableDatePluginLoader</a></dt>
       <dd><p>Loads notable-date plugins from assemblies, gating activation behind an <a class="xref" href="Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy.html">IPluginTrustPolicy</a> and
 registering the contributed algorithms with a <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a>.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginActivationException.html">PluginActivationException</a></dt>
       <dd><p>The exception thrown when the declared plugin type cannot be activated or does not implement
 <a class="xref" href="Bodu.Globalization.Calendar.Plugins.INotableDatePlugin.html">INotableDatePlugin</a>.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginAlgorithmRegistrationOptions.html">PluginAlgorithmRegistrationOptions</a></dt>
       <dd><p>Controls how
 <a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.html#Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_RegisterAlgorithms_Bodu_Globalization_Calendar_Plugins_INotableDatePlugin_Bodu_Globalization_Calendar_Algorithms_NotableDateAlgorithmRegistry_Bodu_Globalization_Calendar_Plugins_PluginAlgorithmRegistrationOptions_Microsoft_Extensions_Logging_ILogger_">RegisterAlgorithms(INotableDatePlugin, NotableDateAlgorithmRegistry, PluginAlgorithmRegistrationOptions, ILogger?)</a>
 treats a plugin's contributed algorithm keys.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException.html">PluginMissingAttributeException</a></dt>
       <dd><p>The exception thrown when a candidate assembly does not declare a <a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginAttribute.html">NotableDatePluginAttribute</a>.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException.html">PluginNotTrustedException</a></dt>
       <dd><p>The exception thrown when a trust policy rejects a candidate plugin assembly.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginTrustContext.html">PluginTrustContext</a></dt>
       <dd><p>Carries the metadata a trust policy evaluates before a plugin assembly's code is activated.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginTrustResult.html">PluginTrustResult</a></dt>
       <dd><p>The outcome of a trust-policy evaluation.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.StrongNamePluginTrustPolicy.html">StrongNamePluginTrustPolicy</a></dt>
       <dd><p>A trust policy that admits plugin assemblies whose strong-name public-key token appears in a consumer-supplied
 allowlist.</p>
@@ -236,19 +247,19 @@ allowlist.</p>
     <h3 id="interfaces">
 Interfaces
 </h3>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.INotableDateAlgorithmPlugin.html">INotableDateAlgorithmPlugin</a></dt>
       <dd><p>A plugin that contributes one or more custom <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a> implementations keyed by algorithm
 key, which a host registers with a <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a>.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.INotableDatePlugin.html">INotableDatePlugin</a></dt>
       <dd><p>The base contract implemented by every notable-date plugin, exposing the identity a host uses for diagnostics,
 logging, and version reporting.</p>
 </dd>
     </dl>
-    <dl class="jumplist">
+    <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy.html">IPluginTrustPolicy</a></dt>
       <dd><p>Decides whether a candidate plugin assembly is trusted, evaluated before any of the plugin's code is activated.</p>
 </dd>
@@ -271,7 +282,7 @@ logging, and version reporting.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57c0ab2 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: aa16ed3 · Built: 2026-09-30 (UTC)</span>
         </div>
       </div>
     </footer>
