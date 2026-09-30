@@ -18,7 +18,7 @@ The namespace allow-list is *debt*: entries are namespaces that still lack an
 overview and should be removed as overviews are written, never added to.
 
 Usage:
-  python3 bld/check-docs.py all            # after `docfx docs/docfx.json`
+  python3 bld/check-docs.py all            # after `bash bld/docs/build-api-docs.sh all`
   python3 bld/check-docs.py orphans identifiers status   # no build needed
 """
 
@@ -100,15 +100,18 @@ def check_orphans() -> list[str]:
 def check_namespaces() -> list[str]:
     api_toc = os.path.join(DOCS, "api", "toc.yml")
     if not os.path.exists(api_toc):
-        return [f"{os.path.relpath(api_toc, ROOT)} does not exist; run `docfx docs/docfx.json` (metadata) first"]
+        return [f"{os.path.relpath(api_toc, ROOT)} does not exist; run `bash bld/docs/build-api-docs.sh assemblies metadata merge` first"]
 
-    # Top-level namespace entries of the generated API TOC. Namespaces outside the
-    # Bodu.* root (BCL-convention homes such as Microsoft.Extensions.DependencyInjection)
-    # hold only registration extensions and are exempt by design.
+    # Namespace entries of the generated API TOC, at every depth: the TOC nests namespaces
+    # (namespaceLayout: nested). Only namespaces with a page of their own are checked; the nested
+    # layout also adds page-less parent nodes (Bodu.IO above Bodu.IO.Hashing) that have no page to
+    # give an overview to. Namespaces outside the Bodu.* root (BCL-convention homes such as
+    # Microsoft.Extensions.DependencyInjection) hold only registration extensions and are exempt by
+    # design.
     namespaces = {
         uid
-        for uid in re.findall(r"^- uid: (\S+)\n  name: .*\n  type: Namespace", read(api_toc), re.M)
-        if uid.startswith("Bodu.") or uid == "Bodu"
+        for uid in re.findall(r"^\s*- uid: (\S+)\n\s+name: .*\n\s+type: Namespace", read(api_toc), re.M)
+        if (uid.startswith("Bodu.") or uid == "Bodu") and os.path.exists(os.path.join(DOCS, "api", f"{uid}.yml"))
     }
 
     overwritten: set[str] = set()
