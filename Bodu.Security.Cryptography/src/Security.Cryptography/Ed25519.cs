@@ -295,6 +295,7 @@ public sealed partial class Ed25519
         Span<byte> digest = stackalloc byte[64];
         Span<byte> r = stackalloc byte[32];
         Span<byte> k = stackalloc byte[32];
+        IncrementalHash? hash = null;
 
         try
         {
@@ -306,19 +307,20 @@ public sealed partial class Ed25519
             s[31] |= 64;
 
             // r = SHA-512(prefix ‖ M) mod L, then R = [r]B.
-            HashPrefixedMessage(expanded[32..], [], data, digest);
+            HashPrefixedMessage(expanded[32..], [], data, digest, ref hash);
             Ed25519Scalar.Reduce(digest, r);
 
             Span<byte> rEncoded = destination[..32];
             Ed25519Point.ScalarMultBase(r).Encode(rEncoded);
 
             // S = (r + SHA-512(R ‖ A ‖ M) · s) mod L.
-            HashPrefixedMessage(rEncoded, TypedKeyMaterial!.PublicKey, data, digest);
+            HashPrefixedMessage(rEncoded, TypedKeyMaterial!.PublicKey, data, digest, ref hash);
             Ed25519Scalar.Reduce(digest, k);
             Ed25519Scalar.MulAdd(k, s, r, destination[32..]);
         }
         finally
         {
+            hash?.Dispose();
             CryptographyHelper.Clear(k);
             CryptographyHelper.Clear(r);
             CryptographyHelper.Clear(digest);
@@ -383,7 +385,16 @@ public sealed partial class Ed25519
 
         // k = SHA-512(R ‖ A ‖ M) mod L; accept when [S]B == R + [k]A (cofactorless).
         Span<byte> digest = stackalloc byte[64];
-        HashPrefixedMessage(rEncoded, TypedKeyMaterial!.PublicKey, data, digest);
+        IncrementalHash? hash = null;
+
+        try
+        {
+            HashPrefixedMessage(rEncoded, TypedKeyMaterial!.PublicKey, data, digest, ref hash);
+        }
+        finally
+        {
+            hash?.Dispose();
+        }
 
         Span<byte> k = stackalloc byte[32];
         Ed25519Scalar.Reduce(digest, k);
@@ -406,11 +417,15 @@ public sealed partial class Ed25519
     /// <param name="second">The second part of the prefix: empty, or the encoded public key A.</param>
     /// <param name="message">The message.</param>
     /// <param name="destination">The 64-byte span that receives the digest.</param>
+    /// <param name="hash">
+    /// The incremental hash for a longer message: <see langword="null" /> until one is needed, then kept for the
+    /// caller's next hash. The caller disposes it.
+    /// </param>
     /// <remarks>
     /// <para>
     /// A message of up to <see cref="StackHashMaximumMessageLength" /> bytes is copied after the prefix into a buffer
     /// on the stack and hashed in one call, which allocates nothing; a longer one is hashed incrementally, without the
-    /// copy.
+    /// copy, and signing's two hashes of it share one <see cref="IncrementalHash" />.
     /// </para>
     /// <para>
     /// The prefix, 64 bytes at most, may be the secret nonce prefix, so its copy is cleared before the method returns.
@@ -420,11 +435,12 @@ public sealed partial class Ed25519
         ReadOnlySpan<byte> first,
         ReadOnlySpan<byte> second,
         ReadOnlySpan<byte> message,
-        Span<byte> destination)
+        Span<byte> destination,
+        ref IncrementalHash? hash)
     {
         if (message.Length > StackHashMaximumMessageLength)
         {
-            using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA512);
+            hash ??= IncrementalHash.CreateHash(HashAlgorithmName.SHA512);
             hash.AppendData(first);
             hash.AppendData(second);
             hash.AppendData(message);
