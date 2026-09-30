@@ -17,6 +17,13 @@ reference makes to its reader, and a broken promise fails the build rather than 
                leads to generated code
   landing      every package's landing page (bld/docs-checks/package-docs-map.txt) cross-references
                the package's API
+  links        every link and asset reference in the rendered site leads to a file the site has, and
+               every #anchor to an element on that page, so a member deep link (an anchor on its
+               type's page) cannot dangle; DocFX checks neither the links in an apidoc overwrite file
+               nor the hrefs in XML documentation
+  xmldoc       every href in an XML documentation comment anywhere in the codebase that leads into
+               the site - relative, as the API pages render it, or an absolute URL of the published
+               site - names a page and anchor the site has, including comments no page renders
   overlay      every template partial copied from DocFX names the DocFX version the pipeline pins,
                so a DocFX upgrade cannot silently run on partials forked from another version
 """
@@ -27,22 +34,155 @@ import glob
 import html
 import json
 import os
+import posixpath
 import re
 import sys
+import urllib.parse
 from collections import defaultdict
-from typing import Any
+from typing import Any, Iterator
 
 import docfx_yaml as dy
 import docs_common as dc
 
 TYPE_KINDS = frozenset({"Class", "Struct", "Interface", "Enum", "Delegate"})
-SITE_API = os.path.join(dc.DOCS, "_site", "api")
+SITE = os.path.join(dc.DOCS, "_site")
+SITE_API = os.path.join(SITE, "api")
 OVERLAY = os.path.join(dc.DOCS, "templates", "bodu")
 GENERATED_SOURCE = re.compile(r"/obj/|\.Designer\.cs(?:$|#)|\.g\.cs(?:$|#)")
 
+# A link or asset reference in a rendered page, and an anchor a link can land on.
+LINK_ATTRIBUTE = re.compile(r'\s(?:href|src)="([^"]*)"')
+ANCHOR_ATTRIBUTE = re.compile(r'\s(?:id|name)="([^"]*)"')
+# A scheme (https:, mailto:, javascript:, ...) or a protocol-relative link leaves the site.
+LEAVES_SITE = re.compile(r"^(?:[A-Za-z][A-Za-z0-9+.-]*:|//)")
+# An XML documentation comment line, and an href within it.
+XML_DOC_LINE = re.compile(r"^\s*///(.*)$")
+XML_DOC_HREF = re.compile(r'\bhref="([^"]*)"')
+# XML documentation renders on the API pages, so a relative href in it resolves from api/.
+XML_DOC_BASE = "api/index.html"
+# Directories a walk of the codebase never needs to enter: build output and tooling state.
+UNSCANNED_DIRECTORIES = frozenset({".git", ".vs", "bin", "obj", "node_modules", "_site"})
+# Beyond this many broken links the rest are counted rather than listed.
+LINK_REPORT_LIMIT = 50
+
+
+class RenderedSite:
+    """The files of a built site and, read when first asked for, the anchors each page defines."""
+
+    def __init__(self, root: str) -> None:
+        self.root = root
+        self.files: set[str] = set()
+        for directory, _, names in os.walk(root):
+            for name in names:
+                self.files.add(os.path.relpath(os.path.join(directory, name), root).replace(os.sep, "/"))
+        self._anchors: dict[str, frozenset[str]] = {}
+
+    def pages(self) -> list[str]:
+        return sorted(path for path in self.files if path.endswith(".html"))
+
+    def read(self, page: str) -> str:
+        with open(os.path.join(self.root, page), encoding="utf-8", errors="replace") as stream:
+            return stream.read()
+
+    def anchors(self, page: str) -> frozenset[str]:
+        if page not in self._anchors:
+            self._anchors[page] = frozenset(html.unescape(anchor) for anchor in ANCHOR_ATTRIBUTE.findall(self.read(page)))
+        return self._anchors[page]
+
+    def problem(self, target: str, fragment: str) -> str | None:
+        """Returns why a link to ``target`` (a site-relative path) and ``fragment`` does not resolve, or None."""
+        if target.startswith("/"):
+            return "root-absolute, but the site is served under a path prefix (/bodu/, /bodu/dev/, ...)"
+        if target == ".." or target.startswith("../"):
+            return "leads outside the site"
+        page = next((c for c in (target, posixpath.normpath(posixpath.join(target, "index.html"))) if c in self.files), None)
+        if page is None:
+            return "no such file in the site"
+        if fragment and page.endswith(".html") and fragment not in self.anchors(page):
+            return f"{page} has no anchor #{fragment}"
+        return None
+
+
+def resolve_link(page: str, href: str) -> tuple[str, str] | None:
+    """Resolves ``href``, found on ``page`` (a site-relative path), to a site-relative target and fragment.
+
+    Returns None for a link that leaves the site. A root-absolute path is returned as it is, for
+    RenderedSite.problem to report. The query (the framework selector's ?view=) is dropped.
+    """
+    href = html.unescape(href).strip()
+    if not href or LEAVES_SITE.match(href):
+        return None
+    path, _, fragment = href.partition("#")
+    path = urllib.parse.unquote(path.split("?", 1)[0])
+    fragment = urllib.parse.unquote(fragment)
+    if path.startswith("/"):
+        return path, fragment
+    target = page if not path else posixpath.normpath(posixpath.join(posixpath.dirname(page), path))
+    return target, fragment
+
+
+def published_site_url() -> str:
+    """The URL GitHub Pages serves the site from, derived from the repository."""
+    owner, _, name = os.environ.get("GITHUB_REPOSITORY", "bslater/bodu").partition("/")
+    return f"https://{owner.lower()}.github.io/{name}/"
+
+
+def xml_doc_target(href: str, site_url: str) -> tuple[str, str] | None:
+    """Resolves an href from XML documentation to a target in the site, or None when it leads elsewhere.
+
+    A relative href resolves from the API pages, where the documentation renders. An absolute URL of
+    the published site resolves within it, less the version slot (dev/, 1.0/, ...) it names, since
+    every slot is a build of the same site.
+    """
+    href = html.unescape(href).strip()
+    if href.lower().startswith(site_url.lower()):
+        rest = re.sub(r"^(?:dev|[0-9]+\.[0-9]+)/", "", href[len(site_url):])
+        return resolve_link("index.html", rest or "index.html")
+    return resolve_link(XML_DOC_BASE, href)
+
+
+def rendered_link_problems(rendered: RenderedSite) -> list[str]:
+    problems = []
+    for page in rendered.pages():
+        for href in LINK_ATTRIBUTE.findall(rendered.read(page)):
+            resolved = resolve_link(page, href)
+            reason = resolved and rendered.problem(*resolved)
+            if reason:
+                problems.append(f"{page}: {href} ({reason})")
+    return problems
+
+
+def source_files(root: str, extension: str) -> Iterator[str]:
+    """Yields every file under ``root`` with ``extension``, in a stable order, skipping build output."""
+    for directory, directories, names in os.walk(root):
+        directories[:] = sorted(d for d in directories if d not in UNSCANNED_DIRECTORIES)
+        for name in sorted(names):
+            if name.endswith(extension):
+                yield os.path.join(directory, name)
+
+
+def xml_doc_link_problems(rendered: RenderedSite, source_root: str, site_url: str) -> list[str]:
+    problems = []
+    for path in source_files(source_root, ".cs"):
+        with open(path, encoding="utf-8", errors="replace") as stream:
+            for number, line in enumerate(stream, 1):
+                comment = XML_DOC_LINE.match(line)
+                for href in XML_DOC_HREF.findall(comment.group(1)) if comment else ():
+                    resolved = xml_doc_target(href, site_url)
+                    reason = resolved and rendered.problem(*resolved)
+                    if reason:
+                        problems.append(f"{os.path.relpath(path, source_root)}:{number}: {href} ({reason})")
+    return problems
+
+
+def capped(problems: list[str], limit: int = LINK_REPORT_LIMIT) -> list[str]:
+    if len(problems) <= limit:
+        return problems
+    return problems[:limit] + [f"... and {len(problems) - limit} more broken link(s)"]
+
 
 class Site:
-    """The merged metadata and the pipeline's resolved inputs, loaded once."""
+    """The merged metadata, the pipeline's resolved inputs, and the rendered site, loaded once."""
 
     def __init__(self) -> None:
         self.packages: dict[str, dict[str, Any]] = dc.read_json(dc.PACKAGES_JSON)
@@ -54,6 +194,7 @@ class Site:
             if name != "toc.yml":
                 self.pages[name] = dy.load_file(path)
         self.toc = dy.load_file(os.path.join(dc.API, "toc.yml"))
+        self.rendered = RenderedSite(SITE)
 
     def items(self) -> list[tuple[str, dict[str, Any]]]:
         return [(name, item) for name, page in self.pages.items() for item in page.get("items") or []]
@@ -224,6 +365,14 @@ def check_landing(site: Site) -> list[str]:
     return problems
 
 
+def check_links(site: Site) -> list[str]:
+    return capped(rendered_link_problems(site.rendered))
+
+
+def check_xmldoc(site: Site) -> list[str]:
+    return capped(xml_doc_link_problems(site.rendered, dc.ROOT, published_site_url()))
+
+
 def check_overlay() -> list[str]:
     tools = dc.read_json(os.path.join(dc.DOCS, ".config", "dotnet-tools.json"))
     pinned = tools["tools"]["docfx"]["version"]
@@ -243,6 +392,8 @@ CHECKS = {
     "pages": check_pages,
     "sources": check_sources,
     "landing": check_landing,
+    "links": check_links,
+    "xmldoc": check_xmldoc,
 }
 
 
