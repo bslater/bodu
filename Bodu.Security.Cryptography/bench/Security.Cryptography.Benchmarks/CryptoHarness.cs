@@ -86,6 +86,7 @@ internal static class CryptoHarness
         RunHashes();
         RunStreamCiphers();
         RunAeadsAndModes();
+        RunBlockCiphers();
         RunKeyDerivation();
         RunPublicKey();
     }
@@ -242,6 +243,41 @@ internal static class CryptoHarness
             using IBlockCipher cipher = create();
             byte[] iv = Random(ivLength, 13);
             Measure("mode", $"Bodu {name}-CTR 1 MiB", BulkLength, () => { using var ctr = new CtrModeTransform(cipher, iv); ctr.Transform(bulk, output.AsSpan(0, BulkLength), encrypt: true); });
+        }
+    }
+
+    /// <summary>
+    /// Measures block ciphers one block per call, through <see cref="IBlockCipher.Encrypt" /> and
+    /// <see cref="IBlockCipher.Decrypt" />: the wide-block Serpent variants, which have no batched path, and Serpent-128
+    /// for scale.
+    /// </summary>
+    private static void RunBlockCiphers()
+    {
+        const int Length = 64 << 10;
+        byte[] input = Random(Length, 18);
+        byte[] output = new byte[Length];
+        byte[] tweak = Random(16, 19);
+
+        foreach ((string name, Func<IBlockCipher> create) in new (string, Func<IBlockCipher>)[]
+        {
+            ("Serpent-128", () => new Serpent128Cipher(Random(32, 20))),
+            ("Serpent-256", () => new Serpent256Cipher(Random(32, 20), tweak)),
+            ("Serpent-512", () => new Serpent512Cipher(Random(64, 20), tweak)),
+            ("Serpent-1024", () => new Serpent1024Cipher(Random(128, 20), tweak)),
+        })
+        {
+            using IBlockCipher cipher = create();
+            int blockLength = cipher.BlockSize / 8;
+            Measure("block", $"Bodu {name} encrypt, block per call", Length, () =>
+            {
+                for (int offset = 0; offset < Length; offset += blockLength)
+                    cipher.Encrypt(input.AsSpan(offset, blockLength), output.AsSpan(offset, blockLength));
+            });
+            Measure("block", $"Bodu {name} decrypt, block per call", Length, () =>
+            {
+                for (int offset = 0; offset < Length; offset += blockLength)
+                    cipher.Decrypt(input.AsSpan(offset, blockLength), output.AsSpan(offset, blockLength));
+            });
         }
     }
 
