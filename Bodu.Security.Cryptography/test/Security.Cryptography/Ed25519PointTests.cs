@@ -173,6 +173,38 @@ public partial class Ed25519PointTests
         new(scalar, isUnsigned: true, isBigEndian: false);
 
     /// <summary>
+    /// Yields triples of points to add: seeded multiples of the base point, each point of small order added to a
+    /// seeded multiple and a seeded multiple added to it, and the identity on either side.
+    /// </summary>
+    /// <param name="seed">The seed of the multiples.</param>
+    /// <returns>The triples, each named: the two points to add, and a third to add to their sum.</returns>
+    private static IEnumerable<(string Name, Ed25519Point Point, Ed25519Point Other, Ed25519Point Further)> PointTriples(int seed)
+    {
+        var random = new Random(seed);
+        byte[] scalar = new byte[32];
+
+        Ed25519Point Next()
+        {
+            random.NextBytes(scalar);
+            return Ed25519Point.ScalarMultBase(scalar);
+        }
+
+        for (int iteration = 0; iteration < 32; iteration++)
+            yield return ($"seeded {iteration}", Next(), Next(), Next());
+
+        foreach (string encoding in s_smallOrderEncodings)
+        {
+            Ed25519Point smallOrder = Decoded(encoding);
+            yield return ($"{encoding} on the right", Next(), smallOrder, Next());
+            yield return ($"{encoding} on the left", smallOrder, Next(), Next());
+            yield return ($"{encoding} with itself", smallOrder, smallOrder, Next());
+        }
+
+        yield return ("identity on the right", Next(), Ed25519Point.Identity, Next());
+        yield return ("identity on the left", Ed25519Point.Identity, Next(), Next());
+    }
+
+    /// <summary>
     /// Sets <paramref name="scalar" /> to a boundary value for the first few iterations and a pseudo-random value
     /// thereafter, to exercise the fixed-base and double-scalar routines at their edges.
     /// </summary>
