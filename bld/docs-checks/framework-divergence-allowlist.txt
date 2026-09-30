@@ -1,0 +1,13 @@
+# APIs whose declaration or documentation legitimately differs between the documented frameworks.
+#
+# bld/docs/merge_framework_metadata.py compares every API present in more than one framework in
+# $(BoduNetTargets). The merged page shows the newest framework's version; a difference not listed
+# here fails the merge, so a divergence is always a reviewed decision rather than an accident.
+#
+# Each line is "<uid> <field>  # reason", where <uid> is the DocFX UID from the merge report
+# (docs/obj/api/divergence-report.md) and <field> is one of the compared fields:
+#   type, syntax, parameters, return, typeParameters, inheritance, implements, attributes,
+#   documentation
+# An entry whose divergence no longer occurs also fails the merge; remove it.
+#
+# Empty: every API present in both .NET 8 and .NET 10 is currently declared and documented the same.
