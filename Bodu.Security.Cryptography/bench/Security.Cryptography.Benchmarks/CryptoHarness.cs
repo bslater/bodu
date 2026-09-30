@@ -295,23 +295,63 @@ internal static class CryptoHarness
             Measure("asym", "Bodu Ed25519 verify", 0, () => ed25519.VerifyData(message, signature));
         }
 
-        using (var kem = new MLKem768())
-        {
-            Measure("pq", "Bodu ML-KEM-768 key generation", 0, kem.GenerateKey);
-            kem.GenerateKey();
-            (byte[] ciphertext, _) = kem.Encapsulate();
-            Measure("pq", "Bodu ML-KEM-768 encapsulate", 0, () => kem.Encapsulate());
-            Measure("pq", "Bodu ML-KEM-768 decapsulate", 0, () => kem.Decapsulate(ciphertext));
-        }
+        MeasureKem("512", () => new MLKem512());
+        MeasureKem("768", () => new MLKem768());
+        MeasureKem("1024", () => new MLKem1024());
+        MeasureDsa("44", () => new MLDsa44(), message);
+        MeasureDsa("65", () => new MLDsa65(), message);
+        MeasureDsa("87", () => new MLDsa87(), message);
+    }
 
-        using (var dsa = new MLDsa65())
+    /// <summary>
+    /// Measures one ML-KEM parameter set: key generation, encapsulation and decapsulation with the values the key keeps,
+    /// and encapsulation to a key imported for that one encapsulation, as a peer's key is.
+    /// </summary>
+    /// <param name="level">The parameter set's number, such as 768.</param>
+    /// <param name="create">Creates an instance of the parameter set.</param>
+    private static void MeasureKem(string level, Func<MLKem> create)
+    {
+        string name = "Bodu ML-KEM-" + level;
+        using MLKem kem = create();
+        using MLKem recipient = create();
+
+        Measure("pq", name + " key generation", 0, kem.GenerateKey);
+        kem.GenerateKey();
+        byte[] encapsulationKey = kem.ExportEncapsulationKey();
+        (byte[] ciphertext, _) = kem.Encapsulate();
+        Measure("pq", name + " encapsulate", 0, () => kem.Encapsulate());
+        Measure("pq", name + " decapsulate", 0, () => kem.Decapsulate(ciphertext));
+        Measure("pq", name + " encapsulate to an imported key", 0, () =>
         {
-            Measure("pq", "Bodu ML-DSA-65 key generation", 0, dsa.GenerateKey);
-            dsa.GenerateKey();
-            byte[] signature = dsa.SignData(message);
-            Measure("pq", "Bodu ML-DSA-65 sign", 0, () => dsa.SignData(message));
-            Measure("pq", "Bodu ML-DSA-65 verify", 0, () => dsa.VerifyData(message, signature));
-        }
+            recipient.ImportEncapsulationKey(encapsulationKey);
+            recipient.Encapsulate();
+        });
+    }
+
+    /// <summary>
+    /// Measures one ML-DSA parameter set: key generation, signing and verification with the values the key keeps, and
+    /// verification with a public key imported for that one verification, as a signer's key is.
+    /// </summary>
+    /// <param name="level">The parameter set's number, such as 65.</param>
+    /// <param name="create">Creates an instance of the parameter set.</param>
+    /// <param name="message">The message to sign and verify.</param>
+    private static void MeasureDsa(string level, Func<MLDsa> create, byte[] message)
+    {
+        string name = "Bodu ML-DSA-" + level;
+        using MLDsa dsa = create();
+        using MLDsa verifier = create();
+
+        Measure("pq", name + " key generation", 0, dsa.GenerateKey);
+        dsa.GenerateKey();
+        byte[] publicKey = dsa.ExportPublicKey();
+        byte[] signature = dsa.SignData(message);
+        Measure("pq", name + " sign", 0, () => dsa.SignData(message));
+        Measure("pq", name + " verify", 0, () => dsa.VerifyData(message, signature));
+        Measure("pq", name + " verify with an imported key", 0, () =>
+        {
+            verifier.ImportPublicKey(publicKey);
+            verifier.VerifyData(message, signature);
+        });
     }
 
     /// <summary>

@@ -45,17 +45,55 @@ public partial class MLDsaEngineTests
     }
 
     /// <summary>
-    /// Verifies that converting a polynomial to Montgomery form rejects a span shorter than a polynomial with
-    /// <see cref="ArgumentOutOfRangeException" /> naming it, rather than writing past its end.
+    /// Verifies that each kernel converts every coefficient of edge, patterned, seeded and signed polynomials to the
+    /// Montgomery form the coefficient conversion computes, representative for representative.
     /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
     [TestMethod]
-    public void ToMontgomery_WhenSpanIsShorterThanAPolynomial_ShouldThrowArgumentOutOfRangeException()
+    [DataRow("Scalar")]
+    [DataRow("Avx2")]
+    public void ToMontgomery_WhenGivenAPolynomial_ForEachKernel_ShouldConvertEveryCoefficient(string kernel)
     {
+        MLDsaEngine.KernelKind kind = ParseSupportedKernel(kernel);
+
+        foreach (int[] polynomial in Polynomials().Concat(SignedPolynomials()))
+        {
+            int[] converted = (int[])polynomial.Clone();
+
+            MLDsaEngine.ToMontgomery(kind, converted);
+
+            CollectionAssert.AreEqual(polynomial.Select(MLDsaEngine.ToMontgomery).ToArray(), converted, $"{kernel}, from {polynomial[0]}");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that converting a polynomial to Montgomery form rejects a span shorter than a polynomial with
+    /// <see cref="ArgumentOutOfRangeException" /> naming it, rather than writing past its end, whichever kernel is
+    /// named.
+    /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
+    [TestMethod]
+    [DataRow("Auto")]
+    [DataRow("Scalar")]
+    [DataRow("Avx2")]
+    public void ToMontgomery_WhenSpanIsShorterThanAPolynomial_ShouldThrowArgumentOutOfRangeException(string kernel)
+    {
+        MLDsaEngine.KernelKind kind = ParseSupportedKernel(kernel);
+
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            MLDsaEngine.ToMontgomery(new int[MLDsaEngine.N - 1].AsSpan());
+            MLDsaEngine.ToMontgomery(kind, new int[MLDsaEngine.N - 1].AsSpan());
         });
 
         Assert.AreEqual("poly", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that the vector kernel's conversion forbids inlining and is aggressively optimized.
+    /// </summary>
+    [TestMethod]
+    public void ToMontgomery_WhenDeclared_ForTheVectorKernel_ShouldForbidInliningIntoTheDispatcher()
+    {
+        AssertKernelIsCompiledOnItsOwn(nameof(MLDsaEngine.Vector256Kernel.ToMontgomery));
     }
 }

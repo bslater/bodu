@@ -14,4 +14,17 @@ namespace Bodu.Security.Cryptography;
 [TestClass]
 public sealed partial class KeccakPermutationTests
 {
+    /// <summary>
+    /// Parses a four-way kernel's name, reporting the test inconclusive when the processor cannot run the kernel.
+    /// </summary>
+    /// <param name="name">The kernel's name.</param>
+    /// <returns>The kernel.</returns>
+    private static KeccakPermutation.KernelKind ParseSupportedKernel(string name)
+    {
+        KeccakPermutation.KernelKind kernel = Enum.Parse<KeccakPermutation.KernelKind>(name);
+        if (!KeccakPermutation.IsSupported(kernel))
+            Assert.Inconclusive($"The {name} kernel cannot run on this processor.");
+
+        return kernel;
+    }
 }

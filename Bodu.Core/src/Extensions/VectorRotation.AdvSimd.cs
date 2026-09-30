@@ -28,15 +28,23 @@ internal static partial class VectorRotation
         /// <param name="count">The number of bits to rotate each lane by.</param>
         /// <returns>The rotated lanes.</returns>
         /// <remarks>
+        /// <para>
         /// <paramref name="count" /> must be a constant from 1 to 31; it is not validated. Because it is a constant,
         /// the choice between the forms folds away when the call is inlined.
+        /// </para>
+        /// <para>
+        /// The shifts are the instruction set's own, their counts immediates. .NET 8 compiles
+        /// <c>Vector128.ShiftRightLogical(value, 32 - count)</c> to a shift by a count loaded into a register on every
+        /// call, even where <paramref name="count" /> is a constant, but folds the constant into the immediate form.
+        /// </para>
         /// </remarks>
+        [SuppressMessage("Performance", "CA1857:A constant is expected for the parameter", Justification = "The count is a constant wherever the rotation is called, so once the call is inlined the complementary shift count folds to the constant the instruction takes.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector128<uint> RotateLeft(Vector128<uint> value, [ConstantExpected(Min = 1, Max = 31)] byte count) => count switch
         {
             16 => Arm.AdvSimd.ReverseElement16(value.AsInt32()).AsUInt32(),
             8 => Arm.AdvSimd.Arm64.VectorTableLookup(value.AsByte(), Vector128.Create((byte)3, 0, 1, 2, 7, 4, 5, 6, 11, 8, 9, 10, 15, 12, 13, 14)).AsUInt32(),
-            _ => Arm.AdvSimd.ShiftLeftAndInsert(Vector128.ShiftRightLogical(value, 32 - count), value, count),
+            _ => Arm.AdvSimd.ShiftLeftAndInsert(Arm.AdvSimd.ShiftRightLogical(value, (byte)(32 - count)), value, count),
         };
     }
 }

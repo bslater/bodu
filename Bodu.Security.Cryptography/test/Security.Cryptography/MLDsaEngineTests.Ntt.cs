@@ -9,17 +9,70 @@ namespace Bodu.Security.Cryptography;
 public partial class MLDsaEngineTests
 {
     /// <summary>
-    /// Verifies that the forward transform matches the remainder-operator reference on edge and seeded polynomials.
+    /// Verifies that each kernel's forward transform matches the remainder-operator reference on edge and seeded
+    /// polynomials.
     /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
     [TestMethod]
-    public void Ntt_WhenCoefficientsAreInRange_ShouldMatchTheReference()
+    [DataRow("Scalar")]
+    [DataRow("Avx2")]
+    public void Ntt_WhenCoefficientsAreInRange_ForEachKernel_ShouldMatchTheReference(string kernel)
     {
+        MLDsaEngine.KernelKind kind = ParseSupportedKernel(kernel);
+
         foreach (int[] polynomial in Polynomials())
         {
             int[] expected = (int[])polynomial.Clone();
             int[] actual = (int[])polynomial.Clone();
 
             MLDsaReference.Ntt(expected);
+            MLDsaEngine.Ntt(kind, actual);
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that each kernel's forward transform accepts coefficients up to q − 1 in magnitude, the ends of the
+    /// range it documents, and transforms their residues as the reference and the scalar kernel do.
+    /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
+    [TestMethod]
+    [DataRow("Scalar")]
+    [DataRow("Avx2")]
+    public void Ntt_WhenCoefficientsAreSigned_ForEachKernel_ShouldTransformTheirResidues(string kernel)
+    {
+        MLDsaEngine.KernelKind kind = ParseSupportedKernel(kernel);
+        int iteration = 0;
+
+        foreach (int[] polynomial in SignedPolynomials())
+        {
+            int[] expected = polynomial.Select(value => Mod(value)).ToArray();
+            int[] scalar = (int[])polynomial.Clone();
+            int[] actual = (int[])polynomial.Clone();
+
+            MLDsaReference.Ntt(expected);
+            MLDsaEngine.Ntt(MLDsaEngine.KernelKind.Scalar, scalar);
+            MLDsaEngine.Ntt(kind, actual);
+
+            CollectionAssert.AreEqual(expected, actual, $"iteration {iteration}");
+            CollectionAssert.AreEqual(scalar, actual, $"iteration {iteration}");
+            iteration++;
+        }
+    }
+
+    /// <summary>
+    /// Verifies that the forward transform without a named kernel transforms as the kernel dispatch selects does.
+    /// </summary>
+    [TestMethod]
+    public void Ntt_WhenKernelIsNotNamed_ShouldMatchTheSelectedKernel()
+    {
+        foreach (int[] polynomial in SignedPolynomials().Take(20))
+        {
+            int[] expected = (int[])polynomial.Clone();
+            int[] actual = (int[])polynomial.Clone();
+
+            MLDsaEngine.Ntt(MLDsaEngine.SelectKernel(), expected);
             MLDsaEngine.Ntt(actual);
 
             CollectionAssert.AreEqual(expected, actual);
@@ -27,17 +80,71 @@ public partial class MLDsaEngineTests
     }
 
     /// <summary>
-    /// Verifies that the inverse transform matches the remainder-operator reference on edge and seeded polynomials.
+    /// Verifies that each kernel's inverse transform matches the remainder-operator reference on edge and seeded
+    /// polynomials.
     /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
     [TestMethod]
-    public void InvNtt_WhenCoefficientsAreInRange_ShouldMatchTheReference()
+    [DataRow("Scalar")]
+    [DataRow("Avx2")]
+    public void InvNtt_WhenCoefficientsAreInRange_ForEachKernel_ShouldMatchTheReference(string kernel)
     {
+        MLDsaEngine.KernelKind kind = ParseSupportedKernel(kernel);
+
         foreach (int[] polynomial in Polynomials())
         {
             int[] expected = (int[])polynomial.Clone();
             int[] actual = (int[])polynomial.Clone();
 
             MLDsaReference.InvNtt(expected);
+            MLDsaEngine.InvNtt(kind, actual);
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that each kernel's inverse transform accepts coefficients up to q − 1 in magnitude, the ends of the
+    /// range it documents, including the patterns that drive the last layer's sum and difference to 256(q − 1), and
+    /// transforms their residues as the reference and the scalar kernel do.
+    /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
+    [TestMethod]
+    [DataRow("Scalar")]
+    [DataRow("Avx2")]
+    public void InvNtt_WhenCoefficientsReachQInMagnitude_ForEachKernel_ShouldTransformTheirResidues(string kernel)
+    {
+        MLDsaEngine.KernelKind kind = ParseSupportedKernel(kernel);
+        int iteration = 0;
+
+        foreach (int[] coefficients in SignedPolynomials())
+        {
+            int[] expected = coefficients.Select(value => Mod(value)).ToArray();
+            int[] scalar = (int[])coefficients.Clone();
+            int[] actual = (int[])coefficients.Clone();
+
+            MLDsaReference.InvNtt(expected);
+            MLDsaEngine.InvNtt(MLDsaEngine.KernelKind.Scalar, scalar);
+            MLDsaEngine.InvNtt(kind, actual);
+
+            CollectionAssert.AreEqual(expected, actual, $"iteration {iteration}");
+            CollectionAssert.AreEqual(scalar, actual, $"iteration {iteration}");
+            iteration++;
+        }
+    }
+
+    /// <summary>
+    /// Verifies that the inverse transform without a named kernel transforms as the kernel dispatch selects does.
+    /// </summary>
+    [TestMethod]
+    public void InvNtt_WhenKernelIsNotNamed_ShouldMatchTheSelectedKernel()
+    {
+        foreach (int[] polynomial in SignedPolynomials().Take(20))
+        {
+            int[] expected = (int[])polynomial.Clone();
+            int[] actual = (int[])polynomial.Clone();
+
+            MLDsaEngine.InvNtt(MLDsaEngine.SelectKernel(), expected);
             MLDsaEngine.InvNtt(actual);
 
             CollectionAssert.AreEqual(expected, actual);
@@ -45,48 +152,22 @@ public partial class MLDsaEngineTests
     }
 
     /// <summary>
-    /// Verifies that the inverse transform accepts coefficients up to q − 1 in magnitude, the ends of the range it
-    /// documents, including the patterns that drive the last layer's sum and difference to 256(q − 1), and transforms
-    /// their residues.
+    /// Verifies that each kernel's inverse transform undoes its forward transform.
     /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
     [TestMethod]
-    public void InvNtt_WhenCoefficientsReachQInMagnitude_ShouldTransformTheirResidues()
+    [DataRow("Scalar")]
+    [DataRow("Avx2")]
+    public void InvNtt_WhenAppliedAfterNtt_ForEachKernel_ShouldRestoreThePolynomial(string kernel)
     {
-        var random = new Random(0x0204_0005);
+        MLDsaEngine.KernelKind kind = ParseSupportedKernel(kernel);
 
-        for (int iteration = 0; iteration < 64; iteration++)
-        {
-            int[] coefficients = Enumerable.Range(0, MLDsaEngine.N)
-                .Select(i => iteration switch
-                {
-                    0 => Q - 1,
-                    1 => -(Q - 1),
-                    2 => i % 2 == 0 ? Q - 1 : -(Q - 1),
-                    3 => i < MLDsaEngine.N / 2 ? Q - 1 : -(Q - 1),
-                    _ => random.Next(-Q + 1, Q),
-                })
-                .ToArray();
-            int[] expected = coefficients.Select(value => Mod(value)).ToArray();
-
-            MLDsaReference.InvNtt(expected);
-            MLDsaEngine.InvNtt(coefficients);
-
-            CollectionAssert.AreEqual(expected, coefficients, $"iteration {iteration}");
-        }
-    }
-
-    /// <summary>
-    /// Verifies that the inverse transform undoes the forward transform.
-    /// </summary>
-    [TestMethod]
-    public void InvNtt_WhenAppliedAfterNtt_ShouldRestoreThePolynomial()
-    {
         foreach (int[] polynomial in Polynomials())
         {
             int[] roundTrip = (int[])polynomial.Clone();
 
-            MLDsaEngine.Ntt(roundTrip);
-            MLDsaEngine.InvNtt(roundTrip);
+            MLDsaEngine.Ntt(kind, roundTrip);
+            MLDsaEngine.InvNtt(kind, roundTrip);
 
             CollectionAssert.AreEqual(polynomial, roundTrip);
         }
@@ -94,21 +175,39 @@ public partial class MLDsaEngineTests
 
     /// <summary>
     /// Verifies that the transforms reject a span shorter than a polynomial with
-    /// <see cref="ArgumentOutOfRangeException" /> naming it, rather than reading past its end.
+    /// <see cref="ArgumentOutOfRangeException" /> naming it, rather than reading past its end, whichever kernel is
+    /// named.
     /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
     [TestMethod]
-    public void Ntt_WhenSpanIsShorterThanAPolynomial_ShouldThrowArgumentOutOfRangeException()
+    [DataRow("Auto")]
+    [DataRow("Scalar")]
+    [DataRow("Avx2")]
+    public void Ntt_WhenSpanIsShorterThanAPolynomial_ShouldThrowArgumentOutOfRangeException(string kernel)
     {
+        MLDsaEngine.KernelKind kind = ParseSupportedKernel(kernel);
+
         var forward = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            MLDsaEngine.Ntt(new int[MLDsaEngine.N - 1]);
+            MLDsaEngine.Ntt(kind, new int[MLDsaEngine.N - 1]);
         });
         var inverse = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            MLDsaEngine.InvNtt(new int[MLDsaEngine.N - 1]);
+            MLDsaEngine.InvNtt(kind, new int[MLDsaEngine.N - 1]);
         });
 
         Assert.AreEqual("w", forward.ParamName);
         Assert.AreEqual("w", inverse.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that the vector kernel's transforms forbid inlining and are aggressively optimized, so each is compiled
+    /// on its own rather than into the dispatcher.
+    /// </summary>
+    [TestMethod]
+    public void Ntt_WhenDeclared_ForEachVectorKernel_ShouldForbidInliningIntoTheDispatcher()
+    {
+        AssertKernelIsCompiledOnItsOwn(nameof(MLDsaEngine.Vector256Kernel.Ntt));
+        AssertKernelIsCompiledOnItsOwn(nameof(MLDsaEngine.Vector256Kernel.InvNtt));
     }
 }

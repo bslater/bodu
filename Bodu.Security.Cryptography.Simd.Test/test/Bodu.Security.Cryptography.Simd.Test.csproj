@@ -21,8 +21,9 @@
   </ItemGroup>
 
   <!--
-    The known-answer suites for the SIMD-accelerated primitives are compiled into this assembly rather
-    than duplicated, so the scalar fallbacks are held to the same published vectors as the accelerated
+    The known-answer suites for the SIMD-accelerated primitives — the ML-KEM and ML-DSA ACVP suites
+    among them, for their vector transforms and four-way Keccak sampling — are compiled into this
+    assembly rather than duplicated, so the scalar fallbacks are held to the same published vectors as the accelerated
     paths. Linking (rather than referencing the main test assembly) keeps the two projects independent:
     nothing in Bodu.Security.Cryptography.Test has to be unsealed or made visible for this to work.
 
@@ -45,6 +46,22 @@
              Link="Security.Cryptography\Argon2Tests.KnownAnswers.cs" />
     <Compile Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\StreamAeadKnownAnswerTests.cs"
              Link="Security.Cryptography\StreamAeadKnownAnswerTests.cs" />
+    <Compile Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\MLKemAcvpVectors.cs"
+             Link="Security.Cryptography\MLKemAcvpVectors.cs" />
+    <Compile Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\MLKem512Tests.KnownAnswerTests.cs"
+             Link="Security.Cryptography\MLKem512Tests.KnownAnswerTests.cs" />
+    <Compile Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\MLKem768Tests.KnownAnswerTests.cs"
+             Link="Security.Cryptography\MLKem768Tests.KnownAnswerTests.cs" />
+    <Compile Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\MLKem1024Tests.KnownAnswerTests.cs"
+             Link="Security.Cryptography\MLKem1024Tests.KnownAnswerTests.cs" />
+    <Compile Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\MLDsaAcvpVectors.cs"
+             Link="Security.Cryptography\MLDsaAcvpVectors.cs" />
+    <Compile Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\MLDsa44Tests.KnownAnswerTests.cs"
+             Link="Security.Cryptography\MLDsa44Tests.KnownAnswerTests.cs" />
+    <Compile Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\MLDsa65Tests.KnownAnswerTests.cs"
+             Link="Security.Cryptography\MLDsa65Tests.KnownAnswerTests.cs" />
+    <Compile Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\MLDsa87Tests.KnownAnswerTests.cs"
+             Link="Security.Cryptography\MLDsa87Tests.KnownAnswerTests.cs" />
   </ItemGroup>
 
   <!--
@@ -71,6 +88,18 @@
                       LogicalName="Bodu.Security.Cryptography.Argon2.argon2-1.0.0-corpus.txt" />
     <EmbeddedResource Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Fixtures\XChaCha20\Draft\draft-arciszewski-xchacha-03.txt"
                       LogicalName="Bodu.Security.Cryptography.XChaCha20.draft-arciszewski-xchacha-03.txt" />
+    <EmbeddedResource Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Fixtures\MLKem\NistAcvp\ML-KEM-keyGen.txt"
+                      LogicalName="Bodu.Security.Cryptography.MLKem.AcvpKeyGen.txt" />
+    <EmbeddedResource Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Fixtures\MLKem\NistAcvp\ML-KEM-encapDecap.txt"
+                      LogicalName="Bodu.Security.Cryptography.MLKem.AcvpEncapDecap.txt" />
+    <EmbeddedResource Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Fixtures\MLKem\NistAcvp\ML-KEM-keyCheck.txt"
+                      LogicalName="Bodu.Security.Cryptography.MLKem.AcvpKeyCheck.txt" />
+    <EmbeddedResource Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Fixtures\MLDsa\NistAcvp\ML-DSA-keyGen.txt"
+                      LogicalName="Bodu.Security.Cryptography.MLDsa.AcvpKeyGen.txt" />
+    <EmbeddedResource Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Fixtures\MLDsa\NistAcvp\ML-DSA-sigGen.txt"
+                      LogicalName="Bodu.Security.Cryptography.MLDsa.AcvpSigGen.txt" />
+    <EmbeddedResource Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Fixtures\MLDsa\NistAcvp\ML-DSA-sigVer.txt"
+                      LogicalName="Bodu.Security.Cryptography.MLDsa.AcvpSigVer.txt" />
   </ItemGroup>
 
 </Project>

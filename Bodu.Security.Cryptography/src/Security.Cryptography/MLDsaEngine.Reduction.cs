@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Bodu.Security.Cryptography;
 
@@ -92,17 +93,180 @@ internal static partial class MLDsaEngine
         MontgomeryReduce(value * MontgomerySquared);
 
     /// <summary>
-    /// Converts every coefficient of a polynomial to Montgomery form, in place.
+    /// Converts every coefficient of a polynomial to Montgomery form, in place, with the kernel dispatch selects.
     /// </summary>
     /// <param name="poly">The 256 coefficients, replaced by their Montgomery form.</param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="poly" /> holds fewer than 256 coefficients.
     /// </exception>
-    internal static void ToMontgomery(Span<int> poly)
+    internal static void ToMontgomery(Span<int> poly) =>
+        ToMontgomery(KernelKind.Auto, poly);
+
+    /// <summary>
+    /// Converts every coefficient of a polynomial to Montgomery form, in place, with the specified kernel.
+    /// </summary>
+    /// <param name="kernel">
+    /// The kernel; <see cref="KernelKind.Auto" /> for the one dispatch selects. Any other kind must be one the
+    /// processor supports.
+    /// </param>
+    /// <param name="poly">The 256 coefficients, replaced by their Montgomery form.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="poly" /> holds fewer than 256 coefficients.
+    /// </exception>
+    /// <remarks>
+    /// Every kernel produces the same coefficients as <see cref="ToMontgomery(int)" />.
+    /// </remarks>
+    internal static void ToMontgomery(KernelKind kernel, Span<int> poly)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(poly.Length, N, nameof(poly));
 
+        if (Resolve(kernel) == KernelKind.Avx2)
+        {
+            Vector256Kernel.ToMontgomery(ref MemoryMarshal.GetReference(poly));
+            return;
+        }
+
         for (int i = 0; i < N; i++)
             poly[i] = ToMontgomery(poly[i]);
+    }
+
+    /// <summary>
+    /// Reduces every coefficient of a polynomial with <see cref="Reduce32(int)" />, in place, with the kernel dispatch
+    /// selects.
+    /// </summary>
+    /// <param name="poly">
+    /// The 256 coefficients, each from −2^31 to 2^31 − 2^22 − 1, replaced by their reductions.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="poly" /> holds fewer than 256 coefficients.
+    /// </exception>
+    internal static void Reduce32(Span<int> poly) =>
+        Reduce32(KernelKind.Auto, poly);
+
+    /// <summary>
+    /// Reduces every coefficient of a polynomial with <see cref="Reduce32(int)" />, in place, with the specified
+    /// kernel.
+    /// </summary>
+    /// <param name="kernel">
+    /// The kernel; <see cref="KernelKind.Auto" /> for the one dispatch selects. Any other kind must be one the
+    /// processor supports.
+    /// </param>
+    /// <param name="poly">
+    /// The 256 coefficients, each from −2^31 to 2^31 − 2^22 − 1, replaced by their reductions.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="poly" /> holds fewer than 256 coefficients.
+    /// </exception>
+    /// <remarks>
+    /// Every kernel produces the same coefficients as <see cref="Reduce32(int)" />.
+    /// </remarks>
+    internal static void Reduce32(KernelKind kernel, Span<int> poly)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(poly.Length, N, nameof(poly));
+
+        if (Resolve(kernel) == KernelKind.Avx2)
+        {
+            Vector256Kernel.Reduce32(ref MemoryMarshal.GetReference(poly));
+            return;
+        }
+
+        for (int i = 0; i < N; i++)
+            poly[i] = Reduce32(poly[i]);
+    }
+
+    /// <summary>
+    /// Adds two polynomials coefficient-wise modulo q with the kernel dispatch selects.
+    /// </summary>
+    /// <param name="left">The first polynomial. Coefficients in [0, q).</param>
+    /// <param name="right">The second polynomial. Coefficients in [0, q).</param>
+    /// <param name="sum">The span receiving the sum, coefficients in [0, q). May be either operand.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="left" />, <paramref name="right" /> or <paramref name="sum" /> holds fewer than 256
+    /// coefficients.
+    /// </exception>
+    internal static void AddModQ(ReadOnlySpan<int> left, ReadOnlySpan<int> right, Span<int> sum) =>
+        AddModQ(KernelKind.Auto, left, right, sum);
+
+    /// <summary>
+    /// Adds two polynomials coefficient-wise modulo q with the specified kernel.
+    /// </summary>
+    /// <param name="kernel">
+    /// The kernel; <see cref="KernelKind.Auto" /> for the one dispatch selects. Any other kind must be one the
+    /// processor supports.
+    /// </param>
+    /// <param name="left">The first polynomial. Coefficients in [0, q).</param>
+    /// <param name="right">The second polynomial. Coefficients in [0, q).</param>
+    /// <param name="sum">The span receiving the sum, coefficients in [0, q). May be either operand.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="left" />, <paramref name="right" /> or <paramref name="sum" /> holds fewer than 256
+    /// coefficients.
+    /// </exception>
+    /// <remarks>
+    /// Every kernel produces the same coefficients.
+    /// </remarks>
+    internal static void AddModQ(KernelKind kernel, ReadOnlySpan<int> left, ReadOnlySpan<int> right, Span<int> sum)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(left.Length, N, nameof(left));
+        ArgumentOutOfRangeException.ThrowIfLessThan(right.Length, N, nameof(right));
+        ArgumentOutOfRangeException.ThrowIfLessThan(sum.Length, N, nameof(sum));
+
+        if (Resolve(kernel) == KernelKind.Avx2)
+        {
+            Vector256Kernel.AddModQ(ref MemoryMarshal.GetReference(left), ref MemoryMarshal.GetReference(right), ref MemoryMarshal.GetReference(sum));
+            return;
+        }
+
+        for (int i = 0; i < N; i++)
+            sum[i] = Canonicalize(left[i] + right[i] - Q);
+    }
+
+    /// <summary>
+    /// Subtracts one polynomial from another coefficient-wise modulo q with the kernel dispatch selects.
+    /// </summary>
+    /// <param name="left">The minuend. Coefficients in [0, q).</param>
+    /// <param name="right">The subtrahend. Coefficients in [0, q).</param>
+    /// <param name="difference">
+    /// The span receiving the difference, coefficients in [0, q). May be either operand.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="left" />, <paramref name="right" /> or <paramref name="difference" /> holds fewer than 256
+    /// coefficients.
+    /// </exception>
+    internal static void SubtractModQ(ReadOnlySpan<int> left, ReadOnlySpan<int> right, Span<int> difference) =>
+        SubtractModQ(KernelKind.Auto, left, right, difference);
+
+    /// <summary>
+    /// Subtracts one polynomial from another coefficient-wise modulo q with the specified kernel.
+    /// </summary>
+    /// <param name="kernel">
+    /// The kernel; <see cref="KernelKind.Auto" /> for the one dispatch selects. Any other kind must be one the
+    /// processor supports.
+    /// </param>
+    /// <param name="left">The minuend. Coefficients in [0, q).</param>
+    /// <param name="right">The subtrahend. Coefficients in [0, q).</param>
+    /// <param name="difference">
+    /// The span receiving the difference, coefficients in [0, q). May be either operand.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="left" />, <paramref name="right" /> or <paramref name="difference" /> holds fewer than 256
+    /// coefficients.
+    /// </exception>
+    /// <remarks>
+    /// Every kernel produces the same coefficients.
+    /// </remarks>
+    internal static void SubtractModQ(KernelKind kernel, ReadOnlySpan<int> left, ReadOnlySpan<int> right, Span<int> difference)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(left.Length, N, nameof(left));
+        ArgumentOutOfRangeException.ThrowIfLessThan(right.Length, N, nameof(right));
+        ArgumentOutOfRangeException.ThrowIfLessThan(difference.Length, N, nameof(difference));
+
+        if (Resolve(kernel) == KernelKind.Avx2)
+        {
+            Vector256Kernel.SubtractModQ(ref MemoryMarshal.GetReference(left), ref MemoryMarshal.GetReference(right), ref MemoryMarshal.GetReference(difference));
+            return;
+        }
+
+        for (int i = 0; i < N; i++)
+            difference[i] = Canonicalize(left[i] - right[i]);
     }
 }

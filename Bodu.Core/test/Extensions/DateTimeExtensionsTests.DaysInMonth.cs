@@ -79,6 +79,40 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.DaysInMonth(DateTime, System.Globalization.Calendar)" /> with a
+    /// <see langword="null" /> calendar uses the calendar the current culture is set to use, its
+    /// <see cref="System.Globalization.DateTimeFormatInfo.Calendar" />, when that is not the culture's default calendar.
+    /// </summary>
+    [TestMethod]
+    public void DaysInMonth_WhenCalendarIsNullAndCurrentCultureUsesNonDefaultCalendar_ShouldUseThatCalendar()
+    {
+        System.Globalization.CultureInfo previousCulture = System.Globalization.CultureInfo.CurrentCulture;
+        try
+        {
+            // ar-SA offers both the Um Al-Qura and the Gregorian calendar, and which of them is its default depends on
+            // the ICU version the runtime loads, so the culture is set to use whichever of the two is not. January has
+            // 31 days, which no Um Al-Qura month has, so the two calendars cannot agree.
+            var culture = new System.Globalization.CultureInfo("ar-SA");
+            System.Globalization.Calendar calendar = culture.Calendar is System.Globalization.UmAlQuraCalendar
+                ? new System.Globalization.GregorianCalendar()
+                : new System.Globalization.UmAlQuraCalendar();
+            culture.DateTimeFormat.Calendar = calendar;
+            System.Globalization.CultureInfo.CurrentCulture = culture;
+
+            var input = new DateTime(2024, 1, 15);
+            var expected = calendar.GetDaysInMonth(calendar.GetYear(input), calendar.GetMonth(input));
+
+            var actual = input.DaysInMonth((System.Globalization.Calendar)null);
+
+            Assert.AreEqual(expected, actual);
+        }
+        finally
+        {
+            System.Globalization.CultureInfo.CurrentCulture = previousCulture;
+        }
+    }
+
+    /// <summary>
     /// Verifies that a non-Gregorian calendar receives the date projected into its own year/month reckoning: for
     /// 2024-03-15 the <see cref="System.Globalization.UmAlQuraCalendar" /> month is Ramadan 1445 (30 days), whereas
     /// passing the Gregorian components (year 2024) directly would throw

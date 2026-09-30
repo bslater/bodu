@@ -3,6 +3,12 @@ name: Coverage
 # Deliberately separate from build-test.yml. That workflow is the fast red/green signal and its
 # 30-minute budget is worth protecting; instrumented collection across every test project on the
 # regression tier is an order of magnitude slower and belongs on its own schedule.
+#
+# Every job here runs on ubuntu-24.04 alone, not on the 24.04 and 26.04 pair the verification jobs
+# use while GitHub moves ubuntu-latest from one to the other: coverage measures the code, not the
+# platform, and a second image would only double the collection. The label is named rather than
+# ubuntu-latest so the gradual move cannot put one run's jobs on different images. Switch it to
+# ubuntu-26.04 when the verification jobs drop 24.04.
 on:
   schedule:
     # Weekly full baseline, Sunday 15:00 UTC.
@@ -29,7 +35,7 @@ jobs:
   # projects whose production sources the diff actually touched.
   # ---------------------------------------------------------------------------------------------
   scope:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     outputs:
       mode: ${{ steps.decide.outputs.mode }}
@@ -96,7 +102,7 @@ jobs:
   collect:
     needs: scope
     if: needs.scope.outputs.mode != 'skip'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 90
     strategy:
       fail-fast: false
@@ -177,7 +183,7 @@ jobs:
   aggregate:
     needs: [scope, collect]
     if: always() && needs.scope.outputs.mode != 'skip'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v7
