@@ -1,6 +1,6 @@
 # Implementation plan: the cryptography speed-ups left for later
 
-**Status:** F1 to F8 done (§9), F8 added after F7; F9 to F13, added after F8, in progress · **Source:** the "Left for
+**Status:** F1 to F13 done (§9), F8 added after F7, and F9 to F13 after F8 · **Source:** the "Left for
 later" items in [`crypto-performance.md`](crypto-performance.md) §10 and the open items in
 [`argon2-performance.md`](argon2-performance.md) §10.3, after `Bodu.Security.Cryptography` 1.1.0,
 and F7's and F8's (§9) · **Target:** `Bodu.Security.Cryptography` 1.2.0, out of band
@@ -465,12 +465,12 @@ As `crypto-performance.md` §6:
 
 ## 9. Results
 
-Figures are from the `--crypto-harness` of `Bodu.Security.Cryptography.Benchmarks`. F1's and F2's
-are from the same 4-vCPU Xeon VM as §1, at 2.8 GHz with AVX-512F/VL but no IFMA; F3's section
-describes the machine the work moved to, where F4's, F5's and F6's were measured as well; F7's and F8's come from
-GitHub's hosted runners, as F7's section describes. Each is the range over
-two runs of the median of five rounds. The baselines were measured the same day on this
-branch before the item's code, with the harness change that added the case in place.
+Figures are from the `--crypto-harness` of `Bodu.Security.Cryptography.Benchmarks`. F1's and F2's are from the same
+4-vCPU Xeon VM as §1, at 2.8 GHz with AVX-512F/VL but no IFMA; F3's section describes the machine the work moved to,
+where F4's, F5's and F6's were measured as well; F7's to F13's come from GitHub's hosted runners, as F7's section
+describes, and F9's and F10's also from a machine of §1's kind, as their sections say. Each is the range over two runs
+of the median of five rounds. The baselines were measured the same day on this branch before the item's code, with the
+harness change that added the case in place.
 
 ### F1 - Poly1305 several blocks at a time (done)
 
@@ -2038,3 +2038,303 @@ How it was done, and where it departs from the design above:
   - The M1's crossover. Its kernel caught the scalar loop at 128 bytes, but runs of 128 to 255 bytes take the scalar
     loop, because on the N2 that loop is faster there.
   - OpenSSL splits one group's blocks with integer instructions, whose pipes the vector code leaves idle.
+
+### F9 - BLAKE2b's x64 kernels without AVX-512 (done: no change)
+
+F9's figures come from F7's workflow and from a five-round A/B here. The workflow's x64 job drew a different processor
+on each of its two runs: an Intel Xeon Platinum 8370C with AVX-512, then an AMD EPYC 9V74, a Zen 4 whose virtual machine
+offers AVX2 but not AVX-512. After the first run the x64 suite gained an `avx2` configuration, which switches the
+runtime's AVX-512 off, beside the `ssse3` configuration, which switches AVX2 off, so the second run timed both kernels.
+By then the work had moved back to a machine of §1's kind, a 4-core Xeon virtual machine at 2.8 GHz (family 6, model 85,
+AVX-512F/VL without IFMA), and not F3's second machine, on which F7 had measured. The scalar path's time over each
+kernel's, by the medians; above 1, the kernel ran faster:
+
+| BLAKE2b-512 | AVX2, 1 MiB | AVX2, 64 B | SSSE3, 1 MiB | SSSE3, 64 B |
+|---|---|---|---|---|
+| EPYC 9V74, .NET 8 | 1.25 | 1.27 | 1.18 | 1.23 |
+| EPYC 9V74, .NET 10 | 1.26 | 1.19 | 1.18 | 1.14 |
+| Xeon 8370C, .NET 8 | - | - | 1.11 | 1.17 |
+| Xeon 8370C, .NET 10 | - | - | 1.13 | 1.18 |
+| §1's kind, .NET 8 | 1.41 | 1.11 | 1.07 | 0.97 |
+| §1's kind, .NET 10 | 1.33 | 1.18 | 1.15 | 1.04 |
+| F3's machine, .NET 8 (F7) | 0.95 | 0.96 | 0.88 | 0.90 |
+| F3's machine, .NET 10 (F7) | 1.08 | 1.05 | 0.96 | 0.92 |
+
+Both kernels ran faster than the scalar path on both hosted processors under both runtimes, and on §1's kind of machine
+but for the SSSE3 kernel at 64 bytes under .NET 8, at 0.97, whose five rounds ranged from 0.90 to 1.02. They lost only
+on F3's machine, a Xeon of family 6, model 207, whose Golden Cove cores are also those of Intel's client processors
+since Alder Lake: the SSSE3 kernel under both runtimes, and the AVX2 kernel under .NET 8, by 4-12%. BLAKE2s, the
+control, ran faster than its scalar path throughout: 1.05-1.09 times on the EPYC, 1.21-1.30 times with SSSE3 on the Xeon
+8370C, and 1.07-1.28 times on §1's kind.
+
+The design gates a kernel that loses under both runtimes and selects by runtime one that loses under one. Read per
+processor, that would gate the SSSE3 kernel and select the AVX2 kernel by runtime on F3's machine alone, while both win
+on the other three. Dispatch cannot tell those cores apart without reading the processor's model, which no dispatch here
+does, and gating either kernel everywhere would give up as much as 41% on three processors to recover at most 12% on
+one. So dispatch is unchanged, and the target holds on every processor measured but F3's. Only a processor without AVX2
+takes the SSSE3 kernel, and every one measured here stood in for one with AVX2 switched off.
+
+The rest of the x64 suite, on the EPYC: Argon2's AVX2 kernel ran 3.0-3.3 times as fast as its scalar path and its SSSE3
+kernel 1.7-1.8 times, scrypt's SSE2 kernel 1.5-1.7 times, and BLAKE3 over 1 MiB 3.2-4.3 times with AVX2.
+
+How it was done, and where it departs from the design above:
+
+- **The A/B.** Five rounds on each runtime, alternating the order of five configurations: the defaults; AVX-512 off
+  (`DOTNET_EnableAVX512F=0` and `DOTNET_EnableAVX512=0`), with the library's SIMD on and off; and AVX2 off
+  (`DOTNET_EnableAVX2=0`), with it on and off. Each kernel is compared with a scalar path under the same runtime
+  settings.
+- **The workflow.** The x64 job runs a suite of its own, `x64`: BLAKE2, BLAKE3 and the key derivations.
+  `harness_matrix.py` gives each configuration its binary, arguments and environment, runs only the configurations a
+  suite asks for, and builds the summary's columns from those present.
+- **Departure: not F7's EPYC.** The design expected F7's EPYC 7763. GitHub's hosted pool mixes processors, and the first
+  run drew the Xeon 8370C, whose AVX-512 the vector configuration used; hence the `avx2` configuration, which answers
+  the question on any x64 runner. The second run drew the EPYC 9V74, a Zen 4 where the 7763 is a Zen 3.
+- **Departure: not F7's machine.** The A/B ran on §1's kind of machine, where the work had moved back, so it does not
+  repeat F7's measurement; F3's machine was not available again.
+- **No tests.** Dispatch did not change, so no selection test did.
+- **Left for later.** BLAKE2b on Golden Cove: an Alder Lake or later desktop would show whether Intel's client cores
+  repeat what F3's server cores did under .NET 8.
+
+### F10 - Argon2's thread threshold (done)
+
+F10's figures come from both runs of F7's workflow, on the N2, the M1 and the x64 processor each run drew, and from the
+sweep on §1's kind of machine. The sweep compares one thread with every slice divided among threads, through a driver,
+at the sizes the library keeps on one thread, and with the default above them. The first run timed 1, 2 and 3 MiB at
+p = 4, below 1.1.0's threshold of 256 blocks. One thread's wall time against the divided derivation's, in milliseconds,
+by the ranges of each run's medians:
+
+| m, t = 3, p = 4 | N2, .NET 8 | N2, .NET 10 | M1, .NET 8 | M1, .NET 10 | Xeon 8370C, .NET 8 | Xeon 8370C, .NET 10 |
+|---|---|---|---|---|---|---|
+| 1 MiB (64-block segments) | 1.90 / 0.90 | 1.80 / 0.80 | 1.40-1.50 / 1.10-1.20 | 1.80-2.10 / 1.00-1.70 | 1.00 / 0.70 | 1.10 / 0.70-0.90 |
+| 2 MiB (128) | 3.70 / 2.20 | 3.60 / 1.40-1.50 | 2.60-2.90 / 1.60-2.20 | 3.70-3.90 / 2.00-2.90 | 2.00 / 1.10 | 1.90 / 1.10-1.60 |
+| 3 MiB (192) | 5.40 / 1.80-3.10 | 5.20-5.30 / 2.00 | 3.80-4.40 / 2.50-3.30 | 4.90-5.90 / 3.00-4.00 | 2.90-3.00 / 1.70-1.80 | 2.90 / 2.40-2.50 |
+
+Threads cut the wall time from 64-block segments on every hosted machine under both runtimes, and the threshold moved
+there first. The second run looked below it, at 16 and 32 blocks, and timed the moved default from 64:
+
+| m, t = 3, p = 4 | N2, .NET 8 | N2, .NET 10 | M1, .NET 8 | M1, .NET 10 | EPYC 9V74, .NET 8 | EPYC 9V74, .NET 10 |
+|---|---|---|---|---|---|---|
+| 256 KiB (16-block segments) | 0.40 / 0.30 | 0.40 / 0.30 | 0.30 / 0.20 | 0.30 / 0.20-0.50 | 0.30 / 0.40 | 0.30 / 0.40 |
+| 512 KiB (32) | 0.80 / 0.40 | 0.70 / 0.50 | 0.50 / 0.30 | 0.50 / 0.30-0.60 | 0.50 / 0.50 | 0.50 / 0.40-0.50 |
+| 1 MiB (64) | 1.50 / 0.70 | 1.40 / 0.70 | 0.90 / 0.50 | 0.90-1.20 / 0.50-1.80 | 0.90 / 0.70-0.90 | 0.90 / 0.70-0.80 |
+| 2 MiB (128) | 2.90 / 1.20-1.30 | 2.90 / 1.20-1.30 | 1.90-2.00 / 1.00 | 1.90-2.70 / 1.60-3.50 | 1.70 / 1.00-1.20 | 1.60-2.00 / 1.10-1.50 |
+| 3 MiB (192) | 4.40 / 1.80-2.60 | 4.30-4.40 / 1.60-1.90 | 2.80-3.00 / 1.50-1.70 | 3.00-5.10 / 2.40-4.90 | 2.50 / 1.40-1.50 | 2.50 / 1.50-2.00 |
+
+Below 64 blocks the N2 and the M1 still gained, the M1's .NET 10 readings noisily, but the EPYC lost at 16 blocks and
+gained nothing at 32. These readings are a few tenths of a millisecond, near the harness's resolution, so they give the
+direction only.
+
+On §1's kind of machine the threads lost at 64 blocks as well. One thread's wall time over the divided derivation's,
+over ten rounds on each runtime:
+
+| Segment (m at p = 4) | .NET 8 | .NET 10 |
+|---|---|---|
+| 64 blocks (1 MiB) | 0.80, 8 rounds of 10 lost | 0.92, 5 lost |
+| 128 blocks (2 MiB) | 1.01, 5 lost | 1.28, 2 lost |
+| 192 blocks (3 MiB) | 1.17, 1 lost | 1.07, 2 lost |
+| 256 blocks (4 MiB) | 1.33, none lost | 1.02, 3 lost |
+
+`argon2-performance.md`'s Table R4 had found the same on that plan's 2.1 GHz Xeon: no gain at 64 blocks, and an
+inconsistent one at 128. The design moves the threshold to the shortest segment at which the threads win on every
+machine measured, and this one is among them, so the threshold is 192 blocks: a lane of 768 KiB, a 3 MiB matrix at
+p = 4, down from 1.1.0's 256. There the threads cut the hosted machines' wall time 1.1-2.6 times by the midpoints and
+this machine's 1.07-1.17 times, at up to about twice the processor time. What makes this machine's hand-offs dearer than
+the hosted runners' was not measured.
+
+How it was done, and where it departs from the design above:
+
+- **The driver.** `Argon2FillDriver` reaches the internal `Argon2Core.DeriveTag` as F8's `Poly1305KernelDriver` reaches
+  Poly1305's core: dynamic methods bound to the library's module construct `FillOptions` with the threshold, or the
+  kernel, that the harness names. The sweep's divided rows pass a threshold of one block.
+- **The sweep** runs m from 256 KiB to 32 MiB at p = 4, by default and on one thread, and divides every slice below
+  3 MiB, the sizes the library keeps on one thread.
+- **Tests first, twice.** `ResolveWorkers`' rows moved to 64 blocks, failing against 256, and the threshold followed;
+  after the sweep here, they moved to 192, failing against 64, and the threshold followed again.
+- **The summary.** A configuration whose median processor time reads 0.0 ms gives no ratio: the 256 KiB derivations take
+  less processor time than .NET 8's clock resolves.
+- **Departure: two moves.** The design moved the threshold once, after timing 1 to 4 MiB. The first move, to 64 blocks,
+  followed the hosted machines' first run before the sweep here was weighed; the sweep here then set it at 192.
+- **Departure: below 1 MiB.** The second run also timed 256 and 512 KiB, to see whether the threshold could sit lower
+  still.
+- **The documentation.** Argon2's remarks, the package README, the Argon2 guide, which still said about 1 MiB per lane,
+  and CLAUDE.md say 768 KiB per lane.
+- **Left for later.** A threshold per machine. The hosted machines gained from 64-block segments, and the ARM64 ones
+  from 16; a threshold measured when the process starts, or set per architecture, could give them that without slowing a
+  machine like this one.
+
+### F11 - Poly1305's AdvSimd step (done: no change)
+
+F11's figures come from the first run of F7's workflow, which timed two variants of the step, built as kernel kinds of
+their own, beside it at every length on the N2 and the M1. Each kind's rate over 1 MiB, in MiB/s:
+
+| 1 MiB | AdvSimd | Constants formed once | Integer split |
+|---|---|---|---|
+| N2, .NET 8 | 2,899-2,904 | 2,773-2,789 | 2,734-2,754 |
+| N2, .NET 10 | 2,772-2,775 | 2,743-2,744 | 2,706-2,707 |
+| M1, .NET 8 | 5,061-5,268 | 5,123-5,131 | 4,971-5,053 |
+| M1, .NET 10 | 4,565-5,660 | 4,436-5,699 | 3,387-3,915 |
+
+On the N2 under .NET 8 the step ran fastest at every length. Under .NET 10 the step with its constants formed once ran
+1-2% faster than it from 1 to 16 KiB, and the integer split up to 1% faster from 4 to 16 KiB, but both ran slower over
+1 MiB. On the M1 the step with its constants formed once ran level with it within the noise; the integer split ran 1.1
+times as fast at 256 bytes under .NET 8, level from 512 bytes to 16 KiB and 3% slower over 1 MiB, and at 0.7-0.8 of its
+speed from 1 KiB under .NET 10. Neither variant ran faster on both processors, which the design asked of a change, so
+the step stays as F8 left it and both kinds went.
+
+Forming the constants once slowed the step over 1 MiB on the N2 under both runtimes, .NET 8's by 4% and .NET 10's by 1%,
+so the constants are not what holds .NET 10 back. Over 1 MiB .NET 10's step ran at 0.95-0.96 of .NET 8's in the kernel
+rows of both runs, and the MAC at 0.92-0.93, as F8 found.
+
+`LD4`, the third variant, is not among them. .NET 10's JIT, 10.0.0 and 10.0.12 alike, gave its four consecutive
+destination registers as v29, v30, v31 and v0, then moved into v0 from p0, SVE's first predicate register, which follows
+v31 in the JIT's numbering, overwriting the fourth vector. Every test of it failed under qemu, so it was never timed.
+
+How it was done:
+
+- **Two temporary kinds.** `AdvSimdHoisted` formed the step's constants before the loop, and read the 5 that folds the
+  carry out of 2^130 back in from the spare second lane of a multiplier register the step already holds.
+  `AdvSimdIntegerSplit` did the same, and split the four blocks into limbs in general registers, as OpenSSL does: each
+  limb of two blocks packed into one 64-bit value, and two such values moved into a vector. Under qemu the step's
+  vector-pipe instructions went from 97 (.NET 8) and 100 (.NET 10) to 97 and 98 in the first, and to 88 on both runtimes
+  in the second, whose splitting moved to the integer pipes but for ten `INS`. Neither spilled.
+- **Tests.** Every kernel-driven `Poly1305Core` test drove both kinds, and the entry-point check covered their loops;
+  under qemu they passed on both runtimes.
+- **Removed.** One revert took both kinds out once the run had timed them.
+- **Left for later.**
+  - `LD4`, once .NET's JIT gives it registers correctly.
+  - .NET 10's step on the N2, still 4-5% slower than .NET 8's for a reason other than its constants.
+
+### F12 - Apple silicon's own choices (done, for Poly1305)
+
+`SimdCapabilities.AppleSilicon` reports ARM64 under macOS, iOS, tvOS or Mac Catalyst, and each runtime folds it to a
+constant. There, Poly1305's AdvSimd kernel takes runs from `AppleAdvSimdMinimumBytes`, 128 bytes; elsewhere on ARM64
+from 256, as before, and `KernelMinimumBytes` follows. The scalar loop's time over the kernel's between the two
+thresholds, from the kernel rows of both runs, by the medians; above 1, the kernel ran faster:
+
+| Bytes | M1, .NET 8 | M1, .NET 10 | N2, .NET 8 | N2, .NET 10 |
+|---|---|---|---|---|
+| 128 | 1.08, 1.15 | 1.19, 1.12 | 0.87, 0.88 | 0.88, 0.87 |
+| 192 | 1.38, 1.40 | 1.34, 1.35 | 0.98, 0.98 | 0.97, 0.97 |
+
+On the M1 the kernel ran faster at both lengths in both runs under both runtimes; on the N2 the scalar loop still
+finished first, so its threshold stands. The MAC rows compare two processes, the vector configuration's and the scalar
+configuration's, and on the M1 they swung between runs from 0.87 to 1.51 at these lengths. The kernel rows time both
+loops in one process, so they decide.
+
+Argon2's half of F12 was built, test first: under .NET 8 dispatch selected the AdvSimd kernel on Apple's cores alone.
+F13's hybrid kernel then ran faster than it on the M1, and faster than the scalar kernel on the N2, under both runtimes,
+so Argon2 has no choice left to make by platform, and dispatch consults `AppleSilicon` for Poly1305 alone.
+
+How it was done, and where it departs from the design above:
+
+- **Tests first.** `Poly1305Core.SelectKernel(int, bool)` and, until F13, `Argon2Core.SelectKernel(bool)` took the
+  platform as an argument, so the tests drive both platforms' choices on any ARM64 processor. The Apple rows, 128 and
+  240 bytes, failed under qemu on both runtimes against the old dispatch, as did Argon2's .NET 8 choice off Apple's
+  cores, and passed after it.
+  - `SimdCapabilities.AppleSilicon` has tests of its own, which hold it to the process's architecture and operating
+    system, and the SIMD-off assembly checks that Poly1305 selects the scalar loop on both platforms.
+  - The dispatch threshold test skips the negative lengths the 128-byte threshold would give it.
+- **The harness.** The MAC rows add 128 and 192 bytes, between the two thresholds.
+- **Departure: Argon2.** Replaced by F13's hybrid kernel, below.
+
+### F13 - the gated ARM64 kernels (done: a hybrid Argon2 kernel; the other gates stay)
+
+**The counts.** F13 counted the instructions of each kernel's rounds in the JIT's ARM64 output under qemu, .NET 8.0.31
+and .NET 10.0.12, by the pipes they issue to, and set them against each processor's: the N2 issues five instructions a
+cycle to four integer pipes, two of which multiply, and two 128-bit vector pipes; the M1 eight a cycle to six integer
+and four vector pipes. The cycles are the larger of the instructions over the issue width and each class's instructions
+over its pipes, a bound on throughput. The instructions are averaged over the rounds, so the classes may not sum to the
+total:
+
+| Kernel, per round | Instructions (integer / vector / load and store) | N2, cycles | M1, cycles |
+|---|---|---|---|
+| BLAKE2b, scalar | 157 (118 / 0 / 40) | 31 | 20 |
+| BLAKE2b, AdvSimd | 166 (36 / 97 / 32) | 49 | 24 |
+| BLAKE2s, scalar | 157 (117 / 0 / 40) | 31 | 20 |
+| BLAKE3, scalar | 155 (116 / 0 / 39) | 31 | 19 |
+| BLAKE2s, and BLAKE3's single block, AdvSimd | 125 (36 / 56 / 32) | 28 | 16 |
+| scrypt, scalar, per double round | 67, all integer; 99 under .NET 8 | 17; 25 under .NET 8 | 11; 16 under .NET 8 |
+| scrypt, AdvSimd, per double round | 49 (2 / 46 / 0) | 23 | 12 |
+| Argon2, scalar, per P | 259 (194 / 0 / 64) | 52 | 32 |
+| Argon2, AdvSimd, per P | 161-169 (4 / 148 / 8-16) | 74 | 37 |
+| Argon2, a row held in general registers, per P | 181-189 (164 / 0 / 16-24) | 41 | 27 |
+| Argon2, hybrid, per pair of P's | 342-357 (169 / 148 / 24-40) | 74 | 45 |
+
+Each gated kernel holds one state across a vector's lanes, so a round's vector instructions form one chain, each waiting
+on the one before, where the scalar code runs a round's four columns or rows as four chains side by side. The bound
+therefore flatters the vector kernels. By it BLAKE2s, BLAKE3's single block and, under .NET 8, scrypt would run 7-12%
+faster in the vector layout on the N2, yet F7 measured each slower there than its scalar path. BLAKE2b's vector round
+loses even on the bound: with two 64-bit words to a vector, its 97 vector instructions need 49 cycles of the N2's two
+vector pipes, where the scalar round needs 31.
+
+None of these primitives has a second, independent state to pair in a hybrid: each block's compression chains on the one
+before, and splitting one state between the two register files would move half its words across at every change from
+columns to diagonals, twice a round. Their gates stay, and `SimdCapabilities.AdvSimdSingleState` stays closed.
+
+Argon2 has one. A block's eight rows are independent of each other, as are its eight columns. The layout the design
+named, a row to each 64-bit lane of a vector, loses on the bound. Counted by hand, since it was not built, a pair of
+rows takes about 264 vector instructions: 232 for the rounds, where the multiply-add takes five instructions to the
+scalar code's three and a rotation by 63 bits two, and about 32 to interleave the two rows and part them again. That is
+some 66 cycles a row on the N2's two vector pipes, against the scalar kernel's 52. The counts pointed to a better use of
+the independence: each kernel leaves the other kind of pipe idle, the scalar kernel the N2's vector pipes and the
+AdvSimd kernel its integer pipes. `HybridKernel<TIsa>` rounds the rows, and then the columns, in pairs: one of each pair
+in eight vector registers through `Vector128Kernel<TIsa>`'s `G1` and `G2` half-steps, the other in sixteen `ulong`
+locals through the same half-steps written for general registers, each vector half-step followed by its scalar twin.
+Holding a row in locals across its round also saves the four loads and stores `ScalarKernel` spends on every `GB`;
+`ScalarResident`, which did only that, was built as a second temporary kind to tell the two gains apart. The
+key-derivation case's tag, m = 19 MiB, t = 2, p = 1, through each kernel named on the calling thread, in milliseconds
+over both runs:
+
+| Kernel | N2, .NET 8 | N2, .NET 10 | M1, .NET 8 | M1, .NET 10 |
+|---|---|---|---|---|
+| Scalar | 23.42-24.15 | 23.09-24.18 | 20.20-31.22 | 23.26-29.82 |
+| AdvSimd | 30.39-31.59 | 30.32-31.93 | 17.89-29.89 | 20.24-27.82 |
+| Scalar, a row held in general registers (first run) | 21.57-21.97 | 20.82-21.56 | 24.86-27.55 | 21.46-29.18 |
+| Hybrid | 18.61-18.97 | 18.34-19.39 | 13.53-17.43 | 14.33-20.27 |
+
+The counts ranked the N2's four kernels in the order they measured, the hybrid first, though by less than they
+predicted, since a derivation spends part of its time outside the compression: the scalar kernel's time over the
+hybrid's was 1.24-1.28 there, against the counts' 1.4. On the M1 the AdvSimd kernel ran faster than the scalar kernel
+against the count, as F7 had found, and the hybrid ran fastest of all: 1.52-1.67 times as fast as the scalar kernel and
+1.27-1.55 times as fast as the AdvSimd kernel.
+
+Dispatch now selects the hybrid on every ARM64 processor under both runtimes, and the AdvSimd kernel runs only where a
+caller names it. Through dispatch the key-derivation case took 18.65-18.69 ms on the N2 under .NET 8 and 18.80-18.84
+under .NET 10, 3.33 and 3.20 times as fast as 1.0.0, where master's dispatch ran the AdvSimd kernel under .NET 8 and the
+scalar kernel under .NET 10, at the times above. On the M1 it took 12.48-18.00 and 14.08-21.27 ms, 3.24 and 2.90 times
+as fast as 1.0.0.
+
+**ARG-N-002.** The share of 1.0.0's processor time at 64 MiB, t = 3, p = 4, in the second run, by the midpoints:
+
+| 64 MiB, t = 3, p = 4, share of 1.0.0's | N2, .NET 8 | N2, .NET 10 | M1, .NET 8 | M1, .NET 10 |
+|---|---|---|---|---|
+| CPU, the hybrid kernel | 38% | 37% | 42% | 41% |
+| CPU, the scalar kernel | 45% | 46% | 66% | 56% |
+| Wall, the hybrid kernel | 11% | 13% | 17% | 30% |
+
+The target, 60%, is met on both processors under both runtimes, where F7 left the M1 under .NET 10 unplaced at 47-67%.
+The M1's .NET 10 wall readings spread from 43 to 125 ms.
+
+How it was done, and where it departs from the design above:
+
+- **The counts.** `DOTNET_JitDisasm` over each kernel under qemu, with tiered compilation off, classified by mnemonic
+  and operands into integer, multiply, vector, load and store, and branch, and averaged over the rounds.
+- **Two temporary kinds.** `ScalarResident` and `AdvSimdHybrid`, which dispatch never selected. The first run timed them
+  with the others through the harness's `kernel/Argon2id` rows, which call `Argon2Core.DeriveTag` through
+  `Argon2FillDriver` with the kernel named.
+- **Tests first.** The selection test expected the hybrid on ARM64 and failed under qemu on both runtimes against
+  dispatch's scalar kernel, then passed; F12's per-platform Argon2 tests went with it.
+  - The `FillBlock` tests hold the hybrid to the scalar kernel with and without XOR, in and out of place: over the
+    AdvSimd shim on the ARM64 job and under qemu, and over the SSSE3 shim on x64, so that an x64 pass runs, and the
+    coverage matrix measures, the code it shares with the ARM64 kernel.
+  - The `DeriveTag` kernel sweep, RFC 9106's vectors and the reference implementation's run through it too.
+- **`ScalarResident` went.** It ran 1.11-1.12 times as fast as the scalar kernel on the N2, and its half-steps live on
+  in the hybrid. `Vector128Kernel<TIsa>`'s `G1` and `G2` became internal for the hybrid.
+- **Departure: the layout.** The design named a row to each lane as Argon2's candidate. By the count it loses on the N2,
+  so it was not built; the hybrid, which pairs the two layouts Argon2 already had, was the one the count said could beat
+  the scalar path there.
+- **Constant time.** The hybrid runs the operations of the two kernels it pairs: fixed-latency multiplies, and shuffles
+  by constant indices, with no branch or index on the data.
+- **The documentation.** The package README's acceleration table and ARM64 paragraph, the hardware-acceleration guide,
+  `SimdCapabilities`' remarks and CLAUDE.md describe the hybrid kernel; `argon2-performance.md`'s ARG-N-002 row and
+  §10.3 record its share of 1.0.0's CPU.

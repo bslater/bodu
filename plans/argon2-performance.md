@@ -1,7 +1,7 @@
 # Implementation plan: a faster Argon2id
 
 **Status:** Done and released: merged in #710 and shipped in `Bodu.Security.Cryptography` 1.1.0,
-released out of band (#711); measured on one x64 machine (§10), then on ARM64 and a small-L3 x64 machine (§10.3) · **Source:** FallbackPlan requirements document "a faster
+released out of band (#711); measured on one x64 machine (§10), then on ARM64 and a small-L3 x64 machine (§10.3), with the thread threshold and ARM64's kernel revised for 1.2.0 (§10.3) · **Source:** FallbackPlan requirements document "a faster
 Argon2id in Bodu" (`ARG-F-*` / `ARG-N-*`, raised 2026-09-27 against 1.0.0) ·
 **Target:** `Bodu.Security.Cryptography` 1.1.0
 
@@ -691,7 +691,7 @@ capped at 16 MiB vectors.
 | ARG-F-002 | Additive API only | `MaxDegreeOfParallelism`, a bounded constructor per variant, and a bounded `Verify`; nothing changed or removed |
 | ARG-F-003 | A bound on threads | Implemented; `1` is 1.0.0's behaviour |
 | ARG-N-001 | Wall ≤ 40 % | 12 % (AVX2), 17 % (SSSE3), 25 % (scalar) |
-| ARG-N-002 | CPU ≤ 60 % with vector code | 37 % (AVX2), 53 % (SSSE3); on ARM64 (§10.3), with the kernels dispatch now selects, 56-57 % on a Neoverse N2 and 36-48 % on an Apple M1 under .NET 8 (AdvSimd), and 45-50 % on the N2 under .NET 10 (scalar), where the M1's readings of the same code spread from 47 % to 67 % |
+| ARG-N-002 | CPU ≤ 60 % with vector code | 37 % (AVX2), 53 % (SSSE3); on ARM64 (§10.3), with the hybrid kernel dispatch now selects under both runtimes, 37-38 % on a Neoverse N2 and 41-42 % on an Apple M1 |
 | ARG-N-003 | Scalar no slower | 77-79 % |
 | ARG-N-004 | < 1 MiB allocated, no gen2 | 26 KiB with threads, 0.2-0.3 KiB without; gen2 0 |
 | ARG-N-005 | Four at once ≥ 1.0.0 | 2.4× (AVX2), 1.7× (SSSE3), 1.2× (scalar) |
@@ -705,7 +705,8 @@ capped at 16 MiB vectors.
 
 - **Thread threshold: 256 blocks per segment, unchanged.** It is the first size in
   Table R4 where four threads reliably cut the wall time, by 28-41 %; at 128 blocks
-  the gain is inconsistent and at 64 there is none.
+  the gain is inconsistent and at 64 there is none. It has since moved to 192 blocks
+  (§10.3).
 - **Pool: `ProcessorCount` buffers, 256 MiB each, 30 s idle, unchanged.** Four at once
   shows no gen2 collections and no throughput loss, and the residency is documented.
 - **No AVX-512 kernel.** None was prototyped. AVX2 already meets ARG-N-002 at 37 %, and
@@ -736,6 +737,23 @@ figures, on GitHub's hosted runners:
   matrix. From the 256-block threshold the threads cut the wall time by 1.6-2.4 times, on
   both runtimes, so the threshold stands; below it both runs take one thread. The AVX2
   kernel takes 21-23 % of 1.0.0's CPU and 7-9 % of its wall time.
+
+Changed in `Bodu.Security.Cryptography` 1.2.0, by F10 and F13 of the same plan:
+
+- **The thread threshold** moved from 256 blocks per segment to 192, a lane of 768 KiB:
+  the shortest segment at which dividing a slice among threads cut the wall time on all
+  five machines measured, under .NET 8 and .NET 10. The hosted N2, M1, Xeon 8370C and
+  EPYC 9V74 gained from 64 blocks, but a 4-core Xeon VM at 2.8 GHz ran 64-block segments
+  faster on one thread, and 128-block segments as fast under .NET 8, much as Table R4
+  found here.
+- **ARM64's kernel** pairs the AdvSimd kernel with the general registers. A hybrid kernel
+  rounds the rows, and then the columns, two at a time: one in vector registers and the
+  other in general registers, so that both kinds of pipe work at once. It ran 1.24-1.28
+  times as fast as the scalar kernel on the N2 and 1.3-1.6 times as fast as the AdvSimd
+  kernel on the M1, under both runtimes, and dispatch selects it on every ARM64
+  processor. At 64 MiB, t = 3, p = 4 it took 37-38 % of 1.0.0's CPU on the N2 and 41-42 %
+  on the M1, so ARG-N-002 is met on both under both runtimes, the M1 under .NET 10
+  included.
 
 Closed since this section was written:
 
