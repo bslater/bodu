@@ -37,6 +37,8 @@ catch should be distilled into the Learning log below so the next author applies
 | BODU-P011 | `<returns>` not used on a property | 2 | Claude Policy Review | Use `<value>` for the property's value |
 | BODU-P012 | resx key follows the taxonomy | 2 | Claude Policy Review | `Arg_Invalid_*` / `Arg_Null_*` / `Op_Invalid_*` / `Format_Invalid_*` / … |
 | BODU-P013 | Validation grouped at the top of the member | 2 | Claude Policy Review | All guards contiguous before the body, then a blank line |
+| BODU-P014 | No em-dashes or en-dashes, in any file | 1 | `check-policy.sh` (added lines, every text file) | ` - ` for an aside, `-` in a range (`2020-2026`); a dash that is test data is listed in `bld/policy/dash-allowlist.txt` |
+| BODU-P015 | No XML-doc line continues a paragraph with a Markdown block marker | 0/1 | BODU1001/BODU1002 (the formatter never wraps one there) · `validate_api_site.py` `doclines` | Keep `-`, `+`, `*`, `#`, `&gt;` or `1.` at the end of the previous line; DocFX renders the text as Markdown |
 
 ## Learning log
 

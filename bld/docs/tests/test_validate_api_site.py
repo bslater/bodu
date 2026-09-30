@@ -210,6 +210,60 @@ class LinkScanTests(unittest.TestCase):
             "Widget.cs:7: https://bslater.github.io/bodu/guides/widgets.html#stopping (guides/widgets.html has no anchor #stopping)",
         ])
 
+    def test_xml_doc_line_start_problems_when_line_opens_markdown_block_should_report_it(self) -> None:
+        """Verifies that documentation lines opening a Markdown list, heading or quote are reported with file and line, and that code blocks, look-alikes, plain comments and test folders are not."""
+        write_files(self.root, {
+            "Pkg/src/Widget.cs": "\n".join([
+                "/// <summary>",                       # 1
+                "/// Its full precision",              # 2
+                "/// - including zeros - is kept",     # 3 bullet
+                "/// + a term",                        # 4 bullet
+                "/// 1. first",                        # 5 ordered list from one
+                "/// 2. second, which cannot interrupt a paragraph",
+                "/// &gt; zero",                       # 7 block quote
+                "/// # heading",                       # 8 heading
+                "/// #1 tag, -1 value, -> arrow",
+                "/// -1 value",
+                "/// =",                               # 11 setext underline
+                "/// </summary>",
+                "/// <code>",
+                "/// - inside a code block",
+                "/// </code>",
+                "/// <code><![CDATA[",
+                "/// * inside CDATA",
+                "/// ]]></code>",
+                "// - a plain comment",
+                "var difference = 1 - 2;",
+                "/// <para>",
+                "/// 1. an authored step opening its paragraph",
+                "/// </para>",
+                "/// See <see cref=\"Widget\" />",
+                "/// - continuing after an inline tag",  # 25
+            ]),
+            "Pkg/test/WidgetTests.cs": "/// Test prose\n/// - a test's documentation is not rendered",
+            "Pkg/shared/Shared.cs": "/// Shared prose\n/// * shared source is rendered too",
+        })
+        problems = v.xml_doc_line_start_problems([os.path.join(self.root, "Pkg")], self.root)
+        self.assertEqual([p.split(": ", 1)[0] for p in problems], [
+            os.path.join("Pkg", "shared", "Shared.cs") + ":2",
+            os.path.join("Pkg", "src", "Widget.cs") + ":3",
+            os.path.join("Pkg", "src", "Widget.cs") + ":4",
+            os.path.join("Pkg", "src", "Widget.cs") + ":5",
+            os.path.join("Pkg", "src", "Widget.cs") + ":7",
+            os.path.join("Pkg", "src", "Widget.cs") + ":8",
+            os.path.join("Pkg", "src", "Widget.cs") + ":11",
+            os.path.join("Pkg", "src", "Widget.cs") + ":25",
+        ])
+
+    def test_continues_prose_when_previous_line_bounds_a_block_should_be_false(self) -> None:
+        """Verifies that a line after a blank line or a block tag starts a block, and one after prose or an inline tag continues it."""
+        for previous in ("", "<para>", "</para>", "<summary>", "<item>", '<list type="bullet">', "<description>"):
+            with self.subTest(previous=previous):
+                self.assertFalse(v.continues_prose(previous))
+        for previous in ("some prose", 'the <see cref="X" />', "a <c>value</c>", "ends with a comma,"):
+            with self.subTest(previous=previous):
+                self.assertTrue(v.continues_prose(previous))
+
     def test_capped_when_over_the_limit_should_count_the_rest(self) -> None:
         """Verifies that a long list of broken links is cut at the limit and the remainder counted."""
         self.assertEqual(v.capped(["a", "b", "c"], limit=2), ["a", "b", "... and 1 more broken link(s)"])

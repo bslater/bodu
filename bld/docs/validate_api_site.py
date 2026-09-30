@@ -24,6 +24,10 @@ reference makes to its reader, and a broken promise fails the build rather than 
   xmldoc       every href in an XML documentation comment anywhere in the codebase that leads into
                the site - relative, as the API pages render it, or an absolute URL of the published
                site - names a page and anchor the site has, including comments no page renders
+  doclines     no line of documented XML documentation, outside a code block, begins with what
+               Markdown reads as the start of a block (-, +, * or 1. and a space, a run of - or =,
+               #, >): DocFX renders the documentation as Markdown, so the line would become a list,
+               heading or quote; the XML-doc formatter never wraps one there, but an author can
   overlay      every template partial copied from DocFX names the DocFX version the pipeline pins,
                so a DocFX upgrade cannot silently run on partials forked from another version
 """
@@ -62,6 +66,18 @@ XML_DOC_HREF = re.compile(r'\bhref="([^"]*)"')
 XML_DOC_BASE = "api/index.html"
 # Directories a walk of the codebase never needs to enter: build output and tooling state.
 UNSCANNED_DIRECTORIES = frozenset({".git", ".vs", "bin", "obj", "node_modules", "_site"})
+# Folders of a documented package that hold no documented source.
+UNDOCUMENTED_DIRECTORIES = UNSCANNED_DIRECTORIES | {"test", "tests", "bench", "benchmarks", "samples"}
+# Text that Markdown reads as the start of a block when it begins a line: a bullet, a setext underline or thematic
+# break, an ATX heading, a block quote, or an ordered list starting at one (the only kind that can interrupt a
+# paragraph). It mirrors DocWrapper.IsMarkdownBlockMarker in Bodu.CodeStyle.
+MARKDOWN_BLOCK_START = re.compile(r"^(?:[-+*](?:\s|$)|[-=*]+\s*$|#{1,6}(?:\s|$)|>|&gt;|1[.)](?:\s|$))")
+# The start of a <code> block or CDATA section that does not end on the same line, and the end of either.
+CODE_BLOCK_OPEN = re.compile(r"<code\b[^>]*>(?!.*</code>)|<!\[CDATA\[(?!.*\]\]>)")
+CODE_BLOCK_CLOSE = re.compile(r"</code>|\]\]>")
+# A tag closing a line, and the tags that sit inside prose rather than bounding a block of it.
+TRAILING_TAG = re.compile(r"</?([A-Za-z]+)\b[^<>]*>$")
+INLINE_XML_TAGS = frozenset({"see", "paramref", "typeparamref", "c", "a"})
 # Beyond this many broken links the rest are counted rather than listed.
 LINK_REPORT_LIMIT = 50
 
@@ -152,10 +168,10 @@ def rendered_link_problems(rendered: RenderedSite) -> list[str]:
     return problems
 
 
-def source_files(root: str, extension: str) -> Iterator[str]:
-    """Yields every file under ``root`` with ``extension``, in a stable order, skipping build output."""
+def source_files(root: str, extension: str, skipped: frozenset[str] = UNSCANNED_DIRECTORIES) -> Iterator[str]:
+    """Yields every file under ``root`` with ``extension``, in a stable order, skipping the ``skipped`` folders."""
     for directory, directories, names in os.walk(root):
-        directories[:] = sorted(d for d in directories if d not in UNSCANNED_DIRECTORIES)
+        directories[:] = sorted(d for d in directories if d not in skipped)
         for name in sorted(names):
             if name.endswith(extension):
                 yield os.path.join(directory, name)
@@ -172,6 +188,54 @@ def xml_doc_link_problems(rendered: RenderedSite, source_root: str, site_url: st
                     reason = resolved and rendered.problem(*resolved)
                     if reason:
                         problems.append(f"{os.path.relpath(path, source_root)}:{number}: {href} ({reason})")
+    return problems
+
+
+def documented_source_roots() -> list[str]:
+    """The package folder of every documented project: its src, and any shared source compiled into it."""
+    return sorted({os.path.dirname(os.path.dirname(entry["project"])) for entry in dc.read_json(dc.PROJECTS_JSON)})
+
+
+def continues_prose(previous: str) -> bool:
+    """Whether a documentation line following ``previous`` continues its paragraph, rather than starting a block.
+
+    A line after a blank line, or after a tag that bounds a block (``<para>``, ``</summary>``, ``<item>``, ...),
+    starts a block, so a marker there is the author's; after prose or an inline tag it continues the paragraph.
+    """
+    if not previous:
+        return False
+    tag = TRAILING_TAG.search(previous)
+    return tag is None or tag.group(1) in INLINE_XML_TAGS
+
+
+def xml_doc_line_start_problems(roots: list[str], relative_to: str) -> list[str]:
+    """Reports every XML documentation line under ``roots`` that continues a paragraph with a Markdown block marker.
+
+    Code blocks and CDATA are skipped. A marker that opens a block (after ``<para>`` or a blank line) is the
+    author's and is not reported; one that continues a paragraph turns the rest of it into a list, heading or quote.
+    """
+    problems = []
+    for root in roots:
+        for path in source_files(root, ".cs", UNDOCUMENTED_DIRECTORIES):
+            in_code = False
+            previous = ""
+            with open(path, encoding="utf-8", errors="replace") as stream:
+                for number, line in enumerate(stream, 1):
+                    comment = XML_DOC_LINE.match(line)
+                    if not comment:
+                        in_code, previous = False, ""
+                        continue
+                    text = comment.group(1).strip()
+                    if in_code:
+                        in_code = not CODE_BLOCK_CLOSE.search(text)
+                        previous = ""
+                        continue
+                    if continues_prose(previous) and MARKDOWN_BLOCK_START.match(text):
+                        problems.append(
+                            f"{os.path.relpath(path, relative_to)}:{number}: '{text}' continues a paragraph but opens a "
+                            "Markdown list, heading or quote on the API site; keep the marker at the end of the previous line")
+                    in_code = bool(CODE_BLOCK_OPEN.search(text))
+                    previous = text
     return problems
 
 
@@ -373,6 +437,10 @@ def check_xmldoc(site: Site) -> list[str]:
     return capped(xml_doc_link_problems(site.rendered, dc.ROOT, published_site_url()))
 
 
+def check_doclines(site: Site) -> list[str]:
+    return capped(xml_doc_line_start_problems(documented_source_roots(), dc.ROOT))
+
+
 def check_overlay() -> list[str]:
     tools = dc.read_json(os.path.join(dc.DOCS, ".config", "dotnet-tools.json"))
     pinned = tools["tools"]["docfx"]["version"]
@@ -394,6 +462,7 @@ CHECKS = {
     "landing": check_landing,
     "links": check_links,
     "xmldoc": check_xmldoc,
+    "doclines": check_doclines,
 }
 
 
