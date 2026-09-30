@@ -25,6 +25,10 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 
         int bufferSize = (specification.IncrementalCoverageBytes ?? specification.HashLengthInBytes) * 4;
         byte[] inputA = TestHelpers.GenerateRandomNonZeroBytes(bufferSize);
+
+        // The random byte the test changes was 0xFF when this test failed in CI: Fletcher-16 sums modulo 255, where 0xFF
+        // and 0x00 are the same value.
+        inputA[bufferSize - 2] = 0xFF;
         byte[] inputB = inputA.Copy()!;
         inputB[bufferSize - 2] = 0x00;
 
