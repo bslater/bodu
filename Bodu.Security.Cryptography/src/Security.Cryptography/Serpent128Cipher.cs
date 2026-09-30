@@ -57,7 +57,7 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso cref="Serpent128"/>
 public sealed class Serpent128Cipher
-    : SerpentBlockCipherBase, IBlockCipher
+    : SerpentBlockCipherBase, IBlockCipher, ICounterModeBlockCipher
 {
     /// <summary>Length of the Serpent block is 128 bits (16 bytes). Internal constant kept for span-length validation; callers should read <see cref="BlockSize" /> instead.</summary>
     private const int BlockSizeBits = 128;
@@ -173,6 +173,20 @@ public sealed class Serpent128Cipher
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, input.Length);
 
         SerpentCore.DecryptBlocks(_roundKeys, input, output);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Forms eight counter blocks at a time over 256-bit vectors, and four over 128-bit vectors, where the processor
+    /// offers them, one block to each lane, and combines their keystream with the input as it stores it; the rest go
+    /// one at a time.
+    /// </remarks>
+    void ICounterModeBlockCipher.XorCounterKeystream(ref ulong counterHigh, ref ulong counterLow, ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        ThrowIfDisposed();
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, input.Length);
+
+        SerpentCore.XorCounterKeystream(_roundKeys, ref counterHigh, ref counterLow, input, output);
     }
 
     /// <inheritdoc />

@@ -25,6 +25,12 @@ namespace Bodu.Security.Cryptography;
 /// point their per-block loop would have stopped, so output and exceptions match the per-block formulation byte for
 /// byte, including the output already written when a wrap check throws.
 /// </para>
+/// <para>
+/// A cipher that implements <see cref="ICounterModeBlockCipher" /> takes the big-endian 128-bit counter itself: its
+/// kernels form the counter blocks in registers and combine their keystream with the input as they store it, so
+/// <see cref="TransformBigEndian128" /> hands it the whole input, and <see cref="CtrModeTransform" /> the input up to
+/// the counter's wrap.
+/// </para>
 /// </remarks>
 internal static class CounterKeystream
 {
@@ -72,10 +78,17 @@ internal static class CounterKeystream
     internal static void TransformBigEndian128(IBlockCipher cipher, ReadOnlySpan<byte> initialCounter, ReadOnlySpan<byte> input, Span<byte> output)
     {
         const int BlockBytes = 16;
-        Span<byte> counters = stackalloc byte[BatchBytes];
-        Span<byte> keystream = stackalloc byte[BatchBytes];
         ulong high = BinaryPrimitives.ReadUInt64BigEndian(initialCounter);
         ulong low = BinaryPrimitives.ReadUInt64BigEndian(initialCounter.Slice(8));
+
+        if (cipher is ICounterModeBlockCipher counterCipher)
+        {
+            counterCipher.XorCounterKeystream(ref high, ref low, input, output);
+            return;
+        }
+
+        Span<byte> counters = stackalloc byte[BatchBytes];
+        Span<byte> keystream = stackalloc byte[BatchBytes];
         int used = 0;
 
         try

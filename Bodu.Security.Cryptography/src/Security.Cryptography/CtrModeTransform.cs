@@ -106,7 +106,8 @@ public sealed class CtrModeTransform
     /// <remarks>
     /// Each call consumes one counter block per whole or partial block of input; the unused keystream of a final
     /// partial block is discarded rather than carried into the next call. Counter blocks are encrypted a run at a time
-    /// through <see cref="IBlockCipher.EncryptBlocks" />.
+    /// through <see cref="IBlockCipher.EncryptBlocks" />, except under <see cref="Serpent128Cipher" />, whose kernels
+    /// form the counter blocks in registers and combine their keystream with the input as they store it.
     /// </remarks>
     [SkipLocalsInit]
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
@@ -114,6 +115,9 @@ public sealed class CtrModeTransform
         ObjectDisposedException.ThrowIf(_disposed, this);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
         CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
+
+        if (_cipher is ICounterModeBlockCipher counterCipher)
+            return TransformInCipher(counterCipher, input, output);
 
         int blockSize = _cipher.BlockSize / 8;
         int batchLength = CounterKeystream.BatchLength(blockSize);
@@ -172,6 +176,49 @@ public sealed class CtrModeTransform
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Applies the keystream through a 128-bit block cipher that forms its counter blocks itself, stopping after the
+    /// block that takes the counter's last value, as the run of counter blocks does.
+    /// </summary>
+    /// <param name="cipher">The cipher.</param>
+    /// <param name="input">The input.</param>
+    /// <param name="output">The destination, at least as long as <paramref name="input" />.</param>
+    /// <returns>The number of bytes written: the length of <paramref name="input" />.</returns>
+    /// <exception cref="CryptographicException">
+    /// The counter had wrapped, or wrapped before the input was covered; the blocks before the wrap are written first.
+    /// </exception>
+    private int TransformInCipher(ICounterModeBlockCipher cipher, ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        if (input.IsEmpty)
+            return 0;
+
+        if (_counterWrapped)
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_CtrCounterWrapped);
+
+        ulong high = BinaryPrimitives.ReadUInt64BigEndian(_counter);
+        ulong low = BinaryPrimitives.ReadUInt64BigEndian(_counter.AsSpan(8));
+        int blocks = (int)(((uint)input.Length + 15u) / 16u);
+
+        // The counter values left, 2^128 minus the counter, number no more than the input's blocks only when the high
+        // half is all ones and the low half is not zero; there they are 2^64 minus the low half.
+        ulong left = 0UL - low;
+        bool wraps = high == ulong.MaxValue && low != 0 && left <= (ulong)blocks;
+        int length = wraps ? (int)Math.Min(input.Length, (long)left * 16) : input.Length;
+
+        cipher.XorCounterKeystream(ref high, ref low, input[..length], output);
+        BinaryPrimitives.WriteUInt64BigEndian(_counter, high);
+        BinaryPrimitives.WriteUInt64BigEndian(_counter.AsSpan(8), low);
+
+        if (wraps)
+        {
+            _counterWrapped = true;
+            if (length < input.Length)
+                throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_CtrCounterWrapped);
+        }
+
+        return input.Length;
+    }
 
     /// <summary>
     /// Writes successive counter blocks into <paramref name="destination" /> until at least <paramref name="limit" />

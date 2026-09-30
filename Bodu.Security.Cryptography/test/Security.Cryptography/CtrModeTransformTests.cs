@@ -38,13 +38,15 @@ public sealed partial class CtrModeTransformTests
     protected override bool GuardsAgainstKeystreamReuse => true;
 
     /// <summary>
-    /// Gets the ciphers the batching tests run CTR over: AES with 16-byte blocks, Skipjack with 8-byte blocks, and
-    /// Threefish-512 with 64-byte blocks, so a run of counters divides differently for each.
+    /// Gets the ciphers the batching tests run CTR over: AES and Serpent-128 with 16-byte blocks, Skipjack with 8-byte
+    /// blocks, and Threefish-512 with 64-byte blocks, so a run of counters divides differently for each. Serpent-128
+    /// forms its counter blocks and applies their keystream in its own kernels, eight, four or one block at a time.
     /// </summary>
     /// <returns>One row per cipher: its name, and a factory for a fresh keyed instance.</returns>
     public static IEnumerable<object[]> BatchingCiphers()
     {
         yield return new object[] { "AES-128", (Func<IBlockCipher>)(() => new AesBlockCipher(Enumerable.Range(1, 16).Select(i => (byte)i).ToArray())) };
+        yield return new object[] { "Serpent-128", (Func<IBlockCipher>)(() => new Serpent128Cipher(Enumerable.Range(1, 32).Select(i => (byte)i).ToArray())) };
         yield return new object[] { "Skipjack", (Func<IBlockCipher>)(() => new SkipjackBlockCipher(Enumerable.Range(1, 10).Select(i => (byte)i).ToArray())) };
         yield return new object[] { "Threefish-512", (Func<IBlockCipher>)(() => new Threefish512Cipher(Enumerable.Range(1, 64).Select(i => (byte)i).ToArray(), new byte[16])) };
     }

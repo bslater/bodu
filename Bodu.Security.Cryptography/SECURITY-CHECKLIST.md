@@ -93,7 +93,10 @@ ML-KEM's AVX2 transform, product and ML-DSA's per-coefficient kernels.
       itself makes data-dependent (Argon2's reference-block choice, scrypt's read of `V[j]`) happens
       outside the kernel (`Argon2Core.IArgon2Kernel`, `ScryptCore.IScryptKernel` and the
       `IVector128Isa` remarks). ML-KEM's and ML-DSA's rejection samplers parse the XOF streams
-      outside the four-way permutation, exactly as they parse one stream at a time.
+      outside the four-way permutation, exactly as they parse one stream at a time. Serpent-128's
+      counter kernels carry between the counter's words by masks, so no branch depends on the
+      counter, which EAX derives from the key (`SerpentCore.Vector256Kernel.AddToCounters`,
+      `SerpentCore.AdvanceCounter`).
 - [ ] **Bit-identical to the scalar reference.** A differential test compares the kernel with the
       scalar path on seeded random inputs (`Argon2CoreTests.FillBlock_*`,
       `GhashTests.Update_*_ShouldMatchBitSerialReference*`,
@@ -102,8 +105,10 @@ ML-KEM's AVX2 transform, product and ML-DSA's per-coefficient kernels.
       `Blake2bCoreTests` / `Blake2sCoreTests.Compress_WhenStatesAreRandom_ForEachKernel_ShouldMatchScalarKernel`,
       `Poly1305CoreTests.Update_*_ForEachKernel_ShouldMatchReferenceImplementation`,
       `KeccakPermutationTests.Permute4_*_ForEachKernel_ShouldMatchTheScalarPermutation`,
-      `KeccakSponge4Tests.*_ForEachKernel_*`, and the `MLDsaEngineTests` / `MLKemEngineTests`
-      `*_ForEachKernel_*` tests over edge, run-patterned, signed and seeded polynomials).
+      `KeccakSponge4Tests.*_ForEachKernel_*`, the `MLDsaEngineTests` / `MLKemEngineTests`
+      `*_ForEachKernel_*` tests over edge, run-patterned, signed and seeded polynomials, and
+      `SerpentCoreTests.XorCounterKeystream_*_ForEachKernel_*` over every length to forty blocks and
+      every carry between the counter's words).
 - [ ] **Every kernel meets the published vectors.** The vector corpus runs through each kernel the
       host supports, not only the one dispatch picks
       (`Argon2CoreTests.DeriveTag_WhenEachSupportedKernelFillsTheMatrix_*`,
