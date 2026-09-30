@@ -20,6 +20,8 @@ public sealed partial class Poly1305CoreTests
     [DataRow("Avx2Paired", 4)]
     [DataRow("Avx512", 8)]
     [DataRow("AdvSimd", 2)]
+    [DataRow("AdvSimdHoisted", 2)]
+    [DataRow("AdvSimdIntegerSplit", 2)]
     public void LanesFor_WhenGivenKernel_ShouldReturnItsLaneCount(string kernel, int expected)
     {
         Assert.AreEqual(expected, Poly1305Core.LanesFor(Enum.Parse<Poly1305Core.KernelKind>(kernel)));

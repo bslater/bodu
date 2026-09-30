@@ -388,7 +388,7 @@ internal partial struct Poly1305Core
         KernelKind.Auto or KernelKind.Scalar => true,
         KernelKind.Avx2 or KernelKind.Avx2Paired => Avx2.IsSupported,
         KernelKind.Avx512 => Avx512F.IsSupported,
-        KernelKind.AdvSimd => AdvSimd.Arm64.IsSupported,
+        KernelKind.AdvSimd or KernelKind.AdvSimdHoisted or KernelKind.AdvSimdIntegerSplit => AdvSimd.Arm64.IsSupported,
         _ => false,
     };
 
@@ -401,7 +401,7 @@ internal partial struct Poly1305Core
     {
         KernelKind.Avx512 => 8,
         KernelKind.Avx2 or KernelKind.Avx2Paired => 4,
-        KernelKind.AdvSimd => 2,
+        KernelKind.AdvSimd or KernelKind.AdvSimdHoisted or KernelKind.AdvSimdIntegerSplit => 2,
         _ => 1,
     };
 
@@ -463,6 +463,10 @@ internal partial struct Poly1305Core
             Vector256Kernel.BlocksPaired(ref this, ref message, groups);
         else if (kernel == KernelKind.Avx2)
             Vector256Kernel.Blocks(ref this, ref message, groups);
+        else if (kernel == KernelKind.AdvSimdHoisted)
+            Vector128Kernel.BlocksWithSplit<Vector128Kernel.UnzipSplit>(ref this, ref message, groups);
+        else if (kernel == KernelKind.AdvSimdIntegerSplit)
+            Vector128Kernel.BlocksWithSplit<Vector128Kernel.IntegerSplit>(ref this, ref message, groups);
         else
             Vector128Kernel.Blocks(ref this, ref message, groups);
 

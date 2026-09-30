@@ -155,6 +155,8 @@ public sealed partial class Poly1305CoreTests
     [DataRow("Avx2Paired")]
     [DataRow("Avx512")]
     [DataRow("AdvSimd")]
+    [DataRow("AdvSimdHoisted")]
+    [DataRow("AdvSimdIntegerSplit")]
     public void Update_WhenMessageIsSeededRandom_ForEachKernel_ShouldMatchReferenceImplementation(string kernel)
     {
         Poly1305Core.KernelKind kind = ParseSupportedKernel(kernel);
@@ -181,6 +183,8 @@ public sealed partial class Poly1305CoreTests
     [DataRow("Avx2Paired")]
     [DataRow("Avx512")]
     [DataRow("AdvSimd")]
+    [DataRow("AdvSimdHoisted")]
+    [DataRow("AdvSimdIntegerSplit")]
     public void Update_WhenMessageArrivesInPieces_ForEachKernel_ShouldMatchReferenceImplementation(string kernel)
     {
         Poly1305Core.KernelKind kind = ParseSupportedKernel(kernel);
@@ -222,6 +226,12 @@ public sealed partial class Poly1305CoreTests
     [DataRow("AdvSimd", (byte)0xFF, (byte)0xFF)]
     [DataRow("AdvSimd", (byte)0xFF, (byte)0x00)]
     [DataRow("AdvSimd", (byte)0x00, (byte)0xFF)]
+    [DataRow("AdvSimdHoisted", (byte)0xFF, (byte)0xFF)]
+    [DataRow("AdvSimdHoisted", (byte)0xFF, (byte)0x00)]
+    [DataRow("AdvSimdHoisted", (byte)0x00, (byte)0xFF)]
+    [DataRow("AdvSimdIntegerSplit", (byte)0xFF, (byte)0xFF)]
+    [DataRow("AdvSimdIntegerSplit", (byte)0xFF, (byte)0x00)]
+    [DataRow("AdvSimdIntegerSplit", (byte)0x00, (byte)0xFF)]
     public void Update_WhenLimbsRunLargest_ForEachKernel_ShouldMatchReferenceImplementation(string kernel, byte messageFill, byte sFill)
     {
         Poly1305Core.KernelKind kind = ParseSupportedKernel(kernel);
@@ -249,6 +259,8 @@ public sealed partial class Poly1305CoreTests
     [DataRow("Avx2Paired")]
     [DataRow("Avx512")]
     [DataRow("AdvSimd")]
+    [DataRow("AdvSimdHoisted")]
+    [DataRow("AdvSimdIntegerSplit")]
     public void Update_WhenKernelFollowsScalarBlocks_ForEachKernel_ShouldMatchReferenceImplementation(string kernel)
     {
         Poly1305Core.KernelKind kind = ParseSupportedKernel(kernel);
@@ -338,6 +350,7 @@ public sealed partial class Poly1305CoreTests
             ("Poly1305Core.Blocks", core.GetMethod("Blocks", Instance)),
             ("Poly1305Core.KernelBlocks", core.GetMethod("KernelBlocks", Instance)),
             ("Vector128Kernel.Blocks", vector128?.GetMethod("Blocks", Static)),
+            ("Vector128Kernel.BlocksWithSplit", vector128?.GetMethod("BlocksWithSplit", Static)),
             ("Vector256Kernel.Blocks", vector256?.GetMethod("Blocks", Static)),
             ("Vector256Kernel.BlocksPaired", vector256?.GetMethod("BlocksPaired", Static)),
             ("Vector512Kernel.Blocks", vector512?.GetMethod("Blocks", Static)),
