@@ -54,15 +54,16 @@ public sealed partial class Blake2sCoreTests
     }
 
     /// <summary>
-    /// Verifies that dispatch selects the AdvSimd kernel on ARM64.
+    /// Verifies that dispatch selects the scalar kernel on ARM64, where it ran faster than the AdvSimd kernel on the
+    /// processors measured; the AdvSimd kernel runs only where a caller names it.
     /// </summary>
     [TestMethod]
-    public void SelectKernel_WhenAdvSimdIsAvailable_ShouldReturnAdvSimd()
+    public void SelectKernel_WhenAdvSimdIsAvailable_ShouldReturnScalar()
     {
         if (!SimdCapabilities.AdvSimd)
             Assert.Inconclusive("AdvSimd is not available on this processor.");
 
-        Assert.AreEqual(Blake2sCore.KernelKind.AdvSimd, Blake2sCore.SelectKernel());
+        Assert.AreEqual(Blake2sCore.KernelKind.Scalar, Blake2sCore.SelectKernel());
     }
 
     /// <summary>
