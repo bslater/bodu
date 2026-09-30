@@ -24,7 +24,7 @@ public sealed partial class AhoCorasickAutomatonTests
 
     /// <summary>
     /// Verifies that the classic <c>he / she / his / hers</c> pattern set over <c>"ushers"</c> reports exactly the
-    /// published match set — <c>she@1</c>, <c>he@2</c>, <c>hers@2</c> — in the documented order (ascending end index,
+    /// published match set - <c>she@1</c>, <c>he@2</c>, <c>hers@2</c> - in the documented order (ascending end index,
     /// then ascending pattern length).
     /// </summary>
     [TestMethod]

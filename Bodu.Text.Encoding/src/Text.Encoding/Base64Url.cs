@@ -21,7 +21,7 @@ namespace Bodu.Text.Encoding;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Encode a JWT segment — URL-safe alphabet, no padding.
+/// // Encode a JWT segment - URL-safe alphabet, no padding.
 /// byte[] header   = "{\"alg\":\"HS256\",\"typ\":\"JWT\"}"u8.ToArray();
 /// string segment  = Base64Url.Encode(header);                                  // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
 ///

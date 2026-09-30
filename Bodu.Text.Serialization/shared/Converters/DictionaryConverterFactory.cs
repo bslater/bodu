@@ -14,14 +14,14 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 
 /// <summary>
 /// Produces a <see cref="DictionaryConverter{TDictionary, TKey, TValue}" /> for dictionaries with a supported key type
-/// — concrete dictionaries with a public parameterless constructor and the dictionary interfaces that
+/// - concrete dictionaries with a public parameterless constructor and the dictionary interfaces that
 /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> satisfies.
 /// </summary>
 /// <remarks>
 /// Supported key types are <see cref="string" />, the fixed-width integer family (<see cref="sbyte" />,
 /// <see cref="byte" />, <see cref="short" />, <see cref="ushort" />, <see cref="int" />, <see cref="uint" />,
 /// <see cref="long" />, <see cref="ulong" />), enumerations, <see cref="Guid" />, <see cref="bool" />, and
-/// <see cref="char" /> — the key types whose text form round-trips cleanly through the format's string key. A
+/// <see cref="char" /> - the key types whose text form round-trips cleanly through the format's string key. A
 /// dictionary with any other key type is not claimed by this factory and falls through to the later converters.
 /// </remarks>
 internal sealed class DictionaryConverterFactory

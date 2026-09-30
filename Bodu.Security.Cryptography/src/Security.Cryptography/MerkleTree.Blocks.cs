@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A stream is read sequentially — it cannot be read out of order — so a parallel instance reads it into a batch of
+/// A stream is read sequentially - it cannot be read out of order - so a parallel instance reads it into a batch of
 /// buffers and hashes the batch concurrently; peak input buffering is
 /// <c>min(maxDegreeOfParallelism, 256) × (blockSize + 1)</c> bytes. Copying each block off the stream happens on the
 /// calling thread, which caps the achievable speedup; a buffer already in memory has every block sliced and hashed
@@ -37,7 +37,7 @@ public sealed partial class MerkleTree
     /// one pass serves both publishing a root and answering authentication paths.
     /// </summary>
     /// <param name="source">The stream to read to its end. Must be readable.</param>
-    /// <param name="blockSize">The size, in bytes, of each block — the chunk one leaf covers.</param>
+    /// <param name="blockSize">The size, in bytes, of each block - the chunk one leaf covers.</param>
     /// <param name="diagnostics">
     /// The recorder that receives the tree's nodes as they are produced, or <see langword="null" /> to record nothing.
     /// </param>
@@ -51,7 +51,7 @@ public sealed partial class MerkleTree
     /// <remarks>
     /// <para>
     /// The stream is read once, forward only, and never buffered in full. Retaining the leaf hashes costs
-    /// <c>leafCount × <see cref="HashLength" /></c> bytes — 16 KiB for a 512 MiB input at one-mebibyte blocks. When
+    /// <c>leafCount × <see cref="HashLength" /></c> bytes - 16 KiB for a 512 MiB input at one-mebibyte blocks. When
     /// only the root is wanted, prefer
     /// <see cref="ComputeRootOfBlocks(Stream, int, MerkleTreeDiagnostics, CancellationToken)" />, which holds a
     /// logarithmic number of hashes instead.
@@ -239,13 +239,13 @@ public sealed partial class MerkleTree
     /// Peak memory is <c>O(blockSize + log n × <see cref="HashLength" />)</c> on a sequential instance: the read
     /// buffer, plus at most <c>fanOut − 1</c> pending nodes per level. A parallel instance adds the batch of block
     /// buffers. The root is identical to
-    /// <see cref="ComputeBlocked(Stream, int, MerkleTreeDiagnostics, CancellationToken)" />'s — this overload simply
+    /// <see cref="ComputeBlocked(Stream, int, MerkleTreeDiagnostics, CancellationToken)" />'s - this overload simply
     /// cannot produce an authentication path afterwards, because it does not keep the leaf hashes.
     /// </para>
     /// <para>
     /// Leaves are folded as they arrive, level by level: a level holds at most <c>fanOut − 1</c> pending nodes, and the
     /// moment it fills the group is hashed and the parent carried up. At the end a lone node is promoted unchanged,
-    /// never re-hashed — which is what reproduces RFC 6962's shape at a fan-out of two without ever having held the
+    /// never re-hashed - which is what reproduces RFC 6962's shape at a fan-out of two without ever having held the
     /// whole tree. Recording into <paramref name="diagnostics" /> retains one entry per node, so the memory bound does
     /// not hold while a recorder is supplied.
     /// </para>
@@ -406,7 +406,7 @@ public sealed partial class MerkleTree
     /// Creates an accumulator that builds the root over fixed-size blocks from bytes appended as they are written, so a
     /// writer can feed the tree from the same calls that feed its flat digest.
     /// </summary>
-    /// <param name="blockSize">The size, in bytes, of each block — the chunk one leaf covers.</param>
+    /// <param name="blockSize">The size, in bytes, of each block - the chunk one leaf covers.</param>
     /// <param name="retainLeafHashes">
     /// <see langword="true" /> to keep every leaf hash so the accumulator can return a
     /// <see cref="MerkleBlockComputation" /> for authentication paths; <see langword="false" /> to hold only a
@@ -424,7 +424,7 @@ public sealed partial class MerkleTree
     /// The accumulator's root is identical to
     /// <see cref="ComputeRootOfBlocks(Stream, int, MerkleTreeDiagnostics, CancellationToken)" />'s over the same bytes
     /// at this instance's fan-out, and its <see cref="MerkleBlockAccumulator.FinishBound" /> is <see cref="BindRoot" />
-    /// of that root and the byte length — the published shape for a possession check. It is sequential by nature: one
+    /// of that root and the byte length - the published shape for a possession check. It is sequential by nature: one
     /// writer appends, and each leaf is hashed as its block completes, whatever <see cref="MaxDegreeOfParallelism" />
     /// is.
     /// </remarks>

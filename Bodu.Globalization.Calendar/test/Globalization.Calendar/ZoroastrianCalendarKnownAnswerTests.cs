@@ -37,8 +37,8 @@ public sealed class ZoroastrianCalendarKnownAnswerTests
 
     /// <summary>
     /// Verifies that each Zoroastrian observance resolves to the independently computed vector list across the full
-    /// fifty-year sweep (Gregorian 1990-2039), pinning the Solar Hijri projection — including the years where Zartosht
-    /// No-Diso straddles the Gregorian new year and lands zero or two times — against the Meeus-derived arithmetic
+    /// fifty-year sweep (Gregorian 1990-2039), pinning the Solar Hijri projection - including the years where Zartosht
+    /// No-Diso straddles the Gregorian new year and lands zero or two times - against the Meeus-derived arithmetic
     /// recorded in the embedded vector table.
     /// </summary>
     /// <param name="kat">The vector row carrying the (year, observance) input and the expected occurrence list.</param>

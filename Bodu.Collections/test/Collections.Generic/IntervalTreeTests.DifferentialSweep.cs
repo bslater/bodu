@@ -28,7 +28,7 @@ public partial class IntervalTreeTests
 
     /// <summary>
     /// Verifies that 10,000 seeded weighted add/remove operations mirrored against a brute-force list oracle leave
-    /// the <see cref="IntervalTree{T}" /> in exactly the mirrored state at every checkpoint — count, full ascending
+    /// the <see cref="IntervalTree{T}" /> in exactly the mirrored state at every checkpoint - count, full ascending
     /// enumeration, and batteries of stabbing, overlap-window, and intersection probes answered by linear scans.
     /// This sweep is the correctness gate for the max-endpoint augmentation across every rotation and fixup path.
     /// </summary>

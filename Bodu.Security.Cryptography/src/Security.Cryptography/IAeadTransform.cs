@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Represents an authenticated encryption with associated data (AEAD) transform — the construction-neutral surface
+/// Represents an authenticated encryption with associated data (AEAD) transform - the construction-neutral surface
 /// shared by block-cipher AEAD modes (<see cref="IAeadBlockCipherModeTransform" />) and stream-cipher AEADs (
 /// <see cref="IStreamAeadTransform" />). A single call encrypts or decrypts a message together with its associated
 /// data; associated data is optional and defaults to empty.
@@ -22,7 +22,7 @@ namespace Bodu.Security.Cryptography;
 /// not thread-safe; construct a fresh instance for every message.
 /// </para>
 /// <para>
-/// The emitted wire format is <c>ciphertext ‖ tag</c> — the ciphertext followed immediately by the
+/// The emitted wire format is <c>ciphertext ‖ tag</c> - the ciphertext followed immediately by the
 /// <see cref="TagSize" /> / 8 byte authentication tag.
 /// </para>
 /// </remarks>

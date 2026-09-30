@@ -116,7 +116,7 @@ public partial class PstTableContextTests
 
     /// <summary>
     /// Verifies that a row matrix holding more rows than the row index records is rejected under strict validation
-    /// — surplus rows are unindexed content the writer never committed — while the tolerant levels yield exactly the
+    /// - surplus rows are unindexed content the writer never committed - while the tolerant levels yield exactly the
     /// indexed rows.
     /// </summary>
     [TestMethod]

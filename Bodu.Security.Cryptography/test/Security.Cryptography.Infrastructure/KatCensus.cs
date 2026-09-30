@@ -10,7 +10,7 @@ using System.Reflection;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Produces a normalized, sorted inventory of every <see cref="CryptoKnownAnswer" /> reachable from the test assembly —
+/// Produces a normalized, sorted inventory of every <see cref="CryptoKnownAnswer" /> reachable from the test assembly -
 /// a go-forward data-fidelity artifact that lets a future change diff the full set of known-answer inputs and outputs.
 /// </summary>
 /// <remarks>
@@ -100,7 +100,7 @@ public static class KatCensus
     }
 
     /// <summary>
-    /// Renders a collected census — the header followed by one line per entry — as a single newline-joined string.
+    /// Renders a collected census - the header followed by one line per entry - as a single newline-joined string.
     /// </summary>
     /// <param name="entries">The entries to render.</param>
     /// <returns>The complete census text, terminated by a trailing newline.</returns>

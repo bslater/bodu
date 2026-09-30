@@ -7,8 +7,8 @@
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Enumerates the base occurrences of a rule's single occurrence source — a single-date strategy or a recurrence
-/// strategy — for a given Gregorian year, without any concrete-type branching in the caller.
+/// Enumerates the base occurrences of a rule's single occurrence source - a single-date strategy or a recurrence
+/// strategy - for a given Gregorian year, without any concrete-type branching in the caller.
 /// </summary>
 /// <remarks>
 /// This is the single seam the resolution engine and the business-day context use to obtain "the dates a rule produces

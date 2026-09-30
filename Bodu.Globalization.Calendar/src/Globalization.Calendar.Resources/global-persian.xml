@@ -22,7 +22,7 @@
     -->
 
     <!--
-      Nowruz — 1 Farvardin: the Persian New Year, beginning at the vernal equinox (about 20-21 March). A 13-day
+      Nowruz - 1 Farvardin: the Persian New Year, beginning at the vernal equinox (about 20-21 March). A 13-day
       span covering the traditional New Year holiday period.
     -->
     <NotableDate id="nowruz" displayName="Nowruz" category="Cultural" defaultNonWorkingDay="false">
@@ -30,14 +30,14 @@
         <Strategy><Fixed month="1" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Sizdah Bedar (Nature's Day) — 13 Farvardin: the thirteenth and final day of the Nowruz festivities. -->
+    <!-- Sizdah Bedar (Nature's Day) - 13 Farvardin: the thirteenth and final day of the Nowruz festivities. -->
     <NotableDate id="sizdah-bedar" displayName="Sizdah Bedar" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="Persian" />
         <Strategy><Fixed month="1" day="13" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!--
-      Yalda Night (Shab-e Yalda) — 30 Azar: the eve of the winter solstice and the last night of autumn in the
+      Yalda Night (Shab-e Yalda) - 30 Azar: the eve of the winter solstice and the last night of autumn in the
       Persian calendar, celebrating the longest night of the year (about 20-21 December).
     -->
     <NotableDate id="yalda-night" displayName="Yalda Night" category="Cultural" defaultNonWorkingDay="false">

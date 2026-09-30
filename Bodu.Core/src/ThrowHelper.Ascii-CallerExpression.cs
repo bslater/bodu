@@ -52,7 +52,7 @@ public static partial class ThrowHelper
     /// </exception>
     /// <remarks>
     /// Useful for validating inputs to algorithms that operate on uppercase alphanumeric identifiers, such as ISO 7064
-    /// MOD 97-10 (IBAN / LEI), ISIN, SEDOL, and CUSIP. Lowercase letters are <b>not</b> accepted — the caller is
+    /// MOD 97-10 (IBAN / LEI), ISIN, SEDOL, and CUSIP. Lowercase letters are <b>not</b> accepted - the caller is
     /// expected to normalize before validation.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -69,13 +69,13 @@ public static partial class ThrowHelper
 
     /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not an ASCII hexadecimal
-    /// digit character — that is, a character in the ranges <c>'0'</c>–<c>'9'</c> (U+0030–U+0039), <c>'A'</c>–
-    /// <c>'F'</c> (U+0041–U+0046), or <c>'a'</c>–<c>'f'</c> (U+0061–U+0066) inclusive.
+    /// digit character - that is, a character in the ranges <c>'0'</c>-<c>'9'</c> (U+0030-U+0039), <c>'A'</c>-
+    /// <c>'F'</c> (U+0041-U+0046), or <c>'a'</c>-<c>'f'</c> (U+0061-U+0066) inclusive.
     /// </summary>
     /// <param name="value">The character to validate.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="value" /> is not a decimal digit or a letter in <c>'A'</c>–<c>'F'</c> / <c>'a'</c>–
+    /// Thrown when <paramref name="value" /> is not a decimal digit or a letter in <c>'A'</c>-<c>'F'</c> / <c>'a'</c>-
     /// <c>'f'</c>.
     /// </exception>
     /// <remarks>

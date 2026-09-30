@@ -43,8 +43,8 @@ public partial class EvictingDictionary<TKey, TValue>
     /// Use the <see langword="foreach" /> statement to enumerate the dictionary rather than using this struct directly.
     /// </para>
     /// <para>
-    /// The enumerator captures the dictionary's version — and, when time-based expiration is configured, a single clock
-    /// snapshot — on construction. Any mutation of the dictionary (including reads that reposition entries under the
+    /// The enumerator captures the dictionary's version - and, when time-based expiration is configured, a single clock
+    /// snapshot - on construction. Any mutation of the dictionary (including reads that reposition entries under the
     /// LeastRecentlyUsed, MostRecentlyUsed, or LeastFrequentlyUsed policies) invalidates the enumerator and causes
     /// <see cref="MoveNext" /> or <see cref="Reset" /> to throw <see cref="InvalidOperationException" />. Expired
     /// entries are filtered against the captured clock snapshot and are never removed by enumeration.

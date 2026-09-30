@@ -21,26 +21,26 @@ against the code and adds what the requirements did not know.
 
 | Requirements claim | Repository reality |
 |---|---|
-| Lanes are filled one after another (`Argon2Core.DeriveTag` L66–73; the `Argon2` remarks) | Confirmed. The user guide says so too (`docs/guides/cryptography/argon2.md`, "Not multi-threaded here"). |
+| Lanes are filled one after another (`Argon2Core.DeriveTag` L66-73; the `Argon2` remarks) | Confirmed. The user guide says so too (`docs/guides/cryptography/argon2.md`, "Not multi-threaded here"). |
 | Every call allocates the matrix (L58) and clears it after use (L79) | Confirmed. The spike prices it at about 20 ms of a warm derivation once the kernel is vectorised (§2). |
 | The compression function is scalar, while BLAKE2, BLAKE3, Threefish and CubeHash already dispatch to AVX-512 | Confirmed, and the gap is wider than stated: **the package has no AVX2 or ARM64 path anywhere.** Every existing kernel is AVX-512, apart from PCLMULQDQ for GHASH. `SimdCapabilities` exposes only `Avx512F`, `Avx512FVL` and `Pclmulqdq`. Nothing in the repository references `System.Runtime.Intrinsics.Arm`, and CI runs only on `ubuntu-latest` (x64). ARG-N-002 therefore brings the package's first AVX2 gate, its first ARM64 gate, and the repository's first ARM64 CI run. |
 | Stack scratch is zeroed for every block; the project does not set `SkipLocalsInit` | Confirmed. `SkipLocalsInit` also needs `AllowUnsafeBlocks`, which the project does not set; `bld/Compiler.props` makes it an explicit per-project opt-in. On its own, `[SkipLocalsInit]` saved about 6 % of 1.0.0's CPU in the spike. The restructured core removes per-block scratch altogether. |
 | ARG-N-006: "as 1.0.0 clears the matrix and H0 today" | **Partly.** 1.0.0 clears the matrix, H0 and its two heap buffers, but not its password-derived **stack** scratch. Uncleared: `FillBlock`'s two working blocks, `Permute`'s column, `InitializeBlocks`' input (a copy of H0) and output block, `Finalize`'s final block, and the bundled BLAKE2b's state, working vector, message words and final block. The last two hold raw password bytes while H0 is computed. They are released uncleared when each frame returns. The H0 input is also a heap array that a compacting collection may move before it is cleared. The new code has to close these gaps, not just preserve 1.0.0's clearing. |
-| ARG-F-001: RFC 9106's vectors and Bodu's own tests prove the output unchanged | **Not yet provable.** The suite holds three vectors, all from RFC 9106 §5 (m = 32 KiB, t = 3, p = 4, version 0x13, two-block segments). It has no vector for version 0x10, for a tag over 64 bytes, or for p = 1, and none with a segment longer than 128 blocks — so the address-block regeneration inside a segment is never checked. Phase 0 closes this before any code moves. The spike checked 1.0.0 against the reference implementation's version 0x10 tags (`kats/argon2{d,i,id}_v16`) and two rows from its `src/test.c`: all match, so importing them is green today. |
+| ARG-F-001: RFC 9106's vectors and Bodu's own tests prove the output unchanged | **Not yet provable.** The suite holds three vectors, all from RFC 9106 §5 (m = 32 KiB, t = 3, p = 4, version 0x13, two-block segments). It has no vector for version 0x10, for a tag over 64 bytes, or for p = 1, and none with a segment longer than 128 blocks - so the address-block regeneration inside a segment is never checked. Phase 0 closes this before any code moves. The spike checked 1.0.0 against the reference implementation's version 0x10 tags (`kats/argon2{d,i,id}_v16`) and two rows from its `src/test.c`: all match, so importing them is green today. |
 | ARG-N-008: the scalar path held to the vectors "as the package already does for BLAKE2, BLAKE3 and Threefish" | Confirmed: `Bodu.Security.Cryptography.Simd.Test` links their KAT suites and sets the switch in `runtimeconfig.template.json`. The coverage tooling knows only AVX-512, though: `tools/New-CoverageMatrix.ps1` treats `*.Avx512.cs` as hardware-gated, so an ARM64-only file would read 0 % on x64 CI. |
 | §2.1's figures | Reproduced within noise on a 4-vCPU Intel Xeon at 2.1 GHz with AVX2 and AVX-512, on .NET 10.0.0: 236 ms wall and 232 ms CPU at p = 4, and 215 ms at p = 1. |
 
 Four further findings:
 
 - **The first call in a process costs about 1.6 times a warm call.** In a fresh
-  process, 1.0.0's first derivation took 347–407 ms against 221–262 ms for the
+  process, 1.0.0's first derivation took 347-407 ms against 221-262 ms for the
   second, because the fill loop starts on unoptimised tier-0 JIT code (Table C).
   FallbackPlan's CLI unlock is such a first call, and §2.1 measured only warm calls.
 - **The spike's host holds the whole matrix in cache.** It matches §2.1's
   description, and its L3 is 260 MiB, so one 64 MiB matrix fits and four (256 MiB)
   do not. If §2.1's machine is the same class, that is the likelier reading of its
   "four at once is limited by the memory system". A desktop or laptop typically has
-  8–36 MiB of last-level cache, so its single-derivation numbers will be less
+  8-36 MiB of last-level cache, so its single-derivation numbers will be less
   flattering. Phase 7 measures on one.
 - **The Argon2 tests do not follow the repository's layout rules.**
   `Argon2CoverageTests` is the catch-all name `CLAUDE.md` rules out, there is no
@@ -67,7 +67,7 @@ also matched 1.0.0's tags bit for bit on shapes the RFC never reaches: version 0
 follow the requirements' appendix method (six warm-ups, then ten calls) on the host in
 §1. Each figure is a single run, so allow ±10 %.
 
-**Table A — one derivation (Argon2id, 64 MiB, t = 3, p = 4, warm).** "In OS" is the
+**Table A - one derivation (Argon2id, 64 MiB, t = 3, p = 4, warm).** "In OS" is the
 share of CPU spent in the operating system, mostly on page faults.
 
 | Configuration | Wall | CPU (in OS) | CPU vs 1.0.0 | Allocated | Gen2 per call |
@@ -88,7 +88,7 @@ share of CPU spent in the operating system, mostly on page faults.
 | AVX2, 4 threads, native per call | 37 | 117 (33) | 50 % | 28 KiB | 0 |
 | AVX2, 4 threads, reused | 27 | 80 (1) | 35 % | 28 KiB | 0 |
 
-**Table B — four at once (four dedicated threads, each deriving four times).**
+**Table B - four at once (four dedicated threads, each deriving four times).**
 
 | Configuration | All 16 | Each | CPU each | Throughput vs 1.0.0 |
 |---|--:|--:|--:|--:|
@@ -102,24 +102,24 @@ share of CPU spent in the operating system, mostly on page faults.
 With the callers on thread-pool threads instead (`Task.Run`, three runs each),
 AVX2 with reuse gave these totals:
 
-- Four callers × four derivations: 630–697 ms at one thread each, 360–408 ms at
-  four. 1.0.0: 1,182–1,698 ms.
-- Eight callers × four on the four cores: 779–1,008 ms at one thread each,
-  777–834 ms at four. 1.0.0: 2,758–2,787 ms.
+- Four callers × four derivations: 630-697 ms at one thread each, 360-408 ms at
+  four. 1.0.0: 1,182-1,698 ms.
+- Eight callers × four on the four cores: 779-1,008 ms at one thread each,
+  777-834 ms at four. 1.0.0: 2,758-2,787 ms.
 
-**Table C — the first call in a fresh process (64 MiB, p = 4, native per call; three
+**Table C - the first call in a fresh process (64 MiB, p = 4, native per call; three
 processes each).** AO is `[MethodImpl(MethodImplOptions.AggressiveOptimization)]` on
 the fill loop and the kernels.
 
 | Configuration | First call | Second call |
 |---|--:|--:|
-| 1.0.0 | 347–407 ms | 221–262 ms |
-| AVX2, 1 thread | 257–269 | 100–108 |
-| AVX2, 1 thread, with AO | 120–130 | 95–106 |
-| AVX2, 4 threads | 189–207 | 58–147 |
-| AVX2, 4 threads, with AO | 76–81 | 44–51 |
+| 1.0.0 | 347-407 ms | 221-262 ms |
+| AVX2, 1 thread | 257-269 | 100-108 |
+| AVX2, 1 thread, with AO | 120-130 | 95-106 |
+| AVX2, 4 threads | 189-207 | 58-147 |
+| AVX2, 4 threads, with AO | 76-81 | 44-51 |
 
-**Table D — where threads start to pay (AVX2, reused, p = 4, t = 3).** The last
+**Table D - where threads start to pay (AVX2, reused, p = 4, t = 3).** The last
 column is the CPU with four threads divided by the CPU with one.
 
 | m | Blocks per segment | 1 thread | 4 threads | CPU cost of threads |
@@ -135,20 +135,20 @@ What the spike shows:
 1. **Every x64 target is reachable, with margin.**
    - ARG-N-001 asks for at most 40 % of 1.0.0's wall time. Threads alone reach 23 %
      on the scalar kernel, and 11 % with AVX2.
-   - ARG-N-002 asks for at most 60 % of its CPU. AVX2 reaches 30–50 % in every
+   - ARG-N-002 asks for at most 60 % of its CPU. AVX2 reaches 30-50 % in every
      memory mode.
    - ARG-N-003 asks that scalar be no slower. The restructured scalar kernel costs
-     64–77 %.
+     64-77 %.
    - ARG-N-005 asks four at once to keep 1.0.0's throughput. Every configuration
-     reaches 2.7–5.7 times it.
+     reaches 2.7-5.7 times it.
 2. **Once the kernel is vectorised, getting the matrix is a fifth of the cost, and
    native allocation per call does not remove it.** The operating system zero-fills
    fresh pages on first touch. So the ~20 ms the runtime spent zeroing and
-   collecting moves into operating-system time (17–33 ms per call), and it contends when
+   collecting moves into operating-system time (17-33 ms per call), and it contends when
    derivations overlap: in Table B, native per call took 577 ms where reuse took
    377 ms. Only reuse removes it.
 3. **Reuse is what gives the ARM64 target its margin.** The 128-bit kernel has the
-   shape an AdvSimd kernel will have. It costs 49–53 % with reuse but 68 % with
+   shape an AdvSimd kernel will have. It costs 49-53 % with reuse but 68 % with
    per-call native memory and threads. Only an ARM64 run can confirm this, and it is
    the riskiest target in the requirements.
 4. **Threads by default cost nothing when derivations are already concurrent.** That
@@ -156,7 +156,7 @@ What the spike shows:
    cores. Threads pay from about 64 blocks per segment (Table D).
 5. **The first call is dominated by the JIT, not the algorithm.** AO roughly halves
    it. With threads, a fresh process's first 64 MiB derivation drops from 1.0.0's
-   ~350–400 ms to ~80 ms.
+   ~350-400 ms to ~80 ms.
 
 ## 3. Decisions
 
@@ -238,7 +238,7 @@ fix" route can ship this package alone at 1.1.0 and let the wave catch up.
   equality and `ToString` would pick it up, and a PHC string cannot carry it.
   ARG-F-003 also separates p, which is part of the result, from the bound, which is
   not.
-- **No AVX-512 kernel in this work.** AVX2 already costs 30–35 % of 1.0.0's CPU.
+- **No AVX-512 kernel in this work.** AVX2 already costs 30-35 % of 1.0.0's CPU.
   What remains is the matrix and memory latency, which wider registers do not touch.
   Phase 7 revisits it only if a prototype gains at least 15 % on the §2.1 machine.
 - **AO on the fill loop and the kernels**, for the first call (finding 5).
@@ -405,7 +405,7 @@ Each phase is one or more commits on the session branch. Every phase leaves
 includes Regression. Every commit after Phase 0 is checked against the three output
 oracles Phase 0 establishes.
 
-### Phase 0 — lock the output (ARG-F-001); no production change
+### Phase 0 - lock the output (ARG-F-001); no production change
 
 - **Reorganise the Argon2 tests** into member-named backbone partials:
   `Argon2Tests.Ctor`, `.DeriveKey`, `.GetBytes`, `.Hash` and `.Verify`, plus
@@ -432,7 +432,7 @@ oracles Phase 0 establishes.
   BVT cost stays within seconds, with heavy rows in Regression. Regenerate
   `kat-census.txt`.
 
-### Phase 1 — measure first (ARG-N-009)
+### Phase 1 - measure first (ARG-N-009)
 
 - **`Argon2Benchmarks`**, using BenchmarkDotNet with `[MemoryDiagnoser]`. It runs
   Argon2id at 64 MiB and at 256 KiB, with t = 3 and p = 4, one at a time and four at
@@ -450,7 +450,7 @@ oracles Phase 0 establishes.
 - **Record the 1.0.0 baselines on three machines**: the §2.1 class (4 vCPU, AVX-512,
   large L3); an x64 AVX2 desktop or laptop with a small L3; and Apple silicon.
 
-### Phase 2 — restructure without changing the arithmetic (ARG-N-003, ARG-N-006)
+### Phase 2 - restructure without changing the arithmetic (ARG-N-003, ARG-N-006)
 
 - The carried-state scalar kernel, `FillSegment<TKernel>`, per-segment scratch, and
   AO.
@@ -459,7 +459,7 @@ oracles Phase 0 establishes.
 - **Exit:** all oracles pass, and scalar CPU is no more than 1.0.0's. The spike's
   equivalent measured 77 %. The first call is measured.
 
-### Phase 3 — matrix ownership (ARG-N-004, ARG-N-006)
+### Phase 3 - matrix ownership (ARG-N-004, ARG-N-006)
 
 - Set `AllowUnsafeBlocks` for the project, which also defines `ALLOW_UNSAFE`. Add
   `Argon2Matrix`, and `Argon2MatrixPool` with its retention switch. Put
@@ -476,7 +476,7 @@ oracles Phase 0 establishes.
 - **Exit:** in the benchmark, no gen2 collections, under 1 MiB allocated per call, and
   no operating-system time per call once warm.
 
-### Phase 4 — lanes on threads (ARG-N-001, ARG-F-003)
+### Phase 4 - lanes on threads (ARG-N-001, ARG-F-003)
 
 - The API in §4.1; the promoted guard and its resx message; the per-slice fork/join;
   the threshold; the fallback for platforms without threads.
@@ -491,7 +491,7 @@ oracles Phase 0 establishes.
 - **Exit:** on the §2.1 machine, wall time at most 40 % of 1.0.0's (ARG-N-001), and
   four at once at no less than 1.0.0's throughput (ARG-N-005).
 
-### Phase 5 — vector kernels (ARG-N-002, ARG-N-007)
+### Phase 5 - vector kernels (ARG-N-002, ARG-N-007)
 
 - The `Avx2`, `Ssse3` and `AdvSimd` gates on `SimdCapabilities`. Its remarks are
   rewritten, since it is no longer AVX-512-only.
@@ -509,7 +509,7 @@ oracles Phase 0 establishes.
   `SimdOptOutTests` asserts that the new gates are off.
 - **Exit:** on both x64 machines, CPU at most 60 % of 1.0.0's with AVX2 (ARG-N-002).
 
-### Phase 6 — ARM64 in CI, and coverage tooling (ARG-N-008)
+### Phase 6 - ARM64 in CI, and coverage tooling (ARG-N-008)
 
 - **A job on `ubuntu-24.04-arm`**, GitHub's hosted ARM64 runner, which is free for
   public repositories. It builds and runs both cryptography test projects on both
@@ -521,7 +521,7 @@ oracles Phase 0 establishes.
   hardware-gated, as it does `*.Avx512.cs`. The header of `bld/collect-coverage.sh`
   and `docs/articles/code-coverage.md` are updated to match.
 
-### Phase 7 — measure against the targets and settle the tunables
+### Phase 7 - measure against the targets and settle the tunables
 
 - Run Phase 1's harness and benchmarks on the three machines, 1.0.0 against the new
   build. Record the results in a Results section of this plan, for FallbackPlan's §8.
@@ -536,7 +536,7 @@ oracles Phase 0 establishes.
     cannot change code, only if four at once regresses under the default on any
     machine.
 
-### Phase 8 — documentation and release
+### Phase 8 - documentation and release
 
 - **XML documentation**: the `Argon2` remarks (threads, the bound, reuse and
   residency, the first call, and the limits of clearing), the new members, and
@@ -558,14 +558,14 @@ oracles Phase 0 establishes.
 | ARG-F-001 | Phase 0 (three oracles); every later phase runs them |
 | ARG-F-002 | §4.1 (additive only); package validation at pack |
 | ARG-F-003 | Phase 4 (`maxDegreeOfParallelism`) |
-| ARG-N-001 | Phase 4; spike: 11–23 % of 1.0.0's wall |
-| ARG-N-002 | Phase 5 (x64), Phases 6–7 (ARM64); spike: AVX2 30–50 %, 128-bit 49–53 % with reuse |
-| ARG-N-003 | Phase 2; spike: 64–77 % |
-| ARG-N-004 | Phase 3; spike: 2–28 KiB per call, no gen2 |
-| ARG-N-005 | Phase 4 exit, Phase 7; spike: 2.7–5.7× |
-| ARG-N-006 | Phases 2–3 (§4.5), including 1.0.0's stack gaps |
+| ARG-N-001 | Phase 4; spike: 11-23 % of 1.0.0's wall |
+| ARG-N-002 | Phase 5 (x64), Phases 6-7 (ARM64); spike: AVX2 30-50 %, 128-bit 49-53 % with reuse |
+| ARG-N-003 | Phase 2; spike: 64-77 % |
+| ARG-N-004 | Phase 3; spike: 2-28 KiB per call, no gen2 |
+| ARG-N-005 | Phase 4 exit, Phase 7; spike: 2.7-5.7× |
+| ARG-N-006 | Phases 2-3 (§4.5), including 1.0.0's stack gaps |
 | ARG-N-007 | Phase 5 (§4.5); review checklist |
-| ARG-N-008 | Phases 5–6 |
+| ARG-N-008 | Phases 5-6 |
 | ARG-N-009 | Phase 1, extended in Phase 4, run in Phase 7 |
 | ARG-N-010 | In-box APIs only (`System.Runtime.Intrinsics`, `NativeMemory`, `Parallel`, `TimeProvider`). Target frameworks unchanged. `IsAotCompatible` kept, with a NativeAOT smoke check of which kernel an AOT build selects |
 
@@ -607,9 +607,9 @@ class:
 
 | Measure | 1.0.0 | Spike |
 |---|--:|--:|
-| Warm 64 MiB derivation | 209–236 ms | 27–37 ms, using 35–50 % of 1.0.0's CPU |
-| First derivation in a fresh process | ~350–400 ms | ~80 ms |
-| Four at once | 1× | 3.7–5.7× the throughput |
+| Warm 64 MiB derivation | 209-236 ms | 27-37 ms, using 35-50 % of 1.0.0's CPU |
+| First derivation in a fresh process | ~350-400 ms | ~80 ms |
+| Four at once | 1× | 3.7-5.7× the throughput |
 
 Phase 7 confirms these on the release build, and on the kinds of machines
 FallbackPlan's users run. §10 records the implementation's measurements so far.
@@ -622,9 +622,9 @@ each: Phase 0 (`1af9d09`, `311aa11`), 1 (`a0eb574`), 2 (`b0e244d`), 3 (`cfef00f`
 measurements follow, from one machine: the 4-vCPU Xeon (AVX-512) of §2, .NET 10.0.0,
 Release, using the harness (`--argon2-harness`, the requirements' appendix method). Each
 row is the mean of two rounds, with 1.0.0 measured in the same session. The VM's speed
-drifted by 10–15 % between sessions, so compare figures within a table, not with §2.
+drifted by 10-15 % between sessions, so compare figures within a table, not with §2.
 
-**Table R1 — one derivation (Argon2id, 64 MiB, t = 3, p = 4, warm).** The kernel is
+**Table R1 - one derivation (Argon2id, 64 MiB, t = 3, p = 4, warm).** The kernel is
 selected with the runtime's switches: the default takes AVX2, `DOTNET_EnableAVX2=0`
 SSSE3, and `DOTNET_EnableHWIntrinsic=0` the scalar kernel.
 
@@ -638,30 +638,30 @@ SSSE3, and `DOTNET_EnableHWIntrinsic=0` the scalar kernel.
 | Scalar, threads | 62.2 | 25 % | 191.2 | 77 % | 26 KiB | 0 |
 | Scalar, one thread | 193.6 | 78 % | 195.9 | 79 % | 0.2 KiB | 0 |
 
-**Table R2 — four at once (four dedicated threads, each deriving four times).**
+**Table R2 - four at once (four dedicated threads, each deriving four times).**
 
 | Build | All 16, threads | All 16, one thread each | Throughput vs 1.0.0 |
 |---|--:|--:|--:|
-| 1.0.0 | 1,096 ms | — | 1.0× |
+| 1.0.0 | 1,096 ms | - | 1.0× |
 | AVX2 | 462 | 450 | 2.4× |
-| SSSE3 | 655 | 619 | 1.7–1.8× |
-| Scalar | 929 | 872 | 1.2–1.3× |
+| SSSE3 | 655 | 619 | 1.7-1.8× |
+| Scalar | 929 | 872 | 1.2-1.3× |
 
-**Table R3 — the first derivation in a fresh process (64 MiB, p = 4; three processes
-each).** 1.0.0: 363–385 ms. This build: 96–115 ms.
+**Table R3 - the first derivation in a fresh process (64 MiB, p = 4; three processes
+each).** 1.0.0: 363-385 ms. This build: 96-115 ms.
 
-**Table R4 — where threads pay (AVX2, p = 4, t = 3).** Measured on a scratch build with
+**Table R4 - where threads pay (AVX2, p = 4, t = 3).** Measured on a scratch build with
 the threshold lowered to one block, so four threads engage at every size; three runs,
 each the median of repeated derivations. The ratios divide four threads by one.
 
 | m | Blocks per segment | Wall ratio | CPU ratio |
 |---|--:|--:|--:|
-| 1 MiB | 64 | 0.95–1.11 | 1.9–2.5 |
-| 2 MiB | 128 | 0.66–1.03 | 1.2–2.2 |
-| 4 MiB | 256 | 0.59–0.72 | 0.9–1.7 |
-| 8 MiB | 512 | 0.51–0.68 | 1.6–1.7 |
-| 16 MiB | 1,024 | 0.41–0.48 | 1.4–1.5 |
-| 32 MiB | 2,048 | 0.42–0.49 | 1.3–1.5 |
+| 1 MiB | 64 | 0.95-1.11 | 1.9-2.5 |
+| 2 MiB | 128 | 0.66-1.03 | 1.2-2.2 |
+| 4 MiB | 256 | 0.59-0.72 | 0.9-1.7 |
+| 8 MiB | 512 | 0.51-0.68 | 1.6-1.7 |
+| 16 MiB | 1,024 | 0.41-0.48 | 1.4-1.5 |
+| 32 MiB | 2,048 | 0.42-0.49 | 1.3-1.5 |
 
 An earlier single run read 1.01 at 4 MiB; the three repeats did not reproduce it.
 
@@ -692,8 +692,8 @@ capped at 16 MiB vectors.
 | ARG-F-003 | A bound on threads | Implemented; `1` is 1.0.0's behaviour |
 | ARG-N-001 | Wall ≤ 40 % | 12 % (AVX2), 17 % (SSSE3), 25 % (scalar) |
 | ARG-N-002 | CPU ≤ 60 % with vector code | 37 % (AVX2), 53 % (SSSE3); **ARM64 not yet measured** |
-| ARG-N-003 | Scalar no slower | 77–79 % |
-| ARG-N-004 | < 1 MiB allocated, no gen2 | 26 KiB with threads, 0.2–0.3 KiB without; gen2 0 |
+| ARG-N-003 | Scalar no slower | 77-79 % |
+| ARG-N-004 | < 1 MiB allocated, no gen2 | 26 KiB with threads, 0.2-0.3 KiB without; gen2 0 |
 | ARG-N-005 | Four at once ≥ 1.0.0 | 2.4× (AVX2), 1.7× (SSSE3), 1.2× (scalar) |
 | ARG-N-006 | Clearing | The matrix, H0, per-segment scratch and the first- and last-block buffers are cleared |
 | ARG-N-007 | Data independence | Kernels branch-free, shuffles by constant indices; checklist §7 in `SECURITY-CHECKLIST.md` |
@@ -704,14 +704,14 @@ capped at 16 MiB vectors.
 ### 10.2 Tunables and deferred decisions
 
 - **Thread threshold: 256 blocks per segment, unchanged.** It is the first size in
-  Table R4 where four threads reliably cut the wall time, by 28–41 %; at 128 blocks
+  Table R4 where four threads reliably cut the wall time, by 28-41 %; at 128 blocks
   the gain is inconsistent and at 64 there is none.
 - **Pool: `ProcessorCount` buffers, 256 MiB each, 30 s idle, unchanged.** Four at once
   shows no gen2 collections and no throughput loss, and the residency is documented.
 - **No AVX-512 kernel.** None was prototyped. AVX2 already meets ARG-N-002 at 37 %, and
   the plan's 15 % bar needs a prototype to clear.
 - **No `AppContext` default for the bound.** Four at once never falls below 1.0.0. When
-  the machine is already saturated, threads by default cost 3–7 % of throughput against
+  the machine is already saturated, threads by default cost 3-7 % of throughput against
   one thread each (AVX2 3 %, SSSE3 6 %, scalar 7 %), which the per-instance bound
   recovers.
 
@@ -734,9 +734,9 @@ Closed since this section was written:
   > is about 1 MiB, compress blocks with AVX2, SSSE3 or AdvSimd, and hold the matrix in
   > native memory: a 64 MiB derivation takes about an eighth of the time and allocates
   > almost nothing on the managed heap. Tags are unchanged. Two behaviours are new, and
-  > each can be turned off: **threads by default** — construct with
+  > each can be turned off: **threads by default** - construct with
   > `maxDegreeOfParallelism: 1`, or pass it to `Argon2.Verify`, to keep each derivation on
-  > its calling thread; and **retained matrices** — up to one cleared matrix per processor
+  > its calling thread; and **retained matrices** - up to one cleared matrix per processor
   > stays reserved for 30 seconds after the last derivation, unless the `AppContext` switch
   > `Bodu.Security.Cryptography.Argon2.DisableMatrixReuse` is set. NativeAOT applications
   > get the SSSE3 kernel on x64 unless they set `IlcInstructionSet` (for example

@@ -7,7 +7,7 @@ title: Runnable samples
 The repository ships runnable, self-contained sample projects for `Bodu.Globalization.Recurrence`
 under
 [`samples/Globalization.Recurrence/`](https://github.com/bslater/bodu/tree/master/samples/Globalization.Recurrence).
-All five samples are **offline and deterministic** — they format with the invariant culture and, more
+All five samples are **offline and deterministic** - they format with the invariant culture and, more
 to the point, never read a clock, so output does not vary by machine, locale, or the time of day they
 run. Each is a member of `bodu.slnx`, built and executed by CI, so the code they show cannot drift
 from the current API. Each sample's README documents every scenario individually: its intent, what
@@ -25,7 +25,7 @@ dotnet run --project samples/Globalization.Recurrence/<SampleName>
 
 The RFC 5545 `RRULE` form via <xref:Bodu.Globalization.Recurrence.RecurrenceRule>: parsing, typed
 part properties, and the canonical text round trip; the four `BY*` semantics implementations most
-often disagree on — invalid dates skipped rather than clamped, the occurrence set as a genuine set,
+often disagree on - invalid dates skipped rather than clamped, the occurrence set as a genuine set,
 `BYSETPOS` indexing the whole frequency period, and a `BY` filter never re-anchoring its interval;
 `WKST` week numbering with year-straddling `BYWEEKNO` and the fifty-third week; the fluent
 <xref:Bodu.Globalization.Recurrence.RecurrenceRuleBuilder> with
@@ -38,7 +38,7 @@ The Vixie cron form via <xref:Bodu.Globalization.Recurrence.CronExpression>: the
 field grammar, and the `crontab(5)` `@` macros; the optional-seconds six-field layout selected by
 <xref:Bodu.Globalization.Recurrence.CronFormat>, contrasting the overloads that infer the layout
 against those that enforce it; canonical text and equality by schedule rather than spelling; the two
-Vixie semantics that separate this dialect from Quartz — the day-of-month / day-of-week union rule
+Vixie semantics that separate this dialect from Quartz - the day-of-month / day-of-week union rule
 decided by a field's leading character, and a step wider than its range collapsing to the range
 start; and the two failure surfaces, unreachable schedules and defect-named rejections.
 *Package: `Bodu.Globalization.Recurrence`.*
@@ -72,14 +72,14 @@ zone-correct firing at the host boundary. *Package: `Bodu.Globalization.Recurren
 
 ## Conformance
 
-The semantics these samples demonstrate are reconciled row by row against three committed corpora —
+The semantics these samples demonstrate are reconciled row by row against three committed corpora -
 RFC 5545's worked examples, libical's occurrence counts, and a cron vector table derived from
-Cronos's test suite — currently 830 in-scope rows with zero differences. See the
+Cronos's test suite - currently 830 in-scope rows with zero differences. See the
 [recurrence guide](../guides/recurrence/index.md) for the contract, and
 `corpus/recurrence/README.md` for each table's provenance and every recorded divergence.
 
 ## Related
 
-- [Globalization.Calendar samples](calendar.md) — the notable-date engine and working-day arithmetic,
+- [Globalization.Calendar samples](calendar.md) - the notable-date engine and working-day arithmetic,
   a natural sibling of the recurrence package.
-- [Core samples](core.md) — `WeekPattern` and the date extensions the calendar package builds on.
+- [Core samples](core.md) - `WeekPattern` and the date extensions the calendar package builds on.

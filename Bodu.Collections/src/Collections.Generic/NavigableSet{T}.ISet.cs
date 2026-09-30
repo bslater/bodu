@@ -25,7 +25,7 @@ public sealed partial class NavigableSet<T>
     /// </summary>
     /// <param name="other">The collection to union with. Must not be <see langword="null" />.</param>
     /// <remarks>
-    /// Adds element-at-a-time — O(m log(n + m)) for m elements in <paramref name="other" />.
+    /// Adds element-at-a-time - O(m log(n + m)) for m elements in <paramref name="other" />.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
     public void UnionWith(IEnumerable<T> other)
@@ -45,7 +45,7 @@ public sealed partial class NavigableSet<T>
     /// <param name="other">The collection to intersect with. Must not be <see langword="null" />.</param>
     /// <remarks>
     /// Sorts <paramref name="other" /> into a scratch array under this set's comparer and merge-walks it against the
-    /// in-order enumeration to find the non-members — O(n + m log m) overall, with no tree nodes allocated for
+    /// in-order enumeration to find the non-members - O(n + m log m) overall, with no tree nodes allocated for
     /// <paramref name="other" />.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
@@ -81,7 +81,7 @@ public sealed partial class NavigableSet<T>
     /// </summary>
     /// <param name="other">The collection to subtract. Must not be <see langword="null" />.</param>
     /// <remarks>
-    /// Removes element-at-a-time — O(m log n) for m elements in <paramref name="other" />.
+    /// Removes element-at-a-time - O(m log n) for m elements in <paramref name="other" />.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
     public void ExceptWith(IEnumerable<T> other)
@@ -110,7 +110,7 @@ public sealed partial class NavigableSet<T>
     /// </param>
     /// <remarks>
     /// Sorts and deduplicates <paramref name="other" /> into a scratch array and toggles membership per distinct
-    /// element — O(m log m + m log n) overall, with no tree nodes allocated for <paramref name="other" />.
+    /// element - O(m log m + m log n) overall, with no tree nodes allocated for <paramref name="other" />.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
     public void SymmetricExceptWith(IEnumerable<T> other)
@@ -288,7 +288,7 @@ public sealed partial class NavigableSet<T>
 
     /// <summary>
     /// Materializes <paramref name="other" /> as a sorted, comparer-deduplicated scratch array for merge-based
-    /// membership tests — a single array allocation with no tree nodes built.
+    /// membership tests - a single array allocation with no tree nodes built.
     /// </summary>
     /// <param name="other">The source enumerable.</param>
     /// <param name="uniqueCount">

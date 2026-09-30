@@ -15,7 +15,7 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// <para>
 /// A multi-year range query needs each spanned year's entry. Looking each year up individually through
 /// <see cref="INotableDateCache.GetYear" /> re-reads the territory's whole persisted state per year on a backend that
-/// stores the territory as one unit — the distributed cache re-fetches and re-deserializes the same blob, and a file
+/// stores the territory as one unit - the distributed cache re-fetches and re-deserializes the same blob, and a file
 /// cache re-stats and re-scans the same parse memo. Implementing this seam collapses those reads to one: the batch is
 /// answered from a single territory read, applying the same per-year freshness and version policy as
 /// <see cref="INotableDateCache.GetYear" />.
@@ -38,7 +38,7 @@ internal interface INotableDateCacheBatchReader
     /// <param name="ttl">The duration a computed year remains fresh after it was computed.</param>
     /// <param name="asOf">The instant against which freshness is evaluated.</param>
     /// <returns>
-    /// One element per year in span order — the fresh, version-matching entry for that year, or <see langword="null" />
+    /// One element per year in span order - the fresh, version-matching entry for that year, or <see langword="null" />
     /// when the year misses.
     /// </returns>
     NotableDateCacheEntry?[] GetYears(string territory, int firstYear, int lastYear, string resourceVersion, TimeSpan ttl, DateTimeOffset asOf);

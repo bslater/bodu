@@ -13,7 +13,7 @@ namespace Bodu.IO.Pst;
 /// </summary>
 /// <remarks>
 /// A node's payload is assembled from its data tree on demand and materialized in memory; the multi-block trees the
-/// format uses for large payloads are flattened transparently. Subnodes form the node's private namespace — a message
+/// format uses for large payloads are flattened transparently. Subnodes form the node's private namespace - a message
 /// node, for example, keeps its recipient and attachment tables there.
 /// </remarks>
 public sealed class PstNode
@@ -69,7 +69,7 @@ public sealed class PstNode
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
     /// <exception cref="PstFileFormatException">The data tree is malformed or fails validation.</exception>
     /// <remarks>
-    /// Resolving the length reads only the data tree's internal blocks — never the leaf payloads — so it is cheap even
+    /// Resolving the length reads only the data tree's internal blocks - never the leaf payloads - so it is cheap even
     /// for very large nodes.
     /// </remarks>
     public long DataLength

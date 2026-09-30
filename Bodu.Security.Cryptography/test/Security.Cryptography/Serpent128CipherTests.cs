@@ -10,11 +10,11 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Concrete test class exercising <see cref="Serpent128Cipher" /> against the canonical Serpent test vectors from the
-/// NESSIE submission by Ross Anderson, Eli Biham, and Lars Knudsen — the same corpus published with the original
+/// NESSIE submission by Ross Anderson, Eli Biham, and Lars Knudsen - the same corpus published with the original
 /// Serpent AES candidate submission.
 /// </summary>
 /// <remarks>
-/// Serpent-128 is the standardised, non-tweakable Serpent variant — distinct from the experimental wide-block
+/// Serpent-128 is the standardised, non-tweakable Serpent variant - distinct from the experimental wide-block
 /// Serpent-256 / 512 / 1024 constructions which are tweakable. It therefore plugs into
 /// <see cref="BlockCipherTests{TTest, TCipher, TVariant}" /> with <see cref="SingleTestVariant" /> rather than
 /// <see cref="TweakableBlockCipherVariant" />.

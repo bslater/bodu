@@ -1,10 +1,10 @@
 # Bodu.Financial.Samples.OfflineRates
 
 The flagship **offline static-rate-file** sample: build a fully functional dated exchange-rate
-provider from a committed CSV — no network, no API keys — and use it to resolve rates and
+provider from a committed CSV - no network, no API keys - and use it to resolve rates and
 convert money. `StaticRates.cs` is the pattern itself: any rate data you already hold (a file, a
 database table, an archived API response) pours through `RateTableBuilder` into an immutable
-`RateBook` and serves through `FixedDatedRateProvider` — the same contracts the live web
+`RateBook` and serves through `FixedDatedRateProvider` - the same contracts the live web
 providers implement, so everything downstream is interchangeable.
 
 ```bash
@@ -22,7 +22,7 @@ dotnet run --project samples/Financial/Bodu.Financial.Samples.OfflineRates
 **Intent.** Rate series only carry business-day observations, so any real system immediately
 hits the question: what should a lookup on a Saturday, holiday, or missing day do? The four
 `RateLookupOptions` date-resolution modes are the explicit answer, and tolerances are hard
-bounds — this scenario shows all of it on one weekend.
+bounds - this scenario shows all of it on one weekend.
 
 **What it does.** Resolves AUD/USD for Saturday 2024-03-16 (the data has Friday the 15th and
 Monday the 18th, nothing between) under each mode: `Exact` (via `TryGetRate`, which reports the
@@ -42,7 +42,7 @@ NearestWithin(3)  2024-03-16 -> 2024-03-15 (NearestPreferPrevious, offset 1d): 0
 ```
 
 Each resolved line shows *how* the date was resolved (the resolution kind and the offset in
-days) plus the serving provider — the metadata an auditable valuation needs. `NearestWithin`
+days) plus the serving provider - the metadata an auditable valuation needs. `NearestWithin`
 prefers the earlier date on ties. The last line proves a tolerance is a bound, not a suggestion:
 three days past the dataset finds nothing.
 
@@ -52,7 +52,7 @@ three days past the dataset finds nothing.
 
 ### ConvertMoney (`Scenarios/ConvertMoney.cs`)
 
-**Intent.** Show the three ways money crosses currencies through a dated provider — the
+**Intent.** Show the three ways money crosses currencies through a dated provider - the
 one-call extension, the explicit lookup-then-typed-rate form (which catches direction mistakes
 at compile time), and the runtime form for currencies only known at run time.
 
@@ -74,7 +74,7 @@ currency is a string. All use `PreviousWithin(5)` to tolerate weekends.
 ```
 
 Each result is rounded to the target currency's minor units (JPY to whole yen). The typed line
-prints the rate and its observation date — the two facts the typed bridge preserves and checks.
+prints the rate and its observation date - the two facts the typed bridge preserves and checks.
 
 **APIs demonstrated.** `MoneyOfTCurrencyExchangeRateExtensions.ConvertTo<TSource, TTarget>`,
 `ExchangeRate<TBase, TQuote>.FromRuntime`, `Money<T>.Convert(ExchangeRate<T, TQuote>)`,
@@ -83,7 +83,7 @@ prints the rate and its observation date — the two facts the typed bridge pres
 ## Data
 
 `Data/aud-daily-2024H1.csv` holds illustrative AUD-based business-day rates for 2024 H1
-(AUD/USD, AUD/EUR, AUD/JPY — synthetic values approximating published levels; see the file
+(AUD/USD, AUD/EUR, AUD/JPY - synthetic values approximating published levels; see the file
 header). The natural weekend gaps in business-day data are exactly what the LookupModes scenario
 exercises.
 

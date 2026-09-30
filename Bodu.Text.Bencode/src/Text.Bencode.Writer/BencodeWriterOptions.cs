@@ -10,8 +10,8 @@ namespace Bodu.Text.Bencode.Writer;
 /// Defines the customizations applied when creating a <see cref="Utf8BencodeWriter" />.
 /// </summary>
 /// <remarks>
-/// Bencode output is always canonical — dictionary keys are emitted in ascending bytewise order and there is no
-/// insignificant whitespace — so the options define no indentation or encoder settings.
+/// Bencode output is always canonical - dictionary keys are emitted in ascending bytewise order and there is no
+/// insignificant whitespace - so the options define no indentation or encoder settings.
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[

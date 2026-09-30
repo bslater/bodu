@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// <c>throwIfZero == true</c> bug in <see cref="BlockCipherTransform" /> manifested as a
 /// misleading "block length must be a positive multiple" <see cref="CryptographicException" />
 /// when <see cref="CryptoStream.FlushFinalBlock" /> ran <c>TransformFinalBlock(_, 0, 0)</c> on
-/// an empty plaintext under <see cref="PaddingMode.PKCS7" /> — a path the BCL always reaches
+/// an empty plaintext under <see cref="PaddingMode.PKCS7" /> - a path the BCL always reaches
 /// at end-of-stream. Each test below configures the algorithm with PKCS7 over CBC and asserts
 /// the documented contract: an empty plaintext yields exactly one block of all-pad ciphertext
 /// that round-trips back to an empty array, partial blocks are padded out, and intermediate
@@ -26,7 +26,7 @@ public sealed partial class Pkcs7PaddingTests
     /// <summary>
     /// Verifies that encrypting an empty plaintext under <see cref="PaddingMode.PKCS7" />
     /// produces exactly one block of ciphertext (the all-pad block) and round-trips back to an
-    /// empty plaintext on decrypt — the canonical PKCS#7 contract.
+    /// empty plaintext on decrypt - the canonical PKCS#7 contract.
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
     [TestMethod]
@@ -50,7 +50,7 @@ public sealed partial class Pkcs7PaddingTests
     /// <summary>
     /// Verifies that <see cref="ICryptoTransform.TransformFinalBlock(byte[], int, int)" />
     /// invoked with <c>inputCount == 0</c> on a PKCS7 encryptor produces a single block of
-    /// padded ciphertext rather than throwing — the framework's
+    /// padded ciphertext rather than throwing - the framework's
     /// <see cref="CryptoStream.FlushFinalBlock" /> always invokes this path with whatever
     /// residual data sits in its buffer, including zero bytes.
     /// </summary>
@@ -73,7 +73,7 @@ public sealed partial class Pkcs7PaddingTests
     /// <summary>
     /// Verifies that <see cref="ICryptoTransform.TransformBlock(byte[], int, int, byte[], int)" />
     /// invoked with <c>inputCount == 0</c> returns <c>0</c> rather than raising
-    /// <see cref="CryptographicException" /> — the
+    /// <see cref="CryptographicException" /> - the
     /// <see cref="ICryptoTransform" /> contract treats a zero-byte <c>TransformBlock</c> as a
     /// no-op, and <see cref="CryptoStream" /> can reach this path after a flush even when no
     /// further data has been written.
@@ -97,7 +97,7 @@ public sealed partial class Pkcs7PaddingTests
 
     /// <summary>
     /// Verifies that flushing a freshly-opened <see cref="CryptoStream" /> without writing
-    /// any data still emits one PKCS#7 padding block — <see cref="CryptoStream.FlushFinalBlock" />
+    /// any data still emits one PKCS#7 padding block - <see cref="CryptoStream.FlushFinalBlock" />
     /// always invokes <c>TransformFinalBlock</c> with whatever residual sits in its buffer, so
     /// rejecting zero-length input would break every encrypt pipeline that flushes early.
     /// </summary>
@@ -126,7 +126,7 @@ public sealed partial class Pkcs7PaddingTests
 
     /// <summary>
     /// Verifies that a block-aligned plaintext round-trips through <see cref="CryptoStream" />
-    /// under <see cref="PaddingMode.PKCS7" /> — the cipher writes the plaintext blocks and
+    /// under <see cref="PaddingMode.PKCS7" /> - the cipher writes the plaintext blocks and
     /// appends a full block of padding (since the input is already aligned), and the decrypt
     /// pipeline strips that padding back off.
     /// </summary>
@@ -152,7 +152,7 @@ public sealed partial class Pkcs7PaddingTests
 
     /// <summary>
     /// Verifies that a sub-block plaintext round-trips through <see cref="CryptoStream" /> under
-    /// <see cref="PaddingMode.PKCS7" /> — PKCS#7 pads the trailing residual out to the next
+    /// <see cref="PaddingMode.PKCS7" /> - PKCS#7 pads the trailing residual out to the next
     /// block boundary, and the decrypt pipeline recovers the original prefix.
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
@@ -178,9 +178,9 @@ public sealed partial class Pkcs7PaddingTests
     }
 
     /// <summary>
-    /// Verifies that a multi-write <see cref="CryptoStream" /> session — calling
+    /// Verifies that a multi-write <see cref="CryptoStream" /> session - calling
     /// <see cref="Stream.Write(byte[], int, int)" /> several times with chunks of varying sizes
-    /// that do not align with the cipher's block boundary — still produces ciphertext that
+    /// that do not align with the cipher's block boundary - still produces ciphertext that
     /// decrypts to the concatenated plaintext under <see cref="PaddingMode.PKCS7" />. This
     /// drives the residual-buffering paths inside
     /// <see cref="ICryptoTransform.TransformBlock(byte[], int, int, byte[], int)" /> that a

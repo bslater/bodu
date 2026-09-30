@@ -14,8 +14,8 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// The numeric values match the <c>Type</c> field assignments in Table 5 of the Skein 1.3 specification. Skein uses the
-/// type to bind each UBI call to its role in the hashing pipeline — configuration, optional keying, message absorption,
-/// and output extraction — preventing cross-protocol confusion between otherwise identical compressions.
+/// type to bind each UBI call to its role in the hashing pipeline - configuration, optional keying, message absorption,
+/// and output extraction - preventing cross-protocol confusion between otherwise identical compressions.
 /// </para>
 /// <para>
 /// Only the values used by the sequential Skein hash (<see cref="Key" />, <see cref="Cfg" />, <see cref="Msg" />, and
@@ -57,7 +57,7 @@ internal enum SkeinTweakType : byte
     Non = 20,
 
     /// <summary>
-    /// Absorbs message data — the input being hashed.
+    /// Absorbs message data - the input being hashed.
     /// </summary>
     Msg = 48,
 

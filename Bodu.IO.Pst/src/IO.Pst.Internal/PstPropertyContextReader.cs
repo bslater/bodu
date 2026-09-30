@@ -28,8 +28,8 @@ internal static class PstPropertyContextReader
     /// <param name="entry">The node whose heap carries the context.</param>
     /// <returns>The parsed heap and the context's records in key order, values unresolved.</returns>
     /// <exception cref="PstFileFormatException">
-    /// The node's heap does not declare a property context, the tree's shape is not the property-context shape, or —
-    /// under <see cref="PstValidationLevel.Strict" /> — a record declares an unrecognized wire type.
+    /// The node's heap does not declare a property context, the tree's shape is not the property-context shape, or -
+    /// under <see cref="PstValidationLevel.Strict" /> - a record declares an unrecognized wire type.
     /// </exception>
     internal static (PstHeapNode Heap, List<PstPcEntry> Entries) Read(PstSource source, PstNbtEntry entry)
     {

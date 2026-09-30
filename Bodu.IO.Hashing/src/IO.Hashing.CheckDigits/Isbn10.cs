@@ -28,7 +28,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Two contrasting bodies — the second exercises the 'X' sentinel.
+/// // Two contrasting bodies - the second exercises the 'X' sentinel.
 /// char check    = Isbn10.Compute("030640615");   // '2'
 /// char checkX   = Isbn10.Compute("043942089");   // 'X'  (sentinel for value ten)
 ///
@@ -113,7 +113,7 @@ public sealed class Isbn10
     /// </summary>
     /// <param name="valueIncludingCheck">The complete ten-character sequence.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence evaluates as valid under ISBN-10; otherwise, <see langword="false" /> —
+    /// <see langword="true" /> if the sequence evaluates as valid under ISBN-10; otherwise, <see langword="false" /> -
     /// including the case where <paramref name="valueIncludingCheck" /> is empty, has the wrong length, or contains an
     /// unrecognized character.
     /// </returns>

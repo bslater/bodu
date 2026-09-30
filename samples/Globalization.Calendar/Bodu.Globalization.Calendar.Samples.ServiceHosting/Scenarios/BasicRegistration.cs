@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar.Samples.ServiceHosting.Scenarios;
 
 /// <summary>
 /// Demonstrates the singleton registration: <c>AddNotableDateService(resource)</c> registers an
-/// immutable <see cref="INotableDateService" /> that consumers take by constructor injection — the
+/// immutable <see cref="INotableDateService" /> that consumers take by constructor injection - the
 /// resource loads once, and every consumer shares the thread-safe service.
 /// </summary>
 public static class BasicRegistration

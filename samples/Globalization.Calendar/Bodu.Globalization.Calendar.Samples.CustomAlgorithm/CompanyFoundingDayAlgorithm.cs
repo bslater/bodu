@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar.Samples.CustomAlgorithm;
 /// <summary>
 /// A consumer-written <see cref="INotableDateAlgorithm" />: the anniversary of the company's founding
 /// (12 March 1998), celebrated on the Friday of that week so it always lands adjacent to a weekend.
-/// An algorithm answers one question — "what date in this year?" — and returns <see langword="null" />
+/// An algorithm answers one question - "what date in this year?" - and returns <see langword="null" />
 /// for years it does not apply to; everything else (categories, adjustments, territories, emission)
 /// stays declarative in the rule that references it by key.
 /// </summary>

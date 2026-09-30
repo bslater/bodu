@@ -9,8 +9,8 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Represents a single known-answer test vector for an extendable output function (XOF) or customizable XOF (CXOF) — a
-/// message, an optional customization string, and the expected variable-length output — as parsed from a NIST
+/// Represents a single known-answer test vector for an extendable output function (XOF) or customizable XOF (CXOF) - a
+/// message, an optional customization string, and the expected variable-length output - as parsed from a NIST
 /// Lightweight Cryptography <c>LWC_XOF_KAT</c> / <c>LWC_CXOF_KAT</c> reference file.
 /// </summary>
 public sealed record XofKnownAnswer

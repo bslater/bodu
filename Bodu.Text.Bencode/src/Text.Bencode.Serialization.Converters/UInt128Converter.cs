@@ -17,7 +17,7 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// </summary>
 /// <remarks>
 /// Bencode integers are arbitrary-precision per BEP 3, but this implementation reads and writes through the 64-bit
-/// surfaces, so a <see cref="UInt128" /> above <see cref="ulong.MaxValue" /> cannot be written — mirroring the way the
+/// surfaces, so a <see cref="UInt128" /> above <see cref="ulong.MaxValue" /> cannot be written - mirroring the way the
 /// signed 128-bit type is confined to the signed 64-bit range by <see cref="IntegerConverter{T}" />. A negative
 /// document value surfaces as a <see cref="BencodeSerializationException" />, matching the overflow contract of
 /// <see cref="UInt64Converter" />.

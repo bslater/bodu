@@ -36,7 +36,7 @@ public partial class DequeTests
     }
 
     /// <summary>
-    /// Verifies that switching <see cref="Deque{T}.AllowGrow"/> off does not shrink the existing capacity —
+    /// Verifies that switching <see cref="Deque{T}.AllowGrow"/> off does not shrink the existing capacity -
     /// any room already allocated remains available.
     /// </summary>
     [TestMethod]

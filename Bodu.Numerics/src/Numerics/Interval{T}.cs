@@ -19,7 +19,7 @@ namespace Bodu.Numerics;
 /// <see cref="Interval{T}" /> is the value-typed building block for working with numeric ranges as first-class data.
 /// Rather than encoding a range as a <c>(min, max)</c> tuple or a pair of <c>bool</c> predicates and threading the
 /// inclusivity convention through every call site, an interval carries both endpoints and their inclusivity in a single
-/// immutable value, with set algebra — membership, containment, intersection, union, overlap, adjacency — defined on
+/// immutable value, with set algebra - membership, containment, intersection, union, overlap, adjacency - defined on
 /// the type. Reach for it whenever the range itself is a value the code passes around, validates against, intersects,
 /// merges, or persists. <see cref="Interval{T}" /> is more general than <c>System.Range</c> (which is integer-only and
 /// always <c>[start, end)</c>) and safer than untyped tuples or <c>(bool, bool)</c> flags, where the inclusivity
@@ -35,12 +35,12 @@ namespace Bodu.Numerics;
 /// An interval is the set of values <c>x</c> such that <c>Lower &#x2264; x &#x2264; Upper</c> (closed-closed),
 /// <c>Lower &lt; x &lt; Upper</c> (open-open), <c>Lower &#x2264; x &lt; Upper</c> (closed-open), or
 /// <c>Lower &lt; x &#x2264; Upper</c> (open-closed). Endpoint inclusion is independent for the two sides and is
-/// preserved through every operation defined on the type. The closed-open shape — <c>[a, b)</c> — is the most common in
+/// preserved through every operation defined on the type. The closed-open shape - <c>[a, b)</c> - is the most common in
 /// programming contexts because adjacent half-open intervals partition a span with no overlap and no gap, matching the
 /// conventions of <c>System.Range</c>, LINQ's <c>Enumerable.Range</c>, and slice iterators.
 /// </para>
 /// <para>
-/// An interval is <b>empty</b> when its bounds do not admit any value — either <c>Lower &gt; Upper</c>, or
+/// An interval is <b>empty</b> when its bounds do not admit any value - either <c>Lower &gt; Upper</c>, or
 /// <c>Lower &#x2261; Upper</c> with at least one endpoint open. All empty intervals are equal to <see cref="Empty" />
 /// by <see cref="IEquatable{T}.Equals(T)" />, and a structural pattern-match against an empty instance always returns
 /// the same canonical projection regardless of how the empty value was constructed. The default-constructed
@@ -48,8 +48,8 @@ namespace Bodu.Numerics;
 /// than as a malformed value.
 /// </para>
 /// <para>
-/// Unbounded intervals — those with no lower limit, no upper limit, or neither, written <c>(-&#x221E;, b]</c>,
-/// <c>[a, +&#x221E;)</c>, or <c>(-&#x221E;, +&#x221E;)</c> — are representable through the <see cref="AtLeast(T)" />,
+/// Unbounded intervals - those with no lower limit, no upper limit, or neither, written <c>(-&#x221E;, b]</c>,
+/// <c>[a, +&#x221E;)</c>, or <c>(-&#x221E;, +&#x221E;)</c> - are representable through the <see cref="AtLeast(T)" />,
 /// <see cref="GreaterThan(T)" />, <see cref="AtMost(T)" />, <see cref="LessThan(T)" />, and <see cref="All" />
 /// factories. An unbounded endpoint carries no concrete value and is always open (infinity is never a member);
 /// <see cref="LowerUnbounded" /> and <see cref="UpperUnbounded" /> report which sides, if any, are unbounded, and
@@ -69,13 +69,13 @@ namespace Bodu.Numerics;
 ///<![CDATA[
 /// using Bodu.Numerics;
 ///
-/// // Scheduling windows — closed-open at the end keeps adjacent slots disjoint.
+/// // Scheduling windows - closed-open at the end keeps adjacent slots disjoint.
 /// var morning = Interval<int>.ClosedOpen(9, 12);
 /// var meeting = Interval<int>.ClosedOpen(11, 13);
 /// bool clash   = morning.Overlaps(meeting);            // True
 /// var conflict = morning.Intersect(meeting);           // [11, 12)
 ///
-/// // Validation predicate — a percentage in [0, 100].
+/// // Validation predicate - a percentage in [0, 100].
 /// var percentage = Interval<double>.Closed(0.0, 100.0);
 /// bool ok = percentage.Contains(99.5);                 // True
 ///

@@ -173,7 +173,7 @@ internal static partial class Ghash
 
     /// <summary>
     /// Reduces a 256-bit carry-less product, given as its low, high, and middle terms, to a field element in the
-    /// kernels' byte-reversed representation — the Gueron–Kounavis method: fold the middle term into the halves, shift
+    /// kernels' byte-reversed representation - the Gueron-Kounavis method: fold the middle term into the halves, shift
     /// the whole product left one bit, then reduce modulo <c>x¹²⁸ + x⁷ + x² + x + 1</c> in two phases.
     /// </summary>
     /// <typeparam name="TIsa">The instruction set that supplies the byte shifts.</typeparam>

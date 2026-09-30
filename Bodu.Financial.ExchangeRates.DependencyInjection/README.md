@@ -1,6 +1,6 @@
 # Bodu.Financial.ExchangeRates.DependencyInjection
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 Shared dependency-injection machinery for the
 [Bodu.Financial](../Bodu.Financial) web exchange-rate providers. Every per-source provider
@@ -40,7 +40,7 @@ public static IFinancialServiceBuilder AddAcmeExchangeRates(
 Both an `IConfiguration`-bound overload and a code-only `Action<TOptions>` overload are
 provided, so a provider can be registered from configuration or configured inline.
 
-Consumers do not usually reference this package directly — they add a concrete provider
+Consumers do not usually reference this package directly - they add a concrete provider
 package (which brings this one transitively) and call its `Add…` method.
 
 Part of the [Bodu](https://github.com/bslater/bodu) utility library.

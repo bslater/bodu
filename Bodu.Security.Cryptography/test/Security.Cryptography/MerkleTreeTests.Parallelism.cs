@@ -112,7 +112,7 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that an input spanning many batches — around and beyond the 256-block batch cap — reproduces the
+    /// Verifies that an input spanning many batches - around and beyond the 256-block batch cap - reproduces the
     /// sequential root at several degrees.
     /// </summary>
     /// <param name="leafCount">The number of one-byte leaves.</param>

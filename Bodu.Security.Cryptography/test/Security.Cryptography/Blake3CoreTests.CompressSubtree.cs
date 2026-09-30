@@ -59,7 +59,7 @@ public sealed partial class Blake3CoreTests
     }
 
     /// <summary>
-    /// Verifies that input that is not a power of two of whole chunks — empty, a partial chunk, or three chunks — is
+    /// Verifies that input that is not a power of two of whole chunks - empty, a partial chunk, or three chunks - is
     /// rejected with <see cref="ArgumentException" />.
     /// </summary>
     /// <param name="length">The input's length, in bytes.</param>

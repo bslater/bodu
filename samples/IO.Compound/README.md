@@ -1,6 +1,6 @@
 # IO.Compound Samples
 
-A console application demonstrating the `Bodu.IO.Compound` package — the OLE2 / Compound
+A console application demonstrating the `Bodu.IO.Compound` package - the OLE2 / Compound
 File Binary structured-storage container. Run it with:
 
 ```bash
@@ -8,7 +8,7 @@ dotnet run --project samples/IO.Compound/Bodu.IO.Compound.Samples.CompoundBasics
 ```
 
 The sample is offline and deterministic: in-memory containers plus two committed fixtures
-(`golden-v3.cfb`, 8 KB; `sample1.doc`, 29 KB — a real Word 97-2003 file).
+(`golden-v3.cfb`, 8 KB; `sample1.doc`, 29 KB - a real Word 97-2003 file).
 
 ## Sample → pattern → package matrix
 

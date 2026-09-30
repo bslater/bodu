@@ -126,7 +126,7 @@ public sealed partial class AdjustmentTriggerMatrixTests
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // Fixed-date triggers — comparison month/day projected onto the occurrence year. A per-row fixture lets the
+    // Fixed-date triggers - comparison month/day projected onto the occurrence year. A per-row fixture lets the
     // occurrence date vary so both the strictly-before and strictly-after boundaries are exercised.
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -164,7 +164,7 @@ public sealed partial class AdjustmentTriggerMatrixTests
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // Nth-occurrence-in-month trigger — fires when the occurrence weekday matches the configured weekday AND its
+    // Nth-occurrence-in-month trigger - fires when the occurrence weekday matches the configured weekday AND its
     // day-of-month falls in the seven-day block the ordinal identifies. June 2026 days 1, 8, 15, 22, 29 are Mondays,
     // letting a single weekday cover every ordinal block.
     // -----------------------------------------------------------------------------------------------------------------

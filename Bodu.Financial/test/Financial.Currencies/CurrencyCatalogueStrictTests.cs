@@ -73,7 +73,7 @@ public class CurrencyCatalogueStrictTests
     }
 
     /// <summary>
-    /// Verifies that no extra currency tag types exist beyond what <c>currencies.json</c> declares — catches
+    /// Verifies that no extra currency tag types exist beyond what <c>currencies.json</c> declares - catches
     /// stale generated files that the regeneration cycle might have missed.
     /// </summary>
     [TestMethod]
@@ -112,7 +112,7 @@ public class CurrencyCatalogueStrictTests
     }
 
     /// <summary>
-    /// Verifies that the catalogue has no duplicate ISO codes — a structural invariant the generator should
+    /// Verifies that the catalogue has no duplicate ISO codes - a structural invariant the generator should
     /// preserve.
     /// </summary>
     [TestMethod]

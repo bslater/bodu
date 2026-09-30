@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Estonia (EE) — notable-date resource pack.
+  Estonia (EE) - notable-date resource pack.
 
   Authored on the notable-date schema. All rules are scoped to territory "EE"; Estonia has
   no subdivision-specific public holidays.
@@ -60,13 +60,13 @@
       ============================================================================================================
     -->
 
-    <!-- Spring Day (International Workers' Day) — 1 May. Fixed date. -->
+    <!-- Spring Day (International Workers' Day) - 1 May. Fixed date. -->
     <NotableDate id="spring-day" displayName="Spring Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ee"><Applicability><Territory code="EE" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Second Day of Christmas (Boxing Day) — 26 December. Fixed date; the day after Christmas Day. -->
+    <!-- Second Day of Christmas (Boxing Day) - 26 December. Fixed date; the day after Christmas Day. -->
     <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ee"><Applicability><Territory code="EE" /></Applicability>
         <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
@@ -78,25 +78,25 @@
       ============================================================================================================
     -->
 
-    <!-- Independence Day — 24 February, marking the 1918 declaration of Estonian independence. fromYear 1918 excludes earlier years. -->
+    <!-- Independence Day - 24 February, marking the 1918 declaration of Estonian independence. fromYear 1918 excludes earlier years. -->
     <NotableDate id="independence-day" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ee"><Applicability fromYear="1918"><Territory code="EE" /></Applicability>
         <Strategy><Fixed month="February" day="24" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Victory Day — 23 June, marking the 1919 Battle of Võnnu in the Estonian War of Independence. fromYear 1919 excludes earlier years. -->
+    <!-- Victory Day - 23 June, marking the 1919 Battle of Võnnu in the Estonian War of Independence. fromYear 1919 excludes earlier years. -->
     <NotableDate id="victory-day" displayName="Victory Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ee"><Applicability fromYear="1919"><Territory code="EE" /></Applicability>
         <Strategy><Fixed month="June" day="23" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Midsummer Day (Saint John's Day / Jaanipäev) — 24 June, the traditional midsummer celebration. Fixed date. -->
+    <!-- Midsummer Day (Saint John's Day / Jaanipäev) - 24 June, the traditional midsummer celebration. Fixed date. -->
     <NotableDate id="midsummer-day" displayName="Midsummer Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ee"><Applicability><Territory code="EE" /></Applicability>
         <Strategy><Fixed month="June" day="24" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Day of Restoration of Independence — 20 August, marking the 1991 restoration of Estonian independence from the Soviet Union. fromYear 1991 excludes earlier years. -->
+    <!-- Day of Restoration of Independence - 20 August, marking the 1991 restoration of Estonian independence from the Soviet Union. fromYear 1991 excludes earlier years. -->
     <NotableDate id="day-of-restoration-of-independence" displayName="Day of Restoration of Independence" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ee"><Applicability fromYear="1991"><Territory code="EE" /></Applicability>
         <Strategy><Fixed month="August" day="20" /></Strategy></Rule></Rules>

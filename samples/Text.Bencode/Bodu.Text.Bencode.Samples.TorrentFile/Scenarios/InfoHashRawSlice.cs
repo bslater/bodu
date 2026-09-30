@@ -15,7 +15,7 @@ namespace Bodu.Text.Bencode.Samples.TorrentFile.Scenarios;
 /// <summary>
 /// Demonstrates the raw-slice surface with BitTorrent's most famous requirement: the info-hash is
 /// the SHA-1 of the <c>info</c> dictionary's <em>exact encoded bytes</em>. Because Bencode is
-/// canonical, <see cref="BencodeElement.GetRawBytes" /> hands back precisely that slice — and
+/// canonical, <see cref="BencodeElement.GetRawBytes" /> hands back precisely that slice - and
 /// <see cref="Utf8BencodeWriter.WriteRawValue" /> lets a new document embed it verbatim, so the
 /// hash survives re-authoring.
 /// </summary>

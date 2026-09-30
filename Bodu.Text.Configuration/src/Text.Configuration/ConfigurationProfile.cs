@@ -17,7 +17,7 @@ namespace Bodu.Text.Configuration;
 /// <c>For(profile)</c> factory which produces an options bag preconfigured for the selected profile.
 /// </para>
 /// <para>
-/// Profiles encode opinionated combinations of orthogonal switches. Mixing them is supported — start from the closest
+/// Profiles encode opinionated combinations of orthogonal switches. Mixing them is supported - start from the closest
 /// preset and override the few properties that differ. The behavioural matrix is:
 /// </para>
 /// <list type="table">

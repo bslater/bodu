@@ -13,7 +13,7 @@ public partial class MsgPropertyDecoderTests
 {
     /// <summary>
     /// Verifies that code-page strings decode through the declared message code page regardless of the order the
-    /// code-page entry appears in — the two-pass guarantee.
+    /// code-page entry appears in - the two-pass guarantee.
     /// </summary>
     /// <param name="testName">The scenario label.</param>
     /// <param name="codePage">The declared code page.</param>

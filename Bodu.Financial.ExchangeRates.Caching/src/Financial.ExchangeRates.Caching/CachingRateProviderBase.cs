@@ -27,8 +27,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </para>
 /// <para>
 /// Single-date lookups serve per-row fresh observations and cache the resolved row on a miss. Range lookups serve from
-/// the cache only when its recorded coverage contains the whole requested window — that is, every day in the window was
-/// actually fetched and is still fresh — so an interior day that was never fetched forces a refetch rather than being
+/// the cache only when its recorded coverage contains the whole requested window - that is, every day in the window was
+/// actually fetched and is still fresh - so an interior day that was never fetched forces a refetch rather than being
 /// served from a sparse set of rows. On a miss the whole range is refetched from the inner provider and written back
 /// through a single atomic <see cref="IRateCache.StoreFetchedRange" /> that merges the rows and records the covered
 /// window together, even when the fetch returned no rows, so an empty-but-fetched window is not refetched on the next
@@ -39,35 +39,35 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// When the inner provider advertises its history depth through <see cref="IHistoricalRateProvider" /> and
 /// <see cref="CachingRateOptions.RespectHistoryAvailability" /> is enabled (the default), misses for dates the source
 /// has declared unavailable are not delegated: a single-date lookup outside the advertised history surfaces as an
-/// ordinary miss without an inner call, and a range fetch is clamped to start at the advertised earliest date — or
-/// skipped entirely when the whole window precedes it — while the full requested window is still recorded as covered,
+/// ordinary miss without an inner call, and a range fetch is clamped to start at the advertised earliest date - or
+/// skipped entirely when the whole window precedes it - while the full requested window is still recorded as covered,
 /// so the unavailable prefix is not re-asked until normal expiry.
 /// </para>
 /// <para>
 /// Because this provider is itself an <see cref="IDatedRateProvider" /> and accepts one as its inner source, caching
-/// providers also <em>stack</em>: wrapping a cached provider in a second caching provider forms a tiered read-through —
-/// a fast outer cache (for example in-memory) over a durable inner one (for example SQLite) over the origin — where
+/// providers also <em>stack</em>: wrapping a cached provider in a second caching provider forms a tiered read-through -
+/// a fast outer cache (for example in-memory) over a durable inner one (for example SQLite) over the origin - where
 /// each layer is consulted in turn and only a miss falls through. Bind every layer's cache to the same
 /// <see cref="IRateCache.Provider" /> so a served rate is tagged with the correct source.
 /// </para>
 /// <para>
 /// Both the single-date and range surfaces additionally emit a provenance record alongside each hit/miss diagnostic,
-/// recording whether the rate was resolved live or from the cache, the cache backend that served it, and — for a cache
-/// serve — the age of the served data. The provenance event is logged at
+/// recording whether the rate was resolved live or from the cache, the cache backend that served it, and - for a cache
+/// serve - the age of the served data. The provenance event is logged at
 /// <see cref="CachingRateOptions.RateProvenanceLogLevel" />.
 /// </para>
 /// <para>
 /// Request coalescing is deliberately delegated to the inner provider rather than performed here, so the synchronous
-/// and asynchronous surfaces stay identical: both shipped origin bases already single-flight their downloads —
+/// and asynchronous surfaces stay identical: both shipped origin bases already single-flight their downloads -
 /// <c>WebRateProvider</c> directly through its <c>SingleFlightCoordinator</c>, and <c>PairWebRateProvider</c> through
-/// the same coordinator via its per-pair-and-window coalescing bridge — so concurrent misses for the same source
+/// the same coordinator via its per-pair-and-window coalescing bridge - so concurrent misses for the same source
 /// collapse onto one fetch at the layer where the cost actually lives, and decorator-level coalescing would be
 /// redundant.
 /// </para>
 /// <para>
 /// The provider is <see cref="IDisposable" />. By default it does not dispose the inner provider it wraps, because the
 /// inner is supplied by the caller (and, under dependency injection, owned by the container). Pass <c>ownsInner</c> as
-/// <see langword="true" /> at construction to make disposing this provider also dispose a disposable inner — the case
+/// <see langword="true" /> at construction to make disposing this provider also dispose a disposable inner - the case
 /// where a single owner composes a self-owning source (for example a provider that builds its own
 /// <see cref="System.Net.Http.HttpClient" />) behind the cache by hand.
 /// </para>
@@ -143,7 +143,7 @@ public abstract partial class CachingRateProviderBase
 
     /// <summary>
     /// Gets the history depth this provider advertises, forwarded from the inner provider it wraps. The cache itself
-    /// adds no history of its own — it can only hold what the inner once served — so the decorator is exactly as deep
+    /// adds no history of its own - it can only hold what the inner once served - so the decorator is exactly as deep
     /// as its source.
     /// </summary>
     /// <value>
@@ -416,7 +416,7 @@ public abstract partial class CachingRateProviderBase
     /// <remarks>
     /// Forward-resolving rules (<see cref="RateDateResolution.NextOnOrAfter" /> and the nearest family) can reach up to
     /// <see cref="RateLookupOptions.ToleranceDays" /> past the requested date, so the guard tests that reachable
-    /// maximum rather than the requested date itself — a request just outside the advertised floor whose tolerance
+    /// maximum rather than the requested date itself - a request just outside the advertised floor whose tolerance
     /// reaches back inside it is still delegated.
     /// </remarks>
     private bool IsOutsideAdvertisedHistory(DateOnly date, RateLookupOptions? options, DateTimeOffset now, out DateOnly earliest)
@@ -488,7 +488,7 @@ public abstract partial class CachingRateProviderBase
     /// <param name="asOf">The lookup instant the served data's age is derived from.</param>
     /// <returns>An <see cref="RateProvenance" /> carrying <see cref="RateOrigin.Cache" /> lineage.</returns>
     /// <remarks>
-    /// Used by every serve path — single-date and range, synchronous and asynchronous — so a cache hit reports an
+    /// Used by every serve path - single-date and range, synchronous and asynchronous - so a cache hit reports an
     /// identical provenance regardless of the surface it was served through.
     /// </remarks>
     private RateProvenance CacheServeProvenance(DateTimeOffset? servedCachedAtUtc, DateTimeOffset asOf) =>
@@ -541,7 +541,7 @@ public abstract partial class CachingRateProviderBase
         }
 
         // A resolved (non-identity) serve carries the row the resolver actually selected, so both instants come
-        // straight from it — no re-scan of the candidate lists. Only the same-currency identity serve, which
+        // straight from it - no re-scan of the candidate lists. Only the same-currency identity serve, which
         // synthesizes its rate without a row, falls back to the legacy oldest-candidate scans.
         DateTimeOffset? servedObservedAt;
         if (matched is { } row)
@@ -573,7 +573,7 @@ public abstract partial class CachingRateProviderBase
 
     /// <summary>
     /// Attempts to serve a range request from the cache, treating the window as cached only when the recorded coverage
-    /// contains every day of it — so a window that straddles an unfetched interior gap is not served from a sparse set
+    /// contains every day of it - so a window that straddles an unfetched interior gap is not served from a sparse set
     /// of rows. The direct pair is preferred; a complete inverse-pair coverage serves the window by inverting each rate
     /// when inversion is permitted.
     /// </summary>
@@ -598,8 +598,8 @@ public abstract partial class CachingRateProviderBase
         // inverting each rate, mirroring the single-date serve path.
         //
         // A backend that stores both halves as one unit exposes the snapshot seam, so coverage and rows come from a
-        // single state read; other backends — including the SQLite cache, whose two tables make a coverage-first probe
-        // cheaper — are consulted through the standard IRateCache calls.
+        // single state read; other backends - including the SQLite cache, whose two tables make a coverage-first probe
+        // cheaper - are consulted through the standard IRateCache calls.
         TimeSpan directDuration = EffectiveExpiry(pair, duration);
 
         if (_cache is IRateCacheSnapshotReader reader)
@@ -609,7 +609,7 @@ public abstract partial class CachingRateProviderBase
                 return BuildRange(pair, FreshRows(snapshot, directDuration, now), startDate, endDate, invert: false, out result, out oldestCachedAtUtc);
 
             // When enabled, any fresh direct coverage is evidence the pair is fetched in the direct orientation, so
-            // the inverse probe — a second whole-state backend read — is skipped and the miss refetches instead.
+            // the inverse probe - a second whole-state backend read - is skipped and the miss refetches instead.
             if (AllowInverseRangeServe && ShouldProbeInverse(snapshot.Coverage))
             {
                 TimeSpan inverseDuration = EffectiveExpiry(pair.Inverse(), duration);
@@ -656,8 +656,8 @@ public abstract partial class CachingRateProviderBase
     /// <param name="pair">The pair whose cached data the duration governs.</param>
     /// <param name="duration">The configured caching duration.</param>
     /// <returns>
-    /// The pair's effective duration — shortened by up to <see cref="CachingRateOptions.ExpiryJitter" /> of itself,
-    /// stably per pair — or <paramref name="duration" /> unchanged when jitter is disabled.
+    /// The pair's effective duration - shortened by up to <see cref="CachingRateOptions.ExpiryJitter" /> of itself,
+    /// stably per pair - or <paramref name="duration" /> unchanged when jitter is disabled.
     /// </returns>
     private TimeSpan EffectiveExpiry(CurrencyPair pair, TimeSpan duration)
     {
@@ -858,7 +858,7 @@ public abstract partial class CachingRateProviderBase
     /// reciprocating each rate so a complete inverse-pair coverage can satisfy the requested direction.
     /// </summary>
     /// <param name="cachedPair">
-    /// The pair whose cached rows back the serve — the requested pair, or its inverse when <paramref name="invert" />
+    /// The pair whose cached rows back the serve - the requested pair, or its inverse when <paramref name="invert" />
     /// is set.
     /// </param>
     /// <param name="fresh">The fresh cached rows of <paramref name="cachedPair" />, ordered ascending by date.</param>

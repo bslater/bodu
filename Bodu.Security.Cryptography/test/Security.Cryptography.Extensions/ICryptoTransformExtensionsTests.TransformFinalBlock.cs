@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 public partial class ICryptoTransformExtensionsTests
 {
     // ---------------------------------------------------------------------------------------------------------------
-    // TransformFinalBlock() — no-input overload
+    // TransformFinalBlock() - no-input overload
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -42,7 +42,7 @@ public partial class ICryptoTransformExtensionsTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // TransformFinalBlock(byte[]) — full-array overload
+    // TransformFinalBlock(byte[]) - full-array overload
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -103,7 +103,7 @@ public partial class ICryptoTransformExtensionsTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // TransformFinalBlock(byte[], int) — from-offset overload
+    // TransformFinalBlock(byte[], int) - from-offset overload
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>

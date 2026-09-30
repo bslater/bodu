@@ -26,7 +26,7 @@ public partial class CryptoHelpersTests
 
     /// <summary>
     /// Verifies that <see cref="CryptographyHelper.ConstantTimeSelect" /> copies the <c>whenNonZero</c> operand for
-    /// every non-zero accumulator shape — small, byte-sized, negative, and the extreme integer values — so the
+    /// every non-zero accumulator shape - small, byte-sized, negative, and the extreme integer values - so the
     /// arithmetic mask derivation covers the full input domain.
     /// </summary>
     [TestMethod]

@@ -12,13 +12,13 @@ namespace Bodu.Formats.Outlook;
 /// <summary>
 /// Corruption sweeps over copies of the real reference fixture, driven through the full messaging surface: whatever
 /// bytes are flipped or truncated, the mail reader must either decode clean or fail with the container's
-/// <see cref="PstFileException" /> family or the reader's <see cref="OutlookFormatException" /> family — never
-/// another exception type — at every validation level.
+/// <see cref="PstFileException" /> family or the reader's <see cref="OutlookFormatException" /> family - never
+/// another exception type - at every validation level.
 /// </summary>
 /// <remarks>
 /// This is the format-level counterpart of the container's <c>PstMalformedCorpusTests</c>: the container sweep proves
-/// the node/LTP layers' exception discipline, while this sweep proves the messaging decode built on them — property
-/// translation, recipient rows, attachment objects, embedded messages, bodies, and the name-to-id map — upholds the
+/// the node/LTP layers' exception discipline, while this sweep proves the messaging decode built on them - property
+/// translation, recipient rows, attachment objects, embedded messages, bodies, and the name-to-id map - upholds the
 /// same contract.
 /// </remarks>
 [TestClass]

@@ -126,12 +126,12 @@ public sealed class XmlDocFormatterCDataTests
         }
 
         // Every prose line except possibly the LAST (the trailing remnant of the paragraph) must fill at
-        // least 95 chars — i.e. close to the 112-char content budget. A line that's shorter than 95 chars
+        // least 95 chars - i.e. close to the 112-char content budget. A line that's shorter than 95 chars
         // and not the final line indicates the wrapper bailed early at a clause boundary.
         for (var i = 0; i < proseLineLengths.Count - 1; i++)
         {
             Assert.IsTrue(proseLineLengths[i] >= 95,
-                $"Prose line {i} too short ({proseLineLengths[i]} chars) — suggests clause-aware wrapping is breaking too early.\nAll prose line lengths: {string.Join(", ", proseLineLengths)}\nFull output:\n{result.FormattedText}");
+                $"Prose line {i} too short ({proseLineLengths[i]} chars) - suggests clause-aware wrapping is breaking too early.\nAll prose line lengths: {string.Join(", ", proseLineLengths)}\nFull output:\n{result.FormattedText}");
         }
     }
 
@@ -159,7 +159,7 @@ public sealed class XmlDocFormatterCDataTests
 
     /// <summary>
     /// Verifies that a <c>&lt;para&gt;</c> block whose prose is followed by a <c>&lt;code&gt;</c> element on
-    /// its own line — the pattern that triggered BODU1002 — is considered canonical and round-trips unchanged.
+    /// its own line - the pattern that triggered BODU1002 - is considered canonical and round-trips unchanged.
     /// Before the fix, the formatter packed <c>&lt;code&gt;</c> inline onto the preceding prose line, causing
     /// the analyser to report a difference and the code-fix provider to produce incorrect output.
     /// </summary>
@@ -169,7 +169,7 @@ public sealed class XmlDocFormatterCDataTests
         // Base indent is empty to match the real-world shape of a file-scoped class doc comment
         // (e.g. GcmSivModeTransform.cs). The content budget is 120 - 0 - 4 = 116 chars, which
         // accommodates the 113-char prose line without rewrapping. With a 4-char base indent the
-        // budget drops to 112 and the prose would be reformatted — that is a correct reformat, not
+        // budget drops to 112 and the prose would be reformatted - that is a correct reformat, not
         // the bug; the bug was specifically <code> being pulled onto the preceding prose line.
         var input =
             "/// <remarks>\r\n" +

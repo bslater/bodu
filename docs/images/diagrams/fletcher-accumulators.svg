@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-labelledby="fl-title fl-desc">
-  <title id="fl-title">Fletcher checksum — twin accumulators A and B</title>
+  <title id="fl-title">Fletcher checksum - twin accumulators A and B</title>
   <desc id="fl-desc">The Fletcher checksum maintains two running accumulators, A and B, both reduced modulo a prime near 2^(N/2). For each input word, A accumulates the word and B accumulates the running A. The output is B concatenated with A, truncated to the chosen width (16, 32, or 64 bits). The position-dependent coupling of B on A is what gives Fletcher its detection power.</desc>
 
   <defs>
@@ -44,7 +44,7 @@
     <rect class="panel" width="800" height="280" rx="8"/>
     <rect class="header" width="800" height="46" rx="8"/>
     <rect class="header" y="38" width="800" height="8"/>
-    <text class="title" x="16" y="20">Fletcher — twin accumulators A, B (mod M)</text>
+    <text class="title" x="16" y="20">Fletcher - twin accumulators A, B (mod M)</text>
     <text class="formula" x="784" y="38" text-anchor="end">A ← (A + wᵢ) mod M;   B ← (B + A) mod M;   output = (B « N⁄2) | A</text>
 
     <!-- incoming words -->
@@ -95,9 +95,9 @@
     <!-- width legend -->
     <g transform="translate(640 60)">
       <text class="sub" x="0" y="0">Widths:</text>
-      <text class="sub-muted" x="0" y="18">Fletcher-16 — M = 2^8  − 1</text>
-      <text class="sub-muted" x="0" y="34">Fletcher-32 — M = 2^16 − 1</text>
-      <text class="sub-muted" x="0" y="50">Fletcher-64 — M = 2^32 − 1</text>
+      <text class="sub-muted" x="0" y="18">Fletcher-16 - M = 2^8  − 1</text>
+      <text class="sub-muted" x="0" y="34">Fletcher-32 - M = 2^16 − 1</text>
+      <text class="sub-muted" x="0" y="50">Fletcher-64 - M = 2^32 − 1</text>
     </g>
 
     <!-- footer note -->

@@ -10,9 +10,9 @@ namespace Bodu.Formats.Excel.Binary.Samples.ExcelReading.Scenarios;
 
 /// <summary>
 /// Demonstrates the workbook session: <see cref="ExcelBinaryWorkbook" /> opens the container
-/// once, exposes the sheet directory (<see cref="ExcelWorksheetInfo" /> — name, visibility,
+/// once, exposes the sheet directory (<see cref="ExcelWorksheetInfo" /> - name, visibility,
 /// type, declared used range), the flattened document properties, and the workbook's declared
-/// date system — everything you need to decide what to read before reading any cells.
+/// date system - everything you need to decide what to read before reading any cells.
 /// </summary>
 public static class WorkbookAndSheets
 {

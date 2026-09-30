@@ -29,7 +29,7 @@ namespace Bodu.Security.Cryptography;
 /// <description>State / block size: 512 bits (64 bytes).</description>
 /// </item>
 /// <item>
-/// <description>Output sizes: 128, 160, 224, 256, 384, or 512 bits — default 512.</description>
+/// <description>Output sizes: 128, 160, 224, 256, 384, or 512 bits - default 512.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -37,12 +37,12 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>Optional variable-length key: 0–<see cref="Skein.MaxKeySize" /> / 8 bytes.</description>
+/// <description>Optional variable-length key: 0-<see cref="Skein.MaxKeySize" /> / 8 bytes.</description>
 /// </item>
 /// </list>
 /// <para>
 /// <strong>When to choose Skein-512.</strong> The general-purpose Skein default, recommended by the Skein 1.3
-/// specification — pick this when reproducing or interoperating with Skein-based digests. For new code without an
+/// specification - pick this when reproducing or interoperating with Skein-based digests. For new code without an
 /// interop requirement <see cref="Blake2b" /> is faster on contemporary 64-bit hardware and SHA-2 / SHA-3 are more
 /// widely deployed. Use <see cref="Skein256" /> for narrower state, <see cref="Skein1024" /> for the widest.
 /// </para>

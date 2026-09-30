@@ -13,8 +13,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </summary>
 /// <remarks>
 /// <para>
-/// CUSIP body characters are drawn from the decimal digits (<c>'0'</c>–<c>'9'</c>), uppercase Latin letters (<c>'A'</c>
-/// –<c>'Z'</c>, with values 10–35), and the historical sentinels <c>'*'</c>=36, <c>'@'</c>=37 and <c>'#'</c>=38. The
+/// CUSIP body characters are drawn from the decimal digits (<c>'0'</c>-<c>'9'</c>), uppercase Latin letters (<c>'A'</c>
+/// -<c>'Z'</c>, with values 10-35), and the historical sentinels <c>'*'</c>=36, <c>'@'</c>=37 and <c>'#'</c>=38. The
 /// body is eight characters; the ninth character is the check digit.
 /// </para>
 /// <para>
@@ -23,7 +23,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// being added to the running total. The check digit is chosen so that the total is a multiple of ten.
 /// </para>
 /// <para>
-/// <b>Worked example.</b> For the body <c>"03783310"</c> — Apple Inc. — the computed check digit is <c>'0'</c>, and the
+/// <b>Worked example.</b> For the body <c>"03783310"</c> - Apple Inc. - the computed check digit is <c>'0'</c>, and the
 /// resulting CUSIP <c>"037833100"</c> is therefore valid.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
@@ -32,7 +32,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Apple Inc. — CUSIP body "03783310".
+/// // Apple Inc. - CUSIP body "03783310".
 /// char check = Cusip.Compute("03783310");   // '0'
 ///
 /// // Full-sequence validation.
@@ -104,7 +104,7 @@ public sealed class Cusip
     /// </summary>
     /// <param name="valueIncludingCheck">The complete nine-character CUSIP.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence evaluates as valid under CUSIP; otherwise, <see langword="false" /> —
+    /// <see langword="true" /> if the sequence evaluates as valid under CUSIP; otherwise, <see langword="false" /> -
     /// including the case where <paramref name="valueIncludingCheck" /> is empty, the length is wrong, any body
     /// character is outside the CUSIP alphabet, or the check character is not a decimal digit.
     /// </returns>

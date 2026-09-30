@@ -12,7 +12,7 @@ namespace Bodu.Text.Filtering;
 public enum TextFilterDecision
 {
     /// <summary>
-    /// The value was accepted without any pattern matching it — in <see cref="TextFilterEvaluationMode.AnyMatch" />
+    /// The value was accepted without any pattern matching it - in <see cref="TextFilterEvaluationMode.AnyMatch" />
     /// because the include set is empty, or in <see cref="TextFilterEvaluationMode.LastMatchWins" /> because no rule
     /// matched.
     /// </summary>

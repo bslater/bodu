@@ -19,7 +19,7 @@ namespace Bodu.Formats.Outlook.Pst;
 /// <remarks>
 /// <para>
 /// Entry <c>i</c> of the entry stream defines the property identifier <c>0x8000 + wPropIdx</c>. Each 8-byte record
-/// carries a numeric name identifier or a string-stream offset, a kind bit, and a GUID index — <c>1</c> for
+/// carries a numeric name identifier or a string-stream offset, a kind bit, and a GUID index - <c>1</c> for
 /// <c>PS_MAPI</c>, <c>2</c> for <c>PS_PUBLIC_STRINGS</c>, and <c>3 + n</c> for the <c>n</c>-th GUID of the GUID stream.
 /// A string name is a 4-byte byte length followed by UTF-16LE text.
 /// </para>
@@ -27,8 +27,8 @@ namespace Bodu.Formats.Outlook.Pst;
 /// A record is malformed when its GUID index does not resolve, its string offset or length leaves the string stream,
 /// its string name is empty or whitespace, or its property index would place the identifier outside the named range.
 /// Under strict parsing a malformed record throws the consuming format's exception; otherwise it is skipped. This file
-/// lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader — the record
-/// layout is identical in a <c>.msg</c> <c>__nameid_version1.0</c> storage and a PST name-to-id map node — and the
+/// lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader - the record
+/// layout is identical in a <c>.msg</c> <c>__nameid_version1.0</c> storage and a PST name-to-id map node - and the
 /// consuming project selects the namespace and exception type via its <c>DefineConstants</c>.
 /// </para>
 /// </remarks>

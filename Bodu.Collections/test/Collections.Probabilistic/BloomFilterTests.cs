@@ -31,7 +31,7 @@ public sealed partial class BloomFilterTests
 
     /// <summary>
     /// A reference-type equality comparer whose <see cref="object.Equals(object)" /> is reference-based, so two
-    /// instances are never equal — used to drive the <see cref="BloomFilter{T}.UnionWith" /> comparer-compatibility
+    /// instances are never equal - used to drive the <see cref="BloomFilter{T}.UnionWith" /> comparer-compatibility
     /// checks.
     /// </summary>
     private sealed class ReferenceOnlyIntComparer

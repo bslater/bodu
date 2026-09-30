@@ -49,7 +49,7 @@ public partial class BitSetTests
 
     /// <summary>
     /// Verifies that <see cref="BitSet.NextClearBit" /> returns the capacity when every allocated bit from the start
-    /// index onward is set — the first conceptually clear bit lies beyond the storage.
+    /// index onward is set - the first conceptually clear bit lies beyond the storage.
     /// </summary>
     [TestMethod]
     public void NextClearBit_WhenAllAllocatedBitsSet_ShouldReturnCapacity()
@@ -62,7 +62,7 @@ public partial class BitSetTests
     }
 
     /// <summary>
-    /// Verifies that a start index at or beyond the capacity is returned unchanged — such bits are conceptually
+    /// Verifies that a start index at or beyond the capacity is returned unchanged - such bits are conceptually
     /// clear, so the result is never −1.
     /// </summary>
     [TestMethod]

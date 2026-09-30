@@ -9,7 +9,7 @@ using Bodu.Text.Encoding;
 namespace Bodu.Samples.Text.Encoding.EncodingTour.Scenarios;
 
 /// <summary>
-/// Demonstrates the checksummed schemes — encodings for identifiers humans re-type:
+/// Demonstrates the checksummed schemes - encodings for identifiers humans re-type:
 /// <see cref="Base58Check" /> (Bitcoin addresses; a 4-byte double-SHA-256 checksum) and
 /// <see cref="Bech32" /> (BIP 173; a BCH code plus a human-readable part). A single corrupted
 /// character makes decode fail instead of silently yielding wrong bytes.

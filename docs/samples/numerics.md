@@ -7,8 +7,8 @@ title: Runnable samples
 The repository ships runnable, self-contained sample projects for `Bodu.Numerics` (and its
 `Bodu.Numerics.Serialization.Json` companion) under
 [`samples/Numerics/`](https://github.com/bslater/bodu/tree/master/samples/Numerics). All four
-samples are **offline and deterministic** — they format with the invariant culture so output
-does not vary by machine — and are members of `bodu.slnx`, built and executed by CI, so the code
+samples are **offline and deterministic** - they format with the invariant culture so output
+does not vary by machine - and are members of `bodu.slnx`, built and executed by CI, so the code
 they show cannot drift from the current API. Each sample's README documents every scenario
 individually: its intent, what the code does, the output to expect, and the APIs demonstrated.
 
@@ -25,7 +25,7 @@ dotnet run --project samples/Numerics/<SampleName>
 Exact rational arithmetic with <xref:Bodu.Numerics.Fraction`1>: construction and auto-reduction,
 `+ − × ÷` over `Fraction<int>` and `Fraction<BigInteger>`, parse/format, `Fraction<T>` as a
 first-class <xref:System.Numerics.INumber`1> in generic algorithms, and the continued-fraction
-surface (`ToContinuedFraction`, `Approximate`, `LimitDenominator` — e.g. approximating π to
+surface (`ToContinuedFraction`, `Approximate`, `LimitDenominator` - e.g. approximating π to
 `355/113`). *Package: `Bodu.Numerics`.*
 
 ### Bodu.Numerics.Samples.Intervals
@@ -50,7 +50,7 @@ variance and standard deviation, min/max), the sliding-window `MovingSum<T>` and
 <xref:System.Numerics.Complex>: the arithmetic operators (including the non-componentwise
 multiply), `Conjugate` / `Reciprocal` / `Magnitude` / `Phase`, polar construction, and the
 transcendental surface (`Sqrt` of a negative real, Euler's identity through `Exp`, `Log`, `Pow`,
-and the trig functions) — each result printed beside `System.Numerics.Complex`'s answer for the
+and the trig functions) - each result printed beside `System.Numerics.Complex`'s answer for the
 same call. A closing scenario runs one generic Mandelbrot iteration over `Complex<float>`,
 `Complex<double>`, and `Complex<Half>` to show where the precision choice actually changes the
 answer, and covers parse/format round-tripping and the `Equals`-versus-`==` split on `NaN`.
@@ -66,5 +66,5 @@ round-trip in one document. *Package: `Bodu.Numerics.Serialization.Json`.*
 
 ## Related
 
-- [Financial samples](financial.md) — money and exchange-rate types, including a dedicated JSON
+- [Financial samples](financial.md) - money and exchange-rate types, including a dedicated JSON
   sample built on the same companion-package pattern.

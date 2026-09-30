@@ -29,8 +29,8 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfCollectionTooSmall{T}" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for collections that meet or exceed the required
+    /// Verifies that <see cref="ThrowHelper.ThrowIfCollectionTooSmall{T}" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for collections that meet or exceed the required
     /// minimum count.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

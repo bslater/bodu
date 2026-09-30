@@ -26,12 +26,12 @@
 
   <NotableDates>
 
-    <!-- Democracy Day — 12 June, marking the 1993 election; moved to this date in 2019 (previously 29 May). Strategy: Fixed day-of-month. -->
+    <!-- Democracy Day - 12 June, marking the 1993 election; moved to this date in 2019 (previously 29 May). Strategy: Fixed day-of-month. -->
     <NotableDate id="democracy-day-ng" displayName="Democracy Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ng"><Applicability fromYear="2019"><Territory code="NG" /></Applicability><Strategy><Fixed month="June" day="12" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Independence Day — 1 October, marking the 1960 independence from the United Kingdom. Strategy: Fixed day-of-month. -->
+    <!-- Independence Day - 1 October, marking the 1960 independence from the United Kingdom. Strategy: Fixed day-of-month. -->
     <NotableDate id="independence-day-ng" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ng"><Applicability><Territory code="NG" /></Applicability><Strategy><Fixed month="October" day="1" /></Strategy></Rule></Rules>
     </NotableDate>

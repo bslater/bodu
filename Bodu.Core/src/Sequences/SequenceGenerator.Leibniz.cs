@@ -14,7 +14,7 @@ public static partial class SequenceGenerator
     /// </summary>
     /// <param name="min">
     /// The inclusive lower bound on the absolute value of emitted terms. Because term magnitudes strictly decrease,
-    /// iteration ends as soon as <c>|F(n)| &lt; <paramref name="min" /></c> — no later term can re-enter the window.
+    /// iteration ends as soon as <c>|F(n)| &lt; <paramref name="min" /></c> - no later term can re-enter the window.
     /// Must be non-negative; a value of <c>0</c> produces an unbounded sequence (bound consumption with <c>Take</c>).
     /// </param>
     /// <param name="max">
@@ -45,8 +45,8 @@ public static partial class SequenceGenerator
     /// </para>
     /// <para>
     /// Because the magnitude sequence <c>1, 1/3, 1/5, …</c> starts at one and is monotonically decreasing, the upper
-    /// bound only ever gates the first term — a <paramref name="max" /> of <c>1</c> or less terminates immediately with
-    /// an empty sequence — and once a term drops below <paramref name="min" /> no later term can return to the window,
+    /// bound only ever gates the first term - a <paramref name="max" /> of <c>1</c> or less terminates immediately with
+    /// an empty sequence - and once a term drops below <paramref name="min" /> no later term can return to the window,
     /// so ending iteration there is what keeps the sequence finite. The iterator is deferred, deterministic, and
     /// allocates only its own state.
     /// </para>
@@ -74,7 +74,7 @@ public static partial class SequenceGenerator
             double magnitude = 1.0 / ((2 * n) + 1);
 
             // Magnitudes strictly decrease from 1, so a term at or above the upper bound can only be the first term,
-            // and a term below the lower bound can never be followed by one back inside the window — both end iteration.
+            // and a term below the lower bound can never be followed by one back inside the window - both end iteration.
             if (magnitude >= max || magnitude < min)
                 yield break;
 

@@ -11,8 +11,8 @@ namespace Bodu.IO.Biff;
 /// </summary>
 /// <remarks>
 /// Both options seed state the reader would otherwise establish from the stream itself. They exist for the case where
-/// the surrounding context already knows the answer — for example a sheet substream read after the workbook globals
-/// have fixed the version and code page — so the reader need not see a <c>BOF</c> or <c>CODEPAGE</c> record first.
+/// the surrounding context already knows the answer - for example a sheet substream read after the workbook globals
+/// have fixed the version and code page - so the reader need not see a <c>BOF</c> or <c>CODEPAGE</c> record first.
 /// </remarks>
 public readonly struct BiffReaderOptions
 {

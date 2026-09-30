@@ -12,7 +12,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// write, distinguishing a durable success from a swallowed storage failure and from a deliberate no-op cache.
 /// </summary>
 /// <remarks>
-/// The status exists so a caller — most notably the caching decorator — can tell whether the rows and coverage window
+/// The status exists so a caller - most notably the caching decorator - can tell whether the rows and coverage window
 /// were actually persisted. A <see cref="Failed" /> result signals that nothing was persisted (a backing-store error
 /// was swallowed to keep the cache best-effort), so a subsequent range lookup must refetch rather than trust the
 /// coverage; this closes the window in which a half-completed write left coverage recorded without its rows.

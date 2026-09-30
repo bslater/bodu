@@ -39,8 +39,8 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiDecimalDigit" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for accepted ASCII decimal digits.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiDecimalDigit" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for accepted ASCII decimal digits.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="value">The character passed to the guard.</param>

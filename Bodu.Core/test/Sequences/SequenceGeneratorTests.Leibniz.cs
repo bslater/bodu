@@ -103,7 +103,7 @@ public partial class SequenceGeneratorTests
 
     /// <summary>
     /// Verifies that the magnitudes of the emitted terms always sit within the [min, max) window when both bounds
-    /// straddle the emitted term sequence — the lower bound filters terms with smaller magnitude, the upper bound is
+    /// straddle the emitted term sequence - the lower bound filters terms with smaller magnitude, the upper bound is
     /// large enough that the generator does not terminate before yielding the requested number of items.
     /// </summary>
     [TestMethod]

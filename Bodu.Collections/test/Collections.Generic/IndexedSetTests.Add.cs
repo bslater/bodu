@@ -38,7 +38,7 @@ public partial class IndexedSetTests
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
     }
     // --------------------------------------------------------
-    // Add — argument validation
+    // Add - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -56,7 +56,7 @@ public partial class IndexedSetTests
     }
 
     // --------------------------------------------------------
-    // Add — behaviour
+    // Add - behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -91,7 +91,7 @@ public partial class IndexedSetTests
     }
 
     // --------------------------------------------------------
-    // AddRange — behaviour
+    // AddRange - behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -139,7 +139,7 @@ public partial class IndexedSetTests
     }
 
     // --------------------------------------------------------
-    // AddRange — argument validation
+    // AddRange - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -173,7 +173,7 @@ public partial class IndexedSetTests
     }
 
     // --------------------------------------------------------
-    // ICollection<T>.Add — explicit implementation (from IList<T>)
+    // ICollection<T>.Add - explicit implementation (from IList<T>)
     // --------------------------------------------------------
 
     /// <summary>

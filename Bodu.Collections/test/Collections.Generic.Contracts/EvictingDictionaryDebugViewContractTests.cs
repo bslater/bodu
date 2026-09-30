@@ -10,7 +10,7 @@ namespace Bodu.Collections.Generic.Contracts;
 /// <summary>
 /// Drives <see cref="DebugViewContractTests{TCollection}" /> against
 /// <see cref="EvictingDictionary{TKey, TValue}" />. Asserts the standard Bodu debugger-display
-/// contract — DebuggerDisplay, DebuggerTypeProxy, and an instance-constructible proxy — is present
+/// contract - DebuggerDisplay, DebuggerTypeProxy, and an instance-constructible proxy - is present
 /// and wired up correctly.
 /// </summary>
 [TestClass]

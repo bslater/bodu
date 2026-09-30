@@ -28,8 +28,8 @@ public sealed partial class Utf8TomlReaderTests
         new(Encoding.UTF8.GetBytes(toml), new TomlReaderOptions { SpecVersion = specVersion });
 
     /// <summary>
-    /// Drains the lexer to the end of the document, formatting each token as <c>TokenType(value)</c> — with a
-    /// trailing <c>!</c> marking a final key segment — so a test can assert the exact source-order token sequence.
+    /// Drains the lexer to the end of the document, formatting each token as <c>TokenType(value)</c> - with a
+    /// trailing <c>!</c> marking a final key segment - so a test can assert the exact source-order token sequence.
     /// </summary>
     /// <param name="lexer">The lexer to drain.</param>
     /// <returns>The formatted token entries in read order.</returns>
@@ -43,8 +43,8 @@ public sealed partial class Utf8TomlReaderTests
     }
 
     /// <summary>
-    /// Formats the reader's current token as <c>TokenType(value)</c> — with a trailing <c>!</c> marking a final key
-    /// segment — for exact token-sequence assertions.
+    /// Formats the reader's current token as <c>TokenType(value)</c> - with a trailing <c>!</c> marking a final key
+    /// segment - for exact token-sequence assertions.
     /// </summary>
     /// <param name="lexer">The reader positioned on the token to format.</param>
     /// <returns>The formatted token entry.</returns>

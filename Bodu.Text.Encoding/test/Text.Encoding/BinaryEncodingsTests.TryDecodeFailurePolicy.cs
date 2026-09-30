@@ -43,7 +43,7 @@ public sealed class BinaryEncodingsTests_TryDecodeFailurePolicy
     /// <summary>
     /// Verifies that every <see cref="IBinaryEncoding" /> adapter returns <see langword="false" /> and sets
     /// <c>bytesWritten</c> to zero when handed malformed input that the adapter cannot decode. The destination
-    /// contents are intentionally unspecified — this test pins the <c>bytesWritten</c> contract only.
+    /// contents are intentionally unspecified - this test pins the <c>bytesWritten</c> contract only.
     /// </summary>
     /// <param name="encoding">The encoding under test.</param>
     /// <param name="malformed">An input string that the encoding rejects.</param>

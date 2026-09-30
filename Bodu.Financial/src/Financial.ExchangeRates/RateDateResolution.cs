@@ -45,14 +45,14 @@ public enum RateDateResolution
     /// <summary>
     /// The available rate whose date is closest to the requested date is used; if the previous and next dates are
     /// equally close, the previous date wins. When the two candidates have <i>different</i> distances, the closer one
-    /// is selected regardless of preference — the preference applies only at exact ties.
+    /// is selected regardless of preference - the preference applies only at exact ties.
     /// </summary>
     NearestPreferPrevious = 4,
 
     /// <summary>
     /// The available rate whose date is closest to the requested date is used; if the previous and next dates are
     /// equally close, the next date wins. When the two candidates have <i>different</i> distances, the closer one is
-    /// selected regardless of preference — the preference applies only at exact ties.
+    /// selected regardless of preference - the preference applies only at exact ties.
     /// </summary>
     NearestPreferNext = 5,
 }

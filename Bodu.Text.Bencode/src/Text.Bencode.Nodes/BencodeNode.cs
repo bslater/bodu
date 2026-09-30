@@ -13,7 +13,7 @@ namespace Bodu.Text.Bencode.Nodes;
 
 /// <summary>
 /// Represents a single node in a mutable Bencode (BEP 3) document object model, serving as the base for the three
-/// concrete node kinds — <see cref="BencodeObject" />, <see cref="BencodeArray" />, and <see cref="BencodeValue" />.
+/// concrete node kinds - <see cref="BencodeObject" />, <see cref="BencodeArray" />, and <see cref="BencodeValue" />.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -206,8 +206,8 @@ public abstract class BencodeNode
     /// Thrown when <paramref name="data" /> is empty or is not valid canonical Bencode.
     /// </exception>
     /// <remarks>
-    /// The underlying reader enforces the canonical grammar — a single root value, ascending unique dictionary keys,
-    /// and no trailing bytes — so a successful parse round-trips byte-for-byte through <see cref="ToByteArray" />.
+    /// The underlying reader enforces the canonical grammar - a single root value, ascending unique dictionary keys,
+    /// and no trailing bytes - so a successful parse round-trips byte-for-byte through <see cref="ToByteArray" />.
     /// </remarks>
     public static BencodeNode? Parse(ReadOnlySpan<byte> data) =>
         Parse(data, default);

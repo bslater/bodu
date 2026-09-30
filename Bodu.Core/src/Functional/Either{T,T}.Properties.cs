@@ -12,7 +12,7 @@ public readonly partial struct Either<TLeft, TRight>
     /// Gets a value indicating whether this either carries a left value.
     /// </summary>
     /// <value>
-    /// <see langword="true" /> if the left side is active; otherwise, <see langword="false" /> — including for
+    /// <see langword="true" /> if the left side is active; otherwise, <see langword="false" /> - including for
     /// <c>default(Either&lt;TLeft, TRight&gt;)</c>, which carries neither side.
     /// </value>
     /// <remarks>
@@ -29,7 +29,7 @@ public readonly partial struct Either<TLeft, TRight>
     /// Gets a value indicating whether this either carries a right value.
     /// </summary>
     /// <value>
-    /// <see langword="true" /> if the right side is active; otherwise, <see langword="false" /> — including for
+    /// <see langword="true" /> if the right side is active; otherwise, <see langword="false" /> - including for
     /// <c>default(Either&lt;TLeft, TRight&gt;)</c>, which carries neither side.
     /// </value>
     /// <remarks>

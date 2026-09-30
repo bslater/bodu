@@ -12,7 +12,7 @@ namespace Bodu.IO.Pst.Internal;
 /// <c>HNID</c> as variable-size data.
 /// </summary>
 /// <remarks>
-/// This layer deliberately carries no MAPI semantics — the codes stay raw <see langword="ushort" /> values; the
+/// This layer deliberately carries no MAPI semantics - the codes stay raw <see langword="ushort" /> values; the
 /// classification only records each type's storage width so values can be resolved without misreading the file.
 /// </remarks>
 internal static class PstWireType

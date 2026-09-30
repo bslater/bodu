@@ -23,8 +23,8 @@ namespace Bodu.Security.Cryptography;
 /// process by enabling the <see cref="DisableSimdSwitchName" /> feature switch.
 /// </para>
 /// <para>
-/// The switch exists for <strong>determinism, reproducibility, and audit</strong> — pinning execution to the single
-/// scalar reference implementation — not because the vectorized paths are unsafe. Every gated kernel uses only
+/// The switch exists for <strong>determinism, reproducibility, and audit</strong> - pinning execution to the single
+/// scalar reference implementation - not because the vectorized paths are unsafe. Every gated kernel uses only
 /// arithmetic, rotations, XORs, and shuffles by constant indices, with no secret-dependent branches or table lookups,
 /// so the scalar and vector paths produce bit-identical output. This type therefore makes no constant-time <em>guarantee</em>;
 /// it only lets a caller select which of two equivalent implementations runs.
@@ -33,7 +33,7 @@ namespace Bodu.Security.Cryptography;
 /// The switch is read once at type initialization via <see cref="AppContext.TryGetSwitch(string, out bool)" />, so it
 /// must be set before the first use of any accelerated primitive (for example through <c>runtimeconfig.json</c>, an
 /// <c>&lt;RuntimeHostConfigurationOption&gt;</c> MSBuild item, or an early
-/// <see cref="AppContext.SetSwitch(string, bool)" /> call). When the switch is off — the default — each property
+/// <see cref="AppContext.SetSwitch(string, bool)" /> call). When the switch is off - the default - each property
 /// reduces to the underlying hardware intrinsic, which the JIT folds to a compile-time constant on hosts without the
 /// instruction set, eliminating the vectorized branch entirely; when the instruction set is present it reduces to a
 /// single cached-boolean load.

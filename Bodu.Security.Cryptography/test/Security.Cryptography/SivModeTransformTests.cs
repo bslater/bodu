@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Tests for <see cref="SivModeTransform" /> (RFC 5297 — AES-SIV with CMAC and S2V).
+/// Tests for <see cref="SivModeTransform" /> (RFC 5297 - AES-SIV with CMAC and S2V).
 /// </summary>
 [TestClass]
 public sealed partial class SivModeTransformTests
@@ -26,7 +26,7 @@ public sealed partial class SivModeTransformTests
     /// <inheritdoc />
     /// <remarks>
     /// <see cref="CreateTransform" /> does not forward the <paramref name="cipher" /> argument to the
-    /// production constructor — it uses fixed AES keys for both the S2V and CTR ciphers. Passing
+    /// production constructor - it uses fixed AES keys for both the S2V and CTR ciphers. Passing
     /// <see langword="null" /> therefore never reaches the null-check in
     /// <see cref="SivModeTransform" />, so the base-class cipher-null test is not applicable here.
     /// </remarks>
@@ -38,9 +38,9 @@ public sealed partial class SivModeTransformTests
     // XOR cipher, tampering the SIV causes CTR to produce a new "plaintext" whose S2V equals
     // the tampered SIV, so FixedTimeEquals always passes and no CryptographicException is thrown.
     private static readonly byte[] s_s2vTestKey =
-        Convert.FromHexString("fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0"); // K1 — matches RFC 5297 A.1
+        Convert.FromHexString("fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0"); // K1 - matches RFC 5297 A.1
     private static readonly byte[] s_ctrTestKey =
-        Convert.FromHexString("f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"); // K2 — matches RFC 5297 A.1
+        Convert.FromHexString("f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"); // K2 - matches RFC 5297 A.1
 
     /// <summary>
     /// Creates a <see cref="SivModeTransform" /> backed by two distinct AES-128 ciphers

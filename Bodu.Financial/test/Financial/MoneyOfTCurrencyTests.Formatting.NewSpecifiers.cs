@@ -12,7 +12,7 @@ namespace Bodu.Financial;
 public partial class MoneyOfTCurrencyTests
 {
     // ---------------------------------------------------------------------------------------------------------------
-    // L specifier — English currency name appended to the numeric portion.
+    // L specifier - English currency name appended to the numeric portion.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -113,7 +113,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // R specifier — invariant round-trip form.
+    // R specifier - invariant round-trip form.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>

@@ -10,8 +10,8 @@ namespace Bodu.Text.Encoding.Contracts;
 /// <summary>
 /// Drives <see cref="BinaryEncodingContractTests{TEncoding}" /> against <see cref="Base32" /> with the
 /// canonical RFC 4648 §10 vectors. Validates that the contract base wires up to <see cref="Base32" />'s
-/// static surface and round-trips bytes through every code path. Bespoke Base32 tests (variants —
-/// Crockford, ExtendedHex, ZBase32 — formatting options, span overloads) live in the existing
+/// static surface and round-trips bytes through every code path. Bespoke Base32 tests (variants -
+/// Crockford, ExtendedHex, ZBase32 - formatting options, span overloads) live in the existing
 /// <c>Base32Tests.*.cs</c> partials.
 /// </summary>
 [TestClass]

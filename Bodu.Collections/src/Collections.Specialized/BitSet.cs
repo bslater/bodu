@@ -41,12 +41,12 @@ namespace Bodu.Collections.Specialized;
 /// </para>
 /// <para>
 /// Equality is a value comparison over the logical content: two instances are equal when they have the same set bits,
-/// regardless of allocated capacity. Because the content is mutable, the hash code changes as bits change — do not use
+/// regardless of allocated capacity. Because the content is mutable, the hash code changes as bits change - do not use
 /// a <see cref="BitSet" /> as a dictionary key while it is being mutated.
 /// </para>
 /// <para>
-/// Unlike <see cref="System.Collections.BitArray" /> — which has a fixed, explicit length, no set-bit query surface,
-/// and a boxing enumerator over <see cref="bool" /> values — <see cref="BitSet" /> grows on demand, exposes
+/// Unlike <see cref="System.Collections.BitArray" /> - which has a fixed, explicit length, no set-bit query surface,
+/// and a boxing enumerator over <see cref="bool" /> values - <see cref="BitSet" /> grows on demand, exposes
 /// <see cref="NextSetBit" /> / <see cref="NextClearBit" /> / <see cref="Cardinality" />, and enumerates set-bit indices
 /// without boxing.
 /// </para>
@@ -64,11 +64,11 @@ namespace Bodu.Collections.Specialized;
 /// primes.Set(100);          // grows automatically
 ///
 /// Console.WriteLine(primes.Cardinality);    // 4
-/// Console.WriteLine(primes.Length);         // 101 — highest set bit + 1
-/// Console.WriteLine(primes.Get(1_000_000)); // False — beyond capacity, no throw
+/// Console.WriteLine(primes.Length);         // 101 - highest set bit + 1
+/// Console.WriteLine(primes.Get(1_000_000)); // False - beyond capacity, no throw
 ///
 /// foreach (int index in primes)
-///     Console.WriteLine(index);             // 2, 3, 5, 100 — ascending
+///     Console.WriteLine(index);             // 2, 3, 5, 100 - ascending
 ///]]>
 /// </code>
 /// </example>
@@ -117,7 +117,7 @@ public sealed partial class BitSet
     /// </param>
     /// <remarks>
     /// The requested capacity is rounded up to a whole number of 64-bit words, so <see cref="Capacity" /> may exceed
-    /// <paramref name="initialCapacityBits" />. The capacity is a pre-allocation hint only — the set still grows
+    /// <paramref name="initialCapacityBits" />. The capacity is a pre-allocation hint only - the set still grows
     /// automatically when a bit beyond it is set or flipped.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -140,7 +140,7 @@ public sealed partial class BitSet
     /// </summary>
     /// <param name="source">The set whose bits are copied. Must not be <see langword="null" />.</param>
     /// <remarks>
-    /// The copy shares no storage with <paramref name="source" /> — subsequent mutations of either instance do not
+    /// The copy shares no storage with <paramref name="source" /> - subsequent mutations of either instance do not
     /// affect the other. The copy's <see cref="Capacity" /> matches the source's capacity at the time of the copy.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
@@ -154,7 +154,7 @@ public sealed partial class BitSet
     /// <summary>
     /// Gets the number of bits the current backing storage can address without reallocating.
     /// </summary>
-    /// <value>The allocated size in bits — always a multiple of 64.</value>
+    /// <value>The allocated size in bits - always a multiple of 64.</value>
     /// <remarks>
     /// <para>
     /// <see cref="Capacity" /> is an allocation detail, distinct from the logical <see cref="Length" />: reading a bit
@@ -168,7 +168,7 @@ public sealed partial class BitSet
     /// <summary>
     /// Gets the number of set bits in the set.
     /// </summary>
-    /// <value>The population count — the total number of bits whose value is <see langword="true" />.</value>
+    /// <value>The population count - the total number of bits whose value is <see langword="true" />.</value>
     public int Cardinality
     {
         get
@@ -200,12 +200,12 @@ public sealed partial class BitSet
     }
 
     /// <summary>
-    /// Gets the logical length of the set — one greater than the index of the highest set bit.
+    /// Gets the logical length of the set - one greater than the index of the highest set bit.
     /// </summary>
     /// <value>The highest set-bit index plus one, or 0 when the set is empty.</value>
     /// <remarks>
     /// <para>
-    /// <see cref="Length" /> is the Java <c>BitSet.length()</c> contract and reflects only the logical content — it is
+    /// <see cref="Length" /> is the Java <c>BitSet.length()</c> contract and reflects only the logical content - it is
     /// unrelated to the allocated <see cref="Capacity" />. Clearing the highest set bit reduces the length; clearing
     /// every bit reduces it to 0 regardless of how much storage remains allocated.
     /// </para>
@@ -237,7 +237,7 @@ public sealed partial class BitSet
     /// bit beyond the capacity is set to <see langword="true" />).
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="index" /> &lt; 0, or — for the setter only — <paramref name="index" /> ≥
+    /// <paramref name="index" /> &lt; 0, or - for the setter only - <paramref name="index" /> ≥
     /// <see cref="MaxBitCount" />.
     /// </exception>
     public bool this[int index]
@@ -264,7 +264,7 @@ public sealed partial class BitSet
     /// </summary>
     /// <param name="index">The zero-based index of the bit to clear.</param>
     /// <remarks>
-    /// An index at or beyond <see cref="Capacity" /> is already conceptually clear, so the call is a no-op — it never
+    /// An index at or beyond <see cref="Capacity" /> is already conceptually clear, so the call is a no-op - it never
     /// grows the storage and never throws for large indices (Java <c>BitSet.clear</c> semantics). Such a no-op call
     /// does not invalidate in-flight enumerators.
     /// </remarks>
@@ -317,7 +317,7 @@ public sealed partial class BitSet
     }
 
     /// <summary>
-    /// Toggles the bit at the specified index — a set bit becomes clear and a clear bit becomes set.
+    /// Toggles the bit at the specified index - a set bit becomes clear and a clear bit becomes set.
     /// </summary>
     /// <param name="index">The zero-based index of the bit to toggle.</param>
     /// <remarks>
@@ -378,7 +378,7 @@ public sealed partial class BitSet
     /// <see langword="true" /> if the bit at <paramref name="index" /> is set; otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// An index at or beyond <see cref="Capacity" /> returns <see langword="false" /> rather than throwing — every bit
+    /// An index at or beyond <see cref="Capacity" /> returns <see langword="false" /> rather than throwing - every bit
     /// outside the allocated storage is conceptually clear (Java <c>BitSet.get</c> semantics). Any non-negative index,
     /// including <see cref="int.MaxValue" />, is accepted.
     /// </remarks>
@@ -477,7 +477,7 @@ public sealed partial class BitSet
     /// <param name="fromIndex">The index at which the search starts.</param>
     /// <returns>The index of the first clear bit ≥ <paramref name="fromIndex" />.</returns>
     /// <remarks>
-    /// A clear bit conceptually always exists — every bit at or beyond <see cref="Capacity" /> is clear — so this
+    /// A clear bit conceptually always exists - every bit at or beyond <see cref="Capacity" /> is clear - so this
     /// method never returns −1. The result may therefore be ≥ <see cref="Length" /> (and ≥ <see cref="Capacity" /> when
     /// every allocated bit from <paramref name="fromIndex" /> onward is set).
     /// </remarks>
@@ -529,7 +529,7 @@ public sealed partial class BitSet
     /// <see cref="Length" />.
     /// </returns>
     /// <remarks>
-    /// The summary form is deliberate — a set-builder listing could be arbitrarily large. Enumerate the instance to
+    /// The summary form is deliberate - a set-builder listing could be arbitrarily large. Enumerate the instance to
     /// obtain the individual set-bit indices.
     /// </remarks>
     public override string ToString() =>
@@ -617,7 +617,7 @@ public sealed partial class BitSet
     private static (int FirstWord, int LastWord, ulong FirstMask, ulong LastMask) GetRangeMasks(int fromInclusive, int toExclusive)
     {
         // Shift counts are masked to the low six bits by the C# shift operators, so shifting by
-        // -toExclusive yields (64 - (toExclusive % 64)) % 64 — the standard trailing-mask idiom.
+        // -toExclusive yields (64 - (toExclusive % 64)) % 64 - the standard trailing-mask idiom.
         return (
             fromInclusive >> WordShift,
             (toExclusive - 1) >> WordShift,
@@ -672,7 +672,7 @@ public sealed partial class BitSet
     }
 
     /// <summary>
-    /// Returns the number of backing words in use — the index of the highest non-zero word plus one.
+    /// Returns the number of backing words in use - the index of the highest non-zero word plus one.
     /// </summary>
     /// <returns>The count of words up to and including the highest non-zero word, or 0 when the set is empty.</returns>
     private int GetWordsInUse()

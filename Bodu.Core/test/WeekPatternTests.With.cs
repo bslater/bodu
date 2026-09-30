@@ -45,7 +45,7 @@ public partial class WeekPatternTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="WeekPattern.With" /> does not affect days that were already selected —
+    /// Verifies that <see cref="WeekPattern.With" /> does not affect days that were already selected -
     /// only the newly specified day is added.
     /// </summary>
     [TestMethod]

@@ -34,8 +34,8 @@ public sealed partial class Base45Tests
     }
 
     /// <summary>
-    /// Verifies that decoding a three-character group greater than <c>65535</c> — the RFC 9285 §6 example
-    /// <c>"GGW"</c> (65536) — throws a <see cref="FormatException" />.
+    /// Verifies that decoding a three-character group greater than <c>65535</c> - the RFC 9285 §6 example
+    /// <c>"GGW"</c> (65536) - throws a <see cref="FormatException" />.
     /// </summary>
     [TestMethod]
     public void Decode_WhenTripletOverflows_ShouldThrowFormatException()

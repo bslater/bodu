@@ -38,10 +38,10 @@ public static partial class DateOnlyExtensions
     ///<![CDATA[
     /// var start = new DateOnly(2024, 1, 1);
     ///
-    /// // before is between two occurrences — returns the occurrence at 2024-01-11
+    /// // before is between two occurrences - returns the occurrence at 2024-01-11
     /// var prev1 = start.PreviousOccurrence(intervalDays: 5, new DateOnly(2024, 1, 13)); // → 2024-01-11
     ///
-    /// // before falls exactly on an occurrence — returns the one before it
+    /// // before falls exactly on an occurrence - returns the one before it
     /// var prev2 = start.PreviousOccurrence(intervalDays: 5, new DateOnly(2024, 1, 11)); // → 2024-01-06
     ///]]>
     /// </code>

@@ -44,7 +44,7 @@ public partial class IntervalTreeTests
     }
 
     /// <summary>
-    /// Verifies that the struct enumerator fails fast — <see cref="IntervalTree{T}.Enumerator.MoveNext" /> throws
+    /// Verifies that the struct enumerator fails fast - <see cref="IntervalTree{T}.Enumerator.MoveNext" /> throws
     /// <see cref="InvalidOperationException" /> after any structural mutation, including a duplicate-count change.
     /// </summary>
     [TestMethod]

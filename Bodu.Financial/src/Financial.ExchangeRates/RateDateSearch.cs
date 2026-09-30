@@ -15,8 +15,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// Both the immutable storage backing <see cref="RateSeries" /> and any mutable buffer can route through this helper so
-/// that the previous/next/nearest selection rules — including the tie-break semantics encoded in
-/// <see cref="RateDateResolution.NearestPreferPrevious" /> and <see cref="RateDateResolution.NearestPreferNext" /> —
+/// that the previous/next/nearest selection rules - including the tie-break semantics encoded in
+/// <see cref="RateDateResolution.NearestPreferPrevious" /> and <see cref="RateDateResolution.NearestPreferNext" /> -
 /// have a single source of truth. The helper operates on a <see cref="ReadOnlySpan{T}" /> of day numbers so callers can
 /// pass either a full backing array or the active prefix of a growing buffer without allocation.
 /// </para>

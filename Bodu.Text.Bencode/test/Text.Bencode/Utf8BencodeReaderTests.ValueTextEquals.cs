@@ -63,7 +63,7 @@ public partial class Utf8BencodeReaderTests
 
     /// <summary>
     /// Verifies that the <see langword="string" /> overload treats a <see langword="null" /> argument as the empty
-    /// string — matching an empty byte string and nothing else — exactly as
+    /// string - matching an empty byte string and nothing else - exactly as
     /// <see cref="System.Text.Json.Utf8JsonReader.ValueTextEquals(string?)" /> does.
     /// </summary>
     [TestMethod]

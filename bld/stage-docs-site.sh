@@ -3,7 +3,7 @@
 # stage-docs-site.sh
 #
 # Lays a freshly built DocFX site into the directory layout the gh-pages branch serves, and does
-# nothing else — no git, no network — so the layout can be exercised locally instead of only
+# nothing else - no git, no network - so the layout can be exercised locally instead of only
 # discovered in a deployment.
 #
 #   stage-docs-site.sh <site-dir> <work-dir> <slot>
@@ -15,11 +15,11 @@
 # Layout:
 #
 #   /            the latest release, so every URL published before versioning kept working
-#   /<series>/   that release, archived (1.0, 1.1, ...) — written once, when its tag is pushed
+#   /<series>/   that release, archived (1.0, 1.1, ...) - written once, when its tag is pushed
 #   /dev/        the current master build
 #
 # A release therefore lands twice, from one build: at the root and under its series. Keeping the
-# root a full copy rather than a redirect is deliberate — a redirect only forwards the home page,
+# root a full copy rather than a redirect is deliberate - a redirect only forwards the home page,
 # and the links that matter are deep ones (api/Bodu.Collections.Generic.CircularBuffer-1.html, or
 # a member's anchor on its type's page) that a reader or a README already holds. Those must not
 # start 404ing the day versioning arrives.
@@ -39,7 +39,7 @@ if [ ! -d "$site" ]; then
 fi
 # An empty site would otherwise quietly replace a good one with nothing.
 if [ ! -f "$site/index.html" ]; then
-    printf '::error::%s has no index.html — refusing to publish what does not look like a built site\n' "$site" >&2
+    printf '::error::%s has no index.html - refusing to publish what does not look like a built site\n' "$site" >&2
     exit 1
 fi
 if [ ! -d "$work" ]; then
@@ -73,7 +73,7 @@ else
 fi
 
 # GitHub Pages runs Jekyll over a branch source, and Jekyll drops directories whose names begin
-# with an underscore — which is most of what DocFX emits. Without this file the styles and scripts
+# with an underscore - which is most of what DocFX emits. Without this file the styles and scripts
 # 404 and the site renders unstyled.
 touch "$work/.nojekyll"
 

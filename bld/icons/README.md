@@ -21,6 +21,6 @@ an orphan icon no longer maps to a project.
    plus `docs/images/hero-manifest.txt`).
 2. Run `python3 bld/artwork/generate-package-icons.py` to re-emit the SVG sources.
 3. Run `bash bld/icons/generate-icons.sh` to re-rasterize the PNGs (uses `rsvg-convert` when
-   installed, otherwise the `cairosvg` Python package — `pip install cairosvg`).
-4. Commit both the SVGs and PNGs — packing consumes the PNGs directly, so builds stay
+   installed, otherwise the `cairosvg` Python package - `pip install cairosvg`).
+4. Commit both the SVGs and PNGs - packing consumes the PNGs directly, so builds stay
    toolchain-free and deterministic.

@@ -17,7 +17,7 @@ namespace Bodu.Text.Yaml;
 public partial class YamlSerializerTests
 {
     /// <summary>
-    /// Verifies that a positional record — which has no parameterless constructor — round-trips by binding its
+    /// Verifies that a positional record - which has no parameterless constructor - round-trips by binding its
     /// constructor parameters from the mapping.
     /// </summary>
     [TestMethod]

@@ -23,13 +23,13 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// <para>
 /// Because the implementation buffers its input, memory use grows linearly with the total number of bytes appended
-/// between calls to <see cref="Reset" />. The algorithm is well suited to short keys — its intended use case — but
+/// between calls to <see cref="Reset" />. The algorithm is well suited to short keys - its intended use case - but
 /// should be avoided for very large streams where a block-oriented, fixed-memory hash would be more appropriate.
 /// </para>
 /// <para>
 /// <strong>When to choose SuperFastHash.</strong> SuperFastHash predates MurmurHash and was designed by Paul Hsieh for
 /// in-memory hash tables of short keys (32-byte block sums and similar). It has been superseded by the MurmurHash3 /
-/// CityHash / xxHash generation, which beat it on every measurable axis — pick it only when reproducing a digest from
+/// CityHash / xxHash generation, which beat it on every measurable axis - pick it only when reproducing a digest from
 /// existing SuperFastHash-based code. For new work on short keys prefer <see cref="MurmurHash3_32" /> or
 /// <see cref="Fnv1a32" />; for streaming and very large inputs prefer <see cref="CityHash64" /> or a CRC variant via
 /// <see cref="Bodu.IO.Hashing.Checksums.Crc" />.

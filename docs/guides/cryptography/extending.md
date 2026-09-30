@@ -4,7 +4,7 @@ title: Extending the library
 
 # Extending the library
 
-`Bodu.Security.Cryptography` is built from a small number of public abstract bases and interfaces, and the shipped algorithms use only those seams. This page shows how to add your own hash, your own block cipher, and your own transform on the same footing as the built-ins — and how to prove them with the contract-test bases the library's own tests derive from. It promotes the material in the [runnable samples](../../samples/cryptography.md) (`Bodu.Security.Cryptography.Samples.CustomHash` and its `.Test` companion) into a walk-through.
+`Bodu.Security.Cryptography` is built from a small number of public abstract bases and interfaces, and the shipped algorithms use only those seams. This page shows how to add your own hash, your own block cipher, and your own transform on the same footing as the built-ins - and how to prove them with the contract-test bases the library's own tests derive from. It promotes the material in the [runnable samples](../../samples/cryptography.md) (`Bodu.Security.Cryptography.Samples.CustomHash` and its `.Test` companion) into a walk-through.
 
 > [!WARNING]
 > The hash and cipher on this page are **teaching devices** with no security properties; they exist to show the plumbing. Do not ship them. Like the rest of the library, nothing here is independently audited.
@@ -13,14 +13,14 @@ title: Extending the library
 
 | To add a… | Derive from / implement | Then it works with |
 |---|---|---|
-| Hash | <xref:Bodu.Security.Cryptography.BlockHashAlgorithm> (Merkle–Damgård style, padded final block); <xref:Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm> (BLAKE-style, last block held back); <xref:Bodu.Security.Cryptography.KeyedBlockHashAlgorithm> / <xref:Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm> (adds `Key`); or <xref:Bodu.Security.Cryptography.BufferedBlockHashAlgorithm> for a sponge or other non-block shape | every `HashAlgorithm` consumer: `ComputeHash`, `CryptoStream`, `AppendData` / `VerifyHash`, `MerkleTree`, `HashAlgorithmHelper` |
+| Hash | <xref:Bodu.Security.Cryptography.BlockHashAlgorithm> (Merkle-Damgård style, padded final block); <xref:Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm> (BLAKE-style, last block held back); <xref:Bodu.Security.Cryptography.KeyedBlockHashAlgorithm> / <xref:Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm> (adds `Key`); or <xref:Bodu.Security.Cryptography.BufferedBlockHashAlgorithm> for a sponge or other non-block shape | every `HashAlgorithm` consumer: `ComputeHash`, `CryptoStream`, `AppendData` / `VerifyHash`, `MerkleTree`, `HashAlgorithmHelper` |
 | Block cipher | <xref:Bodu.Security.Cryptography.IBlockCipher> | `BlockCipherModeFactory` (ECB / CBC / CFB / OFB / CTR), `CtsModeTransform`, `XtsModeTransform`; the AEAD transforms only if the block is 128 bits |
 | `ICryptoTransform` for that cipher | <xref:Bodu.Security.Cryptography.BlockCipherTransform> (its constructors are `protected internal`) | `CryptoStream`, <xref:Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions> |
 | Poly1305 AEAD over a keystream | <xref:Bodu.Security.Cryptography.Poly1305AeadTransform> + your own <xref:Bodu.Security.Cryptography.IStreamCipher> | `AeadTransformExtensions`, anything typed `IStreamAeadTransform` / `IAeadTransform` |
 | Padding scheme | <xref:Bodu.Security.Cryptography.IPaddingStrategy> | hand composition (the factories only know the built-in schemes) |
-| Algorithm factory | <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1> / <xref:Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1> | `HashAlgorithmHelper`; and `MerkleTree`, whose constructor takes a `Func<HashAlgorithm>` — pass `factory.Create` |
+| Algorithm factory | <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1> / <xref:Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1> | `HashAlgorithmHelper`; and `MerkleTree`, whose constructor takes a `Func<HashAlgorithm>` - pass `factory.Create` |
 
-## Pattern 1 — a custom `BlockHashAlgorithm`
+## Pattern 1 - a custom `BlockHashAlgorithm`
 
 `BlockHashAlgorithm` owns the residual buffer and the byte counter; you supply the block size (in **bits**) and the digest size through `HashSizeValue`, plus three hooks: `ProcessBlock` for each full block, `PadBlock` to turn the residual into one or two final blocks, and `ProcessFinalBlock` to emit the digest. `Initialize()` must reset your chaining state after calling `base.Initialize()`, and the constructor should call it once.
 
@@ -29,7 +29,7 @@ title: Extending the library
 using System.Buffers.Binary;
 using Bodu.Security.Cryptography;
 
-// A tiny 64-bit, 8-byte-block digest — illustrative only, NOT a secure hash.
+// A tiny 64-bit, 8-byte-block digest - illustrative only, NOT a secure hash.
 public sealed class Mix64Digest : BlockHashAlgorithm
 {
     private const ulong Prime = 0x9E3779B97F4A7C15UL;
@@ -100,7 +100,7 @@ bool ok = digest.VerifyHash(message, oneShot);                   // true
 
 For a keyed hash derive from `KeyedBlockHashAlgorithm` instead: it adds the `Key` property (defensive copy, length-checked against the `keySize` you pass to its constructor, zeroed on `Dispose`) and an `OnKeyChanged` hook to rebuild key-dependent state. Reconfiguring any of these after hashing has started throws `CryptographicUnexpectedOperationException`, which `ThrowIfInvalidState()` provides for your own settable properties.
 
-## Pattern 2 — a custom `IBlockCipher`
+## Pattern 2 - a custom `IBlockCipher`
 
 `IBlockCipher` is four members: `BlockSize` in bits, single-block `Encrypt` / `Decrypt`, and `Dispose`. The `EncryptBlocks` / `DecryptBlocks` loops are default interface members. Validate lengths yourself and zero any key-derived state on dispose.
 
@@ -108,7 +108,7 @@ For a keyed hash derive from `KeyedBlockHashAlgorithm` instead: it adds the `Key
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
-// A toy 64-bit block "cipher" (XOR with a key-derived mask) — illustrative only, NOT secure.
+// A toy 64-bit block "cipher" (XOR with a key-derived mask) - illustrative only, NOT secure.
 public sealed class XorBlockCipher : IBlockCipher
 {
     private readonly byte[] _mask;
@@ -158,7 +158,7 @@ byte[] ciphertext = new byte[padded.Length];
 cbc.Transform(padded, ciphertext, encrypt: true);
 ```
 
-## Pattern 3 — exposing it as an `ICryptoTransform`
+## Pattern 3 - exposing it as an `ICryptoTransform`
 
 <xref:Bodu.Security.Cryptography.BlockCipherTransform> is the `ICryptoTransform` the wrappers return: it owns the engine, a mode transform from `BlockCipherModeFactory`, and a padding strategy, and it implements the `TransformBlock` / `TransformFinalBlock` protocol (including the held-back final block on decrypt). Its constructors are `protected internal`, so a two-line subclass is the way to put a custom engine behind `CryptoStream`:
 
@@ -185,18 +185,18 @@ byte[] plaintext = "custom IBlockCipher + CBC + PKCS7"u8.ToArray();
 
 byte[] ciphertext;
 using (ICryptoTransform t = new XorCbcTransform(key, iv, encrypt: true))
-    ciphertext = t.Transform(plaintext);                    // 7363636…5E3F — identical to the hand-composed bytes
+    ciphertext = t.Transform(plaintext);                    // 7363636…5E3F - identical to the hand-composed bytes
 
 byte[] recovered;
 using (ICryptoTransform t = new XorCbcTransform(key, iv, encrypt: false))
     recovered = t.Transform(ciphertext);
 ```
 
-The transform disposes the engine, so construct a fresh engine per transform as the sample does. The base accepts either `PaddingMode` or <xref:Bodu.Security.Cryptography.PaddingModeKind> (for ISO 7816-4), and only the five factory modes — pass `CTS` or `XTS` and the base constructor throws `NotSupportedException`.
+The transform disposes the engine, so construct a fresh engine per transform as the sample does. The base accepts either `PaddingMode` or <xref:Bodu.Security.Cryptography.PaddingModeKind> (for ISO 7816-4), and only the five factory modes - pass `CTS` or `XTS` and the base constructor throws `NotSupportedException`.
 
-## Pattern 4 — factories and `HashAlgorithmHelper`
+## Pattern 4 - factories and `HashAlgorithmHelper`
 
-Consumers that need a *fresh* algorithm per operation — Merkle trees, parallel pipelines — take an <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1> rather than an instance. The interface is one covariant `Create()`; <xref:Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1> wraps a `Func<T>`, and `HashAlgorithmFactory.From(Func<T>)` on <xref:Bodu.Security.Cryptography.HashAlgorithmFactory> is the inference-friendly way to build one. <xref:Bodu.Security.Cryptography.HashAlgorithmHelper> then hashes through a factory, creating and disposing per call.
+Consumers that need a *fresh* algorithm per operation - Merkle trees, parallel pipelines - take an <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1> rather than an instance. The interface is one covariant `Create()`; <xref:Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1> wraps a `Func<T>`, and `HashAlgorithmFactory.From(Func<T>)` on <xref:Bodu.Security.Cryptography.HashAlgorithmFactory> is the inference-friendly way to build one. <xref:Bodu.Security.Cryptography.HashAlgorithmHelper> then hashes through a factory, creating and disposing per call.
 
 ```csharp
 using System.Security.Cryptography;
@@ -220,9 +220,9 @@ IHashAlgorithmFactory<HashAlgorithm> general = factory;             // covariant
 
 A factory must return a new instance every time: `MerkleTree` creates one per computation, and a parallel instance creates one per worker, never sharing an algorithm between them. `MerkleTree` itself is immutable and holds no algorithm, so it is not `IDisposable` and needs no `using`.
 
-## Pattern 5 — proving it with the contract-test bases
+## Pattern 5 - proving it with the contract-test bases
 
-The library's own tests are written against abstract, generic contract bases in the `Bodu.Security.Cryptography.Test` project (namespace `Bodu.Security.Cryptography`, infrastructure in `Bodu.Security.Cryptography.Infrastructure`). They are not a NuGet package: reference the test project from your own MSTest project, as `Bodu.Security.Cryptography.Samples.CustomHash.Test` does with a `ProjectReference` to `Bodu.Security.Cryptography.Test.csproj` and `Bodu.Test.csproj`. Deriving one of them runs the same scenarios the shipped algorithms pass — constructors, `HashSize`, `Initialize`, `TransformBlock` / `TransformFinalBlock`, `TryComputeHash`, `ComputeHashAsync`, `CryptoStream`, `Dispose`, residual-buffer accumulation across chunk boundaries, block-aligned versus unaligned parity, and the padded final block.
+The library's own tests are written against abstract, generic contract bases in the `Bodu.Security.Cryptography.Test` project (namespace `Bodu.Security.Cryptography`, infrastructure in `Bodu.Security.Cryptography.Infrastructure`). They are not a NuGet package: reference the test project from your own MSTest project, as `Bodu.Security.Cryptography.Samples.CustomHash.Test` does with a `ProjectReference` to `Bodu.Security.Cryptography.Test.csproj` and `Bodu.Test.csproj`. Deriving one of them runs the same scenarios the shipped algorithms pass - constructors, `HashSize`, `Initialize`, `TransformBlock` / `TransformFinalBlock`, `TryComputeHash`, `ComputeHashAsync`, `CryptoStream`, `Dispose`, residual-buffer accumulation across chunk boundaries, block-aligned versus unaligned parity, and the padded final block.
 
 | Base | For |
 |---|---|
@@ -236,7 +236,7 @@ The library's own tests are written against abstract, generic contract bases in 
 | `PaddingStrategyTests<T>` | an `IPaddingStrategy` |
 | `AsymmetricAlgorithmTests<…>` with `KeyAgreementAlgorithmTests`, `SignatureAlgorithmTests`, `KemAlgorithmTests`, `MLKemContractTests`, `MLDsaContractTests` | asymmetric algorithms |
 
-A hash test supplies a `HashAlgorithmSpecification` (sizes, `ICryptoTransform` flags, boundary lengths, and `KnownAnswers` built with the `MessageDigestKnownAnswer` factories — note that `Abc` hashes the ASCII string `"ABC"`, and `Sequential0To255` is the 255 bytes `0x00…0xFE`), two `CreateAlgorithm` overloads, and the incremental series: entry *k* is the digest of the bytes `0, 1, …, k−1`, with `HashBlockSize + 2` entries required (ten for an 8-byte block). The values below were produced by running the digest from Pattern 1 once and pinning the output — the same way the shipped algorithms pin theirs against published vectors.
+A hash test supplies a `HashAlgorithmSpecification` (sizes, `ICryptoTransform` flags, boundary lengths, and `KnownAnswers` built with the `MessageDigestKnownAnswer` factories - note that `Abc` hashes the ASCII string `"ABC"`, and `Sequential0To255` is the 255 bytes `0x00…0xFE`), two `CreateAlgorithm` overloads, and the incremental series: entry *k* is the digest of the bytes `0, 1, …, k−1`, with `HashBlockSize + 2` entries required (ten for an 8-byte block). The values below were produced by running the digest from Pattern 1 once and pinning the output - the same way the shipped algorithms pin theirs against published vectors.
 
 ```csharp
 using Bodu.Security.Cryptography;
@@ -252,7 +252,7 @@ public sealed class Mix64DigestTests
     private static readonly HashAlgorithmSpecification Specification = new()
     {
         HashSize = 64,                         // bits
-        HashBlockSize = 8,                     // bytes — drives the incremental-coverage window
+        HashBlockSize = 8,                     // bytes - drives the incremental-coverage window
         InputBlockSize = 1,
         OutputBlockSize = 1,
         CanReuseTransform = true,
@@ -300,8 +300,8 @@ The `TVariant` enum lets one test class cover several configurations of an algor
 
 ## Where to go next
 
-- [Runnable samples](../../samples/cryptography.md) — `Bodu.Security.Cryptography.Samples.CustomHash` and its contract-test companion, built by CI.
-- [Modes, transforms, and factories](cipher-composition-reference.md) — everything a custom engine plugs into.
-- [Using hashes and checksums](hashing.md) — the three structural hash shapes the bases model.
-- [Security guarantees and limitations](security-posture.md) — the contracts (zeroization, exceptions, single use) your type should honour.
-- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
+- [Runnable samples](../../samples/cryptography.md) - `Bodu.Security.Cryptography.Samples.CustomHash` and its contract-test companion, built by CI.
+- [Modes, transforms, and factories](cipher-composition-reference.md) - everything a custom engine plugs into.
+- [Using hashes and checksums](hashing.md) - the three structural hash shapes the bases model.
+- [Security guarantees and limitations](security-posture.md) - the contracts (zeroization, exceptions, single use) your type should honour.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

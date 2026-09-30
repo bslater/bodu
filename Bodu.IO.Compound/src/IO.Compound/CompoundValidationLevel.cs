@@ -10,7 +10,7 @@ namespace Bodu.IO.Compound;
 /// Specifies how strictly the compound-file reader validates a container's structure.
 /// </summary>
 /// <remarks>
-/// All levels enforce the memory-safety invariants required to parse a file without faulting — the signature,
+/// All levels enforce the memory-safety invariants required to parse a file without faulting - the signature,
 /// byte-order marker, sector sizes, file truncation, allocation-table bounds, and the presence of a root storage are
 /// always validated. The level controls only how the reader responds to the remaining, recoverable inconsistencies.
 /// <example>

@@ -42,7 +42,7 @@ public sealed partial class GcmModeTransformTests
     public void Encrypt_WhenCounterWouldWrapPast0xFFFFFFFF_ShouldThrowCryptographicException()
     {
         // J0 is "<12-byte nonce> || 00 00 FF FE". After the constructor's inc32, the running counter is
-        // <nonce> || 00 00 FF FF — one increment away from wrapping into the J0-reserved value.
+        // <nonce> || 00 00 FF FF - one increment away from wrapping into the J0-reserved value.
         // Encrypting two 16-byte blocks consumes counters FFFF and then would wrap to 0000.
         byte[] j0 = new byte[BlockSizeBytes];
         Array.Fill(j0, (byte)0xCA, 0, 12);
@@ -65,7 +65,7 @@ public sealed partial class GcmModeTransformTests
 
     /// <summary>
     /// Verifies that the wrap guard fires when the running counter is exactly at <c>0xFFFFFFFF</c> and a single
-    /// further payload block is processed — the smallest possible wrap scenario.
+    /// further payload block is processed - the smallest possible wrap scenario.
     /// </summary>
     [TestMethod]
     public void Encrypt_WhenSingleBlockWouldWrapFrom0xFFFFFFFF_ShouldThrowCryptographicException()
@@ -84,7 +84,7 @@ public sealed partial class GcmModeTransformTests
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         using var transform = GcmModeTransform.CreateForTesting(cipher, j0);
 
-        // Single block worth of plaintext: encrypts under counter FFFF, then inc32 would wrap to 0000 — but
+        // Single block worth of plaintext: encrypts under counter FFFF, then inc32 would wrap to 0000 - but
         // since this is the final block we do not actually consume the wrapped counter. The guard only needs
         // to fire when a counter value would actually be USED. Encrypting one block is therefore expected to
         // succeed; encrypting two blocks must fail. This test documents the boundary: one block at FFFF is OK.
@@ -115,7 +115,7 @@ public sealed partial class GcmModeTransformTests
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         using var transform = GcmModeTransform.CreateForTesting(cipher, j0);
 
-        // Two-block ciphertext plus tag — same wrap boundary as the encrypt test.
+        // Two-block ciphertext plus tag - same wrap boundary as the encrypt test.
         byte[] ciphertextWithTag = new byte[(BlockSizeBytes * 2) + (transform.TagSize / 8)];
         byte[] recovered = new byte[BlockSizeBytes * 2];
 

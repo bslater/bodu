@@ -24,12 +24,12 @@ public readonly partial struct Interval<T>
     /// <code language="csharp">
     ///<![CDATA[
     /// var window = Interval<int>.ClosedOpen(1, 5);   // [1, 5)
-    /// window.Contains(1);                            // True  — closed lower
-    /// window.Contains(4);                            // True  — interior
-    /// window.Contains(5);                            // False — open upper
-    /// window.Contains(0);                            // False — outside
+    /// window.Contains(1);                            // True  - closed lower
+    /// window.Contains(4);                            // True  - interior
+    /// window.Contains(5);                            // False - open upper
+    /// window.Contains(0);                            // False - outside
     ///
-    /// Interval<int>.Empty.Contains(0);               // False — the empty interval contains nothing
+    /// Interval<int>.Empty.Contains(0);               // False - the empty interval contains nothing
     ///]]>
     /// </code>
     /// </example>
@@ -44,7 +44,7 @@ public readonly partial struct Interval<T>
     }
 
     /// <summary>
-    /// Determines whether this interval fully contains <paramref name="other" /> — every value of
+    /// Determines whether this interval fully contains <paramref name="other" /> - every value of
     /// <paramref name="other" /> is also a value of this interval.
     /// </summary>
     /// <param name="other">The interval to test for containment.</param>
@@ -58,16 +58,16 @@ public readonly partial struct Interval<T>
     ///<![CDATA[
     /// var outer = Interval<int>.Closed(0, 10);
     ///
-    /// outer.Contains(Interval<int>.Closed(2, 8));        // True — strict subset
-    /// outer.Contains(Interval<int>.Closed(0, 10));       // True — equal sets
-    /// outer.Contains(Interval<int>.Closed(2, 11));       // False — exceeds upper
-    /// outer.Contains(Interval<int>.Empty);               // True — ∅ ⊆ every set
+    /// outer.Contains(Interval<int>.Closed(2, 8));        // True - strict subset
+    /// outer.Contains(Interval<int>.Closed(0, 10));       // True - equal sets
+    /// outer.Contains(Interval<int>.Closed(2, 11));       // False - exceeds upper
+    /// outer.Contains(Interval<int>.Empty);               // True - ∅ ⊆ every set
     ///
     /// // Endpoint inclusivity is honored: an open lower fits inside a closed lower at the same value.
     /// var closed = Interval<int>.Closed(0, 10);          // [0, 10]
     /// var open   = Interval<int>.Open(0, 10);            // (0, 10)
     /// closed.Contains(open);                             // True
-    /// open.Contains(closed);                             // False — closed includes 0 and 10
+    /// open.Contains(closed);                             // False - closed includes 0 and 10
     ///]]>
     /// </code>
     /// </example>
@@ -93,7 +93,7 @@ public readonly partial struct Interval<T>
     /// empty interval shares no values with any interval and is therefore never overlapping.
     /// </returns>
     /// <remarks>
-    /// Two intervals that touch but do not share any value — for example <c>[1, 2)</c> and <c>[2, 3]</c> — do not
+    /// Two intervals that touch but do not share any value - for example <c>[1, 2)</c> and <c>[2, 3]</c> - do not
     /// overlap, because no single value belongs to both. To test whether they are adjacent (touching), inspect the
     /// endpoints directly.
     /// </remarks>
@@ -102,13 +102,13 @@ public readonly partial struct Interval<T>
     ///<![CDATA[
     /// var a = Interval<int>.Closed(1, 5);
     /// var b = Interval<int>.Closed(3, 7);
-    /// a.Overlaps(b);                                                     // True — share [3, 5]
+    /// a.Overlaps(b);                                                     // True - share [3, 5]
     ///
     /// // Touching at a boundary but not both including it: NOT overlapping.
-    /// Interval<int>.ClosedOpen(1, 5).Overlaps(Interval<int>.Closed(5, 10));   // False — neither holds 5 jointly
-    /// Interval<int>.OpenClosed(1, 5).Overlaps(Interval<int>.Closed(5, 10));   // True  — both include 5
+    /// Interval<int>.ClosedOpen(1, 5).Overlaps(Interval<int>.Closed(5, 10));   // False - neither holds 5 jointly
+    /// Interval<int>.OpenClosed(1, 5).Overlaps(Interval<int>.Closed(5, 10));   // True  - both include 5
     ///
-    /// Interval<int>.Closed(1, 2).Overlaps(Interval<int>.Closed(5, 6));   // False — disjoint
+    /// Interval<int>.Closed(1, 2).Overlaps(Interval<int>.Closed(5, 6));   // False - disjoint
     ///]]>
     /// </code>
     /// </example>
@@ -142,7 +142,7 @@ public readonly partial struct Interval<T>
     }
 
     /// <summary>
-    /// Returns the intersection of this interval with <paramref name="other" /> — the interval of values shared by
+    /// Returns the intersection of this interval with <paramref name="other" /> - the interval of values shared by
     /// both.
     /// </summary>
     /// <param name="other">The interval to intersect with.</param>
@@ -157,7 +157,7 @@ public readonly partial struct Interval<T>
     /// <code language="csharp">
     ///<![CDATA[
     /// Interval<int>.Closed(1, 5).Intersect(Interval<int>.Closed(3, 7));   // [3, 5]
-    /// Interval<int>.Closed(1, 3).Intersect(Interval<int>.Closed(5, 7));   // ∅ — disjoint
+    /// Interval<int>.Closed(1, 3).Intersect(Interval<int>.Closed(5, 7));   // ∅ - disjoint
     ///
     /// // On ties, the stricter (open) inclusivity wins.
     /// var closed = Interval<int>.Closed(1, 5);   // [1, 5]
@@ -184,8 +184,8 @@ public readonly partial struct Interval<T>
     }
 
     /// <summary>
-    /// Returns this interval with the values of <paramref name="other" /> removed — the set difference
-    /// <c>this \ other</c> — as zero, one, or two disjoint intervals.
+    /// Returns this interval with the values of <paramref name="other" /> removed - the set difference
+    /// <c>this \ other</c> - as zero, one, or two disjoint intervals.
     /// </summary>
     /// <param name="other">The interval whose values are removed from this one.</param>
     /// <returns>
@@ -195,7 +195,7 @@ public readonly partial struct Interval<T>
     /// </returns>
     /// <remarks>
     /// The endpoint at each cut flips inclusivity: removing a closed bound leaves an open bound on the remainder, and
-    /// vice versa. Unbounded operands are handled naturally — for example the difference of <see cref="All" /> and a
+    /// vice versa. Unbounded operands are handled naturally - for example the difference of <see cref="All" /> and a
     /// finite interval yields the two half-lines around it.
     /// </remarks>
     /// <example>
@@ -242,8 +242,8 @@ public readonly partial struct Interval<T>
     }
 
     /// <summary>
-    /// Returns the symmetric difference of this interval and <paramref name="other" /> — the values in exactly one of
-    /// the two, <c>(this \ other) &#x222A; (other \ this)</c> — as zero, one, or two disjoint intervals.
+    /// Returns the symmetric difference of this interval and <paramref name="other" /> - the values in exactly one of
+    /// the two, <c>(this \ other) &#x222A; (other \ this)</c> - as zero, one, or two disjoint intervals.
     /// </summary>
     /// <param name="other">The interval to symmetric-difference with.</param>
     /// <returns>An <see cref="IntervalPair{T}" /> holding the values covered by exactly one operand.</returns>
@@ -308,15 +308,15 @@ public readonly partial struct Interval<T>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
-    /// // Adjacent — [1, 5) ∪ [5, 10] → [1, 10]
+    /// // Adjacent - [1, 5) ∪ [5, 10] → [1, 10]
     /// Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.Closed(5, 10), out var contiguous);
     /// // contiguous == [1, 10], result == true
     ///
-    /// // Overlapping — [1, 5] ∪ [3, 7] → [1, 7]
+    /// // Overlapping - [1, 5] ∪ [3, 7] → [1, 7]
     /// Interval<int>.Closed(1, 5).TryUnion(Interval<int>.Closed(3, 7), out var merged);
     /// // merged == [1, 7], result == true
     ///
-    /// // Disjoint — [1, 5) ∪ (5, 10] is not contiguous (no operand contains 5).
+    /// // Disjoint - [1, 5) ∪ (5, 10] is not contiguous (no operand contains 5).
     /// bool ok = Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.OpenClosed(5, 10), out _);
     /// // ok == false
     ///
@@ -361,7 +361,7 @@ public readonly partial struct Interval<T>
 
     /// <summary>
     /// Determines whether the upper endpoint of one interval equals the lower endpoint of the other and at least one of
-    /// those endpoints is inclusive — the condition under which the two intervals' values would form a single
+    /// those endpoints is inclusive - the condition under which the two intervals' values would form a single
     /// contiguous run.
     /// </summary>
     /// <param name="other">The interval to test for adjacency.</param>
@@ -372,7 +372,7 @@ public readonly partial struct Interval<T>
 
     /// <summary>
     /// Compares this interval's lower endpoint with <paramref name="other" />'s, ordering an unbounded lower below
-    /// every finite lower and, on a value tie, an inclusive (closed) lower below an open one — so a smaller result
+    /// every finite lower and, on a value tie, an inclusive (closed) lower below an open one - so a smaller result
     /// denotes the endpoint that admits the leftmost values.
     /// </summary>
     /// <param name="other">The interval whose lower endpoint is compared.</param>
@@ -399,7 +399,7 @@ public readonly partial struct Interval<T>
 
     /// <summary>
     /// Compares this interval's upper endpoint with <paramref name="other" />'s, ordering an unbounded upper above
-    /// every finite upper and, on a value tie, an inclusive (closed) upper above an open one — so a larger result
+    /// every finite upper and, on a value tie, an inclusive (closed) upper above an open one - so a larger result
     /// denotes the endpoint that admits the rightmost values.
     /// </summary>
     /// <param name="other">The interval whose upper endpoint is compared.</param>

@@ -74,7 +74,7 @@ public partial class WebRateProviderExtensionsTests
     [TestMethod]
     public void AddWebRateProvider_WhenOptionsAreInvalid_ShouldThrowOptionsValidationExceptionWithRegisteredMessage()
     {
-        // BaseAddress left null — the first invariant TryValidate checks.
+        // BaseAddress left null - the first invariant TryValidate checks.
         using ServiceProvider provider = CreateServices(configure: static _ => { }).BuildServiceProvider();
 
         var ex = Assert.ThrowsExactly<OptionsValidationException>(() =>

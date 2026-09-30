@@ -29,7 +29,7 @@ public partial class ArrayExtensionsTests
         ];
 
     // -------------------------------------------------------------------------
-    // Data sources — full reverse, varying lengths
+    // Data sources - full reverse, varying lengths
     // -------------------------------------------------------------------------
 
     /// <summary>
@@ -45,7 +45,7 @@ public partial class ArrayExtensionsTests
         ];
 
     // -------------------------------------------------------------------------
-    // Data sources — non-generic Array, element type coverage
+    // Data sources - non-generic Array, element type coverage
     // -------------------------------------------------------------------------
 
     /// <summary>
@@ -72,7 +72,7 @@ public partial class ArrayExtensionsTests
         ];
 
     // -------------------------------------------------------------------------
-    // Data sources — partial reverse, index + count
+    // Data sources - partial reverse, index + count
     // -------------------------------------------------------------------------
 
     /// <summary>
@@ -88,7 +88,7 @@ public partial class ArrayExtensionsTests
         ];
 
     // -------------------------------------------------------------------------
-    // Data sources — ReverseCore<T> and ReverseArrayCore
+    // Data sources - ReverseCore<T> and ReverseArrayCore
     // -------------------------------------------------------------------------
 
     /// <summary>
@@ -99,15 +99,15 @@ public partial class ArrayExtensionsTests
     public static IEnumerable<object[]> ReverseCoreData =>
         [
             [0, 5, new[] { 5, 4, 3, 2, 1 }], // full reverse
-            [1, 3, new[] { 1, 4, 3, 2, 5 }], // partial — middle
-            [0, 3, new[] { 3, 2, 1, 4, 5 }], // partial — first section
-            [2, 3, new[] { 1, 2, 5, 4, 3 }], // partial — last section
-            [2, 0, new[] { 1, 2, 3, 4, 5 }], // count zero — straight copy
-            [2, 1, new[] { 1, 2, 3, 4, 5 }], // count one — straight copy
+            [1, 3, new[] { 1, 4, 3, 2, 5 }], // partial - middle
+            [0, 3, new[] { 3, 2, 1, 4, 5 }], // partial - first section
+            [2, 3, new[] { 1, 2, 5, 4, 3 }], // partial - last section
+            [2, 0, new[] { 1, 2, 3, 4, 5 }], // count zero - straight copy
+            [2, 1, new[] { 1, 2, 3, 4, 5 }], // count one - straight copy
         ];
 
     // -------------------------------------------------------------------------
-    // Data sources — Range expressions
+    // Data sources - Range expressions
     // Note: Range is not a valid [DataRow] argument; [DynamicData] is required
     // for all Range-based parameterised tests.
     // -------------------------------------------------------------------------
@@ -124,8 +124,8 @@ public partial class ArrayExtensionsTests
             [0, 0, false, true,  new[] { 5, 4, 3, 2, 1 }], // 0..^0  full array
             [0, 3, false, false, new[] { 3, 2, 1, 4, 5 }], // 0..3   first section
             [2, 5, false, false, new[] { 1, 2, 5, 4, 3 }], // 2..5   last section
-            [2, 2, false, false, new[] { 1, 2, 3, 4, 5 }], // 2..2   empty range — straight copy
-            [2, 3, false, false, new[] { 1, 2, 3, 4, 5 }], // 2..3   single element — straight copy
+            [2, 2, false, false, new[] { 1, 2, 3, 4, 5 }], // 2..2   empty range - straight copy
+            [2, 3, false, false, new[] { 1, 2, 3, 4, 5 }], // 2..3   single element - straight copy
         ];
 
     // -------------------------------------------------------------------------

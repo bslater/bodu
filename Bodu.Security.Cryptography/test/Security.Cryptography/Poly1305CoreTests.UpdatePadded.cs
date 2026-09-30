@@ -47,8 +47,8 @@ public sealed partial class Poly1305CoreTests
     }
 
     /// <summary>
-    /// Verifies that the RFC 8439 AEAD framing — the associated data and the ciphertext each padded to 16 bytes, then
-    /// their lengths — reproduces the tag of the Section 2.8.2 example under its published one-time key.
+    /// Verifies that the RFC 8439 AEAD framing - the associated data and the ciphertext each padded to 16 bytes, then
+    /// their lengths - reproduces the tag of the Section 2.8.2 example under its published one-time key.
     /// </summary>
     [TestMethod]
     public void UpdatePadded_WhenGivenRfc8439AeadExample_ShouldProduceTag()

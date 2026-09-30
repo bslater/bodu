@@ -20,8 +20,8 @@ public readonly partial struct Money
     /// <exception cref="InvalidOperationException">The operands have different ISO codes.</exception>
     /// <exception cref="OverflowException">The sum falls outside the range of <see cref="decimal" />.</exception>
     /// <remarks>
-    /// When the operands report different minor-unit scales — for example a two-decimal settled amount and a
-    /// six-decimal unit price — the result carries the finer (maximum) of the two scales, mirroring
+    /// When the operands report different minor-unit scales - for example a two-decimal settled amount and a
+    /// six-decimal unit price - the result carries the finer (maximum) of the two scales, mirroring
     /// <see cref="decimal" /> addition semantics. The sum is exact at that scale, so no rounding occurs and the
     /// reported precision is the same regardless of operand order.
     /// </remarks>

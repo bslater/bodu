@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Resolves notable-date occurrences — public holidays, observances, and other named dates — for a requested territory
+/// Resolves notable-date occurrences - public holidays, observances, and other named dates - for a requested territory
 /// and a single day or an inclusive date range.
 /// </summary>
 /// <remarks>

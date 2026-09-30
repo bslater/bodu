@@ -28,37 +28,37 @@
       since the Persian and Gregorian year boundaries do not coincide.
     -->
 
-    <!-- Nowruz / Jamshedi Navroz — 1 Farvardin, Zoroastrian and Persian New Year. Strategy: Fixed Persian month/day. -->
+    <!-- Nowruz / Jamshedi Navroz - 1 Farvardin, Zoroastrian and Persian New Year. Strategy: Fixed Persian month/day. -->
     <NotableDate id="zoroastrian-nowruz" displayName="Zoroastrian Nowruz" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="Persian" />
         <Strategy><Fixed month="1" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Khordad Sal — 6 Farvardin, birth anniversary of Zarathushtra in the Fasli/Iranian convention. Strategy: Fixed Persian month/day. -->
+    <!-- Khordad Sal - 6 Farvardin, birth anniversary of Zarathushtra in the Fasli/Iranian convention. Strategy: Fixed Persian month/day. -->
     <NotableDate id="khordad-sal" displayName="Khordad Sal" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="Persian" />
         <Strategy><Fixed month="1" day="6" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Tirgan — 13 Tir, Zoroastrian water festival. Strategy: Fixed Persian month/day. -->
+    <!-- Tirgan - 13 Tir, Zoroastrian water festival. Strategy: Fixed Persian month/day. -->
     <NotableDate id="tirgan" displayName="Tirgan" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="Persian" />
         <Strategy><Fixed month="4" day="13" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Mehregan — 16 Mehr, Zoroastrian festival of Mithra. Strategy: Fixed Persian month/day. -->
+    <!-- Mehregan - 16 Mehr, Zoroastrian festival of Mithra. Strategy: Fixed Persian month/day. -->
     <NotableDate id="mehregan" displayName="Mehregan" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="Persian" />
         <Strategy><Fixed month="7" day="16" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Zartosht No-Diso — 11 Dey, death anniversary of Zarathushtra in the Fasli/Iranian convention. Strategy: Fixed Persian month/day. -->
+    <!-- Zartosht No-Diso - 11 Dey, death anniversary of Zarathushtra in the Fasli/Iranian convention. Strategy: Fixed Persian month/day. -->
     <NotableDate id="zartosht-no-diso" displayName="Zartosht No-Diso" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="Persian" />
         <Strategy><Fixed month="10" day="11" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Sadeh — 10 Bahman, mid-winter fire festival. Strategy: Fixed Persian month/day. -->
+    <!-- Sadeh - 10 Bahman, mid-winter fire festival. Strategy: Fixed Persian month/day. -->
     <NotableDate id="sadeh" displayName="Sadeh" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="Persian" />
         <Strategy><Fixed month="11" day="10" sweepCalendarYears="true" /></Strategy></Rule></Rules>

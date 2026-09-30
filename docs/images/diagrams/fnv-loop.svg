@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="fnv-title fnv-desc">
-  <title id="fnv-title">FNV hash — FNV-1a and FNV-1 update ordering</title>
+  <title id="fnv-title">FNV hash - FNV-1a and FNV-1 update ordering</title>
   <desc id="fnv-desc">The Fowler-Noll-Vo hash starts from a published offset basis and processes one input byte at a time. The two variants differ only in operation order: FNV-1a XORs the byte into the state and then multiplies by the FNV prime, while FNV-1 multiplies first and then XORs the byte. FNV-1a's XOR-first ordering gives better avalanche on short inputs and is the preferred variant.</desc>
 
   <defs>
@@ -47,7 +47,7 @@
     <rect class="panel" width="800" height="300" rx="8"/>
     <rect class="header" width="800" height="46" rx="8"/>
     <rect class="header" y="38" width="800" height="8"/>
-    <text class="title" x="16" y="20">FNV — XOR / multiply order is the only difference</text>
+    <text class="title" x="16" y="20">FNV - XOR / multiply order is the only difference</text>
     <text class="formula" x="784" y="38" text-anchor="end">prime · offset basis from the FNV specification per width</text>
 
     <!-- offset basis -->
@@ -65,7 +65,7 @@
     </g>
 
     <!-- FNV-1a lane -->
-    <text class="variant" x="250" y="86" fill="#2DD4BF">FNV-1a — XOR first, then multiply (preferred)</text>
+    <text class="variant" x="250" y="86" fill="#2DD4BF">FNV-1a - XOR first, then multiply (preferred)</text>
     <g transform="translate(360 110)">
       <circle class="op" cx="0" cy="0" r="15"/>
       <text class="op-sym" x="0" y="5">⊕</text>
@@ -90,10 +90,10 @@
     <path class="wire-byte" d="M 144 156 C 240 130, 300 118, 343 112" marker-end="url(#fnv-arr-by)"/>
     <!-- h feedback FNV-1a -->
     <path class="wire-a" d="M 600 126 C 600 156, 360 156, 360 130" stroke-dasharray="4 3" marker-end="url(#fnv-arr-a)"/>
-    <text class="sub-muted" x="430" y="151" text-anchor="middle">hₚᵣₑᵥ — loop for next byte</text>
+    <text class="sub-muted" x="430" y="151" text-anchor="middle">hₚᵣₑᵥ - loop for next byte</text>
 
     <!-- FNV-1 lane -->
-    <text class="variant" x="250" y="200" fill="#60A5FA">FNV-1 — multiply first, then XOR (legacy)</text>
+    <text class="variant" x="250" y="200" fill="#60A5FA">FNV-1 - multiply first, then XOR (legacy)</text>
     <g transform="translate(360 224)">
       <circle class="op" cx="0" cy="0" r="15"/>
       <text class="op-sym" x="0" y="5">×</text>
@@ -118,12 +118,12 @@
     <path class="wire-byte" d="M 144 168 C 260 200, 380 244, 453 232" marker-end="url(#fnv-arr-by)"/>
     <!-- h feedback FNV-1 -->
     <path class="wire-b" d="M 600 240 C 600 270, 360 270, 360 244" stroke-dasharray="4 3" marker-end="url(#fnv-arr-b)"/>
-    <text class="sub-muted" x="430" y="265" text-anchor="middle">hₚᵣₑᵥ — loop for next byte</text>
+    <text class="sub-muted" x="430" y="265" text-anchor="middle">hₚᵣₑᵥ - loop for next byte</text>
 
     <!-- basis feeds both lanes -->
     <path class="wire" d="M 110 94 L 110 130 L 200 130 L 200 110 L 343 110" marker-end="url(#fnv-arr-d)" opacity="0.7"/>
 
     <!-- footer note -->
-    <text class="sub" x="20" y="290">Same prime, same basis, same bytes — only the operation order changes. FNV-1a's XOR-before-multiply mixes each byte before it can be diluted.</text>
+    <text class="sub" x="20" y="290">Same prime, same basis, same bytes - only the operation order changes. FNV-1a's XOR-before-multiply mixes each byte before it can be diluted.</text>
   </g>
 </svg>

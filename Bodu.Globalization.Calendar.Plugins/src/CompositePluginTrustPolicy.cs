@@ -8,8 +8,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
 /// A trust policy that trusts a candidate only when every composed policy trusts it; the first rejection short-circuits
-/// and its reason is surfaced. An empty policy set fails closed — it rejects every candidate rather than vacuously
-/// trusting it — so a misconfigured composite cannot silently disable the trust gate.
+/// and its reason is surfaced. An empty policy set fails closed - it rejects every candidate rather than vacuously
+/// trusting it - so a misconfigured composite cannot silently disable the trust gate.
 /// </summary>
 public sealed class CompositePluginTrustPolicy
     : IPluginTrustPolicy

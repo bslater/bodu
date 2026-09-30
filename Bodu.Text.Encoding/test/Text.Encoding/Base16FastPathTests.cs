@@ -60,7 +60,7 @@ public sealed class Base16FastPathTests
 
     /// <summary>
     /// Verifies that the decorated paths (prefix / spacing / line breaks / mixed) still produce the expected output
-    /// after the unformatted fast path delegates to the BCL — the formatting overload is unrelated and must remain
+    /// after the unformatted fast path delegates to the BCL - the formatting overload is unrelated and must remain
     /// independent.
     /// </summary>
     [TestMethod]

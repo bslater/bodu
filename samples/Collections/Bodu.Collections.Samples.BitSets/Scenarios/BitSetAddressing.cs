@@ -15,7 +15,7 @@ namespace Bodu.Collections.Samples.BitSets.Scenarios;
 /// </summary>
 /// <remarks>
 /// The three size properties are the part worth slowing down for. They answer different questions, they routinely
-/// disagree, and picking the wrong one produces code that works on small inputs and quietly misbehaves later — so
+/// disagree, and picking the wrong one produces code that works on small inputs and quietly misbehaves later - so
 /// this scenario is built to make them disagree and then show why each value is the right answer to its own question.
 /// </remarks>
 public static class BitSetAddressing

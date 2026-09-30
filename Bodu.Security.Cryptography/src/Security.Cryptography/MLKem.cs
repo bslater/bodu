@@ -23,7 +23,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong><see cref="AsymmetricAlgorithm.KeySize" /> semantics.</strong> The reported key size is the FIPS 203
-/// parameter-set designator (512, 768, or 1024) identifying the module rank and security category — it is not a key
+/// parameter-set designator (512, 768, or 1024) identifying the module rank and security category - it is not a key
 /// length in bits, because module-lattice keys have no meaningful single bit-length.
 /// </para>
 /// <para>
@@ -40,7 +40,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>Memory.</strong> When a key is generated or imported, the instance also keeps the values FIPS 203 derives
-/// from it on every operation — the matrix Â, the decoded vectors t̂ and ŝ, and H(ek) — so that encapsulation and
+/// from it on every operation - the matrix Â, the decoded vectors t̂ and ŝ, and H(ek) - so that encapsulation and
 /// decapsulation do not recompute them. Beside the encoded keys they take about 8, 15 and 24 KiB for ML-KEM-512, 768
 /// and 1024, or 6, 12 and 20 KiB for an instance holding only an encapsulation key.
 /// </para>

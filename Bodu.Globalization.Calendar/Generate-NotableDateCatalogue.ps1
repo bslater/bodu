@@ -7,7 +7,7 @@
     five Calendar.Data.* region packs and the per-region common hubs), resolves the import graph the same way the
     runtime loader does (NotableDateResourceLoader.ResolveImports / SelectImportedConcepts / ApplyUse), and
     renders a small set of crisp DocFX markdown pages. The pages catalogue WHAT notable dates exist (by theme
-    and by region) and HOW regions and territories differ — deliberately without restating the calculation
+    and by region) and HOW regions and territories differ - deliberately without restating the calculation
     recipe logic: dates are summarised with a one-phrase "when" gloss (anchor name + signed offset, or the
     algorithm key verbatim), never the underlying math.
 
@@ -128,7 +128,7 @@ $HijriMonths = @{ '1' = 'Muharram'; '2' = 'Safar'; '3' = 'Rabi I'; '4' = 'Rabi I
 $AnchorShort = @{ 'easter-sunday' = 'Easter'; 'orthodox-easter-sunday' = 'Orthodox Easter'; 'lunar-new-year' = 'Lunar New Year'; 'ramadan' = 'Ramadan' }
 
 # ---------------------------------------------------------------------------------------------------------------
-# Section A — resource index (filename stem -> full path), across all four resource directories.
+# Section A - resource index (filename stem -> full path), across all four resource directories.
 # ---------------------------------------------------------------------------------------------------------------
 
 $script:Warnings = [System.Collections.Generic.List[string]]::new()
@@ -180,7 +180,7 @@ function Get-HubInfo([string]$stem) {
 }
 
 # ---------------------------------------------------------------------------------------------------------------
-# Section B — memoized parse into a resource model (namespace-aware via XmlNamespaceManager).
+# Section B - memoized parse into a resource model (namespace-aware via XmlNamespaceManager).
 # ---------------------------------------------------------------------------------------------------------------
 
 $script:ResourceCache = @{}
@@ -190,7 +190,7 @@ function Get-Resource([string]$stem) {
     if (-not $script:Index.ContainsKey($stem)) { throw "Resource '$stem' is not in the index (referenced but not found)." }
 
     $path = $script:Index[$stem].Path
-    $xml = [xml](Get-Content -LiteralPath $path -Raw)   # throws on malformed XML — the well-formedness gate
+    $xml = [xml](Get-Content -LiteralPath $path -Raw)   # throws on malformed XML - the well-formedness gate
     $nsmgr = [System.Xml.XmlNamespaceManager]::new($xml.NameTable)
     $nsmgr.AddNamespace('nd', $Ns)
     $root = $xml.DocumentElement
@@ -249,7 +249,7 @@ function Get-Resource([string]$stem) {
 }
 
 # ---------------------------------------------------------------------------------------------------------------
-# Section C — recursive import resolver. Mirrors NotableDateResourceLoader.ResolveImports / SelectImportedConcepts
+# Section C - recursive import resolver. Mirrors NotableDateResourceLoader.ResolveImports / SelectImportedConcepts
 # / ApplyUse: recurse into each <Import> (all source concepts when bare, else cherry-pick by ref), apply per-Use
 # overrides, dedup imported first-source-wins, then local-wins merge. Bare (no-Use) resolution is memoized per stem.
 # ---------------------------------------------------------------------------------------------------------------
@@ -345,7 +345,7 @@ function Get-WhenGloss($rule) {
             return "$ord $dw $mo (relative)"
         }
         'Algorithm' { return "Algorithm: $([string]$a['key'])" }
-        default { return '—' }
+        default { return '-' }
     }
 }
 
@@ -396,7 +396,7 @@ function Get-Calendar($concept) {
 }
 
 # ---------------------------------------------------------------------------------------------------------------
-# Section D — per-region effective concept model (region inline + imported-with-overrides, local wins).
+# Section D - per-region effective concept model (region inline + imported-with-overrides, local wins).
 # ---------------------------------------------------------------------------------------------------------------
 
 function Build-RegionModel([string]$regionStem) {
@@ -421,13 +421,13 @@ function Build-RegionModel([string]$regionStem) {
 }
 
 # ---------------------------------------------------------------------------------------------------------------
-# Section G — rendering helpers.
+# Section G - rendering helpers.
 # ---------------------------------------------------------------------------------------------------------------
 
 $RegeneratedUtc = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
 
 function Esc([string]$s) { if ($null -eq $s) { return '' } return ($s -replace '\|', '\|') }
-function YesNo([bool]$b) { if ($b) { 'Yes' } else { '—' } }
+function YesNo([bool]$b) { if ($b) { 'Yes' } else { '-' } }
 function Format-Anchor([string]$heading) {
     # markdig heading-slug: lower, spaces->-, drop non-alnum/-.
     $s = $heading.ToLowerInvariant() -replace "[^a-z0-9 \-]", '' -replace '\s+', '-'
@@ -450,8 +450,8 @@ function New-Footer {
     [void]$l.Add('')
     [void]$l.Add('## See also')
     [void]$l.Add('')
-    [void]$l.Add('- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.')
-    [void]$l.Add('- **[Bodu.Globalization.Calendar guides](../index.md)** — the full guide index for the calendar runtime and its companions.')
+    [void]$l.Add('- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.')
+    [void]$l.Add('- **[Bodu.Globalization.Calendar guides](../index.md)** - the full guide index for the calendar runtime and its companions.')
     [void]$l.Add('')
     return , $l
 }
@@ -495,7 +495,7 @@ function Render-CatalogueSection([string]$stem, [string]$themeFile) {
             [void]$l.Add('|---|---|---|')
             foreach ($c in $res.Concepts) {
                 $sk = Get-SortKey $c
-                $when = if ($sk.Rule) { Get-WhenGloss $sk.Rule } else { '—' }
+                $when = if ($sk.Rule) { Get-WhenGloss $sk.Rule } else { '-' }
                 [void]$l.Add("| $(Esc $c.DisplayName) | $($c.Category) | $when |")
             }
             [void]$l.Add('')
@@ -514,7 +514,7 @@ function Render-CatalogueSection([string]$stem, [string]$themeFile) {
         [void]$l.Add('| Observance | When |')
         [void]$l.Add('|---|---|')
         foreach ($c in $sample) {
-            $sk = Get-SortKey $c; $when = if ($sk.Rule) { Get-WhenGloss $sk.Rule } else { '—' }
+            $sk = Get-SortKey $c; $when = if ($sk.Rule) { Get-WhenGloss $sk.Rule } else { '-' }
             [void]$l.Add("| $(Esc $c.DisplayName) | $when |")
         }
         if ($concepts.Count -gt $sample.Count) { [void]$l.Add("| _+ $($concepts.Count - $sample.Count) more_ | |") }
@@ -531,7 +531,7 @@ function Render-CatalogueSection([string]$stem, [string]$themeFile) {
         [void]$l.Add('|---|---|---|---|')
     }
     foreach ($c in $sorted) {
-        $sk = Get-SortKey $c; $when = if ($sk.Rule) { Get-WhenGloss $sk.Rule } else { '—' }
+        $sk = Get-SortKey $c; $when = if ($sk.Rule) { Get-WhenGloss $sk.Rule } else { '-' }
         $nw = YesNo (Get-IsNonWorking $c)
         if ($anyNonGreg) { [void]$l.Add("| $(Esc $c.DisplayName) | $($c.Category) | $nw | $(Get-Calendar $c) | $when |") }
         else { [void]$l.Add("| $(Esc $c.DisplayName) | $($c.Category) | $nw | $when |") }
@@ -544,7 +544,7 @@ function Render-ThemePage($page, $observedByMap) {
     $l = New-Header $page.Title
     [void]$l.Add("# $($page.Title)")
     [void]$l.Add('')
-    [void]$l.Add('Concepts defined by the shared catalogues in this theme. A region pack imports the concepts it observes and supplies its own territory scope and non-working status — see the [region pages](index.md#by-region). The **When** column is a one-phrase gloss, not the calculation recipe.')
+    [void]$l.Add('Concepts defined by the shared catalogues in this theme. A region pack imports the concepts it observes and supplies its own territory scope and non-working status - see the [region pages](index.md#by-region). The **When** column is a one-phrase gloss, not the calculation recipe.')
     [void]$l.Add('')
     foreach ($stem in $page.Catalogues) {
         if (-not $script:Index.ContainsKey($stem)) { Add-Warn "Theme '$($page.Title)' lists missing catalogue '$stem'."; continue }
@@ -586,7 +586,7 @@ function Render-RegionPage($page, $models) {
             }
             $rows = @($g.Group | Sort-Object @{ E = { (Get-SortKey $_).M } }, @{ E = { (Get-SortKey $_).D } }, DisplayName)
             foreach ($c in $rows) {
-                $sk = Get-SortKey $c; $when = if ($sk.Rule) { Get-WhenGloss $sk.Rule } else { '—' }
+                $sk = Get-SortKey $c; $when = if ($sk.Rule) { Get-WhenGloss $sk.Rule } else { '-' }
                 $nw = YesNo (Get-IsNonWorking $c)
                 $scope = Get-TerritoryScope $c $m.Country
                 $src = if ($c.Source -eq 'inline') { 'inline' } else { "[← $($c.Source)]($(Get-SourceLink $c.Source))" }
@@ -640,7 +640,7 @@ foreach ($stem in $script:RegionStems) {
 }
 
 # ---------------------------------------------------------------------------------------------------------------
-# Section F — comparison matrix (selective: top-N most-observed concepts, three per-bundle tables).
+# Section F - comparison matrix (selective: top-N most-observed concepts, three per-bundle tables).
 # ---------------------------------------------------------------------------------------------------------------
 
 function Get-CellState($concept, [string]$country) {
@@ -669,7 +669,7 @@ function Render-MatrixPage($tally, [int]$topN) {
     $l = New-Header 'Cross-region comparison matrix'
     [void]$l.Add('# Cross-region comparison matrix')
     [void]$l.Add('')
-    [void]$l.Add("The most widely-shared notable dates across the region packs, by bundle. Cells: **N** non-working public holiday · **O** observed (working) · **S** subdivision-only · **—** not in the pack. The top $topN concepts by country count are shown; per-country detail is on the [region pages](index.md#by-region), concept definitions on the [theme pages](index.md#by-theme).")
+    [void]$l.Add("The most widely-shared notable dates across the region packs, by bundle. Cells: **N** non-working public holiday · **O** observed (working) · **S** subdivision-only · **-** not in the pack. The top $topN concepts by country count are shown; per-country detail is on the [region pages](index.md#by-region), concept definitions on the [theme pages](index.md#by-theme).")
     [void]$l.Add('')
     $top = @($tally.GetEnumerator() | Sort-Object @{ E = { -$_.Value.Count } }, @{ E = { $_.Value.Display } } | Select-Object -First $topN)
     foreach ($rp in $RegionPages) {
@@ -679,7 +679,7 @@ function Render-MatrixPage($tally, [int]$topN) {
         [void]$l.Add("| Concept | $($countries -join ' | ') |")
         [void]$l.Add("|---|$(($countries | ForEach-Object { ':--:' }) -join '|')|")
         foreach ($e in $top) {
-            $cells = @($countries | ForEach-Object { $cc = $_; if ($e.Value.Countries.ContainsKey($cc)) { $e.Value.Countries[$cc] } else { '—' } })
+            $cells = @($countries | ForEach-Object { $cc = $_; if ($e.Value.Countries.ContainsKey($cc)) { $e.Value.Countries[$cc] } else { '-' } })
             [void]$l.Add("| $(Esc $e.Value.Display) | $($cells -join ' | ') |")
         }
         [void]$l.Add('')
@@ -699,18 +699,18 @@ function Render-IndexPage([int]$catCount, [int]$regionCount, [int]$conceptCount,
     [void]$l.Add('What notable dates the calendar data ships, and how regions and territories differ. This catalogue is generated from the `Bodu.Globalization.Calendar` XML resources; it lists the dates and their scope, not the calculation recipes (for those, see the linked guides).')
     [void]$l.Add('')
     $hubLinks = @($script:HubStems | ForEach-Object { "[``$_``]($(Get-SourceLink $_))" }) -join ', '
-    [void]$l.Add("Concepts are authored once in a **shared catalogue** and a **region pack** imports the ones it observes, supplying its own territory scope and non-working status. Each data bundle also ships a **region hub** ($hubLinks) that re-exports the shared concepts its packs have in common — and occasionally defines a few of its own — so those packs import from the hub rather than from each catalogue directly. The pages below present the same data along two axes.")
+    [void]$l.Add("Concepts are authored once in a **shared catalogue** and a **region pack** imports the ones it observes, supplying its own territory scope and non-working status. Each data bundle also ships a **region hub** ($hubLinks) that re-exports the shared concepts its packs have in common - and occasionally defines a few of its own - so those packs import from the hub rather than from each catalogue directly. The pages below present the same data along two axes.")
     [void]$l.Add('')
     [void]$l.Add('## How to read these pages')
     [void]$l.Add('')
     [void]$l.Add('| Column | Meaning |')
     [void]$l.Add('|---|---|')
     [void]$l.Add('| Category | `PublicHoliday`, `Religious`, `Cultural`, `Observance`, `Remembrance`, … |')
-    [void]$l.Add('| Non-working | `Yes` = a non-working public holiday for the scope shown; `—` = a working observance |')
+    [void]$l.Add('| Non-working | `Yes` = a non-working public holiday for the scope shown; `-` = a working observance |')
     [void]$l.Add('| Territory scope | `National`, a subdivision list (e.g. `ENG, WLS, NIR`), or `National + …` |')
     [void]$l.Add('| Calendar | shown only when non-Gregorian (`Hijri`, `Hebrew`, `Persian`, `ChineseLunisolar`, …) |')
     [void]$l.Add('| Source | `inline` (defined in the region pack) or `← catalogue` / `← <region>-common` (the direct import: a shared catalogue or the bundle''s region hub) |')
-    [void]$l.Add('| When | a one-phrase gloss: `Fixed 25 Dec`, `Easter +1`, `1st Mon May`, `Algorithm: western-easter` — never the recipe |')
+    [void]$l.Add('| When | a one-phrase gloss: `Fixed 25 Dec`, `Easter +1`, `1st Mon May`, `Algorithm: western-easter` - never the recipe |')
     [void]$l.Add('')
     [void]$l.Add('## By theme')
     [void]$l.Add('')
@@ -745,7 +745,7 @@ function Render-IndexPage([int]$catCount, [int]$regionCount, [int]$conceptCount,
 }
 
 # ---------------------------------------------------------------------------------------------------------------
-# Section I — optional XSD validation.
+# Section I - optional XSD validation.
 # ---------------------------------------------------------------------------------------------------------------
 
 if ($ValidateXsd) {
@@ -761,7 +761,7 @@ if ($ValidateXsd) {
 }
 
 # ---------------------------------------------------------------------------------------------------------------
-# Section J — write pages.
+# Section J - write pages.
 # ---------------------------------------------------------------------------------------------------------------
 
 if (-not (Test-Path -LiteralPath $OutputDir)) { New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null }
@@ -787,7 +787,7 @@ foreach ($rp in $RegionPages) {
 Write-Page 'comparison-matrix.md' (Render-MatrixPage $matrix $matrixRows)
 
 # ---------------------------------------------------------------------------------------------------------------
-# Section H — surgical, idempotent TOC update. Insert/replace the catalogue group under the calendar node.
+# Section H - surgical, idempotent TOC update. Insert/replace the catalogue group under the calendar node.
 # ---------------------------------------------------------------------------------------------------------------
 
 $tocEntries = @(
@@ -806,7 +806,7 @@ $tocEntries = @(
 )
 # The guides TOC nests libraries under topic nodes: the calendar library sits at 4-space indent below
 # 'Globalization & Calendars', and the generated catalogue group is one of its 8-space-indented children.
-$groupName = 'Bodu.Globalization.Calendar — Notable-date catalogue'
+$groupName = 'Bodu.Globalization.Calendar - Notable-date catalogue'
 $grp = [System.Collections.Generic.List[string]]::new()
 [void]$grp.Add("        - name: $groupName")
 [void]$grp.Add('          items:')

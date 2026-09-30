@@ -7,8 +7,8 @@ title: Runnable samples
 The repository ships a runnable, self-contained sample project for
 `Bodu.Collections.Concurrent` under
 [`samples/Collections.Concurrent/`](https://github.com/bslater/bodu/tree/master/samples/Collections.Concurrent).
-The sample is **offline and deterministic** — even its parallel section prints only
-order-independent aggregates so output is byte-identical across runs — and is a member of
+The sample is **offline and deterministic** - even its parallel section prints only
+order-independent aggregates so output is byte-identical across runs - and is a member of
 `bodu.slnx`, built and executed by CI, so the code it shows cannot drift from the current API.
 Its README documents every scenario individually: intent, what the code does, the output to
 expect, and the APIs demonstrated.
@@ -34,5 +34,5 @@ output. *Package: `Bodu.Collections.Concurrent`.*
 
 ## Related
 
-- [Collections samples](collections.md) — the single-threaded collection catalogue these are
+- [Collections samples](collections.md) - the single-threaded collection catalogue these are
   built from.

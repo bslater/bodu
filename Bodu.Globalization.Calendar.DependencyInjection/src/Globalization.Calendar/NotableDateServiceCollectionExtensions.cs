@@ -18,8 +18,8 @@ namespace Bodu.Globalization.Calendar;
 /// <para>
 /// The service is registered as a singleton because a <see cref="NotableDateResource" /> is immutable and the resolver
 /// holds no shared mutable state, so a single instance can be shared across the application safely. Registrations are
-/// idempotent (<c>TryAdd</c> semantics): when an <see cref="INotableDateService" /> — or, for the keyed overloads, a
-/// service under the same key — is already registered, the call leaves the existing registration in place.
+/// idempotent (<c>TryAdd</c> semantics): when an <see cref="INotableDateService" /> - or, for the keyed overloads, a
+/// service under the same key - is already registered, the call leaves the existing registration in place.
 /// </para>
 /// <para>
 /// <strong>When to use.</strong> Use <see cref="AddNotableDateService(IServiceCollection, NotableDateResource)" /> when
@@ -79,7 +79,7 @@ public static class NotableDateServiceCollectionExtensions
     /// <param name="services">The service collection to add the registration to.</param>
     /// <param name="resource">The loaded resource the service resolves against.</param>
     /// <param name="options">
-    /// The collaborators composed into the service — for example a custom algorithm registry — or
+    /// The collaborators composed into the service - for example a custom algorithm registry - or
     /// <see langword="null" /> for built-ins only.
     /// </param>
     /// <returns>The same service collection, to allow chaining.</returns>
@@ -159,7 +159,7 @@ public static class NotableDateServiceCollectionExtensions
     /// <para>
     /// Consumers resolve the keyed service with <c>GetRequiredKeyedService&lt;INotableDateService&gt;(serviceKey)</c>
     /// or a <c>[FromKeyedServices(serviceKey)]</c> constructor parameter. Keyed registrations are independent of the
-    /// unkeyed registration — registering both is supported.
+    /// unkeyed registration - registering both is supported.
     /// </para>
     /// </remarks>
     public static IServiceCollection AddNotableDateService(
@@ -326,7 +326,7 @@ public static class NotableDateServiceCollectionExtensions
     /// <typeparamref name="TOptions" /> through the standard <c>AddOptions&lt;TOptions&gt;()</c> surface (for example
     /// bound to a configuration section), and every change notification rebuilds the resource through
     /// <paramref name="resourceFactory" /> and swaps it into the live service. A factory failure during a change is
-    /// logged and leaves the previously loaded resource in effect — a broken configuration edit never faults the reload
+    /// logged and leaves the previously loaded resource in effect - a broken configuration edit never faults the reload
     /// thread or takes the calendar offline.
     /// </para>
     /// </remarks>

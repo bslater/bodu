@@ -16,7 +16,7 @@ namespace Bodu.IO.Hashing;
 /// <remarks>
 /// <para>
 /// <see cref="CityHash32" /> dispatches to one of four internal mixing paths based on input length: a loop over
-/// individual bytes for 0–4 bytes; a four-word path for 5–12 bytes; a six-word path for 13–24 bytes; and a full
+/// individual bytes for 0-4 bytes; a four-word path for 5-12 bytes; a six-word path for 13-24 bytes; and a full
 /// iterative path consuming 20-byte blocks with three interleaved accumulators for 25 or more bytes. All paths converge
 /// through the <c>Mur</c> and <c>Mix</c> primitives defined in <see cref="CityHash" />.
 /// </para>
@@ -31,15 +31,15 @@ namespace Bodu.IO.Hashing;
 /// <description>Variant: <c>CityHash32</c>.</description>
 /// </item>
 /// <item>
-/// <description>Length-dispatched mixing: 0–4, 5–12, 13–24, and 25+ byte paths.</description>
+/// <description>Length-dispatched mixing: 0-4, 5-12, 13-24, and 25+ byte paths.</description>
 /// </item>
 /// <item>
-/// <description>Seedless — for seeded variants prefer <see cref="MurmurHash3_32" />.</description>
+/// <description>Seedless - for seeded variants prefer <see cref="MurmurHash3_32" />.</description>
 /// </item>
 /// </list>
 /// <para>
 /// <strong>When to choose CityHash32.</strong> Pick <see cref="CityHash32" /> for 32-bit slot indexes when throughput
-/// on long inputs matters — it edges <see cref="MurmurHash3_32" /> on 64-bit hosts. For short fixed-length keys
+/// on long inputs matters - it edges <see cref="MurmurHash3_32" /> on 64-bit hosts. For short fixed-length keys
 /// <see cref="Fnv1a32" /> is simpler and competitive; if a seed is needed (bloom filters, hash-flooding mitigation)
 /// prefer <see cref="MurmurHash3_32" />.
 /// </para>

@@ -53,9 +53,9 @@ public partial class NumericExtensionsTests
     /// input value, for a representative set of inputs.
     /// </summary>
     [TestMethod]
-    [DataRow(0x00000000U, 0x00000000U, "all bits zero — identity")]
-    [DataRow(0xFFFFFFFFU, 0xFFFFFFFFU, "all bits set — identity")]
-    [DataRow(0x55555555U, 0x55555555U, "byte-palindrome — identity")]
+    [DataRow(0x00000000U, 0x00000000U, "all bits zero - identity")]
+    [DataRow(0xFFFFFFFFU, 0xFFFFFFFFU, "all bits set - identity")]
+    [DataRow(0x55555555U, 0x55555555U, "byte-palindrome - identity")]
     [DataRow(0x12345678U, 0x78563412U, "12345678 → 78563412")]
     [DataRow(0xABCD1234U, 0x3412CDABU, "ABCD1234 → 3412CDAB")]
     [DataRow(0x01020304U, 0x04030201U, "01020304 → 04030201")]
@@ -82,9 +82,9 @@ public partial class NumericExtensionsTests
     /// input value, for a representative set of inputs.
     /// </summary>
     [TestMethod]
-    [DataRow(0x0000000000000000UL, 0x0000000000000000UL, "all bits zero — identity")]
-    [DataRow(0xFFFFFFFFFFFFFFFFUL, 0xFFFFFFFFFFFFFFFFUL, "all bits set — identity")]
-    [DataRow(0x5555555555555555UL, 0x5555555555555555UL, "byte-palindrome — identity")]
+    [DataRow(0x0000000000000000UL, 0x0000000000000000UL, "all bits zero - identity")]
+    [DataRow(0xFFFFFFFFFFFFFFFFUL, 0xFFFFFFFFFFFFFFFFUL, "all bits set - identity")]
+    [DataRow(0x5555555555555555UL, 0x5555555555555555UL, "byte-palindrome - identity")]
     [DataRow(0x0102030405060708UL, 0x0807060504030201UL, "sequential byte values")]
     [DataRow(0x1234567890ABCDEFUL, 0xEFCDAB9078563412UL, "arbitrary non-palindromic value")]
     [DataRow(0xABCD1234567890ABUL, 0xAB9078563412CDABUL, "split arbitrary value")]
@@ -110,9 +110,9 @@ public partial class NumericExtensionsTests
     /// input value, for a representative set of inputs.
     /// </summary>
     [TestMethod]
-    [DataRow((ushort)0x0000, (ushort)0x0000, "all bits zero — identity")]
-    [DataRow((ushort)0xFFFF, (ushort)0xFFFF, "all bits set — identity")]
-    [DataRow((ushort)0xAAAA, (ushort)0xAAAA, "byte-palindrome — identity")]
+    [DataRow((ushort)0x0000, (ushort)0x0000, "all bits zero - identity")]
+    [DataRow((ushort)0xFFFF, (ushort)0xFFFF, "all bits set - identity")]
+    [DataRow((ushort)0xAAAA, (ushort)0xAAAA, "byte-palindrome - identity")]
     [DataRow((ushort)0x1234, (ushort)0x3412, "arbitrary non-palindromic value")]
     [DataRow((ushort)0xABCD, (ushort)0xCDAB, "ABCD → CDAB")]
     [DataRow((ushort)0x0102, (ushort)0x0201, "0102 → 0201")]

@@ -1,7 +1,7 @@
 # INI → quartet design note
 
 **Date:** 2026-07-21
-**Status:** Design — implements tranche **T3** (lands atomically with T4).
+**Status:** Design - implements tranche **T3** (lands atomically with T4).
 **Relates to:** [`line-formats-quartet-redesign-assessment.md`](./line-formats-quartet-redesign-assessment.md).
 
 INI is the hardest of the three: a two-level object-of-objects, duplicate-section
@@ -17,7 +17,7 @@ a global/unnamed section) and its values are sub-objects of `string → string`.
 No deeper nesting. Structurally analogous to TOML tables but capped at depth 2
 and carrying comment trivia TOML discards.
 
-## Token model — two readers (like TOML)
+## Token model - two readers (like TOML)
 
 - **Source-order** `Utf8IniReader` (public forward-only surface for
   streaming/tooling): `None, SectionHeader, PropertyName, String, Comment`.
@@ -27,7 +27,7 @@ and carrying comment trivia TOML discards.
 
 **Why INI needs the pre-parse reader (unlike DotEnv/Delimited).**
 `IniDuplicateSectionBehavior.Preserve`/merge means a later `[foo]` appends to an
-earlier `[foo]` — structure out of source order, exactly TOML's condition. Under
+earlier `[foo]` - structure out of source order, exactly TOML's condition. Under
 non-merging policies (last-wins / error) one forward pass suffices, but under
 merge a materialized flat-row pre-parse is required, so the serializer **always**
 routes through `IniDocumentReader` (a flat pooled row store, TOML-identical
@@ -52,16 +52,16 @@ reserved root key that preserves round-trip fidelity. A global key colliding
 with a section name is **rejected** with `IniSerializationException`; the
 reserved-key mode disambiguates.
 
-## Mutable DOM (`Text.Ini.Nodes`) — trivia-bearing (D5 deviation)
+## Mutable DOM (`Text.Ini.Nodes`) - trivia-bearing (D5 deviation)
 
 `IniNode` / `IniObject` / `IniValue`. `IniObject` sub-objects and `IniValue`s
 carry `LeadingComments` and (on values) `InlineComment` trivia. This DOM is the
 successor to today's `IniDocument` / `IniSection` / `IniEntry` / `IniComment`
 and is the **one place** the "quartet DOMs are trivia-free" rule is deliberately
-broken — INI authoring and (via decouple, D6) `Bodu.Text.Configuration` both
+broken - INI authoring and (via decouple, D6) `Bodu.Text.Configuration` both
 require faithful comment round-trips. Called out explicitly per the assessment.
 
-## Read-only DOM (`Text.Ini.Document`) — trivia-free, `IDisposable`
+## Read-only DOM (`Text.Ini.Document`) - trivia-free, `IDisposable`
 
 `IniDocument` / `IniElement` / `IniProperty`, root object-of-objects,
 `JsonElement`-shaped accessors, comments dropped.
@@ -81,7 +81,7 @@ read-only on first use, `IniSerializerDefaults`) reuses the shared attribute /
 Today's `IniParseOptions` knobs move onto the reader/serializer options:
 `AllowGlobalSection`, `CaseSensitiveSections`, `CaseSensitiveKeys`,
 `PreserveComments`, `DuplicateKeyBehavior` (`Bodu.Text.DuplicateKeyPolicy`),
-`DuplicateSectionBehavior` (`IniDuplicateSectionBehavior` —
+`DuplicateSectionBehavior` (`IniDuplicateSectionBehavior` -
 `Merge`/`Preserve`/`MergeAdjacent`). Both enums relocate into the INI root
 bucket. The comment-prefix default (`;` for INI vs `#` for DotEnv) is preserved.
 
@@ -96,11 +96,11 @@ policies), and `IniDocument`/`IniNode` DOM tests (incl. trivia round-trip).
 Migrate `IniKnownAnswerVector`. Curated malformed + full-grammar sweep in the
 Regression tier. One `Smoke` test.
 
-## Downstream — the atomic T4 dependency
+## Downstream - the atomic T4 dependency
 
 `Bodu.Text.Configuration.ConfigurationDocument : IniDocumentBase` and
 `ConfigurationReader.Helpers.cs` build `IniSection`/`IniEntry`/`IniComment`
-directly. Per assessment **D6**, T4 **decouples** Configuration — moving the
+directly. Per assessment **D6**, T4 **decouples** Configuration - moving the
 trivia-preserving INI model into Configuration as its own internal document model
-and dropping the Formats dependency — so the new `Bodu.Text.Ini` is free to be a
+and dropping the Formats dependency - so the new `Bodu.Text.Ini` is free to be a
 clean quartet. T3 and T4 land together or `bodu.slnx` will not build.

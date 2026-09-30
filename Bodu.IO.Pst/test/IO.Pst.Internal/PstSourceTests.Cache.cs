@@ -12,8 +12,8 @@ namespace Bodu.IO.Pst.Internal;
 public partial class PstSourceTests
 {
     /// <summary>
-    /// Verifies that a data block whose identifier collides with a cached page's cache key — the page's identifier
-    /// with the top bit set — is read and validated as a block rather than served from the page cache: the two key
+    /// Verifies that a data block whose identifier collides with a cached page's cache key - the page's identifier
+    /// with the top bit set - is read and validated as a block rather than served from the page cache: the two key
     /// spaces must be independent, because the identifier is read verbatim from the file.
     /// </summary>
     [TestMethod]

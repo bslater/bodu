@@ -13,7 +13,7 @@ public partial class Argon2Tests
 
     /// <summary>
     /// Verifies that a steady loop of derivations allocates well under 1 MiB of managed memory per call, even with a
-    /// 4 MiB matrix — the matrix lives in native memory, not on the collected heap.
+    /// 4 MiB matrix - the matrix lives in native memory, not on the collected heap.
     /// </summary>
     /// <remarks>
     /// Measured on the calling thread with a single lane, so allocations made by other tests running in parallel do not

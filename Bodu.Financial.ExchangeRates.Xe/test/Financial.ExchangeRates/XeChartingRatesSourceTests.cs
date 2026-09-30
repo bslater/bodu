@@ -95,7 +95,7 @@ public class XeChartingRatesSourceTests
     }
 
     /// <summary>
-    /// Verifies that the full provider stack — token scrape, authorized charting-rates request, and delta decode —
+    /// Verifies that the full provider stack - token scrape, authorized charting-rates request, and delta decode -
     /// resolves a rate over HTTP without any test-only seams.
     /// </summary>
     [TestMethod]

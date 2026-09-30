@@ -146,7 +146,7 @@ public static partial class IniSerializer
     }
 
     /// <summary>
-    /// Writes the body of one section from a section-shaped value — a string-keyed dictionary or a POCO of scalar
+    /// Writes the body of one section from a section-shaped value - a string-keyed dictionary or a POCO of scalar
     /// members.
     /// </summary>
     /// <param name="writer">The writer.</param>
@@ -246,7 +246,7 @@ public static partial class IniSerializer
     /// <param name="options">The serializer options.</param>
     /// <returns>The populated dictionary.</returns>
     /// <exception cref="IniSerializationException">
-    /// Thrown when the document's shape cannot map to the dictionary — global keys with no reserved name, or sections
+    /// Thrown when the document's shape cannot map to the dictionary - global keys with no reserved name, or sections
     /// into a scalar-valued dictionary.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
@@ -338,7 +338,7 @@ public static partial class IniSerializer
     }
 
     /// <summary>
-    /// Reads one section's entries into a section-shaped value — a string-keyed dictionary or a POCO of scalar members.
+    /// Reads one section's entries into a section-shaped value - a string-keyed dictionary or a POCO of scalar members.
     /// </summary>
     /// <param name="entries">The section's key/value entries.</param>
     /// <param name="targetType">The section-shaped target type.</param>

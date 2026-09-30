@@ -55,7 +55,7 @@ namespace Bodu.Globalization.Calendar.Tool {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to bodu-calendar — compile and lint Bodu notable-date rule packs.
+        ///   Looks up a localized string similar to bodu-calendar - compile and lint Bodu notable-date rule packs.
         /// </summary>
         internal static string Usage {
             get {
@@ -109,7 +109,7 @@ namespace Bodu.Globalization.Calendar.Tool {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to {0}: OK — resource &apos;{1}&apos; is valid ({2} diagnostic(s))..
+        ///   Looks up a localized string similar to {0}: OK - resource &apos;{1}&apos; is valid ({2} diagnostic(s))..
         /// </summary>
         internal static string Lint_Clean {
             get {
@@ -118,7 +118,7 @@ namespace Bodu.Globalization.Calendar.Tool {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to {0}: FAILED — {1} error(s), {2} total diagnostic(s)..
+        ///   Looks up a localized string similar to {0}: FAILED - {1} error(s), {2} total diagnostic(s)..
         /// </summary>
         internal static string Lint_Failed {
             get {

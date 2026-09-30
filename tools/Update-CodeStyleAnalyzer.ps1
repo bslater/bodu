@@ -5,7 +5,7 @@
 # otherwise run by hand after changing anything under Bodu.CodeStyle/:
 #
 #   1. Pack the analyzer into ./local-packages and evict NuGet's global cache for it
-#      (delegated to bld/pack-codestyle-analyzer.ps1 — the same pack the bash + cmd entry points call).
+#      (delegated to bld/pack-codestyle-analyzer.ps1 - the same pack the bash + cmd entry points call).
 #   2. Force-restore a consumer (solution or project) so it re-extracts the freshly-packed 1.0.0 payload.
 #   3. Build the consumer so Roslyn loads the new analyzer and reports against your source.
 #
@@ -15,7 +15,7 @@
 #
 # The analyzer is always packed in Release (that is the configuration committed to local-packages/ and used by
 # CI); -Configuration governs only the consumer restore/build. The pack runs under the SDK 8 pin in
-# Bodu.CodeStyle/global.json, while the consumer build runs under the repo-root SDK 10 pin — each dotnet
+# Bodu.CodeStyle/global.json, while the consumer build runs under the repo-root SDK 10 pin - each dotnet
 # invocation resolves its own SDK from its working directory, so the two never collide.
 #
 # Examples:

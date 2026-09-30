@@ -17,8 +17,8 @@ namespace Bodu.Collections.Generic.Internal;
 /// <remarks>
 /// Implementations expose only what the shared machinery needs: the physically stored count, a pre-copy hook (used by
 /// the evicting dictionary to purge expired entries between argument-shape validation and the destination range check),
-/// and a boxed ordered enumerator. Everything the two consumers deliberately do differently — enumeration order, expiry
-/// filtering, and fail-fast versioning — lives behind the enumerator the implementation returns.
+/// and a boxed ordered enumerator. Everything the two consumers deliberately do differently - enumeration order, expiry
+/// filtering, and fail-fast versioning - lives behind the enumerator the implementation returns.
 /// </remarks>
 internal interface IOrderedDictionaryView<TKey, TValue>
     where TKey : notnull

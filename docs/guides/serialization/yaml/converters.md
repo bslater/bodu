@@ -11,9 +11,9 @@ public abstract T Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerial
 public abstract void Write(Utf8YamlWriter writer, T value, YamlSerializerOptions options);
 ```
 
-The reader is a token cursor over an already-composed tree — YAML's anchors, aliases, and merge keys are resolved during the parse, so a converter never sees an alias token. On entry the reader is positioned on the first token of the value; on return it must be positioned on the value's last token (the scalar itself, or the container's end token). The sibling libraries ([TOML](../toml/index.md), [Bencode](../bencode/index.md)) follow the identical pattern with their own prefix and reader/writer types. The set of converters the library already ships — and therefore the types you never need to write one for — is listed in the [built-in converter catalog](builtin-converters.md).
+The reader is a token cursor over an already-composed tree - YAML's anchors, aliases, and merge keys are resolved during the parse, so a converter never sees an alias token. On entry the reader is positioned on the first token of the value; on return it must be positioned on the value's last token (the scalar itself, or the container's end token). The sibling libraries ([TOML](../toml/index.md), [Bencode](../bencode/index.md)) follow the identical pattern with their own prefix and reader/writer types. The set of converters the library already ships - and therefore the types you never need to write one for - is listed in the [built-in converter catalog](builtin-converters.md).
 
-## Pattern 1 — A value type as a single scalar
+## Pattern 1 - A value type as a single scalar
 
 A converter that stores a `Point` as an `"x,y"` string scalar:
 
@@ -38,7 +38,7 @@ public sealed class PointConverter : YamlConverter<Point>
 }
 ```
 
-## Pattern 2 — Register it
+## Pattern 2 - Register it
 
 Two ways, highest precedence first:
 
@@ -58,9 +58,9 @@ string yaml = YamlSerializer.Serialize(new Shape { Origin = new Point(1, 2) }, o
 // Origin: 1,2
 ```
 
-Register options-level converters before the options are first used — an options instance freezes on first use (or eagerly via `MakeReadOnly()`), and later mutation of `Converters` throws.
+Register options-level converters before the options are first used - an options instance freezes on first use (or eagerly via `MakeReadOnly()`), and later mutation of `Converters` throws.
 
-## Pattern 3 — Understand resolution order
+## Pattern 3 - Understand resolution order
 
 For a given type the serializer selects a converter by checking, in order:
 
@@ -69,11 +69,11 @@ For a given type the serializer selects a converter by checking, in order:
 3. the first matching converter in `options.Converters`;
 4. the built-in converters.
 
-The first match wins, and the result is cached on the options. `CanConvert` defaults to an **exact** type check — `typeof(T) == typeToConvert` — so a `YamlConverter<Animal>` does not apply to a `Dog` subclass; override `CanConvert` (or use a factory, Pattern 4) to cover a hierarchy.
+The first match wins, and the result is cached on the options. `CanConvert` defaults to an **exact** type check - `typeof(T) == typeToConvert` - so a `YamlConverter<Animal>` does not apply to a `Dog` subclass; override `CanConvert` (or use a factory, Pattern 4) to cover a hierarchy.
 
-## Pattern 4 — Serve a family of types
+## Pattern 4 - Serve a family of types
 
-To convert an open generic or a whole category of types, derive `YamlConverterFactory` (<xref:Bodu.Text.Yaml.Serialization.YamlConverterFactory>), return `true` from `CanConvert` for the family, and build the concrete converter in `CreateConverter`. This is the same pattern the built-in nullable, enum, collection, and dictionary converters — and the public <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> — use:
+To convert an open generic or a whole category of types, derive `YamlConverterFactory` (<xref:Bodu.Text.Yaml.Serialization.YamlConverterFactory>), return `true` from `CanConvert` for the family, and build the concrete converter in `CreateConverter`. This is the same pattern the built-in nullable, enum, collection, and dictionary converters - and the public <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> - use:
 
 ```csharp
 public sealed class MoneyConverterFactory : YamlConverterFactory
@@ -89,7 +89,7 @@ public sealed class MoneyConverterFactory : YamlConverterFactory
 
 The factory itself never reads or writes a value: the serializer calls `CanConvert` to decide whether the factory applies, then `CreateConverter` once per closed type and caches the result.
 
-## Pattern 5 — A type read from a mapping
+## Pattern 5 - A type read from a mapping
 
 A converter is not limited to scalars: read a mapping by walking the reader's tokens, and write one by bracketing `WriteStartMapping` / `WriteEndMapping`:
 
@@ -185,9 +185,9 @@ options.Converters.Add(new YamlStringEnumConverter(NamingPolicy.SnakeCaseLower, 
 
 The generic forms expose a public parameterless constructor, which is what makes them usable from a `[Converter]` attribute; the non-generic factory is the options-level, all-enums form. There is no non-generic number-enum converter. Without any of these, the default enum handling still honors `[StringEnumMemberName]` and the `WriteEnumsAsStrings` flag (see the [built-in converter catalog](builtin-converters.md)).
 
-## Pattern 6 — Fail clearly on malformed data
+## Pattern 6 - Fail clearly on malformed data
 
-By the time `Read` runs, the document has already parsed — a syntactically malformed document raises <xref:Bodu.Text.Yaml.YamlFormatException> before any converter is consulted. What a converter must handle is a *well-formed value that does not fit*: the wrong token kind, or text that does not parse into the target type. Signal that by throwing <xref:Bodu.Text.Yaml.YamlSerializationException> — the same type the built-in converters throw, so callers need one catch clause. Hardening the `PointConverter` from Pattern 1:
+By the time `Read` runs, the document has already parsed - a syntactically malformed document raises <xref:Bodu.Text.Yaml.YamlFormatException> before any converter is consulted. What a converter must handle is a *well-formed value that does not fit*: the wrong token kind, or text that does not parse into the target type. Signal that by throwing <xref:Bodu.Text.Yaml.YamlSerializationException> - the same type the built-in converters throw, so callers need one catch clause. Hardening the `PointConverter` from Pattern 1:
 
 ```csharp
 public override Point Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options)
@@ -209,19 +209,19 @@ public override Point Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSe
 }
 ```
 
-Check the kind through `reader.TokenType` before calling a typed getter, and prefer `TryParse` plus an explicit throw over letting a `FormatException` escape. Do not throw <xref:Bodu.Text.Yaml.YamlFormatException> from a converter — that type is reserved for syntactically invalid documents.
+Check the kind through `reader.TokenType` before calling a typed getter, and prefer `TryParse` plus an explicit throw over letting a `FormatException` escape. Do not throw <xref:Bodu.Text.Yaml.YamlFormatException> from a converter - that type is reserved for syntactically invalid documents.
 
-## Design notes — statelessness and caching
+## Design notes - statelessness and caching
 
-**Write converters stateless.** The serializer resolves the converter for a type once, caches the result on the options instance, and reuses that single converter for every subsequent value — across calls and threads. Keep configuration in `readonly` fields set at construction, and derive everything else from the `reader` / `value` / `options` the serializer passes in.
+**Write converters stateless.** The serializer resolves the converter for a type once, caches the result on the options instance, and reuses that single converter for every subsequent value - across calls and threads. Keep configuration in `readonly` fields set at construction, and derive everything else from the `reader` / `value` / `options` the serializer passes in.
 
-**Options freeze on first use.** A <xref:Bodu.Text.Yaml.YamlSerializerOptions> instance becomes read-only the first time it is used — or eagerly via `MakeReadOnly()` — and then caches resolved converters and type metadata. Two consequences: reuse one options instance (fresh options per call discards the caches and repeats the reflection), and register every converter before first use (later `Converters` mutation throws).
+**Options freeze on first use.** A <xref:Bodu.Text.Yaml.YamlSerializerOptions> instance becomes read-only the first time it is used - or eagerly via `MakeReadOnly()` - and then caches resolved converters and type metadata. Two consequences: reuse one options instance (fresh options per call discards the caches and repeats the reflection), and register every converter before first use (later `Converters` mutation throws).
 
 ## Where to go next
 
-- [Built-in converter catalog](builtin-converters.md) — the types that already have a converter, so you do not rewrite a provisioned one.
-- [Mapping attributes](attributes.md) — the declarative layer (`[PropertyName]`, `[Ignore]`, `[Converter]`, naming policies, options flags) that covers shaping short of a converter.
-- [Using YAML](using.md) — the per-format walk-through, including the reader/writer seam and error handling.
-- [Bodu.Text.Yaml core concepts](../../../docs/serialization/yaml/concepts.md) — converter resolution and options caching in the family vocabulary.
+- [Built-in converter catalog](builtin-converters.md) - the types that already have a converter, so you do not rewrite a provisioned one.
+- [Mapping attributes](attributes.md) - the declarative layer (`[PropertyName]`, `[Ignore]`, `[Converter]`, naming policies, options flags) that covers shaping short of a converter.
+- [Using YAML](using.md) - the per-format walk-through, including the reader/writer seam and error handling.
+- [Bodu.Text.Yaml core concepts](../../../docs/serialization/yaml/concepts.md) - converter resolution and options caching in the family vocabulary.
 - [Bodu serializer guides](../index.md) and the [Text & Serialization guides](../../topics/text-and-serialization.md).
-- API reference — <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1>, <xref:Bodu.Text.Yaml.Serialization.YamlConverterFactory>, <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader>, <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter>.
+- API reference - <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1>, <xref:Bodu.Text.Yaml.Serialization.YamlConverterFactory>, <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader>, <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter>.

@@ -10,7 +10,7 @@ namespace Bodu.Financial.ExchangeRates.Caching.Distributed;
 
 /// <summary>
 /// Verifies the cross-process behaviour of <see cref="DistributedRateCache" /> using two independent instances
-/// over one shared backing store — the multi-writer case any real <see cref="IDistributedCache" /> (Redis, SQL Server)
+/// over one shared backing store - the multi-writer case any real <see cref="IDistributedCache" /> (Redis, SQL Server)
 /// presents. Same-pair writes are last-write-wins across instances, but because a fetched range is one atomic blob set a
 /// reader never observes coverage without its rows even when a concurrent writer overwrites it.
 /// </summary>
@@ -18,7 +18,7 @@ public sealed partial class DistributedRateCacheTests
 {
     /// <summary>
     /// Verifies that many concurrent same-pair range writes from two instances over one backing store leave the per-pair
-    /// blob internally consistent: one row whose rate is a writer's, with the window covered — never a torn blob.
+    /// blob internally consistent: one row whose rate is a writer's, with the window covered - never a torn blob.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]

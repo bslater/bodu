@@ -9,7 +9,7 @@ namespace Bodu.Text.Configuration;
 /// <summary>
 /// Golden behaviour tests that pin the Bodu, EditorConfigCompatible, Strict, and Relaxed profiles against a
 /// single shared fixture. The fixture is designed so each profile produces a *different* observable outcome
-/// for at least one switch — preamble layering, inline comments, duplicate keys, <c>unset</c> handling, or
+/// for at least one switch - preamble layering, inline comments, duplicate keys, <c>unset</c> handling, or
 /// section-header trailing content. If a profile's preset drifts, exactly one of these tests fails and the
 /// drifted axis is named.
 /// </summary>
@@ -38,7 +38,7 @@ format.indent.size = unset
 
         Assert.AreEqual("Bodu", view.GetString("service:name"));
 
-        // Bodu treats unset as a literal — the [*.cs] section sets size=4 and [generated/**] sets
+        // Bodu treats unset as a literal - the [*.cs] section sets size=4 and [generated/**] sets
         // it to "unset" (literal string).
         Assert.AreEqual("unset", view.GetString("format:indent:size"));
     }
@@ -56,7 +56,7 @@ format.indent.size = unset
         // EditorConfigCompatible disables preamble layering for resolution.
         Assert.IsNull(view["service:name"]);
 
-        // EditorConfigCompatible treats unset as RemoveEffectiveValue — the indent setting is removed.
+        // EditorConfigCompatible treats unset as RemoveEffectiveValue - the indent setting is removed.
         Assert.IsNull(view["format:indent:size"]);
     }
 
@@ -125,7 +125,7 @@ good = value
 
     /// <summary>
     /// Verifies that <see cref="ConfigurationProfile.EditorConfigCompatible" /> rejects an inline comment
-    /// that the Bodu profile would strip — under EditorConfig 0.17.2, <c>#</c>/<c>;</c> are literal value
+    /// that the Bodu profile would strip - under EditorConfig 0.17.2, <c>#</c>/<c>;</c> are literal value
     /// characters.
     /// </summary>
     [TestMethod]
@@ -194,7 +194,7 @@ key = value
 
     /// <summary>
     /// Verifies that the preamble layering on/off switch is the only axis that differs between Bodu and
-    /// EditorConfigCompatible when resolving with a non-matching target — pins the documented matrix.
+    /// EditorConfigCompatible when resolving with a non-matching target - pins the documented matrix.
     /// </summary>
     [TestMethod]
     public void Profiles_WhenNonMatchingTarget_ShouldDifferOnlyOnPreambleLayering()
@@ -235,7 +235,7 @@ key = value
     }
 
     /// <summary>
-    /// Verifies that the Relaxed profile uses the same resolve options as Bodu — it differs only on
+    /// Verifies that the Relaxed profile uses the same resolve options as Bodu - it differs only on
     /// parse-side diagnostic routing (Collect vs Throw).
     /// </summary>
     [TestMethod]

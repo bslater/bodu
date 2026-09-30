@@ -65,7 +65,7 @@ public partial class ComplexTests
     }
 
     /// <summary>
-    /// Verifies that the magnitude selectors resolve an exact-magnitude tie by the real component's magnitude — the
+    /// Verifies that the magnitude selectors resolve an exact-magnitude tie by the real component's magnitude - the
     /// documented deterministic rule for a non-ordered complex type.
     /// </summary>
     [TestMethod]
@@ -258,7 +258,7 @@ public partial class ComplexTests
     /// <summary>
     /// Verifies that the public static classification methods <see cref="Complex{T}.IsNaN" />,
     /// <see cref="Complex{T}.IsInfinity" />, and <see cref="Complex{T}.IsFinite" /> agree with the
-    /// <see cref="System.Numerics.Complex" /> oracle across finite, infinite, NaN, and mixed component shapes —
+    /// <see cref="System.Numerics.Complex" /> oracle across finite, infinite, NaN, and mixed component shapes -
     /// including the infinite-plus-NaN case, where an infinite component dominates NaN.
     /// </summary>
     [TestMethod]

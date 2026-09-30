@@ -106,7 +106,7 @@ public sealed partial class Poly1305CoreTests
     }
 
     /// <summary>
-    /// Verifies that finishing clears the whole core — key schedule, <c>s</c>, accumulator and a held partial block —
+    /// Verifies that finishing clears the whole core - key schedule, <c>s</c>, accumulator and a held partial block -
     /// once the tag is written.
     /// </summary>
     [TestMethod]

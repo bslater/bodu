@@ -14,8 +14,8 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The try-pattern swallows all runtime failures — <see cref="IOException" />,
-/// <see cref="OperationCanceledException" />, format errors — and signals them via
+/// The try-pattern swallows all runtime failures - <see cref="IOException" />,
+/// <see cref="OperationCanceledException" />, format errors - and signals them via
 /// <see langword="false" /> rather than propagating.
 /// </para>
 /// <para>
@@ -111,7 +111,7 @@ public partial class HashAlgorithmExtensionsTests
 
     // ─── Stream-shape coverage ────────────────────────────────────────────────────────────────
     // Mirrors the stream-shape coverage of VerifyHashAsync to confirm the try-pattern reads the
-    // stream identically — the only behavioural difference is exception swallowing, exercised
+    // stream identically - the only behavioural difference is exception swallowing, exercised
     // in the error-handling section below.
 
     /// <summary>
@@ -216,7 +216,7 @@ public partial class HashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="MonitoringStream" /> is actually read during hash computation —
+    /// Verifies that <see cref="MonitoringStream" /> is actually read during hash computation -
     /// the try-pattern must not short-circuit stream access.
     /// </summary>
     [TestMethod]
@@ -232,7 +232,7 @@ public partial class HashAlgorithmExtensionsTests
         Assert.IsTrue(result,
             "TryVerifyHashAsync must return true when the stream content matches the expected hash.");
         Assert.IsNotEmpty(monitored.Reads,
-            "TryVerifyHashAsync must actually read from the stream — it must not short-circuit.");
+            "TryVerifyHashAsync must actually read from the stream - it must not short-circuit.");
     }
 
     // ─── Graceful false returns ───────────────────────────────────────────────────────────────
@@ -262,7 +262,7 @@ public partial class HashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that a null expected hash on the stream overload returns <see langword="false" />
-    /// rather than throwing — the stream try-pattern treats this as a verification failure.
+    /// rather than throwing - the stream try-pattern treats this as a verification failure.
     /// </summary>
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenStreamExpectedHashIsNull_ShouldReturnFalse()
@@ -287,7 +287,7 @@ public partial class HashAlgorithmExtensionsTests
         bool result = await algorithm.TryVerifyHashAsync(stream, new byte[4]);
 
         Assert.IsFalse(result,
-            "TryVerifyHashAsync must return false when the source stream faults — IOException is swallowed by the try-pattern.");
+            "TryVerifyHashAsync must return false when the source stream faults - IOException is swallowed by the try-pattern.");
     }
 
     /// <summary>
@@ -305,7 +305,7 @@ public partial class HashAlgorithmExtensionsTests
         bool result = await algorithm.TryVerifyHashAsync(stream, new byte[4], cts.Token);
 
         Assert.IsFalse(result,
-            "TryVerifyHashAsync must return false when cancelled mid-stream — OperationCanceledException is swallowed by the try-pattern.");
+            "TryVerifyHashAsync must return false when cancelled mid-stream - OperationCanceledException is swallowed by the try-pattern.");
     }
 
     /// <summary>

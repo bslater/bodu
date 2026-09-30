@@ -116,7 +116,7 @@
       items:
         - name: Overview
           href: io-hashing/index.md
-        - name: Bodu.IO.Hashing — Fingerprints
+        - name: Bodu.IO.Hashing - Fingerprints
           items:
             - name: Using FNV
               href: io-hashing/fnv.md
@@ -168,7 +168,7 @@
               href: cryptography/cipher-composition-reference.md
             - name: Hardware acceleration and the SIMD switch
               href: cryptography/hardware-acceleration.md
-        - name: Symmetric ciphers — Standard
+        - name: Symmetric ciphers - Standard
           items:
             - name: AES-family block ciphers
               href: cryptography/aes-family.md
@@ -176,7 +176,7 @@
               href: cryptography/skipjack.md
             - name: Using Blowfish
               href: cryptography/blowfish.md
-        - name: Symmetric ciphers — Tweakable
+        - name: Symmetric ciphers - Tweakable
           items:
             - name: Using Threefish-256
               href: cryptography/threefish-256.md
@@ -186,11 +186,11 @@
               href: cryptography/threefish-1024.md
             - name: Using Serpent
               href: cryptography/serpent.md
-        - name: Symmetric ciphers — Stream
+        - name: Symmetric ciphers - Stream
           items:
             - name: Using stream ciphers
               href: cryptography/stream-ciphers.md
-        - name: Symmetric ciphers — AEAD
+        - name: Symmetric ciphers - AEAD
           items:
             - name: AEAD modes (AES + transform)
               href: cryptography/aead-modes.md
@@ -275,7 +275,7 @@
       items:
         - name: Overview
           href: calendar/index.md
-        - name: Bodu.Globalization.Calendar — Service
+        - name: Bodu.Globalization.Calendar - Service
           items:
             - name: Using NotableDateService
               href: calendar/notable-dates.md
@@ -287,7 +287,7 @@
               href: calendar/round-trip-guarantees.md
             - name: Binary rule packs
               href: calendar/binary-rule-packs.md
-        - name: Bodu.Globalization.Calendar — Reference
+        - name: Bodu.Globalization.Calendar - Reference
           items:
             - name: Validation diagnostics
               href: calendar/validation-diagnostics.md
@@ -305,7 +305,7 @@
               href: calendar/identity-and-resolution.md
             - name: Working with non-Gregorian calendars
               href: calendar/non-gregorian-calendars.md
-        - name: Bodu.Globalization.Calendar — Patterns
+        - name: Bodu.Globalization.Calendar - Patterns
           items:
             - name: Holiday patterns and examples
               href: calendar/holiday-patterns.md
@@ -325,7 +325,7 @@
               href: calendar/caching/custom-backend.md
             - name: Async resolution, localized names, and typed catalogues
               href: calendar/async-and-localization.md
-        - name: Bodu.Globalization.Calendar — Tooling
+        - name: Bodu.Globalization.Calendar - Tooling
           items:
             - name: The bodu-calendar CLI
               href: calendar/tooling/bodu-calendar-cli.md
@@ -335,11 +335,11 @@
           items:
             - name: Date calculation algorithms
               href: calendar/algorithms.md
-        - name: Bodu.Globalization.Calendar.<Region> — Data packs
+        - name: Bodu.Globalization.Calendar.<Region> - Data packs
           items:
             - name: Calendar data packs
               href: calendar/data-packs.md
-        - name: Bodu.Globalization.Calendar — Notable-date catalogue
+        - name: Bodu.Globalization.Calendar - Notable-date catalogue
           items:
             - name: Catalogue overview
               href: calendar/catalogue/index.md
@@ -386,7 +386,7 @@
       items:
         - name: Overview
           href: text-encoding/index.md
-        - name: Bodu.Text.Encoding — Encodings
+        - name: Bodu.Text.Encoding - Encodings
           items:
             - name: Using Base16 (hexadecimal)
               href: text-encoding/base16.md
@@ -404,13 +404,13 @@
               href: text-encoding/base62.md
             - name: Using Bech32 and Bech32m
               href: text-encoding/bech32.md
-        - name: Bodu.Text.Encoding — Escape encodings
+        - name: Bodu.Text.Encoding - Escape encodings
           items:
             - name: Using Quoted-Printable (MIME bodies)
               href: text-encoding/quoted-printable.md
             - name: Using percent-encoding (URIs and forms)
               href: text-encoding/percent-encoding.md
-        - name: Bodu.Text.Encoding — Patterns
+        - name: Bodu.Text.Encoding - Patterns
           items:
             - name: The IBinaryEncoding interface
               href: text-encoding/binary-encodings-interface.md
@@ -430,7 +430,7 @@
       items:
         - name: Overview
           href: formats/index.md
-        - name: Line formats — Using each format
+        - name: Line formats - Using each format
           items:
             - name: Choosing a text format
               href: formats/choosing-a-format.md
@@ -440,7 +440,7 @@
               href: formats/dotenv.md
             - name: Using INI
               href: formats/ini.md
-        - name: Line formats — I/O
+        - name: Line formats - I/O
           items:
             - name: Streams and async I/O
               href: formats/streaming.md
@@ -456,7 +456,7 @@
           href: serialization/index.md
         - name: Migrating from System.Text.Json
           href: serialization/migrating-from-system-text-json.md
-        - name: Serializer options — freezing, caching, and thread safety
+        - name: Serializer options - freezing, caching, and thread safety
           href: serialization/options-and-lifetime.md
         - name: Bodu.Text.Toml
           items:
@@ -556,7 +556,7 @@
       items:
         - name: Overview
           href: financial/index.md
-        - name: Bodu.Financial — Money
+        - name: Bodu.Financial - Money
           items:
             - name: Working with Money<TCurrency>
               href: financial/money.md

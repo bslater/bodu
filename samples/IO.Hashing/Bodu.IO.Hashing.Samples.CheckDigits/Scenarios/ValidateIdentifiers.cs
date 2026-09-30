@@ -11,7 +11,7 @@ namespace Bodu.IO.Hashing.Samples.CheckDigits.Scenarios;
 /// <summary>
 /// Demonstrates validation across identifier domains: every scheme exposes the same static
 /// <c>IsValid</c> shape, so a form-validation layer treats an IBAN, an ISBN, a barcode, a card
-/// number, and a routing number identically — and a single mistyped character flips each to
+/// number, and a routing number identically - and a single mistyped character flips each to
 /// invalid.
 /// </summary>
 public static class ValidateIdentifiers

@@ -1,10 +1,10 @@
 ---
-title: Bodu.Text.Bencode — Core concepts
+title: Bodu.Text.Bencode - Core concepts
 ---
 
 # Core concepts
 
-This page describes the vocabulary and shape of **Bodu.Text.Bencode**. Its sibling serializers — [Bodu.Text.Toml](../toml/index.md) and [Bodu.Text.Yaml](../yaml/index.md) — share the same architecture, so what you learn here transfers with the prefix changed; see the [family introduction](../index.md) for the cross-library view.
+This page describes the vocabulary and shape of **Bodu.Text.Bencode**. Its sibling serializers - [Bodu.Text.Toml](../toml/index.md) and [Bodu.Text.Yaml](../yaml/index.md) - share the same architecture, so what you learn here transfers with the prefix changed; see the [family introduction](../index.md) for the cross-library view.
 
 Part of the **[Text & Serialization](../../topics/text-and-serialization.md)** topic.
 
@@ -18,7 +18,7 @@ The static <xref:Bodu.Text.Bencode.BencodeSerializer> is the high-level entry po
 | `Deserialize<T>` | from `ReadOnlySpan<byte>`, `byte[]`, and `Stream`, plus `DeserializeAsync<T>(Stream, …)`. |
 | DOM bridges | `SerializeToNode<T>` (to a mutable <xref:Bodu.Text.Bencode.Nodes.BencodeNode>), `SerializeToDocument<T>` (to a read-only <xref:Bodu.Text.Bencode.Document.BencodeDocument>), and `Deserialize<T>(BencodeNode, …)` (bind straight from a node tree). |
 
-Every overload accepts an optional <xref:Bodu.Text.Bencode.BencodeSerializerOptions>; the async pair takes it before the `CancellationToken`. There are no `TryDeserialize`-style members — wrap a call in a `try`/`catch` over the two exception types when reading untrusted input.
+Every overload accepts an optional <xref:Bodu.Text.Bencode.BencodeSerializerOptions>; the async pair takes it before the `CancellationToken`. There are no `TryDeserialize`-style members - wrap a call in a `try`/`catch` over the two exception types when reading untrusted input.
 
 ## Options
 
@@ -39,13 +39,13 @@ Every overload accepts an optional <xref:Bodu.Text.Bencode.BencodeSerializerOpti
 
 Construct one from a <xref:Bodu.Text.Bencode.BencodeSerializerDefaults> value to start from a scenario's conventions: `General` leaves names unchanged with default-case matching; `Web` applies camel-case naming and case-insensitive matching.
 
-`AllowUnsortedKeys` and `AllowDuplicateKeys` relax only the *read* path — the writer is unconditionally canonical, so anything written is byte-for-byte BEP 3 regardless of how lenient the read was.
+`AllowUnsortedKeys` and `AllowDuplicateKeys` relax only the *read* path - the writer is unconditionally canonical, so anything written is byte-for-byte BEP 3 regardless of how lenient the read was.
 
-An options instance becomes read-only the first time it is used — or eagerly via `MakeReadOnly()` (`IsReadOnly` reports the state) — and then caches its resolved converters and type metadata. Mutating a frozen instance throws `InvalidOperationException`. Configure one options object and reuse it across many operations.
+An options instance becomes read-only the first time it is used - or eagerly via `MakeReadOnly()` (`IsReadOnly` reports the state) - and then caches its resolved converters and type metadata. Mutating a frozen instance throws `InvalidOperationException`. Configure one options object and reuse it across many operations.
 
 ## Converters and resolution
 
-A <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1> converts one type, reading through the <xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> and writing through the <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter>. A <xref:Bodu.Text.Bencode.Serialization.BencodeConverterFactory> produces converters for a family of types (every `Nullable<T>`, every enum, every collection) — the same pattern the built-in converters use.
+A <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1> converts one type, reading through the <xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> and writing through the <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter>. A <xref:Bodu.Text.Bencode.Serialization.BencodeConverterFactory> produces converters for a family of types (every `Nullable<T>`, every enum, every collection) - the same pattern the built-in converters use.
 
 For a given type the serializer resolves a converter by checking, in order:
 
@@ -60,23 +60,23 @@ The first match wins, and the result is cached on the options.
 
 The full serialization surface lives in the `Bodu.Text.Bencode.Serialization` namespace:
 
-- **Attributes** — `[PropertyName]`, `[Ignore]`, `[Converter]`, `[PropertyOrder]`, `[Constructor]`, `[Required]`, `[Include]`, `[ExtensionData]`, `[NamingPolicy]`, `[UnmappedMemberHandling]`, `[ObjectCreationHandling]`, `[StringEnumMemberName]`.
-- **Callbacks** — the <xref:Bodu.Text.Serialization.IOnSerializing> / <xref:Bodu.Text.Serialization.IOnSerialized> / <xref:Bodu.Text.Serialization.IOnDeserializing> / <xref:Bodu.Text.Serialization.IOnDeserialized> interfaces, run at the matching point in the pipeline.
-- **Naming policies** — <xref:Bodu.Text.Serialization.NamingPolicy>`.CamelCase`, `.SnakeCaseLower` / `.SnakeCaseUpper`, `.KebabCaseLower` / `.KebabCaseUpper`, plus the `BencodeSerializerDefaults.Web` preset.
-- **Enum converters** — a string-enum converter (member names) and a number-enum converter.
+- **Attributes** - `[PropertyName]`, `[Ignore]`, `[Converter]`, `[PropertyOrder]`, `[Constructor]`, `[Required]`, `[Include]`, `[ExtensionData]`, `[NamingPolicy]`, `[UnmappedMemberHandling]`, `[ObjectCreationHandling]`, `[StringEnumMemberName]`.
+- **Callbacks** - the <xref:Bodu.Text.Serialization.IOnSerializing> / <xref:Bodu.Text.Serialization.IOnSerialized> / <xref:Bodu.Text.Serialization.IOnDeserializing> / <xref:Bodu.Text.Serialization.IOnDeserialized> interfaces, run at the matching point in the pipeline.
+- **Naming policies** - <xref:Bodu.Text.Serialization.NamingPolicy>`.CamelCase`, `.SnakeCaseLower` / `.SnakeCaseUpper`, `.KebabCaseLower` / `.KebabCaseUpper`, plus the `BencodeSerializerDefaults.Web` preset.
+- **Enum converters** - a string-enum converter (member names) and a number-enum converter.
 
 ## The document object models
 
 When you do not want a model, the library offers two DOMs:
 
-- **Mutable** — <xref:Bodu.Text.Bencode.Nodes.BencodeNode> with the concrete `BencodeObject` (a keyed dictionary node), `BencodeArray` (a list node), and `BencodeValue` (a scalar node). `Parse` a document into a tree, index into it with `node["key"]` / `node[index]`, mutate it, and write it back with `ToByteArray()`. Scalars convert with implicit operators (`string`, `long`, `int`, `ulong`, `byte[]` → `BencodeNode`) and explicit operators back the other way, and the tree supports `DeepClone()`, `DeepEquals(…)`, `ReplaceWith(…)`, and `GetPath()`. `Parse` returns `null` for an empty document.
-- **Read-only** — <xref:Bodu.Text.Bencode.Document.BencodeDocument> with `BencodeElement` and `BencodeProperty`. A low-allocation view over a parsed buffer, walked through `RootElement`: `GetProperty` / `TryGetProperty`, the integer indexer for lists, `EnumerateObject()` / `EnumerateArray()`, and typed getters (`GetString`, `GetBytes`, `GetInt64`, `GetUInt64`, and the `TryGet…` pair). Each element's kind is a <xref:Bodu.Text.Bencode.BencodeValueKind> (`Object`, `Array`, `ByteString`, `Integer`). `BencodeDocument` is disposable — it owns a pooled buffer, so wrap it in `using` and `Clone()` out any element that must outlive it.
+- **Mutable** - <xref:Bodu.Text.Bencode.Nodes.BencodeNode> with the concrete `BencodeObject` (a keyed dictionary node), `BencodeArray` (a list node), and `BencodeValue` (a scalar node). `Parse` a document into a tree, index into it with `node["key"]` / `node[index]`, mutate it, and write it back with `ToByteArray()`. Scalars convert with implicit operators (`string`, `long`, `int`, `ulong`, `byte[]` → `BencodeNode`) and explicit operators back the other way, and the tree supports `DeepClone()`, `DeepEquals(…)`, `ReplaceWith(…)`, and `GetPath()`. `Parse` returns `null` for an empty document.
+- **Read-only** - <xref:Bodu.Text.Bencode.Document.BencodeDocument> with `BencodeElement` and `BencodeProperty`. A low-allocation view over a parsed buffer, walked through `RootElement`: `GetProperty` / `TryGetProperty`, the integer indexer for lists, `EnumerateObject()` / `EnumerateArray()`, and typed getters (`GetString`, `GetBytes`, `GetInt64`, `GetUInt64`, and the `TryGet…` pair). Each element's kind is a <xref:Bodu.Text.Bencode.BencodeValueKind> (`Object`, `Array`, `ByteString`, `Integer`). `BencodeDocument` is disposable - it owns a pooled buffer, so wrap it in `using` and `Clone()` out any element that must outlive it.
 
 ## The low-level reader and writer
 
 <xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> and <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter> are forward-only, allocation-free `ref struct` token machines over `ReadOnlySpan<byte>` and `IBufferWriter<byte>` respectively. The serializer and every converter are built on this pair; reach for it directly to process tokens without binding to a model.
 
-The reader is positioned on a token by `Read()` (which returns `false` at the end), and the token is classified by `TokenType` — a <xref:Bodu.Text.Bencode.BencodeTokenType> with the values `None`, `StartList`, `EndList`, `StartDictionary`, `EndDictionary`, `PropertyName`, `Integer`, and `ByteString`. A Bencode dictionary surfaces as alternating `PropertyName` and value tokens between `StartDictionary` and `EndDictionary`. Once positioned, value getters read the current token without advancing:
+The reader is positioned on a token by `Read()` (which returns `false` at the end), and the token is classified by `TokenType` - a <xref:Bodu.Text.Bencode.BencodeTokenType> with the values `None`, `StartList`, `EndList`, `StartDictionary`, `EndDictionary`, `PropertyName`, `Integer`, and `ByteString`. A Bencode dictionary surfaces as alternating `PropertyName` and value tokens between `StartDictionary` and `EndDictionary`. Once positioned, value getters read the current token without advancing:
 
 | Reader member | Reads |
 |---|---|
@@ -96,12 +96,12 @@ Bencode maps the BCL types it can represent natively and rejects the rest unless
 
 ## Errors
 
-A malformed document raises <xref:Bodu.Text.Bencode.BencodeFormatException> (carrying the byte `Offset` where parsing failed) — truncated data, non-canonical integers, trailing bytes, and, unless the matching leniency option is set, out-of-order or duplicate dictionary keys. A document that parses but cannot bind to your type — a type mismatch, a missing required member, a value out of range for the target — raises <xref:Bodu.Text.Bencode.BencodeSerializationException> (carrying the byte `BytesOffset` of the failing value where one is known).
+A malformed document raises <xref:Bodu.Text.Bencode.BencodeFormatException> (carrying the byte `Offset` where parsing failed) - truncated data, non-canonical integers, trailing bytes, and, unless the matching leniency option is set, out-of-order or duplicate dictionary keys. A document that parses but cannot bind to your type - a type mismatch, a missing required member, a value out of range for the target - raises <xref:Bodu.Text.Bencode.BencodeSerializationException> (carrying the byte `BytesOffset` of the failing value where one is known).
 
 ## Where to go next
 
-- **[Bodu.Text.Bencode introduction](index.md)** — what is specific to the format: byte strings, canonical output, the kinds it cannot represent.
-- **[Getting started](getting-started.md)** — install and the first round trip.
-- **[Using Bencode](../../../guides/serialization/bencode/using.md)** — the worked walk-through.
-- **[Bodu serializers introduction](../index.md)** — the shared family shape.
-- **[Text & Serialization topic overview](../../topics/text-and-serialization.md)** — where the serializers sit among the codecs and document formats.
+- **[Bodu.Text.Bencode introduction](index.md)** - what is specific to the format: byte strings, canonical output, the kinds it cannot represent.
+- **[Getting started](getting-started.md)** - install and the first round trip.
+- **[Using Bencode](../../../guides/serialization/bencode/using.md)** - the worked walk-through.
+- **[Bodu serializers introduction](../index.md)** - the shared family shape.
+- **[Text & Serialization topic overview](../../topics/text-and-serialization.md)** - where the serializers sit among the codecs and document formats.

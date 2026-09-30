@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class AsymmetricAlgorithmTests<TTest, TAlgorithm>
 {
     /// <summary>
-    /// Verifies that disposing an instance twice — and disposing one that was never touched — is harmless.
+    /// Verifies that disposing an instance twice - and disposing one that was never touched - is harmless.
     /// </summary>
     [TestMethod]
     public void Dispose_WhenCalledTwiceOrOnUntouchedInstance_ShouldNotThrow()

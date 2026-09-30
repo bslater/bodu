@@ -185,7 +185,7 @@ internal static partial class Argon2Core
         }
 
         /// <summary>
-        /// Applies the first half of <c>GB</c> — the steps that rotate by 32 and by 24 — to two sets of four words.
+        /// Applies the first half of <c>GB</c> - the steps that rotate by 32 and by 24 - to two sets of four words.
         /// </summary>
         /// <param name="a0">The first set's <c>a</c> words.</param>
         /// <param name="a1">The second set's <c>a</c> words.</param>
@@ -218,7 +218,7 @@ internal static partial class Argon2Core
         }
 
         /// <summary>
-        /// Applies the second half of <c>GB</c> — the steps that rotate by 16 and by 63 — to two sets of four words.
+        /// Applies the second half of <c>GB</c> - the steps that rotate by 16 and by 63 - to two sets of four words.
         /// </summary>
         /// <param name="a0">The first set's <c>a</c> words.</param>
         /// <param name="a1">The second set's <c>a</c> words.</param>

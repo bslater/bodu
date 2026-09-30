@@ -27,14 +27,14 @@ namespace Bodu.Collections.Generic;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <c>AllowOverwrite = true</c> (the default for the parameterless and capacity-only constructors) — adds to a full
+/// <c>AllowOverwrite = true</c> (the default for the parameterless and capacity-only constructors) - adds to a full
 /// buffer evict the oldest element to make room for the new one. The <see cref="ItemEvicting" /> event fires before the
 /// eviction (and may veto it by throwing) and the <see cref="ItemEvicted" /> event fires after.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <c>AllowOverwrite = false</c> — <see cref="Enqueue" /> throws <see cref="InvalidOperationException" /> when the
+/// <c>AllowOverwrite = false</c> - <see cref="Enqueue" /> throws <see cref="InvalidOperationException" /> when the
 /// buffer is full; <see cref="TryEnqueue" /> returns <see langword="false" /> without modifying state.
 /// </description>
 /// </item>
@@ -44,21 +44,21 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description><see cref="Enqueue(T)" /> / <see cref="TryEnqueue(T)" /> — add an element at the tail.</description>
+/// <description><see cref="Enqueue(T)" /> / <see cref="TryEnqueue(T)" /> - add an element at the tail.</description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="Dequeue" /> / <see cref="TryDequeue(out T)" /> — remove and return the oldest (head) element.
+/// <see cref="Dequeue" /> / <see cref="TryDequeue(out T)" /> - remove and return the oldest (head) element.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="Peek" /> / <see cref="TryPeek(out T)" /> — read the oldest element without removing it.
+/// <see cref="Peek" /> / <see cref="TryPeek(out T)" /> - read the oldest element without removing it.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// Inherited <see cref="RingBackedCollection{T}.TrimExcess" /> — shrink the backing array to <c>Count</c>.
+/// Inherited <see cref="RingBackedCollection{T}.TrimExcess" /> - shrink the backing array to <c>Count</c>.
 /// </description>
 /// </item>
 /// </list>
@@ -75,7 +75,7 @@ namespace Bodu.Collections.Generic;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Sliding window of the three most recent samples — overwrite-on-full is the default.
+/// // Sliding window of the three most recent samples - overwrite-on-full is the default.
 /// var window = new CircularBuffer<int>(capacity: 3);
 /// window.Enqueue(1);
 /// window.Enqueue(2);
@@ -87,7 +87,7 @@ namespace Bodu.Collections.Generic;
 /// var bounded = new CircularBuffer<int>(capacity: 2, allowOverwrite: false);
 /// bounded.Enqueue(10);
 /// bounded.Enqueue(20);
-/// bool added = bounded.TryEnqueue(30); // false — buffer is full
+/// bool added = bounded.TryEnqueue(30); // false - buffer is full
 ///]]>
 /// </code>
 /// </example>
@@ -222,7 +222,7 @@ public sealed class CircularBuffer<T>
     /// <see langword="true" />.
     /// </para>
     /// <para>
-    /// <b>Important:</b> Any exception thrown from a handler vetoes the eviction in place — the oldest element is not
+    /// <b>Important:</b> Any exception thrown from a handler vetoes the eviction in place - the oldest element is not
     /// removed, the new element is not stored, the count, head, and tail indices are unchanged, and the exception
     /// propagates to the caller of <see cref="Enqueue" /> or <see cref="TryEnqueue" />. Event handlers should therefore
     /// avoid throwing unless the veto is intentional.

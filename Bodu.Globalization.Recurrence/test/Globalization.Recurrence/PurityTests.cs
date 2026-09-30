@@ -12,8 +12,8 @@ namespace Bodu.Globalization.Recurrence;
 /// <summary>
 /// Guards the purity contract of the <c>Bodu.Globalization.Recurrence</c> assembly: every occurrence answer is a pure
 /// function of the arguments, so no API may read the wall clock or consult the machine time zone. The failure mode
-/// this guards against is silent — code that consults the machine time zone passes every test on a UTC build agent
-/// and fails only on a user's machine — so the ban is enforced against the compiled assembly's member references
+/// this guards against is silent - code that consults the machine time zone passes every test on a UTC build agent
+/// and fails only on a user's machine - so the ban is enforced against the compiled assembly's member references
 /// rather than left to review.
 /// </summary>
 [TestClass]

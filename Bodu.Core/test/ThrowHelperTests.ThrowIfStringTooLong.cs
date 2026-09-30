@@ -10,8 +10,8 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfStringTooLong" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — when the string length is at or below the inclusive
+    /// Verifies that <see cref="ThrowHelper.ThrowIfStringTooLong" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - when the string length is at or below the inclusive
     /// maximum.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

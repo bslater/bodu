@@ -1,4 +1,4 @@
-# AnyMatch include/exclude set semantics — the Ant / MSBuild model.
+# AnyMatch include/exclude set semantics - the Ant / MSBuild model.
 # Format: 'scenario:' starts a scenario; 'mode:' / 'ignore-case:' set options;
 # 'include:' / 'exclude:' add wildcard patterns, 'include-regex:' / 'exclude-regex:' add regexes;
 # 'match:' expects the value to be accepted, 'skip:' expects it to be rejected.

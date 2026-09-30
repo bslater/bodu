@@ -8,7 +8,7 @@
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// The exception thrown when a value cannot be bound to or from a TOML document during serialization — for example a
+/// The exception thrown when a value cannot be bound to or from a TOML document during serialization - for example a
 /// type mismatch, a missing required member, or a value TOML cannot represent.
 /// </summary>
 /// <remarks>
@@ -62,7 +62,7 @@ public sealed class TomlSerializationException
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// The exception thrown when a value cannot be bound to or from a YAML document during serialization — for example a
+/// The exception thrown when a value cannot be bound to or from a YAML document during serialization - for example a
 /// type mismatch, a missing required member, or a value YAML cannot represent.
 /// </summary>
 /// <remarks>

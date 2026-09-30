@@ -20,7 +20,7 @@ namespace Bodu.Financial;
 /// the target currency (identity pass-through).
 /// </param>
 /// <param name="RawConvertedAmount">
-/// The unrounded contribution to the aggregated total — <c>SourceAmount × Rate</c> for cross-currency lines or
+/// The unrounded contribution to the aggregated total - <c>SourceAmount × Rate</c> for cross-currency lines or
 /// <c>SourceAmount</c> for the identity pass-through.
 /// </param>
 public readonly record struct MoneyBagConversionLine(

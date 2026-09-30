@@ -9,12 +9,12 @@ using Bodu.Collections.Specialized;
 namespace Bodu.Collections.Samples.BitSets.Scenarios;
 
 /// <summary>
-/// Demonstrates the <see cref="BitSet" /> set-algebra surface — <see cref="BitSet.And" />, <see cref="BitSet.Or" />,
+/// Demonstrates the <see cref="BitSet" /> set-algebra surface - <see cref="BitSet.And" />, <see cref="BitSet.Or" />,
 /// <see cref="BitSet.Xor" />, <see cref="BitSet.AndNot" />, and the allocation-free
-/// <see cref="BitSet.Intersects" /> test — plus value equality over logical content.
+/// <see cref="BitSet.Intersects" /> test - plus value equality over logical content.
 /// </summary>
 /// <remarks>
-/// The operators mutate the receiver rather than returning a new set, which is what makes a packed bit set fast —
+/// The operators mutate the receiver rather than returning a new set, which is what makes a packed bit set fast -
 /// a whole 64-bit word of the answer is computed per machine instruction, with nothing allocated. The cost is that
 /// <c>left.And(right)</c> destroys <c>left</c>, so every line here works on a fresh copy to keep the operands
 /// comparable.

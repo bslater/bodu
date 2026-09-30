@@ -13,8 +13,8 @@ namespace Bodu.Security.Cryptography;
 /// the published BLAKE3 reference-vector corpus, which tops out at 102 400 bytes.
 /// </summary>
 /// <remarks>
-/// Independent code paths — one-shot <see cref="HashAlgorithm.ComputeHash(byte[])" />, fixed-size streaming
-/// via <c>TransformBlock</c>, and pseudo-random chunk streaming — must produce identical 256-bit digests
+/// Independent code paths - one-shot <see cref="HashAlgorithm.ComputeHash(byte[])" />, fixed-size streaming
+/// via <c>TransformBlock</c>, and pseudo-random chunk streaming - must produce identical 256-bit digests
 /// for the same input. The fixed input pattern <c>(i % 251)</c> matches the official BLAKE3
 /// <c>test_vectors.json</c> generator, so the resulting digest can be cross-checked against any external
 /// BLAKE3 implementation by anyone running this corpus offline. Categorised as <c>Regression</c> so the

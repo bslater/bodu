@@ -19,11 +19,11 @@ namespace Bodu.Formats.Outlook.Pst;
 /// <remarks>
 /// The type constructor registers <see cref="CodePagesEncodingProvider" /> so the Windows code pages that dominate
 /// real-world messages (Windows-1252, Shift-JIS, and the rest) resolve on all platforms. Resolution prefers the message
-/// code page, then the internet code page, then falls back to Windows-1252 — the historical default for messages that
+/// code page, then the internet code page, then falls back to Windows-1252 - the historical default for messages that
 /// declare nothing (Latin-1 when the code-page provider is unavailable). The UTF-16 code pages (1200 and 1201) are not
 /// usable for <c>PT_STRING8</c> payloads and fall through to the next candidate; resolved encodings are cached per code
 /// page. Every method always returns an encoding and never throws. This file lives in
-/// <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader — the same code-page
+/// <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader - the same code-page
 /// properties govern <c>PT_STRING8</c> decoding in a <c>.msg</c> container and a PST property context; the consuming
 /// project selects the namespace via its <c>DefineConstants</c>.
 /// </remarks>
@@ -79,7 +79,7 @@ internal static class MapiEncodingResolver
 
     /// <summary>
     /// Resolves the encoding of an HTML body stored as bytes: the internet code page is authoritative for HTML, so it
-    /// is tried before the message code page — the reverse of the precedence code-page strings use.
+    /// is tried before the message code page - the reverse of the precedence code-page strings use.
     /// </summary>
     /// <param name="internetCodePage">The declared internet code page, when present.</param>
     /// <param name="messageCodePage">The declared message code page, when present.</param>

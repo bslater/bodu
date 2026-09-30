@@ -12,7 +12,7 @@ using Bodu.Text.Delimited.Reader;
 namespace Bodu.Text.Delimited.Reader;
 
 /// <summary>
-/// Contains the RFC 4180 conformance corpus for <see cref="Utf8DelimitedReader" /> — a curated sweep of the quoting,
+/// Contains the RFC 4180 conformance corpus for <see cref="Utf8DelimitedReader" /> - a curated sweep of the quoting,
 /// line-ending, empty-field, and embedded-content cases exercised by the community <c>csv-spectrum</c> corpus and the
 /// RFC 4180 grammar, run in the Regression tier.
 /// </summary>

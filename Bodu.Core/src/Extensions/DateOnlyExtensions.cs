@@ -9,8 +9,8 @@ using System.Runtime.CompilerServices;
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Provides calendar-arithmetic operations over <see cref="DateOnly" /> — age, period anchors, weekday navigation, week
-/// and quarter numbering, and culture-aware formatting helpers — that complement the small surface shipped with
+/// Provides calendar-arithmetic operations over <see cref="DateOnly" /> - age, period anchors, weekday navigation, week
+/// and quarter numbering, and culture-aware formatting helpers - that complement the small surface shipped with
 /// <see cref="DateOnly" /> itself.
 /// </summary>
 /// <remarks>
@@ -64,8 +64,8 @@ public static partial class DateOnlyExtensions
     /// </summary>
     /// <param name="date">The <see cref="DateOnly" /> value to extract components from.</param>
     /// <param name="year">Outputs the year component.</param>
-    /// <param name="month">Outputs the month component (1–12).</param>
-    /// <param name="day">Outputs the day component (1–31, depending on the month).</param>
+    /// <param name="month">Outputs the month component (1-12).</param>
+    /// <param name="day">Outputs the day component (1-31, depending on the month).</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void GetDateParts(this DateOnly date, out int year, out int month, out int day)
     {
@@ -172,7 +172,7 @@ public static partial class DateOnlyExtensions
     /// The <see cref="DayOfWeek" /> to locate (e.g., <see cref="DayOfWeek.Friday" /> to find the next Friday).
     /// </param>
     /// <returns>
-    /// An integer in the range 0–6 representing the number of days to add to <paramref name="days" /> to reach the next
+    /// An integer in the range 0-6 representing the number of days to add to <paramref name="days" /> to reach the next
     /// occurrence of <paramref name="dayOfWeek" />. Returns 0 if <paramref name="days" /> already falls on
     /// <paramref name="dayOfWeek" />; callers that require a strictly forward result must substitute 7 when 0 is
     /// returned.

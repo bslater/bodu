@@ -9,7 +9,7 @@ namespace Bodu.Text.Configuration;
 /// <summary>
 /// Pins the section-header grammar matrix. The parser scans back from end-of-line for the closing <c>]</c>,
 /// which deliberately allows <c>]</c> inside the section name (matching EditorConfig section conventions).
-/// What is permitted *after* the closing <c>]</c> — trailing whitespace, trailing words, an inline comment —
+/// What is permitted *after* the closing <c>]</c> - trailing whitespace, trailing words, an inline comment -
 /// is controlled by <see cref="ConfigurationParseOptions.SectionHeaderMode" />.
 /// </summary>
 [TestClass]
@@ -57,7 +57,7 @@ public class ConfigurationReaderSectionHeaderTests
     }
 
     /// <summary>
-    /// Verifies that even strict mode permits trailing whitespace after the closing <c>]</c> — whitespace
+    /// Verifies that even strict mode permits trailing whitespace after the closing <c>]</c> - whitespace
     /// is not considered trailing "content".
     /// </summary>
     [TestMethod]
@@ -130,7 +130,7 @@ public class ConfigurationReaderSectionHeaderTests
     }
 
     /// <summary>
-    /// Verifies the existing behaviour that a section name containing <c>]</c> is preserved verbatim — the
+    /// Verifies the existing behaviour that a section name containing <c>]</c> is preserved verbatim - the
     /// parser scans back for the final <c>]</c>, allowing patterns such as <c>[abc]def]</c>. This test pins
     /// the lenient default's contract.
     /// </summary>
@@ -190,7 +190,7 @@ public class ConfigurationReaderSectionHeaderTests
     /// <summary>
     /// Verifies that under collect-diagnostics, an empty section header <c>[]</c> reports
     /// <see cref="ConfigurationDiagnosticCode.EmptySectionHeader" /> exactly once, the parse continues past
-    /// the malformed header, and no named section is created — subsequent properties fall through to the
+    /// the malformed header, and no named section is created - subsequent properties fall through to the
     /// current (global) section rather than into a named section called <c>""</c>.
     /// </summary>
     [TestMethod]
@@ -218,7 +218,7 @@ public class ConfigurationReaderSectionHeaderTests
 
     /// <summary>
     /// Verifies that an empty section header with trailing whitespace <c>[]   </c> still surfaces
-    /// <see cref="ConfigurationDiagnosticCode.EmptySectionHeader" /> — the empty-name check fires before the
+    /// <see cref="ConfigurationDiagnosticCode.EmptySectionHeader" /> - the empty-name check fires before the
     /// trailing-content check.
     /// </summary>
     [TestMethod]

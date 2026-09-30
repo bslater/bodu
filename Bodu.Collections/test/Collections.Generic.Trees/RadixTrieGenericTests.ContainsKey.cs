@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic.Trees;
 public sealed partial class RadixTrieGenericTests
 {
     /// <summary>
-    /// Verifies that only stored keys — not prefixes ending inside a compressed edge — are reported as present.
+    /// Verifies that only stored keys - not prefixes ending inside a compressed edge - are reported as present.
     /// </summary>
     [TestMethod]
     public void ContainsKey_WhenKeyEndsInsideEdge_ShouldReturnFalse()

@@ -31,7 +31,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// The memory matrix is held in native memory and reused across derivations, so a derivation neither allocates it on
-/// the collected heap nor waits for it to be zeroed. Up to one matrix per processor stays reserved — cleared — for up
+/// the collected heap nor waits for it to be zeroed. Up to one matrix per processor stays reserved - cleared - for up
 /// to thirty seconds after the last derivation; the <c>Bodu.Security.Cryptography.Argon2.DisableMatrixReuse</c>
 /// <see cref="AppContext" /> switch releases each matrix as soon as its derivation ends instead. Every block of the
 /// matrix and every buffer holding a password-derived value is cleared before it is released; values the JIT keeps in

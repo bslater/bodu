@@ -23,7 +23,7 @@ public partial class LayeredDictionaryTests
 
     /// <summary>
     /// Verifies that mutating a layer obtained through <see cref="LayeredDictionary{TKey, TValue}.Layers" /> is
-    /// visible through the view — the layers remain live references.
+    /// visible through the view - the layers remain live references.
     /// </summary>
     [TestMethod]
     public void Layers_WhenLayerMutatedThroughProperty_ShouldBeVisibleThroughView()

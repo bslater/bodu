@@ -10,23 +10,23 @@ using System.Runtime.CompilerServices;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// The block arithmetic every consumer of block mode shares — the number of blocks a byte length divides into, and the
+/// The block arithmetic every consumer of block mode shares - the number of blocks a byte length divides into, and the
 /// offset and length of each one.
 /// </summary>
 /// <remarks>
 /// <para>
 /// A byte stream becomes an ordered sequence of tree entries by cutting it into fixed-size blocks. Every block but the
 /// last is <c>blockSize</c> bytes; the last is short whenever the length is not a whole multiple, and is hashed at its
-/// <em>actual</em> length rather than padded — padding would make a short final block indistinguishable from a full
+/// <em>actual</em> length rather than padded - padding would make a short final block indistinguishable from a full
 /// block of the same bytes followed by zeros.
 /// </para>
 /// <para>
-/// A zero-length input has <strong>zero</strong> blocks, not one empty block. Its root is therefore the empty tree's —
-/// the hash of zero bytes — rather than the hash of one empty leaf.
+/// A zero-length input has <strong>zero</strong> blocks, not one empty block. Its root is therefore the empty tree's -
+/// the hash of zero bytes - rather than the hash of one empty leaf.
 /// </para>
 /// <para>
 /// These three functions are trivial and are nonetheless published, because a consumer that computes the final block's
-/// length incorrectly does not fail loudly — it produces a different, wrong root. A
+/// length incorrectly does not fail loudly - it produces a different, wrong root. A
 /// <see cref="MerkleBlockComputation" /> answers the same questions for its own input and additionally rejects a block
 /// that does not exist.
 /// </para>

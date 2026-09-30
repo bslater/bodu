@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography;
 /// <typeparam name="TTest">The concrete test class inheriting this fixture.</typeparam>
 /// <typeparam name="TAlgorithm">The specific Skein variant under test (<see cref="Skein256" />, <see cref="Skein512" />, or <see cref="Skein1024" />).</typeparam>
 /// <typeparam name="TVariant">
-/// The per-class variant enum encoding (output size, mode) — for example <see cref="Skein256TestVariant" />. The
+/// The per-class variant enum encoding (output size, mode) - for example <see cref="Skein256TestVariant" />. The
 /// enum's name convention is <c>Hash_<i>n</i></c> for the plain-hash profile and <c>Mac_<i>n</i></c> for the keyed
 /// Skein-MAC profile, where <i>n</i> is the digest size in bits.
 /// </typeparam>

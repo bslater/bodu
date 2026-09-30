@@ -79,8 +79,8 @@ public partial class ThrowHelperTests
         ThrowHelper.ThrowIfReadOnly(collection);
     }
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfReadOnly{T}" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for writable collections.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfReadOnly{T}" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for writable collections.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="collection">The collection passed to the guard.</param>

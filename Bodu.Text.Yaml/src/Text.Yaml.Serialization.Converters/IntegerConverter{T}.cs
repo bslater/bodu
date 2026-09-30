@@ -17,8 +17,8 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// <typeparam name="T">The integral type.</typeparam>
 /// <remarks>
 /// A float source is accepted only when it carries an integral value, or unconditionally (with truncation) under
-/// <see cref="YamlNumberHandling.AllowFloatToInteger" />. A value above <see cref="long.MaxValue" /> — an unsigned
-/// 64-bit, native-sized unsigned, or 128-bit value — writes as its invariant text, and a 128-bit value below
+/// <see cref="YamlNumberHandling.AllowFloatToInteger" />. A value above <see cref="long.MaxValue" /> - an unsigned
+/// 64-bit, native-sized unsigned, or 128-bit value - writes as its invariant text, and a 128-bit value below
 /// <see cref="long.MinValue" /> does the same: the scalar re-reads as a string and converts back exactly, because the
 /// writer's integer surface is signed 64-bit.
 /// </remarks>

@@ -188,8 +188,8 @@ public sealed partial class GhashTests
     }
 
     /// <summary>
-    /// Returns a copy of a 16-byte block with its bytes moved <paramref name="bytes" /> positions toward the high end —
-    /// toward the low end when negative — and zeros shifted in.
+    /// Returns a copy of a 16-byte block with its bytes moved <paramref name="bytes" /> positions toward the high end -
+    /// toward the low end when negative - and zeros shifted in.
     /// </summary>
     /// <param name="value">The block.</param>
     /// <param name="bytes">The shift, in bytes.</param>

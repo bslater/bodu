@@ -8,7 +8,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Represents the abstract base class from which check-digit algorithms that emit a fixed-length multi-character check
-/// code — most notably ISO 7064 MOD 97-10 and its derivatives (IBAN, LEI) — derive.
+/// code - most notably ISO 7064 MOD 97-10 and its derivatives (IBAN, LEI) - derive.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -24,8 +24,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// The families are kept distinct by design rather than unified under one base type.
 /// </para>
 /// <para>
-/// The streaming surface — <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" />,
-/// <see cref="CheckValueAlgorithm.Reset" />, and the two <c>GetCurrentCheckDigits</c> overloads — will nonetheless feel
+/// The streaming surface - <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" />,
+/// <see cref="CheckValueAlgorithm.Reset" />, and the two <c>GetCurrentCheckDigits</c> overloads - will nonetheless feel
 /// familiar to anyone who has used a hash algorithm: input is accumulated, the computation can be restarted, and
 /// reading the current check code is non-destructive and idempotent. That resemblance is incidental convenience, not a
 /// shared contract. Concrete implementations document their empty-body behavior.
@@ -40,7 +40,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Use a concrete derivative through the abstract surface — IBAN emits a two-digit check.
+/// // Use a concrete derivative through the abstract surface - IBAN emits a two-digit check.
 /// MultiCharCheckDigitAlgorithm algo = new Iban();
 /// algo.Append("GBWEST12345698765432");                 // country code + BBAN
 ///

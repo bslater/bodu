@@ -11,8 +11,8 @@ namespace Bodu.Samples.Extensions.Configuration.Text.BridgeHosting.Scenarios;
 
 /// <summary>
 /// Demonstrates <c>AddTomlFile</c>: a TOML document becomes an <see cref="IConfiguration" />
-/// source, its tables flattened to the standard colon-separated keys — <c>[server.limits]</c>
-/// surfaces as <c>server:limits:*</c> — alongside any other provider in the same builder.
+/// source, its tables flattened to the standard colon-separated keys - <c>[server.limits]</c>
+/// surfaces as <c>server:limits:*</c> - alongside any other provider in the same builder.
 /// </summary>
 public static class TomlFileSource
 {

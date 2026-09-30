@@ -45,7 +45,7 @@ public partial class ConfigurationPatternTests
     }
 
     /// <summary>
-    /// Verifies that the length check fires before the cache is consulted — repeatedly compiling an
+    /// Verifies that the length check fires before the cache is consulted - repeatedly compiling an
     /// over-cap pattern continues to throw rather than serving a cached failure or success entry. This pins
     /// the order of validation relative to <c>CompileCache</c>.
     /// </summary>

@@ -30,7 +30,7 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// <para>
 /// <strong>When to choose MurmurHash3.</strong> MurmurHash3 has excellent avalanche, strong distribution under
-/// SMHasher's full battery, and is faster than the FNV family on inputs longer than a few dozen bytes — making it the
+/// SMHasher's full battery, and is faster than the FNV family on inputs longer than a few dozen bytes - making it the
 /// default choice for non-distributed in-memory hash tables, bloom filters, and content-based sharding. Pick
 /// <see cref="MurmurHash3_32" /> when 32 bits is sufficient and the host is 32-bit-friendly; pick
 /// <see cref="MurmurHash3_128" /> when collision pressure (large key spaces, fingerprinting) calls for more bits.

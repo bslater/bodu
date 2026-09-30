@@ -22,16 +22,16 @@ four parts:
 ```
 
 Because the HRP and checksum are integral to the string, `Bech32` is modelled on [`Base58Check`](base58.md#base58check--checksum-protected-payloads)
-rather than the [`IBinaryEncoding`](binary-encodings-interface.md) family — it sits outside the runtime registry.
+rather than the [`IBinaryEncoding`](binary-encodings-interface.md) family - it sits outside the runtime registry.
 
 ## 5-bit groups vs. 8-bit bytes
 
-The core methods operate on **5-bit data groups** (each value `0`–`31`). Two convenience pairs bridge to ordinary
+The core methods operate on **5-bit data groups** (each value `0`-`31`). Two convenience pairs bridge to ordinary
 bytes, and `ConvertBits` does it by hand:
 
 | Method | Data form |
 |---|---|
-| `Encode(hrp, data, scheme)` / `Decode(...)` | 5-bit groups (values 0–31) |
+| `Encode(hrp, data, scheme)` / `Decode(...)` | 5-bit groups (values 0-31) |
 | `EncodeFromBytes(hrp, data, scheme)` / `DecodeToBytes(...)` | 8-bit bytes (repacked with `ConvertBits` internally) |
 | `ConvertBits(data, fromBits, toBits, pad)` | manual bit-width conversion |
 
@@ -63,7 +63,7 @@ Bech32.Decode("bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4",
 // scheme == Bech32Encoding.Bech32
 ```
 
-## Worked example — a SegWit v0 address
+## Worked example - a SegWit v0 address
 
 A SegWit address is not a plain byte payload: the data part is a one-symbol **witness version** followed by the
 witness program repacked from 8 bits to 5. Witness v0 uses Bech32; v1+ uses Bech32m.
@@ -95,11 +95,11 @@ Bech32.IsValid("bc1qw508d6qejxtdg4Y5r3zarvary0c5xw7kv8f3t4");   // false (mixed 
 ## The 90-character limit
 
 BIP 173 caps an address at **90 characters**. The decoder enforces this limit; the encoder does **not**, so it can
-produce the longer strings non-address schemes need — Lightning BOLT11 invoices routinely exceed 90 characters.
+produce the longer strings non-address schemes need - Lightning BOLT11 invoices routinely exceed 90 characters.
 
 ## HRP rules
 
-The human-readable part must be **non-empty** and contain only US-ASCII characters in the range 33–126. An empty or
+The human-readable part must be **non-empty** and contain only US-ASCII characters in the range 33-126. An empty or
 out-of-range HRP throws `ArgumentException` from the encoder; `TryEncode` returns `false`.
 
 ## Non-throwing forms
@@ -129,7 +129,7 @@ int length = Bech32.GetEncodedLength(hrpLength: 2, dataLength: 33);
 
 ## Where to go next
 
-- **[Base58 guide](base58.md)** — the legacy Bitcoin address encoding and `Base58Check`.
-- **[Base32 guide](base32.md)** — the plain 5-bit encoding Bech32's data part is built on.
-- **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — the runtime registry for the flat-byte encodings (Bech32 stays outside it).
-- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.
+- **[Base58 guide](base58.md)** - the legacy Bitcoin address encoding and `Base58Check`.
+- **[Base32 guide](base32.md)** - the plain 5-bit encoding Bech32's data part is built on.
+- **[`IBinaryEncoding` interface](binary-encodings-interface.md)** - the runtime registry for the flat-byte encodings (Bech32 stays outside it).
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** - every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

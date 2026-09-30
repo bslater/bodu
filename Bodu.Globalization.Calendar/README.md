@@ -1,8 +1,8 @@
 # Bodu.Globalization.Calendar
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-A resource-driven notable-date (holiday / observance) engine for .NET 8. Calendars are described as declarative, importable documents — concepts, rules, calculation strategies, adjustment policies, and resolution policies — that the engine resolves into concrete occurrences for a territory and date range. The package ships the calculation strategies, astronomical algorithms, range-resolution machinery, and working-day extensions; the regional holiday data ships in the companion `Bodu.Globalization.Calendar.<Region>` data packages.
+A resource-driven notable-date (holiday / observance) engine for .NET 8. Calendars are described as declarative, importable documents - concepts, rules, calculation strategies, adjustment policies, and resolution policies - that the engine resolves into concrete occurrences for a territory and date range. The package ships the calculation strategies, astronomical algorithms, range-resolution machinery, and working-day extensions; the regional holiday data ships in the companion `Bodu.Globalization.Calendar.<Region>` data packages.
 
 ## Installation
 
@@ -28,7 +28,7 @@ Shared faith and civil catalogues (`global-core`, `christian-western`, `christia
 
 ## Calculation strategies and algorithms
 
-The `Bodu.Globalization.Calendar.Algorithms` namespace provides the `IDateCalculationStrategy` implementations — `FixedDateStrategy`, `DayOfWeekInMonthStrategy`, `RelativeWeekdayInMonthStrategy`, `WeekdayNearDateStrategy`, `OffsetFromRuleStrategy`, and `AlgorithmDateStrategy` — together with the astronomical / calendrical `INotableDateAlgorithm` engines: `EasterCalculator`, `HinduLunarCalculator`, `LunarPhaseCalculator`, `SolarTermCalculator`, `TibetanLosarCalculator`, and `MatarikiCalendar`. Custom algorithms register through `NotableDateAlgorithmRegistry` and dispatch by key.
+The `Bodu.Globalization.Calendar.Algorithms` namespace provides the `IDateCalculationStrategy` implementations - `FixedDateStrategy`, `DayOfWeekInMonthStrategy`, `RelativeWeekdayInMonthStrategy`, `WeekdayNearDateStrategy`, `OffsetFromRuleStrategy`, and `AlgorithmDateStrategy` - together with the astronomical / calendrical `INotableDateAlgorithm` engines: `EasterCalculator`, `HinduLunarCalculator`, `LunarPhaseCalculator`, `SolarTermCalculator`, `TibetanLosarCalculator`, and `MatarikiCalendar`. Custom algorithms register through `NotableDateAlgorithmRegistry` and dispatch by key.
 
 ## Range resolution
 
@@ -70,7 +70,7 @@ The suite uses self-contained `*KnownAnswerTests` classes that pin Easter offset
 
 ## Runnable samples
 
-The repository ships offline, `dotnet run`-able sample projects for the calendar packages — holiday queries with subdivision shadowing, working-day arithmetic, authored company calendars, DI with live data reload, and custom algorithms with contract tests — under [`samples/Globalization.Calendar/`](https://github.com/bslater/bodu/tree/master/samples/Globalization.Calendar).
+The repository ships offline, `dotnet run`-able sample projects for the calendar packages - holiday queries with subdivision shadowing, working-day arithmetic, authored company calendars, DI with live data reload, and custom algorithms with contract tests - under [`samples/Globalization.Calendar/`](https://github.com/bslater/bodu/tree/master/samples/Globalization.Calendar).
 
 ## License
 

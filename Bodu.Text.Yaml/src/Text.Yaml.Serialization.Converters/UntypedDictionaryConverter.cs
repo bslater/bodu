@@ -12,8 +12,8 @@ using Bodu.Text.Yaml.Writer;
 namespace Bodu.Text.Yaml.Serialization.Converters;
 
 /// <summary>
-/// Converts a dictionary the generic dictionary factory does not claim — a non-generic <see cref="IDictionary" /> such
-/// as <see cref="Hashtable" />, or a generic dictionary whose key type has no round-trippable text form — as a YAML
+/// Converts a dictionary the generic dictionary factory does not claim - a non-generic <see cref="IDictionary" /> such
+/// as <see cref="Hashtable" />, or a generic dictionary whose key type has no round-trippable text form - as a YAML
 /// mapping whose keys are each entry key's invariant text.
 /// </summary>
 /// <remarks>

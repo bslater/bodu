@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Extensions;
 /// <para>
 /// <see cref="System.Globalization.DateTimeFormatInfo" /> publishes the first day of the week through
 /// <see cref="System.Globalization.DateTimeFormatInfo.FirstDayOfWeek" />, but offers no symmetrical accessor for the
-/// last day of the week — yet that value is needed for week-end snapping, weekend predicates, and report headers in any
+/// last day of the week - yet that value is needed for week-end snapping, weekend predicates, and report headers in any
 /// locale-driven calendar code. This class supplies the missing accessors, derived from the same culture data so the
 /// result matches whatever the active culture says is the start of the week.
 /// </para>
@@ -26,8 +26,8 @@ namespace Bodu.Globalization.Extensions;
 /// <para>
 /// All methods are pure, allocation-free, and reject a <see langword="null" />
 /// <see cref="System.Globalization.DateTimeFormatInfo" /> with <see cref="ArgumentNullException" />. Results are
-/// sensitive to the supplied <see cref="System.Globalization.DateTimeFormatInfo" /> — they intentionally do <em>not
-/// </em> consult ambient culture state — so callers can rely on deterministic behavior even when the current thread's
+/// sensitive to the supplied <see cref="System.Globalization.DateTimeFormatInfo" /> - they intentionally do <em>not
+/// </em> consult ambient culture state - so callers can rely on deterministic behavior even when the current thread's
 /// culture changes between calls.
 /// </para>
 /// <example>

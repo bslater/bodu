@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic;
 public partial class LayeredDictionaryTests
 {
     /// <summary>
-    /// Verifies that the value collection contains the first-wins values — the shadowed deeper value is not included.
+    /// Verifies that the value collection contains the first-wins values - the shadowed deeper value is not included.
     /// </summary>
     [TestMethod]
     public void Values_WhenKeysShadowed_ShouldContainFirstWinsValues()

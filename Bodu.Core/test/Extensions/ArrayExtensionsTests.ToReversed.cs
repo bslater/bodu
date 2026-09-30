@@ -265,7 +265,7 @@ public partial class ArrayExtensionsTests
     }
 
     // =========================================================================
-    // Array (non-generic) — Range
+    // Array (non-generic) - Range
     // =========================================================================
 
     /// <summary>
@@ -285,7 +285,7 @@ public partial class ArrayExtensionsTests
     }
 
     // =========================================================================
-    // T[] — Range
+    // T[] - Range
     // =========================================================================
 
     /// <summary>
@@ -328,7 +328,7 @@ public partial class ArrayExtensionsTests
     }
 
     // =========================================================================
-    // Array (non-generic) — index + count
+    // Array (non-generic) - index + count
     // =========================================================================
 
     /// <summary>
@@ -345,7 +345,7 @@ public partial class ArrayExtensionsTests
     }
 
     // =========================================================================
-    // T[] — index + count
+    // T[] - index + count
     // =========================================================================
 
     /// <summary>
@@ -358,7 +358,7 @@ public partial class ArrayExtensionsTests
         int index, int count, int[] expected) => CollectionAssert.AreEqual(expected, Ints.ToReversed(index, count));
 
     // =========================================================================
-    // Array (non-generic) — full reverse
+    // Array (non-generic) - full reverse
     // =========================================================================
 
     /// <summary>
@@ -375,7 +375,7 @@ public partial class ArrayExtensionsTests
         Assert.AreEqual(input.GetType().GetElementType(), result.GetType().GetElementType());
     }
     // =========================================================================
-    // T[] — full reverse
+    // T[] - full reverse
     // =========================================================================
 
     /// <summary>
@@ -531,8 +531,8 @@ public partial class ArrayExtensionsTests
     /// type of the source array in the returned result.
     /// </summary>
     [TestMethod]
-    [DataRow(typeof(int), DisplayName = "int — unmanaged")]
-    [DataRow(typeof(string), DisplayName = "string — reference type")]
+    [DataRow(typeof(int), DisplayName = "int - unmanaged")]
+    [DataRow(typeof(string), DisplayName = "string - reference type")]
     public void ReverseArrayCore_WhenCalled_ForNonGenericCore_ShouldPreserveElementType(Type elementType)
     {
         var source = Array.CreateInstance(elementType, 3);
@@ -552,7 +552,7 @@ public partial class ArrayExtensionsTests
     }
 
     // =========================================================================
-    // ArrayExtensions.ReverseArrayCore — internal non-generic core
+    // ArrayExtensions.ReverseArrayCore - internal non-generic core
     // Requires [assembly: InternalsVisibleTo("Bodu.Extensions.Tests")] in the
     // main project.
     // =========================================================================
@@ -635,7 +635,7 @@ public partial class ArrayExtensionsTests
     }
 
     // =========================================================================
-    // ArrayExtensions.ReverseCore<T> — internal generic core
+    // ArrayExtensions.ReverseCore<T> - internal generic core
     // Requires [assembly: InternalsVisibleTo("Bodu.Extensions.Tests")] in the
     // main project.
     // =========================================================================

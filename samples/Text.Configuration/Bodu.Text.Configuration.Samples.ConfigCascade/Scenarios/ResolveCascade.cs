@@ -10,8 +10,8 @@ namespace Bodu.Samples.Text.Configuration.ConfigCascade.Scenarios;
 
 /// <summary>
 /// Demonstrates the heart of the library: path-targeted resolution. Every section whose glob
-/// matches the target path contributes its keys, later sections overriding earlier ones — the
-/// EditorConfig cascade — so one file expresses defaults plus per-tree exceptions.
+/// matches the target path contributes its keys, later sections overriding earlier ones - the
+/// EditorConfig cascade - so one file expresses defaults plus per-tree exceptions.
 /// </summary>
 public static class ResolveCascade
 {

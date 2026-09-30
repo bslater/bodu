@@ -6,9 +6,9 @@ title: Streaming, async, and resumable hashing
 
 Every algorithm in `Bodu.IO.Hashing` derives from `System.IO.Hashing.NonCryptographicHashAlgorithm`, whose core is `Append` / `GetCurrentHash` / `Reset`. Three things build on that core for data that does not fit in one span: <xref:Bodu.IO.Hashing.HashingStream> computes a digest as a side effect of ordinary stream I/O; <xref:Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions> adds the `Stream`, `async`, and verify overloads; and <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> lets a stored digest be extended with new bytes without re-reading the original input. This page walks through all three and ends with the digest byte-order table you need when comparing results across tools.
 
-## Pattern 1 — `HashingStream` while copying
+## Pattern 1 - `HashingStream` while copying
 
-`HashingStream(Stream innerStream, NonCryptographicHashAlgorithm algorithm, bool leaveOpen = false)` is a pass-through stream. Bytes are fed to the algorithm whichever way they flow — reads append what the inner stream actually returned, writes append after the inner stream accepted them — so one pass over the data both moves it and checksums it. `CanSeek` is always `false` (seeking would let bytes bypass or re-enter the digest; `Seek` and `SetLength` throw `NotSupportedException`), and the algorithm is yours: the stream never disposes it.
+`HashingStream(Stream innerStream, NonCryptographicHashAlgorithm algorithm, bool leaveOpen = false)` is a pass-through stream. Bytes are fed to the algorithm whichever way they flow - reads append what the inner stream actually returned, writes append after the inner stream accepted them - so one pass over the data both moves it and checksums it. `CanSeek` is always `false` (seeking would let bytes bypass or re-enter the digest; `Seek` and `SetLength` throw `NotSupportedException`), and the algorithm is yours: the stream never disposes it.
 
 <!-- compile -->
 ```csharp
@@ -25,7 +25,7 @@ var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
 using (var hashing = new HashingStream(source, crc, leaveOpen: true))
 {
     hashing.CopyTo(destination);                  // every byte read from the source is fed to the CRC
-    byte[] soFar = hashing.GetCurrentHash();      // 707A0D67 — non-destructive snapshot
+    byte[] soFar = hashing.GetCurrentHash();      // 707A0D67 - non-destructive snapshot
 }
 
 byte[] digest = crc.GetCurrentHash();             // same value; the algorithm outlives the stream
@@ -49,7 +49,7 @@ byte[] second = hashing.GetCurrentHash();         // Fletcher-32 of "abcdef" alo
 
 `Read`, `Write`, `ReadByte`, `WriteByte`, and the `Memory<byte>` / `Task` async overloads are all routed through the algorithm; `Flush` / `FlushAsync` and `DisposeAsync` forward to the inner stream (which is disposed unless `leaveOpen` is `true`). Like the algorithm it wraps, a `HashingStream` is not thread-safe.
 
-## Pattern 2 — the extension surface
+## Pattern 2 - the extension surface
 
 <xref:Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions> covers `byte[]`, span, `string` + `Encoding`, and `Stream` inputs. The stream members:
 
@@ -57,7 +57,7 @@ byte[] second = hashing.GetCurrentHash();         // Fletcher-32 of "abcdef" alo
 |---|---|---|---|
 | `ComputeHash(Stream source, int bufferSize = 4096)` | 4 KiB | Resets first, then `GetCurrentHash` | synchronous |
 | `ComputeHashAsync(Stream source, int bufferSize = 81920, CancellationToken)` | 80 KiB | as above | returns `ValueTask<byte[]>` |
-| `AppendData(Stream source, int bufferSize = 4096)` / `AppendDataAsync(Stream, int = 4096, CancellationToken)` | 4 KiB | **No** — call `GetCurrentHash` when done | accumulate several sources into one digest |
+| `AppendData(Stream source, int bufferSize = 4096)` / `AppendDataAsync(Stream, int = 4096, CancellationToken)` | 4 KiB | **No** - call `GetCurrentHash` when done | accumulate several sources into one digest |
 | `VerifyHash(Stream, byte[] \| string hex)` / `VerifyHashAsync(Stream, byte[] \| string \| ReadOnlyMemory<byte>, CancellationToken)` | via `ComputeHash*` | Yes | constant-time compare; throws on `null` |
 | `TryVerifyHash(…)` / `TryVerifyHashAsync(…)` | as above | Yes | `false` for `null` arguments, malformed hex, cancellation, or any exception |
 
@@ -89,9 +89,9 @@ await running.AppendDataAsync(s4, bufferSize: 4096);                           /
 byte[] same = running.GetCurrentHash();                                         // … until you ask
 ```
 
-## Pattern 3 — resuming from a stored digest
+## Pattern 3 - resuming from a stored digest
 
-<xref:Bodu.IO.Hashing.IResumableHashAlgorithm> is implemented by <xref:Bodu.IO.Hashing.Checksums.Crc>, the FNV family (<xref:Bodu.IO.Hashing.Fnv132>, <xref:Bodu.IO.Hashing.Fnv164>, <xref:Bodu.IO.Hashing.Fnv1a32>, <xref:Bodu.IO.Hashing.Fnv1a64>), <xref:Bodu.IO.Hashing.Checksums.Fletcher16> / <xref:Bodu.IO.Hashing.Checksums.Fletcher32> / <xref:Bodu.IO.Hashing.Checksums.Fletcher64>, and <xref:Bodu.IO.Hashing.Checksums.Adler32> / <xref:Bodu.IO.Hashing.Checksums.Adler32C> / <xref:Bodu.IO.Hashing.Checksums.Adler64> — every algorithm whose digest *is* (or reversibly encodes) the full working state. The interface exposes `HashLengthInBytes`, three `ComputeHashFrom(previousHash, newData)` overloads (span; `byte[]`; `byte[]` with offset and length), and the allocation-free `TryComputeHashFrom(previousHash, newData, destination, out bytesWritten)`. The result equals a single pass over the concatenated input; the original bytes are never needed again.
+<xref:Bodu.IO.Hashing.IResumableHashAlgorithm> is implemented by <xref:Bodu.IO.Hashing.Checksums.Crc>, the FNV family (<xref:Bodu.IO.Hashing.Fnv132>, <xref:Bodu.IO.Hashing.Fnv164>, <xref:Bodu.IO.Hashing.Fnv1a32>, <xref:Bodu.IO.Hashing.Fnv1a64>), <xref:Bodu.IO.Hashing.Checksums.Fletcher16> / <xref:Bodu.IO.Hashing.Checksums.Fletcher32> / <xref:Bodu.IO.Hashing.Checksums.Fletcher64>, and <xref:Bodu.IO.Hashing.Checksums.Adler32> / <xref:Bodu.IO.Hashing.Checksums.Adler32C> / <xref:Bodu.IO.Hashing.Checksums.Adler64> - every algorithm whose digest *is* (or reversibly encodes) the full working state. The interface exposes `HashLengthInBytes`, three `ComputeHashFrom(previousHash, newData)` overloads (span; `byte[]`; `byte[]` with offset and length), and the allocation-free `TryComputeHashFrom(previousHash, newData, destination, out bytesWritten)`. The result equals a single pass over the concatenated input; the original bytes are never needed again.
 
 <!-- compile -->
 ```csharp
@@ -119,7 +119,7 @@ foreach (NonCryptographicHashAlgorithm algorithm in new NonCryptographicHashAlgo
 }
 ```
 
-How each family resumes differs, and it dictates the one rule: **resume only with the same algorithm and parameters**. `Crc` reverse-finalizes the digest (undoing XOR-out, output reflection, and width masking) to recover the register, so a digest from a different `CrcStandard` yields garbage. FNV applies no finalization — the digest is the accumulator. Fletcher and Adler digests carry both accumulators (`B ‖ A`), which seed the sums directly. A `previousHash` whose length is not `HashLengthInBytes` throws `ArgumentException` (`previousHash`). The fingerprints that mix or finalize irreversibly — CityHash, MurmurHash3, Pearson, the classic string hashes — do not implement the interface.
+How each family resumes differs, and it dictates the one rule: **resume only with the same algorithm and parameters**. `Crc` reverse-finalizes the digest (undoing XOR-out, output reflection, and width masking) to recover the register, so a digest from a different `CrcStandard` yields garbage. FNV applies no finalization - the digest is the accumulator. Fletcher and Adler digests carry both accumulators (`B ‖ A`), which seed the sums directly. A `previousHash` whose length is not `HashLengthInBytes` throws `ArgumentException` (`previousHash`). The fingerprints that mix or finalize irreversibly - CityHash, MurmurHash3, Pearson, the classic string hashes - do not implement the interface.
 
 ## Digest byte order
 
@@ -133,7 +133,7 @@ How each family resumes differs, and it dictates the one rule: **resume only wit
 | Fletcher-16 / 32 / 64 | big-endian, `B ‖ A` | Fletcher-32 of `"abcde"`: `B = 0x05C3`, `A = 0x01EF` | `05 C3 01 EF` |
 | Adler-32 / 32C / 64 | big-endian, `(B << k) \| A` | Adler-32 of `"Wikipedia"` = `0x11E60398` | `11 E6 03 98` |
 
-So `BitConverter.ToUInt32(new Crc().ComputeHash("123456789"u8.ToArray()))` yields `0xCBF43926` on a little-endian host, while the Adler and Fletcher arrays drop straight into a big-endian zlib trailer. Bodu's Fletcher consumes input **one byte at a time** at every width (so its Fletcher-32 is not the 16-bit-word variant some references tabulate) — see [Using Fletcher](fletcher.md). The [concepts page](../../docs/io-hashing/concepts.md#endianness) covers the CRC reflection parameters, which are a separate question from digest byte order.
+So `BitConverter.ToUInt32(new Crc().ComputeHash("123456789"u8.ToArray()))` yields `0xCBF43926` on a little-endian host, while the Adler and Fletcher arrays drop straight into a big-endian zlib trailer. Bodu's Fletcher consumes input **one byte at a time** at every width (so its Fletcher-32 is not the 16-bit-word variant some references tabulate) - see [Using Fletcher](fletcher.md). The [concepts page](../../docs/io-hashing/concepts.md#endianness) covers the CRC reflection parameters, which are a separate question from digest byte order.
 
 <!-- compile -->
 ```csharp
@@ -160,8 +160,8 @@ uint crcWord = BitConverter.ToUInt32(crc32);                                    
 
 ## Where to go next
 
-- [Using CRC](crc.md#pattern-6--resume-from-a-stored-digest) — the CRC-specific reverse-finalization in more depth.
-- [Using Fletcher](fletcher.md) and [Using Adler](adler.md) — the twin-accumulator checksums this page resumes.
-- [Streams and async](../cryptography/streaming-and-async.md) — the equivalent surfaces for the cryptographic hashes and ciphers.
-- [Runnable samples](../../samples/io-hashing.md) — `Bodu.IO.Hashing.Samples.ChecksumTour` exercises `HashingStream` and resumable hashing over a committed file.
-- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
+- [Using CRC](crc.md#pattern-6--resume-from-a-stored-digest) - the CRC-specific reverse-finalization in more depth.
+- [Using Fletcher](fletcher.md) and [Using Adler](adler.md) - the twin-accumulator checksums this page resumes.
+- [Streams and async](../cryptography/streaming-and-async.md) - the equivalent surfaces for the cryptographic hashes and ciphers.
+- [Runnable samples](../../samples/io-hashing.md) - `Bodu.IO.Hashing.Samples.ChecksumTour` exercises `HashingStream` and resumable hashing over a committed file.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

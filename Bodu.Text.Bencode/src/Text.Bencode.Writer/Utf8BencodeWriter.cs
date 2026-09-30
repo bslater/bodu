@@ -35,7 +35,7 @@ namespace Bodu.Text.Bencode.Writer;
 /// Scalars and lists written outside any dictionary are emitted to the destination as they are written; bytes that
 /// belong to an open dictionary are held in that dictionary's buffer until it closes, because the canonical key order
 /// is only known at that point. A consequence of streaming is that a write failing partway through a document leaves
-/// the bytes already emitted in the destination — discard the destination when any write throws, and assert
+/// the bytes already emitted in the destination - discard the destination when any write throws, and assert
 /// <see cref="CurrentDepth" /> is zero before consuming it.
 /// </para>
 /// <example>
@@ -59,7 +59,7 @@ public ref struct Utf8BencodeWriter
     /// <summary>The destination buffer writer that receives the completed document.</summary>
     private readonly IBufferWriter<byte> _output;
 
-    /// <summary>The shared mutable state — the container stack — that survives by-value copies of the writer.</summary>
+    /// <summary>The shared mutable state - the container stack - that survives by-value copies of the writer.</summary>
     private readonly List<Frame> _frames;
 
     /// <summary>The maximum permitted container nesting depth.</summary>
@@ -301,7 +301,7 @@ public ref struct Utf8BencodeWriter
     {
         DictionaryFrame frame = RequireDictionaryFrameForKey();
 
-        // The key bytes live in the frame's entry buffer as a recorded range — no per-key array.
+        // The key bytes live in the frame's entry buffer as a recorded range - no per-key array.
         frame.PendingKeyStart = frame.Buffer.WrittenCount;
         frame.PendingKeyLength = name.Length;
         frame.Buffer.AppendRange(name);
@@ -337,7 +337,7 @@ public ref struct Utf8BencodeWriter
     {
         DictionaryFrame frame = RequireDictionaryFrameForKey();
 
-        // Encode the key directly into the frame's entry buffer as a recorded range — no per-key array.
+        // Encode the key directly into the frame's entry buffer as a recorded range - no per-key array.
         int count = Encoding.UTF8.GetByteCount(name);
         frame.PendingKeyStart = frame.Buffer.WrittenCount;
         frame.PendingKeyLength = count;
@@ -684,7 +684,7 @@ public ref struct Utf8BencodeWriter
     /// Validation parses <paramref name="value" /> with a standalone <see cref="Reader.Utf8BencodeReader" /> using the
     /// default maximum depth; the payload's nesting is not counted against this writer's configured
     /// <see cref="BencodeWriterOptions.MaxDepth" />. When validation is skipped the caller is responsible for the bytes
-    /// being canonical — non-canonical bytes produce a document this library's reader rejects.
+    /// being canonical - non-canonical bytes produce a document this library's reader rejects.
     /// </remarks>
     public readonly void WriteRawValue(ReadOnlySpan<byte> value, bool skipInputValidation = false)
     {
@@ -848,7 +848,7 @@ public ref struct Utf8BencodeWriter
         }
 
         /// <summary>
-        /// Gets the buffer that receives the list's bytes — the innermost enclosing dictionary's buffer, or the
+        /// Gets the buffer that receives the list's bytes - the innermost enclosing dictionary's buffer, or the
         /// destination output when no dictionary is open above the list.
         /// </summary>
         /// <value>The list's content sink.</value>

@@ -13,8 +13,8 @@ namespace Bodu.Globalization.Calendar.Samples.ServiceHosting.Scenarios;
 /// <summary>
 /// Demonstrates the keyed and options registrations: a multi-tenant process registers one
 /// <see cref="INotableDateService" /> per jurisdiction and resolves them by key, and the
-/// <see cref="NotableDateServiceOptions" /> overload composes collaborators — here a custom algorithm
-/// registry — through the container.
+/// <see cref="NotableDateServiceOptions" /> overload composes collaborators - here a custom algorithm
+/// registry - through the container.
 /// </summary>
 public static class KeyedRegistration
 {

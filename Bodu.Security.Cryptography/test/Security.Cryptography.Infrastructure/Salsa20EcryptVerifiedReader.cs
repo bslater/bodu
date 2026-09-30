@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// Parses the official ECRYPT Stream Cipher Project "verified" Salsa20 test-vector file. The file is organized into
 /// key-size profiles (<c>Key size: 128 bits</c> / <c>256 bits</c>), each holding six numbered sets of
 /// <c>Set N, vector# M</c> records. Every record declares a <c>key</c>, an <c>IV</c>, one or more <c>stream[a..b]</c>
-/// keystream fragments, and a <c>xor-digest</c> — the XOR of every 64-byte block over the full generated keystream.
+/// keystream fragments, and a <c>xor-digest</c> - the XOR of every 64-byte block over the full generated keystream.
 /// Multi-line hex values are folded back together.
 /// </summary>
 public static partial class Salsa20EcryptVerifiedReader

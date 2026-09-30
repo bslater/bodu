@@ -45,7 +45,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Serpent-1024.</strong> The widest wide-block Serpent variant — purely experimental, for
+/// <strong>When to choose Serpent-1024.</strong> The widest wide-block Serpent variant - purely experimental, for
 /// scenarios where a 1024-bit tweakable block with Serpent's round function is required. <see cref="Threefish1024" />
 /// is the better-studied alternative. Throughput drops markedly relative to the 256/512-bit Serpent variants. Use
 /// <see cref="Serpent128" /> for any production scenario that requires interoperable Serpent.

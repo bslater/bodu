@@ -521,8 +521,8 @@ public partial class ConcurrentHashSetTests
     }
 
     /// <summary>
-    /// Verifies that when every key hashes to the same bucket — funnelling all writers into a single equal-key run
-    /// of the split-ordered list — every privately-owned key is still added exactly once and retained.
+    /// Verifies that when every key hashes to the same bucket - funnelling all writers into a single equal-key run
+    /// of the split-ordered list - every privately-owned key is still added exactly once and retained.
     /// </summary>
     [TestMethod]
     [TestCategory("Stress")]
@@ -1114,7 +1114,7 @@ public partial class ConcurrentHashSetTests
 
     /// <summary>
     /// Verifies that keys fully acknowledged before <see cref="ConcurrentHashSet{T}.Clear" /> begins are absent
-    /// after it returns, even while unrelated churn races the clear — the clear's atomic swap must be ordered after
+    /// after it returns, even while unrelated churn races the clear - the clear's atomic swap must be ordered after
     /// every operation that completed before it started.
     /// </summary>
     [TestMethod]
@@ -1257,7 +1257,7 @@ public partial class ConcurrentHashSetTests
 
     /// <summary>
     /// Verifies lock-free progress under oversubscription: with more workers than processors all hammering a single
-    /// fully colliding equal-key run, every worker still completes its fixed operation quota — no interleaving of
+    /// fully colliding equal-key run, every worker still completes its fixed operation quota - no interleaving of
     /// preempted threads can livelock or deadlock the set.
     /// </summary>
     [TestMethod]
@@ -1302,7 +1302,7 @@ public partial class ConcurrentHashSetTests
             $"Workers={workerCount}, Faults={faults}, FinalCount={set.Count}, Completed={completed}, " +
             $"FirstException={firstException}");
 
-        Assert.IsTrue(completed, "Every worker must finish its quota — the lock-free set must never livelock.");
+        Assert.IsTrue(completed, "Every worker must finish its quota - the lock-free set must never livelock.");
         Assert.AreEqual(0, faults, $"No exception is expected. First exception: {firstException}");
         Assert.IsTrue(set.Count is >= 0 and <= 64, $"Final count must lie within the toggled key range, got {set.Count}.");
     }

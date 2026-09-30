@@ -10,13 +10,13 @@ namespace Bodu.IO.Pst;
 
 /// <summary>
 /// Corruption sweeps over copies of the real reference fixtures: whatever bytes are flipped or truncated, the reader
-/// must either succeed or fail with the <see cref="PstFileException" /> family — never another exception type — at
+/// must either succeed or fail with the <see cref="PstFileException" /> family - never another exception type - at
 /// every validation level.
 /// </summary>
 /// <remarks>
 /// This is the "patch a copy of a real fixture" strand of the fixture strategy (exploration doc §6): the synthetic
 /// <c>PstFixtureBuilder</c> cases target specific structures, while these sweeps subject the full real-file read path
-/// to arbitrary damage. The walk forces every node's payload, subnodes, and — where a heap signature is present — its
+/// to arbitrary damage. The walk forces every node's payload, subnodes, and - where a heap signature is present - its
 /// property or table context, so corruption reaches the LTP layer, not just the header.
 /// </remarks>
 [TestClass]
@@ -78,7 +78,7 @@ public sealed class PstMalformedCorpusTests
     }
 
     /// <summary>
-    /// Opens the supplied bytes and walks every node — payload, subnodes, and any property or table context — and
+    /// Opens the supplied bytes and walks every node - payload, subnodes, and any property or table context - and
     /// fails the test if anything outside the <see cref="PstFileException" /> family escapes.
     /// </summary>
     /// <param name="bytes">The (possibly corrupted) file bytes.</param>

@@ -10,8 +10,8 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf" /> does not throw —
-    /// and on the ParamName-asserting overload reports nothing — for arrays whose length is a positive
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf" /> does not throw -
+    /// and on the ParamName-asserting overload reports nothing - for arrays whose length is a positive
     /// multiple of the divisor.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

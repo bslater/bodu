@@ -11,12 +11,12 @@ using System.Runtime.Serialization;
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// Immutable parameter bundle that fully describes a CRC variant — width, polynomial, initial value, input/output bit
-/// reflection, and final XOR — and serves as the lookup key into the RevEng catalogue used by <see cref="Crc" />.
+/// Immutable parameter bundle that fully describes a CRC variant - width, polynomial, initial value, input/output bit
+/// reflection, and final XOR - and serves as the lookup key into the RevEng catalogue used by <see cref="Crc" />.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Every CRC variant in the wild differs from every other along the same five dimensions — the polynomial, the initial
+/// Every CRC variant in the wild differs from every other along the same five dimensions - the polynomial, the initial
 /// register value, whether input bits are reflected as they enter the register, whether the final register is reflected
 /// on the way out, and what value the register is XOR-ed with at the end. <c>CRC-32/ISO-HDLC</c> and
 /// <c>CRC-32/BZIP2</c> share a polynomial but disagree on reflection; <c>CRC-16/MODBUS</c> and <c>CRC-16/USB</c> share
@@ -31,21 +31,21 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <term>Catalogue properties</term>
 /// <description>
 /// <see cref="CRC32_ISOHDLC" />, <see cref="CRC32_ISCSI" />, <see cref="CRC16_MODBUS" />, <see cref="CRC16_KERMIT" />,
-/// <see cref="CRC64_XZ" />, … — direct named accessors for the common entries that return the canonical, cached
+/// <see cref="CRC64_XZ" />, … - direct named accessors for the common entries that return the canonical, cached
 /// <see cref="CrcStandard" /> instance.
 /// </description>
 /// </item>
 /// <item>
 /// <term><see cref="Get(CrcStandards)" /></term>
 /// <description>
-/// Materializes any catalogue entry from its <see cref="CrcStandards" /> enum value — useful when the choice is
+/// Materializes any catalogue entry from its <see cref="CrcStandards" /> enum value - useful when the choice is
 /// data-driven (e.g. read from configuration).
 /// </description>
 /// </item>
 /// <item>
 /// <term><see cref="FromName(string)" /></term>
 /// <description>
-/// Resolves canonical names <em>and</em> published aliases — <c>"CRC-32"</c>, <c>"PKZIP"</c>, <c>"CRC-32/XZ"</c>,
+/// Resolves canonical names <em>and</em> published aliases - <c>"CRC-32"</c>, <c>"PKZIP"</c>, <c>"CRC-32/XZ"</c>,
 /// <c>"CRC-32/ADCCP"</c> all return the same <see cref="CRC32_ISOHDLC" /> instance.
 /// </description>
 /// </item>
@@ -84,14 +84,14 @@ namespace Bodu.IO.Hashing.Checksums;
 ///<![CDATA[
 /// using Bodu.IO.Hashing.Checksums;
 ///
-/// // 1. Direct named accessor — most callers want exactly this.
+/// // 1. Direct named accessor - most callers want exactly this.
 /// var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
 ///
-/// // 2. Data-driven look-up — pick the variant from a configuration value.
+/// // 2. Data-driven look-up - pick the variant from a configuration value.
 /// CrcStandards configured = Enum.Parse<CrcStandards>(config["CrcVariant"]);
 /// var configuredCrc = new Crc(CrcStandard.Get(configured));
 ///
-/// // 3. Look-up by alias — accept legacy or vendor names supplied by users.
+/// // 3. Look-up by alias - accept legacy or vendor names supplied by users.
 /// CrcStandard pkzip = CrcStandard.FromName("PKZIP");      // same instance as CRC32_ISOHDLC
 /// CrcStandard ccitt = CrcStandard.FromName("CRC-CCITT");  // resolves to CRC16_KERMIT
 ///

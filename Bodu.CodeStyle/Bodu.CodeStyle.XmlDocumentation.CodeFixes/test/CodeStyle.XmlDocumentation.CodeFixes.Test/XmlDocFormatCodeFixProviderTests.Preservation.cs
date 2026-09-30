@@ -252,8 +252,8 @@ public partial class XmlDocFormatCodeFixProviderTests
     /// the doc comment and the documented member does not block the fix. The shape is taken verbatim
     /// from <c>Bodu.Core/src/Collections.Generic/EvictingDictionary.CacheItem.cs</c>, where the same doc
     /// comment attaches to either a <c>class</c> or a <c>record class</c> depending on target framework.
-    /// The rewrite is a deterministic reformat driven by trivia content, indentation, and wrap width —
-    /// none of which depend on which member the trivia attaches to — so replacing the trivia at its
+    /// The rewrite is a deterministic reformat driven by trivia content, indentation, and wrap width -
+    /// none of which depend on which member the trivia attaches to - so replacing the trivia at its
     /// source position is safe across all configurations.
     /// </summary>
     [TestMethod]

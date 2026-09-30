@@ -12,7 +12,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <remarks>
 /// <para>
 /// The Gumm algorithm was presented by H. Peter Gumm in 1985 (<i>A New Class of Check-Digit Methods for Arbitrary
-/// Number Systems</i>, IEEE Transactions on Information Theory, 31(1), 102–105). Like the Verhoeff scheme it was
+/// Number Systems</i>, IEEE Transactions on Information Theory, 31(1), 102-105). Like the Verhoeff scheme it was
 /// discovered independently of, it detects <b>all</b> single-digit substitution errors and <b>all</b> transpositions of
 /// adjacent digits using a single decimal check digit.
 /// </para>
@@ -108,12 +108,12 @@ public sealed partial class Gumm
     }
 
     /// <summary>
-    /// Determines whether the supplied sequence, comprising a body followed by a trailing Gumm check digit, is valid —
+    /// Determines whether the supplied sequence, comprising a body followed by a trailing Gumm check digit, is valid -
     /// that is, whether the accumulated group element evaluates to the identity.
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence evaluates as valid under Gumm; otherwise, <see langword="false" /> —
+    /// <see langword="true" /> if the sequence evaluates as valid under Gumm; otherwise, <see langword="false" /> -
     /// including the case where <paramref name="digitsIncludingCheck" /> is empty or contains a character outside the
     /// range <c>'0'</c> to <c>'9'</c>.
     /// </returns>

@@ -33,7 +33,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Fletcher32.</strong> The general-purpose Fletcher variant — TCP/UDP-style packet checks, file
+/// <strong>When to choose Fletcher32.</strong> The general-purpose Fletcher variant - TCP/UDP-style packet checks, file
 /// integrity in streaming pipelines, and ZFS-class block sums. Faster than CRC at the cost of weaker burst-error
 /// coverage; pick <see cref="Crc" /> with a 32-bit standard such as <see cref="CrcStandard.CRC32_ISOHDLC" /> when
 /// error-detection guarantees matter more than throughput.

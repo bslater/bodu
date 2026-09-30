@@ -17,7 +17,7 @@ namespace Bodu.Formats.Outlook;
 /// <remarks>
 /// <para>
 /// Folder views are bound to their owning <see cref="OutlookMailStore" /> session. Enumerations stream the folder's
-/// hierarchy and contents tables one row block at a time — nothing is materialized ahead of iteration — and a folder
+/// hierarchy and contents tables one row block at a time - nothing is materialized ahead of iteration - and a folder
 /// whose table node is absent enumerates empty, matching real-world stores that omit empty tables.
 /// </para>
 /// <para>
@@ -127,7 +127,7 @@ public sealed class OutlookMailFolder
     /// </exception>
     /// <remarks>
     /// Search folders are Outlook runtime state, not archive content, and are excluded from the enumeration at every
-    /// validation level — the standard search root hangs off the hierarchy of real stores.
+    /// validation level - the standard search root hangs off the hierarchy of real stores.
     /// </remarks>
     public IEnumerable<OutlookMailFolder> EnumerateSubfolders()
     {

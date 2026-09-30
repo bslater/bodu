@@ -26,8 +26,8 @@ namespace Bodu.Collections.Generic;
 /// Because the mapping is one-to-one in both directions, adding a pair whose <i>value</i> is already bound to a
 /// different key is a conflict. The <see cref="BiDictionaryDuplicateValuePolicy" /> chosen at construction resolves it:
 /// <see cref="BiDictionaryDuplicateValuePolicy.Throw" /> (the default) rejects the operation, while
-/// <see cref="BiDictionaryDuplicateValuePolicy.Replace" /> evicts the previous binding — the key that held the value is
-/// removed — so the new pair wins. Duplicate <i>keys</i> follow the standard
+/// <see cref="BiDictionaryDuplicateValuePolicy.Replace" /> evicts the previous binding - the key that held the value is
+/// removed - so the new pair wins. Duplicate <i>keys</i> follow the standard
 /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> contract: <see cref="Add(TKey, TValue)" /> throws
 /// and the indexer setter re-binds.
 /// </para>
@@ -39,7 +39,7 @@ namespace Bodu.Collections.Generic;
 /// invariant is simply that the mapping stays one-to-one.
 /// </para>
 /// <para>
-/// Both type parameters are constrained by <see langword="notnull" /> — values act as lookup keys in the inverse index,
+/// Both type parameters are constrained by <see langword="notnull" /> - values act as lookup keys in the inverse index,
 /// so <see langword="null" /> values cannot be indexed and are rejected at run time just as <see langword="null" />
 /// keys are. Custom equality is supported independently on each side via <see cref="KeyComparer" /> and
 /// <see cref="ValueComparer" />.
@@ -47,7 +47,7 @@ namespace Bodu.Collections.Generic;
 /// <para>
 /// Enumeration follows the forward index's unspecified, insertion-biased order (the same non-contractual order as
 /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" />); do not rely on it. Enumerator invalidation also
-/// matches the BCL dictionary: adding an entry — through either view — invalidates active enumerators, which then throw
+/// matches the BCL dictionary: adding an entry - through either view - invalidates active enumerators, which then throw
 /// <see cref="InvalidOperationException" />; do not mutate the dictionary while enumerating it.
 /// </para>
 /// <para>
@@ -61,13 +61,13 @@ namespace Bodu.Collections.Generic;
 /// codes.Add("AU", 36);
 /// codes.Add("NZ", 554);
 ///
-/// int numeric = codes["AU"];                 // 36 — forward lookup
-/// codes.TryGetKey(554, out string? alpha);   // "NZ" — O(1) inverse lookup
+/// int numeric = codes["AU"];                 // 36 - forward lookup
+/// codes.TryGetKey(554, out string? alpha);   // "NZ" - O(1) inverse lookup
 ///
 /// // The inverse view shares storage with the original.
 /// BiDictionary<int, string> byNumber = codes.Inverse;
 /// byNumber.Add(76, "BR");
-/// bool present = codes.ContainsKey("BR");    // true — visible through the original
+/// bool present = codes.ContainsKey("BR");    // true - visible through the original
 ///]]>
 /// </code>
 /// </example>
@@ -258,8 +258,8 @@ public sealed partial class BiDictionary<TKey, TValue>
     /// on first access and cached, so repeated reads return the same instance.
     /// </para>
     /// <para>
-    /// Keys and values swap roles through the view — its <see cref="KeyComparer" /> is this instance's
-    /// <see cref="ValueComparer" /> and vice versa — and the shared <see cref="DuplicateValuePolicy" /> governs
+    /// Keys and values swap roles through the view - its <see cref="KeyComparer" /> is this instance's
+    /// <see cref="ValueComparer" /> and vice versa - and the shared <see cref="DuplicateValuePolicy" /> governs
     /// conflicts on the value side of whichever view is being mutated.
     /// </para>
     /// </remarks>

@@ -4,18 +4,18 @@ title: Padding
 
 # Padding
 
-Block ciphers encrypt fixed-size blocks. When a plaintext is not a whole number of blocks long, the last block has to be *padded* — and the receiver has to know how to *unpad* it. This page covers the padding schemes supported by the library and shows when each one is appropriate.
+Block ciphers encrypt fixed-size blocks. When a plaintext is not a whole number of blocks long, the last block has to be *padded* - and the receiver has to know how to *unpad* it. This page covers the padding schemes supported by the library and shows when each one is appropriate.
 
 The five framework modes come from the standard <xref:System.Security.Cryptography.PaddingMode> enum. Set them via the algorithm's `Padding` property, or construct a strategy directly through <xref:Bodu.Security.Cryptography.PaddingFactory>. An extended <xref:Bodu.Security.Cryptography.PaddingModeKind> enum mirrors those values and adds ISO/IEC 7816-4 bit padding for scenarios where the framework enum is not expressive enough.
 
-![Block-cipher padding schemes compared — PKCS7, ANSI X.923, ISO 10126, Zeros, and ISO/IEC 7816-4 bit padding](../../images/diagrams/padding-schemes.svg)
+![Block-cipher padding schemes compared - PKCS7, ANSI X.923, ISO 10126, Zeros, and ISO/IEC 7816-4 bit padding](../../images/diagrams/padding-schemes.svg)
 
-Every scheme is one <xref:Bodu.Security.Cryptography.IPaddingStrategy> implementation: `Pad(plaintext, blockSize)` extends the input to a block boundary, and `Unpad(padded, blockSize)` reverses it. `PaddingFactory.Create` has two overloads — one keyed on the BCL <xref:System.Security.Cryptography.PaddingMode>, one on <xref:Bodu.Security.Cryptography.PaddingModeKind> (the only way to reach `ISO7816_4`). The `SymmetricAlgorithm` wrappers construct the matching strategy for you from whichever of `Padding` / `BlockPadding` you set — see [Encryption basics](encryption-basics.md) for how those two properties stay in sync.
+Every scheme is one <xref:Bodu.Security.Cryptography.IPaddingStrategy> implementation: `Pad(plaintext, blockSize)` extends the input to a block boundary, and `Unpad(padded, blockSize)` reverses it. `PaddingFactory.Create` has two overloads - one keyed on the BCL <xref:System.Security.Cryptography.PaddingMode>, one on <xref:Bodu.Security.Cryptography.PaddingModeKind> (the only way to reach `ISO7816_4`). The `SymmetricAlgorithm` wrappers construct the matching strategy for you from whichever of `Padding` / `BlockPadding` you set - see [Encryption basics](encryption-basics.md) for how those two properties stay in sync.
 
 > [!NOTE]
-> **Self-describing schemes always grow.** PKCS7, ANSI X.923, and ISO/IEC 7816-4 each append a *full extra block* when the plaintext is already block-aligned. That is deliberate: it guarantees the final byte (or the rightmost `0x80`) unambiguously marks the padding, so `Unpad` can never mistake real data for filler. Only `Zeros` and `None` leave block-aligned input untouched — and those two cannot self-describe, so the caller must already know the true length.
+> **Self-describing schemes always grow.** PKCS7, ANSI X.923, and ISO/IEC 7816-4 each append a *full extra block* when the plaintext is already block-aligned. That is deliberate: it guarantees the final byte (or the rightmost `0x80`) unambiguously marks the padding, so `Unpad` can never mistake real data for filler. Only `Zeros` and `None` leave block-aligned input untouched - and those two cannot self-describe, so the caller must already know the true length.
 
-## PKCS7 — the safe default
+## PKCS7 - the safe default
 
 **Use for:** any block-oriented mode (CBC, ECB) where the plaintext is arbitrary binary or text.
 
@@ -42,11 +42,11 @@ PKCS7 round-trips cleanly for any plaintext length, including zero.
 
 **Note on padding oracles.** PKCS7 unpadding validates the trailing bytes and rejects a ciphertext whose last block is not well-formed. Historically this has been the source of "padding oracle" attacks against CBC when an attacker can distinguish a padding failure from a MAC failure via timing or error messages. The library validates in constant time inside `Pkcs7Padding.Unpad`, but you should still pair CBC-with-PKCS7 encryption with a MAC over the ciphertext (encrypt-then-MAC) when the ciphertext travels across a trust boundary.
 
-## Zeros — for application-framed messages
+## Zeros - for application-framed messages
 
 **Use for:** plaintexts that already carry their own length (a length prefix, a terminator, or a framed binary record) and are produced with a deterministic shape.
 
-Zero padding appends `0x00` bytes until the plaintext reaches a block boundary. It does nothing when the plaintext is already block-aligned. The problem with unpadding is that `0x00` is a perfectly valid plaintext byte — `Unpad` strips trailing zeros, and it cannot tell whether those zeros were padding or part of the real message.
+Zero padding appends `0x00` bytes until the plaintext reaches a block boundary. It does nothing when the plaintext is already block-aligned. The problem with unpadding is that `0x00` is a perfectly valid plaintext byte - `Unpad` strips trailing zeros, and it cannot tell whether those zeros were padding or part of the real message.
 
 ```csharp
 using var alg = new Threefish256
@@ -68,7 +68,7 @@ byte[] recovered  = alg.Decrypt(ciphertext);
 
 Zero padding is appropriate when **the application layer already knows the real length**. If it doesn't, prefer PKCS7.
 
-## ANSI X.923 — length byte, zero-filled interior
+## ANSI X.923 - length byte, zero-filled interior
 
 **Use for:** interoperability with legacy systems or specifications that mandate ANSI X.923.
 
@@ -92,9 +92,9 @@ byte[] recovered  = alg.Decrypt(ciphertext);
 
 The same padding-oracle caution as PKCS7 applies: pair with a MAC when the ciphertext crosses a trust boundary.
 
-## ISO 10126 — length byte, random interior
+## ISO 10126 - length byte, random interior
 
-**Use for:** interoperability with existing ISO 10126 ciphertexts. The scheme was withdrawn by ISO in 2007 and is not recommended for new designs — prefer PKCS7.
+**Use for:** interoperability with existing ISO 10126 ciphertexts. The scheme was withdrawn by ISO in 2007 and is not recommended for new designs - prefer PKCS7.
 
 ISO 10126 is shaped like ANSI X.923 except the interior pad bytes are cryptographically random instead of `0x00`. Because the random bytes cannot be reconstructed during decryption, `Unpad` only validates the trailing length byte.
 
@@ -107,7 +107,7 @@ using var alg = new Threefish256
 };
 ```
 
-## ISO/IEC 7816-4 — bit padding (one-and-zeros)
+## ISO/IEC 7816-4 - bit padding (one-and-zeros)
 
 **Use for:** smart-card protocols and crypto constructions that require the 7816-4 shape (for example CMAC, SHA-3/Keccak). Access this mode through the extended <xref:Bodu.Security.Cryptography.PaddingModeKind> enum, which is not part of the framework `PaddingMode` surface.
 
@@ -116,11 +116,11 @@ ISO/IEC 7816-4 appends a single `0x80` byte followed by `0x00` bytes out to the 
 ```csharp
 IPaddingStrategy bitPadding = PaddingFactory.Create(PaddingModeKind.ISO7816_4);
 
-byte[] padded   = bitPadding.Pad(plaintext, blockSize: 256);    // block size in bits — 256 for Threefish-256
+byte[] padded   = bitPadding.Pad(plaintext, blockSize: 256);    // block size in bits - 256 for Threefish-256
 byte[] unpadded = bitPadding.Unpad(padded, blockSize: 256);
 ```
 
-## None — only for block-aligned or stream modes
+## None - only for block-aligned or stream modes
 
 **Use for:** stream-shaped modes (CTR, CFB, OFB) that don't need padding, or when you have already padded the plaintext in your own code and want the cipher to leave it alone.
 
@@ -143,17 +143,17 @@ byte[] recovered  = alg.Decrypt(ciphertext);
 
 `PaddingMode.None` combined with a block-oriented mode (CBC, ECB) and a plaintext that isn't a multiple of the block size will throw <xref:System.Security.Cryptography.CryptographicException> during encryption. Don't use the two together unless you know your plaintext is block-aligned.
 
-## Choosing — quick guide
+## Choosing - quick guide
 
 | If your plaintext is… | and your mode is… | Use | Ciphertext length |
 |---|---|---|---|
-| Arbitrary bytes | CBC, ECB | **PKCS7** | Plaintext + 1–block bytes |
+| Arbitrary bytes | CBC, ECB | **PKCS7** | Plaintext + 1-block bytes |
 | Framed (length-prefixed / terminated) | CBC, ECB | **Zeros** or **PKCS7** | ≥ plaintext, to next block boundary |
 | Any length | CTR, CFB, OFB | **None** | Exactly plaintext length |
 | Already block-aligned | CBC, ECB | **None** (if sure) | Exactly plaintext length |
-| Interop with ANSI X.923 spec | CBC, ECB | **ANSIX923** | Plaintext + 1–block bytes |
-| Interop with legacy ISO 10126 ciphertext | CBC, ECB | **ISO10126** | Plaintext + 1–block bytes |
-| Smart-card / CMAC / bit-oriented protocols | CBC, ECB | **ISO7816_4** (via `PaddingModeKind`) | Plaintext + 1–block bytes |
+| Interop with ANSI X.923 spec | CBC, ECB | **ANSIX923** | Plaintext + 1-block bytes |
+| Interop with legacy ISO 10126 ciphertext | CBC, ECB | **ISO10126** | Plaintext + 1-block bytes |
+| Smart-card / CMAC / bit-oriented protocols | CBC, ECB | **ISO7816_4** (via `PaddingModeKind`) | Plaintext + 1-block bytes |
 
 ## Using the strategy directly
 
@@ -165,23 +165,23 @@ using System.Security.Cryptography;
 
 IPaddingStrategy pkcs7 = PaddingFactory.Create(PaddingMode.PKCS7);
 
-byte[] padded   = pkcs7.Pad(plaintext, blockSize: 256);         // block size in bits — 256 for Threefish-256
+byte[] padded   = pkcs7.Pad(plaintext, blockSize: 256);         // block size in bits - 256 for Threefish-256
 byte[] unpadded = pkcs7.Unpad(padded, blockSize: 256);
 ```
 
 `IPaddingStrategy.Pad` / `Unpad` take the block size in **bits** (the same unit as `IBlockCipher.BlockSize`), so pass `256` for Threefish-256, `128` for AES, Camellia, Twofish, or Serpent-128, and `64` for Blowfish or Skipjack. This is primarily useful if you're composing a custom encryption pipeline against <xref:Bodu.Security.Cryptography.IBlockCipherModeTransform>.
 
-## Padding oracles — the one caveat that spans schemes
+## Padding oracles - the one caveat that spans schemes
 
-The length-describing schemes (PKCS7, ANSI X.923, ISO 10126, ISO/IEC 7816-4) must *validate* their trailing bytes during `Unpad`, and a ciphertext whose final block is malformed is rejected. Historically that rejection became an oracle: when an attacker can tell a *padding* failure apart from a downstream *MAC* failure — via a distinct exception, error code, or response time — they can decrypt CBC ciphertext byte by byte without the key.
+The length-describing schemes (PKCS7, ANSI X.923, ISO 10126, ISO/IEC 7816-4) must *validate* their trailing bytes during `Unpad`, and a ciphertext whose final block is malformed is rejected. Historically that rejection became an oracle: when an attacker can tell a *padding* failure apart from a downstream *MAC* failure - via a distinct exception, error code, or response time - they can decrypt CBC ciphertext byte by byte without the key.
 
-This library closes the timing half of that gap: the validations in `Pkcs7Padding.Unpad`, `Ansix923Padding.Unpad`, and the ISO/IEC 7816-4 strategy scan the final block in **constant time**. But constant-time unpadding alone does not make CBC safe across a trust boundary — an attacker can still observe *whether* unpadding threw. The durable fix is to authenticate the ciphertext:
+This library closes the timing half of that gap: the validations in `Pkcs7Padding.Unpad`, `Ansix923Padding.Unpad`, and the ISO/IEC 7816-4 strategy scan the final block in **constant time**. But constant-time unpadding alone does not make CBC safe across a trust boundary - an attacker can still observe *whether* unpadding threw. The durable fix is to authenticate the ciphertext:
 
-- **Encrypt-then-MAC** — compute a MAC (for example [SipHash](siphash.md) or HMAC) over `IV ‖ ciphertext`, verify it in constant time *before* decrypting, and abort on mismatch so the padding step never runs on attacker-modified data; or
-- **Use an [AEAD mode](aead-modes.md)** — GCM / OCB / EAX / SIV verify the tag before releasing any plaintext, removing the padding-oracle surface entirely. AEAD is the recommended default.
+- **Encrypt-then-MAC** - compute a MAC (for example [SipHash](siphash.md) or HMAC) over `IV ‖ ciphertext`, verify it in constant time *before* decrypting, and abort on mismatch so the padding step never runs on attacker-modified data; or
+- **Use an [AEAD mode](aead-modes.md)** - GCM / OCB / EAX / SIV verify the tag before releasing any plaintext, removing the padding-oracle surface entirely. AEAD is the recommended default.
 
 ## Where to go next
 
-- [Cipher block modes](cipher-modes.md) — which padding pairs with which mode.
-- [Encryption basics](encryption-basics.md) — the full Key/IV/Tweak/Padding lifecycle.
-- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
+- [Cipher block modes](cipher-modes.md) - which padding pairs with which mode.
+- [Encryption basics](encryption-basics.md) - the full Key/IV/Tweak/Padding lifecycle.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

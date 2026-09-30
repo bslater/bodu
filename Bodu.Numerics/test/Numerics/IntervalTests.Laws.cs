@@ -56,7 +56,7 @@ public partial class IntervalTests
     /// <see cref="Interval{T}.Intersect(Interval{T})" />, <see cref="Interval{T}.Difference(Interval{T})" />,
     /// <see cref="Interval{T}.SymmetricDifference(Interval{T})" />, and the contiguous
     /// <see cref="Interval{T}.TryUnion(Interval{T}, out Interval{T})" /> agree with the pointwise set predicates they
-    /// implement — the algebraic contract, not just fixed examples.
+    /// implement - the algebraic contract, not just fixed examples.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]

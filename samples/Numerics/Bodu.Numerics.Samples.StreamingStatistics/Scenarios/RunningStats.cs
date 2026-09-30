@@ -11,7 +11,7 @@ namespace Bodu.Numerics.Samples.StreamingStatistics.Scenarios;
 
 /// <summary>
 /// Demonstrates <see cref="RunningStatistics{T}" />: a single-pass accumulator that tracks count,
-/// extremes, mean, and variance as values arrive — never storing the stream — using Welford's
+/// extremes, mean, and variance as values arrive - never storing the stream - using Welford's
 /// numerically stable update so the variance stays accurate without a second pass.
 /// </summary>
 public static class RunningStats

@@ -70,7 +70,7 @@ public partial class CompoundFileTests
     }
 
     /// <summary>
-    /// Verifies that two streaming cursors over the same source, read concurrently, each return the correct bytes —
+    /// Verifies that two streaming cursors over the same source, read concurrently, each return the correct bytes -
     /// the seek-and-read serialization holds under interleaving.
     /// </summary>
     [TestMethod]

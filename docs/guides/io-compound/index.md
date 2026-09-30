@@ -4,7 +4,7 @@ title: Bodu.IO.Compound guides
 
 # Bodu.IO.Compound guides
 
-Recipe-style walk-throughs for **Bodu.IO.Compound**, the reader and writer for the OLE2 / Compound File Binary (CFB) container format — the structured-storage envelope used by legacy Microsoft Office files (`.xls`, `.doc`, `.ppt`, `.msg`) and other technologies.
+Recipe-style walk-throughs for **Bodu.IO.Compound**, the reader and writer for the OLE2 / Compound File Binary (CFB) container format - the structured-storage envelope used by legacy Microsoft Office files (`.xls`, `.doc`, `.ppt`, `.msg`) and other technologies.
 
 The library has no application-format knowledge: it exposes the embedded storage hierarchy and the raw byte payload of each named stream, and leaves interpretation to the caller. The narrow BIFF8 `.xls` reader in [Bodu.Formats.Excel.Binary](../excel/index.md) is built directly on top of it.
 
@@ -12,21 +12,21 @@ If you are new to the library, start with the [introduction](../../docs/io-compo
 
 ## How the library works
 
-A compound file is effectively a small file system embedded in a single file. <xref:Bodu.IO.Compound.CompoundFile> is the managed counterpart of the COM `StgOpenStorage` entry point: navigation begins at `RootStorage` and descends through nested <xref:Bodu.IO.Compound.CompoundStorage> containers (the COM `IStorage`) to <xref:Bodu.IO.Compound.CompoundStream> leaves (the COM `IStream`). A <xref:Bodu.IO.Compound.CompoundStream> is itself a seekable <xref:System.IO.Stream> cursor over the bytes — read-only when opened from a read-only file, read-write on a writable one.
+A compound file is effectively a small file system embedded in a single file. <xref:Bodu.IO.Compound.CompoundFile> is the managed counterpart of the COM `StgOpenStorage` entry point: navigation begins at `RootStorage` and descends through nested <xref:Bodu.IO.Compound.CompoundStorage> containers (the COM `IStorage`) to <xref:Bodu.IO.Compound.CompoundStream> leaves (the COM `IStream`). A <xref:Bodu.IO.Compound.CompoundStream> is itself a seekable <xref:System.IO.Stream> cursor over the bytes - read-only when opened from a read-only file, read-write on a writable one.
 
 ![A compound file is a structured-storage envelope: a header, allocation tables, and a directory of sectors on the left, resolving via CompoundFile.Open into the logical RootStorage to CompoundStorage to CompoundStream hierarchy on the right.](../../images/diagrams/io-compound-structure.svg)
 
 By default the whole source is buffered into memory at open time, so the file is read-only and safe to share across threads. Opening with `buffered: false` reads sectors on demand from a seekable stream instead, bounding memory for large files.
 
-> Most of these guides cover the read path. For writing — building a container from scratch, editing one, or embedding property sets — see [Authoring compound files](authoring-compound-files.md).
+> Most of these guides cover the read path. For writing - building a container from scratch, editing one, or embedding property sets - see [Authoring compound files](authoring-compound-files.md).
 
 ## Namespace map
 
 | Namespace | What lives here | Guides |
 |---|---|---|
 | <xref:Bodu.IO.Compound> | The `CompoundFile` reader and writer, the `CompoundStorage` / `CompoundStream` hierarchy, the `CompoundStream` cursor, `CompoundEntryInfo` metadata, and the `CompoundFileFormatException` / `CompoundStreamNotFoundException` / `CompoundFileSerializationException` errors. | [Reading compound files](reading-compound-files.md) · [Buffered vs streaming access](streaming-and-buffering.md) · [Authoring compound files](authoring-compound-files.md) · [Editing an existing container in place](editing-in-place.md) |
-| <xref:Bodu.IO.Compound.Builders> | The detached authoring object model — `CompoundStorageBuilder`, `CompoundStreamBuilder`, and the `CompoundBuildOptions` serialization options. | [Authoring compound files](authoring-compound-files.md) |
-| <xref:Bodu.IO.Compound.PropertySets> | The OLE property-set readers and writers — `SummaryInformation`, `DocumentSummaryInformation`, their `…Builder` authors, and the underlying `OlePropertySet` / `OlePropertySection` / `OlePropertyValue` model. | [Reading property sets](property-sets.md) · [Authoring custom property sets](custom-property-sets.md) · [Authoring compound files](authoring-compound-files.md) |
+| <xref:Bodu.IO.Compound.Builders> | The detached authoring object model - `CompoundStorageBuilder`, `CompoundStreamBuilder`, and the `CompoundBuildOptions` serialization options. | [Authoring compound files](authoring-compound-files.md) |
+| <xref:Bodu.IO.Compound.PropertySets> | The OLE property-set readers and writers - `SummaryInformation`, `DocumentSummaryInformation`, their `…Builder` authors, and the underlying `OlePropertySet` / `OlePropertySection` / `OlePropertyValue` model. | [Reading property sets](property-sets.md) · [Authoring custom property sets](custom-property-sets.md) · [Authoring compound files](authoring-compound-files.md) |
 
 ## Guides
 
@@ -34,7 +34,7 @@ By default the whole source is buffered into memory at open time, so the file is
 
 <div class="bodu-card">
   <h3><a href="reading-compound-files.md">Reading compound files</a></h3>
-  <p>Open a file, probe the signature, walk the storage hierarchy with the enumerate and <code>TryOpen</code> surfaces, and read a named stream's bytes — the end-to-end navigation recipe.</p>
+  <p>Open a file, probe the signature, walk the storage hierarchy with the enumerate and <code>TryOpen</code> surfaces, and read a named stream's bytes - the end-to-end navigation recipe.</p>
 </div>
 
 <div class="bodu-card">
@@ -44,7 +44,7 @@ By default the whole source is buffered into memory at open time, so the file is
 
 <div class="bodu-card">
   <h3><a href="editing-in-place.md">Editing an existing container in place</a></h3>
-  <p>Open a <code>.doc</code>, <code>.xls</code>, or <code>.msg</code> for update, add, replace, rename, and delete streams through writable <code>Stream</code> cursors, then <code>Commit</code> or <code>Revert</code> — with the staging model and its guarantees spelled out.</p>
+  <p>Open a <code>.doc</code>, <code>.xls</code>, or <code>.msg</code> for update, add, replace, rename, and delete streams through writable <code>Stream</code> cursors, then <code>Commit</code> or <code>Revert</code> - with the staging model and its guarantees spelled out.</p>
 </div>
 
 <div class="bodu-card">
@@ -54,7 +54,7 @@ By default the whole source is buffered into memory at open time, so the file is
 
 <div class="bodu-card">
   <h3><a href="property-sets.md">Reading property sets</a></h3>
-  <p>The <code>\x05SummaryInformation</code> and <code>\x05DocumentSummaryInformation</code> metadata streams — typed accessors, the raw <code>OlePropertySet</code>, and the <code>TryGet*</code> convenience methods on <code>CompoundFile</code>.</p>
+  <p>The <code>\x05SummaryInformation</code> and <code>\x05DocumentSummaryInformation</code> metadata streams - typed accessors, the raw <code>OlePropertySet</code>, and the <code>TryGet*</code> convenience methods on <code>CompoundFile</code>.</p>
 </div>
 
 <div class="bodu-card">
@@ -71,15 +71,15 @@ By default the whole source is buffered into memory at open time, so the file is
 
 ## Suggested reading path
 
-1. **[Reading compound files](reading-compound-files.md)** — the core open → navigate → read recipe that every other use builds on.
-2. **[Buffered vs streaming access](streaming-and-buffering.md)** — once the file is too large to hold whole, or you need to control the source's lifetime.
-3. **[Reading property sets](property-sets.md)** — when you want the authored document metadata (title, author, timestamps) rather than the format payload.
-4. **[Authoring compound files](authoring-compound-files.md)** — when you need to *write* a container rather than read one.
-5. **[Editing an existing container in place](editing-in-place.md)** and **[Authoring custom property sets](custom-property-sets.md)** — when the container already exists and you need to change it, or stamp it with metadata of your own.
+1. **[Reading compound files](reading-compound-files.md)** - the core open → navigate → read recipe that every other use builds on.
+2. **[Buffered vs streaming access](streaming-and-buffering.md)** - once the file is too large to hold whole, or you need to control the source's lifetime.
+3. **[Reading property sets](property-sets.md)** - when you want the authored document metadata (title, author, timestamps) rather than the format payload.
+4. **[Authoring compound files](authoring-compound-files.md)** - when you need to *write* a container rather than read one.
+5. **[Editing an existing container in place](editing-in-place.md)** and **[Authoring custom property sets](custom-property-sets.md)** - when the container already exists and you need to change it, or stamp it with metadata of your own.
 
 ## Where to go next
 
-- [Runnable samples](../../samples/io-compound.md) — the offline CompoundBasics sample under `samples/IO.Compound/`: builder authoring + read-back, property sets, detection and the v3/v4 knob, a real `.doc`'s tree.
-- [Bodu.IO.Compound API reference](xref:Bodu.IO.Compound) — every type and member, including the [Bodu.IO.Compound.Builders](xref:Bodu.IO.Compound.Builders) authoring types.
-- [Bodu.Formats.Excel.Binary](../excel/index.md) — the BIFF8 `.xls` reader built on this package.
-- [Package matrix](../../docs/package-matrix.md) — where Bodu.IO.Compound sits in the suite and its dependency stack.
+- [Runnable samples](../../samples/io-compound.md) - the offline CompoundBasics sample under `samples/IO.Compound/`: builder authoring + read-back, property sets, detection and the v3/v4 knob, a real `.doc`'s tree.
+- [Bodu.IO.Compound API reference](xref:Bodu.IO.Compound) - every type and member, including the [Bodu.IO.Compound.Builders](xref:Bodu.IO.Compound.Builders) authoring types.
+- [Bodu.Formats.Excel.Binary](../excel/index.md) - the BIFF8 `.xls` reader built on this package.
+- [Package matrix](../../docs/package-matrix.md) - where Bodu.IO.Compound sits in the suite and its dependency stack.

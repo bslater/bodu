@@ -8,7 +8,7 @@ namespace Bodu.Text.Configuration;
 
 /// <summary>
 /// Pins the literal-character behaviour of <see cref="ConfigurationKey" /> parsing. The key splitter does not
-/// currently support backslash escapes for separator characters — a <c>\.</c> sequence is treated as the two
+/// currently support backslash escapes for separator characters - a <c>\.</c> sequence is treated as the two
 /// characters <c>\</c> and <c>.</c>, and the <c>.</c> still separates segments. These tests document that
 /// contract so any future addition of escape support is a deliberate, observable change.
 /// </summary>
@@ -67,7 +67,7 @@ public partial class ConfigurationKeyTests
 
     /// <summary>
     /// Verifies that mixing <c>.</c> and <c>:</c> in the same raw key produces a single, canonical
-    /// colon-delimited path — both separators are recognized.
+    /// colon-delimited path - both separators are recognized.
     /// </summary>
     [TestMethod]
     public void Parse_WhenMixedSeparators_ShouldProduceSingleCanonicalPath()

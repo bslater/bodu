@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography.Samples.HybridEncryption.Scenarios;
 
 /// <summary>
-/// Demonstrates <see cref="HpkeSuite" /> — the KEM/KDF/AEAD triple and the sizes it implies — and the secret-export
+/// Demonstrates <see cref="HpkeSuite" /> - the KEM/KDF/AEAD triple and the sizes it implies - and the secret-export
 /// interface, including the <see cref="HpkeAead.ExportOnly" /> suite that derives keys without encrypting anything.
 /// </summary>
 public static class SuitesAndExport

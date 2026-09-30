@@ -10,11 +10,11 @@ uid: Bodu.Text.Bencode.Serialization
 
 ## Key types
 
-- <xref:Bodu.Text.Bencode.Serialization.BencodeConverter> — the non-generic root (`CanConvert`) that `BencodeSerializerOptions.Converters` holds.
-- <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1> — the per-type base: implement `Read` and `Write` for `T`.
-- <xref:Bodu.Text.Bencode.Serialization.BencodeConverterFactory> — the base for converter families: `CanConvert` plus `CreateConverter` for a closed type.
-- <xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter> / <xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter`1> — enums as member-name byte strings, with an optional <xref:Bodu.Text.Serialization.NamingPolicy> and integer fallback.
-- <xref:Bodu.Text.Bencode.Serialization.BencodeNumberEnumConverter`1> — enums as their underlying integer.
+- <xref:Bodu.Text.Bencode.Serialization.BencodeConverter> - the non-generic root (`CanConvert`) that `BencodeSerializerOptions.Converters` holds.
+- <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1> - the per-type base: implement `Read` and `Write` for `T`.
+- <xref:Bodu.Text.Bencode.Serialization.BencodeConverterFactory> - the base for converter families: `CanConvert` plus `CreateConverter` for a closed type.
+- <xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter> / <xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter`1> - enums as member-name byte strings, with an optional <xref:Bodu.Text.Serialization.NamingPolicy> and integer fallback.
+- <xref:Bodu.Text.Bencode.Serialization.BencodeNumberEnumConverter`1> - enums as their underlying integer.
 
 ## Example
 
@@ -40,6 +40,6 @@ options.Converters.Add(new VersionConverter());
 ## Notes
 
 - **Resolution order.** A `[Converter]` attribute on the member or type wins, then `Converters` in registration order, then the built-in catalog.
-- **Kinds Bencode cannot represent.** Booleans, floating-point values, and date-times have no built-in mapping — a registered converter must reduce them to an integer or byte string.
+- **Kinds Bencode cannot represent.** Booleans, floating-point values, and date-times have no built-in mapping - a registered converter must reduce them to an integer or byte string.
 - **Internal converters.** The `Bodu.Text.Bencode.Serialization.Converters` sub-namespace is internal; extend through the public base types above.
 - **See also:** the [Bodu.Text.Bencode introduction](~/docs/serialization/bencode/index.md) and the [writing converters](~/guides/serialization/bencode/converters.md) guide.

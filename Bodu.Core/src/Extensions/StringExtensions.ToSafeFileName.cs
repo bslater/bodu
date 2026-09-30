@@ -20,7 +20,7 @@ public static partial class StringExtensions
     /// </summary>
     /// <param name="value">The candidate file name to sanitise.</param>
     /// <returns>
-    /// A string in which each invalid character has been replaced by <c>'_'</c> — the original instance when nothing
+    /// A string in which each invalid character has been replaced by <c>'_'</c> - the original instance when nothing
     /// required replacement. Returns <c>"_"</c> when the input is empty so that the result is never itself an empty
     /// file name.
     /// </returns>
@@ -28,7 +28,7 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// The invalid character set is platform-dependent — Windows reports more invalid characters than POSIX systems do.
+    /// The invalid character set is platform-dependent - Windows reports more invalid characters than POSIX systems do.
     /// Callers writing files for a known target platform should construct the invalid set explicitly rather than
     /// relying on the current platform's defaults.
     /// </remarks>

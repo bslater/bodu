@@ -29,8 +29,8 @@ public partial class AsconXof128Tests
     }
 
     /// <summary>
-    /// Verifies that disposing a freshly-constructed <see cref="AsconXof128" /> instance — one
-    /// that has never been absorbed, squeezed, or had any property accessed — completes without
+    /// Verifies that disposing a freshly-constructed <see cref="AsconXof128" /> instance - one
+    /// that has never been absorbed, squeezed, or had any property accessed - completes without
     /// throwing.
     /// </summary>
     [TestMethod]

@@ -18,13 +18,13 @@ namespace Bodu.Test;
 /// <list type="bullet">
 ///   <item>
 ///     <description>
-///       <see cref="Smoke" /> — the smallest possible run that exercises one primary happy-path on each public
+///       <see cref="Smoke" /> - the smallest possible run that exercises one primary happy-path on each public
 ///       type. It is intended to detect catastrophic breakage and is run by <c>smoke.runsettings</c>.
 ///     </description>
 ///   </item>
 ///   <item>
 ///     <description>
-///       <see cref="Regression" /> — tests omitted from the default build run because they are exhaustive,
+///       <see cref="Regression" /> - tests omitted from the default build run because they are exhaustive,
 ///       parameterized over published vectors, or otherwise duplicate coverage already provided by structural
 ///       tests. The default <c>bvt.runsettings</c> filters these out; <c>regression.runsettings</c> includes
 ///       everything.
@@ -32,13 +32,13 @@ namespace Bodu.Test;
 ///   </item>
 ///   <item>
 ///     <description>
-///       <see cref="Stress" /> — long-running, high-iteration tests (existing convention). Excluded from BVT;
+///       <see cref="Stress" /> - long-running, high-iteration tests (existing convention). Excluded from BVT;
 ///       included in regression runs.
 ///     </description>
 ///   </item>
 /// </list>
 /// <para>
-/// A test method that carries no category attribute is treated as part of the BVT tier — the default build run
+/// A test method that carries no category attribute is treated as part of the BVT tier - the default build run
 /// executes every uncategorised test plus everything in <see cref="Smoke" />.
 /// </para>
 /// </remarks>

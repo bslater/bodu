@@ -37,12 +37,12 @@ namespace Bodu.Security.Cryptography;
 /// <description>Default parameterization: SipHash-2-4 (2 compression rounds, 4 finalization rounds).</description>
 /// </item>
 /// <item>
-/// <description>Multi-message key reuse is supported — unlike <see cref="Poly1305" />.</description>
+/// <description>Multi-message key reuse is supported - unlike <see cref="Poly1305" />.</description>
 /// </item>
 /// </list>
 /// <para>
 /// <strong>When to choose SipHash64.</strong> The right keyed hash for protecting in-memory hash tables and bloom
-/// filters against collision-based denial-of-service attacks — fast, fixed cost, and the de-facto standard in language
+/// filters against collision-based denial-of-service attacks - fast, fixed cost, and the de-facto standard in language
 /// runtimes (Python, Ruby, Rust, Perl). For 128-bit tag width or stronger long-term authentication guarantees pick
 /// <see cref="SipHash128" />; for protocol-level message authentication use HMAC-SHA-256 or <see cref="Blake2b" />-MAC.
 /// </para>
@@ -52,7 +52,7 @@ namespace Bodu.Security.Cryptography;
 ///<![CDATA[
 /// using Bodu.Security.Cryptography;
 ///
-/// // 16-byte secret key — keep it private to your process; SipHash assumes attackers cannot guess it.
+/// // 16-byte secret key - keep it private to your process; SipHash assumes attackers cannot guess it.
 /// byte[] hashTableKey = RandomNumberGenerator.GetBytes(16);
 /// using var sip = new SipHash64 { Key = hashTableKey };
 /// byte[] tag = sip.ComputeHash(System.Text.Encoding.UTF8.GetBytes("user-supplied-key"));

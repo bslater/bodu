@@ -12,19 +12,19 @@ Everything runs offline against the committed `Data/server-config.yaml`.
 dotnet run --project samples/Text.Yaml/Bodu.Text.Yaml.Samples.YamlDocuments
 ```
 
-## Scenario 1 — TokenReaderWriter
+## Scenario 1 - TokenReaderWriter
 
 **Intent.** Expose the lowest layer both DOMs and the serializer are built on: forward-only
 token emission and pulling over raw UTF-8, with no intermediate tree and no allocation. This is
 the layer for custom emitters, format converters, and hot paths.
 
 **What it does.** Constructs a `Utf8YamlWriter` over an `ArrayBufferWriter<byte>` and emits a
-document token by token — a key via `WritePropertyName` followed by its value, and a nested
+document token by token - a key via `WritePropertyName` followed by its value, and a nested
 `health` mapping via `WriteStartMapping` … `WriteEndMapping`. It prints the emitted YAML, then
 walks the same bytes with `Utf8YamlReader`, printing each `TokenType` and, for property
 names and scalars, the decoded value from the typed getters.
 
-**What to expect.** The five emitted lines, then the token stream — note the shape: each
+**What to expect.** The five emitted lines, then the token stream - note the shape: each
 `key: value` pair surfaces as a `PropertyName` token followed by a value token, and each
 mapping is bracketed by `StartMapping` / `EndMapping`:
 
@@ -70,10 +70,10 @@ mapping is bracketed by `StartMapping` / `EndMapping`:
 / `WriteDouble`; `Utf8YamlReader(ReadOnlySpan<byte>)`, `Read()`, `TokenType`, `GetString()`,
 `GetInt64()`, `GetBoolean()`, `GetDouble()`.
 
-## Scenario 2 — MutableDom
+## Scenario 2 - MutableDom
 
 **Intent.** Show the `JsonNode`-style workflow: when you need to read *and rewrite* a YAML
-document without defining a POCO — a config editor, a migration script, a tool that grafts
+document without defining a POCO - a config editor, a migration script, a tool that grafts
 sections into existing files.
 
 **What it does.** Parses `Data/server-config.yaml` into a `YamlNode` tree with `YamlNode.Parse`,
@@ -83,7 +83,7 @@ bottom-up (a `YamlObject` with a string leaf and a `YamlArray` of two strings) a
 the root with `Add`. Finally it re-emits the edited tree as YAML text via `ToYamlString()`.
 
 **What to expect.** The two original values read back, then the full emitted document showing
-all three edits — `workers: 16`, and the appended `logging` mapping with its nested sequence:
+all three edits - `workers: 16`, and the appended `logging` mapping with its nested sequence:
 
 ```text
 --- The mutable DOM - editing a document without a POCO ---
@@ -122,17 +122,17 @@ all three edits — `workers: 16`, and the appended `logging` mapping with its n
 `YamlNode.AsValue()`, `YamlValue.GetValue<T>()`, `YamlValue.Create`, `YamlObject` collection
 initializers and `Add`, `YamlArray` collection initializer, `YamlNode.ToYamlString()`.
 
-## Scenario 3 — ReadOnlyDom
+## Scenario 3 - ReadOnlyDom
 
 **Intent.** Show the `JsonDocument`-style workflow: one parse, then cheap struct `YamlElement`
-cursors over the parsed data — the right layer when you only need to *inspect* a document
+cursors over the parsed data - the right layer when you only need to *inspect* a document
 (feature flags, tool config probes) and want neither a POCO nor a mutable tree. The document
 owns the parsed data, hence `using`.
 
 **What it does.** Parses the same file with `YamlDocument.Parse`, drills down with `GetProperty`
 chains and reads leaves with the typed getters (`GetString`, `GetInt64`, `GetBoolean`). It then
-enumerates the `limits` mapping with `EnumerateMapping()` — no knowledge of its keys required,
-each property exposing `Name`, `Value`, and `ValueKind` — and probes for an absent `proxy` key
+enumerates the `limits` mapping with `EnumerateMapping()` - no knowledge of its keys required,
+each property exposing `Name`, `Value`, and `ValueKind` - and probes for an absent `proxy` key
 with `TryGetProperty` instead of catching an exception.
 
 **What to expect.** The four typed leaves, the two enumerated limit entries tagged `Integer`,
@@ -167,9 +167,9 @@ and a `False` for the optional-key probe:
 `YamlDocument.RootElement`, `YamlElement.GetProperty` / `TryGetProperty`, typed getters,
 `YamlElement.EnumerateMapping()`, `YamlProperty.Name` / `.Value`, `YamlElement.ValueKind`.
 
-## Scenario 4 — StreamingReads
+## Scenario 4 - StreamingReads
 
-**Intent.** Show the serializer's stream and buffer facade — how to read a document straight
+**Intent.** Show the serializer's stream and buffer facade - how to read a document straight
 from a `Stream` (a file, a response body) and write straight into an `IBufferWriter<byte>`
 without an intermediate string. Unlike JSON, the YAML reader is buffered rather than an
 incremental scanner, so the stream overloads read the whole document into memory before
@@ -229,5 +229,5 @@ Bodu.Text.Yaml.Samples.YamlDocuments/
 
 ## Related
 
-- `Bodu.Text.Yaml.Samples.YamlBasics` — the `YamlSerializer` POCO surface above these layers.
+- `Bodu.Text.Yaml.Samples.YamlBasics` - the `YamlSerializer` POCO surface above these layers.
 - Guides: `docs/guides/serialization/yaml/`.

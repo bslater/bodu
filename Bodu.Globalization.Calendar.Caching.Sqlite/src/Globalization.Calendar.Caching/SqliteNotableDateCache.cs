@@ -209,8 +209,8 @@ public sealed class SqliteNotableDateCache
     /// <inheritdoc />
     /// <remarks>
     /// The write is a transactional delete-and-reinsert of the whole territory rather than a per-year UPSERT. This is
-    /// deliberate: the base class's <c>StoreYear</c> applies the shared merge policy — dropping other-version entries
-    /// and TTL-expired years — to the full entry list before calling this method, and that pruning is not cleanly
+    /// deliberate: the base class's <c>StoreYear</c> applies the shared merge policy - dropping other-version entries
+    /// and TTL-expired years - to the full entry list before calling this method, and that pruning is not cleanly
     /// expressible as SQL against the persisted RFC 3339 text instants without a UTC-normalized wire change. An UPSERT
     /// that bypassed the base merge would fork the single merge policy the backends share; a territory's entry set is
     /// small (one row per cached year), so the rewrite cost is immaterial.
@@ -312,7 +312,7 @@ public sealed class SqliteNotableDateCache
         {
             // Skip a single malformed row rather than failing the whole read. JsonException covers a corrupt
             // occurrences blob; row corruption is data damage, not a storage failure, so it degrades to a skip even
-            // when ThrowOnStorageFailure is set — matching the distributed backend.
+            // when ThrowOnStorageFailure is set - matching the distributed backend.
             return null;
         }
     }
@@ -363,7 +363,7 @@ public sealed class SqliteNotableDateCache
     }
 
     /// <summary>
-    /// Applies the per-connection concurrency setting — the <c>busy_timeout</c> wait — to a freshly opened connection.
+    /// Applies the per-connection concurrency setting - the <c>busy_timeout</c> wait - to a freshly opened connection.
     /// </summary>
     /// <param name="connection">The open connection to configure.</param>
     /// <remarks>
@@ -388,8 +388,8 @@ public sealed class SqliteNotableDateCache
     /// </summary>
     /// <param name="connection">The open keep-alive connection.</param>
     /// <remarks>
-    /// Best-effort: a database that cannot honor the mode — notably an in-memory database, which reports back its
-    /// native mode — is left unchanged rather than failing. Runs outside any transaction so the journal-mode change is
+    /// Best-effort: a database that cannot honor the mode - notably an in-memory database, which reports back its
+    /// native mode - is left unchanged rather than failing. Runs outside any transaction so the journal-mode change is
     /// permitted.
     /// </remarks>
     private static void ApplyWriteAheadLogging(SqliteConnection connection)

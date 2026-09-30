@@ -12,11 +12,11 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <remarks>
 /// <para>
 /// The Damm algorithm was presented by H. Michael Damm in 2004. It evaluates a running <i>interim</i> digit by
-/// repeatedly indexing into a carefully chosen 10×10 <i>totally antisymmetric</i> quasigroup — a table with no fixed
+/// repeatedly indexing into a carefully chosen 10×10 <i>totally antisymmetric</i> quasigroup - a table with no fixed
 /// points on its diagonal and no partial idempotent entries. The final interim is the check digit.
 /// </para>
 /// <para>
-/// Damm detects <b>all</b> single-digit substitution errors and <b>all</b> adjacent-digit transpositions — the latter
+/// Damm detects <b>all</b> single-digit substitution errors and <b>all</b> adjacent-digit transpositions - the latter
 /// without the <c>09 ↔ 90</c> exception that Luhn suffers from. Validation is especially clean: a sequence (body
 /// followed by its check digit) is valid if and only if its final interim is zero.
 /// </para>
@@ -33,7 +33,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// // Single-call computation against an in-memory body.
 /// char check = Damm.Compute("572");   // '4'
 ///
-/// // Full-sequence validation — equivalent to checking that the final interim is zero.
+/// // Full-sequence validation - equivalent to checking that the final interim is zero.
 /// bool ok = Damm.IsValid("5724");     // true
 ///
 /// // Streaming use when the body is built up incrementally.
@@ -83,12 +83,12 @@ public sealed partial class Damm
     }
 
     /// <summary>
-    /// Determines whether the supplied sequence, comprising a body followed by a trailing Damm check digit, is valid —
+    /// Determines whether the supplied sequence, comprising a body followed by a trailing Damm check digit, is valid -
     /// that is, whether the final interim evaluates to zero.
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence evaluates as valid under Damm; otherwise, <see langword="false" /> —
+    /// <see langword="true" /> if the sequence evaluates as valid under Damm; otherwise, <see langword="false" /> -
     /// including the case where <paramref name="digitsIncludingCheck" /> is empty or contains a character outside the
     /// range <c>'0'</c> to <c>'9'</c>.
     /// </returns>

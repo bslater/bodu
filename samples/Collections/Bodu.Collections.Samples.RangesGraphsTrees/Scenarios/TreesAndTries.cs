@@ -16,7 +16,7 @@ namespace Bodu.Collections.Samples.RangesGraphsTrees.Scenarios;
 /// <remarks>
 /// A trie is not a dictionary with extra steps: it is indexed by <em>prefix</em>, so "every key starting with
 /// this" is a walk to one node rather than a scan of every key. The distinction that catches people is that
-/// reaching a node is not the same as that node being a key — <c>te</c> is a real node on the way to <c>ten</c>
+/// reaching a node is not the same as that node being a key - <c>te</c> is a real node on the way to <c>ten</c>
 /// and is still not a member.
 /// </remarks>
 public static class TreesAndTries

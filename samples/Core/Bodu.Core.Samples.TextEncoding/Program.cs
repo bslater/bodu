@@ -9,7 +9,7 @@ using Bodu.Core.Samples.TextEncoding.Scenarios;
 namespace Bodu.Core.Samples.TextEncoding;
 
 /// <summary>
-/// Entry point for the text-encoding sample: the <c>Bodu.Text</c> encoding surfaces from <c>Bodu.Core</c> —
+/// Entry point for the text-encoding sample: the <c>Bodu.Text</c> encoding surfaces from <c>Bodu.Core</c> -
 /// <c>EncodingDetection</c> for byte-order-mark sniffing, <c>EncodingExtensions</c> for transcoding, preamble
 /// handling and fallback selection, and <c>StringEncodingExtensions</c> for pooled / span-based string encoding.
 /// It reads a handful of committed byte fixtures under <c>Data/</c>, so the output is identical on every run.

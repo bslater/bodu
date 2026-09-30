@@ -9,7 +9,7 @@ namespace Bodu.Numerics;
 public partial class IntervalSetTests
 {
     /// <summary>
-    /// Verifies that sets with the same normalized pieces are equal — regardless of input order — and share a hash
+    /// Verifies that sets with the same normalized pieces are equal - regardless of input order - and share a hash
     /// code.
     /// </summary>
     [TestMethod]

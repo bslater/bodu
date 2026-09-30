@@ -11,7 +11,7 @@
 
   <NotableDates>
 
-    <!-- Bounded window 2020..2030 (inclusive) — global territory. -->
+    <!-- Bounded window 2020..2030 (inclusive) - global territory. -->
     <NotableDate id="windowed" displayName="Windowed" category="Observance" defaultNonWorkingDay="false">
       <Rules>
         <Rule id="r">
@@ -21,7 +21,7 @@
       </Rules>
     </NotableDate>
 
-    <!-- Lower bound only — applies from 2025 onward. -->
+    <!-- Lower bound only - applies from 2025 onward. -->
     <NotableDate id="from-2025" displayName="From 2025" category="Observance" defaultNonWorkingDay="false">
       <Rules>
         <Rule id="r">
@@ -31,7 +31,7 @@
       </Rules>
     </NotableDate>
 
-    <!-- Upper bound only — applies up to and including 2025. -->
+    <!-- Upper bound only - applies up to and including 2025. -->
     <NotableDate id="to-2025" displayName="To 2025" category="Observance" defaultNonWorkingDay="false">
       <Rules>
         <Rule id="r">
@@ -41,7 +41,7 @@
       </Rules>
     </NotableDate>
 
-    <!-- Explicit inclusion years — only 2024 and 2026. -->
+    <!-- Explicit inclusion years - only 2024 and 2026. -->
     <NotableDate id="only-years" displayName="Only Years" category="Observance" defaultNonWorkingDay="false">
       <Rules>
         <Rule id="r">
@@ -54,7 +54,7 @@
       </Rules>
     </NotableDate>
 
-    <!-- Explicit exclusion year — applies every year except 2025. -->
+    <!-- Explicit exclusion year - applies every year except 2025. -->
     <NotableDate id="except-2025" displayName="Except 2025" category="Observance" defaultNonWorkingDay="false">
       <Rules>
         <Rule id="r">
@@ -78,7 +78,7 @@
       </Rules>
     </NotableDate>
 
-    <!-- National scope AU — matches AU and any AU-* subdivision, but not a foreign code. -->
+    <!-- National scope AU - matches AU and any AU-* subdivision, but not a foreign code. -->
     <NotableDate id="national-au" displayName="National AU" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules>
         <Rule id="r">
@@ -88,7 +88,7 @@
       </Rules>
     </NotableDate>
 
-    <!-- Subdivision-only scope AU-NSW — matches AU-NSW but not the national AU request. -->
+    <!-- Subdivision-only scope AU-NSW - matches AU-NSW but not the national AU request. -->
     <NotableDate id="subnational-nsw" displayName="Subnational NSW" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules>
         <Rule id="r">

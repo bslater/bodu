@@ -23,7 +23,7 @@ public sealed partial class RadixTrieTests
     }
 
     /// <summary>
-    /// Verifies that a case-insensitive comparer governs edge-label matching across a split — differently cased
+    /// Verifies that a case-insensitive comparer governs edge-label matching across a split - differently cased
     /// inserts split and traverse the same compressed edges.
     /// </summary>
     [TestMethod]

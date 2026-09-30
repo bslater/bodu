@@ -9,7 +9,7 @@ using Bodu.Text.Filtering.Samples.FilteringTour.Scenarios;
 namespace Bodu.Text.Filtering.Samples.FilteringTour;
 
 /// <summary>
-/// Entry point for the filtering tour: the <c>TextFilter</c> engine end to end — include/exclude
+/// Entry point for the filtering tour: the <c>TextFilter</c> engine end to end - include/exclude
 /// sets, gitignore-style parsed ordered rules, the glob grammar with cost-tier classification, and
 /// the built-in telemetry with a per-decision observer. Everything runs offline against small
 /// in-code corpora, so output is deterministic.

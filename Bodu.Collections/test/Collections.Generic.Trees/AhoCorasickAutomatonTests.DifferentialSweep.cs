@@ -11,8 +11,8 @@ namespace Bodu.Collections.Generic.Trees;
 public sealed partial class AhoCorasickAutomatonTests
 {
     /// <summary>
-    /// Verifies that over seeded random corpora — 5,000-character texts on a four-character alphabet with 50 random
-    /// patterns of lengths 1..8 — the automaton reports exactly the match set found by a brute-force per-pattern
+    /// Verifies that over seeded random corpora - 5,000-character texts on a four-character alphabet with 50 random
+    /// patterns of lengths 1..8 - the automaton reports exactly the match set found by a brute-force per-pattern
     /// <see cref="string.IndexOf(string, int, StringComparison)" /> scan, that the enumeration honors the documented
     /// (end index, pattern length) order, and that the eager span conveniences agree with the lazy enumeration.
     /// </summary>

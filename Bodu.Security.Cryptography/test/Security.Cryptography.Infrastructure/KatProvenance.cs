@@ -7,8 +7,8 @@
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Describes where a cryptographic known-answer test vector came from — the kind of source and a human-readable
-/// citation — so failure diagnostics make the authority and origin of a vector obvious.
+/// Describes where a cryptographic known-answer test vector came from - the kind of source and a human-readable
+/// citation - so failure diagnostics make the authority and origin of a vector obvious.
 /// </summary>
 /// <param name="Kind">The category of source the vector was taken from.</param>
 /// <param name="Citation">

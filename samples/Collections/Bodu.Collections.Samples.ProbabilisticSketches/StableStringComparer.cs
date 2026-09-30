@@ -9,7 +9,7 @@ namespace Bodu.Collections.Samples.ProbabilisticSketches;
 /// <summary>
 /// An ordinal <see cref="string" /> equality comparer with a process-stable hash code. The probabilistic
 /// sketches derive all of their bit positions from <see cref="IEqualityComparer{T}.GetHashCode(T)" />, and the
-/// BCL <see cref="string.GetHashCode()" /> is randomized per process — so a default comparer would make every
+/// BCL <see cref="string.GetHashCode()" /> is randomized per process - so a default comparer would make every
 /// sketch produce process-local bit patterns and non-reproducible estimates. Supplying this FNV-1a comparer
 /// pins the hashing so the sample prints identical output (and the same false positive) every run.
 /// </summary>

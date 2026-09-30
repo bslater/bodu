@@ -15,12 +15,12 @@ namespace Bodu.Caching;
 /// <remarks>
 /// <para>
 /// A hit requires both the path and the caller-observed last-write instant to match the stored entry, so a file changed
-/// by any writer — this process or another — misses on its moved timestamp and is re-parsed. Eviction and invalidation
+/// by any writer - this process or another - misses on its moved timestamp and is re-parsed. Eviction and invalidation
 /// only ever force a re-parse, never a stale serve, so the capacity bound is safe by construction; it exists to keep
 /// the memo from growing without limit in a process that touches many distinct cache files over its lifetime.
 /// </para>
 /// <para>
-/// All operations take a single plain lock. The memo brackets file I/O — an open, stat, read, and parse — so the
+/// All operations take a single plain lock. The memo brackets file I/O - an open, stat, read, and parse - so the
 /// microseconds spent under the lock are immaterial next to the work it saves, and a simple linked-list LRU under one
 /// lock is preferred over a lock-free structure that cannot maintain recency order.
 /// </para>

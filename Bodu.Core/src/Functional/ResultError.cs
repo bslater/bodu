@@ -64,7 +64,7 @@ public readonly struct ResultError
     /// Gets the human-readable error message.
     /// </summary>
     /// <value>
-    /// The message supplied when the error was created. Never <see langword="null" /> — <see cref="string.Empty" /> for
+    /// The message supplied when the error was created. Never <see langword="null" /> - <see cref="string.Empty" /> for
     /// <c>default(ResultError)</c>.
     /// </value>
     public string Message =>

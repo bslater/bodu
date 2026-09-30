@@ -30,7 +30,7 @@ public readonly partial struct Money
     /// <remarks>
     /// <para>
     /// This is the direct construction route for values whose precision is known up front and differs from the
-    /// currency's registered minor units — typically unit prices such as a six-decimal-place share price in a
+    /// currency's registered minor units - typically unit prices such as a six-decimal-place share price in a
     /// two-decimal currency. The supplied scale is stored with the value: <see cref="Money.MinorUnits" /> reports it,
     /// formatting pads to it, arithmetic and allocation round intermediate results to it rather than to the registry
     /// precision, and the JSON converters persist it so a round-trip restores the same precision.
@@ -38,7 +38,7 @@ public readonly partial struct Money
     /// <para>
     /// For amounts that are <em>computed</em> rather than quoted, prefer accumulating in <see cref="CalculatedMoney" />
     /// and settling once through <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" /> with
-    /// <see cref="ScalePolicy.Custom" /> — that path defers rounding to a single, explicit settlement decision and
+    /// <see cref="ScalePolicy.Custom" /> - that path defers rounding to a single, explicit settlement decision and
     /// produces the same explicit-scale value.
     /// </para>
     /// </remarks>
@@ -80,15 +80,15 @@ public readonly partial struct Money
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Rescaling to a coarser precision drops sub-scale digits under <paramref name="rounding" /> — rescaling a
+    /// Rescaling to a coarser precision drops sub-scale digits under <paramref name="rounding" /> - rescaling a
     /// six-place unit price to a currency's two registered minor units is a plain settlement of that single value.
     /// Rescaling finer is lossless: the amount is unchanged and only the reported precision (and therefore formatting
     /// and the serialized <c>scale</c>) widens. The equivalent operation is <c>transformScale</c> in dinero.js and
     /// <c>withScale</c> on Joda's <c>BigMoney</c>.
     /// </para>
     /// <para>
-    /// For policy-aware settlement — cash-rounding increments, a <see cref="ScalePolicy" />, or a configured rounding
-    /// strategy — settle through <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" /> instead; this method
+    /// For policy-aware settlement - cash-rounding increments, a <see cref="ScalePolicy" />, or a configured rounding
+    /// strategy - settle through <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" /> instead; this method
     /// applies only the supplied midpoint rule.
     /// </para>
     /// </remarks>
@@ -122,7 +122,7 @@ public readonly partial struct Money
     /// This value is a default-initialised, currency-less <see cref="Money" />.
     /// </exception>
     /// <remarks>
-    /// Trimming never changes the numeric amount — only the reported precision. A six-place <c>12.500000 USD</c> trims
+    /// Trimming never changes the numeric amount - only the reported precision. A six-place <c>12.500000 USD</c> trims
     /// to the registered two places (<c>12.50</c>), a six-place <c>12.340010</c> trims to five, and a value whose
     /// finest digits are significant (<c>12.345678</c>) is returned unchanged. The registered minor units are the
     /// floor, so ordinary money is always a no-op. The equivalent operation is <c>trimScale</c> in dinero.js.

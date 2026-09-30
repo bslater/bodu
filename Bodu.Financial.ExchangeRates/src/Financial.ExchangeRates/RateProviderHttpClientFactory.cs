@@ -13,7 +13,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// A provider that builds its own client owns the HTTP contract with the endpoint: it presents a recognizable
-/// <c>User-Agent</c> (several feeds — Yahoo Finance in particular — answer requests without one with
+/// <c>User-Agent</c> (several feeds - Yahoo Finance in particular - answer requests without one with
 /// <c>429 Too Many Requests</c>) and applies the configured request timeout. When the caller supplies a client instead,
 /// provisioning it correctly is the caller's responsibility, so this factory is not involved.
 /// </para>

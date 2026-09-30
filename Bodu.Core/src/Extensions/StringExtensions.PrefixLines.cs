@@ -20,7 +20,7 @@ public static partial class StringExtensions
     /// <remarks>
     /// Line boundaries are recognised at <c>\r\n</c>, <c>\n</c>, and bare <c>\r</c>. An empty
     /// <paramref name="prefix" /> returns the input unchanged. Commonly used to add a comment marker to a block of
-    /// source — e.g. <c>"line1\nline2".PrefixLines("// ")</c>.
+    /// source - e.g. <c>"line1\nline2".PrefixLines("// ")</c>.
     /// </remarks>
     public static string PrefixLines(this string value, string prefix)
     {

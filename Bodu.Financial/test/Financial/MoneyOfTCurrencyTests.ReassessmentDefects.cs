@@ -19,7 +19,7 @@ namespace Bodu.Financial;
 public partial class MoneyOfTCurrencyTests
 {
     // ---------------------------------------------------------------------------------------------------------------
-    // P0.1 — DivideRound applies directed modes only at midpoint; must apply at every non-zero remainder.
+    // P0.1 - DivideRound applies directed modes only at midpoint; must apply at every non-zero remainder.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -37,7 +37,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="MidpointRounding.ToZero" /> truncates toward zero for negative values too —
+    /// Verifies that <see cref="MidpointRounding.ToZero" /> truncates toward zero for negative values too -
     /// <c>-1.209 USD → -1.20</c> (the integer nearer zero), not <c>-1.21</c>.
     /// </summary>
     [TestMethod]
@@ -66,7 +66,7 @@ public partial class MoneyOfTCurrencyTests
 
     /// <summary>
     /// Verifies that <see cref="MidpointRounding.ToPositiveInfinity" /> rounds toward positive infinity for
-    /// negative values — i.e. truncates toward zero. <c>-1.209 USD → -1.20</c>, not <c>-1.21</c>.
+    /// negative values - i.e. truncates toward zero. <c>-1.209 USD → -1.20</c>, not <c>-1.21</c>.
     /// </summary>
     [TestMethod]
     public void FromFraction_WhenToPositiveInfinityOnNegative_ShouldRoundTowardZero()
@@ -80,7 +80,7 @@ public partial class MoneyOfTCurrencyTests
 
     /// <summary>
     /// Verifies that <see cref="MidpointRounding.ToNegativeInfinity" /> rounds toward minus infinity at any
-    /// non-zero positive remainder — i.e. truncates toward zero for positives. <c>1.209 USD → 1.20</c>.
+    /// non-zero positive remainder - i.e. truncates toward zero for positives. <c>1.209 USD → 1.20</c>.
     /// </summary>
     [TestMethod]
     public void FromFraction_WhenToNegativeInfinityOnPositive_ShouldRoundTowardZero()
@@ -107,7 +107,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // P1.3 — Invalid MidpointRounding enum values must throw, not fall back to ToEven.
+    // P1.3 - Invalid MidpointRounding enum values must throw, not fall back to ToEven.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -127,7 +127,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // P0.2 — Ratio allocation should use largest-remainder method, not first-positive-slot.
+    // P0.2 - Ratio allocation should use largest-remainder method, not first-positive-slot.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -166,7 +166,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies that ties in fractional remainder fall back to stable input order — the first slot among
+    /// Verifies that ties in fractional remainder fall back to stable input order - the first slot among
     /// ties receives the residual.
     /// </summary>
     [TestMethod]
@@ -206,11 +206,11 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // P0.3 — MoneyBag.Balances must not expose the internal mutable dictionary.
+    // P0.3 - MoneyBag.Balances must not expose the internal mutable dictionary.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that mutating the returned <see cref="MoneyBag.Balances" /> does not affect the bag's state —
+    /// Verifies that mutating the returned <see cref="MoneyBag.Balances" /> does not affect the bag's state -
     /// the property returns a snapshot or read-only wrapper, not the underlying mutable dictionary.
     /// </summary>
     [TestMethod]
@@ -232,7 +232,7 @@ public partial class MoneyOfTCurrencyTests
             }
             catch (NotSupportedException)
             {
-                return;     // wrapper threw on mutation — acceptable.
+                return;     // wrapper threw on mutation - acceptable.
             }
 
             Assert.AreEqual(originalUsd, bag.Balances[CurrencyCode.USD], "Bag state must not be mutable through Balances cast.");
@@ -241,7 +241,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // P0.5 — MoneyBag.ConvertTo must reject zero/negative rates from providers and delegates.
+    // P0.5 - MoneyBag.ConvertTo must reject zero/negative rates from providers and delegates.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -330,7 +330,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // P0.6 — Money must reject the currency-less and undefined CurrencyCode values.
+    // P0.6 - Money must reject the currency-less and undefined CurrencyCode values.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -360,7 +360,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // P1.5 — MoneyBag constructor must reject (not silently drop) Money entries with an empty ISO.
+    // P1.5 - MoneyBag constructor must reject (not silently drop) Money entries with an empty ISO.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -379,11 +379,11 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // P1.6 — Default Money arithmetic must reject (both operands have empty ISO).
+    // P1.6 - Default Money arithmetic must reject (both operands have empty ISO).
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that arithmetic between two default <see cref="Money" /> instances throws — empty-ISO
+    /// Verifies that arithmetic between two default <see cref="Money" /> instances throws - empty-ISO
     /// values must not produce more empty-ISO values.
     /// </summary>
     [TestMethod]
@@ -429,7 +429,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // P0.4 — MoneyBag.ConvertTo rounding-policy explicit overload.
+    // P0.4 - MoneyBag.ConvertTo rounding-policy explicit overload.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>

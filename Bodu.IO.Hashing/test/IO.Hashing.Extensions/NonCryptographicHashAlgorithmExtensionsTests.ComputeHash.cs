@@ -23,7 +23,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that the byte-array overload discards any state previously accumulated on the algorithm so the
-    /// returned digest reflects only the supplied buffer — a one-shot computation that mirrors the symmetric
+    /// returned digest reflects only the supplied buffer - a one-shot computation that mirrors the symmetric
     /// VerifyHash contract.
     /// </summary>
     [TestMethod]
@@ -82,7 +82,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         CollectionAssert.AreEqual(s_sampleHash, result);
     }
 
-    // ─── byte[] overload — argument validation ────────────────────────────────────────────────
+    // ─── byte[] overload - argument validation ────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that the byte-array overload throws <see cref="ArgumentNullException" /> when the algorithm is
@@ -99,7 +99,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         });
     }
 
-    // ─── byte[] + offset + count overload — argument validation ───────────────────────────────
+    // ─── byte[] + offset + count overload - argument validation ───────────────────────────────
 
     /// <summary>
     /// Verifies that the byte-array range overload throws <see cref="ArgumentNullException" /> when the algorithm is
@@ -116,7 +116,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         });
     }
 
-    // ─── ReadOnlySpan<byte> overload — argument validation ────────────────────────────────────
+    // ─── ReadOnlySpan<byte> overload - argument validation ────────────────────────────────────
 
     /// <summary>
     /// Verifies that the span overload throws <see cref="ArgumentNullException" /> when the algorithm is
@@ -133,7 +133,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         });
     }
 
-    // ─── Stream overload — argument validation ────────────────────────────────────────────────
+    // ─── Stream overload - argument validation ────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that the stream overload throws <see cref="ArgumentNullException" /> when the algorithm is
@@ -164,7 +164,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         CollectionAssert.AreEqual(s_sampleHash, result);
     }
 
-    // ─── byte[] overload — correctness ────────────────────────────────────────────────────────
+    // ─── byte[] overload - correctness ────────────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that an empty buffer produces the digest corresponding to a zero accumulator.
@@ -240,7 +240,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a small <paramref name="bufferSize" /> — forcing multiple read iterations — produces the same
+    /// Verifies that a small <paramref name="bufferSize" /> - forcing multiple read iterations - produces the same
     /// digest as the default buffer size.
     /// </summary>
     [TestMethod]
@@ -255,7 +255,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that the byte-array overload exercises the reset path on the underlying algorithm, leaving it in a
-    /// clean state after the call returns. The byte-array overload resets twice — once on entry to discard any
+    /// clean state after the call returns. The byte-array overload resets twice - once on entry to discard any
     /// pending state and once via <c>GetHashAndReset</c> on exit.
     /// </summary>
     [TestMethod]
@@ -332,7 +332,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         });
     }
 
-    // ─── byte[] + offset + count overload — correctness ───────────────────────────────────────
+    // ─── byte[] + offset + count overload - correctness ───────────────────────────────────────
 
     /// <summary>
     /// Verifies that a zero <paramref name="count" /> returns the digest of empty input.
@@ -462,7 +462,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         CollectionAssert.AreEqual(s_sampleHash, result);
     }
 
-    // ─── ReadOnlySpan<byte> overload — correctness ────────────────────────────────────────────
+    // ─── ReadOnlySpan<byte> overload - correctness ────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that an empty span produces the digest corresponding to a zero accumulator.
@@ -492,7 +492,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         CollectionAssert.AreEqual(viaSpan, viaStream);
     }
 
-    // ─── Stream overload — correctness ────────────────────────────────────────────────────────
+    // ─── Stream overload - correctness ────────────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that an empty stream produces the digest corresponding to a zero accumulator.

@@ -12,7 +12,7 @@ namespace Bodu.Collections.Generic;
 public static partial class ShuffleHelpers
 {
     /// <summary>
-    /// Lazily yields a randomized subset of an <see cref="IEnumerable{T}" /> using a partial Fisher–Yates shuffle.
+    /// Lazily yields a randomized subset of an <see cref="IEnumerable{T}" /> using a partial Fisher-Yates shuffle.
     /// </summary>
     /// <typeparam name="T">The type of elements in the source sequence.</typeparam>
     /// <param name="source">The source sequence to shuffle.</param>
@@ -61,7 +61,7 @@ public static partial class ShuffleHelpers
     }
 
     /// <summary>
-    /// Yields a randomized subset of the specified array by copying and shuffling it using a partial Fisher–Yates
+    /// Yields a randomized subset of the specified array by copying and shuffling it using a partial Fisher-Yates
     /// algorithm.
     /// </summary>
     /// <typeparam name="T">The type of elements in the array.</typeparam>
@@ -114,7 +114,7 @@ public static partial class ShuffleHelpers
     /// Thrown when <paramref name="source" /> or <paramref name="rng" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// The source is enumerated exactly once, when the result is first iterated — safe for one-shot sequences and
+    /// The source is enumerated exactly once, when the result is first iterated - safe for one-shot sequences and
     /// sequences with side effects.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -202,7 +202,7 @@ public static partial class ShuffleHelpers
     public static IEnumerable<T> ShuffleAndYield<T>(Memory<T> memory, IRandomGenerator rng, int count) => ShuffleAndYield(memory.ToArray(), rng, count);
 
     /// <summary>
-    /// Yields a randomized subset of the specified array using an in-place partial Fisher–Yates shuffle.
+    /// Yields a randomized subset of the specified array using an in-place partial Fisher-Yates shuffle.
     /// </summary>
     /// <typeparam name="T">The type of elements in the array.</typeparam>
     /// <param name="array">The buffer to shuffle. The contents are modified during shuffling.</param>

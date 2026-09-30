@@ -19,7 +19,7 @@ namespace Bodu.Test.Contracts;
 /// Asserts the standard Bodu debugger-display contract: every public collection type that surfaces in the
 /// debugger should carry a <see cref="DebuggerDisplayAttribute" /> and a <see cref="DebuggerTypeProxyAttribute" />
 /// declaring an inner type that snapshots the collection's elements for the debugger's eager-evaluation
-/// pipeline. The base does not assert on the *contents* of the snapshot — that varies per collection — but
+/// pipeline. The base does not assert on the *contents* of the snapshot - that varies per collection - but
 /// does assert that the attribute is present and that the proxy is constructible from an instance of the
 /// collection.
 /// </para>
@@ -80,7 +80,7 @@ public abstract class DebugViewContractTests<TCollection>
     /// </summary>
     /// <remarks>
     /// The debugger evaluates these getters eagerly when a collection is expanded in a watch window, and it
-    /// swallows whatever they throw — a getter that faults shows up as an unhelpful placeholder rather than an
+    /// swallows whatever they throw - a getter that faults shows up as an unhelpful placeholder rather than an
     /// error, so nothing else in the suite would notice. Reading them here is what makes the proxy's surface,
     /// rather than merely its constructor, part of the contract.
     /// </remarks>

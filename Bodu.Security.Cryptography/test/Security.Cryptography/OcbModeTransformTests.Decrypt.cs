@@ -84,11 +84,11 @@ public sealed partial class OcbModeTransformTests
     /// for a range of plaintext lengths spanning empty, partial-block, and multi-block inputs.
     /// </summary>
     [TestMethod]
-    [DataRow(0, DisplayName = "0 bytes  — empty plaintext")]
-    [DataRow(7, DisplayName = "7 bytes  — sub-block partial")]
-    [DataRow(16, DisplayName = "16 bytes — exactly one full block")]
-    [DataRow(23, DisplayName = "23 bytes — full block + 7-byte partial")]
-    [DataRow(32, DisplayName = "32 bytes — exactly two full blocks")]
+    [DataRow(0, DisplayName = "0 bytes  - empty plaintext")]
+    [DataRow(7, DisplayName = "7 bytes  - sub-block partial")]
+    [DataRow(16, DisplayName = "16 bytes - exactly one full block")]
+    [DataRow(23, DisplayName = "23 bytes - full block + 7-byte partial")]
+    [DataRow(32, DisplayName = "32 bytes - exactly two full blocks")]
     public void Decrypt_WithValidCiphertext_ShouldReturnPlaintextLengthAsWrittenCount(int ptLen)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);

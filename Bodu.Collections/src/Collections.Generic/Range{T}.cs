@@ -21,7 +21,7 @@ namespace Bodu.Collections.Generic;
 /// <see cref="ArgumentException" />.
 /// </para>
 /// <para>
-/// Half-open semantics — <c>[start, end)</c> — match the convention used by .NET span slicing,
+/// Half-open semantics - <c>[start, end)</c> - match the convention used by .NET span slicing,
 /// <see cref="System.Range" />, and most database <c>BETWEEN</c> alternatives. They allow adjacent ranges (
 /// <c>[0, 5)</c> followed by <c>[5, 10)</c>) to abut without overlapping, which is the property that keeps
 /// <see cref="RangeSet{T}" /> and <see cref="RangeDictionary{TKey, TValue}" /> internally consistent.

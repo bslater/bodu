@@ -16,8 +16,8 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// Converts a mutable DOM node tree to and from the wire format, bridging the document object model to the serializer.
 /// </summary>
 /// <remarks>
-/// The converter accepts every node type — the object, array, and value nodes as well as the <see cref="FormatNode" />
-/// base — so it must lead the built-in converter list, ahead of the collection and object factories that would
+/// The converter accepts every node type - the object, array, and value nodes as well as the <see cref="FormatNode" />
+/// base - so it must lead the built-in converter list, ahead of the collection and object factories that would
 /// otherwise claim the object node by virtue of its <see cref="System.Collections.Generic.IDictionary{TKey, TValue}" />
 /// surface.
 /// </remarks>

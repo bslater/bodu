@@ -74,7 +74,7 @@ public partial class YamlSerializerTests
 
     /// <summary>
     /// Verifies that after an element-typed member consumes its subtree, subsequent members of the enclosing mapping
-    /// still bind — pinning the bridge's reader-positioning contract.
+    /// still bind - pinning the bridge's reader-positioning contract.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenElementMemberFollowedByScalar_ShouldBindBothMembers()

@@ -14,7 +14,7 @@ namespace Bodu.Samples.Text.Formats.ConfigFiles.Scenarios;
 /// Demonstrates reading an INI file: the global (sectionless) keys hoisted onto the root object, named sections as
 /// nested objects via the read-only <see cref="IniDocument" />, and typed access by binding the whole file onto a
 /// settings class with <see cref="IniSerializer" /> and the snake_case naming policy. Note the parser deliberately
-/// treats <c>;</c> after a value as value content — values may legitimately contain semicolons.
+/// treats <c>;</c> after a value as value content - values may legitimately contain semicolons.
 /// </summary>
 public static class IniReadTypedValues
 {

@@ -37,7 +37,7 @@ public partial class BitSetTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BitSet.NextSetBit" /> crosses word boundaries — a search starting in one word finds
+    /// Verifies that <see cref="BitSet.NextSetBit" /> crosses word boundaries - a search starting in one word finds
     /// the first set bit in a later word.
     /// </summary>
     [TestMethod]

@@ -34,10 +34,10 @@ namespace Bodu.Text.Encoding;
 /// // RFC 4648 Standard Base64 (default).
 /// string standard = Base64.Encode(data);                                       // "aGVsbG8="
 ///
-/// // URL-safe alphabet, no padding — the form used by JWT and OAuth tokens.
+/// // URL-safe alphabet, no padding - the form used by JWT and OAuth tokens.
 /// string urlSafe  = Base64.Encode(data, Base64Variant.UrlSafe);                // "aGVsbG8"
 ///
-/// // MIME variant — wraps every 76 characters with CRLF.
+/// // MIME variant - wraps every 76 characters with CRLF.
 /// string mime     = Base64.Encode(longerPayload, Base64Variant.Mime);
 ///
 /// // Round-trip.
@@ -306,7 +306,7 @@ public static partial class Base64
 
         // Padding alignment: Standard / Mime require canonical padding by default. UrlSafe and AllowMissingPadding
         // bypass the "must have padding" requirement. In all variants, if padding IS present it must match the
-        // canonical count for the data — partial or excessive padding ("TQ===") is always rejected.
+        // canonical count for the data - partial or excessive padding ("TQ===") is always rejected.
         int expectedPadding = (4 - dataMod) % 4;
         bool padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding)
             && variant != Base64Variant.UrlSafe;

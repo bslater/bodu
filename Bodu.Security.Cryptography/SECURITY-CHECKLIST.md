@@ -16,7 +16,7 @@ generated code holds the timing.
 
 Every public `Import*` method is a trust boundary and must reject malformed input.
 
-- [ ] **Length.** Wrong-length input is rejected (`ArgumentException`) — enforced generically by
+- [ ] **Length.** Wrong-length input is rejected (`ArgumentException`) - enforced generically by
       `AsymmetricAlgorithmTests.ImportMembers_WhenGivenMalformedInput_ShouldReject`.
 - [ ] **Canonical encoding.** Non-canonical encodings are rejected, not folded:
   - ML-DSA `s1`/`s2` packed code points > 2η (`MLDsaContractTests.ImportPrivateKey_WhenS1PackingIsNonCanonical_*`).
@@ -27,7 +27,7 @@ Every public `Import*` method is a trust boundary and must reject malformed inpu
   - ML-KEM decapsulation key validates the embedded ek modulus even with a regenerated `H(ek)`
     (`MLKemContractTests.ImportDecapsulationKey_WhenEmbeddedKeyNonCanonicalButHashConsistent_*`).
 - [ ] **Exception type.** Container parsers surface `CryptographicException`, raw codecs surface
-      `ArgumentException`, and unsupported formats surface `NotSupportedException` — never the inherited
+      `ArgumentException`, and unsupported formats surface `NotSupportedException` - never the inherited
       `NotImplementedException` (`AsymmetricAlgorithmTests.*KeyFormat*`).
 
 ## 2. Secret-material lifetime
@@ -82,14 +82,14 @@ Every public `Import*` method is a trust boundary and must reject malformed inpu
 
 ## 7. Vector kernels (every primitive)
 
-Applies when adding or changing any SIMD kernel — the AVX-512 kernels, the GHASH / POLYVAL
+Applies when adding or changing any SIMD kernel - the AVX-512 kernels, the GHASH / POLYVAL
 kernels (PCLMULQDQ, PMULL and the scalar multiply), Argon2's AVX2, SSSE3 and AdvSimd kernels,
 scrypt's SSE2 and AdvSimd BlockMix kernels, the BLAKE2b and BLAKE2s compression kernels,
 Poly1305's AVX2 and AVX-512 block kernels, the four-way Keccak permutation, and ML-DSA's and
 ML-KEM's AVX2 transform, product and ML-DSA's per-coefficient kernels.
 
 - [ ] **Data-independent.** The kernel uses arithmetic, rotations, XORs and shuffles by constant
-      indices only — no branch on, and no memory access indexed by, the data. Anything the algorithm
+      indices only - no branch on, and no memory access indexed by, the data. Anything the algorithm
       itself makes data-dependent (Argon2's reference-block choice, scrypt's read of `V[j]`) happens
       outside the kernel (`Argon2Core.IArgon2Kernel`, `ScryptCore.IScryptKernel` and the
       `IVector128Isa` remarks). ML-KEM's and ML-DSA's rejection samplers parse the XOF streams
@@ -112,7 +112,7 @@ ML-KEM's AVX2 transform, product and ML-DSA's per-coefficient kernels.
       `Compress_WhenHashing*_ForEachKernel_*` over RFC 7693's examples and the official blake2-kat.json,
       and `Poly1305CoreTests.Update_WhenGivenRfc8439AppendixA3Vector_ForEachKernel_ShouldProduceTag`,
       and `KeccakSponge4Tests.Squeeze_WhenAbsorbingFips202Messages_ForEachKernel_*`), and
-      `Bodu.Security.Cryptography.Simd.Test` holds the scalar path to the same vectors — for ML-KEM
+      `Bodu.Security.Cryptography.Simd.Test` holds the scalar path to the same vectors - for ML-KEM
       and ML-DSA, the linked ACVP suites.
 - [ ] **Gated and switchable.** Dispatch goes through a `SimdCapabilities` gate that honours the
       `DisableSimd` switch, and `SimdOptOutTests` asserts the gate is closed under it.

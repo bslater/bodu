@@ -12,7 +12,7 @@ namespace Bodu.IO.Pst;
 /// <summary>
 /// Verifies the LTP surfaces against the reference corpus and its independently generated <c>lspst</c> oracle: folder
 /// display names, message subjects and senders, contents-table row counts, and an every-node sweep proving no value
-/// reference dangles. MAPI property identifiers appear here as raw literals with their MS-OXPROPS names in comments —
+/// reference dangles. MAPI property identifiers appear here as raw literals with their MS-OXPROPS names in comments -
 /// oracle knowledge in tests, kept out of the library per its layering.
 /// </summary>
 [TestClass]

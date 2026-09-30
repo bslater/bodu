@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Recurrence.Samples.AnchoredIntervals.Scenarios;
 
 /// <summary>
-/// Demonstrates the boundary of the RFC 5545 §3.3.6 duration grammar — what parses, what does not,
+/// Demonstrates the boundary of the RFC 5545 §3.3.6 duration grammar - what parses, what does not,
 /// and the defect message that names the offending token when text is rejected.
 /// </summary>
 public static class DurationGrammar

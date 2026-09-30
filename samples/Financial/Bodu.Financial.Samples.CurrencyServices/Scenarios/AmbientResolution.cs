@@ -12,7 +12,7 @@ namespace Bodu.Financial.Samples.CurrencyServices.Scenarios;
 /// <summary>
 /// Demonstrates the ambient currency-resolution seam. Runtime <see cref="Money" /> resolves currency
 /// metadata (minor units, names, parse validation) through <see cref="CurrencyResolution.Current" />;
-/// <see cref="CurrencyResolution.PushScoped" /> swaps the lookup for a scope (async-flow safe — the
+/// <see cref="CurrencyResolution.PushScoped" /> swaps the lookup for a scope (async-flow safe - the
 /// test seam), while <see cref="CurrencyResolution.SetDefault" /> is the one-time composition-root
 /// promotion (see the host scenario).
 /// </summary>

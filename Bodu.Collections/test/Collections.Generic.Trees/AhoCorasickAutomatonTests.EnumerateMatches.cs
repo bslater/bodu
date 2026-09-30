@@ -60,7 +60,7 @@ public sealed partial class AhoCorasickAutomatonTests
     }
 
     /// <summary>
-    /// Verifies that nested patterns — one pattern a suffix of another — are all reported, in ascending end index
+    /// Verifies that nested patterns - one pattern a suffix of another - are all reported, in ascending end index
     /// then ascending pattern length order.
     /// </summary>
     [TestMethod]
@@ -136,7 +136,7 @@ public sealed partial class AhoCorasickAutomatonTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="AhoCorasickMatch.End" /> is the exclusive end index — start plus pattern length.
+    /// Verifies that <see cref="AhoCorasickMatch.End" /> is the exclusive end index - start plus pattern length.
     /// </summary>
     [TestMethod]
     public void EnumerateMatches_WhenMatchReported_ShouldExposeExclusiveEnd()

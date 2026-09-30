@@ -1,8 +1,8 @@
 ---
-title: Bodu.Numerics — Getting started
+title: Bodu.Numerics - Getting started
 ---
 
-# Bodu.Numerics — Getting started
+# Bodu.Numerics - Getting started
 
 ## Install
 
@@ -10,7 +10,7 @@ title: Bodu.Numerics — Getting started
 dotnet add package Bodu.Numerics
 ```
 
-Targets `net8.0`. No external runtime dependencies — `Bodu.Numerics` references only `Bodu.Core` for shared argument validation.
+Targets `net8.0`. No external runtime dependencies - `Bodu.Numerics` references only `Bodu.Core` for shared argument validation.
 
 ## Minimal samples
 
@@ -22,7 +22,7 @@ using Bodu.Numerics;
 Fraction<int> third = Fraction<int>.Create(1, 3);
 Fraction<int> half  = Fraction<int>.Create(1, 2);
 
-Fraction<int> sum = third + half;          // 5/6 — exact, no float drift
+Fraction<int> sum = third + half;          // 5/6 - exact, no float drift
 Fraction<int> product = third * half;      // 1/6
 Fraction<int> ratio = sum / Fraction<int>.Create(7, 12);  // 10/7
 ```
@@ -46,15 +46,15 @@ for (int i = 0; i < 360; i++) balance *= growth;     // exact 30-year amortizati
 Backed by `BigInteger`, intermediate results never overflow. Reach for `Fraction<BigInteger>` whenever a calculation chains several multiplications or divisions and you need a single, deferred rounding boundary.
 
 > [!TIP]
-> Three construction calls have defined failure modes worth knowing up front: `Create(n, 0)` throws <xref:System.DivideByZeroException>; a canonical result that does not fit a fixed-width `T` throws <xref:System.OverflowException>; and `FromDouble(double.NaN)` (or any non-finite `double`) throws <xref:System.ArgumentException>. Each has a non-throwing partner — `TryCreate`, `TryFromBigInteger`, `TryFromDouble`, `TryFromDecimal` — that reports the same condition with a `false` return.
+> Three construction calls have defined failure modes worth knowing up front: `Create(n, 0)` throws <xref:System.DivideByZeroException>; a canonical result that does not fit a fixed-width `T` throws <xref:System.OverflowException>; and `FromDouble(double.NaN)` (or any non-finite `double`) throws <xref:System.ArgumentException>. Each has a non-throwing partner - `TryCreate`, `TryFromBigInteger`, `TryFromDouble`, `TryFromDecimal` - that reports the same condition with a `false` return.
 
 ### Exact versus best-fit conversion from `double`
 
-`FromDouble` is exact in the IEEE-754 sense — it decomposes the `double`'s mantissa and exponent, so a value that looks "round" in base 10 can produce a fraction with an enormous denominator:
+`FromDouble` is exact in the IEEE-754 sense - it decomposes the `double`'s mantissa and exponent, so a value that looks "round" in base 10 can produce a fraction with an enormous denominator:
 
 ```csharp
 Fraction<BigInteger>.FromDouble(0.1);
-// 3602879701896397/36028797018963968 — the exact bits of the double 0.1, not 1/10
+// 3602879701896397/36028797018963968 - the exact bits of the double 0.1, not 1/10
 ```
 
 When you want the *intended* rational rather than the bit-exact one, reach for `Approximate` with a denominator bound (below), which recovers `1/10` from `0.1`.
@@ -63,7 +63,7 @@ When you want the *intended* rational rather than the bit-exact one, reach for `
 
 ```csharp
 Fraction<int> piApprox = Fraction<int>.Approximate(Math.PI, maxDenominator: 1000);
-// 355/113 — the Zǔ Chōngzhī approximation, accurate to ~6×10⁻⁷
+// 355/113 - the Zǔ Chōngzhī approximation, accurate to ~6×10⁻⁷
 ```
 
 `Approximate` uses convergents of the continued-fraction expansion to find the best rational below a denominator bound.
@@ -87,7 +87,7 @@ Fraction<int>.Parse("75%");                   // 3/4
 
 ### JSON
 
-JSON support ships in the companion **`Bodu.Numerics.Serialization.Json`** package — the core library is serialization-agnostic. Register the converters on a `JsonSerializerOptions` with `AddNumericsJsonConverters`; the default (`Strict`) wire shape is the canonical object form, and `NumericsJsonPolicy.Compact` selects the `"3/4"` string:
+JSON support ships in the companion **`Bodu.Numerics.Serialization.Json`** package - the core library is serialization-agnostic. Register the converters on a `JsonSerializerOptions` with `AddNumericsJsonConverters`; the default (`Strict`) wire shape is the canonical object form, and `NumericsJsonPolicy.Compact` selects the `"3/4"` string:
 
 ```csharp
 using System.Text.Json;
@@ -101,14 +101,14 @@ string json = JsonSerializer.Serialize(new Fraction<int>(3, 4), options);
 
 Fraction<int> roundTrip = JsonSerializer.Deserialize<Fraction<int>>(json, options);
 
-// Compact policy — the single-string form.
+// Compact policy - the single-string form.
 var compact = new JsonSerializerOptions().AddNumericsJsonConverters(NumericsJsonPolicy.Compact);
 JsonSerializer.Serialize(new Fraction<int>(3, 4), compact);   // "3/4"
 ```
 
 ### Bounded intervals (`Interval<T>`)
 
-`Interval<T>` packs a range — lower endpoint, upper endpoint, and the inclusivity of each side — into a single immutable value over any `INumber<T>` endpoint type. The set algebra (membership, containment, intersection, union, overlap, adjacency) is defined on the type.
+`Interval<T>` packs a range - lower endpoint, upper endpoint, and the inclusivity of each side - into a single immutable value over any `INumber<T>` endpoint type. The set algebra (membership, containment, intersection, union, overlap, adjacency) is defined on the type.
 
 ```csharp
 using Bodu.Numerics;
@@ -121,12 +121,12 @@ Interval<int> shared = period.Intersect(window);           // [50, 100)
 bool joined = period.TryUnion(window, out var u);          // True; u = [0, 200]
 
 period.Contains(50);                                       // True
-period.Contains(100);                                      // False — upper exclusive
+period.Contains(100);                                      // False - upper exclusive
 ```
 
 #### Inferring the endpoint type
 
-The non-generic `Interval` helper class mirrors every factory on `Interval<T>` but lets the compiler infer `T` from the arguments — useful when the endpoint type is obvious from literals or locals:
+The non-generic `Interval` helper class mirrors every factory on `Interval<T>` but lets the compiler infer `T` from the arguments - useful when the endpoint type is obvious from literals or locals:
 
 ```csharp
 var span    = Interval.Closed(1.5, 2.5);            // Interval<double>
@@ -136,11 +136,11 @@ var ints    = Interval.ClosedOpen(0, 100);          // Interval<int>
 
 #### Scheduling: detect a clash and trim it
 
-The closed-open shape `[a, b)` is the natural choice for time slots — adjacent slots share a single boundary without double-counting it.
+The closed-open shape `[a, b)` is the natural choice for time slots - adjacent slots share a single boundary without double-counting it.
 
 ```csharp
-var morning = Interval<int>.ClosedOpen(9,  12);   // [9, 12) — 9am–noon
-var meeting = Interval<int>.ClosedOpen(11, 13);   // [11, 13) — overlapping meeting
+var morning = Interval<int>.ClosedOpen(9,  12);   // [9, 12) - 9am-noon
+var meeting = Interval<int>.ClosedOpen(11, 13);   // [11, 13) - overlapping meeting
 
 if (morning.Overlaps(meeting))
 {
@@ -160,7 +160,7 @@ double Sanitize(double value) =>
     percentage.Contains(value) ? value : throw new ArgumentOutOfRangeException(nameof(value));
 
 Sanitize(99.5);   // 99.5
-Sanitize(100.0);  // 100.0 — closed upper
+Sanitize(100.0);  // 100.0 - closed upper
 Sanitize(101.0);  // throws
 ```
 
@@ -181,9 +181,9 @@ int BucketOf(int dayOfYear) =>
     q4.Contains(dayOfYear) ? 4 :
     throw new ArgumentOutOfRangeException(nameof(dayOfYear));
 
-BucketOf(0);    // 1 — closed lower of q1
-BucketOf(90);   // 2 — q1 ends before 90; q2 includes it
-BucketOf(364);  // 4 — q4 contains [273, 365)
+BucketOf(0);    // 1 - closed lower of q1
+BucketOf(90);   // 2 - q1 ends before 90; q2 includes it
+BucketOf(364);  // 4 - q4 contains [273, 365)
 ```
 
 #### Formatting and parsing
@@ -216,14 +216,14 @@ using System.Text.Json;
 using Bodu.Numerics;
 using Bodu.Numerics.Serialization.Json;
 
-// Default (Strict) — explicit object shape, both bounded sides required on read.
+// Default (Strict) - explicit object shape, both bounded sides required on read.
 JsonSerializerOptions options = new JsonSerializerOptions().AddNumericsJsonConverters();
 string json = JsonSerializer.Serialize(Interval<int>.ClosedOpen(0, 100), options);
 // {"lower":0,"upper":100,"lowerInclusive":true,"upperInclusive":false}
 
 Interval<int> roundTrip = JsonSerializer.Deserialize<Interval<int>>(json, options);
 
-// Compact policy — string form using ISO 31-11 bracket notation.
+// Compact policy - string form using ISO 31-11 bracket notation.
 JsonSerializerOptions compactOptions = new JsonSerializerOptions()
     .AddNumericsJsonConverters(NumericsJsonPolicy.Compact);
 
@@ -287,11 +287,11 @@ set.Complement();                   // (-∞, 1) ∪ (5, 8) ∪ (9, +∞)
 `Interval<T>` is continuous; `DiscreteInterval<T>` models the set of representable integers, so an open interval over consecutive integers is empty and successor-adjacent runs merge:
 
 ```csharp
-DiscreteInterval<int>.Open(1, 2).IsEmpty;   // True — no integer strictly between 1 and 2
+DiscreteInterval<int>.Open(1, 2).IsEmpty;   // True - no integer strictly between 1 and 2
 
 var a = DiscreteInterval<int>.Closed(1, 2);
 var b = DiscreteInterval<int>.Closed(3, 4);
-a.TryUnion(b, out var run);                  // run = [1, 4] — 2 and 3 are successors
+a.TryUnion(b, out var run);                  // run = [1, 4] - 2 and 3 are successors
 
 DiscreteInterval<int>.Closed(1, 10).Count;   // 10
 ```
@@ -317,10 +317,10 @@ Money<USD> balance = Money<USD>.FromFraction(exact);   // one rounding event
 
 ## Where to go next
 
-- **[Bodu.Numerics introduction](index.md)** — namespaces, headline types, scenarios.
-- **[Working with `Fraction<T>`](../../guides/numerics/fraction.md)** — construction, arithmetic, parsing/formatting, continued fractions, rational approximation.
-- **[Working with `Interval<T>`](../../guides/numerics/interval.md)** — endpoint inclusivity, membership, intersection, union, adjacency.
-- **[Interval algebra](../../guides/numerics/interval-algebra.md)** — unbounded endpoints, difference / symmetric difference, operators, and `IntervalSet<T>`.
-- **[Discrete integer intervals](../../guides/numerics/discrete-intervals.md)** — the integer-domain `DiscreteInterval<T>`.
-- **[Bodu.Financial getting started](../financial/getting-started.md)** — for monetary primitives built on `Fraction<BigInteger>`.
-- **[Bodu.Numerics API reference](xref:Bodu.Numerics)** — full type-by-type docs.
+- **[Bodu.Numerics introduction](index.md)** - namespaces, headline types, scenarios.
+- **[Working with `Fraction<T>`](../../guides/numerics/fraction.md)** - construction, arithmetic, parsing/formatting, continued fractions, rational approximation.
+- **[Working with `Interval<T>`](../../guides/numerics/interval.md)** - endpoint inclusivity, membership, intersection, union, adjacency.
+- **[Interval algebra](../../guides/numerics/interval-algebra.md)** - unbounded endpoints, difference / symmetric difference, operators, and `IntervalSet<T>`.
+- **[Discrete integer intervals](../../guides/numerics/discrete-intervals.md)** - the integer-domain `DiscreteInterval<T>`.
+- **[Bodu.Financial getting started](../financial/getting-started.md)** - for monetary primitives built on `Fraction<BigInteger>`.
+- **[Bodu.Numerics API reference](xref:Bodu.Numerics)** - full type-by-type docs.

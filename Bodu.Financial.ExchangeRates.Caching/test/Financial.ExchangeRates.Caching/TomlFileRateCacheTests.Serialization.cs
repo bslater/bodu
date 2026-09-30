@@ -188,8 +188,8 @@ public sealed partial class TomlFileRateCacheTests
     }
 
     /// <summary>
-    /// Verifies that a legacy file written before coverage was tracked — one with only an <c>[[Entries]]</c> array and
-    /// no <c>[[Coverage]]</c> section — still deserializes to its rows with empty coverage and no error.
+    /// Verifies that a legacy file written before coverage was tracked - one with only an <c>[[Entries]]</c> array and
+    /// no <c>[[Coverage]]</c> section - still deserializes to its rows with empty coverage and no error.
     /// </summary>
     [TestMethod]
     public void GetRates_WhenFileHasNoCoverageSection_ShouldReadEntriesWithEmptyCoverage()
@@ -212,8 +212,8 @@ public sealed partial class TomlFileRateCacheTests
     }
 
     /// <summary>
-    /// Verifies that a legacy file written before the upstream fetch instant was tracked — one whose <c>[[Entries]]</c>
-    /// table has no <c>ObservedAtUtc</c> key — still deserializes its rows with a <see langword="null" />
+    /// Verifies that a legacy file written before the upstream fetch instant was tracked - one whose <c>[[Entries]]</c>
+    /// table has no <c>ObservedAtUtc</c> key - still deserializes its rows with a <see langword="null" />
     /// <see cref="CachedRate.ObservedAtUtc" /> and no error, mirroring the missing-<c>[[Coverage]]</c> behaviour.
     /// </summary>
     [TestMethod]

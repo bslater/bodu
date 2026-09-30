@@ -20,8 +20,8 @@ namespace Bodu.Numerics;
 /// <see cref="decimal" /> from the literal suffixes.
 /// </para>
 /// <para>
-/// Prefer the non-generic helpers when the endpoint type is obvious from the arguments — typical for literals, local
-/// variables, and expressions that already carry the type — and use <see cref="Interval{T}" />'s own static factories
+/// Prefer the non-generic helpers when the endpoint type is obvious from the arguments - typical for literals, local
+/// variables, and expressions that already carry the type - and use <see cref="Interval{T}" />'s own static factories
 /// (e.g. <see cref="Interval{T}.Closed(T, T)" />) when the call site needs an explicit type to disambiguate, when the
 /// endpoint type comes from a generic context, or when the factory is being held as a method group.
 /// </para>

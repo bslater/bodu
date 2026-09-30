@@ -8,7 +8,7 @@
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Tests for the resolved-entry origin metadata API on <see cref="ConfigurationView" /> — the
+/// Tests for the resolved-entry origin metadata API on <see cref="ConfigurationView" /> - the
 /// "which section/file/line won for this key" debugging surface.
 /// </summary>
 [TestClass]
@@ -57,7 +57,7 @@ format.indent.size = 4
 
     /// <summary>
     /// Verifies that when multiple sections supply the same key, the entry exposes the *last* matching
-    /// section — last-wins precedence is the resolver's contract and origin metadata must reflect it.
+    /// section - last-wins precedence is the resolver's contract and origin metadata must reflect it.
     /// </summary>
     [TestMethod]
     public void GetEntry_WhenMultipleSectionsMatch_ShouldReturnLastWinningSection()

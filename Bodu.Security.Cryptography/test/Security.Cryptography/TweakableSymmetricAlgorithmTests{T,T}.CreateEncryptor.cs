@@ -93,7 +93,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
 
     /// <summary>
     /// Verifies that <see cref="TweakableSymmetricAlgorithm.CreateEncryptor(byte[], byte[], byte[])" /> throws
-    /// <see cref="CryptographicException" /> when the IV is non-null but has the wrong length in ECB mode — a
+    /// <see cref="CryptographicException" /> when the IV is non-null but has the wrong length in ECB mode - a
     /// supplied IV must always be valid if provided.
     /// </summary>
     [TestMethod]

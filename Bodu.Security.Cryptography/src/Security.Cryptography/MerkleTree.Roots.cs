@@ -115,7 +115,7 @@ public sealed partial class MerkleTree
     /// </summary>
     /// <param name="root">The tree head to bind, <see cref="HashLength" /> bytes long.</param>
     /// <param name="boundValue">
-    /// The value to bind — the entry count in entry mode, or the input's byte length in block mode.
+    /// The value to bind - the entry count in entry mode, or the input's byte length in block mode.
     /// </param>
     /// <returns>The bound root, <see cref="HashLength" /> bytes long.</returns>
     /// <exception cref="ArgumentException">

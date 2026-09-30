@@ -8,8 +8,8 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Provides the base-point multiplications that the signed-digit fixed-base table and the non-adjacent-form
-/// verification of <see cref="Ed25519Point" /> replaced — unsigned 4-bit windows over a table of 64 rows of 16
-/// extended points, joined with the unified addition — kept as an independent oracle that the tests hold the new
+/// verification of <see cref="Ed25519Point" /> replaced - unsigned 4-bit windows over a table of 64 rows of 16
+/// extended points, joined with the unified addition - kept as an independent oracle that the tests hold the new
 /// routines to.
 /// </summary>
 /// <remarks>

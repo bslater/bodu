@@ -9,8 +9,8 @@ using System.Text.Json;
 namespace Bodu.Numerics.Serialization.Json;
 
 /// <summary>
-/// Verifies that <see cref="DiscreteIntervalJsonConverter{T}" /> round-trips discrete intervals — bounded, empty, and
-/// unbounded — through the delegated continuous-interval wire format under each <see cref="NumericsJsonPolicy" />.
+/// Verifies that <see cref="DiscreteIntervalJsonConverter{T}" /> round-trips discrete intervals - bounded, empty, and
+/// unbounded - through the delegated continuous-interval wire format under each <see cref="NumericsJsonPolicy" />.
 /// </summary>
 [TestClass]
 public class DiscreteIntervalJsonConverterTests

@@ -12,8 +12,8 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// of the no-AAD overloads to passing an empty associated-data span.
 /// </summary>
 /// <remarks>
-/// Mode-specific correctness — round-trip recovery, tamper detection, AAD-mismatch detection, nonce
-/// sensitivity, lifecycle errors — is covered uniformly for every <see cref="IAeadBlockCipherModeTransform" />
+/// Mode-specific correctness - round-trip recovery, tamper detection, AAD-mismatch detection, nonce
+/// sensitivity, lifecycle errors - is covered uniformly for every <see cref="IAeadBlockCipherModeTransform" />
 /// implementation in <c>AeadBlockCipherModeTests&lt;TTest, TTransform&gt;</c> and is not re-asserted here.
 /// These tests use <see cref="CcmModeTransform" /> only as a convenient concrete transform to exercise
 /// the wrapper end-to-end; the assertions are deliberately mode-agnostic.
@@ -33,7 +33,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
 
     /// <summary>
     /// Returns a fresh AEAD transform used purely to drive the extension wrappers. CCM is selected
-    /// because its public constructor accepts a block-sized IV — no nonce-length special-casing —
+    /// because its public constructor accepts a block-sized IV - no nonce-length special-casing -
     /// keeping the test focus on the wrapper, not the underlying mode.
     /// </summary>
     private static IAeadBlockCipherModeTransform NewTransform() =>

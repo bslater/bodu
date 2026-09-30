@@ -166,7 +166,7 @@ public partial class OfxRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that a zero future-clamp skew — the default, keeping maximum recency — is accepted.
+    /// Verifies that a zero future-clamp skew - the default, keeping maximum recency - is accepted.
     /// </summary>
     [TestMethod]
     public void TryValidate_WhenFutureClampSkewIsZero_ShouldReturnTrue()

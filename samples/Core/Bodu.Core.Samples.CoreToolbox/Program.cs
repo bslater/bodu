@@ -10,7 +10,7 @@ namespace Bodu.Core.Samples.CoreToolbox;
 
 /// <summary>
 /// Entry point for the core-toolbox sample: a guided tour of the general-purpose building blocks in
-/// <c>Bodu.Core</c> — the <c>SequenceGenerator</c> catalogue, the pooled <c>PooledBufferBuilder&lt;T&gt;</c>,
+/// <c>Bodu.Core</c> - the <c>SequenceGenerator</c> catalogue, the pooled <c>PooledBufferBuilder&lt;T&gt;</c>,
 /// the LINQ-style enumerable operators, the string / comparable / numeric extension surfaces,
 /// <c>WeekPattern</c>, and the <c>Bodu.Threading</c> async primitives. Everything runs offline with fixed
 /// inputs, so the output is identical on every run.

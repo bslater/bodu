@@ -76,8 +76,8 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfCollectionIsEmpty{T}" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for non-empty collections.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfCollectionIsEmpty{T}" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for non-empty collections.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="collection">The collection passed to the guard.</param>

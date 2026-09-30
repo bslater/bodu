@@ -22,8 +22,8 @@ namespace Bodu.Globalization.Recurrence;
 /// reproducible from committed artifacts alone.
 /// </para>
 /// <para>
-/// Rows the library deliberately does not model — sub-daily frequencies, intra-day time expansion, <c>EXRULE</c>,
-/// and occurrence lists the RFC abbreviates — are excluded by flag and reported by name, never silently passed
+/// Rows the library deliberately does not model - sub-daily frequencies, intra-day time expansion, <c>EXRULE</c>,
+/// and occurrence lists the RFC abbreviates - are excluded by flag and reported by name, never silently passed
 /// over.
 /// </para>
 /// </remarks>

@@ -10,8 +10,8 @@ using Bodu.Test.Kat;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Loads the embedded Persian-calendar observance vector table — fifty Gregorian years of independently computed dates
-/// for every <c>global-persian</c> catalogue observance — as KAT rows for <c>[DynamicData]</c> binding.
+/// Loads the embedded Persian-calendar observance vector table - fifty Gregorian years of independently computed dates
+/// for every <c>global-persian</c> catalogue observance - as KAT rows for <c>[DynamicData]</c> binding.
 /// </summary>
 /// <remarks>
 /// <para>

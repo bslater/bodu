@@ -9,8 +9,8 @@ using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Reads the curated Project Wycheproof AEAD fixtures — <c>Name</c>, <c>Key</c>, <c>Iv</c>, <c>Aad</c>, <c>Msg</c>,
-/// <c>Ct</c>, <c>Tag</c>, and <c>Result</c> fields in the <see cref="HexFieldKatReader" /> block format — as
+/// Reads the curated Project Wycheproof AEAD fixtures - <c>Name</c>, <c>Key</c>, <c>Iv</c>, <c>Aad</c>, <c>Msg</c>,
+/// <c>Ct</c>, <c>Tag</c>, and <c>Result</c> fields in the <see cref="HexFieldKatReader" /> block format - as
 /// <see cref="AeadKnownAnswer" /> rows.
 /// </summary>
 public static class WycheproofAeadKatReader

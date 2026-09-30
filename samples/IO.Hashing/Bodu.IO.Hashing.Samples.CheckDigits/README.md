@@ -1,7 +1,7 @@
 # Bodu.IO.Hashing.Samples.CheckDigits
 
 The `Bodu.IO.Hashing.CheckDigits` identifier surface: ~20 published check-digit schemes
-behind one shape — static `Compute`/`IsValid` per scheme plus the streaming
+behind one shape - static `Compute`/`IsValid` per scheme plus the streaming
 `CheckDigitAlgorithm` base. Three scenarios cover validating identifiers across domains,
 generating check digits when issuing new identifiers, and the error classes that
 differentiate the schemes. All scenarios run offline over fixed, published example
@@ -11,11 +11,11 @@ identifiers.
 dotnet run --project samples/IO.Hashing/Bodu.IO.Hashing.Samples.CheckDigits
 ```
 
-## Scenario 1 — ValidateIdentifiers
+## Scenario 1 - ValidateIdentifiers
 
 **Intent.** Show that a form-validation layer treats every identifier domain identically:
 IBAN, ISBN-10/13, EAN-13 barcodes, Luhn card numbers, and ABA routing numbers all expose the
-same static `IsValid`, and a single mistyped character flips each from valid to invalid —
+same static `IsValid`, and a single mistyped character flips each from valid to invalid -
 the exact failure the schemes exist to catch before a record hits a downstream system.
 
 **What it does.** Validates one well-known published value per scheme, then corrupts one
@@ -47,15 +47,15 @@ interior character of each (a realistic typo) and validates again.
 **APIs demonstrated.** `Iban.IsValid`, `Isbn10.IsValid` / `Isbn13.IsValid`, `Ean13.IsValid`,
 `Luhn.IsValid`, `AbaRoutingNumber.IsValid`.
 
-## Scenario 2 — ComputeAndAppend
+## Scenario 2 - ComputeAndAppend
 
-**Intent.** Show the generation direction — issuing identifiers means computing the check
-digit for a payload, one static `Compute` call — plus the streaming
+**Intent.** Show the generation direction - issuing identifiers means computing the check
+digit for a payload, one static `Compute` call - plus the streaming
 `Append`/`GetCurrentCheckDigit` surface for payloads assembled in fragments, mirroring the
 hashing side's `Append`/`GetCurrentHash` shape.
 
 **What it does.** Appends the Luhn digit to a card payload (and re-validates the result),
-derives an ISBN-13 check digit, computes an ISBN-10 check that lands on `'X'` (value 10 —
+derives an ISBN-13 check digit, computes an ISBN-10 check that lands on `'X'` (value 10 -
 the check alphabet is not always decimal), and streams an EAN-13 payload in two fragments
 before reading the digit.
 
@@ -82,7 +82,7 @@ before reading the digit.
 alphabet), instance `Append(ReadOnlySpan<char>)` / `GetCurrentCheckDigit()` /
 `AlgorithmName`.
 
-## Scenario 3 — TransposedDigits
+## Scenario 3 - TransposedDigits
 
 **Intent.** Explain why multiple schemes exist: they detect different *error classes*. Luhn
 catches every single-digit error but provably misses one adjacent transposition (`09 ↔ 90`);
@@ -94,7 +94,7 @@ every adjacent digit pair in turn and validates the damaged value, printing `.` 
 scheme caught the swap and `M` where it missed. Swaps of equal digits are skipped (they
 change nothing).
 
-**What to expect.** Exactly one `M` in the Luhn row — the `90` pair — and clean rows for
+**What to expect.** Exactly one `M` in the Luhn row - the `90` pair - and clean rows for
 Damm and Verhoeff:
 
 ```text
@@ -135,7 +135,7 @@ Bodu.IO.Hashing.Samples.CheckDigits/
 
 ## Related
 
-- `Bodu.IO.Hashing.Samples.CustomCheckDigit` — implementing the `CheckDigitAlgorithm`
+- `Bodu.IO.Hashing.Samples.CustomCheckDigit` - implementing the `CheckDigitAlgorithm`
   contract yourself, proven by the shared contract-test base.
-- `Bodu.IO.Hashing.Samples.ChecksumTour` — the byte-integrity half of the package.
+- `Bodu.IO.Hashing.Samples.ChecksumTour` - the byte-integrity half of the package.
 - Guides: `docs/guides/io-hashing/check-digits.md`.

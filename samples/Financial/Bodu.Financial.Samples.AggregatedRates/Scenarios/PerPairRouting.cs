@@ -12,7 +12,7 @@ namespace Bodu.Financial.Samples.AggregatedRates.Scenarios;
 
 /// <summary>
 /// Demonstrates per-pair routing with <see cref="CurrencyPairRoute" />: individual currency pairs get
-/// their own provider order — and optionally their own strategy — while everything else follows the
+/// their own provider order - and optionally their own strategy - while everything else follows the
 /// aggregator's defaults. Route each pair to its authoritative source.
 /// </summary>
 public static class PerPairRouting

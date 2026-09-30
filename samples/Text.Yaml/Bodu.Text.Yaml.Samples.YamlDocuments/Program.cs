@@ -9,7 +9,7 @@ using Bodu.Text.Yaml.Samples.YamlDocuments.Scenarios;
 namespace Bodu.Text.Yaml.Samples.YamlDocuments;
 
 /// <summary>
-/// Entry point for the YAML document-model sample: the layers beneath <c>YamlSerializer</c> — the
+/// Entry point for the YAML document-model sample: the layers beneath <c>YamlSerializer</c> - the
 /// ref-struct <c>Utf8YamlWriter</c>/<c>Utf8YamlReader</c> token surface, the mutable <c>YamlNode</c>
 /// DOM, the read-only <c>YamlDocument</c> DOM, and the stream/async serializer facade. Everything
 /// runs offline against the committed <c>Data/server-config.yaml</c>.

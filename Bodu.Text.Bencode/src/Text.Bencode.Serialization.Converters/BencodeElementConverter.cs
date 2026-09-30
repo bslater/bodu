@@ -16,7 +16,7 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// </summary>
 /// <remarks>
 /// On read the value's raw encoded bytes are captured and parsed into a non-pooled internal
-/// <see cref="BencodeDocument" /> that backs the returned element — the same lifetime a
+/// <see cref="BencodeDocument" /> that backs the returned element - the same lifetime a
 /// <see cref="BencodeElement.Clone" /> result has, so the element never requires disposal. The subtree is re-parsed
 /// under the serializer's dictionary-key leniency, so a document the serializer accepts is also accepted here.
 /// </remarks>

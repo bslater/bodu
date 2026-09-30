@@ -16,8 +16,8 @@ public abstract partial class RingBackedCollection<T> :
     /// </summary>
     /// <returns>An <see cref="Enumerator" /> for the collection.</returns>
     /// <remarks>
-    /// The enumerator captures a structural-version token at creation. Any subsequent structural mutation — including
-    /// <c>Clear</c>, <c>TrimExcess</c>, or any of the derived-type mutators — invalidates the enumerator. The next
+    /// The enumerator captures a structural-version token at creation. Any subsequent structural mutation - including
+    /// <c>Clear</c>, <c>TrimExcess</c>, or any of the derived-type mutators - invalidates the enumerator. The next
     /// <see cref="Enumerator.MoveNext" /> or <see cref="Enumerator.Reset" /> call throws
     /// <see cref="System.InvalidOperationException" />.
     /// </remarks>

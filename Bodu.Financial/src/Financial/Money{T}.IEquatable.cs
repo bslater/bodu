@@ -38,7 +38,7 @@ public readonly partial struct Money<TCurrency> :
         obj is Money<TCurrency> other && Equals(other);
 
     /// <summary>
-    /// Returns a hash code consistent with <see cref="Equals(Money{TCurrency})" /> — combining the closed generic type
+    /// Returns a hash code consistent with <see cref="Equals(Money{TCurrency})" /> - combining the closed generic type
     /// identity (not the runtime <see cref="ICurrency.IsoCode" /> string) with the amount so hashing matches equality
     /// even when two different currency tag types share an ISO code or when a custom tag mutates its reported code.
     /// </summary>

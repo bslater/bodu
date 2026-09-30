@@ -99,8 +99,8 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfOutOfRange{T}(T, T, T, bool, string)" /> does not throw —
-    /// and on the ParamName-asserting overload reports nothing — for values inside the requested bounds.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfOutOfRange{T}(T, T, T, bool, string)" /> does not throw -
+    /// and on the ParamName-asserting overload reports nothing - for values inside the requested bounds.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="value">The value compared against the bounds.</param>

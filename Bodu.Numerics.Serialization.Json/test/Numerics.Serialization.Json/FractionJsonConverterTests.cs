@@ -96,8 +96,8 @@ public class FractionJsonConverterTests
     }
 
     /// <summary>
-    /// Verifies that deserializing the canonical object form rejects malformed payloads — a duplicate property, a
-    /// missing required property, or a non-numeric value — with a <see cref="JsonException" />.
+    /// Verifies that deserializing the canonical object form rejects malformed payloads - a duplicate property, a
+    /// missing required property, or a non-numeric value - with a <see cref="JsonException" />.
     /// </summary>
     [TestMethod]
     [DataRow("{\"numerator\":1,\"denominator\":2,\"denominator\":3}", DisplayName = "Duplicate denominator")]
@@ -116,7 +116,7 @@ public class FractionJsonConverterTests
     /// <summary>
     /// Verifies that components which parse but whose canonical form overflows the backing integer type surface as
     /// <see cref="JsonException" />, honoring the deserialization contract, instead of leaking
-    /// <see cref="OverflowException" /> from the fraction constructor — a denominator of <see cref="int.MinValue" />
+    /// <see cref="OverflowException" /> from the fraction constructor - a denominator of <see cref="int.MinValue" />
     /// cannot be negated into canonical positive form.
     /// </summary>
     [TestMethod]

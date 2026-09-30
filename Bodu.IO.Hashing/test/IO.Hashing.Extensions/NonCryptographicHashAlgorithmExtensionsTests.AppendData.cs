@@ -15,7 +15,7 @@ namespace Bodu.IO.Hashing.Extensions;
 /// </summary>
 public partial class NonCryptographicHashAlgorithmExtensionsTests
 {
-    // ─── Span overload — argument validation ──────────────────────────────────────────────────
+    // ─── Span overload - argument validation ──────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that the span overload throws <see cref="ArgumentNullException" /> when the algorithm is
@@ -32,7 +32,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         });
     }
 
-    // ─── Stream overload — argument validation ─────────────────────────────────────────────────
+    // ─── Stream overload - argument validation ─────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that the stream overload throws <see cref="ArgumentNullException" /> when the algorithm is
@@ -81,7 +81,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a small <paramref name="bufferSize" /> — forcing multiple read iterations — produces the same
+    /// Verifies that a small <paramref name="bufferSize" /> - forcing multiple read iterations - produces the same
     /// result as the default buffer size.
     /// </summary>
     [TestMethod]
@@ -173,7 +173,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
     }
 
-    // ─── Span overload — accumulation ─────────────────────────────────────────────────────────
+    // ─── Span overload - accumulation ─────────────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that an empty span does not alter the current hash state.
@@ -204,7 +204,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         CollectionAssert.AreEqual(fromSpan.GetCurrentHash(), fromStream.GetCurrentHash());
     }
 
-    // ─── Stream overload — correctness ────────────────────────────────────────────────────────
+    // ─── Stream overload - correctness ────────────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that an empty stream does not alter the current hash state.

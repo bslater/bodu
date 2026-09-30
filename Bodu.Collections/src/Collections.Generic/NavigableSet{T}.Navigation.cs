@@ -190,7 +190,7 @@ public sealed partial class NavigableSet<T>
     }
 
     /// <summary>
-    /// Returns the element at the specified zero-based rank — the k-th smallest element.
+    /// Returns the element at the specified zero-based rank - the k-th smallest element.
     /// </summary>
     /// <param name="rank">The zero-based rank of the element to select.</param>
     /// <returns>The element whose rank is <paramref name="rank" />.</returns>

@@ -23,12 +23,12 @@ namespace Bodu.IO.Hashing.Checksums;
 /// the canonical positionally weighted block recurrence so that both paths produce identical digests for any input.
 /// </para>
 /// <para>
-/// <strong>When to choose Adler.</strong> Adler-32 is the canonical checksum used by zlib (RFC 1950) — pick
+/// <strong>When to choose Adler.</strong> Adler-32 is the canonical checksum used by zlib (RFC 1950) - pick
 /// <see cref="Adler32" /> any time interoperability with zlib, deflate, or PNG's chunk integrity is required. It is
 /// faster than CRC at the cost of weaker error-detection guarantees, and is therefore preferred where throughput
 /// matters more than rigorous coverage of burst errors. <see cref="Adler64" /> generalizes the construction to 64 bits
 /// for very large inputs where the Adler-32 collision floor becomes a concern; <see cref="Adler32C" /> swaps the prime
-/// modulus 65521 for the power-of-two 65536 to enable cheaper modular reductions in vectorized paths — its outputs are
+/// modulus 65521 for the power-of-two 65536 to enable cheaper modular reductions in vectorized paths - its outputs are
 /// <em>not</em> interchangeable with standard Adler-32. For stronger error detection prefer <see cref="Crc" />; for
 /// hash-table keying prefer <see cref="Bodu.IO.Hashing.MurmurHash3" /> or <see cref="Bodu.IO.Hashing.CityHash" /> .
 /// </para>
@@ -97,7 +97,7 @@ public abstract class Adler<T>
         // Canonical zlib-style deferred reduction: NMAX (5552) is the largest run of bytes for which the running
         // B accumulator provably stays within a 32-bit value, so both accumulators are reduced once per NMAX bytes.
         // A previous SIMD path here only walked each widened Vector<T> lane with per-element indexing and generic
-        // math — no actual vector arithmetic — which is typically slower than this scalar loop, so it was removed.
+        // math - no actual vector arithmetic - which is typically slower than this scalar loop, so it was removed.
         while (index < length)
         {
             pA += T.CreateTruncating(source[index++]);

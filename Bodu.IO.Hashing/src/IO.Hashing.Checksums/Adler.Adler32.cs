@@ -32,7 +32,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </list>
 /// <para>
 /// <strong>When to choose Adler32.</strong> The right choice whenever interoperability with zlib, deflate, gzip, or PNG
-/// is required — every Adler-32 produced or consumed by those formats is bit-identical to this class's output. Faster
+/// is required - every Adler-32 produced or consumed by those formats is bit-identical to this class's output. Faster
 /// than CRC at the cost of weaker error coverage; pick <see cref="Crc" /> with <see cref="CrcStandard.CRC32_ISOHDLC" />
 /// when error-detection guarantees matter more than throughput, and <see cref="Adler64" /> for very large inputs where
 /// the Adler-32 collision floor becomes a concern.

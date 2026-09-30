@@ -1,8 +1,8 @@
 # Bodu.IO.Hashing
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-Non-cryptographic hashing, checksums, and check-digit algorithms for .NET 8. Hash algorithms derive from `System.IO.Hashing.NonCryptographicHashAlgorithm`, so they expose the standard `Append` / `GetCurrentHash` / `GetHashAndReset` streaming surface and slot into existing pipelines. This package covers data-integrity and identifier-validation use cases — **not** security. For keyed/cryptographic hashing use the sibling `Bodu.Security.Cryptography` package or the platform `System.Security.Cryptography` types.
+Non-cryptographic hashing, checksums, and check-digit algorithms for .NET 8. Hash algorithms derive from `System.IO.Hashing.NonCryptographicHashAlgorithm`, so they expose the standard `Append` / `GetCurrentHash` / `GetHashAndReset` streaming surface and slot into existing pipelines. This package covers data-integrity and identifier-validation use cases - **not** security. For keyed/cryptographic hashing use the sibling `Bodu.Security.Cryptography` package or the platform `System.Security.Cryptography` types.
 
 ## Installation
 
@@ -43,7 +43,7 @@ the full catalogue, streaming, and verification surfaces.
 |---|---|---|---|
 | Fletcher | `Fletcher16`, `Fletcher32`, `Fletcher64` | 16 / 32 / 64 | Position-sensitive checksum |
 | Adler | `Adler32`, `Adler32C`, `Adler64` | 32 / 64 | RFC 1950 family |
-| FNV | `Fnv132`, `Fnv164`, `Fnv1a32`, `Fnv1a64` | 32 / 64 | Fowler–Noll–Vo |
+| FNV | `Fnv132`, `Fnv164`, `Fnv1a32`, `Fnv1a64` | 32 / 64 | Fowler-Noll-Vo |
 | CityHash | `CityHash32`, `CityHash64`, `CityHash128` | 32 / 64 / 128 | Google CityHash |
 | MurmurHash3 | `MurmurHash3_32`, `MurmurHash3_128` | 32 / 128 | |
 | Pearson | `Pearson` (selectable `PearsonTableType`) | 8 | |
@@ -51,7 +51,7 @@ the full catalogue, streaming, and verification surfaces.
 
 ## CRC
 
-A single parametric `Crc` engine drives the full RevEng catalogue — **112 standards** spanning widths from CRC-3 to CRC-64 (CRC-3, -4, -5, -6, -7, -8, -10…-17, -21, -24, -30, -31, -32, -40, -64). `CrcStandard` is the immutable parameter bundle (polynomial, init, reflect-in/out, final XOR); the catalogue is exposed through the `CrcStandards` enum, and `CrcLookupTableCache` shares lookup tables across instances with matching `(width, polynomial, reflectIn)`. `Crc` implements `IResumableHashAlgorithm`, so a digest can be extended from a prior hash without replaying the original input.
+A single parametric `Crc` engine drives the full RevEng catalogue - **112 standards** spanning widths from CRC-3 to CRC-64 (CRC-3, -4, -5, -6, -7, -8, -10…-17, -21, -24, -30, -31, -32, -40, -64). `CrcStandard` is the immutable parameter bundle (polynomial, init, reflect-in/out, final XOR); the catalogue is exposed through the `CrcStandards` enum, and `CrcLookupTableCache` shares lookup tables across instances with matching `(width, polynomial, reflectIn)`. `Crc` implements `IResumableHashAlgorithm`, so a digest can be extended from a prior hash without replaying the original input.
 
 ## Check digits
 
@@ -74,9 +74,9 @@ The extension surface on `NonCryptographicHashAlgorithm` adds `AppendData(Stream
 
 ## Runnable samples
 
-The repository ships offline, `dotnet run`-able sample projects for this package — the CRC
+The repository ships offline, `dotnet run`-able sample projects for this package - the CRC
 catalogue and checksum families, streaming and resumable digests, identifier check digits
-across domains, and a custom check-digit scheme proven by the shared contract-test base —
+across domains, and a custom check-digit scheme proven by the shared contract-test base -
 under [`samples/IO.Hashing/`](https://github.com/bslater/bodu/tree/master/samples/IO.Hashing).
 
 ## Testing

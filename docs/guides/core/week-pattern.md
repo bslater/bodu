@@ -4,13 +4,13 @@ title: WeekPattern
 
 # WeekPattern
 
-`WeekPattern` is an immutable value-type bitmask representing a set of selected days in a standard seven-day week. It supports non-destructive composition, bitwise operators, string parsing, formatting, and enumeration — making it a natural primitive for schedules, recurrence rules, and working-day calculations.
+`WeekPattern` is an immutable value-type bitmask representing a set of selected days in a standard seven-day week. It supports non-destructive composition, bitwise operators, string parsing, formatting, and enumeration - making it a natural primitive for schedules, recurrence rules, and working-day calculations.
 
 Because `WeekPattern` is a value type, every operation that changes the selection returns a new instance rather than mutating the receiver.
 
-![WeekPattern seven-day bitmask — one bit per day indexed by DayOfWeek, with composition and bitwise operators](../../images/diagrams/week-pattern.svg)
+![WeekPattern seven-day bitmask - one bit per day indexed by DayOfWeek, with composition and bitwise operators](../../images/diagrams/week-pattern.svg)
 
-## Pattern 1 — build a pattern with With / Without
+## Pattern 1 - build a pattern with With / Without
 
 <!-- compile -->
 ```csharp
@@ -28,23 +28,23 @@ Console.WriteLine(weekdays.Contains(DayOfWeek.Monday)); // True
 Console.WriteLine(weekdays.Contains(DayOfWeek.Sunday)); // False
 ```
 
-## Pattern 2 — use the built-in well-known patterns
+## Pattern 2 - use the built-in well-known patterns
 
 <!-- compile -->
 ```csharp
 using Bodu;
 
-WeekPattern workweek  = WeekPattern.Weekdays;           // Mon–Fri
-WeekPattern weekend   = WeekPattern.Weekend;            // Sat–Sun
-WeekPattern allDays   = WeekPattern.AllDays;            // Mon–Sun
+WeekPattern workweek  = WeekPattern.Weekdays;           // Mon-Fri
+WeekPattern weekend   = WeekPattern.Weekend;            // Sat-Sun
+WeekPattern allDays   = WeekPattern.AllDays;            // Mon-Sun
 WeekPattern empty     = WeekPattern.Empty;              // no days
 
 // Regional working weeks, one preset per WorkingDaysOfWeek member.
-WeekPattern gulf      = WeekPattern.SundayToThursday;   // Sun–Thu
-WeekPattern sixDay    = WeekPattern.MondayToSaturday;   // Mon–Sat
+WeekPattern gulf      = WeekPattern.SundayToThursday;   // Sun-Thu
+WeekPattern sixDay    = WeekPattern.MondayToSaturday;   // Mon-Sat
 ```
 
-## Pattern 3 — bitwise combination
+## Pattern 3 - bitwise combination
 
 The `|`, `&`, and `~` operators compose or intersect patterns:
 
@@ -59,24 +59,24 @@ WeekPattern monFri = mon | fri;
 // Intersect with weekdays to strip any weekend days.
 WeekPattern safeSchedule = monFri & WeekPattern.Weekdays;
 
-// Invert — days NOT in the pattern.
-WeekPattern nonWorking = ~WeekPattern.Weekdays;  // Sat–Sun
+// Invert - days NOT in the pattern.
+WeekPattern nonWorking = ~WeekPattern.Weekdays;  // Sat-Sun
 ```
 
-All four bitwise operators are defined: `|` (union), `&` (intersection), `^` (symmetric difference — days in exactly one operand), and `~` (complement within the seven-day week). Symmetric difference is handy for "which days changed" between two schedules:
+All four bitwise operators are defined: `|` (union), `&` (intersection), `^` (symmetric difference - days in exactly one operand), and `~` (complement within the seven-day week). Symmetric difference is handy for "which days changed" between two schedules:
 
 <!-- compile -->
 ```csharp
 WeekPattern oldShift = WeekPattern.Parse("_MTW___");
 WeekPattern newShift = WeekPattern.Parse("__TWT__");
-WeekPattern changed  = oldShift ^ newShift;   // Mon and Thu — the days that differ
+WeekPattern changed  = oldShift ^ newShift;   // Mon and Thu - the days that differ
 ```
 
 ## Comparing patterns
 
-`WeekPattern` implements `IEquatable<WeekPattern>` and `IComparable<WeekPattern>`, and defines `==`, `!=`, `<`, `<=`, `>`, `>=`. Two patterns are equal when they select the same days; the ordering operators compare the underlying bitmask, so they give a total order suitable for sorting or use as a dictionary key — they are *not* a subset relation. Use `&`/`==` to test containment (`(a & b) == b` means "a contains all of b").
+`WeekPattern` implements `IEquatable<WeekPattern>` and `IComparable<WeekPattern>`, and defines `==`, `!=`, `<`, `<=`, `>`, `>=`. Two patterns are equal when they select the same days; the ordering operators compare the underlying bitmask, so they give a total order suitable for sorting or use as a dictionary key - they are *not* a subset relation. Use `&`/`==` to test containment (`(a & b) == b` means "a contains all of b").
 
-## Pattern 4 — parse from a compact string
+## Pattern 4 - parse from a compact string
 
 `WeekPattern.Parse` accepts standard abbreviations (case-insensitive):
 
@@ -91,7 +91,7 @@ WeekPattern all  = WeekPattern.Parse("SMTWTFS");      // every day
 bool ok = WeekPattern.TryParse("MF", out WeekPattern result);
 ```
 
-## Pattern 5 — enumerate selected days
+## Pattern 5 - enumerate selected days
 
 `WeekPattern` implements `IEnumerable<DayOfWeek>`, always yielding selected days in `DayOfWeek` order (Sunday = 0 first, unless the first day of the week is configured otherwise):
 
@@ -107,7 +107,7 @@ foreach (DayOfWeek day in schedule)
 // Monday, Tuesday, Wednesday, Thursday, Friday
 ```
 
-## Pattern 6 — remove a day
+## Pattern 6 - remove a day
 
 <!-- compile -->
 ```csharp
@@ -119,7 +119,7 @@ WeekPattern fourDays = fiveDays.Without(DayOfWeek.Friday);
 Console.WriteLine(fourDays.Count);   // 4
 ```
 
-## Pattern 7 — schedule a recurring date using WeekPattern
+## Pattern 7 - schedule a recurring date using WeekPattern
 
 <!-- compile -->
 ```csharp
@@ -140,9 +140,9 @@ for (DateOnly d = start; d <= end; d = d.AddDays(1))
 }
 ```
 
-## Pattern 8 — bridge to and from WorkingDaysOfWeek
+## Pattern 8 - bridge to and from WorkingDaysOfWeek
 
-<xref:Bodu.WorkingDaysOfWeek> is the companion enum naming the common working-week presets (`MondayToFriday`, `SaturdayToThursday`, …). Convert between the two through the extension methods on <xref:Bodu.Extensions.WorkingDaysOfWeekExtensions> — useful when an API takes the named preset but you need the raw day set (or vice versa):
+<xref:Bodu.WorkingDaysOfWeek> is the companion enum naming the common working-week presets (`MondayToFriday`, `SaturdayToThursday`, …). Convert between the two through the extension methods on <xref:Bodu.Extensions.WorkingDaysOfWeekExtensions> - useful when an API takes the named preset but you need the raw day set (or vice versa):
 
 <!-- compile -->
 ```csharp
@@ -157,26 +157,26 @@ WorkingDaysOfWeek back = WeekPattern.Weekdays.ToWorkingDaysOfWeek();   // Monday
 
 | Member | Description |
 |---|---|
-| `Empty` | Static field — no days selected. |
-| `Weekdays` | Static field — Mon–Fri. |
-| `Weekend` | Static field — Sat–Sun. |
-| `AllDays` | Static field — every day, Mon–Sun. |
-| `MondayToFriday`, `MondayToSaturday`, `MondayToThursdayAndSaturday`, `SaturdayToThursday`, `SaturdayToWednesday`, `SundayToFriday`, `SundayToThursday` | Static fields — the regional working-week presets, one per `WorkingDaysOfWeek` member (`MondayToFriday` is the same set as `Weekdays`). |
+| `Empty` | Static field - no days selected. |
+| `Weekdays` | Static field - Mon-Fri. |
+| `Weekend` | Static field - Sat-Sun. |
+| `AllDays` | Static field - every day, Mon-Sun. |
+| `MondayToFriday`, `MondayToSaturday`, `MondayToThursdayAndSaturday`, `SaturdayToThursday`, `SaturdayToWednesday`, `SundayToFriday`, `SundayToThursday` | Static fields - the regional working-week presets, one per `WorkingDaysOfWeek` member (`MondayToFriday` is the same set as `Weekdays`). |
 | `With(DayOfWeek)` | Returns a new pattern with the day added. |
 | `Without(DayOfWeek)` | Returns a new pattern with the day removed. |
 | `Contains(DayOfWeek)` | Returns `true` if the day is selected. |
-| `Count` | Number of selected days (0–7). |
+| `Count` | Number of selected days (0-7). |
 | `Parse(string)` | Parses a compact abbreviation string. Throws on invalid input. |
 | `TryParse(string, out WeekPattern)` | Parses without throwing. |
 | `ToString()` | Returns the compact abbreviation string. |
 | `\|`, `&`, `^`, `~` | Union, intersection, symmetric-difference, complement operators. |
 | `==`, `!=`, `<`, `<=`, `>`, `>=` | Equality (same day set) and total-order comparison of the bitmask. |
-| `IComparable<WeekPattern>`, `IComparable<byte>`, `IComparable` | `CompareTo` over the bitmask — the same total order the comparison operators use, so patterns sort with `OrderBy` and `SortedSet<WeekPattern>`. |
+| `IComparable<WeekPattern>`, `IComparable<byte>`, `IComparable` | `CompareTo` over the bitmask - the same total order the comparison operators use, so patterns sort with `OrderBy` and `SortedSet<WeekPattern>`. |
 | `IEnumerable<DayOfWeek>` | Enumerates selected days in `DayOfWeek` order. |
 
 ## Where to go next
 
-- [Circular buffer](circular-buffer.md) — fixed-capacity FIFO ring buffer.
-- [Evicting dictionary](evicting-dictionary.md) — capacity-bounded dictionary with FIFO / LRU / LFU eviction.
-- [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.
-- **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.
+- [Circular buffer](circular-buffer.md) - fixed-capacity FIFO ring buffer.
+- [Evicting dictionary](evicting-dictionary.md) - capacity-bounded dictionary with FIFO / LRU / LFU eviction.
+- [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) - full namespace overview.
+- **[Core Foundations guides](../topics/core-foundations.md)** - every guide in this topic.

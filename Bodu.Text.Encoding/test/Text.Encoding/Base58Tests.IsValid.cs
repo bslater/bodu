@@ -60,14 +60,14 @@ public sealed partial class Base58Tests
 
     /// <summary>
     /// Verifies that <see cref="Base58.IsValid" /> with <see cref="BaseFormatStyles.IgnoreWhitespace" /> tolerates
-    /// whitespace anywhere in the input — exercises the whitespace-skip branch.
+    /// whitespace anywhere in the input - exercises the whitespace-skip branch.
     /// </summary>
     [TestMethod]
     public void IsValid_WhenIgnoreWhitespaceAndInputContainsWhitespace_ShouldReturnTrue() => Assert.IsTrue(Base58.IsValid("9 Aj\tdv\rz\nr".AsSpan(), Base58Variant.BitcoinFlickr, BaseFormatStyles.IgnoreWhitespace));
 
     /// <summary>
     /// Verifies that <see cref="Base58.IsValid" /> returns <see langword="false" /> for input containing a character
-    /// past the 128-entry lookup table range — exercises the <c>c &gt;= lookup.Length</c> branch.
+    /// past the 128-entry lookup table range - exercises the <c>c &gt;= lookup.Length</c> branch.
     /// </summary>
     [TestMethod]
     public void IsValid_WhenInputContainsCharAboveLookupRange_ShouldReturnFalse() =>
@@ -82,7 +82,7 @@ public sealed partial class Base58Tests
     public void IsValid_WhenInputContainsWhitespaceWithoutFlag_ShouldReturnFalse() => Assert.IsFalse(Base58.IsValid("9 Ajdvzr".AsSpan()));
 
     /// <summary>
-    /// Verifies that <see cref="Base58.IsValid" /> recognises the Ripple variant alphabet — driving the variant
+    /// Verifies that <see cref="Base58.IsValid" /> recognises the Ripple variant alphabet - driving the variant
     /// branch independently from the Bitcoin/Flickr default.
     /// </summary>
     [TestMethod]

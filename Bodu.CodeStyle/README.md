@@ -28,7 +28,7 @@ organised, so suppressing or re-targeting a family in `.editorconfig` stays stra
 | `BODU6xxx` | Design / API shape | deferred |
 | `BODU9xxx` | Whitespace / brace style | deferred |
 
-### BODU1xxx — XML documentation
+### BODU1xxx - XML documentation
 
 Each documented XML tag has its own diagnostic ID so individual tags can be silenced or re-targeted in
 `.editorconfig` independently. All BODU1xxx descriptors share the `Documentation` category, so a single
@@ -55,9 +55,9 @@ XML-doc family in one line.
 | `BODU1016` | `<see>` | inline atomic |
 | `BODU1017` | `<paramref>` | inline atomic |
 | `BODU1018` | `<typeparamref>` | inline atomic |
-| `BODU1040` | _(none — cross-cutting)_ | prose / prefix / indent changes outside any tag |
+| `BODU1040` | _(none - cross-cutting)_ | prose / prefix / indent changes outside any tag |
 
-#### BODU14xx — content quality (shipping)
+#### BODU14xx - content quality (shipping)
 
 These rules go beyond formatting and assert documentation *content*. Each is enabled by default at warning
 severity and ships with a code fix.
@@ -65,7 +65,7 @@ severity and ships with a code fix.
 | ID | Tag | Rule | Fix |
 |---|---|---|---|
 | `BODU1405` | `<code>` | A `<code>` element must begin with a `<![CDATA[…]]>` section flush against the `///` prefix, so language samples and XML-significant characters render verbatim. | Wraps the body in `<![CDATA[…]]>` (or removes the stray space before an existing opener). |
-| `BODU1406` | `<typeparam>` | A `<typeparam>` element must fit on a single line; explanatory prose beyond a concise statement is relocated. | **Content rewrite** — shortens the element to its first sentence and moves the trailing prose into a `<para>` in the type's `<remarks>`. Fires only when there is an unambiguous sentence boundary. |
+| `BODU1406` | `<typeparam>` | A `<typeparam>` element must fit on a single line; explanatory prose beyond a concise statement is relocated. | **Content rewrite** - shortens the element to its first sentence and moves the trailing prose into a `<para>` in the type's `<remarks>`. Fires only when there is an unambiguous sentence boundary. |
 
 > `BODU1406` moves prose between documentation sections, so it changes rendered output rather than only
 > reformatting. Its Fix All coalesces every relocated paragraph for a doc comment into one `<remarks>` block.
@@ -74,20 +74,20 @@ Reserved future ranges within BODU1xxx:
 
 | Range | Purpose |
 |---|---|
-| `BODU1019` – `BODU1039` | Reserved for additional documented tags (e.g. `<seealso>`, `<note>`). |
-| `BODU1041` – `BODU1099` | Reserved for granular cross-cutting splits (separate IDs for prefix vs indent vs line length). |
-| `BODU1100` – `BODU1199` | Required tags (e.g. missing `<summary>` on a public method). |
-| `BODU1200` – `BODU1299` | Tag / element ordering inside doc comments. |
-| `BODU1300` – `BODU1399` | `cref` / `paramref` / `typeparamref` reference validity. |
-| `BODU1400` – `BODU1404`, `BODU1407` – `BODU1499` | Reserved for further content-quality rules (empty tags, redundant prose). |
+| `BODU1019` - `BODU1039` | Reserved for additional documented tags (e.g. `<seealso>`, `<note>`). |
+| `BODU1041` - `BODU1099` | Reserved for granular cross-cutting splits (separate IDs for prefix vs indent vs line length). |
+| `BODU1100` - `BODU1199` | Required tags (e.g. missing `<summary>` on a public method). |
+| `BODU1200` - `BODU1299` | Tag / element ordering inside doc comments. |
+| `BODU1300` - `BODU1399` | `cref` / `paramref` / `typeparamref` reference validity. |
+| `BODU1400` - `BODU1404`, `BODU1407` - `BODU1499` | Reserved for further content-quality rules (empty tags, redundant prose). |
 
-### BODU0xxx — analyzer infrastructure
+### BODU0xxx - analyzer infrastructure
 
 | ID | Severity | Purpose |
 |---|---|---|
 | `BODU0001` | warning | Reported when a `bodu.xmldocstyle.json` configuration file is present but invalid. The formatting analyzers fall back to the built-in defaults; this diagnostic makes the misconfiguration visible instead of silent. Category `BoduCodeStyle`. |
 
-`BODU0002` – `BODU0099` remain reserved for further infrastructure diagnostics (unknown JSON property in strict
+`BODU0002` - `BODU0099` remain reserved for further infrastructure diagnostics (unknown JSON property in strict
 mode, invalid `.editorconfig` value, dependency/load failure).
 
 ## Formatting policy
@@ -107,24 +107,24 @@ Defaults match the Bodu codebase conventions:
 
 The analyzer reads policy from three layers, applied in order:
 
-1. **Defaults in code** — `XmlDocFormatPolicyDefaults.CreateDefaults()`.
-2. **JSON additional file** — `bodu.xmldocstyle.json` added as `<AdditionalFiles>` in the consumer csproj. The
+1. **Defaults in code** - `XmlDocFormatPolicyDefaults.CreateDefaults()`.
+2. **JSON additional file** - `bodu.xmldocstyle.json` added as `<AdditionalFiles>` in the consumer csproj. The
    JSON shape mirrors `XmlDocFormatOptions`. Every property is honored by the formatter:
-   - `maxLineLength`, `documentationPrefix`, `indentText` — physical layout (line width, line prefix, and the
+   - `maxLineLength`, `documentationPrefix`, `indentText` - physical layout (line width, line prefix, and the
      per-level indent applied to nested block content; the default `indentText` is empty, i.e. flush).
    - `blockTags`, `inlineTags`, `forceMultilineTags`, `singleLineWhenShort`, `neverSplitTagContent`,
-     `tagPolicies` — tag layout. A non-`auto` `tagPolicies.<tag>.layout` is authoritative and overrides the
+     `tagPolicies` - tag layout. A non-`auto` `tagPolicies.<tag>.layout` is authoritative and overrides the
      convenience sets; otherwise layout is resolved from `forceMultilineTags` → `singleLineWhenShort` →
      `inlineTags` → `blockTags`. `neverSplitTagContent` (and a per-tag `allowLineBreakInside: false`) keeps an
      over-budget single-line tag intact rather than expanding it.
-   - `collapseProseWhitespace`, `preserveBlankLines`, `preserveXmlTagAttributes`, `preserveCrefText` —
+   - `collapseProseWhitespace`, `preserveBlankLines`, `preserveXmlTagAttributes`, `preserveCrefText` -
      normalization toggles. `collapseProseWhitespace` (default `true`) collapses runs of prose whitespace to a
      single space; `preserveBlankLines` (default `false`) keeps authored blank lines; `preserveXmlTagAttributes`
-     (default `false`) preserves a tag's authored layout verbatim — including line breaks across a multi-line
-     tag — instead of reflowing it onto one line; `preserveCrefText` (default `true`) keeps whitespace inside
+     (default `false`) preserves a tag's authored layout verbatim - including line breaks across a multi-line
+     tag - instead of reflowing it onto one line; `preserveCrefText` (default `true`) keeps whitespace inside
      attribute values when a tag is reflowed (it has no effect when `preserveXmlTagAttributes` already preserves
      the tag verbatim).
-3. **`.editorconfig` scalar overrides** — keys such as `bodu_xmldoc_max_line_length`, plus the standard
+3. **`.editorconfig` scalar overrides** - keys such as `bodu_xmldoc_max_line_length`, plus the standard
    `dotnet_diagnostic.BODU####.severity` per individual rule and `end_of_line`. To silence or re-target the
    whole XML-doc family at once, use
    `dotnet_analyzer_diagnostic.category-Documentation.severity = …` instead of listing each rule.
@@ -167,7 +167,7 @@ bash bld/pack-codestyle-analyzer.sh         # bash / Linux / macOS / WSL / Git B
 # 3. Force-restore the consumer project so it picks up the freshly extracted DLLs.
 dotnet restore Bodu.Core/src/Bodu.Core.csproj --force
 
-# 4. Rebuild the consumer — the new analyzer is now loaded by Roslyn.
+# 4. Rebuild the consumer - the new analyzer is now loaded by Roslyn.
 dotnet build Bodu.Core/src/Bodu.Core.csproj -c Release
 
 # 5. Commit the updated local-packages/Bodu.CodeStyle.XmlDocumentation.1.0.0.nupkg
@@ -176,11 +176,11 @@ git add Bodu.CodeStyle/ local-packages/
 git commit
 ```
 
-If you have Visual Studio open while doing the above, close and reopen the solution after step 2 — VS keeps the
+If you have Visual Studio open while doing the above, close and reopen the solution after step 2 - VS keeps the
 analyzer DLL loaded in memory and will not pick up the new payload until the AppDomain is recycled.
 
 CI runs the equivalent `dotnet pack` step in `.github/workflows/build-test.yml` before restoring the library
-projects, so PRs don't need a freshly packed `.nupkg` committed — but committing it after a local change keeps
+projects, so PRs don't need a freshly packed `.nupkg` committed - but committing it after a local change keeps
 the IDE / local `dotnet build` experience smooth.
 
 The `Bodu.CodeStyle/Directory.Build.props` sets `BoduCodeStyleAnalyzers=false` so the analyzer projects never
@@ -192,7 +192,7 @@ analyse themselves and never form a circular package reference.
 
 Visual Studio loads analyzer + code-fix DLLs into the IDE process at solution open and keeps them resident
 until the process is recycled. After a `dotnet pack` of `Bodu.CodeStyle.XmlDocumentation` (or a `git pull`
-that updates `local-packages/`), close and reopen the solution — or restart Visual Studio entirely — so the
+that updates `local-packages/`), close and reopen the solution - or restart Visual Studio entirely - so the
 new payload is loaded. The `dotnet build` CLI does not have this caching issue.
 
 If the fix still does not appear after a clean restart:
@@ -201,15 +201,15 @@ If the fix still does not appear after a clean restart:
 2. Confirm the consuming project has restored the new package (`dotnet restore <project> --force`).
 3. Confirm `BoduCodeStyleAnalyzers` is `true` in the consuming project's MSBuild graph (the default in
    `bld/Bodu.props`; the `Bodu.CodeStyle/*` projects set it to `false`).
-4. Run `dotnet build` from the CLI to confirm the diagnostic still fires there — if it does, the analyzer
+4. Run `dotnet build` from the CLI to confirm the diagnostic still fires there - if it does, the analyzer
    itself is loaded correctly and the missing fix is a Visual Studio caching issue specifically.
 
 ## Status
 
-- Milestone 1 — Core formatter: shipped.
-- Milestone 2 — `BODU1001` analyzer + code fix + Fix All: shipped.
-- Milestone 3 — Configuration (defaults + JSON + `.editorconfig`): shipped.
-- Milestone 4 — Member ordering: deferred (analyzer + model).
-- Milestone 5 — CLI: deferred.
-- Milestone 6 — VSIX: deferred. The architecture keeps formatting logic in
+- Milestone 1 - Core formatter: shipped.
+- Milestone 2 - `BODU1001` analyzer + code fix + Fix All: shipped.
+- Milestone 3 - Configuration (defaults + JSON + `.editorconfig`): shipped.
+- Milestone 4 - Member ordering: deferred (analyzer + model).
+- Milestone 5 - CLI: deferred.
+- Milestone 6 - VSIX: deferred. The architecture keeps formatting logic in
   `Bodu.CodeStyle.XmlDocumentation.Core` so a future VSIX can reuse the same engine.

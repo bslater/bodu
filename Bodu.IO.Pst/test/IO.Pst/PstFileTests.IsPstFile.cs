@@ -13,7 +13,7 @@ namespace Bodu.IO.Pst;
 public partial class PstFileTests
 {
     /// <summary>
-    /// Gets one manifest row per corpus fixture, every variant included — the sniff recognizes all of them.
+    /// Gets one manifest row per corpus fixture, every variant included - the sniff recognizes all of them.
     /// </summary>
     /// <value>One row per fixture.</value>
     public static IEnumerable<object[]> AllFixtureRows =>

@@ -21,7 +21,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <remarks>
 /// <para>
 /// A cache instance is bound to one provider, and the <see cref="FileRateCacheOptions.Layout" /> decides where each
-/// pair's rows are stored: a single file per pair (the default), or — when the layout is partitioned — one file per
+/// pair's rows are stored: a single file per pair (the default), or - when the layout is partitioned - one file per
 /// calendar period under a per-pair folder. Reads and writes are best-effort: any <see cref="IOException" /> or
 /// <see cref="UnauthorizedAccessException" /> surfaces as an empty read result or a skipped write, so a storage problem
 /// never breaks rate retrieval. Derived types are expected to treat malformed content the same way by returning an
@@ -50,7 +50,7 @@ public abstract class FileRateCacheBase<TOptions>
     /// <summary>Rate-limits the swallowed-failure warning to at most one emission per <see cref="RateLimitedWarningGate.DefaultCooldown" /> window.</summary>
     private readonly RateLimitedWarningGate _warnGate;
 
-    /// <summary>Memoizes the most recently parsed state per file, keyed by full path, against the file's last-write instant, so a repeated read of an unchanged file serves the cached parse rather than re-reading and re-deserializing it on every lookup. An entry is invalidated when this instance writes or deletes the file, and a differing last-write instant — an external or cross-process change — is detected on the next read, so the memo never serves data from a file whose timestamp has moved. Keying by path (not by pair) lets one pair span many partition files. Bounded with LRU eviction so a long-lived process touching many files cannot grow it without limit; eviction only forces a re-parse.</summary>
+    /// <summary>Memoizes the most recently parsed state per file, keyed by full path, against the file's last-write instant, so a repeated read of an unchanged file serves the cached parse rather than re-reading and re-deserializing it on every lookup. An entry is invalidated when this instance writes or deletes the file, and a differing last-write instant - an external or cross-process change - is detected on the next read, so the memo never serves data from a file whose timestamp has moved. Keying by path (not by pair) lets one pair span many partition files. Bounded with LRU eviction so a long-lived process touching many files cannot grow it without limit; eviction only forces a re-parse.</summary>
     private readonly FileParseMemo<CachePairState> _parsed = new();
 
     /// <summary>
@@ -181,7 +181,7 @@ public abstract class FileRateCacheBase<TOptions>
     /// Serializes the supplied state to the cache file's text format.
     /// </summary>
     /// <param name="pair">The currency pair the state belongs to, so the format can record it in the file body.</param>
-    /// <param name="state">The per-pair state — cached rows and coverage windows — to persist.</param>
+    /// <param name="state">The per-pair state - cached rows and coverage windows - to persist.</param>
     /// <returns>The serialized text to write to the cache file.</returns>
     /// <remarks>
     /// The pair is supplied so a format can embed the provider and currency pair in the file body, making each file
@@ -230,8 +230,8 @@ public abstract class FileRateCacheBase<TOptions>
     /// </returns>
     /// <remarks>
     /// Each read walks the pair's directory to enumerate partition files. This per-read walk is a known, accepted cost:
-    /// per-file parses are already memoized against their last-write instants, so the walk itself — one directory
-    /// enumeration — is the only repeated I/O, and it is what detects partitions added or removed by another process.
+    /// per-file parses are already memoized against their last-write instants, so the walk itself - one directory
+    /// enumeration - is the only repeated I/O, and it is what detects partitions added or removed by another process.
     /// If a partitioned layout ships to production with wide pair directories, revisit with a listing memo stamped
     /// against the directory's own last-write time.
     /// </remarks>
@@ -286,8 +286,8 @@ public abstract class FileRateCacheBase<TOptions>
     }
 
     /// <summary>
-    /// Re-wraps a deserialized state's lists in read-only views. The memoized state is shared across reads and — via
-    /// the all-fresh fast path — may be served to callers by reference, so its lists must not be castable back to their
+    /// Re-wraps a deserialized state's lists in read-only views. The memoized state is shared across reads and - via
+    /// the all-fresh fast path - may be served to callers by reference, so its lists must not be castable back to their
     /// mutable backing collections.
     /// </summary>
     /// <param name="state">The freshly deserialized state.</param>
@@ -345,7 +345,7 @@ public abstract class FileRateCacheBase<TOptions>
         foreach (KeyValuePair<string, (List<CachedRate> Entries, List<CoverageWindow> Coverage)> bucket in buckets)
             desired[Path.Combine(directory, _layout.ResolveFileName(Provider, pair, bucket.Key, FileExtension))] = bucket.Key;
 
-        // Delete partition files no longer represented in the new state — a partition pruned to empty must not leave a
+        // Delete partition files no longer represented in the new state - a partition pruned to empty must not leave a
         // stale file behind, the same way a single-file write deletes an emptied file.
         if (Directory.Exists(directory))
         {

@@ -13,7 +13,7 @@ namespace Bodu.Text.Ini.Reader;
 /// </summary>
 /// <remarks>
 /// <para>
-/// INI cannot be normalized in a single forward pass when duplicate sections merge — a later <c>[section]</c> appends
+/// INI cannot be normalized in a single forward pass when duplicate sections merge - a later <c>[section]</c> appends
 /// to an earlier one, declaring structure out of source order. The constructor therefore parses the entire document up
 /// front, applying the <see cref="IniDocumentOptions" /> duplicate policies, and <see cref="Read" /> walks the
 /// materialized store. A malformed document or policy violation raises <see cref="IniFormatException" /> from the
@@ -95,7 +95,7 @@ public ref struct IniDocumentReader
         _state is State.EntryKey or State.EntryValue ? 1 : 0;
 
     /// <summary>
-    /// Gets the text of the current token — a key name, section name, or string value.
+    /// Gets the text of the current token - a key name, section name, or string value.
     /// </summary>
     /// <returns>The token text.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the current token has no text.</exception>

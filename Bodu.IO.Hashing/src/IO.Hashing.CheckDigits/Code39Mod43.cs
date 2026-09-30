@@ -15,9 +15,9 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <remarks>
 /// <para>
 /// The Code 39 modulo-43 check character is the optional self-checking symbol defined by the Code 39 barcode symbology.
-/// Each body character is mapped to its ordinal value in the forty-three-symbol Code 39 alphabet — <c>'0'</c>–
-/// <c>'9'</c> as 0–9, <c>'A'</c>–<c>'Z'</c> as 10–35, and the seven symbols <c>'-'</c>, <c>'.'</c>, space, <c>'$'</c>,
-/// <c>'/'</c>, <c>'+'</c>, and <c>'%'</c> as 36–42. The values are summed, reduced modulo 43, and the result is mapped
+/// Each body character is mapped to its ordinal value in the forty-three-symbol Code 39 alphabet - <c>'0'</c>-
+/// <c>'9'</c> as 0-9, <c>'A'</c>-<c>'Z'</c> as 10-35, and the seven symbols <c>'-'</c>, <c>'.'</c>, space, <c>'$'</c>,
+/// <c>'/'</c>, <c>'+'</c>, and <c>'%'</c> as 36-42. The values are summed, reduced modulo 43, and the result is mapped
 /// back to the alphabet to produce a single trailing check character.
 /// </para>
 /// <para>
@@ -100,7 +100,7 @@ public sealed class Code39Mod43
     /// <param name="valueIncludingCheck">The complete sequence including the trailing check character.</param>
     /// <returns>
     /// <see langword="true" /> if the sequence evaluates as valid under the Code 39 modulo-43 scheme; otherwise,
-    /// <see langword="false" /> — including the case where <paramref name="valueIncludingCheck" /> is empty or contains
+    /// <see langword="false" /> - including the case where <paramref name="valueIncludingCheck" /> is empty or contains
     /// any character outside the Code 39 alphabet.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck)

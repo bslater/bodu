@@ -14,7 +14,7 @@ internal static partial class Blake2bCore
 {
     /// <summary>
     /// The 128-bit implementation of the BLAKE2b compression function, written once over <see cref="Vector128{T}" />
-    /// and specialized for an instruction set by <typeparamref name="TIsa" /> — the shim Argon2's 128-bit kernel uses.
+    /// and specialized for an instruction set by <typeparamref name="TIsa" /> - the shim Argon2's 128-bit kernel uses.
     /// </summary>
     /// <typeparam name="TIsa">
     /// The instruction set supplying the rotations by 32, 24 and 16 bits, and the splice.

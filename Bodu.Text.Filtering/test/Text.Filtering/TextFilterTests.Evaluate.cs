@@ -7,7 +7,7 @@
 namespace Bodu.Text.Filtering;
 
 /// <content>
-/// Tests for <see cref="TextFilter.Evaluate" /> — the decision enumeration and the deciding-pattern contract.
+/// Tests for <see cref="TextFilter.Evaluate" /> - the decision enumeration and the deciding-pattern contract.
 /// </content>
 public partial class TextFilterTests
 {

@@ -1,8 +1,8 @@
 ---
-title: Bodu.IO.Compound — Getting started
+title: Bodu.IO.Compound - Getting started
 ---
 
-# Bodu.IO.Compound — Getting started
+# Bodu.IO.Compound - Getting started
 
 Unfamiliar with terms like *compound file*, *storage*, *stream*, *sector chain*, or *property set*? Read [Core concepts](concepts.md) first.
 
@@ -25,7 +25,7 @@ CompoundStream workbook = file.RootStorage.OpenStream("Workbook");
 byte[] bytes = workbook.ReadAllBytes();
 ```
 
-`CompoundFile.Open` reads the source from its current position to the end. The returned instance is <xref:System.IDisposable> — the `using` declaration disposes it and closes the source unless `leaveOpen: true` was passed.
+`CompoundFile.Open` reads the source from its current position to the end. The returned instance is <xref:System.IDisposable> - the `using` declaration disposes it and closes the source unless `leaveOpen: true` was passed.
 
 ## Probe before opening
 
@@ -57,7 +57,7 @@ foreach (CompoundStorage child in file.RootStorage.EnumerateStorages())
     Console.WriteLine($"[{child.Name}]");
 ```
 
-`EnumerateEntries` yields a metadata snapshot for every direct child; `EnumerateStorages` and `EnumerateStreams` yield the navigable child storages and stream entries. All three enumerate in **directory (canonical) order** — the in-order traversal of each storage's red-black child tree — and are scoped to direct children only. Names carry their control prefixes verbatim, so a lookup of a summary-information stream must pass the literal `\x05`-prefixed name.
+`EnumerateEntries` yields a metadata snapshot for every direct child; `EnumerateStorages` and `EnumerateStreams` yield the navigable child storages and stream entries. All three enumerate in **directory (canonical) order** - the in-order traversal of each storage's red-black child tree - and are scoped to direct children only. Names carry their control prefixes verbatim, so a lookup of a summary-information stream must pass the literal `\x05`-prefixed name.
 
 ## Walk the whole tree recursively
 
@@ -81,7 +81,7 @@ using CompoundFile file = CompoundFile.OpenRead("message.msg");
 Walk(file.RootStorage);
 ```
 
-`EnumerateStorages` returns navigable <xref:Bodu.IO.Compound.CompoundStorage> objects, so descending into a `.msg` attachment or a Word formatting storage is just a recursive call — there is no path syntax, you walk one storage at a time.
+`EnumerateStorages` returns navigable <xref:Bodu.IO.Compound.CompoundStorage> objects, so descending into a `.msg` attachment or a Word formatting storage is just a recursive call - there is no path syntax, you walk one storage at a time.
 
 ## Read a large stream incrementally
 
@@ -98,7 +98,7 @@ using var reader = new StreamReader(stream, Encoding.Unicode);
 string text = reader.ReadToEnd();
 ```
 
-`OpenStream(name)` returns a read-only, seekable `CompoundStream` you can hand to any `Stream` consumer. Under a streaming file it reads sectors on demand; under a buffered file it works over the in-memory payload. (On a writable file, the `OpenStream(name, FileMode, FileAccess)` overload and `CreateStream` return a read-write cursor instead — see the [authoring guide](../../guides/io-compound/authoring-compound-files.md).)
+`OpenStream(name)` returns a read-only, seekable `CompoundStream` you can hand to any `Stream` consumer. Under a streaming file it reads sectors on demand; under a buffered file it works over the in-memory payload. (On a writable file, the `OpenStream(name, FileMode, FileAccess)` overload and `CreateStream` return a read-write cursor instead - see the [authoring guide](../../guides/io-compound/authoring-compound-files.md).)
 
 ## Read document metadata
 
@@ -149,7 +149,7 @@ try
 }
 catch (CompoundFileFormatException ex)
 {
-    // ex.Category is a stable CompoundFileError — InvalidSignature, TruncatedFile,
+    // ex.Category is a stable CompoundFileError - InvalidSignature, TruncatedFile,
     // FatCycle, DirectoryCycle, StreamChainTooShort, and so on.
     Console.WriteLine($"Not a usable compound file: {ex.Category}");
 }
@@ -159,7 +159,7 @@ A modern `.xlsx` / `.docx` (a ZIP archive, not OLE2) fails the signature check a
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — the vocabulary behind these samples: header, FAT/mini-FAT, the red-black directory, validation levels, and the error categories.
-- **[Introduction](index.md)** — headline types and common scenarios.
-- **[Bodu.IO.Compound guides](../../guides/io-compound/index.md)** — reading files, buffered vs streaming access, and property sets.
-- **API reference** — [Bodu.IO.Compound](xref:Bodu.IO.Compound).
+- **[Core concepts](concepts.md)** - the vocabulary behind these samples: header, FAT/mini-FAT, the red-black directory, validation levels, and the error categories.
+- **[Introduction](index.md)** - headline types and common scenarios.
+- **[Bodu.IO.Compound guides](../../guides/io-compound/index.md)** - reading files, buffered vs streaming access, and property sets.
+- **API reference** - [Bodu.IO.Compound](xref:Bodu.IO.Compound).

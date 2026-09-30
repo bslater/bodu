@@ -59,7 +59,7 @@ internal sealed class PstLtpContext
     /// <param name="hnid">The value reference; the null <c>HNID</c> yields an empty payload.</param>
     /// <returns>The payload bytes.</returns>
     /// <exception cref="PstFileFormatException">
-    /// The reference does not resolve — a heap identifier outside the heap, or a node identifier absent from the owning
+    /// The reference does not resolve - a heap identifier outside the heap, or a node identifier absent from the owning
     /// node's subnode tree.
     /// </exception>
     internal byte[] ResolveHnidPayload(PstHeapNode heap, uint hnid)

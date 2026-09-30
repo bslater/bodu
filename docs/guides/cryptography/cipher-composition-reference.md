@@ -4,28 +4,28 @@ title: Modes, transforms, and factories
 
 # Modes, transforms, and factories
 
-This is the reference for how a block cipher becomes an encryptor in `Bodu.Security.Cryptography`: which <xref:Bodu.Security.Cryptography.CipherModeKind> values the `SymmetricAlgorithm` wrappers accept, which modes exist only as direct transforms, where padding sizes are expressed in bits, and how the pieces — <xref:Bodu.Security.Cryptography.IBlockCipher>, <xref:Bodu.Security.Cryptography.BlockCipherModeFactory>, <xref:Bodu.Security.Cryptography.PaddingFactory>, <xref:Bodu.Security.Cryptography.BlockCipherTransform> — fit together. Every row below was checked against `BlockCipherModeFactory` and the transform classes, and every sample compiles and runs.
+This is the reference for how a block cipher becomes an encryptor in `Bodu.Security.Cryptography`: which <xref:Bodu.Security.Cryptography.CipherModeKind> values the `SymmetricAlgorithm` wrappers accept, which modes exist only as direct transforms, where padding sizes are expressed in bits, and how the pieces - <xref:Bodu.Security.Cryptography.IBlockCipher>, <xref:Bodu.Security.Cryptography.BlockCipherModeFactory>, <xref:Bodu.Security.Cryptography.PaddingFactory>, <xref:Bodu.Security.Cryptography.BlockCipherTransform> - fit together. Every row below was checked against `BlockCipherModeFactory` and the transform classes, and every sample compiles and runs.
 
 > [!NOTE]
 > `Bodu.Security.Cryptography` is not independently audited and offers best-effort, not guaranteed, side-channel resistance. For authenticated encryption start from the [AEAD modes](aead-modes.md); the classic modes on this page give confidentiality only.
 
 ## The `CipherModeKind` support matrix
 
-`CipherModeKind` has ten members. Five of them are what <xref:Bodu.Security.Cryptography.BlockCipherModeFactory.Create(Bodu.Security.Cryptography.CipherModeKind,Bodu.Security.Cryptography.IBlockCipher,System.Byte[])> can build — and therefore what the wrappers' `BlockMode` property can drive. The other five are declared in the enum but the factory throws `NotSupportedException` for them; they are reachable only by constructing the transform yourself.
+`CipherModeKind` has ten members. Five of them are what <xref:Bodu.Security.Cryptography.BlockCipherModeFactory.Create(Bodu.Security.Cryptography.CipherModeKind,Bodu.Security.Cryptography.IBlockCipher,System.Byte[])> can build - and therefore what the wrappers' `BlockMode` property can drive. The other five are declared in the enum but the factory throws `NotSupportedException` for them; they are reachable only by constructing the transform yourself.
 
 | `CipherModeKind` | Value | Through `BlockMode` / `BlockCipherModeFactory` | Direct transform | IV | Input alignment (raw transform) | Padding through the wrapper |
 |---|---|---|---|---|---|---|
 | `ECB` | 2 | Yes → <xref:Bodu.Security.Cryptography.EcbModeTransform> | `new EcbModeTransform(cipher)` | none (`null` accepted) | whole blocks | yes (default PKCS7) |
 | `CBC` | 1 | Yes → <xref:Bodu.Security.Cryptography.CbcModeTransform> | `new CbcModeTransform(cipher, iv)` | = block size | whole blocks | yes |
-| `CFB` | 4 | Yes → <xref:Bodu.Security.Cryptography.CfbModeTransform> | `new CfbModeTransform(cipher, iv)` | = block size | whole blocks | yes — `PaddingMode.None` still requires aligned input |
+| `CFB` | 4 | Yes → <xref:Bodu.Security.Cryptography.CfbModeTransform> | `new CfbModeTransform(cipher, iv)` | = block size | whole blocks | yes - `PaddingMode.None` still requires aligned input |
 | `OFB` | 3 | Yes → <xref:Bodu.Security.Cryptography.OfbModeTransform> | `new OfbModeTransform(cipher, iv)` | = block size | whole blocks | same as CFB |
 | `CTR` | 1024 | Yes → <xref:Bodu.Security.Cryptography.CtrModeTransform> | `new CtrModeTransform(cipher, iv)` | = block size (initial counter) | **partial final block accepted** by the raw transform | `PaddingMode.None` still requires aligned input through the wrapper |
-| `CTS` | 5 | **No** — `NotSupportedException` | <xref:Bodu.Security.Cryptography.CtsModeTransform> `(cipher, iv)` | = block size | ≥ one block, any length; output length = input length | n/a (never pad CTS) |
-| `XTS` | 2048 | **No** — `NotSupportedException` | <xref:Bodu.Security.Cryptography.XtsModeTransform> `(dataCipher, tweakCipher, sector)` | 16-byte sector number | whole 16-byte blocks only (no ciphertext stealing); 128-bit block ciphers only | n/a |
-| `OCB` | 4096 | **No** — `NotSupportedException` | <xref:Bodu.Security.Cryptography.OcbModeTransform> (AEAD) | 16-byte IV, first 12 used | any | n/a |
-| `EAX` | 8192 | **No** — `NotSupportedException` | <xref:Bodu.Security.Cryptography.EaxModeTransform> (AEAD) | 16-byte nonce | any | n/a |
-| `SIV` | 16384 | **No** — `NotSupportedException` | <xref:Bodu.Security.Cryptography.SivModeTransform> (AEAD) | ignored | any | n/a |
-| *(no member)* | — | — | <xref:Bodu.Security.Cryptography.GcmModeTransform>, <xref:Bodu.Security.Cryptography.GcmSivModeTransform>, <xref:Bodu.Security.Cryptography.CcmModeTransform> (AEAD) | 12-byte nonce | any | n/a |
+| `CTS` | 5 | **No** - `NotSupportedException` | <xref:Bodu.Security.Cryptography.CtsModeTransform> `(cipher, iv)` | = block size | ≥ one block, any length; output length = input length | n/a (never pad CTS) |
+| `XTS` | 2048 | **No** - `NotSupportedException` | <xref:Bodu.Security.Cryptography.XtsModeTransform> `(dataCipher, tweakCipher, sector)` | 16-byte sector number | whole 16-byte blocks only (no ciphertext stealing); 128-bit block ciphers only | n/a |
+| `OCB` | 4096 | **No** - `NotSupportedException` | <xref:Bodu.Security.Cryptography.OcbModeTransform> (AEAD) | 16-byte IV, first 12 used | any | n/a |
+| `EAX` | 8192 | **No** - `NotSupportedException` | <xref:Bodu.Security.Cryptography.EaxModeTransform> (AEAD) | 16-byte nonce | any | n/a |
+| `SIV` | 16384 | **No** - `NotSupportedException` | <xref:Bodu.Security.Cryptography.SivModeTransform> (AEAD) | ignored | any | n/a |
+| *(no member)* | - | - | <xref:Bodu.Security.Cryptography.GcmModeTransform>, <xref:Bodu.Security.Cryptography.GcmSivModeTransform>, <xref:Bodu.Security.Cryptography.CcmModeTransform> (AEAD) | 12-byte nonce | any | n/a |
 
 Two consequences worth stating plainly:
 
@@ -36,7 +36,7 @@ Two consequences worth stating plainly:
 
 <xref:Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm> keeps `BlockMode` and the BCL `Mode` in sync where a value exists in both enums (`CBC`, `ECB`, `OFB`, `CFB`, `CTS`). Values with no `CipherMode` equivalent leave `Mode` untouched, so after `BlockMode = CipherModeKind.CTR` the inherited property still reports the previous value. Read `BlockMode`, not `Mode`, to know what a Bodu wrapper will do. The tweakable wrappers (<xref:Bodu.Security.Cryptography.Threefish256> and siblings, <xref:Bodu.Security.Cryptography.Serpent256> and siblings) declare their own `BlockMode` on <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm>-derived bases and do not mirror it into `Mode` at all.
 
-## Pattern 1 — the five wrapper modes
+## Pattern 1 - the five wrapper modes
 
 <!-- compile -->
 ```csharp
@@ -63,9 +63,9 @@ foreach (CipherModeKind mode in new[] { CipherModeKind.ECB, CipherModeKind.CBC, 
 
 `ECB` is the one mode that accepts a `null` IV; the other four validate `iv.Length == BlockSize / 8` and throw `CryptographicException` otherwise.
 
-## Pattern 2 — composing by hand with the factories
+## Pattern 2 - composing by hand with the factories
 
-The wrappers are a convenience over three parts you can assemble yourself: an <xref:Bodu.Security.Cryptography.IBlockCipher> engine, an <xref:Bodu.Security.Cryptography.IBlockCipherModeTransform> from `BlockCipherModeFactory`, and an <xref:Bodu.Security.Cryptography.IPaddingStrategy> from `PaddingFactory`. Both factories and the strategies express **block size in bits** — pass `cipher.BlockSize` (128), never the byte count.
+The wrappers are a convenience over three parts you can assemble yourself: an <xref:Bodu.Security.Cryptography.IBlockCipher> engine, an <xref:Bodu.Security.Cryptography.IBlockCipherModeTransform> from `BlockCipherModeFactory`, and an <xref:Bodu.Security.Cryptography.IPaddingStrategy> from `PaddingFactory`. Both factories and the strategies express **block size in bits** - pass `cipher.BlockSize` (128), never the byte count.
 
 <!-- compile -->
 ```csharp
@@ -94,7 +94,7 @@ byte[] recovered = padding.Unpad(decrypted, cipher2.BlockSize);
 
 `IPaddingStrategy.StripsPaddingOnUnpad` tells a decryptor whether `Unpad` can shorten the output: `true` for PKCS7, ANSI X.923, ISO 10126, and ISO/IEC 7816-4; `false` for `Zeros` and `None`, whose `Unpad` returns the input unchanged. `BlockCipherTransform` uses that flag to hold back the final block during decryption so it can strip padding safely.
 
-## Pattern 3 — CTR with a partial final block
+## Pattern 3 - CTR with a partial final block
 
 <!-- compile -->
 ```csharp
@@ -115,12 +115,12 @@ catch (ArgumentException) { /* "Input must be a multiple of block size when usin
 using IBlockCipher cipher = new CamelliaBlockCipher(key);
 using IBlockCipherModeTransform ctr = BlockCipherModeFactory.Create(CipherModeKind.CTR, cipher, iv);
 byte[] ciphertext = new byte[plaintext.Length];
-int written = ctr.Transform(plaintext, ciphertext, encrypt: true);      // 38 — same length as the input
+int written = ctr.Transform(plaintext, ciphertext, encrypt: true);      // 38 - same length as the input
 ```
 
 `CfbModeTransform` and `OfbModeTransform` do not: their `Transform` throws `CryptographicException` for input that is not a block multiple.
 
-## Pattern 4 — CTS and XTS as direct transforms
+## Pattern 4 - CTS and XTS as direct transforms
 
 <!-- compile -->
 ```csharp
@@ -152,7 +152,7 @@ byte[] key2 = Convert.FromHexString("f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff");
 byte[] sector = new byte[16];
 BitConverter.TryWriteBytes(sector, 42L);
 
-byte[] sectorData = new byte[64];                 // whole 16-byte blocks only — no ciphertext stealing
+byte[] sectorData = new byte[64];                 // whole 16-byte blocks only - no ciphertext stealing
 Array.Fill(sectorData, (byte)0xA5);
 
 using IBlockCipher data  = new AesBlockCipher(key1);
@@ -164,7 +164,7 @@ xts.Transform(sectorData, ciphertext, encrypt: true);   // first block EB3C020DD
 
 An `XtsModeTransform` given input that is not a multiple of 16 bytes throws `CryptographicException`; both ciphers must report a 128-bit block or the constructor throws `ArgumentException`.
 
-## Pattern 5 — the AEAD transforms
+## Pattern 5 - the AEAD transforms
 
 `OCB`, `EAX`, and `SIV` appear in `CipherModeKind` but only as names; the factory rejects them. All six block-cipher AEADs implement <xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform> (and through it <xref:Bodu.Security.Cryptography.IAeadTransform>), take an `AesBlockCipher`, and are single-use per message:
 
@@ -194,9 +194,9 @@ using (var c = new AesBlockCipher(key))
 > [!WARNING]
 > Name the `associatedData:` argument. Each AEAD also has a public `Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)` instance method; with two positional `byte[]` arguments that overload wins, writes the ciphertext into your AAD array, and returns an `int`.
 
-## Padding — `PaddingMode`, `PaddingModeKind`, and the dual properties
+## Padding - `PaddingMode`, `PaddingModeKind`, and the dual properties
 
-`PaddingFactory` has two overloads. `Create(PaddingMode)` covers the BCL enum — `PKCS7`, `Zeros`, `None`, `ANSIX923`, `ISO10126` — and throws `CryptographicException` for anything else. `Create(PaddingModeKind)` adds `ISO7816_4` (value 1024), the one scheme the BCL enum cannot name.
+`PaddingFactory` has two overloads. `Create(PaddingMode)` covers the BCL enum - `PKCS7`, `Zeros`, `None`, `ANSIX923`, `ISO10126` - and throws `CryptographicException` for anything else. `Create(PaddingModeKind)` adds `ISO7816_4` (value 1024), the one scheme the BCL enum cannot name.
 
 <xref:Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm> exposes both: `BlockPadding` (<xref:Bodu.Security.Cryptography.PaddingModeKind>) and the inherited `Padding` (`PaddingMode`). Setting either updates the other when the value exists in both enums; `ISO7816_4` updates only `BlockPadding`. `CreateEncryptor` reads `BlockPadding`, so ISO 7816-4 is honoured.
 
@@ -216,7 +216,7 @@ alg.Mode = CipherMode.ECB;                      // both ECB
 
 The tweakable wrappers (`Threefish*`, `Serpent256/512/1024`) derive from `TweakableSymmetricAlgorithm`, not `ExtendedSymmetricAlgorithm`: they have `BlockMode` but only the BCL `Padding` property, so ISO 7816-4 is not selectable on them. [Padding](padding.md) describes what each scheme emits; its `Pad` calls take the block size in bits.
 
-## `BlockCipherTransform` — what the wrappers hand back
+## `BlockCipherTransform` - what the wrappers hand back
 
 `CreateEncryptor()` on every block-cipher wrapper returns a <xref:Bodu.Security.Cryptography.BlockCipherTransform>: an `ICryptoTransform` that owns one engine, one mode transform, and one padding strategy. Its constructors are `protected internal`, so you obtain one from a wrapper or by subclassing (see [Extending the library](extending.md)). Contract, as observed:
 
@@ -224,7 +224,7 @@ The tweakable wrappers (`Threefish*`, `Serpent256/512/1024`) derive from `Tweaka
 |---|---|
 | `InputBlockSize` / `OutputBlockSize` | the cipher block size in **bytes** (16 for Camellia) |
 | `CanTransformMultipleBlocks` | `true` |
-| `CanReuseTransform` | `false` — after `TransformFinalBlock`, any further call throws `InvalidOperationException` |
+| `CanReuseTransform` | `false` - after `TransformFinalBlock`, any further call throws `InvalidOperationException` |
 | `TransformBlock` | encrypt: input must be block-aligned; decrypt with a stripping padding: the last block is held back |
 | `TransformFinalBlock` | encrypt: pads then encrypts (an empty input still emits a padding block for PKCS7-style schemes); decrypt: validates alignment, decrypts, unpads |
 | `Dispose` | disposes the mode transform **and the engine** |
@@ -251,7 +251,7 @@ byte[] ciphertext = encryptor.Transform("composition reference: 37 bytes long!!"
 | <xref:Bodu.Security.Cryptography.IBlockCipher> | `BlockSize` (bits), `Encrypt(input, output)`, `Decrypt(input, output)`, default `EncryptBlocks` / `DecryptBlocks`, `Dispose` | One block per call; the default block-loop members process whole blocks and ignore a trailing partial block. Engines: `AesBlockCipher(byte[])`, `CamelliaBlockCipher`, `TwofishBlockCipher`, `Serpent128Cipher`, `BlowfishBlockCipher`, `SkipjackBlockCipher` (span key), `Threefish256Cipher` / `Serpent256Cipher` … `(key, tweak)`. |
 | <xref:Bodu.Security.Cryptography.IBlockCipherModeTransform> | `Transform(input, output, bool encrypt)`, `Dispose` | Stateful, not thread-safe; a new instance per message. `Dispose` clears chaining state but does **not** dispose the engine. |
 | <xref:Bodu.Security.Cryptography.IStreamCipher> | `BlockSize`, `NextKeystreamBlock(Span<byte>)` | The keystream engine behind the stream ciphers. The shipped engines are internal; the interface is public so a <xref:Bodu.Security.Cryptography.Poly1305AeadTransform> subclass can supply its own through `CreateEngine()`. |
-| <xref:Bodu.Security.Cryptography.IStreamAeadTransform> | (marker) `: IAeadTransform` | Implemented by `XChaCha20Poly1305`, `XSalsa20Poly1305`, `XSalsa20Poly1305Aead` — see [Authenticated stream ciphers](stream-aead.md). |
+| <xref:Bodu.Security.Cryptography.IStreamAeadTransform> | (marker) `: IAeadTransform` | Implemented by `XChaCha20Poly1305`, `XSalsa20Poly1305`, `XSalsa20Poly1305Aead` - see [Authenticated stream ciphers](stream-aead.md). |
 | <xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm> | `Key`, `Nonce`, `KeySize`, `NonceSize`, `GenerateKey`, `GenerateNonce`, `CreateEncryptor` / `CreateDecryptor` / `CreateTransform` | The stream-cipher wrapper base (not a `SymmetricAlgorithm`). The parameterless `Create*` overloads allow **one transform per nonce**; pass `(key, nonce)` explicitly to create a second (decrypting) transform. |
 | <xref:Bodu.Security.Cryptography.TransformMode> | `Encrypt`, `Decrypt` | A public enum that no public member currently consumes; the transforms take a `bool encrypt` instead. |
 
@@ -269,9 +269,9 @@ byte[] ciphertext = encryptor.Transform("composition reference: 37 bytes long!!"
 
 ## Where to go next
 
-- [Composing primitives](composing-primitives.md) — the manual-versus-wrapper walk-through this page tabulates.
-- [Cipher block modes](cipher-modes.md) — one round trip per mode with the IV rules.
-- [Padding](padding.md) — what each scheme emits and the padding-oracle caveat.
-- [AEAD modes](aead-modes.md) — the six authenticated transforms in depth.
-- [Extending the library](extending.md) — a custom `IBlockCipher` behind `BlockCipherTransform`.
-- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
+- [Composing primitives](composing-primitives.md) - the manual-versus-wrapper walk-through this page tabulates.
+- [Cipher block modes](cipher-modes.md) - one round trip per mode with the IV rules.
+- [Padding](padding.md) - what each scheme emits and the padding-oracle caveat.
+- [AEAD modes](aead-modes.md) - the six authenticated transforms in depth.
+- [Extending the library](extending.md) - a custom `IBlockCipher` behind `BlockCipherTransform`.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

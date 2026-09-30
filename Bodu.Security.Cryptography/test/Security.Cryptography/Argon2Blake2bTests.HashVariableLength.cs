@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 public partial class Argon2Blake2bTests
 {
     /// <summary>
-    /// Verifies that <c>H'</c> matches a direct transcription of RFC 9106, Figure 8 — built from the one-shot BLAKE2b —
+    /// Verifies that <c>H'</c> matches a direct transcription of RFC 9106, Figure 8 - built from the one-shot BLAKE2b -
     /// for output lengths on both sides of the 64-byte digest limit and at the chaining boundaries.
     /// </summary>
     /// <param name="outputLength">The requested output length <c>T</c>, in bytes.</param>

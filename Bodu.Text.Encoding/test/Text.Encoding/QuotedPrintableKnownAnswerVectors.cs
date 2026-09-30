@@ -8,8 +8,8 @@ namespace Bodu.Text.Encoding;
 
 /// <summary>
 /// Provides Known Answer Test vectors for MIME Quoted-Printable (RFC 2045 §6.7). The positive vectors are expressed in
-/// the default binary mode and pin the normative escape rules — uppercase <c>=HH</c> hex, the mandatory <c>=3D</c>
-/// escape of the equals sign, and the protection of trailing whitespace — drawn from the RFC 2045 §6.7 worked examples.
+/// the default binary mode and pin the normative escape rules - uppercase <c>=HH</c> hex, the mandatory <c>=3D</c>
+/// escape of the equals sign, and the protection of trailing whitespace - drawn from the RFC 2045 §6.7 worked examples.
 /// </summary>
 public static class QuotedPrintableKnownAnswerVectors
 {

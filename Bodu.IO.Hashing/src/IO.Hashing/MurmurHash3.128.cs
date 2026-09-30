@@ -17,7 +17,7 @@ namespace Bodu.IO.Hashing;
 /// <para>
 /// <see cref="MurmurHash3_128" /> maintains two independent 64-bit accumulators (<c>h1</c> and <c>h2</c>) seeded from
 /// the constructor-supplied value. Input is consumed in 16-byte blocks; each block word is mixed through
-/// multiply-rotate-multiply passes before being folded into the appropriate accumulator. Remaining 1–15 bytes are
+/// multiply-rotate-multiply passes before being folded into the appropriate accumulator. Remaining 1-15 bytes are
 /// handled by a tail switch. Both accumulators are cross-mixed and finalized via
 /// <see cref="MurmurHash3.FMix64(ulong)" /> to produce the 128-bit output.
 /// </para>
@@ -33,17 +33,17 @@ namespace Bodu.IO.Hashing;
 /// <description>Output size: 128 bits (16 bytes), little-endian.</description>
 /// </item>
 /// <item>
-/// <description>Variant: <c>MurmurHash3_x64_128</c> — optimized for 64-bit platforms.</description>
+/// <description>Variant: <c>MurmurHash3_x64_128</c> - optimized for 64-bit platforms.</description>
 /// </item>
 /// <item>
-/// <description>Block size: 16 bytes; tail pass for remaining 1–15 bytes.</description>
+/// <description>Block size: 16 bytes; tail pass for remaining 1-15 bytes.</description>
 /// </item>
 /// <item>
 /// <description>Seed: 32 bits, applied to both accumulators; defaults to <c>0</c>.</description>
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose MurmurHash3_128.</strong> Pick this when collision pressure makes 32 or 64 bits inadequate —
+/// <strong>When to choose MurmurHash3_128.</strong> Pick this when collision pressure makes 32 or 64 bits inadequate -
 /// content fingerprinting, deduplication keys, large bloom filters. Output is also useful as a pair of 64-bit halves
 /// for two-hash cuckoo or split-key schemes. <see cref="CityHash128" /> is a comparable alternative with similar
 /// quality and slightly better throughput on long inputs on modern 64-bit CPUs.
@@ -161,7 +161,7 @@ public sealed class MurmurHash3_128
         ulong h2 = _h2;
         ulong t1 = 0, t2 = 0;
 
-        // Tail: fold in the remaining 1–15 bytes.
+        // Tail: fold in the remaining 1-15 bytes.
         switch (tail.Length)
         {
             case 15: t2 ^= (ulong)tail[14] << 48; goto case 14;
@@ -193,7 +193,7 @@ public sealed class MurmurHash3_128
                 break;
         }
 
-        // Finalization over local copies — the running accumulators are left untouched.
+        // Finalization over local copies - the running accumulators are left untouched.
         h1 = unchecked(h1 ^ totalBytes);
         h2 = unchecked(h2 ^ totalBytes);
 

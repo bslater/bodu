@@ -68,7 +68,7 @@ public sealed class HashAlgorithmHelperBodyTests
     /// surfaces the <see cref="InvalidOperationException" /> raised by
     /// <see cref="System.Security.Cryptography.HashAlgorithm.TryComputeHash(ReadOnlySpan{byte}, Span{byte}, out int)" />
     /// when an algorithm's <see cref="System.Security.Cryptography.HashAlgorithm.TryHashFinal(Span{byte}, out int)" />
-    /// reports failure for a destination that is already large enough — a BCL contract violation that the framework
+    /// reports failure for a destination that is already large enough - a BCL contract violation that the framework
     /// flags as a programmer error.
     /// </summary>
     [TestMethod]
@@ -84,7 +84,7 @@ public sealed class HashAlgorithmHelperBodyTests
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithmHelper.HashDataAsync{T}(IHashAlgorithmFactory{T}, Stream, CancellationToken)" />
-    /// produces the same digest as the span overload for the same input — exercising the asynchronous stream pump.
+    /// produces the same digest as the span overload for the same input - exercising the asynchronous stream pump.
     /// </summary>
     [TestMethod]
     public async Task HashDataAsync_Stream_ShouldMatchSpanOverloadForSameContent()

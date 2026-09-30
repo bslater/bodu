@@ -15,7 +15,7 @@ public sealed partial class NavigableSet<T>
     /// <remarks>
     /// <para>
     /// The view is live: each fresh iteration re-resolves against the set's current state, so mutations made after the
-    /// view was obtained are reflected the next time it is iterated. Within a single iteration the view is fail-fast —
+    /// view was obtained are reflected the next time it is iterated. Within a single iteration the view is fail-fast -
     /// any structural mutation causes the next advance to throw <see cref="InvalidOperationException" />.
     /// </para>
     /// </remarks>
@@ -29,7 +29,7 @@ public sealed partial class NavigableSet<T>
     /// <remarks>
     /// <para>
     /// The view is live: each fresh iteration re-resolves against the set's current state, so mutations made after the
-    /// view was obtained are reflected the next time it is iterated. Within a single iteration the view is fail-fast —
+    /// view was obtained are reflected the next time it is iterated. Within a single iteration the view is fail-fast -
     /// any structural mutation causes the next advance to throw <see cref="InvalidOperationException" />.
     /// </para>
     /// </remarks>
@@ -50,7 +50,7 @@ public sealed partial class NavigableSet<T>
     /// </para>
     /// <para>
     /// The view is live over the bound pair: each fresh iteration re-resolves against the set's current state. Within a
-    /// single iteration the view is fail-fast — any structural mutation causes the next advance to throw
+    /// single iteration the view is fail-fast - any structural mutation causes the next advance to throw
     /// <see cref="InvalidOperationException" />.
     /// </para>
     /// </remarks>

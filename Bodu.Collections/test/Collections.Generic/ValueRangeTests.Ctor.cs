@@ -36,7 +36,7 @@ public partial class ValueRangeTests
     }
 
     // --------------------------------------------------------
-    // Constructor — happy path
+    // Constructor - happy path
     // --------------------------------------------------------
 
     /// <summary>
@@ -82,7 +82,7 @@ public partial class ValueRangeTests
         });
     }
     // --------------------------------------------------------
-    // Constructor — argument validation
+    // Constructor - argument validation
     // --------------------------------------------------------
 
     /// <summary>

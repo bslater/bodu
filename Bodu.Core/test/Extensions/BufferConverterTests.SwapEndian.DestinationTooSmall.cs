@@ -11,7 +11,7 @@ public partial class BufferConverterTests
 
     /// <summary>
     /// Verifies that <see cref="BufferConverter.SwapEndian(System.ReadOnlySpan{byte}, System.Span{byte}, int)" /> throws when the
-    /// destination is shorter than the source — covering the conditional throw at line 143.
+    /// destination is shorter than the source - covering the conditional throw at line 143.
     /// </summary>
     [TestMethod]
     public void SwapEndian_ByteSpans_WhenDestinationIsShorterThanSource_ShouldThrowExactly()

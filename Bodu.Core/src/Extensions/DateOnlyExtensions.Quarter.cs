@@ -12,7 +12,7 @@ namespace Bodu.Extensions;
 public static partial class DateOnlyExtensions
 {
     /// <summary>
-    /// Returns the quarter number (1 – 4) of the year for the specified <see cref="DateOnly" />, using the standard
+    /// Returns the quarter number (1 - 4) of the year for the specified <see cref="DateOnly" />, using the standard
     /// calendar quarter definition.
     /// </summary>
     /// <param name="date">The date value to evaluate.</param>
@@ -22,14 +22,14 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// <para>
     /// This overload uses the standard calendar alignment defined by
-    /// <see cref="CalendarQuarterDefinition.JanuaryToDecember" />: Q1 = Jan – Mar, Q2 = Apr – Jun, Q3 = Jul – Sep, Q4 =
-    /// Oct – Dec.
+    /// <see cref="CalendarQuarterDefinition.JanuaryToDecember" />: Q1 = Jan - Mar, Q2 = Apr - Jun, Q3 = Jul - Sep, Q4 =
+    /// Oct - Dec.
     /// </para>
     /// </remarks>
     public static int Quarter(this DateOnly date) => GetQuarterForDate(date, GetQuarterDefinition(CalendarQuarterDefinition.JanuaryToDecember));
 
     /// <summary>
-    /// Returns the quarter number (1 – 4) for the specified <see cref="DateOnly" />, using the supplied calendar
+    /// Returns the quarter number (1 - 4) for the specified <see cref="DateOnly" />, using the supplied calendar
     /// quarter definition.
     /// </summary>
     /// <param name="date">The date value to evaluate.</param>
@@ -63,7 +63,7 @@ public static partial class DateOnlyExtensions
     }
 
     /// <summary>
-    /// Returns the quarter number (1 – 4) for the specified <see cref="DateOnly" />, using a custom
+    /// Returns the quarter number (1 - 4) for the specified <see cref="DateOnly" />, using a custom
     /// <see cref="IQuarterDefinitionProvider" />.
     /// </summary>
     /// <param name="date">The date value to evaluate.</param>
@@ -75,7 +75,7 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// <para>
     /// This overload supports advanced or domain-specific quarter systems by delegating to
-    /// <see cref="IQuarterDefinitionProvider.GetQuarter(DateOnly)" /> — for example, 4-4-5 retail calendars or regional
+    /// <see cref="IQuarterDefinitionProvider.GetQuarter(DateOnly)" /> - for example, 4-4-5 retail calendars or regional
     /// fiscal quarters.
     /// </para>
     /// </remarks>
@@ -83,7 +83,7 @@ public static partial class DateOnlyExtensions
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if the value returned by <paramref name="provider" /> is not in the range 1 – 4.
+    /// Thrown if the value returned by <paramref name="provider" /> is not in the range 1 - 4.
     /// </exception>
     public static int Quarter(this DateOnly date, IQuarterDefinitionProvider provider)
     {
@@ -100,13 +100,13 @@ public static partial class DateOnlyExtensions
     /// Computes the day number for the last day of the specified quarter, based on a month-day anchor definition.
     /// </summary>
     /// <param name="year">The fiscal or calendar year in which the quarter ends.</param>
-    /// <param name="quarter">The 1-based quarter number (1 – 4).</param>
+    /// <param name="quarter">The 1-based quarter number (1 - 4).</param>
     /// <param name="definition">
     /// A tuple representing the anchor month and day that define the start of Q1 (e.g. (4, 6) for April 6).
     /// </param>
     /// <returns>The day number representing the last day of the specified quarter.</returns>
     /// <remarks>
-    /// Delegates to <see cref="QuarterCalculator.GetEndDayNumber(int, int, ValueTuple{uint, uint})" /> — the shared
+    /// Delegates to <see cref="QuarterCalculator.GetEndDayNumber(int, int, ValueTuple{uint, uint})" /> - the shared
     /// quarter engine consumed by both the <see cref="DateTime" /> and <see cref="DateOnly" /> twins.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -120,13 +120,13 @@ public static partial class DateOnlyExtensions
     /// Computes the day number for the first day of the specified quarter, based on a month-day anchor definition.
     /// </summary>
     /// <param name="year">The fiscal or calendar year in which the quarter starts.</param>
-    /// <param name="quarter">The 1-based quarter number (1 – 4).</param>
+    /// <param name="quarter">The 1-based quarter number (1 - 4).</param>
     /// <param name="definition">
     /// A tuple representing the anchor month and day that define the start of Q1 (e.g. (4, 6) for April 6).
     /// </param>
     /// <returns>The day number representing the first day of the specified quarter.</returns>
     /// <remarks>
-    /// Delegates to <see cref="QuarterCalculator.GetStartDayNumber(int, int, ValueTuple{uint, uint})" /> — the shared
+    /// Delegates to <see cref="QuarterCalculator.GetStartDayNumber(int, int, ValueTuple{uint, uint})" /> - the shared
     /// quarter engine consumed by both the <see cref="DateTime" /> and <see cref="DateOnly" /> twins.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -144,10 +144,10 @@ public static partial class DateOnlyExtensions
     /// The <see cref="CalendarQuarterDefinition" /> that defines quarter anchor points.
     /// </param>
     /// <param name="referenceDate">The date to evaluate.</param>
-    /// <returns>A tuple containing the resolved year and quarter number (1 – 4).</returns>
+    /// <returns>A tuple containing the resolved year and quarter number (1 - 4).</returns>
     /// <remarks>
-    /// Delegates to <see cref="QuarterCalculator.GetYearAndQuarter(CalendarQuarterDefinition, int, int, int, int)" /> —
-    /// the shared quarter engine — passing the date components and <see cref="DateOnly.DayNumber" /> of
+    /// Delegates to <see cref="QuarterCalculator.GetYearAndQuarter(CalendarQuarterDefinition, int, int, int, int)" /> -
+    /// the shared quarter engine - passing the date components and <see cref="DateOnly.DayNumber" /> of
     /// <paramref name="referenceDate" />.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -164,7 +164,7 @@ public static partial class DateOnlyExtensions
     /// A tuple <c>(Month, Day)</c> representing the anchor month and day that define the start of Q1.
     /// </returns>
     /// <remarks>
-    /// Delegates to <see cref="QuarterCalculator.GetDefinition(CalendarQuarterDefinition)" /> — the shared quarter
+    /// Delegates to <see cref="QuarterCalculator.GetDefinition(CalendarQuarterDefinition)" /> - the shared quarter
     /// engine.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -172,15 +172,15 @@ public static partial class DateOnlyExtensions
         QuarterCalculator.GetDefinition(definition);
 
     /// <summary>
-    /// Determines the quarter number (1 – 4) that includes the specified <see cref="DateOnly" />, based on a month-day
+    /// Determines the quarter number (1 - 4) that includes the specified <see cref="DateOnly" />, based on a month-day
     /// anchor definition.
     /// </summary>
     /// <param name="date">The date value to evaluate.</param>
     /// <param name="definition">A tuple representing the start of Q1, encoded as (month, day).</param>
     /// <returns>An integer between 1 and 4 representing the resolved quarter number.</returns>
     /// <remarks>
-    /// Delegates to <see cref="QuarterCalculator.GetQuarter(int, int, ValueTuple{uint, uint})" /> — the shared quarter
-    /// engine — passing the month and day components of <paramref name="date" />.
+    /// Delegates to <see cref="QuarterCalculator.GetQuarter(int, int, ValueTuple{uint, uint})" /> - the shared quarter
+    /// engine - passing the month and day components of <paramref name="date" />.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int GetQuarterForDate(this DateOnly date, (uint Month, uint Day) definition) =>

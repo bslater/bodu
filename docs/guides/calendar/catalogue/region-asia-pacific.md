@@ -38,42 +38,42 @@ Notable dates observed by each country in the **AsiaPacific** data pack, grouped
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Bank Holiday | — | NSW | inline | 1st Mon Aug |
+| Bank Holiday | - | NSW | inline | 1st Mon Aug |
 
 ### Religious
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
 
 ### Cultural
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Valentine's Day | — | National | [← global-cultural](theme-cultural-and-family.md#global-cultural) | Fixed 14 Feb |
-| April Fool's Day | — | National | [← global-cultural](theme-cultural-and-family.md#global-cultural) | Fixed 1 Apr |
-| Halloween | — | National | [← global-cultural](theme-cultural-and-family.md#global-cultural) | Fixed 31 Oct |
-| Christmas Eve | — | National | [← christian-western](theme-civil-and-christian.md#christian-western) | Fixed 24 Dec |
+| Valentine's Day | - | National | [← global-cultural](theme-cultural-and-family.md#global-cultural) | Fixed 14 Feb |
+| April Fool's Day | - | National | [← global-cultural](theme-cultural-and-family.md#global-cultural) | Fixed 1 Apr |
+| Halloween | - | National | [← global-cultural](theme-cultural-and-family.md#global-cultural) | Fixed 31 Oct |
+| Christmas Eve | - | National | [← christian-western](theme-civil-and-christian.md#christian-western) | Fixed 24 Dec |
 
 ### Observance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Harmony Day | — | National | inline | Fixed 21 Mar |
-| Mother's Day | — | National | [← global-family](theme-cultural-and-family.md#global-family) | 2nd Sun May |
-| National Reconciliation Week | — | National | inline | Fixed 27 May |
-| NAIDOC Week | — | National | inline | 1st Sun Jul |
-| Father's Day | — | National | inline | 1st Sun Sep |
-| R U OK? Day | — | National | inline | 2nd Thu Sep |
+| Harmony Day | - | National | inline | Fixed 21 Mar |
+| Mother's Day | - | National | [← global-family](theme-cultural-and-family.md#global-family) | 2nd Sun May |
+| National Reconciliation Week | - | National | inline | Fixed 27 May |
+| NAIDOC Week | - | National | inline | 1st Sun Jul |
+| Father's Day | - | National | inline | 1st Sun Sep |
+| R U OK? Day | - | National | inline | 2nd Thu Sep |
 
 ### Remembrance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
 | Anzac Day | Yes | National + WA, NT, NSW | inline | Fixed 25 Apr |
-| National Sorry Day | — | National | inline | Fixed 26 May |
-| Mabo Day | — | National | inline | Fixed 3 Jun |
-| Remembrance Day | — | National | [← global-remembrance](theme-cultural-and-family.md#global-remembrance) | Fixed 11 Nov |
+| National Sorry Day | - | National | inline | Fixed 26 May |
+| Mabo Day | - | National | inline | Fixed 3 Jun |
+| Remembrance Day | - | National | [← global-remembrance](theme-cultural-and-family.md#global-remembrance) | Fixed 11 Nov |
 
 ### Regional
 
@@ -100,11 +100,11 @@ Notable dates observed by each country in the **AsiaPacific** data pack, grouped
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| Winter Solstice Festival | — | National | Gregorian | inline | Fixed 22 Dec |
-| Double Ninth Festival | — | National | ChineseLunisolar | inline | 9 month 9 (ChineseLunisolar) |
-| Hungry Ghost Festival | — | National | ChineseLunisolar | inline | 15 month 7 (ChineseLunisolar) |
-| Lantern Festival | — | National | Gregorian | inline | Lunar New Year +14 |
-| Qixi Festival | — | National | ChineseLunisolar | inline | 7 month 7 (ChineseLunisolar) |
+| Winter Solstice Festival | - | National | Gregorian | inline | Fixed 22 Dec |
+| Double Ninth Festival | - | National | ChineseLunisolar | inline | 9 month 9 (ChineseLunisolar) |
+| Hungry Ghost Festival | - | National | ChineseLunisolar | inline | 15 month 7 (ChineseLunisolar) |
+| Lantern Festival | - | National | Gregorian | inline | Lunar New Year +14 |
+| Qixi Festival | - | National | ChineseLunisolar | inline | 7 month 7 (ChineseLunisolar) |
 
 ## HK
 
@@ -132,7 +132,7 @@ Notable dates observed by each country in the **AsiaPacific** data pack, grouped
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| Easter Sunday | — | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
+| Easter Sunday | - | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
 
 ## ID
 
@@ -159,7 +159,7 @@ Notable dates observed by each country in the **AsiaPacific** data pack, grouped
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| Easter Sunday | — | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
+| Easter Sunday | - | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
 
 ## IN
 
@@ -178,22 +178,22 @@ Notable dates observed by each country in the **AsiaPacific** data pack, grouped
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| Makar Sankranti | — | National | Gregorian | inline | Fixed 14 Jan |
-| Pongal | — | National | Gregorian | inline | Fixed 14 Jan |
-| Christmas Day | — | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Fixed 25 Dec |
-| Day of Ashura | — | National | Hijri | inline | 10 Muharram (Hijri) |
-| Easter Sunday | — | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
-| Eid al-Adha | — | National | Hijri | inline | 10 Dhu al-Hijja (Hijri) |
-| Eid al-Fitr | — | National | Hijri | inline | 1 Shawwal (Hijri) |
-| Ganesh Chaturthi | — | National | Gregorian | inline | Algorithm: ganesh-chaturthi |
-| Good Friday | — | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Easter -2 |
-| Janmashtami | — | National | Gregorian | inline | Algorithm: janmashtami |
-| Karva Chauth | — | National | Gregorian | inline | Algorithm: karva-chauth |
+| Makar Sankranti | - | National | Gregorian | inline | Fixed 14 Jan |
+| Pongal | - | National | Gregorian | inline | Fixed 14 Jan |
+| Christmas Day | - | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Fixed 25 Dec |
+| Day of Ashura | - | National | Hijri | inline | 10 Muharram (Hijri) |
+| Easter Sunday | - | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
+| Eid al-Adha | - | National | Hijri | inline | 10 Dhu al-Hijja (Hijri) |
+| Eid al-Fitr | - | National | Hijri | inline | 1 Shawwal (Hijri) |
+| Ganesh Chaturthi | - | National | Gregorian | inline | Algorithm: ganesh-chaturthi |
+| Good Friday | - | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Easter -2 |
+| Janmashtami | - | National | Gregorian | inline | Algorithm: janmashtami |
+| Karva Chauth | - | National | Gregorian | inline | Algorithm: karva-chauth |
 | Maha Shivaratri | Yes | National | Gregorian | inline | Algorithm: maha-shivaratri |
-| Navaratri | — | National | Gregorian | inline | Algorithm: navaratri |
-| Raksha Bandhan | — | National | Gregorian | inline | Algorithm: raksha-bandhan |
-| Ram Navami | — | National | Gregorian | inline | Algorithm: ram-navami |
-| Vasant Panchami | — | National | Gregorian | inline | Algorithm: vasant-panchami |
+| Navaratri | - | National | Gregorian | inline | Algorithm: navaratri |
+| Raksha Bandhan | - | National | Gregorian | inline | Algorithm: raksha-bandhan |
+| Ram Navami | - | National | Gregorian | inline | Algorithm: ram-navami |
+| Vasant Panchami | - | National | Gregorian | inline | Algorithm: vasant-panchami |
 
 ## JP
 
@@ -222,15 +222,15 @@ Notable dates observed by each country in the **AsiaPacific** data pack, grouped
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Bodhi Day | — | National | inline | Fixed 8 Dec |
+| Bodhi Day | - | National | inline | Fixed 8 Dec |
 
 ### Cultural
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Setsubun | — | National | inline | Fixed 3 Feb |
-| Golden Week | — | National | inline | Fixed 29 Apr |
-| Obon | — | National | inline | Fixed 13 Aug |
+| Setsubun | - | National | inline | Fixed 3 Feb |
+| Golden Week | - | National | inline | Fixed 29 Apr |
+| Obon | - | National | inline | Fixed 13 Aug |
 
 ## KR
 
@@ -254,7 +254,7 @@ Notable dates observed by each country in the **AsiaPacific** data pack, grouped
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| Constitution Day | — | National | Gregorian | inline | Fixed 17 Jul |
+| Constitution Day | - | National | Gregorian | inline | Fixed 17 Jul |
 
 ## MY
 
@@ -286,30 +286,30 @@ Notable dates observed by each country in the **AsiaPacific** data pack, grouped
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
 
 ### Cultural
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Valentine's Day | — | National | inline | Fixed 14 Feb |
-| Halloween | — | National | inline | Fixed 31 Oct |
-| Guy Fawkes Night | — | National | inline | Fixed 5 Nov |
+| Valentine's Day | - | National | inline | Fixed 14 Feb |
+| Halloween | - | National | inline | Fixed 31 Oct |
+| Guy Fawkes Night | - | National | inline | Fixed 5 Nov |
 
 ### Observance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Mother's Day | — | National | inline | 2nd Sun May |
-| Father's Day | — | National | inline | 1st Sun Sep |
-| Easter Saturday | — | National | inline | Easter -1 |
+| Mother's Day | - | National | inline | 2nd Sun May |
+| Father's Day | - | National | inline | 1st Sun Sep |
+| Easter Saturday | - | National | inline | Easter -1 |
 
 ### Remembrance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
 | Anzac Day | Yes | National | inline | Fixed 25 Apr |
-| Remembrance Day | — | National | inline | Fixed 11 Nov |
+| Remembrance Day | - | National | inline | Fixed 11 Nov |
 
 ## PH
 
@@ -337,23 +337,23 @@ Notable dates observed by each country in the **AsiaPacific** data pack, grouped
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| All Souls' Day | — | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Fixed 2 Nov |
+| All Souls' Day | - | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Fixed 2 Nov |
 | Immaculate Conception | Yes | National | Gregorian | inline | Fixed 8 Dec |
-| Easter Sunday | — | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
+| Easter Sunday | - | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
 
 ### Cultural
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| Christmas Eve | — | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Fixed 24 Dec |
-| New Year's Eve | — | National | Gregorian | [← global-core](theme-civil-and-christian.md#global-core) | Fixed 31 Dec |
+| Christmas Eve | - | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Fixed 24 Dec |
+| New Year's Eve | - | National | Gregorian | [← global-core](theme-civil-and-christian.md#global-core) | Fixed 31 Dec |
 
 ### Civic
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| EDSA People Power Revolution Anniversary | — | National | Gregorian | inline | Fixed 25 Feb |
-| Ninoy Aquino Day | — | National | Gregorian | inline | Fixed 21 Aug |
+| EDSA People Power Revolution Anniversary | - | National | Gregorian | inline | Fixed 25 Feb |
+| Ninoy Aquino Day | - | National | Gregorian | inline | Fixed 21 Aug |
 
 ## SG
 
@@ -376,7 +376,7 @@ Notable dates observed by each country in the **AsiaPacific** data pack, grouped
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| Easter Sunday | — | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
+| Easter Sunday | - | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
 
 ## TH
 
@@ -432,7 +432,7 @@ Notable dates observed by each country in the **AsiaPacific** data pack, grouped
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| Mid-Autumn Festival | — | National | ChineseLunisolar | inline | 15 month 8 (ChineseLunisolar) |
+| Mid-Autumn Festival | - | National | ChineseLunisolar | inline | 15 month 8 (ChineseLunisolar) |
 
 ---
 
@@ -440,6 +440,6 @@ Notable dates observed by each country in the **AsiaPacific** data pack, grouped
 
 ## See also
 
-- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
-- **[Bodu.Globalization.Calendar guides](../index.md)** — the full guide index for the calendar runtime and its companions.
+- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- **[Bodu.Globalization.Calendar guides](../index.md)** - the full guide index for the calendar runtime and its companions.
 

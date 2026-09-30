@@ -16,8 +16,8 @@ namespace Bodu.Formats.Excel.Contracts;
 /// <param name="Records">The framed BIFF8 records that form the worksheet substream body, in record order.</param>
 /// <param name="Expected">The cells the decoder is expected to produce, keyed by position.</param>
 /// <remarks>
-/// The same row drives both decode surfaces — the forward-only <see cref="ExcelWorksheetReader" /> and the materialized
-/// <see cref="ExcelWorksheet" /> obtained from <see cref="ExcelBinaryWorkbook" /> — through
+/// The same row drives both decode surfaces - the forward-only <see cref="ExcelWorksheetReader" /> and the materialized
+/// <see cref="ExcelWorksheet" /> obtained from <see cref="ExcelBinaryWorkbook" /> - through
 /// <see cref="ExcelCellDecodeContractTests" />, proving the two paths agree on every vector. Records are limited to
 /// those that decode without a shared string table (inline labels, numbers, RK, MULRK, BOOLERR, and formula records) so
 /// that the empty-table reader path and the workbook path produce identical results.

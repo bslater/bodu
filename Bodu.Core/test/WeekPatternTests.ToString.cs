@@ -217,7 +217,7 @@ public partial class WeekPatternTests
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.ToString(string, System.IFormatProvider)" /> with a non-null format
-    /// provider produces the same output as the format-only overload — the provider is currently ignored, but the
+    /// provider produces the same output as the format-only overload - the provider is currently ignored, but the
     /// call site must still execute.
     /// </summary>
     [TestMethod]

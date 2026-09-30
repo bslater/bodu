@@ -13,14 +13,14 @@ on:
       publish_slot:
         description: >-
           Publish this run into a specific gh-pages slot ("1.0", "dev"). Leave empty to derive it
-          from the ref, as a push does. Use it to seed or repair a slot out of band — a series
+          from the ref, as a push does. Use it to seed or repair a slot out of band - a series
           whose tag predates this workflow, or a root that needs rebuilding before the next tag.
         required: false
         default: ''
 
 # The site is served from the gh-pages branch, so the only permission this workflow needs is the
 # one that lets it push there. pages: write and id-token: write went with the deploy-pages job, and
-# actions: read was part of the same boilerplate — nothing here reads the Actions API.
+# actions: read was part of the same boilerplate - nothing here reads the Actions API.
 permissions:
   contents: write
 
@@ -152,7 +152,7 @@ jobs:
       run: |
         set -eu
         # Scoped to the trees DocFX actually publishes. reviews/ and forensic-review/ are
-        # excluded from build.content in docs/docfx.json, so nothing in them renders as a link —
+        # excluded from build.content in docs/docfx.json, so nothing in them renders as a link -
         # a file path named in a planning table there is not a stale link, and failing on it
         # blocks the build for no reachable defect.
         echo "Checking for direct apidoc/Bodu.*.md links (should use xref instead)..."
@@ -368,10 +368,10 @@ jobs:
 
           # Only a plain MAJOR.MINOR.PATCH tag publishes. A prerelease is not "the latest release"
           # and must not replace the root site; a malformed tag should not fail the run either.
-          # Both would otherwise derive a slot stage-docs-site.sh rejects — "1.0.0-rc" from
-          # v1.0.0-rc.1, "1" from v1.0 — turning a stray tag into a red build.
+          # Both would otherwise derive a slot stage-docs-site.sh rejects - "1.0.0-rc" from
+          # v1.0.0-rc.1, "1" from v1.0 - turning a stray tag into a red build.
           if ! printf '%s' "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "Tag ${GITHUB_REF_NAME} is not a plain vMAJOR.MINOR.PATCH release — not publishing it as the latest docs."
+            echo "Tag ${GITHUB_REF_NAME} is not a plain vMAJOR.MINOR.PATCH release - not publishing it as the latest docs."
             exit 0
           fi
 
@@ -386,7 +386,7 @@ jobs:
         if git ls-remote --exit-code --heads "$REMOTE" gh-pages >/dev/null 2>&1; then
           git clone --depth 1 --branch gh-pages "$REMOTE" "$WORK"
         else
-          echo "gh-pages does not exist yet — creating it."
+          echo "gh-pages does not exist yet - creating it."
           git clone --depth 1 "$REMOTE" "$WORK"
           git -C "$WORK" checkout --orphan gh-pages
           git -C "$WORK" rm -rf . >/dev/null 2>&1 || true

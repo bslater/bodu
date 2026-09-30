@@ -22,11 +22,11 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// <remarks>
 /// <para>
 /// Writing always enumerates the collection in its natural enumeration order; a null element writes the YAML null
-/// scalar rather than being rejected, because YAML — unlike its sibling formats — has a native null form. For
+/// scalar rather than being rejected, because YAML - unlike its sibling formats - has a native null form. For
 /// <see cref="Queue{T}" /> and <see cref="System.Collections.Concurrent.ConcurrentQueue{T}" /> enumeration is dequeue
 /// (first-in) order, so a queue round-trips unchanged. For <see cref="Stack{T}" /> and
 /// <see cref="System.Collections.Concurrent.ConcurrentStack{T}" /> enumeration yields pop order (most recently pushed
-/// first), while reading pushes the document's elements in document order — so a serialize/deserialize round-trip
+/// first), while reading pushes the document's elements in document order - so a serialize/deserialize round-trip
 /// reverses a stack. <see cref="System.Collections.Concurrent.ConcurrentBag{T}" /> makes no enumeration-order guarantee
 /// in either direction.
 /// </para>

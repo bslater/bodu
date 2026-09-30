@@ -16,7 +16,7 @@ public partial class Utf8BencodeWriterTests
 {
     /// <summary>
     /// Verifies that <see cref="Utf8BencodeWriter.CurrentDepth" /> tracks container opens and closes, returning to
-    /// zero when the document completes — the completeness assertion available to manual writer callers.
+    /// zero when the document completes - the completeness assertion available to manual writer callers.
     /// </summary>
     [TestMethod]
     public void CurrentDepth_WhenContainersOpenAndClose_ShouldTrackNesting()

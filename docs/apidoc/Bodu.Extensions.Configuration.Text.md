@@ -6,53 +6,53 @@ uid: Bodu.Extensions.Configuration.Text
 
 ## Purpose
 
-**Bodu.Extensions.Configuration.Text** bridges <xref:Bodu.Text.Configuration> to <xref:Microsoft.Extensions.Configuration>. It exposes the `AddTextConfiguration*` entry points on <xref:Microsoft.Extensions.Configuration.IConfigurationBuilder> — the overload set mirrors `Microsoft.Extensions.Configuration.Json`'s `AddJsonFile` / `AddJsonStream` — so a Bodu Text Configuration file can be layered alongside JSON, INI, XML, and environment-variable sources with no learning curve.
+**Bodu.Extensions.Configuration.Text** bridges <xref:Bodu.Text.Configuration> to <xref:Microsoft.Extensions.Configuration>. It exposes the `AddTextConfiguration*` entry points on <xref:Microsoft.Extensions.Configuration.IConfigurationBuilder> - the overload set mirrors `Microsoft.Extensions.Configuration.Json`'s `AddJsonFile` / `AddJsonStream` - so a Bodu Text Configuration file can be layered alongside JSON, INI, XML, and environment-variable sources with no learning curve.
 
 Once added, the source loads the file (or stream, or pre-parsed document), parses it with <xref:Bodu.Text.Configuration.ConfigurationDocument>, resolves it for the configured `TargetPath`, and copies the flattened view into the standard <xref:Microsoft.Extensions.Configuration.IConfiguration> dictionary as colon-delimited keys. A companion <xref:Bodu.Extensions.Configuration.Text.ConfigurationOptionsExtensions> helper binds a section to an <xref:Microsoft.Extensions.Options.IOptions`1> instance through the standard DI container.
 
 ## Static documentation
 
-- **[Bodu.Extensions.Configuration.Text introduction](~/docs/extensions-configuration-text/index.md)** — shape of the library, headline types, scenarios.
-- **[Bodu.Extensions.Configuration.Text core concepts](~/docs/extensions-configuration-text/concepts.md)** — vocabulary: source vs provider, target path, parse/resolve option propagation, reload-on-change, options binding.
-- **[Bodu.Extensions.Configuration.Text getting started](~/docs/extensions-configuration-text/getting-started.md)** — install and minimal samples for the file overload, stream overload, conventional probe, options binding.
-- **[Bodu.Text.Configuration](~/docs/text-configuration/index.md)** — the underlying parser, resolver, and view model.
+- **[Bodu.Extensions.Configuration.Text introduction](~/docs/extensions-configuration-text/index.md)** - shape of the library, headline types, scenarios.
+- **[Bodu.Extensions.Configuration.Text core concepts](~/docs/extensions-configuration-text/concepts.md)** - vocabulary: source vs provider, target path, parse/resolve option propagation, reload-on-change, options binding.
+- **[Bodu.Extensions.Configuration.Text getting started](~/docs/extensions-configuration-text/getting-started.md)** - install and minimal samples for the file overload, stream overload, conventional probe, options binding.
+- **[Bodu.Text.Configuration](~/docs/text-configuration/index.md)** - the underlying parser, resolver, and view model.
 
 ## Key types
 
 **Builder extensions**
 
-- <xref:Bodu.Extensions.Configuration.Text.TextConfigurationExtensions> — the primary entry point. The `AddTextConfiguration*` overload family:
-    - `AddTextConfigurationFile(builder, string path, string? targetPath, bool optional, bool reloadOnChange)` — file path.
-    - `AddTextConfigurationFile(builder, IFileProvider?, string path, string? targetPath, bool optional, bool reloadOnChange)` — file path through a specific file provider.
-    - `AddTextConfigurationFile(builder, Action<TextConfigurationSource> configureSource)` — configure callback.
-    - `AddTextConfiguration(builder, bool optional, bool reloadOnChange)` — conventional file probe (`.boduconfig` → `bodu.config`).
-    - `AddTextConfigurationStream(builder, Stream)` — stream source (no reload-on-change).
-    - `AddTextConfigurationDocument(builder, IniDocumentBase, string? targetPath)` — pre-parsed document source (e.g. a `ConfigurationDocument`).
-- <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationExtensions> — TOML provider entry points that bridge <xref:Bodu.Text.Toml> into the configuration pipeline, mirroring the `AddJsonFile` / `AddJsonStream` shape:
-    - `AddTomlFile(builder, string path, bool optional = false)` — read-once, read-only file source.
-    - `AddTomlStream(builder, Stream stream)` — read-once, read-only stream source (UTF-8 TOML text).
-- <xref:Bodu.Extensions.Configuration.Text.BencodeConfigurationExtensions> — Bencode provider entry points that bridge <xref:Bodu.Text.Bencode> into the configuration pipeline, with the same shape as the TOML bridge:
-    - `AddBencodeFile(builder, string path, bool optional = false)` — read-once, read-only file source.
-    - `AddBencodeStream(builder, Stream stream)` — read-once, read-only stream source (a Bencode document with a dictionary root).
+- <xref:Bodu.Extensions.Configuration.Text.TextConfigurationExtensions> - the primary entry point. The `AddTextConfiguration*` overload family:
+    - `AddTextConfigurationFile(builder, string path, string? targetPath, bool optional, bool reloadOnChange)` - file path.
+    - `AddTextConfigurationFile(builder, IFileProvider?, string path, string? targetPath, bool optional, bool reloadOnChange)` - file path through a specific file provider.
+    - `AddTextConfigurationFile(builder, Action<TextConfigurationSource> configureSource)` - configure callback.
+    - `AddTextConfiguration(builder, bool optional, bool reloadOnChange)` - conventional file probe (`.boduconfig` → `bodu.config`).
+    - `AddTextConfigurationStream(builder, Stream)` - stream source (no reload-on-change).
+    - `AddTextConfigurationDocument(builder, IniDocumentBase, string? targetPath)` - pre-parsed document source (e.g. a `ConfigurationDocument`).
+- <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationExtensions> - TOML provider entry points that bridge <xref:Bodu.Text.Toml> into the configuration pipeline, mirroring the `AddJsonFile` / `AddJsonStream` shape:
+    - `AddTomlFile(builder, string path, bool optional = false)` - read-once, read-only file source.
+    - `AddTomlStream(builder, Stream stream)` - read-once, read-only stream source (UTF-8 TOML text).
+- <xref:Bodu.Extensions.Configuration.Text.BencodeConfigurationExtensions> - Bencode provider entry points that bridge <xref:Bodu.Text.Bencode> into the configuration pipeline, with the same shape as the TOML bridge:
+    - `AddBencodeFile(builder, string path, bool optional = false)` - read-once, read-only file source.
+    - `AddBencodeStream(builder, Stream stream)` - read-once, read-only stream source (a Bencode document with a dictionary root).
 
 **Sources and providers**
 
-- <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource> — file-backed configuration source. Subclasses <xref:Microsoft.Extensions.Configuration.FileConfigurationSource>; inherits `Path`, `Optional`, `ReloadOnChange`, `FileProvider`; adds `TargetPath`, `ParseOptions`, `ResolveOptions`.
-- <xref:Bodu.Extensions.Configuration.Text.TextConfigurationProvider> — the matching `FileConfigurationProvider`. Reads the file via the standard MEC pipeline and projects the resolved view into the inherited `Data` dictionary.
-- <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource> — stream-backed configuration source. Subclasses <xref:Microsoft.Extensions.Configuration.StreamConfigurationSource>; adds the same `TargetPath` / `ParseOptions` / `ResolveOptions` triple. One-shot — no reload-on-change.
-- <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider> — the matching `StreamConfigurationProvider`.
+- <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource> - file-backed configuration source. Subclasses <xref:Microsoft.Extensions.Configuration.FileConfigurationSource>; inherits `Path`, `Optional`, `ReloadOnChange`, `FileProvider`; adds `TargetPath`, `ParseOptions`, `ResolveOptions`.
+- <xref:Bodu.Extensions.Configuration.Text.TextConfigurationProvider> - the matching `FileConfigurationProvider`. Reads the file via the standard MEC pipeline and projects the resolved view into the inherited `Data` dictionary.
+- <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource> - stream-backed configuration source. Subclasses <xref:Microsoft.Extensions.Configuration.StreamConfigurationSource>; adds the same `TargetPath` / `ParseOptions` / `ResolveOptions` triple. One-shot - no reload-on-change.
+- <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider> - the matching `StreamConfigurationProvider`.
 - An internal loader (not part of the public surface) shared by both `Text*` providers parses a stream into a `ConfigurationDocument`, resolves it for `TargetPath`, and flattens the resolved view into `Dictionary<string, string?>`.
-- <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationSource> — TOML configuration source backed by either a one-shot `Stream` or a file `Path`. Implements `IConfigurationSource`; exposes `Stream`, `Path`, and `Optional` (a set `Stream` takes precedence over `Path`). Read once when the configuration is built — no reload-on-change machinery.
-- <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationProvider> — the matching read-only provider. Implements `IConfigurationProvider` directly (rather than deriving from the mutable `ConfigurationProvider` base) and consumes <xref:Bodu.Text.Toml>'s read-only document model, flattening it into the colon-delimited configuration key space; `Set` is rejected with `NotSupportedException`, and `GetReloadToken` returns a non-firing token.
-- <xref:Bodu.Extensions.Configuration.Text.BencodeConfigurationSource> — Bencode configuration source backed by either a one-shot `Stream` or a file `Path`. Implements `IConfigurationSource`; exposes `Stream`, `Path`, and `Optional` (a set `Stream` takes precedence over `Path`). Read once when the configuration is built — no reload-on-change machinery.
-- <xref:Bodu.Extensions.Configuration.Text.BencodeConfigurationProvider> — the matching read-only provider, one-for-one with the TOML shape. Consumes <xref:Bodu.Text.Bencode>'s read-only document model with its strict canonical defaults; the document root must be a dictionary, integers render invariant across the full unsigned 64-bit range, and byte strings decode as UTF-8 with U+FFFD replacement. `Set` is rejected with `NotSupportedException`.
+- <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationSource> - TOML configuration source backed by either a one-shot `Stream` or a file `Path`. Implements `IConfigurationSource`; exposes `Stream`, `Path`, and `Optional` (a set `Stream` takes precedence over `Path`). Read once when the configuration is built - no reload-on-change machinery.
+- <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationProvider> - the matching read-only provider. Implements `IConfigurationProvider` directly (rather than deriving from the mutable `ConfigurationProvider` base) and consumes <xref:Bodu.Text.Toml>'s read-only document model, flattening it into the colon-delimited configuration key space; `Set` is rejected with `NotSupportedException`, and `GetReloadToken` returns a non-firing token.
+- <xref:Bodu.Extensions.Configuration.Text.BencodeConfigurationSource> - Bencode configuration source backed by either a one-shot `Stream` or a file `Path`. Implements `IConfigurationSource`; exposes `Stream`, `Path`, and `Optional` (a set `Stream` takes precedence over `Path`). Read once when the configuration is built - no reload-on-change machinery.
+- <xref:Bodu.Extensions.Configuration.Text.BencodeConfigurationProvider> - the matching read-only provider, one-for-one with the TOML shape. Consumes <xref:Bodu.Text.Bencode>'s read-only document model with its strict canonical defaults; the document root must be a dictionary, integers render invariant across the full unsigned 64-bit range, and byte strings decode as UTF-8 with U+FFFD replacement. `Set` is rejected with `NotSupportedException`.
 
 **Options binding**
 
-- <xref:Bodu.Extensions.Configuration.Text.ConfigurationOptionsExtensions> — DI helpers:
-    - `AddConfigurationOptions<TOptions>(services, IConfiguration configuration, string sectionName)` — section by name.
-    - `AddConfigurationOptions<TOptions>(services, IConfigurationSection section)` — already-projected section.
-  Both are thin shims over `services.Configure<TOptions>(...)` — provided for IntelliSense discoverability.
+- <xref:Bodu.Extensions.Configuration.Text.ConfigurationOptionsExtensions> - DI helpers:
+    - `AddConfigurationOptions<TOptions>(services, IConfiguration configuration, string sectionName)` - section by name.
+    - `AddConfigurationOptions<TOptions>(services, IConfigurationSection section)` - already-projected section.
+  Both are thin shims over `services.Configure<TOptions>(...)` - provided for IntelliSense discoverability.
 
 ## Example
 
@@ -100,7 +100,7 @@ sealed class ServiceOptions
 ## Notes
 
 - **Conventional file probe.** The no-argument overload probes the builder's default file provider for `.boduconfig`, then `bodu.config`. The first file present is loaded; if neither exists and `optional` is `true`, the call is a no-op. This matches the dotfile / plain-file convention common in version-controlled repos.
-- **Reload-on-change.** <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource> inherits `ReloadOnChange` from `FileConfigurationSource`. When set, the provider attaches a file watcher via the configured `IFileProvider`, reparses on change, and triggers the standard `IConfiguration` reload tokens — so consumers using `Microsoft.Extensions.Options.IOptionsMonitor<T>` rebind automatically. <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource> does **not** support reload; the stream is parsed once when `Build` is called.
+- **Reload-on-change.** <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource> inherits `ReloadOnChange` from `FileConfigurationSource`. When set, the provider attaches a file watcher via the configured `IFileProvider`, reparses on change, and triggers the standard `IConfiguration` reload tokens - so consumers using `Microsoft.Extensions.Options.IOptionsMonitor<T>` rebind automatically. <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource> does **not** support reload; the stream is parsed once when `Build` is called.
 - **File-provider precedence.** When `AddTextConfigurationFile` is given an explicit `IFileProvider`, that wins; otherwise the source's `FileProvider` wins; otherwise the builder's default applies. Standard MEC precedence is preserved.
 - **Parse / resolve option propagation.** Both `ParseOptions` and `ResolveOptions` default to `null`, in which case `ConfigurationParseOptions.Bodu` and `ConfigurationResolveOptions.Bodu` are used. Set them per-source to mix profiles within a single builder (an EditorConfig-strict file alongside a Bodu-permissive one).
 - **Target path.** `TargetPath` is per-source. Each source resolves the document for its own target; multiple sources with the same path but different targets are a supported pattern when the application needs configuration evaluated for several paths in parallel.

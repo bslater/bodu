@@ -18,7 +18,7 @@ namespace Bodu.Financial;
 public partial class MoneyTests
 {
     /// <summary>
-    /// Verifies that fractional arithmetic is exact — the binary-float precision loss that motivates dinero.js's
+    /// Verifies that fractional arithmetic is exact - the binary-float precision loss that motivates dinero.js's
     /// integer-minor-units design (<c>0.1 + 0.2 !== 0.3</c> in IEEE-754 doubles) cannot occur because amounts are
     /// <see cref="decimal" />.
     /// </summary>
@@ -32,7 +32,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that multiplying by a fractional factor is exact — the dinero.js documented float-multiplication
+    /// Verifies that multiplying by a fractional factor is exact - the dinero.js documented float-multiplication
     /// hazard (e.g. a 29% fee on 4,545 units computed through binary floats drifts off 1,318.05) cannot occur with
     /// decimal scalar multiplication.
     /// </summary>
@@ -45,7 +45,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that a decimal midpoint literal rounds by its printed digits — the Joda-Money <c>Money.of(double)</c>
+    /// Verifies that a decimal midpoint literal rounds by its printed digits - the Joda-Money <c>Money.of(double)</c>
     /// surprise, where the binary double nearest to <c>1.235</c> is fractionally below the midpoint and rounds down,
     /// cannot occur because construction takes <see cref="decimal" />.
     /// </summary>
@@ -58,7 +58,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that equal amounts at different reported scales are equal and hash identically — the
+    /// Verifies that equal amounts at different reported scales are equal and hash identically - the
     /// <c>BigDecimal.equals</c> scale-sensitivity defect class (<c>2.0</c> ≠ <c>2.00</c>, breaking
     /// <c>HashSet</c>/<c>HashMap</c> deduplication) does not exist; equality follows <see cref="decimal" /> numeric
     /// semantics.
@@ -75,7 +75,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that negating a zero amount produces a clean zero — the negative-zero rendering defect class (a
+    /// Verifies that negating a zero amount produces a clean zero - the negative-zero rendering defect class (a
     /// stray <c>-0.00</c> after negation or sign-preserving arithmetic) does not leak into formatting or equality.
     /// </summary>
     [TestMethod]
@@ -88,7 +88,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that midpoint rounding is symmetric for negative amounts — away-from-zero moves a negative midpoint
+    /// Verifies that midpoint rounding is symmetric for negative amounts - away-from-zero moves a negative midpoint
     /// further from zero, mirroring the positive case, rather than the "half-up moves toward positive infinity"
     /// asymmetry some rounding implementations exhibit.
     /// </summary>
@@ -102,7 +102,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that arithmetic beyond the representable range throws <see cref="OverflowException" /> — the silent
+    /// Verifies that arithmetic beyond the representable range throws <see cref="OverflowException" /> - the silent
     /// precision corruption dinero.js v1 exhibits past <c>Number.MAX_SAFE_INTEGER</c> cannot occur; <see cref="decimal" />
     /// arithmetic is checked.
     /// </summary>
@@ -114,8 +114,8 @@ public partial class MoneyTests
         });
 
     /// <summary>
-    /// Verifies that allocation always conserves the whole amount — the lost-penny defect class in naive
-    /// percentage-split implementations — including for negative amounts and residue-bearing ratios.
+    /// Verifies that allocation always conserves the whole amount - the lost-penny defect class in naive
+    /// percentage-split implementations - including for negative amounts and residue-bearing ratios.
     /// </summary>
     [TestMethod]
     [DataRow("1.00", "1,3", DisplayName = "Residue on unequal ratios")]
@@ -133,7 +133,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that zero-weight allocation slots never receive residue — the misdirected-remainder defect class in
+    /// Verifies that zero-weight allocation slots never receive residue - the misdirected-remainder defect class in
     /// largest-remainder implementations that consider zero-ratio slots when distributing leftover minor units.
     /// </summary>
     [TestMethod]
@@ -146,7 +146,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that rescaling to a coarser precision uses the defaulted rounding rule instead of failing — the
+    /// Verifies that rescaling to a coarser precision uses the defaulted rounding rule instead of failing - the
     /// <c>BigDecimal.setScale</c> defect class, which throws <c>ArithmeticException</c> when precision would be lost
     /// and no rounding mode was supplied.
     /// </summary>
@@ -159,7 +159,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that trimming a zero amount held at a wide scale collapses cleanly to the registered precision — the
+    /// Verifies that trimming a zero amount held at a wide scale collapses cleanly to the registered precision - the
     /// trim-of-zero edge dinero.js mishandled with an infinite loop (dinerojs/dinero.js#640).
     /// </summary>
     [TestMethod]
@@ -172,7 +172,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that the undivided minor unit follows the largest fractional remainder — dinero.js gave the residue to
+    /// Verifies that the undivided minor unit follows the largest fractional remainder - dinero.js gave the residue to
     /// the first slot (<c>1003 by [49,51]</c> → 4.92/5.11 instead of 4.91/5.12; dinerojs/dinero.js#144).
     /// </summary>
     [TestMethod]
@@ -185,7 +185,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that residue lands on the slot with the largest remainder rather than positionally — dinero.js
+    /// Verifies that residue lands on the slot with the largest remainder rather than positionally - dinero.js
     /// distributed <c>5 by [100,101,100,100]</c> as [1,1,1,2] instead of [1,2,1,1] (dinerojs/dinero.js#776).
     /// </summary>
     [TestMethod]
@@ -200,7 +200,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that allocating an amount far beyond 2^53 terminates and conserves the total — dinero.js's
+    /// Verifies that allocating an amount far beyond 2^53 terminates and conserves the total - dinero.js's
     /// distribute loop hangs forever on such amounts (dinerojs/dinero.js#771).
     /// </summary>
     [TestMethod]
@@ -214,7 +214,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that multiplying a zero-minor-unit currency by a fractional factor rounds back to whole units —
+    /// Verifies that multiplying a zero-minor-unit currency by a fractional factor rounds back to whole units -
     /// dinero.js produced sub-unit amounts for exponent-0 currencies (dinerojs/dinero.js#435).
     /// </summary>
     [TestMethod]
@@ -227,7 +227,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that rescaling a midpoint from a wider scale rounds half-even correctly — dinero.js's
+    /// Verifies that rescaling a midpoint from a wider scale rounds half-even correctly - dinero.js's
     /// <c>convertPrecision</c> turned 0.015000 (scale 6 → 2, HALF_EVEN) into 0.01 instead of 0.02
     /// (dinerojs/dinero.js#187).
     /// </summary>
@@ -236,7 +236,7 @@ public partial class MoneyTests
         Assert.AreEqual(0.02m, Money.FromExplicitScale(0.015m, CurrencyCode.USD, 6).Rescale(2).Amount);
 
     /// <summary>
-    /// Verifies that multiplying a negative amount by one is the identity — dinero.js turned −200 × 1 into −201
+    /// Verifies that multiplying a negative amount by one is the identity - dinero.js turned −200 × 1 into −201
     /// through an off-by-one in negative rounding (dinerojs/dinero.js#713).
     /// </summary>
     [TestMethod]
@@ -244,7 +244,7 @@ public partial class MoneyTests
         Assert.AreEqual(-2.00m, (new Money(-2.00m, CurrencyCode.USD) * 1m).Amount);
 
     /// <summary>
-    /// Verifies that rescaling an exact zero from a wide scale yields zero — dinero.js's half-even rounding
+    /// Verifies that rescaling an exact zero from a wide scale yields zero - dinero.js's half-even rounding
     /// manufactured a minor unit from zero (<c>transformScale</c> 7 → 2 of 0 gave 1; dinerojs/dinero.js#710).
     /// </summary>
     [TestMethod]
@@ -252,7 +252,7 @@ public partial class MoneyTests
         Assert.AreEqual(0m, Money.FromExplicitScale(0m, CurrencyCode.USD, 7).Rescale(2).Amount);
 
     /// <summary>
-    /// Verifies that a negative midpoint rescaled away-from-zero moves away from zero — dinero.js v1 pulled −2.05
+    /// Verifies that a negative midpoint rescaled away-from-zero moves away from zero - dinero.js v1 pulled −2.05
     /// toward zero (−2 instead of −2.1) via <c>Math.round</c> semantics (dinerojs/dinero.js#7).
     /// </summary>
     [TestMethod]
@@ -261,7 +261,7 @@ public partial class MoneyTests
 
     /// <summary>
     /// Verifies that zero-minor-unit currencies format without fractional digits and without duplicating the whole
-    /// part — dinero.js printed <c>¥500.00</c> (dinerojs/dinero.js#203) and Joda-Money printed <c>"1212"</c> for
+    /// part - dinero.js printed <c>¥500.00</c> (dinerojs/dinero.js#203) and Joda-Money printed <c>"1212"</c> for
     /// 12 JPY through a substring defect (JodaOrg/joda-money#49).
     /// </summary>
     [TestMethod]
@@ -287,7 +287,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that formatted output parses back to an equal value — the print/parse asymmetry defect class where a
+    /// Verifies that formatted output parses back to an equal value - the print/parse asymmetry defect class where a
     /// formatter emits text its own parser rejects (JodaOrg/joda-money#44).
     /// </summary>
     [TestMethod]
@@ -301,7 +301,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that a non-breaking space separating the code and amount parses — Joda-Money rejects the NBSP that
+    /// Verifies that a non-breaking space separating the code and amount parses - Joda-Money rejects the NBSP that
     /// localized number formatters commonly emit (JodaOrg/joda-money#53, closed WontFix).
     /// </summary>
     [TestMethod]
@@ -315,7 +315,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that a lowercase ISO code is rejected by the strict parser — the case-clashing currency registration
+    /// Verifies that a lowercase ISO code is rejected by the strict parser - the case-clashing currency registration
     /// defect class where <c>"usd"</c> and <c>"USD"</c> could coexist as distinct currencies
     /// (JodaOrg/joda-money#36).
     /// </summary>
@@ -324,7 +324,7 @@ public partial class MoneyTests
         Assert.IsFalse(Money.TryParse("usd 5", CultureInfo.InvariantCulture, out _));
 
     /// <summary>
-    /// Verifies that cash rounding to a currency's smallest physical denomination is supported — CHF amounts snap to
+    /// Verifies that cash rounding to a currency's smallest physical denomination is supported - CHF amounts snap to
     /// the 0.05 increment Joda-Money cannot express (JodaOrg/joda-money#71, open RFE).
     /// </summary>
     [TestMethod]
@@ -337,7 +337,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that the deferred tier eliminates per-operation rounding drift — Joda-Money's <c>Money</c> rounds
+    /// Verifies that the deferred tier eliminates per-operation rounding drift - Joda-Money's <c>Money</c> rounds
     /// after every multiply/divide, accumulating cent drift across chains with no complete remedy
     /// (JodaOrg/joda-money#6). The settled tier documents the drift; <see cref="CalculatedMoney" /> avoids it.
     /// </summary>
@@ -352,7 +352,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that pseudo-currencies are rejected loudly rather than silently clamped — Joda-Money reports the
+    /// Verifies that pseudo-currencies are rejected loudly rather than silently clamped - Joda-Money reports the
     /// scale of XAU (stored as −1 decimal places) as 0, indistinguishable from a genuine zero-decimal currency
     /// (JodaOrg/joda-money CurrencyUnit javadoc).
     /// </summary>
@@ -362,7 +362,7 @@ public partial class MoneyTests
 
     /// <summary>
     /// Verifies that the shipped minor-unit metadata matches ISO 4217 for the currencies Joda-Money serially got
-    /// wrong — CNY (JodaOrg/joda-money#51), COP (#48), ZMW (#57), and LBP (fixed in v0.7).
+    /// wrong - CNY (JodaOrg/joda-money#51), COP (#48), ZMW (#57), and LBP (fixed in v0.7).
     /// </summary>
     [TestMethod]
     [DataRow("CNY", 2, DisplayName = "CNY (joda-money#51)")]

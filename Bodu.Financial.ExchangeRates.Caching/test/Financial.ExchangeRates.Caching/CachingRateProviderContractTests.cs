@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// Verifies that <see cref="CachingRateProvider" /> satisfies the shared dated-provider contract, so a
-/// cache-fronted provider is indistinguishable in shape from a direct one — including reporting identical results and
+/// cache-fronted provider is indistinguishable in shape from a direct one - including reporting identical results and
 /// provenance across its synchronous and asynchronous surfaces.
 /// </summary>
 [TestClass]

@@ -13,14 +13,14 @@ namespace Bodu.Security.Cryptography;
 // SivModeTransform implements standard RFC 5297 AES-SIV: the synthetic IV is derived by S2V (a CMAC-based PRF over the
 // associated data and plaintext), then the 31st and 63rd bits from the right are cleared to form the CTR counter. This
 // is confirmed by the RFC 5297 Appendix A.1 known-answer vector below, which pins the exact ciphertext and SIV and is
-// asserted on both the encrypt and decrypt paths — a real data-path check that a symmetric round-trip cannot provide.
+// asserted on both the encrypt and decrypt paths - a real data-path check that a symmetric round-trip cannot provide.
 //
 // Appendix A.1 is the single-associated-data case, which is what this transform's ProcessAssociatedData API models.
 // Appendix A.2 exercises multiple associated-data components plus a nonce (S2V over a vector of inputs) and does not map
 // onto the single-AAD surface, so it is not represented here.
 public sealed partial class SivModeTransformTests
 {
-    // ── RFC 5297 Appendix A — AES-SIV known-answer tests ─────────────────────────────────────
+    // ── RFC 5297 Appendix A - AES-SIV known-answer tests ─────────────────────────────────────
     //
     // RFC 5297 uses a 256-bit key split into K1 (first 128 bits) and K2 (last 128 bits).
     // The vector's Key carries K1 || K2 concatenated; the test splits it back into the two
@@ -32,12 +32,12 @@ public sealed partial class SivModeTransformTests
     [
         // RFC 5297 A.1: K1=fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0, K2=f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
         // AD = 101112131415161718191a1b1c1d1e1f2021222324252627
-        // PT = 112233445566778899aabbccddee (14 bytes — RFC 5297 A.1 exact)
+        // PT = 112233445566778899aabbccddee (14 bytes - RFC 5297 A.1 exact)
         //   CT  = 40c02b9690c4dc04daef7f6afe5c   (14 bytes)
         //   SIV = 85632d07c6e8f37f950acd320a2ecc93  (16 bytes)
         new AeadKnownAnswer
         {
-            Name = "RFC 5297 A.1 — AES-SIV (14-byte plaintext)",
+            Name = "RFC 5297 A.1 - AES-SIV (14-byte plaintext)",
             Provenance = KatProvenance.Rfc("RFC 5297 Appendix A.1"),
             Key = Hex("fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"),
             Nonce = [],
@@ -108,14 +108,14 @@ public sealed partial class SivModeTransformTests
             "SIV decrypt mismatch for RFC 5297 A.1 vector.");
     }
 
-    // ── Project Wycheproof — AES-SIV known-answer tests ──────────────────────────────────────
+    // ── Project Wycheproof - AES-SIV known-answer tests ──────────────────────────────────────
 
     /// <summary>The logical name of the embedded, curated Wycheproof AES-SIV vector file.</summary>
     private const string WycheproofResourceName = "Bodu.Security.Cryptography.Siv.Wycheproof.txt";
 
     /// <summary>
-    /// Loads the curated Wycheproof AES-SIV vectors — every valid row with non-empty associated data, for AES-128,
-    /// AES-192, and AES-256 key halves, fifteen of them with an empty message — as rows whose key is <c>K1 || K2</c>.
+    /// Loads the curated Wycheproof AES-SIV vectors - every valid row with non-empty associated data, for AES-128,
+    /// AES-192, and AES-256 key halves, fifteen of them with an empty message - as rows whose key is <c>K1 || K2</c>.
     /// </summary>
     /// <returns>One row per vector.</returns>
     private static IEnumerable<object[]> WycheproofVectors()

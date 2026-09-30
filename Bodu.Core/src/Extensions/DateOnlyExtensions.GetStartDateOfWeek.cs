@@ -43,7 +43,7 @@ public static partial class DateOnlyExtensions
     /// The result is validated by recalculating the week number for the computed date and comparing it to
     /// <paramref name="week" />. Dates that fall in the previous calendar year (such as the start of ISO week 1 in late
     /// December) are handled correctly. This member delegates to
-    /// <see cref="DateTimeExtensions.GetStartDateOfWeek(int, int, CultureInfo?)" /> — the twins share one
+    /// <see cref="DateTimeExtensions.GetStartDateOfWeek(int, int, CultureInfo?)" /> - the twins share one
     /// implementation, so both surfaces always agree.
     /// </para>
     /// </remarks>

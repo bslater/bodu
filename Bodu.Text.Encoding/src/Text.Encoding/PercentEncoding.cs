@@ -13,7 +13,7 @@ namespace Bodu.Text.Encoding;
 /// <remarks>
 /// <para>
 /// Percent-encoding represents an octet as <c>%HH</c> using uppercase hexadecimal digits. Each
-/// <see cref="PercentEncodingMode" /> selects which bytes pass through unescaped — from the conservative
+/// <see cref="PercentEncodingMode" /> selects which bytes pass through unescaped - from the conservative
 /// unreserved-only <see cref="PercentEncodingMode.UriComponent" /> set through to the WHATWG
 /// <see cref="PercentEncodingMode.FormUrlEncoded" /> set, where space becomes <c>+</c>. Encoding always emits uppercase
 /// hex; decoding accepts both uppercase and lowercase, which RFC 3986 defines as equivalent.
@@ -26,17 +26,17 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// <para>
 /// Because correct use depends on the component mode and decoding options, this is a static type and is intentionally
-/// not registered in <see cref="BinaryEncodings" /> — the parameterless <see cref="IBinaryEncoding" /> contract cannot
+/// not registered in <see cref="BinaryEncodings" /> - the parameterless <see cref="IBinaryEncoding" /> contract cannot
 /// carry that information.
 /// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // URI component (default) — only unreserved characters pass through.
+/// // URI component (default) - only unreserved characters pass through.
 /// string component = PercentEncoding.EncodeString("a/b?c=d");   // a%2Fb%3Fc%3Dd
 ///
-/// // Form field — space becomes '+'.
+/// // Form field - space becomes '+'.
 /// string field = PercentEncoding.EncodeString("a b+c", mode: PercentEncodingMode.FormUrlEncoded); // a+b%2Bc
 ///
 /// // Round-trip.
@@ -84,7 +84,7 @@ public static partial class PercentEncoding
 
     /// <summary>
     /// Indicates whether <paramref name="source" /> is the <em>canonical</em> percent-encoded form for the supplied
-    /// mode — every literal character is one the mode leaves unescaped, and every percent sequence is well-formed.
+    /// mode - every literal character is one the mode leaves unescaped, and every percent sequence is well-formed.
     /// </summary>
     /// <param name="source">The input characters.</param>
     /// <param name="mode">The component mode.</param>
@@ -198,7 +198,7 @@ public static partial class PercentEncoding
     }
 
     /// <summary>
-    /// Returns the upper-case hexadecimal digit for <paramref name="nibble" /> (0–15).
+    /// Returns the upper-case hexadecimal digit for <paramref name="nibble" /> (0-15).
     /// </summary>
     /// <param name="nibble">The nibble value.</param>
     /// <returns>The hexadecimal digit.</returns>

@@ -8,7 +8,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Exercises the <see cref="TweakableSymmetricAlgorithmTests{TTest, TAlgorithm}" /> base test suite against
-/// <see cref="Serpent1024" /> — validating tweak property behaviour, defensive copies, invalid-size handling, and disposal
+/// <see cref="Serpent1024" /> - validating tweak property behaviour, defensive copies, invalid-size handling, and disposal
 /// semantics for the 1024-bit wide-block Serpent variant.
 /// </summary>
 [TestClass]

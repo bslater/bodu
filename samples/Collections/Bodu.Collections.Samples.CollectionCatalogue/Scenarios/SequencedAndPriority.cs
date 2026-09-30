@@ -12,12 +12,12 @@ namespace Bodu.Collections.Samples.CollectionCatalogue.Scenarios;
 /// Demonstrates <see cref="SequencedDictionary{TKey, TValue}" /> (a dictionary that enumerates keys in
 /// insertion order with cheap first/last access) and
 /// <see cref="IndexedPriorityQueue{TElement, TPriority}" /> (a min-priority queue that additionally supports
-/// updating an already-queued element's priority — the "decrease-key" operation Dijkstra needs).
+/// updating an already-queued element's priority - the "decrease-key" operation Dijkstra needs).
 /// </summary>
 /// <remarks>
 /// Decrease-key is the reason the queue is <em>indexed</em>. A plain priority queue has no way to find an element
 /// it has already accepted, so the usual workaround is to push a duplicate at the new priority and discard stale
-/// entries on the way out — which inflates the heap and forces every consumer to carry that filtering logic.
+/// entries on the way out - which inflates the heap and forces every consumer to carry that filtering logic.
 /// </remarks>
 public static class SequencedAndPriority
 {

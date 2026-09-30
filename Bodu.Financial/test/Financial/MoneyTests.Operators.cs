@@ -73,7 +73,7 @@ public partial class MoneyTests
         Assert.AreEqual(value * 3m, value.Multiply(3m));
         Assert.AreEqual(value / 4m, value.Divide(4m));
 
-        // 1 / 8 = 0.125 — a half-cent midpoint that the two rules resolve differently.
+        // 1 / 8 = 0.125 - a half-cent midpoint that the two rules resolve differently.
         Assert.AreEqual(new Money(0.12m, CurrencyCode.USD), new Money(1m, CurrencyCode.USD).Divide(8m, MidpointRounding.ToEven));
         Assert.AreEqual(new Money(0.13m, CurrencyCode.USD), new Money(1m, CurrencyCode.USD).Multiply(0.125m, MidpointRounding.AwayFromZero));
     }

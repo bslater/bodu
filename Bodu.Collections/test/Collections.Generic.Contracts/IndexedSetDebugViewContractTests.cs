@@ -9,8 +9,8 @@ namespace Bodu.Collections.Generic.Contracts;
 
 /// <summary>
 /// Drives <see cref="DebugViewContractTests{TCollection}" /> against <see cref="IndexedSet{T}" />.
-/// Asserts the standard Bodu debugger-display contract — the <c>DebuggerDisplayAttribute</c>,
-/// <c>DebuggerTypeProxyAttribute</c>, and instance-constructible debug-view proxy — is present and
+/// Asserts the standard Bodu debugger-display contract - the <c>DebuggerDisplayAttribute</c>,
+/// <c>DebuggerTypeProxyAttribute</c>, and instance-constructible debug-view proxy - is present and
 /// wired up correctly.
 /// </summary>
 [TestClass]

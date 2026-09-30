@@ -9,7 +9,7 @@ using Bodu.Security.Cryptography.Infrastructure;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Represents a single known-answer test vector for a symmetric block cipher — a named plaintext / ciphertext pair
+/// Represents a single known-answer test vector for a symmetric block cipher - a named plaintext / ciphertext pair
 /// together with the per-row key (and, for tweakable ciphers, the per-row tweak) that produced the expected output.
 /// Mirrors the role of <see cref="KeyedHashAlgorithmKnownAnswer" /> on the keyed-hash side so cipher and hash families
 /// share the same data-driven KAT idiom.
@@ -20,13 +20,13 @@ namespace Bodu.Security.Cryptography;
 /// per-cipher test class overrides <c>GetKnownAnswers(variant)</c> to surface the curated vectors and
 /// <c>CreateBlockCipherForAnswer(answer)</c> to construct an engine seeded with the row's key (and tweak, where
 /// applicable); the base class drives encrypt / decrypt assertions against the row's expected ciphertext. The
-/// transform-tier and algorithm-tier suites instead exercise their public contracts plus a generic round-trip — cipher
+/// transform-tier and algorithm-tier suites instead exercise their public contracts plus a generic round-trip - cipher
 /// correctness flows up through delegation rather than through duplicate KAT byte-equality checks.
 /// </para>
 /// <para>
-/// Vectors are colocated with their consumer test class as a <c>*.KnownAnswers.cs</c> partial — for example
+/// Vectors are colocated with their consumer test class as a <c>*.KnownAnswers.cs</c> partial - for example
 /// <see cref="SkipjackBlockCipherTests" />, <see cref="CamelliaBlockCipherTests" />,
-/// <see cref="Threefish256CipherTests" /> — and exposed through a private <c>KnownAnswersFor(variant)</c> accessor
+/// <see cref="Threefish256CipherTests" /> - and exposed through a private <c>KnownAnswersFor(variant)</c> accessor
 /// whose <c>variant</c> parameter is one of <see cref="SingleTestVariant" />, <see cref="BlockCipherKeyVariant" />, or
 /// <see cref="TweakableBlockCipherVariant" /> depending on what configuration shape the family supports.
 /// </para>
@@ -41,11 +41,11 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>An all-zero key, all-zero plaintext row — basic regression sanity.</description>
+/// <description>An all-zero key, all-zero plaintext row - basic regression sanity.</description>
 /// </item>
 /// <item>
 /// <description>
-/// An all-ones (or all-FF) key, all-ones plaintext row — regression sanity at the opposite extreme.
+/// An all-ones (or all-FF) key, all-ones plaintext row - regression sanity at the opposite extreme.
 /// </description>
 /// </item>
 /// <item>

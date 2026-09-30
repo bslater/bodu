@@ -11,7 +11,7 @@ using System.Numerics;
 namespace Bodu.Numerics;
 
 /// <summary>
-/// Represents an immutable, arbitrary-precision decimal number — a <see cref="BigInteger" /> unscaled value together
+/// Represents an immutable, arbitrary-precision decimal number - a <see cref="BigInteger" /> unscaled value together
 /// with a base-ten scale.
 /// </summary>
 /// <remarks>
@@ -22,7 +22,7 @@ namespace Bodu.Numerics;
 /// </para>
 /// <para>
 /// Every value is held in a single canonical form so equal values share one representation and compare and hash
-/// equally: trailing zeros are removed from the unscaled value down to — but never past — a scale of zero, so
+/// equally: trailing zeros are removed from the unscaled value down to - but never past - a scale of zero, so
 /// <c>1.0</c> and <c>1.00</c> are the same value, and an integer such as <c>100</c> keeps a scale of zero.
 /// </para>
 /// <para>
@@ -63,7 +63,7 @@ public readonly partial struct BigDecimal
     /// <summary>The unscaled integer significand; the value is <see cref="_mantissa" /> &#215; 10<sup>-<see cref="_scale" /></sup>.</summary>
     private readonly BigInteger _mantissa;
 
-    /// <summary>The non-negative base-ten scale — the number of fractional decimal places in the canonical form.</summary>
+    /// <summary>The non-negative base-ten scale - the number of fractional decimal places in the canonical form.</summary>
     private readonly int _scale;
 
     /// <summary>
@@ -130,7 +130,7 @@ public readonly partial struct BigDecimal
         _mantissa;
 
     /// <summary>
-    /// Gets the base-ten scale of the canonical form — the number of fractional decimal places.
+    /// Gets the base-ten scale of the canonical form - the number of fractional decimal places.
     /// </summary>
     /// <value>A non-negative scale; zero for an integer value.</value>
     public int Scale =>

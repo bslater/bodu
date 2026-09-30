@@ -17,9 +17,9 @@ input bytes  : 66 6F 6F 62 61 72         (ASCII "foobar")
               :                          ┌── 6 bytes = 48 bits ───┐
               :                          │  8 chars × 6 = 48 bits │
               :                          └──── 3-byte groups ─────┘
-encoded text : Zm9vYmFy                  (Standard / URL-safe — same here, no +/- in this example)
+encoded text : Zm9vYmFy                  (Standard / URL-safe - same here, no +/- in this example)
               Zm9vYmFy                    (URL-safe)
-              Zm9vYmFy\r\n...             (MIME — 76-char line wrap)
+              Zm9vYmFy\r\n...             (MIME - 76-char line wrap)
 ```
 
 ## Quick reference
@@ -32,10 +32,10 @@ byte[] data = System.Text.Encoding.ASCII.GetBytes("foobar");
 // Standard RFC 4648 §4
 string s = Base64.Encode(data);                                // "Zm9vYmFy"
 
-// URL-safe RFC 4648 §5 — '+' → '-', '/' → '_', no padding by default
+// URL-safe RFC 4648 §5 - '+' → '-', '/' → '_', no padding by default
 string u = Base64.Encode(data, Base64Variant.UrlSafe);         // "Zm9vYmFy"
 
-// MIME RFC 2045 — 76-char wrap with \r\n
+// MIME RFC 2045 - 76-char wrap with \r\n
 byte[] big = new byte[300];
 string m = Base64.Encode(big, Base64Variant.Mime);
 // Contains "\r\n" every 76 chars
@@ -50,7 +50,7 @@ byte[] back = Base64.Decode("Zm9vYmFy");
 |---|---|---|---|
 | `Standard` (RFC 4648 §4) | `A-Z a-z 0-9 + /` | Yes (`=`) | No |
 | `UrlSafe` (RFC 4648 §5) | `A-Z a-z 0-9 - _` | **No** (JWT / OAuth convention) | No |
-| `Mime` (RFC 2045) | Standard alphabet | Yes (`=`) | **Yes — 76 chars** |
+| `Mime` (RFC 2045) | Standard alphabet | Yes (`=`) | **Yes - 76 chars** |
 
 ### When to pick each
 
@@ -62,7 +62,7 @@ byte[] back = Base64.Decode("Zm9vYmFy");
 
 ## URL-safe specifics
 
-URL-safe Base64 swaps two characters: `+` → `-`, `/` → `_`. The decoder is **strict** by default — `+` and `/`
+URL-safe Base64 swaps two characters: `+` → `-`, `/` → `_`. The decoder is **strict** by default - `+` and `/`
 are rejected in URL-safe mode, and `-` / `_` are rejected in Standard mode. To accept either alphabet, use the
 `Get(name)` lookup with the appropriate variant or pre-normalise the input.
 
@@ -75,7 +75,7 @@ Base64.Encode(data, Base64Variant.UrlSafe, BaseFormattingOptions.None);     // n
 Base64.Encode(data, Base64Variant.UrlSafe, BaseFormattingOptions.OmitPadding); // explicit no-padding (same)
 ```
 
-JWT tokens never use padding — decoders accept either form via `BaseFormatStyles.AllowMissingPadding`:
+JWT tokens never use padding - decoders accept either form via `BaseFormatStyles.AllowMissingPadding`:
 
 ```csharp
 byte[] headerBytes = Base64.Decode(
@@ -86,7 +86,7 @@ byte[] headerBytes = Base64.Decode(
 
 ### The dedicated `Base64Url` helper
 
-When URL-safe is *all* you need, <xref:Bodu.Text.Encoding.Base64Url> is a focused static class — RFC 4648 §5, unpadded — that skips the variant argument entirely. It offers `string`, span (`char` and UTF-8 `byte`) surfaces with `Encode` / `Decode` / `EncodeToUtf8`, the non-throwing `TryEncode` / `TryEncodeToUtf8` / `TryDecode`, the `IsValid` predicate, and the `GetEncodedLength` / `GetMaxDecodedLength` sizing pair:
+When URL-safe is *all* you need, <xref:Bodu.Text.Encoding.Base64Url> is a focused static class - RFC 4648 §5, unpadded - that skips the variant argument entirely. It offers `string`, span (`char` and UTF-8 `byte`) surfaces with `Encode` / `Decode` / `EncodeToUtf8`, the non-throwing `TryEncode` / `TryEncodeToUtf8` / `TryDecode`, the `IsValid` predicate, and the `GetEncodedLength` / `GetMaxDecodedLength` sizing pair:
 
 ```csharp
 string token = Base64Url.Encode(payload);                       // unpadded URL-safe
@@ -109,10 +109,10 @@ MIME mandates `\r\n` every 76 characters. The encoder honours this automatically
 byte[] payload = new byte[300];
 RandomNumberGenerator.Fill(payload);
 string mime = Base64.Encode(payload, Base64Variant.Mime);
-// "AAAA…\r\nBBBB…\r\n…" — wraps at column 76
+// "AAAA…\r\nBBBB…\r\n…" - wraps at column 76
 
 byte[] back = Base64.Decode(mime, Base64Variant.Mime);
-// Implicitly strips whitespace — no extra style flag needed
+// Implicitly strips whitespace - no extra style flag needed
 ```
 
 `Base64Variant.Mime` implicitly enables whitespace stripping on decode because MIME content always contains
@@ -126,17 +126,17 @@ contains whitespace.
 | `BaseFormatStyles.IgnoreWhitespace` | Strip ASCII space / tab / CR / LF anywhere |
 | `BaseFormatStyles.AllowMissingPadding` | Accept inputs without trailing `=` |
 | `BaseFormatStyles.AllowPrefix` | No-op for Base64 (no standard prefix) |
-| `BaseFormatStyles.RequireCanonicalEncoding` | **Tightens** the decoder — rejects a two- or three-character tail whose unused bits are non-zero |
+| `BaseFormatStyles.RequireCanonicalEncoding` | **Tightens** the decoder - rejects a two- or three-character tail whose unused bits are non-zero |
 
 ### Canonical form and the 3-byte quantum
 
 Base64's quantum is **3 bytes → 4 characters** (24 bits). A two-byte tail leaves 2 unused bits in its last symbol
-and a one-byte tail leaves 4 — RFC 4648 §3.5 lets the decoder accept any value for those bits, so non-canonical
+and a one-byte tail leaves 4 - RFC 4648 §3.5 lets the decoder accept any value for those bits, so non-canonical
 encodings exist. `RequireCanonicalEncoding` rejects them, giving each byte sequence a single accepted spelling:
 
 ```csharp
-Base64.Decode("QQ==", Base64Variant.Standard);                                       // ok — { 0x41 }
-Base64.Decode("QR==", Base64Variant.Standard);                                       // ok by default — same byte, non-canonical
+Base64.Decode("QQ==", Base64Variant.Standard);                                       // ok - { 0x41 }
+Base64.Decode("QR==", Base64Variant.Standard);                                       // ok by default - same byte, non-canonical
 Base64.Decode("QR==", Base64Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding); // FormatException
 ```
 
@@ -174,7 +174,7 @@ Base64.GetMaxDecodedLength(8);                           // 6
 
 ## Encoding a GUID
 
-`Base64` encodes a <xref:System.Guid> into a 24-character padded (or 22-character unpadded URL-safe) token — the
+`Base64` encodes a <xref:System.Guid> into a 24-character padded (or 22-character unpadded URL-safe) token - the
 densest of the core families for a 16-byte value:
 
 ```csharp
@@ -220,7 +220,7 @@ static bool TryRoundTrip(ReadOnlySpan<byte> data)
 
 ## Where to go next
 
-- **[Base32 guide](base32.md)** — when human readability beats density.
-- **[Base85 guide](base85.md)** — when 25 % expansion matters more than alphabet familiarity.
-- **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — runtime-selected encoding choice.
-- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.
+- **[Base32 guide](base32.md)** - when human readability beats density.
+- **[Base85 guide](base85.md)** - when 25 % expansion matters more than alphabet familiarity.
+- **[`IBinaryEncoding` interface](binary-encodings-interface.md)** - runtime-selected encoding choice.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** - every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

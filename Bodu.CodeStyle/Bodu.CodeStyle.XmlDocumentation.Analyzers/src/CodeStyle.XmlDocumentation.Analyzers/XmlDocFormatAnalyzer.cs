@@ -21,7 +21,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace Bodu.CodeStyle.XmlDocumentation.Analyzers;
 
 /// <summary>
-/// Reports one of the <c>BODU1001</c>–<c>BODU1040</c> diagnostics when an XML documentation comment's formatting
+/// Reports one of the <c>BODU1001</c>-<c>BODU1040</c> diagnostics when an XML documentation comment's formatting
 /// differs from the active project policy. Each per-tag rule has its own diagnostic ID so that individual tags can be
 /// silenced or re-targeted in <c>.editorconfig</c> independently.
 /// </summary>
@@ -115,7 +115,7 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
             ImmutableArray<XmlDocFormattingChange> changes = result.Changes;
             if (changes.IsDefaultOrEmpty)
             {
-                // Defensive: the formatter reported a change but the attributor produced no records — emit
+                // Defensive: the formatter reported a change but the attributor produced no records - emit
                 // the cross-cutting bucket so the diagnostic surfaces in the editor.
                 treeContext.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.XmlDocCrossCutting, location, properties));
                 continue;

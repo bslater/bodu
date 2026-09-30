@@ -14,8 +14,8 @@ namespace Bodu.Collections.Generic;
 /// <para>
 /// The kind determines the point from which an entry's time-to-live is counted. Under <see cref="Absolute" /> the
 /// countdown starts when the entry is added (or its value is updated) and is unaffected by reads. Under
-/// <see cref="Sliding" /> every successful read access — <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" />,
-/// the indexer getter, and <see cref="EvictingDictionary{TKey, TValue}.ContainsKey" /> — restarts the countdown,
+/// <see cref="Sliding" /> every successful read access - <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" />,
+/// the indexer getter, and <see cref="EvictingDictionary{TKey, TValue}.ContainsKey" /> - restarts the countdown,
 /// keeping actively read entries alive indefinitely.
 /// </para>
 /// <para>

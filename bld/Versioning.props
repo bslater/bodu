@@ -9,7 +9,7 @@
     setting <BoduPackageVersionOverride> in its own .csproj. That property is applied (and reported)
     in the repository-root Directory.Build.targets, which is processed after the project body so the
     divergence is explicit, visible in build output, and auditable in source control. Do not edit
-    <VersionPrefix> directly in a project to break rank — use BoduPackageVersionOverride so the
+    <VersionPrefix> directly in a project to break rank - use BoduPackageVersionOverride so the
     intent is obvious.
   -->
   <PropertyGroup>
@@ -30,7 +30,7 @@
       A preview package references this property rather than pinning a literal, so moving the
       preview stream stays a one-line edit here. bld/check-release-manifest.sh enforces both that and
       the tier-to-stream agreement, because nothing else reconciles a package's declared tier with
-      the version it actually publishes at — and a wrong version cannot be taken back off nuget.org.
+      the version it actually publishes at - and a wrong version cannot be taken back off nuget.org.
     -->
     <BoduPreviewVersion>0.7.1</BoduPreviewVersion>
 
@@ -40,8 +40,8 @@
       serves both streams: it is the last release in which Stable and preview packages shared a
       version, and every published package therefore has a 0.7.0 predecessor to compare against.
       Empty = validation stays inert (no published baseline exists yet). The baseline is applied
-      only to packages listed in bld/release-manifest.txt — packages that have never shipped have
-      nothing to compare against — and only to a build with BoduSignAssembly=true (the default),
+      only to packages listed in bld/release-manifest.txt - packages that have never shipped have
+      nothing to compare against - and only to a build with BoduSignAssembly=true (the default),
       because the published packages are strong-named and a comparison against them needs the same
       assembly identity. Applied in the repository-root Directory.Build.targets; see bld/RELEASING.md for the
       release procedure.

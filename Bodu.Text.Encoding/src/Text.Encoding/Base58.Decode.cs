@@ -136,7 +136,7 @@ public static partial class Base58
         error = null;
 
         // Base58 decoding accumulates into a BigInteger whose size grows with the input, so a naive decode is O(n²)
-        // in the input length — an algorithmic-complexity denial-of-service on untrusted input. Cap the input length
+        // in the input length - an algorithmic-complexity denial-of-service on untrusted input. Cap the input length
         // so the worst-case cost stays bounded while still admitting any realistic encoded payload.
         if (chars.Length > MaxDecodeInputLength)
         {

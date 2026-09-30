@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Owns the memory matrix of one Argon2 derivation — its blocks of 128 64-bit words — in native memory, and clears it
+/// Owns the memory matrix of one Argon2 derivation - its blocks of 128 64-bit words - in native memory, and clears it
 /// when released.
 /// </summary>
 /// <remarks>

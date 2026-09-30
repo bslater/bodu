@@ -24,7 +24,7 @@ namespace Bodu.Collections.Generic;
 /// The <see cref="Count" /> property returns the total element count <em>including</em> multiplicity. A multiset
 /// containing <c>"a"</c> twice and <c>"b"</c> once has a <see cref="Count" /> of 3 and a <see cref="DistinctCount" />
 /// of 2. Enumerating the multiset yields each element as many times as it appears; use <see cref="Distinct()" /> to
-/// iterate over each distinct element once, or <see cref="Frequencies()" /> to obtain element–count pairs.
+/// iterate over each distinct element once, or <see cref="Frequencies()" /> to obtain element-count pairs.
 /// </para>
 /// <para>
 /// Set-theoretic operations (<see cref="Union" />, <see cref="Intersect" />, <see cref="Except" />, <see cref="Sum" />)
@@ -33,20 +33,20 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description><see cref="Union" /> — each element appears max(a, b) times.</description>
+/// <description><see cref="Union" /> - each element appears max(a, b) times.</description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="Intersect" /> — each element appears min(a, b) times; elements absent from either operand are omitted.
+/// <see cref="Intersect" /> - each element appears min(a, b) times; elements absent from either operand are omitted.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="Except" /> — each element appears max(0, a − b) times; elements whose count reaches zero are omitted.
+/// <see cref="Except" /> - each element appears max(0, a − b) times; elements whose count reaches zero are omitted.
 /// </description>
 /// </item>
 /// <item>
-/// <description><see cref="Sum" /> — each element appears a + b times.</description>
+/// <description><see cref="Sum" /> - each element appears a + b times.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -65,14 +65,14 @@ namespace Bodu.Collections.Generic;
 /// foreach (char c in "mississippi")
 ///     histogram.Add(c);
 ///
-/// Console.WriteLine(histogram.Count);         // 11 — total occurrences
-/// Console.WriteLine(histogram.DistinctCount); // 4  — distinct letters
-/// Console.WriteLine(histogram["s"[0]]);       // 4  — count for 's'
+/// Console.WriteLine(histogram.Count);         // 11 - total occurrences
+/// Console.WriteLine(histogram.DistinctCount); // 4  - distinct letters
+/// Console.WriteLine(histogram["s"[0]]);       // 4  - count for 's'
 ///
 /// foreach (KeyValuePair<char, int> kv in histogram.Frequencies())
 ///     Console.WriteLine($"{kv.Key}: {kv.Value}");
 ///
-/// // Multiset algebra — combine two histograms without mutating either operand.
+/// // Multiset algebra - combine two histograms without mutating either operand.
 /// var other = new Multiset<char> { 'i', 'i', 's' };
 /// Multiset<char> combined = histogram.Sum(other);
 ///]]>
@@ -340,7 +340,7 @@ public sealed partial class Multiset<T>
     }
 
     /// <summary>
-    /// Returns an enumerable sequence of element–count pairs for each distinct element in the
+    /// Returns an enumerable sequence of element-count pairs for each distinct element in the
     /// <see cref="Multiset{T}" />.
     /// </summary>
     /// <returns>
@@ -488,7 +488,7 @@ public sealed partial class Multiset<T>
     /// </exception>
     /// <remarks>
     /// Both additions are performed with checked arithmetic, following the BCL convention of surfacing
-    /// <see cref="OverflowException" /> for counts that exceed <see cref="int.MaxValue" /> — an
+    /// <see cref="OverflowException" /> for counts that exceed <see cref="int.MaxValue" /> - an
     /// <see cref="ArgumentOutOfRangeException" /> would misattribute the failure to the caller's argument when the
     /// overflow depends on accumulated state (and set-operation builders have no user-supplied count at all). Both new
     /// values are computed before either field is mutated, so a failed insert leaves the multiset unchanged.

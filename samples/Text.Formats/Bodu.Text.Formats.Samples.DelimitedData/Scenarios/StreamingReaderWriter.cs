@@ -16,7 +16,7 @@ namespace Bodu.Samples.Text.Formats.DelimitedData.Scenarios;
 /// <summary>
 /// Demonstrates the token surface for row-at-a-time processing: the forward-only
 /// <see cref="Utf8DelimitedReader" /> walks the UTF-8 bytes one token at a time, and
-/// <see cref="Utf8DelimitedWriter" /> emits records as they are produced — here composed into a filter pipeline that
+/// <see cref="Utf8DelimitedWriter" /> emits records as they are produced - here composed into a filter pipeline that
 /// never builds a document.
 /// </summary>
 public static class StreamingReaderWriter

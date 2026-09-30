@@ -13,7 +13,7 @@ namespace Bodu.Financial.ExchangeRates;
 public partial class OfxRateProviderOptionsTests
 {
     /// <summary>
-    /// Verifies that the default options deliberately advertise an unbounded history — OFX publishes multi-decade
+    /// Verifies that the default options deliberately advertise an unbounded history - OFX publishes multi-decade
     /// data with no fixed inception date.
     /// </summary>
     [TestMethod]

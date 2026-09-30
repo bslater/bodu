@@ -47,8 +47,8 @@ public sealed partial class TextFilter
     /// <param name="value">The value to test.</param>
     /// <returns>The matching patterns; empty when none match.</returns>
     /// <remarks>
-    /// This diagnostic surface tests all patterns without short-circuiting — unlike <see cref="Evaluate" />, which
-    /// stops at the deciding pattern — and does not update the filter's statistics or invoke the observer. A pattern
+    /// This diagnostic surface tests all patterns without short-circuiting - unlike <see cref="Evaluate" />, which
+    /// stops at the deciding pattern - and does not update the filter's statistics or invoke the observer. A pattern
     /// whose brace alternation expanded into several matchers is reported once. Regular-expression timeouts follow the
     /// same fail-safe rule as evaluation (a timed-out exclude reports as matching).
     /// </remarks>
@@ -110,7 +110,7 @@ public sealed partial class TextFilter
         if (decidingIndex >= 0)
         {
             // The compiled entry carries only the declaration index; resolve it to the declared pattern once, and
-            // credit the hit to that slot — brace-expanded alternatives share their pattern's slot by design.
+            // credit the hit to that slot - brace-expanded alternatives share their pattern's slot by design.
             deciding = _patterns[decidingIndex];
             _hitCounts[decidingIndex]++;
         }
@@ -137,7 +137,7 @@ public sealed partial class TextFilter
     {
         // Includes run before excludes deliberately: with a non-empty include group the (usually large) fraction of
         // values matching no include exits here without ever touching the excludes, and with an empty include group
-        // the _includeAll flag skips the loop entirely — so this order is never worse than excludes-first. Both
+        // the _includeAll flag skips the loop entirely - so this order is never worse than excludes-first. Both
         // groups are pre-sorted cheapest-strategy-first, which is safe because set matching is an
         // order-independent OR.
         var includeIndex = -1;
@@ -190,7 +190,7 @@ public sealed partial class TextFilter
     private TextFilterDecision EvaluateLastMatchWins(ReadOnlySpan<char> value, ref int decidingIndex, ref int timeoutCount)
     {
         // "Last matching rule wins" evaluated directly: scan from the last rule toward the first and stop at the
-        // first hit — the same trick git uses for .gitignore. Rule order is semantic here, so unlike AnyMatch these
+        // first hit - the same trick git uses for .gitignore. Rule order is semantic here, so unlike AnyMatch these
         // entries are stored in declaration order and never cost-sorted.
         var ordered = _ordered;
         for (var i = ordered.Length - 1; i >= 0; i--)

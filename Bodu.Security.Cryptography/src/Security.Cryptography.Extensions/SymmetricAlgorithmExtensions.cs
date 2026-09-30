@@ -13,8 +13,8 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> ships with the building blocks —
-/// <c>CreateEncryptor</c>, <c>CreateDecryptor</c>, and <c>CryptoStream</c> — but stops short of the operations that
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> ships with the building blocks -
+/// <c>CreateEncryptor</c>, <c>CreateDecryptor</c>, and <c>CryptoStream</c> - but stops short of the operations that
 /// callers actually want to invoke: "encrypt this byte array", "decrypt this stream into that one", or "give me back
 /// the encryptor only if the key/IV check out". Production code that does this work tends to repeat the same setup:
 /// instantiate the transform, wrap it in a <see cref="System.Security.Cryptography.CryptoStream" />, drain the source,
@@ -26,7 +26,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <term>Encrypt / Decrypt — one-shot</term>
+/// <term>Encrypt / Decrypt - one-shot</term>
 /// <description>
 /// <c>Encrypt</c> and <c>Decrypt</c> overloads accepting <see cref="byte" />[], a slice (<c>offset</c>/<c>count</c>),
 /// <see cref="System.ReadOnlySpan{T}" />, or <see cref="System.ReadOnlyMemory{T}" />, returning the result as a freshly
@@ -34,7 +34,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// </description>
 /// </item>
 /// <item>
-/// <term>Encrypt / Decrypt — stream</term>
+/// <term>Encrypt / Decrypt - stream</term>
 /// <description>
 /// <c>Encrypt(sourceStream, targetStream)</c> / <c>Decrypt(sourceStream, targetStream)</c> with awaitable
 /// <c>EncryptAsync</c> / <c>DecryptAsync</c> variants. The buffer size defaults to <see cref="DefaultBufferSize" /> (80
@@ -45,7 +45,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <item>
 /// <term>Try-pattern transform creation</term>
 /// <description>
-/// <c>TryCreateEncryptor</c> / <c>TryCreateDecryptor</c> — surface key/IV validation failures as a
+/// <c>TryCreateEncryptor</c> / <c>TryCreateDecryptor</c> - surface key/IV validation failures as a
 /// <see langword="false" /> return rather than a <see cref="System.Security.Cryptography.CryptographicException" />.
 /// Useful when accepting key material from configuration or user input.
 /// </description>

@@ -13,8 +13,8 @@ using Bodu.Text.Delimited.Writer;
 namespace Bodu.Samples.Text.Formats.DelimitedData.Scenarios;
 
 /// <summary>
-/// Demonstrates the write direction: the mutable <see cref="DelimitedNode" /> DOM parses a CSV, writes it back out —
-/// re-quoting exactly the fields that need it — and the writer options retarget the same tree to another dialect, so
+/// Demonstrates the write direction: the mutable <see cref="DelimitedNode" /> DOM parses a CSV, writes it back out -
+/// re-quoting exactly the fields that need it - and the writer options retarget the same tree to another dialect, so
 /// CSV-in / TSV-out conversion is a parse and a write.
 /// </summary>
 public static class FormatAndRoundTrip

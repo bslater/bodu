@@ -97,7 +97,7 @@ public partial class RunningStatisticsTests
     }
 
     /// <summary>
-    /// Verifies that copying the accumulator snapshots its state — the copy and the original accumulate
+    /// Verifies that copying the accumulator snapshots its state - the copy and the original accumulate
     /// independently afterwards.
     /// </summary>
     [TestMethod]

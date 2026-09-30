@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ================================================================================================================
-  Australia (AU) — self-contained engine-test fixture
+  Australia (AU) - self-contained engine-test fixture
   ================================================================================================================
 
   A full inline port of the v1 region-au.xml to the v2 cookbook schema. Unlike the shipping AsiaPacific data pack
   (which imports shared concepts from the common catalogues), this fixture is loaded WITHOUT a resource resolver,
-  so every concept — including the civil, Christian, family, and cultural observances the data pack imports — is
+  so every concept - including the civil, Christian, family, and cultural observances the data pack imports - is
   declared inline here.
 
   It exercises the engine surface the Australian calendar relies on: Fixed and DayOfWeekInMonth strategies, the
   Easter algorithm with OffsetFromRule derivations, WeekdayNearDate, year-bound applicability, per-subdivision
-  territory shadowing, weekend substitution (plain and conflict-aware), and — via the NSW Anzac Day trial — the
+  territory shadowing, weekend substitution (plain and conflict-aware), and - via the NSW Anzac Day trial - the
   ObservedAsAdditional emission mode.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.au">
@@ -111,7 +111,7 @@
     </NotableDate>
 
     <!--
-      Anzac Day — 25 April. National rule has no substitute; WA and NT grant a substitute Monday on a weekend; the
+      Anzac Day - 25 April. National rule has no substitute; WA and NT grant a substitute Monday on a weekend; the
       NSW 2026-2027 trial grants an ADDITIONAL Monday (25 April retained). The per-subdivision rules shadow the
       national rule only for their territory and (for NSW) only within the trial window. See the data pack
       region-au.xml header for the full trial provenance.
@@ -133,7 +133,7 @@
           <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
         </Rule>
         <!--
-          NSW Anzac Day weekend-substitute trial — 2026 and 2027 only. The 2026-2027 applicability bound means the
+          NSW Anzac Day weekend-substitute trial - 2026 and 2027 only. The 2026-2027 applicability bound means the
           year-aware specificity shadowing routes AU-NSW through this rule (additional Monday) only in those years
           and falls back to the national "au" rule otherwise.
         -->
@@ -287,7 +287,7 @@
     </NotableDate>
 
     <!--
-      King's Birthday — second Monday in June across most states; WA observes the last Monday in September and QLD
+      King's Birthday - second Monday in June across most states; WA observes the last Monday in September and QLD
       the first Monday in October from 2016 (the fromYear bound suppresses earlier QLD years).
     -->
     <NotableDate id="kings-birthday" displayName="King's Birthday" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -359,7 +359,7 @@
 
     <NotableDate id="royal-queensland-show" displayName="Royal Queensland Show" category="Regional" defaultNonWorkingDay="true">
       <Rules>
-        <Rule id="qld" priority="100" comment="Brisbane metropolitan area only — not observed state-wide.">
+        <Rule id="qld" priority="100" comment="Brisbane metropolitan area only - not observed state-wide.">
           <Applicability calendar="Gregorian"><Territory code="AU-QLD" /></Applicability>
           <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Wednesday" weekOrdinal="Second" /></Strategy></Rule>
       </Rules>

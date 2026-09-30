@@ -16,7 +16,7 @@ namespace Bodu.Text.Yaml.Samples.YamlDocuments.Scenarios;
 /// Demonstrates the lowest layer: the allocation-free ref structs <see cref="Utf8YamlWriter" />
 /// (forward-only token emission into an <see cref="IBufferWriter{T}" />) and
 /// <see cref="Utf8YamlReader" /> (forward-only token pull). This is the surface the serializer and
-/// both DOMs are built on — reach for it when you need maximum control or minimum overhead.
+/// both DOMs are built on - reach for it when you need maximum control or minimum overhead.
 /// </summary>
 public static class TokenReaderWriter
 {

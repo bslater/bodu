@@ -16,8 +16,8 @@ namespace Bodu.Text.Ini.Document;
 /// global keys as string properties and sections as object properties. Comment trivia is not retained.
 /// </summary>
 /// <remarks>
-/// The document owns a normalized store of decoded entries — with the duplicate-section and duplicate-key policies
-/// already applied — and must be disposed when no longer needed; every <see cref="IniElement" /> obtained from it
+/// The document owns a normalized store of decoded entries - with the duplicate-section and duplicate-key policies
+/// already applied - and must be disposed when no longer needed; every <see cref="IniElement" /> obtained from it
 /// becomes invalid once the document is disposed.
 /// </remarks>
 public sealed class IniDocument

@@ -35,7 +35,7 @@ AUD/USD (both quote it), AUD/EUR (only BankA), and AUD/JPY (only BankB).
   AUD/JPY: 102.02  served by BankB  (fallback)
 ```
 
-AUD/USD comes from BankA even though BankB also quotes it — priority order decides, not data
+AUD/USD comes from BankA even though BankB also quotes it - priority order decides, not data
 availability. AUD/JPY silently falls through to BankB; the caller code is identical for all
 three lookups.
 
@@ -45,7 +45,7 @@ three lookups.
 ### Averaging (`Scenarios/Averaging.cs`)
 
 **Intent.** When several comparable sources quote the same pair, the mean smooths their small
-discrepancies — but the result is *synthetic*: it may equal a rate no source ever published, so
+discrepancies - but the result is *synthetic*: it may equal a rate no source ever published, so
 it is deliberately labelled and explicitly not for audit-grade conversions.
 
 **What it does.** Prints each bank's AUD/USD fix, then resolves the same pair through an
@@ -64,7 +64,7 @@ AUD/JPY (a single-contributor pair) to show averaging degrades gracefully.
 ```
 
 0.65505 is the arithmetic mean of the two fixes, and its provider label is the synthetic
-`"Average"` — the deliberate marker that this number traces to a computation, not a publication.
+`"Average"` - the deliberate marker that this number traces to a computation, not a publication.
 A pair only one bank quotes still resolves: the average of one contribution is that value.
 
 **APIs demonstrated.** `AverageStrategy`, `RateAggregationOptions.DefaultStrategy`, the
@@ -73,7 +73,7 @@ synthetic provider label in provenance.
 ### PerPairRouting (`Scenarios/PerPairRouting.cs`)
 
 **Intent.** Different pairs have different authoritative sources. Per-pair routes give each pair
-its own provider order — and optionally its own strategy — while unrouted pairs keep the
+its own provider order - and optionally its own strategy - while unrouted pairs keep the
 aggregator's defaults.
 
 **What it does.** Adds two routes to `RateAggregationOptions.Routes`: AUD/USD prefers BankB
@@ -99,8 +99,8 @@ route flipped AUD/USD to BankB's 0.6533. Routing is per-pair configuration, not 
 
 ### DiComposition (`Scenarios/DiComposition.cs`)
 
-**Intent.** The whole stack — each child wrapped in its own read-through cache, grouped behind
-one `IDatedRateProvider` registration, with routes declared fluently — composed in a service
+**Intent.** The whole stack - each child wrapped in its own read-through cache, grouped behind
+one `IDatedRateProvider` registration, with routes declared fluently - composed in a service
 collection the way a real host would, with each child also reachable by name.
 
 **What it does.** Calls `AddFinancialService().AddAggregatedRateProvider(agg => …)` with two
@@ -118,7 +118,7 @@ aggregate as `IDatedRateProvider` and one child directly as a keyed service.
 ```
 
 The aggregate obeys the `MapPair` route (BankB first); the keyed lookup bypasses routing
-entirely and hits BankA's cached child directly — the escape hatch for "I need *this* source's
+entirely and hits BankA's cached child directly - the escape hatch for "I need *this* source's
 number". With live providers, swap the factory children for
 `AddCachedChild<EcbRateProvider>("ECB")` after the provider package's `Add…ExchangeRates()`
 registration (see the commented block in `Program.cs`).

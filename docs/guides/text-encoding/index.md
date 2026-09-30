@@ -1,21 +1,21 @@
 ---
-title: Bodu.Text.Encoding — Guides
+title: Bodu.Text.Encoding - Guides
 ---
 
-# Bodu.Text.Encoding — Guides
+# Bodu.Text.Encoding - Guides
 
 These guides cover the day-to-day use of each binary-to-text encoding the library ships. If you are new to the
 package, start with the **[Introduction](../../docs/text-encoding/index.md)** and the
-**[Core concepts](../../docs/text-encoding/concepts.md)** pages first — the guides below assume you know the
+**[Core concepts](../../docs/text-encoding/concepts.md)** pages first - the guides below assume you know the
 vocabulary (alphabet, variant, terminal quantum, padding, decoration, OperationStatus).
 
 Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic.
 
 ## How the library works
 
-![Encode and decode pipeline — binary bytes to encoded text and back](../../images/diagrams/encoding-pipeline.svg)
+![Encode and decode pipeline - binary bytes to encoded text and back](../../images/diagrams/encoding-pipeline.svg)
 
-Every encoding follows the same four-stage pipeline — radix conversion, variant transform, optional decoration,
+Every encoding follows the same four-stage pipeline - radix conversion, variant transform, optional decoration,
 encoded output. The per-encoding guides drill into the stages that vary by family: the bit-stream packing for
 Base16 / Base32 / Base64, the big-integer arithmetic for Base58, and the 4-byte block packing for Base85.
 
@@ -31,11 +31,11 @@ Base16 / Base32 / Base64, the big-integer arithmetic for Base58, and the 4-byte 
 | **[Base45](base45.md)** | 50 % | RFC 9285 | QR-code payloads, EU Digital COVID Certificate |
 | **[Base62](base62.md)** | ≈ 35 % | GMP-style | Short URLs, compact identifiers, slugs |
 | **[Bech32](bech32.md)** | data + checksum | Bech32 (BIP 173), Bech32m (BIP 350) | Bitcoin SegWit addresses, Lightning invoices |
-| **[`IBinaryEncoding` interface](binary-encodings-interface.md)** | — | the flat-byte encodings above | Runtime-selected encoding choice (config-driven serializers, plugins) |
+| **[`IBinaryEncoding` interface](binary-encodings-interface.md)** | - | the flat-byte encodings above | Runtime-selected encoding choice (config-driven serializers, plugins) |
 
 ### Escape-based encodings
 
-`QuotedPrintable` and `PercentEncoding` are not flat-byte radix encodings — they escape a *subset* of octets as `=HH`
+`QuotedPrintable` and `PercentEncoding` are not flat-byte radix encodings - they escape a *subset* of octets as `=HH`
 or `%HH` while leaving most printable ASCII literal, so their output length depends on the content. They are static
 types and intentionally **not** `IBinaryEncoding` members (their modes / options carry information the parameterless
 interface cannot express).
@@ -66,7 +66,7 @@ interface cannot express).
 
 ## API shape recap
 
-Every encoding family follows the same pattern. The bullet list below is the entire public surface — the per-family
+Every encoding family follows the same pattern. The bullet list below is the entire public surface - the per-family
 guides drill into the variant-specific options:
 
 - **Encode**: `Encode(byte[]/span)` returning `string`, `Encode(byte[], int, int)`, `Encode(span, span)` returning
@@ -84,17 +84,17 @@ guides drill into the variant-specific options:
 
 ## Where to go next
 
-- **[Base16 guide](base16.md)** — formatting decorations, prefix handling, hex dumps.
-- **[Base32 guide](base32.md)** — variants and when to pick each; TOTP / Crockford use cases.
-- **[Base64 guide](base64.md)** — Standard / URL-safe / MIME; line wrapping; JWT.
-- **[Base58 guide](base58.md)** — leading zeros, big-integer encoding; Bitcoin/IPFS.
-- **[Base85 guide](base85.md)** — Ascii85 vs Z85 vs Git; the `z` shortcut; partial-group rules; Git compact and padded modes.
-- **[Base45 guide](base45.md)** — RFC 9285; the QR-code payload encoding; group packing and strictness.
-- **[Base62 guide](base62.md)** — GMP-style compact identifiers; leading-zero preservation.
-- **[Bech32 guide](bech32.md)** — Bech32 / Bech32m; HRP, separator, checksum; 5-bit vs 8-bit data.
-- **[Quoted-Printable guide](quoted-printable.md)** — MIME body `=HH` encoding; binary vs text mode; soft wrapping; strict-vs-relaxed decode.
-- **[Percent-encoding guide](percent-encoding.md)** — RFC 3986 / WHATWG `%HH` encoding; component modes; form mode; string helpers.
-- **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — runtime-selected encoding pattern.
-- **[Runnable samples](../../samples/text-encoding.md)** — offline sample projects under `samples/Text.Encoding/`: the catalogue tour, checksummed schemes, the registry, and a custom Base36 codec with contract tests.
-- **[Encoding helpers and BOM detection](encoding-helpers.md)** — `System.Text.Encoding` helpers: `string`↔`byte[]` conversion, preamble/BOM handling, UTF classification, fallbacks, and chunked transcoding.
-- **[Text & Serialization guides](../topics/text-and-serialization.md)** — the topic map across Bodu.Text.Encoding, Bodu.Text.Filtering, Bodu.Text.Formats, and the Bencode / TOML / YAML serializers, each with its own complete guide index.
+- **[Base16 guide](base16.md)** - formatting decorations, prefix handling, hex dumps.
+- **[Base32 guide](base32.md)** - variants and when to pick each; TOTP / Crockford use cases.
+- **[Base64 guide](base64.md)** - Standard / URL-safe / MIME; line wrapping; JWT.
+- **[Base58 guide](base58.md)** - leading zeros, big-integer encoding; Bitcoin/IPFS.
+- **[Base85 guide](base85.md)** - Ascii85 vs Z85 vs Git; the `z` shortcut; partial-group rules; Git compact and padded modes.
+- **[Base45 guide](base45.md)** - RFC 9285; the QR-code payload encoding; group packing and strictness.
+- **[Base62 guide](base62.md)** - GMP-style compact identifiers; leading-zero preservation.
+- **[Bech32 guide](bech32.md)** - Bech32 / Bech32m; HRP, separator, checksum; 5-bit vs 8-bit data.
+- **[Quoted-Printable guide](quoted-printable.md)** - MIME body `=HH` encoding; binary vs text mode; soft wrapping; strict-vs-relaxed decode.
+- **[Percent-encoding guide](percent-encoding.md)** - RFC 3986 / WHATWG `%HH` encoding; component modes; form mode; string helpers.
+- **[`IBinaryEncoding` interface](binary-encodings-interface.md)** - runtime-selected encoding pattern.
+- **[Runnable samples](../../samples/text-encoding.md)** - offline sample projects under `samples/Text.Encoding/`: the catalogue tour, checksummed schemes, the registry, and a custom Base36 codec with contract tests.
+- **[Encoding helpers and BOM detection](encoding-helpers.md)** - `System.Text.Encoding` helpers: `string`↔`byte[]` conversion, preamble/BOM handling, UTF classification, fallbacks, and chunked transcoding.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** - the topic map across Bodu.Text.Encoding, Bodu.Text.Filtering, Bodu.Text.Formats, and the Bencode / TOML / YAML serializers, each with its own complete guide index.

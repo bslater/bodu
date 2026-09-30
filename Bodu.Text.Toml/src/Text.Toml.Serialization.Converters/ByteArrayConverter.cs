@@ -12,7 +12,7 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 
 /// <summary>
 /// Converts a <see cref="byte" /> array to and from TOML. Because TOML has no native binary type, the array maps either
-/// to an array of integers — one TOML integer per byte — or to a Base64 basic string, selected by
+/// to an array of integers - one TOML integer per byte - or to a Base64 basic string, selected by
 /// <see cref="TomlSerializerOptions.ByteArrayHandling" />.
 /// </summary>
 /// <remarks>

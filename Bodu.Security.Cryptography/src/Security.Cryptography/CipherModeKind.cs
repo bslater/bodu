@@ -31,24 +31,24 @@ namespace Bodu.Security.Cryptography;
 /// authentication logic. The five panels above show the classic, non-authenticated modes:
 /// <list type="number">
 /// <item>
-/// <description><b>ECB</b> — no feedback. Identical plaintext blocks produce identical ciphertext blocks.</description>
+/// <description><b>ECB</b> - no feedback. Identical plaintext blocks produce identical ciphertext blocks.</description>
 /// </item>
 /// <item>
 /// <description>
-/// <b>CBC</b> — previous ciphertext block XORed into the next plaintext before encryption; the first block uses the IV.
+/// <b>CBC</b> - previous ciphertext block XORed into the next plaintext before encryption; the first block uses the IV.
 /// </description>
 /// </item>
 /// <item>
-/// <description><b>CFB</b> — encrypted previous ciphertext, or IV, acts as keystream; self-synchronizing.</description>
+/// <description><b>CFB</b> - encrypted previous ciphertext, or IV, acts as keystream; self-synchronizing.</description>
 /// </item>
 /// <item>
 /// <description>
-/// <b>OFB</b> — encrypted previous keystream block feeds forward; plaintext is independent of the keystream chain.
+/// <b>OFB</b> - encrypted previous keystream block feeds forward; plaintext is independent of the keystream chain.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <b>CTR</b> — successive counter values are encrypted to produce an independent, random-access keystream.
+/// <b>CTR</b> - successive counter values are encrypted to produce an independent, random-access keystream.
 /// </description>
 /// </item>
 /// </list>

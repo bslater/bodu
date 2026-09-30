@@ -3,10 +3,10 @@
 The integrating sample: how a host actually consumes `Bodu.Globalization.Recurrence`. Four
 scenarios cover putting all four schedule forms behind one adapter, validating a configuration block
 with defect messages an operator can act on, the offset-bearing query surface every form carries,
-and the consequence of the package's purity contract — a missed-run catch-up loop that is exactly
+and the consequence of the package's purity contract - a missed-run catch-up loop that is exactly
 reproducible because the host owns time.
 
-Everything runs offline with fixed inputs, formatted with the invariant culture — deterministic
+Everything runs offline with fixed inputs, formatted with the invariant culture - deterministic
 output every run.
 
 ```bash
@@ -18,8 +18,8 @@ NuGet consumers: `dotnet add package Bodu.Globalization.Recurrence`
 ## The adapter
 
 `Schedule.cs` is the sample's own type, not part of the package. The library deliberately does not
-ship this abstraction: the four forms differ in what they need to answer a query — a `RecurrenceRule`
-and an `AnchoredInterval` need a series origin, a `CronExpression` and a `RecurrenceSet` do not — and
+ship this abstraction: the four forms differ in what they need to answer a query - a `RecurrenceRule`
+and an `AnchoredInterval` need a series origin, a `CronExpression` and a `RecurrenceSet` do not - and
 collapsing that difference is a hosting decision rather than a library one.
 
 What the package *does* guarantee is that every form answers `GetNextOccurrence` and
@@ -27,13 +27,13 @@ What the package *does* guarantee is that every form answers `GetNextOccurrence`
 small possible: it captures the origin once at configuration time, and the query surface reduces to
 a single instant regardless of form.
 
-## Scenario 1 — UnifiedSchedules
+## Scenario 1 - UnifiedSchedules
 
 **Intent.** Show the payoff of the uniform point-query surface: after configuration, nothing
 downstream branches on which form a schedule came from.
 
 **What it does.** Configures seven schedules across all four forms, then queries them all
-identically — previous and next from one instant — and tabulates the result. It orders every
+identically - previous and next from one instant - and tabulates the result. It orders every
 configured job by next occurrence, which is an ordinary `OrderBy` once the forms are uniform. It
 closes by querying each form at an instant it actually fires, with the inclusive flag both ways.
 
@@ -74,24 +74,24 @@ interval  2026-03-10 12:00  2026-03-10 18:00  2026-03-10 12:00
 set       2026-03-16 09:00  2026-03-23 09:00  2026-03-16 09:00 
 ```
 
-The `set` row's next occurrence jumps a fortnight because its `EXDATE` removes 16 March — the
+The `set` row's next occurrence jumps a fortnight because its `EXDATE` removes 16 March - the
 composition is applied by the set, not by the caller.
 
 **APIs demonstrated.** `RecurrenceRule` / `CronExpression` / `AnchoredInterval` / `RecurrenceSet`
 `TryParse` and their `GetNextOccurrence` / `GetPreviousOccurrence` overloads.
 
-## Scenario 2 — ConfigurationValidation
+## Scenario 2 - ConfigurationValidation
 
 **Intent.** Show startup validation across mixed forms, and then the second tier of validation most
 hosts forget: a schedule can parse cleanly and still never fire.
 
-**What it does.** Runs fourteen configured jobs — six valid, eight invalid across every form plus an
-unknown kind — through the adapter, collecting accepted and rejected separately. It then takes four
+**What it does.** Runs fourteen configured jobs - six valid, eight invalid across every form plus an
+unknown kind - through the adapter, collecting accepted and rejected separately. It then takes four
 schedules that all parse and probes each for a first occurrence.
 
 **What to expect.** Every rejection names the offending token, so an operator can fix the file
 without reading a specification. The Quartz `L` is refused explicitly rather than silently ignored.
-And the second tier catches what syntax checking cannot — an unreachable date and an expired `UNTIL`
+And the second tier catches what syntax checking cannot - an unreachable date and an expired `UNTIL`
 both parse, then never fire:
 
 ```text
@@ -133,20 +133,20 @@ rejected : 8
 **APIs demonstrated.** The four `TryParse(…, out …, out string)` defect-reporting overloads, and
 `GetNextOccurrence` returning `null` as a reachability probe.
 
-## Scenario 3 — OffsetAwareQueries
+## Scenario 3 - OffsetAwareQueries
 
 **Intent.** Show the `DateTimeOffset` query surface. A host normally holds offset-bearing instants
-rather than bare `DateTime` values, and every form carries a parallel set of overloads for them —
+rather than bare `DateTime` values, and every form carries a parallel set of overloads for them -
 including the enumeration overloads, not just the point queries.
 
 **What it does.** Queries one schedule of each form through its offset overloads, in both
 directions; enumerates unbounded and windowed offset streams; runs the same rule under three
-different offsets; and closes with the case where the offset genuinely changes the answer — two
+different offsets; and closes with the case where the offset genuinely changes the answer - two
 anchors recorded in different offsets that name the same instant.
 
 **What to expect.** The offset **rides along and is never converted**, because the library resolves
 no time zone and so has nothing to convert with. Running one rule under three offsets selects the
-same wall clock every time — the offset picks no different dates:
+same wall clock every time - the offset picks no different dates:
 
 ```text
 --- Offset-aware queries ---
@@ -185,18 +185,18 @@ interval, 6 Jan     : 01-06 03:00 +10:00, 01-06 09:00 +10:00, 01-06 15:00 +10:00
 
 The last block is the distinction that matters. An offset is not decoration: two `DateTimeOffset`
 values compare as absolute instants, so an anchor persisted in UTC composes correctly with a query
-instant in +10:00 — they name one moment, the grids coincide, and both answers are the same instant
+instant in +10:00 - they name one moment, the grids coincide, and both answers are the same instant
 rendered in the query's offset.
 
-**APIs demonstrated.** The offset overloads across all four forms —
+**APIs demonstrated.** The offset overloads across all four forms -
 `RecurrenceRule.GetOccurrences(DateTimeOffset)` and its windowed form,
 `RecurrenceRule`/`AnchoredInterval` `GetNextOccurrence`/`GetPreviousOccurrence(DateTimeOffset, …)`,
 `CronExpression` and `RecurrenceSet` `GetNextOccurrence`/`GetPreviousOccurrence(DateTimeOffset, bool)`.
 
-## Scenario 4 — CatchUpAndPurity
+## Scenario 4 - CatchUpAndPurity
 
 **Intent.** Show what the purity contract buys a host. Because no type in the package reads a wall
-clock or resolves a time zone, the host supplies both ends of every window — which is what makes a
+clock or resolves a time zone, the host supplies both ends of every window - which is what makes a
 missed-run replay exactly reproducible, and what makes daylight saving a decision the host can see.
 
 **What it does.** Replays a downtime window across three jobs of different forms, listing exactly
@@ -305,10 +305,10 @@ Bodu.Globalization.Recurrence.Samples.SchedulingHost/
 ## Related
 
 - `Bodu.Globalization.Recurrence.Samples.RecurrenceRules` / `.CronExpressions` /
-  `.AnchoredIntervals` / `.RecurrenceSets` — each form in depth.
-- `docs/guides/recurrence/index.md` — the offset and DST posture stated as a contract.
+  `.AnchoredIntervals` / `.RecurrenceSets` - each form in depth.
+- `docs/guides/recurrence/index.md` - the offset and DST posture stated as a contract.
 
 > The package ships **no** timer, poller, or due-state tracking, and that is deliberate: those need a
 > clock, and a clock is what makes scheduling code untestable. This sample's catch-up loop is the
-> shape a host supplies instead — and it produces the same output on every machine, in every locale,
+> shape a host supplies instead - and it produces the same output on every machine, in every locale,
 > which is why it can be a CI smoke test.

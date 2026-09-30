@@ -43,7 +43,7 @@ public static class XmlDocFormatPolicyDefaults
     /// <value>The ordinal immutable set of block tag names.</value>
     /// <remarks>
     /// This set matches <see cref="DefaultForceMultilineTags" />: every default block tag is also forced multiline.
-    /// <c>term</c> and <c>description</c> are intentionally excluded — they are single-line-when-short (see
+    /// <c>term</c> and <c>description</c> are intentionally excluded - they are single-line-when-short (see
     /// <see cref="DefaultSingleLineWhenShortTags" />) so each row of a <c>&lt;list&gt;</c> reads as one line, wrapping
     /// only when its content overflows.
     /// </remarks>
@@ -90,7 +90,7 @@ public static class XmlDocFormatPolicyDefaults
     /// <value>The ordinal immutable set of single-line-when-short tag names.</value>
     /// <remarks>
     /// <c>term</c> and <c>description</c> are single-line-when-short so each row of a <c>&lt;list&gt;</c> renders as
-    /// one line — <c>&lt;term&gt;Combination&lt;/term&gt;</c>, <c>&lt;description&gt;Yield&lt;/description&gt;</c> —
+    /// one line - <c>&lt;term&gt;Combination&lt;/term&gt;</c>, <c>&lt;description&gt;Yield&lt;/description&gt;</c> -
     /// and expands to the multiline block form only when the content overflows the line budget.
     /// </remarks>
     public static ImmutableHashSet<string> DefaultSingleLineWhenShortTags { get; } = ImmutableHashSet.Create(

@@ -11,7 +11,7 @@ namespace Bodu.Text.Toml.Samples.TomlDocuments.Scenarios;
 /// <summary>
 /// Demonstrates streaming reads: when a document arrives in chunks (a socket, a large file), the
 /// reader processes each slice as far as it can, reports how many bytes it consumed, and hands
-/// its resumable state (<see cref="TomlReaderState" />) to the reader for the next slice —
+/// its resumable state (<see cref="TomlReaderState" />) to the reader for the next slice -
 /// exactly the <c>Utf8JsonReader</c> pattern.
 /// </summary>
 public static class StreamingReads

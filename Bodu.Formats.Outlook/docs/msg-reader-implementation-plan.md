@@ -1,7 +1,7 @@
-# Bodu.Formats.Outlook — `.msg` reader kickoff and implementation plan
+# Bodu.Formats.Outlook - `.msg` reader kickoff and implementation plan
 
 **Date:** 2026-07-31
-**Status:** **Executed — M0–M4 delivered 2026-07-31.** Section 1
+**Status:** **Executed - M0-M4 delivered 2026-07-31.** Section 1
 executed tranche **T5** of the `Bodu.IO.Compound` plan (the MS-OXMSG
 substrate-readiness review); the implementation then landed per the
 tranche plan below. Deliberate deviations from the sketches, each
@@ -11,20 +11,20 @@ packages (and the future `.pst` reader) can construct them without
 cross-package `InternalsVisibleTo`; *(2)* named-property resolution
 ships as `TryGetNamedPropertyId(name, out ushort id)` +
 `TryGetPropertyName(tag, out name)` rather than the sketched
-`TryGetNamedPropertyTag` — the MS-OXMSG mapping is identifier-level,
+`TryGetNamedPropertyTag` - the MS-OXMSG mapping is identifier-level,
 not type-level, so returning a typed tag would have invented a type;
 *(3)* scalar conveniences landed in M2 with the property surface (they
 are one-line accessors), leaving M4 the body trio + `CompressedRtf`;
 *(4)* Regression initially ran entirely on synthetic fixtures authored
 through `Bodu.IO.Compound`; the real-world corpus followed on
-2026-07-31 — 41 Apache POI `test-data/hsmf` files with a provenance
+2026-07-31 - 41 Apache POI `test-data/hsmf` files with a provenance
 `NOTICE.md` and an independently generated expectations manifest under
 `Bodu.Formats.Outlook.Msg/test/Fixtures/Reference/`, closing this
 deviation.
-**Relates to:** [`ROADMAP.md`](../../ROADMAP.md) — *New library
+**Relates to:** [`ROADMAP.md`](../../ROADMAP.md) - *New library
 candidates → `Bodu.Formats.Outlook.Msg`*;
 [`Bodu.IO.Compound/docs/roadmap-implementation-plan.md`](../../Bodu.IO.Compound/docs/roadmap-implementation-plan.md)
-— §8 (T5).
+- §8 (T5).
 
 This plan turns the roadmap's `.msg` candidate into sequenced, scoped
 work. The `.msg` (Outlook message) container *is* an OLE2 / Compound
@@ -47,11 +47,11 @@ Every tranche inherits the repository conventions
 
 - **Tier.** Both new packages start **Preview** (README tier badge) and
   are promoted to Stable once the surface has settled against a real
-  corpus — the same path the exchange-rate providers follow.
+  corpus - the same path the exchange-rate providers follow.
 - **Validation and messages.** Public surfaces validate through
   `ThrowHelper.ThrowIf…` (Core) or a domain throw helper; all
   user-facing text lands in a `<Domain>ResourceStrings.resx` with the
-  established key prefixes — never string literals.
+  established key prefixes - never string literals.
 - **Tests.** MSTest partials with a member-named backbone; KAT rows via
   the `Bodu.Test.Kat` generics wired through `KatDisplayName`; new
   tests default to BVT, exhaustive sweeps are
@@ -62,18 +62,18 @@ Every tranche inherits the repository conventions
   first shipped surface (M4), snippet-compile guarded like the
   `Bodu.IO.Compound` guides.
 - **Commit discipline.** One branch per session; each lettered item
-  lands as an ordered commit sequence — production code, test backbone,
-  Regression sweeps, guide/sample updates — never one monolithic
+  lands as an ordered commit sequence - production code, test backbone,
+  Regression sweeps, guide/sample updates - never one monolithic
   commit. Each item's final commit leaves
   `dotnet test bodu.slnx --settings bvt.runsettings` green.
 
-## 1. T5 — substrate-readiness review (MS-OXMSG vs `Bodu.IO.Compound`)
+## 1. T5 - substrate-readiness review (MS-OXMSG vs `Bodu.IO.Compound`)
 
 Executed 2026-07-31 against the current tree. The review walks every
 container-level structure MS-OXMSG requires against the shipped
 `CompoundFile` / `CompoundStorage` / `CompoundStream` surface.
 
-**Verdict: the substrate is ready — no new `Bodu.IO.Compound` API is
+**Verdict: the substrate is ready - no new `Bodu.IO.Compound` API is
 required.** Every `.msg` structural need maps onto an existing member:
 
 | MS-OXMSG requirement | Container surface | Status |
@@ -81,9 +81,9 @@ required.** Every `.msg` structural need maps onto an existing member:
 | Open the container from path or stream, read-only, buffered or streaming | `CompoundFile.OpenRead(path)` / `Open(stream, options)` with `CompoundReadStrategy` | ✓ |
 | Sniff "is this a CFB file at all" before parsing | `CompoundFile.IsCompoundFile(Stream / ReadOnlySpan<byte>)` | ✓ |
 | Root-CLSID discrimination (`.msg` roots conventionally record `{00020D0B-0000-0000-C000-000000000046}`) | `CompoundFile.RootStorage.Stat.ClassId` (`CompoundEntryInfo.ClassId`) | ✓ |
-| Exact-name stream lookup (`__properties_version1.0`, `__substg1.0_HHHHTTTT`) | `CompoundStorage.OpenStream` / `TryOpenStream` — keyed through `CompoundNameComparer`, the format's own case-insensitive, length-first relationship, so lookups match however the writer cased the name | ✓ |
+| Exact-name stream lookup (`__properties_version1.0`, `__substg1.0_HHHHTTTT`) | `CompoundStorage.OpenStream` / `TryOpenStream` - keyed through `CompoundNameComparer`, the format's own case-insensitive, length-first relationship, so lookups match however the writer cased the name | ✓ |
 | Enumerate child storages by prefix (`__recip_version1.0_#NNNNNNNN`, `__attach_version1.0_#NNNNNNNN`) | `CompoundStorage.EnumerateStorages()` / `EnumerateEntries()`; the `#NNNNNNNN` suffix is plain-string filtering at the format layer | ✓ |
-| Storage recursion for nested attached messages (`__substg1.0_3701000D` storage inside an attachment storage) | `CompoundStorage.OpenStorage` / `TryOpenStorage` — unbounded depth | ✓ |
+| Storage recursion for nested attached messages (`__substg1.0_3701000D` storage inside an attachment storage) | `CompoundStorage.OpenStorage` / `TryOpenStorage` - unbounded depth | ✓ |
 | Named-property mapping storage (`__nameid_version1.0`) | Plain child storage + stream reads; no special container support needed | ✓ |
 | Many tiny streams (most `.msg` property streams sit in the mini stream) | Mini-FAT / mini-stream reads are first-class in the reader; `CompoundStream.AsMemory()` / `ReadAllBytes()` avoid per-read overhead for small payloads | ✓ |
 | Tolerance for sloppy real-world writers | `CompoundValidationLevel` (Strict / Compatible / Minimal) on `CompoundFileOptions` | ✓ |
@@ -93,7 +93,7 @@ Confirmations that shaped the plan rather than the substrate:
 
 - **`__properties_version1.0` is not MS-OLEPS.** It is `.msg`'s own
   fixed-record layout, so `OlePropertySet` / `PropertySetReader` are
-  deliberately *not* reused — parsing belongs in this package (the
+  deliberately *not* reused - parsing belongs in this package (the
   Compound plan predicted exactly this split).
 - **No convenience gap surfaced.** The one candidate ("enumerate
   streams whose name starts with a prefix") is a one-line LINQ filter
@@ -108,7 +108,7 @@ T5 closes with this section.
 
 ## 2. Package and namespace shape
 
-Two packages, one flattened namespace — the `Bodu.Financial.ExchangeRates`
+Two packages, one flattened namespace - the `Bodu.Financial.ExchangeRates`
 convention the roadmap prescribes:
 
 | Package | Folder | Namespace | Responsibility |
@@ -117,7 +117,7 @@ convention the roadmap prescribes:
 | `Bodu.Formats.Outlook.Msg` | `Bodu.Formats.Outlook.Msg/` | `Bodu.Formats.Outlook` (public) + `Bodu.Formats.Outlook.Msg` (internal record layer) | The `.msg` reader over `Bodu.IO.Compound`: the session type, the property-stream / substg decoding, named-property resolution, and body conveniences. |
 
 The future `Bodu.Formats.Outlook.Pst` reader references the shared
-package and `Bodu.IO.Pst`, never `.Msg` — so neither format package
+package and `Bodu.IO.Pst`, never `.Msg` - so neither format package
 owns the value model. The internal `.Msg` layer mirrors
 `Bodu.Formats.Excel.Biff8` exactly: an internal namespace in a flat
 `Formats.Outlook.Msg/` folder, granted to the test assembly via
@@ -247,7 +247,7 @@ public sealed class OutlookMessage : IDisposable
         bool leaveOpen = false);
     public static bool IsMsgFile(Stream stream);   // CFB sniff + root-entry check
 
-    // The raw surface — every decoded property of the message object:
+    // The raw surface - every decoded property of the message object:
     public MapiPropertyCollection Properties { get; }
     public IReadOnlyList<OutlookRecipient> Recipients { get; }
     public IReadOnlyList<OutlookAttachment> Attachments { get; }
@@ -303,12 +303,12 @@ public sealed class OutlookMsgFormatException : OutlookFormatException { … }
 
 Design notes:
 
-- `OutlookMessage` is both the session *and* the document — a `.msg`
+- `OutlookMessage` is both the session *and* the document - a `.msg`
   file *is* one message, so no `ExcelBinaryWorkbook`-style separate
   session type is warranted. A nested `OutlookMessage` from
   `OpenMessage()` shares (never owns) the parent's container; disposing
   the root disposes everything.
-- All conveniences are lazy over `Properties` — no double decode.
+- All conveniences are lazy over `Properties` - no double decode.
 - `OpenContentStream()` hands back the underlying `CompoundStream`
   (read-only cursor), so large attachments stream without
   materialization; `ReadAsync` is truly async under the streaming
@@ -316,7 +316,7 @@ Design notes:
 
 ## 4. Internal structure (the `Bodu.Formats.Outlook.Msg` record layer)
 
-Mirrors `Bodu.Formats.Excel.Biff8` — internal, flat folder
+Mirrors `Bodu.Formats.Excel.Biff8` - internal, flat folder
 `Formats.Outlook.Msg/`, exercised directly by tests via
 `InternalsVisibleTo`:
 
@@ -347,9 +347,9 @@ Mirrors `Bodu.Formats.Excel.Biff8` — internal, flat folder
 
 **Synthetic fixtures are authored with `Bodu.IO.Compound` itself.**
 `CompoundFile.Create` + `CompoundStorageBuilder` can emit any `.msg`
-shape the tests need — minimal message, Unicode vs ANSI strings,
+shape the tests need - minimal message, Unicode vs ANSI strings,
 multi-valued properties, recipient/attachment fan-out, nested
-attached messages, deliberately malformed property streams — with
+attached messages, deliberately malformed property streams - with
 byte-exact control and zero Office tooling. A small internal
 `MsgFixtureBuilder` in the test project wraps the patterns.
 
@@ -387,7 +387,7 @@ synthetic message.
 
 | Tranche | Item | Depends on | Notes |
 | --- | --- | --- | --- |
-| **M0** | Scaffolding: both projects + tests in `bodu.slnx`, resx, READMEs, roadmap/CLAUDE rows | — | Build stays green with empty surfaces. |
+| **M0** | Scaffolding: both projects + tests in `bodu.slnx`, resx, READMEs, roadmap/CLAUDE rows | - | Build stays green with empty surfaces. |
 | **M1** | Shared MAPI model (`Bodu.Formats.Outlook`): tags, types, values, collection, named identities, enums, exceptions | M0 | Pure value types; fully unit-testable without fixtures. The `.pst` gate: `Bodu.IO.Pst` work can start once M1 ships. |
 | **M2** | Core `.msg` decode: `OutlookMessage.OpenRead`, property stream, substg values (incl. multi-valued), ANSI/Unicode strings | M1 | The heart of the package; synthetic fixtures land here. |
 | **M3** | Recipients, attachments, nested messages, named-property resolution | M2 | Completes the structural surface. |
@@ -398,15 +398,15 @@ are independent after M1 and can interleave if a session allows.
 
 ## 8. Out of scope
 
-- **Writing `.msg` files** — demand-driven follow-on (D2).
+- **Writing `.msg` files** - demand-driven follow-on (D2).
 - **MAPI session semantics** (`IMessage`/`IMAPIProp` emulation,
-  property flags enforcement, store behaviour) — this is a file
+  property flags enforcement, store behaviour) - this is a file
   reader, not a MAPI implementation.
-- **RTF→HTML/Text de-encapsulation** (MS-OXRTFEX) — consumers get the
+- **RTF→HTML/Text de-encapsulation** (MS-OXRTFEX) - consumers get the
   decompressed RTF verbatim.
-- **TNEF (`winmail.dat`, MS-OXTNEF)** — a separate candidate; would
+- **TNEF (`winmail.dat`, MS-OXTNEF)** - a separate candidate; would
   reuse the shared model if pursued.
-- **S/MIME decryption / signed-content unwrapping** — cryptographic
+- **S/MIME decryption / signed-content unwrapping** - cryptographic
   message processing stays out of a format reader.
-- **OLE attachment rendering** (`AttachMethod = Ole`) — the raw
+- **OLE attachment rendering** (`AttachMethod = Ole`) - the raw
   storage is reachable through `Properties`; interpreting it is not.

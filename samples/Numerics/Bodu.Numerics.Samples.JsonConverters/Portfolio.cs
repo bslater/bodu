@@ -11,7 +11,7 @@ namespace Bodu.Numerics.Samples.JsonConverters;
 /// <summary>
 /// A small POCO whose properties mix ordinary JSON types with several <c>Bodu.Numerics</c> types, used
 /// to show that once the numerics converters are registered they compose transparently inside a larger
-/// object graph — no per-property attributes required.
+/// object graph - no per-property attributes required.
 /// </summary>
 public sealed class Portfolio
 {

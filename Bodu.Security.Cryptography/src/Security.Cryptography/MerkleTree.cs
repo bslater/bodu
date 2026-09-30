@@ -26,7 +26,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Leaves and internal nodes are domain-separated: <c>leaf(d) = H(0x00 || d)</c> and
 /// <c>node(l, r) = H(0x01 || l || r)</c>. Without the leaf prefix a one-entry tree's root would be the entry's bare
-/// digest, and an internal node's preimage — two concatenated child hashes — could be presented as leaf data. That is
+/// digest, and an internal node's preimage - two concatenated child hashes - could be presented as leaf data. That is
 /// how a second tree is constructed to produce a root somebody has already signed.
 /// </para>
 /// <para>
@@ -36,14 +36,14 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <strong>Fan-out.</strong> The default <c>fanOut</c> of two is RFC 6962's tree, the only shape that interoperates
 /// with a transparency log or any other implementation of the standard, and the only shape the proof members work over.
-/// A wider fan-out hashes that many children into each parent — a shallower, sound commitment of the package's own,
+/// A wider fan-out hashes that many children into each parent - a shallower, sound commitment of the package's own,
 /// offered as an explicit non-RFC mode. On such an instance every root computation works and <see cref="BindRoot" />
 /// works, but the authentication-path, consistency-proof and verify members throw <see cref="NotSupportedException" />,
 /// because an RFC 6962 proof has no meaning over a tree the standard does not define.
 /// </para>
 /// <para>
-/// <strong>Parallelism.</strong> Leaf hashing is where a block-mode computation spends essentially all of its time —
-/// one hash over <c>blockSize</c> bytes per leaf against a handful of digest-sized node hashes — so it is the only part
+/// <strong>Parallelism.</strong> Leaf hashing is where a block-mode computation spends essentially all of its time -
+/// one hash over <c>blockSize</c> bytes per leaf against a handful of digest-sized node hashes - so it is the only part
 /// worth spreading across cores. <c>maxDegreeOfParallelism</c> of one, the default, hashes every leaf on the calling
 /// thread with one algorithm; <c>-1</c> or a count of two or more hashes leaves in batches with one algorithm per
 /// worker, obtained from the factory, and folds them in order on the calling thread. The tree shape never changes with
@@ -51,7 +51,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>Thread safety.</strong> Instances are immutable and every operation is safe for concurrent use, provided the
-/// supplied factory returns a <em>fresh</em> <see cref="HashAlgorithm" /> on each call — as <c>SHA256.Create</c> does.
+/// supplied factory returns a <em>fresh</em> <see cref="HashAlgorithm" /> on each call - as <c>SHA256.Create</c> does.
 /// A factory that hands back one shared instance is not safe and will corrupt concurrent computations, and cannot serve
 /// a parallel instance at all. A single instance may therefore be registered as a singleton and used from many
 /// connection handlers at once.
@@ -143,7 +143,7 @@ public sealed partial class MerkleTree
     /// <summary>
     /// Gets the length, in bytes, of every leaf hash, node hash and root this instance produces.
     /// </summary>
-    /// <value>The configured algorithm's digest length in bytes — 32 for SHA-256, 64 for SHA-512.</value>
+    /// <value>The configured algorithm's digest length in bytes - 32 for SHA-256, 64 for SHA-512.</value>
     public int HashLength { get; }
 
     /// <summary>

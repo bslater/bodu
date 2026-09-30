@@ -11,8 +11,8 @@ namespace Bodu.Text.Bencode.Samples.TorrentFile.Scenarios;
 
 /// <summary>
 /// Demonstrates the typed layer: <c>BencodeSerializer</c> maps the metainfo dictionary straight
-/// onto a POCO graph. Torrent keys contain spaces (<c>creation date</c>, <c>piece length</c>) —
-/// exactly what <c>[PropertyName]</c> exists for — and the binary <c>pieces</c> value
+/// onto a POCO graph. Torrent keys contain spaces (<c>creation date</c>, <c>piece length</c>) -
+/// exactly what <c>[PropertyName]</c> exists for - and the binary <c>pieces</c> value
 /// binds to <c>byte[]</c>, not <c>string</c>.
 /// </summary>
 public static class PocoTorrent

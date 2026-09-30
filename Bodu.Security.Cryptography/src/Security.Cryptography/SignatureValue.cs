@@ -152,7 +152,7 @@ public readonly struct SignatureValue
     /// otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// After the format check, the byte comparison is constant-time in content — it runs through
+    /// After the format check, the byte comparison is constant-time in content - it runs through
     /// <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />, so its duration
     /// depends only on the operand length, not on where the bytes first differ. A format or length mismatch returns
     /// <see langword="false" /> immediately (neither is secret). <see cref="FixedTimeEquals(SignatureValue)" /> remains

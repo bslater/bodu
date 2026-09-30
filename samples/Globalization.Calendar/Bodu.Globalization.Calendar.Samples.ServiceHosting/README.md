@@ -13,12 +13,12 @@ dotnet run --project samples/Globalization.Calendar/Bodu.Globalization.Calendar.
 ### BasicRegistration (`Scenarios/BasicRegistration.cs`)
 
 **Intent.** The composition-root norm: load the resource once, register an immutable
-`INotableDateService` singleton, and let consumers take it by constructor injection — including
+`INotableDateService` singleton, and let consumers take it by constructor injection - including
 the working-day extensions, which accept the service as a parameter.
 
 **What it does.** Registers `AsiaPacificCalendarData.LoadResource("AU")` with
 `AddNotableDateService`, resolves `INotableDateService` from the container, counts the 2024
-non-working dates, and answers a payroll question ("payday fell on Anzac Day — when do we
+non-working dates, and answers a payroll question ("payday fell on Anzac Day - when do we
 actually pay?") with `SnapToWorkingDayBackward`.
 
 **What to expect.**
@@ -29,7 +29,7 @@ actually pay?") with `SnapToWorkingDayBackward`.
 ```
 
 The factory overload (`AddNotableDateService(sp => ...)`) defers resource loading to first
-resolution — noted in the code for hosts that want lazy startup.
+resolution - noted in the code for hosts that want lazy startup.
 
 **APIs demonstrated.** `AddNotableDateService(resource)`,
 `AsiaPacificCalendarData.LoadResource`, container resolution of `INotableDateService`,
@@ -64,13 +64,13 @@ cannot clobber each other by ordering.
 
 ### ReloadableResource (`Scenarios/ReloadableResource.cs`)
 
-**Intent.** Rule data changes — a legislated new holiday, a tenant switch, a rules refresh job.
+**Intent.** Rule data changes - a legislated new holiday, a tenant switch, a rules refresh job.
 The reloadable registration swaps the data underneath live consumers: they keep their injected
 `INotableDateService` reference; only the resource moves.
 
 **What it does.** Registers `AddReloadableNotableDateService` with the AU pack, resolves and
 *holds* the service, queries it, then resolves `MutableNotableDateResourceProvider` (the
-operations-side handle) and calls `Reload` with the NZ pack — and queries the same held
+operations-side handle) and calls `Reload` with the NZ pack - and queries the same held
 reference again.
 
 **What to expect.**
@@ -81,7 +81,7 @@ reference again.
   2024-02-06 in NZ : Waitangi Day  (a question the Australian pack could not have answered - the data really was replaced)
 ```
 
-The same service instance answers NZ questions after the swap — Waitangi Day resolving is the
+The same service instance answers NZ questions after the swap - Waitangi Day resolving is the
 proof the new data is live. No re-resolution, no restart, no consumer code change.
 
 **APIs demonstrated.** `AddReloadableNotableDateService(initialResource)`,

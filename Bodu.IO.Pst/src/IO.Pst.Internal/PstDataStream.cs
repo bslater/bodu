@@ -11,8 +11,8 @@ namespace Bodu.IO.Pst.Internal;
 /// logical payload is never materialized.
 /// </summary>
 /// <remarks>
-/// The stream resolves the node's ordered leaf block-tree entries once at construction — reading only the internal tree
-/// blocks — and thereafter loads leaf payloads on demand through <see cref="PstSource.ReadBlock" />, so repeat visits
+/// The stream resolves the node's ordered leaf block-tree entries once at construction - reading only the internal tree
+/// blocks - and thereafter loads leaf payloads on demand through <see cref="PstSource.ReadBlock" />, so repeat visits
 /// ride the session's decoded-block cache. Like the owning session, the stream is single-threaded.
 /// <para>
 /// The stream is bound to its session: once the owning <see cref="PstFile" /> is disposed, every read fails with
@@ -37,7 +37,7 @@ internal sealed class PstDataStream : Stream
     /// <summary>The index of the leaf held in <see cref="_current" />, or <c>-1</c> when none is loaded.</summary>
     private int _currentIndex = -1;
 
-    /// <summary>The payload of the leaf at <see cref="_currentIndex" />; may alias the session cache — never mutated.</summary>
+    /// <summary>The payload of the leaf at <see cref="_currentIndex" />; may alias the session cache - never mutated.</summary>
     private byte[]? _current;
 
     /// <summary>Whether the stream has been disposed.</summary>

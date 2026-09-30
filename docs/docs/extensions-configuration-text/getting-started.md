@@ -1,8 +1,8 @@
 ---
-title: Bodu.Extensions.Configuration.Text — Getting started
+title: Bodu.Extensions.Configuration.Text - Getting started
 ---
 
-# Bodu.Extensions.Configuration.Text — Getting started
+# Bodu.Extensions.Configuration.Text - Getting started
 
 Unfamiliar with terms like *source*, *provider*, *target path*, *conventional probe*, *reload-on-change*, or *options
 binding*? Read [Core concepts](concepts.md) first.
@@ -18,7 +18,7 @@ Targets `net8.0`. Depends on:
 - `Bodu.Core` and `Bodu.Text.Configuration` (the parser, resolver, and view).
 - `Microsoft.Extensions.Configuration`, `Microsoft.Extensions.Configuration.FileExtensions`,
   `Microsoft.Extensions.Configuration.Binder`, `Microsoft.Extensions.FileProviders.Physical`,
-  `Microsoft.Extensions.Options.ConfigurationExtensions`, and the associated abstractions packages — all at the .NET
+  `Microsoft.Extensions.Options.ConfigurationExtensions`, and the associated abstractions packages - all at the .NET
   8.0 LTS line.
 
 ## Minimal samples
@@ -36,7 +36,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 string? logLevel = configuration["logging:level:default"];
 ```
 
-The overload is named to match the JSON provider's `AddJsonFile` — same arguments, same defaults, same shape. The
+The overload is named to match the JSON provider's `AddJsonFile` - same arguments, same defaults, same shape. The
 file is required by default; pass `optional: true` to tolerate a missing file.
 
 ### Conventional file probe
@@ -63,7 +63,7 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 ```
 
-The `targetPath` is handed to `ConfigurationDocument.Resolve(targetPath)` — sections whose header globs match
+The `targetPath` is handed to `ConfigurationDocument.Resolve(targetPath)` - sections whose header globs match
 contribute to the resolved view, in source order, last-wins.
 
 ### Configure via callback
@@ -90,7 +90,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 ```
 
 The callback receives the <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource> directly, so every
-property is reachable. Use this overload when several knobs need to be set together — a one-liner overload exists for
+property is reachable. Use this overload when several knobs need to be set together - a one-liner overload exists for
 the common "just give me the file" case.
 
 ### Load from a stream
@@ -109,7 +109,7 @@ string? name = configuration["service:name"];   // "Bodu"
 int port = configuration.GetValue<int>("service:port");
 ```
 
-Stream sources are one-shot — no reload-on-change. Useful for tests, embedded resources, and HTTP-fetched
+Stream sources are one-shot - no reload-on-change. Useful for tests, embedded resources, and HTTP-fetched
 configuration.
 
 ### Add a TOML file or stream
@@ -125,7 +125,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 string? level = configuration["logging:level"];   // from [logging] level = "..."
 ```
 
-The TOML bridge flattens the table hierarchy into the same colon-delimited key space — `[logging.console]` with
+The TOML bridge flattens the table hierarchy into the same colon-delimited key space - `[logging.console]` with
 `includeScopes = true` surfaces as `configuration["logging:console:includeScopes"]`. It is read-once and read-only, so
 there is no `reloadOnChange` parameter; for stream input use `AddTomlStream(stream)`.
 
@@ -143,7 +143,7 @@ string? level = configuration["logging:level"];   // from d7:loggingd5:level5:De
 ```
 
 The Bencode bridge has the same read-once, read-only shape as the TOML bridge; for stream input use
-`AddBencodeStream(stream)`. The document root must be a Bencode dictionary — nested dictionaries flatten to one
+`AddBencodeStream(stream)`. The document root must be a Bencode dictionary - nested dictionaries flatten to one
 colon-delimited segment per level and list elements to zero-based index segments.
 
 ### Add a pre-parsed document
@@ -163,7 +163,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 ```
 
 `AddTextConfigurationDocument` resolves the document once and adds the flattened pairs in-memory. It takes a one-shot
-snapshot — later edits to the document do not flow into the built configuration, and there is no reload-on-change.
+snapshot - later edits to the document do not flow into the built configuration, and there is no reload-on-change.
 
 ### Bind to a POCO via DI
 
@@ -197,7 +197,7 @@ services.AddConfigurationOptions<ServiceOptions>(configuration.GetSection("servi
 
 ### Combine with other providers
 
-The Bodu source layers with anything else in the builder. Standard MEC precedence applies — later sources override
+The Bodu source layers with anything else in the builder. Standard MEC precedence applies - later sources override
 earlier ones for the same key:
 
 ```csharp
@@ -227,7 +227,7 @@ ChangeToken.OnChange(
 The file watcher is attached through the configured `IFileProvider`. Edits, atomic replaces, and `touch` all trigger
 a reload.
 
-## Pattern — Bodu + IOptionsMonitor for hot-swappable settings
+## Pattern - Bodu + IOptionsMonitor for hot-swappable settings
 
 ```csharp
 using Bodu.Extensions.Configuration.Text;
@@ -247,14 +247,14 @@ services.AddConfigurationOptions<FeatureOptions>(configuration, "features");
 using ServiceProvider provider = services.BuildServiceProvider();
 IOptionsMonitor<FeatureOptions> monitor = provider.GetRequiredService<IOptionsMonitor<FeatureOptions>>();
 
-monitor.OnChange(updated => Console.WriteLine($"Reload — beta = {updated.BetaEnabled}"));
+monitor.OnChange(updated => Console.WriteLine($"Reload - beta = {updated.BetaEnabled}"));
 ```
 
-`IOptionsMonitor<T>` re-binds automatically whenever the underlying file changes — there is no manual reload step.
+`IOptionsMonitor<T>` re-binds automatically whenever the underlying file changes - there is no manual reload step.
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — vocabulary refresher.
-- **[Introduction](index.md)** — type map and scenario index.
-- **[Bodu.Text.Configuration](../text-configuration/index.md)** — the underlying parser, resolver, and view.
-- **[Bodu.Extensions.Configuration.Text API reference](xref:Bodu.Extensions.Configuration.Text)** — full type-by-type docs.
+- **[Core concepts](concepts.md)** - vocabulary refresher.
+- **[Introduction](index.md)** - type map and scenario index.
+- **[Bodu.Text.Configuration](../text-configuration/index.md)** - the underlying parser, resolver, and view.
+- **[Bodu.Extensions.Configuration.Text API reference](xref:Bodu.Extensions.Configuration.Text)** - full type-by-type docs.

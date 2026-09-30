@@ -100,7 +100,7 @@ public partial class ArrayExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a slice is an independent allocation — mutating it leaves the original source unchanged.
+    /// Verifies that a slice is an independent allocation - mutating it leaves the original source unchanged.
     /// </summary>
     [TestMethod]
     public void Slice_WhenMutated_ForTypedArrayIndexCount_ShouldNotAffectSource()
@@ -198,7 +198,7 @@ public partial class ArrayExtensionsTests
     }
 
     // =========================================================================
-    // SliceInternal<T>(T[], int, int) — internal fast path (no validation)
+    // SliceInternal<T>(T[], int, int) - internal fast path (no validation)
     // =========================================================================
 
     /// <summary>

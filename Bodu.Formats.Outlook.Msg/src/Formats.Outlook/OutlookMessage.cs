@@ -282,7 +282,7 @@ public sealed partial class OutlookMessage
     /// Thrown if <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// The check does not require the conventional root class identifier — real-world writers frequently omit it — so
+    /// The check does not require the conventional root class identifier - real-world writers frequently omit it - so
     /// the presence of the <c>__properties_version1.0</c> stream is the discriminator.
     /// </remarks>
     public static bool IsMsgFile(Stream stream)
@@ -321,7 +321,7 @@ public sealed partial class OutlookMessage
 
     /// <summary>
     /// Releases the container and, unless it was left open, the source stream. Disposing a nested message obtained from
-    /// an attachment is a no-op — the root session owns the container, and the nested session's decoded properties stay
+    /// an attachment is a no-op - the root session owns the container, and the nested session's decoded properties stay
     /// readable until the root is disposed, after which every nested session throws
     /// <see cref="ObjectDisposedException" /> as well.
     /// </summary>

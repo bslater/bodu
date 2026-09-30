@@ -39,7 +39,7 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
 
     /// <summary>
     /// Verifies that any exception message surfaced by the hash pipeline (including
-    /// <c>PadBlock</c>'s argument-validation branch) is plain printable ASCII — i.e. no
+    /// <c>PadBlock</c>'s argument-validation branch) is plain printable ASCII - i.e. no
     /// NUL bytes or high-bit characters from a file-encoding round-trip. Regression guard
     /// for a mojibake character that previously appeared in <see cref="SipHash" />'s
     /// <c>PadBlock</c> error message.

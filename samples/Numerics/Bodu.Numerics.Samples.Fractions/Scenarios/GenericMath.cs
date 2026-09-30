@@ -11,7 +11,7 @@ namespace Bodu.Numerics.Samples.Fractions.Scenarios;
 
 /// <summary>
 /// Demonstrates that <see cref="Fraction{T}" /> implements <see cref="INumber{TSelf}" />, so it
-/// drops straight into any generic algorithm written against the .NET generic-math interfaces —
+/// drops straight into any generic algorithm written against the .NET generic-math interfaces -
 /// the same <c>Sum</c> method serves <see cref="int" /> and <see cref="Fraction{T}" /> alike.
 /// </summary>
 public static class GenericMath

@@ -1,6 +1,6 @@
 # Bodu.Core
 
-> **API stability — Stable.**
+> **API stability - Stable.**
 
 Foundational .NET 8 building blocks: extension methods over strings, dates, numerics, spans; 
 pooled buffer builders; argument validation helpers; a non-cryptographic RNG; a synchronous 
@@ -16,12 +16,12 @@ consumers update the package reference only. `Bodu.Collections` depends on `Bodu
 
 ## Key Types
 
-- `ThrowHelper` — argument validation helpers (null, range, enum, argument-expression capture)
-- `RateGate` (Bodu.Threading) — synchronous rate limiter (leading-edge throttling)
-- `WeekPattern` — immutable bitmask over seven days with composition operators
-- `Result<T>` (Bodu.Functional) — explicit success/failure type
-- `XorShiftRandom` — high-performance xorshift128 PRNG (non-cryptographic)
-- `SequenceGenerator` (Bodu.Sequences) — lazy sequence factories (Range, Repeat, Fibonacci, etc.)
+- `ThrowHelper` - argument validation helpers (null, range, enum, argument-expression capture)
+- `RateGate` (Bodu.Threading) - synchronous rate limiter (leading-edge throttling)
+- `WeekPattern` - immutable bitmask over seven days with composition operators
+- `Result<T>` (Bodu.Functional) - explicit success/failure type
+- `XorShiftRandom` - high-performance xorshift128 PRNG (non-cryptographic)
+- `SequenceGenerator` (Bodu.Sequences) - lazy sequence factories (Range, Repeat, Fibonacci, etc.)
 
 ## Extensions
 
@@ -35,7 +35,7 @@ consumers update the package reference only. `Bodu.Collections` depends on `Bodu
 
 ## Buffers
 
-- `PooledBufferBuilder<T>` (Bodu.Buffers) — ArrayPool-backed accumulator with auto-growth
+- `PooledBufferBuilder<T>` (Bodu.Buffers) - ArrayPool-backed accumulator with auto-growth
 
 ## Testing
 

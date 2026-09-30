@@ -53,7 +53,7 @@ public readonly partial struct Complex<T>
 
         // The core formula evaluates sqrt((Hypot(a, b) ± a) / 2), so it overflows once Hypot(a, b) + |a| exceeds the
         // finite range even when the true root is representable. Detect that (for finite inputs) and rescale by an exact
-        // power of two, compute, and scale the result back — matching the magnitude-threshold rescale that
+        // power of two, compute, and scale the result back - matching the magnitude-threshold rescale that
         // System.Numerics.Complex uses. One quartering suffices because 0.25 · MaxValue keeps Hypot + |a| finite.
         bool rescale = false;
         if (T.IsFinite(a) && T.IsFinite(b) && !T.IsFinite(Hypot(a, b) + T.Abs(a)))
@@ -200,8 +200,8 @@ public readonly partial struct Complex<T>
     /// <c>[-1, 1]</c>.
     /// </returns>
     /// <remarks>
-    /// Evaluated with the overflow- and cancellation-avoiding algorithm of Hull, Fairgrieve, and Tang — the same scheme
-    /// <see cref="System.Numerics.Complex.Asin(System.Numerics.Complex)" /> uses — so the result, including the
+    /// Evaluated with the overflow- and cancellation-avoiding algorithm of Hull, Fairgrieve, and Tang - the same scheme
+    /// <see cref="System.Numerics.Complex.Asin(System.Numerics.Complex)" /> uses - so the result, including the
     /// placement of the branch cut, matches the framework value.
     /// </remarks>
     public static Complex<T> Asin(Complex<T> value)
@@ -250,7 +250,7 @@ public readonly partial struct Complex<T>
     /// <c>[-1, 1]</c>.
     /// </returns>
     /// <remarks>
-    /// Evaluated with the Hull–Fairgrieve–Tang algorithm shared with
+    /// Evaluated with the Hull-Fairgrieve-Tang algorithm shared with
     /// <see cref="System.Numerics.Complex.Acos(System.Numerics.Complex)" />, so the result, including the placement of
     /// the branch cut, matches the framework value.
     /// </remarks>

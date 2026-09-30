@@ -74,7 +74,7 @@ public sealed partial class CachingNotableDateServiceTests
     /// <summary>
     /// Verifies that a caller which observed a miss before the winning computation stored its entry, but reached the
     /// coalescing dictionary after that flight was retired, is served the freshly cached year instead of recomputing
-    /// it — the inner service still runs exactly once.
+    /// it - the inner service still runs exactly once.
     /// </summary>
     [TestMethod]
     public void Resolve_WhenLateJoinerMissesTheCompletedFlight_ShouldServeCachedYearWithoutRecomputing()

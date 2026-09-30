@@ -84,8 +84,8 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
         /// the end of the snapshot.
         /// </returns>
         /// <remarks>
-        /// A default-valued <see cref="Enumerator" /> — one produced by <c>default</c> rather than by
-        /// <see cref="ConcurrentLruCache{TKey, TValue}.GetEnumerator" /> — holds no snapshot and is treated as an empty
+        /// A default-valued <see cref="Enumerator" /> - one produced by <c>default</c> rather than by
+        /// <see cref="ConcurrentLruCache{TKey, TValue}.GetEnumerator" /> - holds no snapshot and is treated as an empty
         /// sequence.
         /// </remarks>
         public bool MoveNext()

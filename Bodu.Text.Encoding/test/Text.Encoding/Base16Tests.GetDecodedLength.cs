@@ -35,7 +35,7 @@ public sealed partial class Base16Tests
 
     /// <summary>
     /// Regression: verifies that <see cref="Base16.GetDecodedLength(ReadOnlySpan{char}, BaseFormatStyles)" />
-    /// validates each retained character against the hexadecimal alphabet — non-hex characters like <c>'z'</c>
+    /// validates each retained character against the hexadecimal alphabet - non-hex characters like <c>'z'</c>
     /// must produce <see cref="FormatException" /> rather than a length count that disagrees with the decoder.
     /// </summary>
     /// <param name="invalidInput">An input containing a character outside the hex alphabet.</param>
@@ -55,7 +55,7 @@ public sealed partial class Base16Tests
 
     /// <summary>
     /// Regression: verifies that the length helper still returns the correct count for valid inputs after the
-    /// character-validation fix — the validation must not regress the valid-input path.
+    /// character-validation fix - the validation must not regress the valid-input path.
     /// </summary>
     [TestMethod]
     public void GetDecodedLength_WhenInputIsValid_ShouldStillReturnExpectedCount()
@@ -95,7 +95,7 @@ public sealed partial class Base16Tests
 
     /// <summary>
     /// Regression: verifies that <see cref="Base16.TryGetDecodedLength(ReadOnlySpan{char}, out int, BaseFormatStyles)" />
-    /// returns <see langword="false" /> for inputs that contain non-hex characters — matching the behaviour of
+    /// returns <see langword="false" /> for inputs that contain non-hex characters - matching the behaviour of
     /// <see cref="Base16.Decode(string, BaseFormatStyles)" /> rather than silently reporting a length the decoder
     /// would reject.
     /// </summary>

@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A provider returns finished <see cref="NotableDate" /> occurrences — date and all metadata — for a requested window
+/// A provider returns finished <see cref="NotableDate" /> occurrences - date and all metadata - for a requested window
 /// and territory, complementing the resource-authored rules. It is the code-first counterpart to authoring a rule, and
 /// is registered with the service through the provider-aware constructor.
 /// </para>

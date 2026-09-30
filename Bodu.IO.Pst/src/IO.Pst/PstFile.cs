@@ -15,7 +15,7 @@ namespace Bodu.IO.Pst;
 /// </summary>
 /// <remarks>
 /// <para>
-/// This is the container layer of MS-PST — it speaks node identifiers and raw payloads, decoding the format's permute
+/// This is the container layer of MS-PST - it speaks node identifiers and raw payloads, decoding the format's permute
 /// and cyclic content encodings transparently. Folder, message, and property semantics belong to the higher layers
 /// built on top of it.
 /// </para>

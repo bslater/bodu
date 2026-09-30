@@ -10,8 +10,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
 /// Parses NIST Lightweight Cryptography (LWC) AEAD known-answer test files in the <c>.rsp</c>-style format used by the
-/// official ASCON and NIST submission packages. Each vector occupies six labelled lines — <c>Count</c>, <c>Key</c>,
-/// <c>Nonce</c>, <c>PT</c>, <c>AD</c>, <c>CT</c> — and is separated from the next by one or more blank lines.
+/// official ASCON and NIST submission packages. Each vector occupies six labelled lines - <c>Count</c>, <c>Key</c>,
+/// <c>Nonce</c>, <c>PT</c>, <c>AD</c>, <c>CT</c> - and is separated from the next by one or more blank lines.
 /// </summary>
 public static class NistLwcKatReader
 {

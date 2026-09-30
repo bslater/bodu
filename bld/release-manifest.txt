@@ -2,8 +2,8 @@
 # packages listed here are pushed to nuget.org by .github/workflows/release.yml.
 #
 # Each line is "<PackageId> <first-shipped-version>": the id, then the lock-step version at which
-# that package FIRST appeared on nuget.org. The version is not the version being released — that is
-# BoduBaseVersion in bld/Versioning.props — it is a permanent record, written once when the package
+# that package FIRST appeared on nuget.org. The version is not the version being released - that is
+# BoduBaseVersion in bld/Versioning.props - it is a permanent record, written once when the package
 # joins a wave and never edited again.
 #
 # It exists because the package-validation baseline (BoduPackageValidationBaseline) compares a pack
@@ -41,7 +41,7 @@
 #       reasoning as the tool it drives.
 # --------------------------------------------------------------------------------------------
 
-# Wave 1 — foundation packages
+# Wave 1 - foundation packages
 Bodu.Core 0.5.0
 Bodu.Collections 0.5.0
 Bodu.Collections.Concurrent 0.5.0
@@ -51,7 +51,7 @@ Bodu.IO.Hashing 0.5.0
 Bodu.Text.Encoding 0.5.0
 Bodu.Security.Cryptography 0.5.0
 
-# Wave 2 — self-contained format & text libraries
+# Wave 2 - self-contained format & text libraries
 Bodu.Text.Serialization 0.5.0
 Bodu.Text.Bencode 0.5.0
 Bodu.Text.Toml 0.5.0
@@ -68,11 +68,11 @@ Bodu.Formats.Excel.Binary 0.5.0
 Bodu.Formats.Outlook 0.5.0
 Bodu.Formats.Outlook.Msg 0.5.0
 
-# Wave 3 — Outlook personal-folders (PST) readers
+# Wave 3 - Outlook personal-folders (PST) readers
 Bodu.IO.Pst 0.5.0
 Bodu.Formats.Outlook.Pst 0.5.0
 
-# Wave 4 — financial core, calendar engine, and the remaining Core-only libraries
+# Wave 4 - financial core, calendar engine, and the remaining Core-only libraries
 Bodu.Financial 0.6.0
 Bodu.Financial.DependencyInjection 0.6.0
 Bodu.Financial.Serialization.Json 0.6.0
@@ -91,7 +91,7 @@ Bodu.Globalization.Calendar.Caching 0.6.0
 Bodu.Globalization.Calendar.Caching.Sqlite 0.6.0
 Bodu.Globalization.Calendar.Caching.Distributed 0.6.0
 
-# Wave 5 — exchange-rate provider infrastructure, sources, and caching
+# Wave 5 - exchange-rate provider infrastructure, sources, and caching
 Bodu.Financial.ExchangeRates 0.7.0
 Bodu.Financial.ExchangeRates.DependencyInjection 0.7.0
 Bodu.Financial.ExchangeRates.Boe 0.7.0

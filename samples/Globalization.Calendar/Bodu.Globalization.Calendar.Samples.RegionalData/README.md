@@ -1,12 +1,12 @@
 # Bodu.Globalization.Calendar.Samples.RegionalData
 
-The five regional data packs — `Bodu.Globalization.Calendar.Americas`, `.AsiaPacific`, `.Europe`,
+The five regional data packs - `Bodu.Globalization.Calendar.Americas`, `.AsiaPacific`, `.Europe`,
 `.MiddleEast`, and `.Africa`. Two scenarios: what each pack covers, and why a notable-date lookup is
 always scoped to a territory rather than asked globally.
 
 The second scenario is the one worth reading. One calendar date means different things in different
-places — 25 December is a public holiday in four of the five sample territories and not one in `AE`
-at all — which is why there is no global "is it a holiday" call to make. It closes with AU's 2027
+places - 25 December is a public holiday in four of the five sample territories and not one in `AE`
+at all - which is why there is no global "is it a holiday" call to make. It closes with AU's 2027
 weekend substitutions, where `IsObserved` marks the shifted day and `ActualDate` keeps the date it
 shifted from, so the adjustment is auditable rather than implied.
 
@@ -14,7 +14,7 @@ shifted from, so the adjustment is auditable rather than implied.
 dotnet run --project samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.RegionalData
 ```
 
-Each pack embeds its own rules, so every scenario runs offline and deterministically — no data
+Each pack embeds its own rules, so every scenario runs offline and deterministically - no data
 directory to deploy, no download on first use.
 
 ## Layout
@@ -28,5 +28,5 @@ directory to deploy, no download on first use.
 
 ## Related
 
-- `Bodu.Globalization.Calendar.Samples.NotableDatesBasics` — the resolution surface in depth.
-- `Bodu.Globalization.Calendar.Samples.WorkingDays` — working-day arithmetic over the same data.
+- `Bodu.Globalization.Calendar.Samples.NotableDatesBasics` - the resolution surface in depth.
+- `Bodu.Globalization.Calendar.Samples.WorkingDays` - working-day arithmetic over the same data.

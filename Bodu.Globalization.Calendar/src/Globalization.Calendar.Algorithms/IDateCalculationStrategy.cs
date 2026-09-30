@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The engine ships a strategy per authoring shape — among them <see cref="FixedDateStrategy" />,
+/// The engine ships a strategy per authoring shape - among them <see cref="FixedDateStrategy" />,
 /// <see cref="DayOfWeekInMonthStrategy" />, <see cref="RelativeWeekdayInMonthStrategy" />,
 /// <see cref="WeekdayNearDateStrategy" />, <see cref="OffsetFromRuleStrategy" />, and
 /// <see cref="AlgorithmDateStrategy" /> (which dispatches to a registered <see cref="INotableDateAlgorithm" />). A

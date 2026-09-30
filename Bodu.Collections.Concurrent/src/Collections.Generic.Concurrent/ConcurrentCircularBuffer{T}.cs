@@ -46,7 +46,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// subsequent changes.
 /// </para>
 /// <para>
-/// Slots are padded to 64 bytes — the standard cache-line size on x86/x64 hardware — to prevent false sharing between
+/// Slots are padded to 64 bytes - the standard cache-line size on x86/x64 hardware - to prevent false sharing between
 /// adjacent producer- and consumer-touched slots. Targets with larger cache lines (notably Apple Silicon and some ARM
 /// SoCs at 128 bytes) remain correct; the padding is conservative on those platforms but does not degrade throughput.
 /// </para>
@@ -224,7 +224,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// logical "enqueue into a full buffer" can trigger more than one eviction: a producer may evict the oldest element
     /// to free a slot, lose that freed slot to another producer before it can claim it, and evict again. Each eviction
     /// still removes a distinct real element in FIFO order and fires this event exactly once, so data is never lost or
-    /// duplicated — but the total number of firings is an <em>upper bound</em> on the number of admissions, not a
+    /// duplicated - but the total number of firings is an <em>upper bound</em> on the number of admissions, not a
     /// one-to-one signal. A subscriber counting evictions against enqueues will see them diverge under write pressure.
     /// In the uncontended (single-producer) case the ratio is exactly one eviction per overflow admission. Handlers run
     /// inside the lock-free dequeue path, so they must not perform heavy work.
@@ -274,7 +274,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <remarks>
     /// <para>
     /// The accessor performs a sequence-validated single-slot read; it does not allocate a snapshot. Two consecutive
-    /// index reads (for example, <c>buffer[i]</c> followed by <c>buffer[i + 1]</c>) are not jointly atomic — concurrent
+    /// index reads (for example, <c>buffer[i]</c> followed by <c>buffer[i + 1]</c>) are not jointly atomic - concurrent
     /// producers or consumers may modify the buffer between the two reads. Callers that require joint atomicity across
     /// multiple positions should call <see cref="ToArray" /> once and index the resulting array.
     /// </para>
@@ -465,7 +465,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// Each slot in the snapshot is read using a sequence-validated seqlock pattern: the slot's coordination sequence
     /// is read both before and after the value, and the read is committed only when both sequence observations match
     /// the expected published mark. This guarantees the value, when committed, was the element published at that
-    /// logical position — never a value from an earlier or later generation.
+    /// logical position - never a value from an earlier or later generation.
     /// </para>
     /// <para>
     /// If a slot cannot be stabilized within its retry budget, the entire snapshot is restarted. After the outer retry
@@ -597,7 +597,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 return false;
             }
 
-            // diff > 0: stale head read — another thread dequeued or advanced past this slot; retry.
+            // diff > 0: stale head read - another thread dequeued or advanced past this slot; retry.
             spinner.SpinOnce();
         }
     }
@@ -693,7 +693,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
             }
             else if (diff < 0)
             {
-                // empty — nothing to evict
+                // empty - nothing to evict
                 return false;
             }
             else
@@ -927,11 +927,11 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The two hot fields — <see cref="Sequence" /> (written on every enqueue and dequeue) and <see cref="Value" />
-    /// (written on every enqueue) — are declared first, followed by seven <see cref="long" /> padding fields. Under
+    /// The two hot fields - <see cref="Sequence" /> (written on every enqueue and dequeue) and <see cref="Value" />
+    /// (written on every enqueue) - are declared first, followed by seven <see cref="long" /> padding fields. Under
     /// <see cref="LayoutKind.Sequential" /> the declaration order is the memory order, so the padding trails the hot
     /// fields and isolates them from the <em>next</em> slot's hot fields, pushing the struct past a 64-byte cache line.
-    /// Padding placed ahead of the hot fields would not achieve this — it would only separate them from the slot's own
+    /// Padding placed ahead of the hot fields would not achieve this - it would only separate them from the slot's own
     /// cold prefix while leaving them adjacent to the following slot.
     /// </para>
     /// <para>

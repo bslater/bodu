@@ -9,8 +9,8 @@ using System.Text;
 namespace Bodu.Security.Cryptography.Samples.HashingMacAndKdf.Scenarios;
 
 /// <summary>
-/// Produces authentication tags with the library's keyed hashes and one-time MAC — SipHash-64,
-/// SipHash-128, keyed BLAKE2b, and Poly1305 — each over a fixed message under a fixed key, so the printed
+/// Produces authentication tags with the library's keyed hashes and one-time MAC - SipHash-64,
+/// SipHash-128, keyed BLAKE2b, and Poly1305 - each over a fixed message under a fixed key, so the printed
 /// tags are reproducible.
 /// </summary>
 public static class KeyedHashesAndMac

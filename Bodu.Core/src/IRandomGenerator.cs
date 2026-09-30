@@ -18,8 +18,8 @@ namespace Bodu;
 /// generator under contention, or plug in a domain-specific PRNG without touching the helpers.
 /// </para>
 /// <para>
-/// Two implementations ship with the library: <see cref="XorShiftRandom" /> — a fast, lock-free xorshift generator
-/// suitable for tight inner loops — and <c>SystemRandomAdapter</c>, which wraps <see cref="System.Random" /> for
+/// Two implementations ship with the library: <see cref="XorShiftRandom" /> - a fast, lock-free xorshift generator
+/// suitable for tight inner loops - and <c>SystemRandomAdapter</c>, which wraps <see cref="System.Random" /> for
 /// callers that prefer the BCL distribution and seeding semantics. Either is appropriate for shuffle and sampling work;
 /// neither is suitable for cryptographic use. Consumers that require cryptographic randomness should use
 /// <see cref="System.Security.Cryptography.RandomNumberGenerator" /> directly.

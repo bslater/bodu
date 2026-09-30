@@ -27,7 +27,7 @@ public partial class PstPropertyContextTests
     }
 
     /// <summary>
-    /// Verifies that an empty property context — one whose tree has no records — reports a count of zero.
+    /// Verifies that an empty property context - one whose tree has no records - reports a count of zero.
     /// </summary>
     [TestMethod]
     public void Count_WhenContextIsEmpty_ShouldReportZero()

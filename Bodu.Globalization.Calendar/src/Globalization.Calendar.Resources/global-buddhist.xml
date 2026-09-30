@@ -19,7 +19,7 @@
       conventions, rather than computed against a lunar calendar.
     -->
 
-    <!-- Parinirvana Day (Nirvana Day) — Mahayana commemoration of the Buddha's death; commonly fixed to 15 February. -->
+    <!-- Parinirvana Day (Nirvana Day) - Mahayana commemoration of the Buddha's death; commonly fixed to 15 February. -->
     <NotableDate id="parinirvana-day" displayName="Parinirvana Day" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="February" day="15" /></Strategy></Rule></Rules>
     </NotableDate>
@@ -33,23 +33,23 @@
       full-moon (poya) dates, which vary by tradition and country.
     -->
 
-    <!-- Losar — Tibetan New Year (first new moon of the Tibetan lunisolar year); computed, a 3-day span. -->
+    <!-- Losar - Tibetan New Year (first new moon of the Tibetan lunisolar year); computed, a 3-day span. -->
     <NotableDate id="losar" displayName="Losar" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="3"><Strategy><Algorithm key="losar" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Vesak (Buddha Purnima) — Theravada full-moon day of the Buddha's birth, enlightenment, and death; computed. -->
+    <!-- Vesak (Buddha Purnima) - Theravada full-moon day of the Buddha's birth, enlightenment, and death; computed. -->
     <NotableDate id="vesak" displayName="Vesak" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Algorithm key="vesak" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Asalha Puja (Dhamma Day) — full-moon day marking the Buddha's first sermon; computed. Anchors Vassa below. -->
+    <!-- Asalha Puja (Dhamma Day) - full-moon day marking the Buddha's first sermon; computed. Anchors Vassa below. -->
     <NotableDate id="asalha-puja" displayName="Asalha Puja" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Algorithm key="asalha-puja" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!--
-      Vassa (Rains Retreat) — the three-month monastic retreat that begins the day after Asalha Puja. Authored as a
+      Vassa (Rains Retreat) - the three-month monastic retreat that begins the day after Asalha Puja. Authored as a
       one-day OffsetFromRule from the local asalha-puja anchor (offsetDays="1") so it tracks that computed date; a
       90-day span covers the retreat.
     -->
@@ -60,7 +60,7 @@
 
 
     <!--
-      Buddha's Birthday (East Asian) — eighth day of the fourth Chinese lunisolar month, used by several East Asian
+      Buddha's Birthday (East Asian) - eighth day of the fourth Chinese lunisolar month, used by several East Asian
       Buddhist calendars. Strategy: Fixed Chinese lunisolar month/day with leap-month skipping.
     -->
     <NotableDate id="buddhas-birthday-east-asian" displayName="Buddha's Birthday (East Asian)" category="Religious" defaultNonWorkingDay="false">
@@ -68,7 +68,7 @@
         <Strategy><Fixed month="4" day="8" skipLeapMonth="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Bodhi Day — Mahayana commemoration of the Buddha's enlightenment; commonly fixed to 8 December. -->
+    <!-- Bodhi Day - Mahayana commemoration of the Buddha's enlightenment; commonly fixed to 8 December. -->
     <NotableDate id="bodhi-day" displayName="Bodhi Day" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="December" day="8" /></Strategy></Rule></Rules>
     </NotableDate>

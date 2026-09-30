@@ -74,7 +74,7 @@ public partial class FiscalWeekQuarterProviderTests
         // Nearest-day alignment
         // =========================================================
 
-        // 52-week years — the nearest anchor day for the following year remains within a 364-day span.
+        // 52-week years - the nearest anchor day for the following year remains within a 364-day span.
 
         // Jan 1, 2023 = Sunday; next Jan 1, 2024 = Monday → nearest Sunday = Dec 31, 2023.
         // Span: Dec 31, 2023 − Jan 1, 2023 = 364 days.
@@ -97,7 +97,7 @@ public partial class FiscalWeekQuarterProviderTests
         // Span: Jan 3, 2016 − Jan 4, 2015 = 364 days.
         yield return new object[] { 2015, 1, DayOfWeek.Sunday, false, true, false };
 
-        // 53-week years — the nearest anchor day for the following year falls into the next 7-day cycle,
+        // 53-week years - the nearest anchor day for the following year falls into the next 7-day cycle,
         // producing a 371-day fiscal year.
 
         // Jan 1, 2020 = Wednesday → nearest Sunday = Dec 29, 2019.
@@ -124,7 +124,7 @@ public partial class FiscalWeekQuarterProviderTests
         // On-or-before alignment
         // =========================================================
 
-        // 52-week years — the aligned day on or before the next anchor remains 364 days from the current start.
+        // 52-week years - the aligned day on or before the next anchor remains 364 days from the current start.
 
         // Jan 1, 2023 = Sunday → on-or-before Sunday = Jan 1, 2023.
         // Next anchor: Jan 1, 2024 = Monday → on-or-before Sunday = Dec 31, 2023.
@@ -141,7 +141,7 @@ public partial class FiscalWeekQuarterProviderTests
         // Span: Mar 30, 2024 − Apr 1, 2023 = 364 days.
         yield return new object[] { 2023, 4, DayOfWeek.Saturday, false, false, false };
 
-        // 53-week years — the aligned day on or before the next anchor lands 371 days after the current start.
+        // 53-week years - the aligned day on or before the next anchor lands 371 days after the current start.
 
         // Jan 1, 2020 = Wednesday → on-or-before Sunday = Dec 29, 2019.
         // Next anchor: Jan 1, 2021 = Friday → on-or-before Sunday = Dec 27, 2020.

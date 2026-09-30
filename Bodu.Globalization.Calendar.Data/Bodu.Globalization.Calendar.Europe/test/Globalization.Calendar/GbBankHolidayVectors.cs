@@ -10,7 +10,7 @@ using Bodu.Test.Kat;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Loads the embedded United Kingdom bank-holiday vector table — the official GOV.UK dataset for 2019-2028 — as KAT
+/// Loads the embedded United Kingdom bank-holiday vector table - the official GOV.UK dataset for 2019-2028 - as KAT
 /// rows for <c>[DynamicData]</c> binding.
 /// </summary>
 /// <remarks>

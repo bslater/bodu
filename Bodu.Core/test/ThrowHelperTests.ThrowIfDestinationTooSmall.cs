@@ -58,7 +58,7 @@ public partial class ThrowHelperTests
     }
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfDestinationTooSmall{TSource, TDestination}(TSource[], TDestination[], string)" />
-    /// does not throw — and on the ParamName-asserting overload reports nothing — when the destination
+    /// does not throw - and on the ParamName-asserting overload reports nothing - when the destination
     /// array is at least as long as the source.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

@@ -379,8 +379,8 @@ public class BencodeObjectTests
     }
 
     /// <summary>
-    /// Verifies that serialization sorts keys bytewise — shorter prefixes first and uppercase (lower byte values)
-    /// before lowercase — regardless of insertion order.
+    /// Verifies that serialization sorts keys bytewise - shorter prefixes first and uppercase (lower byte values)
+    /// before lowercase - regardless of insertion order.
     /// </summary>
     [TestMethod]
     public void ToByteArray_WhenKeysDifferByCaseAndLength_ShouldSortBytewise()

@@ -44,7 +44,7 @@ namespace Bodu.IO.Hashing;
 /// <para>
 /// <strong>Buffering caveat.</strong> Because the algorithm needs the whole message before mixing, the base class
 /// buffers every appended byte until <see cref="GetCurrentHashCore(Span{byte})" /> is called. Memory consumption grows
-/// linearly with input length between resets — avoid feeding it multi-gigabyte streams. Instances are not thread-safe;
+/// linearly with input length between resets - avoid feeding it multi-gigabyte streams. Instances are not thread-safe;
 /// share behind explicit synchronization.
 /// </para>
 /// <note type="important"> CityHash is <b>not</b> cryptographically secure. It must <b>not</b> be used for password
@@ -56,12 +56,12 @@ namespace Bodu.IO.Hashing;
 /// using Bodu.IO.Hashing;
 /// using Bodu.IO.Hashing.Extensions;
 ///
-/// // 64-bit fingerprint of a content blob — typical use case.
+/// // 64-bit fingerprint of a content blob - typical use case.
 /// var city = new CityHash64();
 /// byte[] fingerprint = city.ComputeHash(blob);
 ///
 /// // Stream-hash a moderately sized file.
-/// // Note: CityHash buffers fully — prefer Crc / xxHash for very large streams.
+/// // Note: CityHash buffers fully - prefer Crc / xxHash for very large streams.
 /// using FileStream fs = File.OpenRead("payload.bin");
 /// byte[] streamDigest = city.ComputeHash(fs);
 ///]]>

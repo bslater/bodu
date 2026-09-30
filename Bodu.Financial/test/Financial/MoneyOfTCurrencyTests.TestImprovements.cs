@@ -201,12 +201,12 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Invalid metadata flows through every metadata-dependent surface — not just the constructor.
+    // Invalid metadata flows through every metadata-dependent surface - not just the constructor.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
     /// Verifies that the centralised metadata validator catches invalid currency metadata at every
-    /// metadata-dependent surface — Money static properties, Money instance methods, and JSON serialisation —
+    /// metadata-dependent surface - Money static properties, Money instance methods, and JSON serialisation -
     /// not only at the constructor.
     /// </summary>
     [TestMethod]

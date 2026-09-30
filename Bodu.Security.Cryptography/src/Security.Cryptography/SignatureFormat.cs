@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The same mathematical signature can be serialized in incompatible ways — most notably ECDSA signatures, which
+/// The same mathematical signature can be serialized in incompatible ways - most notably ECDSA signatures, which
 /// circulate both as ASN.1 DER <c>SEQUENCE</c> structures and as fixed-width IEEE P1363 <c>r || s</c> concatenations.
 /// Carrying the format alongside the bytes prevents a signature produced in one encoding from being verified, stored,
 /// or transmitted as if it were the other.

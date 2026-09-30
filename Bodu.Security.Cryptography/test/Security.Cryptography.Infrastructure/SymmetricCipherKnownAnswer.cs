@@ -7,14 +7,14 @@
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Serves as the base for symmetric-cipher known-answer test vectors — a plaintext / ciphertext pair produced under the
+/// Serves as the base for symmetric-cipher known-answer test vectors - a plaintext / ciphertext pair produced under the
 /// inherited key. Block, stream, and AEAD vectors all extend this root.
 /// </summary>
 public abstract record SymmetricCipherKnownAnswer
     : KeyedKnownAnswer
 {
     /// <summary>
-    /// Gets the plaintext input — the value fed to encryption and the value expected from decrypting
+    /// Gets the plaintext input - the value fed to encryption and the value expected from decrypting
     /// <see cref="Ciphertext" />.
     /// </summary>
     public required byte[] Plaintext { get; init; }

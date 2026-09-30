@@ -10,8 +10,8 @@ uid: Bodu.Text.Bencode.Reader
 
 ## Key types
 
-- <xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> — the `ref struct` token cursor: `Read` / `Skip` / `TrySkip`, `TokenType` (a <xref:Bodu.Text.Bencode.BencodeTokenType>), `ValueSpan`, and the typed accessors `GetString` / `GetBytes` / `GetInt32` / `GetInt64` / `GetUInt64` with their `TryGet*` counterparts, plus `ValueTextEquals` for allocation-free key matching.
-- <xref:Bodu.Text.Bencode.Reader.BencodeReaderOptions> — `MaxDepth`, and the `AllowUnsortedKeys` / `AllowDuplicateKeys` relaxations for non-canonical producers.
+- <xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> - the `ref struct` token cursor: `Read` / `Skip` / `TrySkip`, `TokenType` (a <xref:Bodu.Text.Bencode.BencodeTokenType>), `ValueSpan`, and the typed accessors `GetString` / `GetBytes` / `GetInt32` / `GetInt64` / `GetUInt64` with their `TryGet*` counterparts, plus `ValueTextEquals` for allocation-free key matching.
+- <xref:Bodu.Text.Bencode.Reader.BencodeReaderOptions> - `MaxDepth`, and the `AllowUnsortedKeys` / `AllowDuplicateKeys` relaxations for non-canonical producers.
 
 ## Example
 
@@ -35,4 +35,4 @@ while (reader.Read())
 
 - **Canonical by default.** The reader rejects unsorted or duplicate dictionary keys and non-minimal integers unless the corresponding option is set; malformed bytes throw <xref:Bodu.Text.Bencode.BencodeFormatException>.
 - **Byte strings, not text.** `ValueSpan` and `GetBytes` return the raw byte string; `GetString` decodes it as UTF-8.
-- **See also:** the [Bodu.Text.Bencode introduction](~/docs/serialization/bencode/index.md) and the [Using Bencode](~/guides/serialization/bencode/using.md) guide (Pattern 9 — Process tokens by hand).
+- **See also:** the [Bodu.Text.Bencode introduction](~/docs/serialization/bencode/index.md) and the [Using Bencode](~/guides/serialization/bencode/using.md) guide (Pattern 9 - Process tokens by hand).

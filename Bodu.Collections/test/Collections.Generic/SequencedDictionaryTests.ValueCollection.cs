@@ -116,7 +116,7 @@ public partial class SequencedDictionaryTests
     /// </summary>
     /// <remarks>
     /// The values view is exposed through a compiler-generated iterator, whose <see cref="IEnumerator.Reset" />
-    /// implementation throws <see cref="NotSupportedException" /> — unlike the BCL <c>Dictionary.ValueCollection</c>.
+    /// implementation throws <see cref="NotSupportedException" /> - unlike the BCL <c>Dictionary.ValueCollection</c>.
     /// </remarks>
     [TestMethod]
     public void ValueCollection_WhenResetCalled_ShouldThrowExactly()

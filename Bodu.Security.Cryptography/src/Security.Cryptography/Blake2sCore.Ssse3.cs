@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 internal static partial class Blake2sCore
 {
     /// <summary>
-    /// Supplies the rotations with SSSE3 — by 16 and 8 bits a <c>PSHUFB</c>, by 12 and 7 bits a pair of shifts — the
+    /// Supplies the rotations with SSSE3 - by 16 and 8 bits a <c>PSHUFB</c>, by 12 and 7 bits a pair of shifts - the
     /// lane rotations with <c>PSHUFD</c>, and the transpose with SSE2's unpacks.
     /// </summary>
     internal readonly struct Ssse3Isa

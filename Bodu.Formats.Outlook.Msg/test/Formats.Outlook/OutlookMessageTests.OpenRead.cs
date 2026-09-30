@@ -13,7 +13,7 @@ namespace Bodu.Formats.Outlook;
 public partial class OutlookMessageTests
 {
     /// <summary>
-    /// Verifies that opening a minimal synthetic message surfaces its subject and body — the package's primary happy
+    /// Verifies that opening a minimal synthetic message surfaces its subject and body - the package's primary happy
     /// path.
     /// </summary>
     [TestMethod]

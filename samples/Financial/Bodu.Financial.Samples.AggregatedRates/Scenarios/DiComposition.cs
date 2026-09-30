@@ -13,7 +13,7 @@ namespace Bodu.Financial.Samples.AggregatedRates.Scenarios;
 
 /// <summary>
 /// Demonstrates the DI composition: <c>AddFinancialService().AddAggregatedRateProvider(...)</c> builds
-/// the whole stack — each child wrapped in a read-through cache, grouped behind one
+/// the whole stack - each child wrapped in a read-through cache, grouped behind one
 /// <see cref="IDatedRateProvider" /> registration, with per-pair routes declared fluently. Children
 /// are also registered as keyed services, so a specific source stays resolvable by name.
 /// </summary>

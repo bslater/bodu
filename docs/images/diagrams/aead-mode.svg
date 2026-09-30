@@ -43,7 +43,7 @@
     <rect class="panel" width="800" height="340" rx="8"/>
     <rect class="header" width="800" height="46" rx="8"/>
     <rect class="header" y="38" width="800" height="8"/>
-    <text class="title" x="16" y="20">AEAD — Authenticated Encryption with Associated Data (generic flow)</text>
+    <text class="title" x="16" y="20">AEAD - Authenticated Encryption with Associated Data (generic flow)</text>
     <text class="formula" x="784" y="38" text-anchor="end">(C, T) = ENC_K(N, A, P);    P or ⊥ = DEC_K(N, A, C, T)</text>
 
     <!-- Top row: encryption path -->
@@ -114,12 +114,12 @@
     <!-- Side legend -->
     <g transform="translate(650 60)">
       <text class="sub" x="0" y="0">Per mode:</text>
-      <text class="sub-muted" x="0" y="18">GCM — CTR + GHASH</text>
-      <text class="sub-muted" x="0" y="34">CCM — CTR + CBC-MAC</text>
-      <text class="sub-muted" x="0" y="50">OCB — offset-based, 1-pass</text>
-      <text class="sub-muted" x="0" y="66">EAX — CTR + OMAC(N‖A‖C)</text>
-      <text class="sub-muted" x="0" y="82">SIV — deterministic, S2V first</text>
-      <text class="sub-muted" x="0" y="98">GCM-SIV — POLYVAL SIV</text>
+      <text class="sub-muted" x="0" y="18">GCM - CTR + GHASH</text>
+      <text class="sub-muted" x="0" y="34">CCM - CTR + CBC-MAC</text>
+      <text class="sub-muted" x="0" y="50">OCB - offset-based, 1-pass</text>
+      <text class="sub-muted" x="0" y="66">EAX - CTR + OMAC(N‖A‖C)</text>
+      <text class="sub-muted" x="0" y="82">SIV - deterministic, S2V first</text>
+      <text class="sub-muted" x="0" y="98">GCM-SIV - POLYVAL SIV</text>
     </g>
 
     <!-- bottom row description -->

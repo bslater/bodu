@@ -22,7 +22,7 @@ public partial class SequenceGeneratorTests
     }
 
     /// <summary>
-    /// Verifies that the first sixteen terms of the Thue–Morse sequence match the canonical prefix.
+    /// Verifies that the first sixteen terms of the Thue-Morse sequence match the canonical prefix.
     /// </summary>
     [TestMethod]
     public void ThueMorse_WhenCountIsSixteen_ShouldReturnCanonicalPrefix()
@@ -42,7 +42,7 @@ public partial class SequenceGeneratorTests
     }
 
     /// <summary>
-    /// Verifies that every emitted Thue–Morse term equals the parity of the number of set bits in its zero-based index.
+    /// Verifies that every emitted Thue-Morse term equals the parity of the number of set bits in its zero-based index.
     /// </summary>
     [TestMethod]
     public void ThueMorse_WhenEnumerated_ShouldMatchPopcountParity()

@@ -15,7 +15,7 @@ namespace Bodu.Collections.Generic.Trees;
 public sealed partial class RadixTrieTests
 {
     /// <summary>
-    /// Provides known-answer prefix-query scenarios — the same catalogue the uncompressed <see cref="Trie" /> is
+    /// Provides known-answer prefix-query scenarios - the same catalogue the uncompressed <see cref="Trie" /> is
     /// pinned by, because the compressed representation must answer identically.
     /// </summary>
     public static IEnumerable<object[]> PrefixScenarios =>

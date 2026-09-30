@@ -15,7 +15,7 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 
 /// <summary>
 /// Converts any fixed-width integer type to and from the format's integer token, using checked conversions so a value
-/// outside the target type's range — or outside the signed 64-bit surface this converter reads and writes through —
+/// outside the target type's range - or outside the signed 64-bit surface this converter reads and writes through -
 /// surfaces as a serialization error rather than silently wrapping.
 /// </summary>
 /// <typeparam name="T">The integer type, constrained to <see cref="IBinaryInteger{TSelf}" />.</typeparam>

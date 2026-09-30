@@ -48,7 +48,7 @@ internal sealed partial class ConfigurationReader
     }
 
     /// <summary>
-    /// Gets the section a property should attach to — the most recently declared section, or the global section when
+    /// Gets the section a property should attach to - the most recently declared section, or the global section when
     /// none have been declared.
     /// </summary>
     /// <param name="document">The document being populated.</param>
@@ -86,7 +86,7 @@ internal sealed partial class ConfigurationReader
 
     /// <summary>
     /// Finds the index of the last <c>]</c> on <paramref name="line" /> after <paramref name="firstNonWs" />. The scan
-    /// does not stop at trailing non-whitespace — characters after the closing <c>]</c> are evaluated separately by the
+    /// does not stop at trailing non-whitespace - characters after the closing <c>]</c> are evaluated separately by the
     /// section-header mode, which decides whether they are an inline comment, harmless trailing text, or a
     /// diagnostic-worthy malformed suffix.
     /// </summary>

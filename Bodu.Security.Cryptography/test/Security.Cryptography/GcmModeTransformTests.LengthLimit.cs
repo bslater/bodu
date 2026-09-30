@@ -118,7 +118,7 @@ public sealed partial class GcmModeTransformTests
     /// </summary>
     /// <remarks>
     /// This test exercises the wiring of <see cref="GcmModeTransform.ValidatePlaintextLength" /> from
-    /// <see cref="GcmModeTransform.Encrypt" />, not the full int.MaxValue path — actually allocating a 2 GiB
+    /// <see cref="GcmModeTransform.Encrypt" />, not the full int.MaxValue path - actually allocating a 2 GiB
     /// plaintext is not feasible in BVT and not necessary to confirm the guard is correctly placed.
     /// </remarks>
     [TestMethod]

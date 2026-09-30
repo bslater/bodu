@@ -68,7 +68,7 @@ public partial class SequencedDictionaryTests
         foreach (KeyValuePair<string, int> kvp in dictionary)
         {
             seen.Add(kvp.Key);
-            _ = dictionary["c"]; // "c" is already the tail — a no-op reorder.
+            _ = dictionary["c"]; // "c" is already the tail - a no-op reorder.
         }
 
         CollectionAssert.AreEqual(new[] { "a", "b", "c" }, seen);

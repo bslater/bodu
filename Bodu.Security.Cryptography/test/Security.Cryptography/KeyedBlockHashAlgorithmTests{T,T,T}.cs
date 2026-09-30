@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// <typeparam name="TVariant">The enumeration type used to represent algorithm configuration variants.</typeparam>
 /// <remarks>
 /// Extends <see cref="BlockHashAlgorithmTests{TTest, TAlgorithm, TVariant}" /> with test logic that
-/// is specific to keyed algorithms — key retention, defensive copying, legal key length boundaries,
+/// is specific to keyed algorithms - key retention, defensive copying, legal key length boundaries,
 /// and interaction between key assignment and hashing state.
 /// </remarks>
 public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>

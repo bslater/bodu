@@ -342,8 +342,8 @@ public sealed partial class Ed25519
     /// <exception cref="CryptographicException">The instance does not hold a public key.</exception>
     /// <remarks>
     /// <para>
-    /// Verification never throws for bad signature input: every failure mode — wrong length, S ≥ L, a non-canonical or
-    /// off-curve R, or a small-order R or public key — yields <see langword="false" />. Verification time may vary with
+    /// Verification never throws for bad signature input: every failure mode - wrong length, S ≥ L, a non-canonical or
+    /// off-curve R, or a small-order R or public key - yields <see langword="false" />. Verification time may vary with
     /// the inputs, which is acceptable because all inputs to verification are public.
     /// </para>
     /// <para>

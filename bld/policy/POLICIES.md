@@ -25,7 +25,7 @@ catch should be distilled into the Learning log below so the next author applies
 | ID | Policy | Tier | Enforced by | Conforming form |
 |---|---|---|---|---|
 | BODU-P001 | Every `.cs` file starts with the copyright banner | 1 | `check-policy.sh` (added files) | The `<copyright file=…>` banner block from CLAUDE.md > File Header |
-| BODU-P002 | File-scoped namespaces (`namespace X;`) | 0/1 | IDE0161 · `check-policy.sh` (added files) | `namespace Bodu.X;` — never the `{ }` block form |
+| BODU-P002 | File-scoped namespaces (`namespace X;`) | 0/1 | IDE0161 · `check-policy.sh` (added files) | `namespace Bodu.X;` - never the `{ }` block form |
 | BODU-P003 | No string-literal exception messages | 1 | `check-policy.sh` (added src lines) | `throw new ArgumentException(ResourceStrings.Arg_Invalid_X, nameof(x))` |
 | BODU-P004 | Folder ↔ namespace alignment (flat, dotted) | 1 | `check-folder-namespace-alignment.sh` | Folder = namespace − RootNamespace, dots preserved |
 | BODU-P005 | `var` per the CLAUDE.md cascade | 0 | IDE0007 | `var` for built-ins / apparent types; explicit otherwise |
@@ -45,7 +45,7 @@ catch should be distilled into the Learning log below so the next author applies
 Append-only. Each downstream catch is distilled here so upstream authors (human or agent) apply
 the rule *before* CI catches it. The fix-and-learn workflow (`claude-policy-fix.yml`) writes an
 entry every time it remediates a violation. When an entry's rule is deterministically checkable,
-promote it into `check-policy.sh` and note the promotion here — that is how a Tier-2 judgment
+promote it into `check-policy.sh` and note the promotion here - that is how a Tier-2 judgment
 becomes a Tier-1 script and the catch-point moves upstream.
 
 Entry format:

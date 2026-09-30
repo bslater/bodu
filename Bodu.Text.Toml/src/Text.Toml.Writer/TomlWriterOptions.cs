@@ -11,9 +11,9 @@ namespace Bodu.Text.Toml.Writer;
 /// </summary>
 /// <remarks>
 /// <para>
-/// TOML output always uses a normalized layout — keys are emitted in insertion order, sub-tables surface as
+/// TOML output always uses a normalized layout - keys are emitted in insertion order, sub-tables surface as
 /// <c>[header]</c> blocks, arrays of tables as <c>[[header]]</c> blocks, and every value uses its shortest
-/// round-trippable spelling — so there is no indentation or encoder option. The layout is deterministic for a given
+/// round-trippable spelling - so there is no indentation or encoder option. The layout is deterministic for a given
 /// insertion order, but two semantically equal documents built in different orders serialize to different bytes; it is
 /// not a canonical form suitable for hashing or signing.
 /// </para>

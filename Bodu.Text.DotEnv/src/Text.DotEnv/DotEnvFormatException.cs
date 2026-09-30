@@ -11,7 +11,7 @@ namespace Bodu.Text.DotEnv;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Raised by the DotEnv reader — and therefore surfaced by <c>DotEnvSerializer</c> while deserializing — when the
+/// Raised by the DotEnv reader - and therefore surfaced by <c>DotEnvSerializer</c> while deserializing - when the
 /// source text cannot be interpreted as a valid DotEnv document: for example, an invalid key name, a missing
 /// assignment, or an unterminated quoted value. The error is signalled through the <see cref="FormatException" />
 /// hierarchy so callers can catch it alongside other parse failures.

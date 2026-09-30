@@ -11,7 +11,7 @@ namespace Bodu.Text.Yaml.Samples.YamlBasics.Scenarios;
 /// <summary>
 /// Demonstrates the serializer's core loop: deserialize a committed YAML file into a typed POCO
 /// graph (a nested mapping, a block sequence of mappings), then serialize it back and read it
-/// again — the System.Text.Json-shaped workflow, for YAML.
+/// again - the System.Text.Json-shaped workflow, for YAML.
 /// </summary>
 public static class SerializerRoundTrip
 {

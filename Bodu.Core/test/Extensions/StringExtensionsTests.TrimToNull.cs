@@ -36,8 +36,8 @@ public partial class StringExtensionsTests
     public void TrimToNull_WhenInvoked_ShouldReturnExpected(string? value, string? expected) => Assert.AreEqual(expected, value.TrimToNull());
 
     /// <summary>
-    /// Verifies that <see cref="StringExtensions.TrimToNull(string?)" /> returns the original instance — not
-    /// a copy — when the input is already trimmed.
+    /// Verifies that <see cref="StringExtensions.TrimToNull(string?)" /> returns the original instance - not
+    /// a copy - when the input is already trimmed.
     /// </summary>
     [TestMethod]
     public void TrimToNull_WhenInputIsAlreadyTrimmed_ShouldReturnSameInstance()

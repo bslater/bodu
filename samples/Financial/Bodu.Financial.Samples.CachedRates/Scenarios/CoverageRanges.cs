@@ -12,8 +12,8 @@ namespace Bodu.Financial.Samples.CachedRates.Scenarios;
 /// <summary>
 /// Demonstrates coverage-based range serving: the cache records which *date ranges* it has fetched,
 /// not just which rows it holds. A range is served from the cache only when coverage contains the
-/// whole window — a partially covered request refetches the full window rather than serving a sparse
-/// row set — and an empty-but-fetched window (weekends, holidays) is covered knowledge that is not
+/// whole window - a partially covered request refetches the full window rather than serving a sparse
+/// row set - and an empty-but-fetched window (weekends, holidays) is covered knowledge that is not
 /// refetched.
 /// </summary>
 public static class CoverageRanges

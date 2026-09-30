@@ -30,12 +30,12 @@ public static partial class SequenceGenerator
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Use this overload when the next value depends only on the current one — classic recurrence relations such as
+    /// Use this overload when the next value depends only on the current one - classic recurrence relations such as
     /// <c>x ↦ 2·x</c> or <c>x ↦ x / 2</c>. Reach for the indexed overload when the position matters, and the
     /// state-based overload when more than one variable must be tracked across iterations.
     /// </para>
     /// <para>
-    /// The condition is checked before each yield, so the sequence terminates as soon as the predicate fails —
+    /// The condition is checked before each yield, so the sequence terminates as soon as the predicate fails -
     /// including on the very first element, which produces an empty sequence. Behavior is fully deterministic provided
     /// <paramref name="conditionHandler" /> and <paramref name="resultSelector" /> are themselves pure.
     /// </para>
@@ -48,7 +48,7 @@ public static partial class SequenceGenerator
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
-    /// // Halving sequence — terminates when the value drops to zero.
+    /// // Halving sequence - terminates when the value drops to zero.
     /// var halves = SequenceGenerator.NextWhile(64, v => v > 0, v => v / 2); // => 64, 32, 16, 8, 4, 2, 1
     ///
     /// // Empty result when the seed already fails the predicate.
@@ -100,7 +100,7 @@ public static partial class SequenceGenerator
     /// <para>
     /// Choose this overload over
     /// <see cref="NextWhile{TResult}(TResult, Func{TResult, bool}, Func{TResult, TResult})" /> when the transformation
-    /// depends on its position — for example, accumulating sums of <c>i</c>, generating polynomial terms, or scaling by
+    /// depends on its position - for example, accumulating sums of <c>i</c>, generating polynomial terms, or scaling by
     /// a power of the current index.
     /// </para>
     /// <para>
@@ -161,8 +161,8 @@ public static partial class SequenceGenerator
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This is the most general <c>NextWhile</c> form. Use it when each iteration needs to track several variables —
-    /// for example, a pair of counters, a running accumulator, or a parser state — that cannot be folded into a single
+    /// This is the most general <c>NextWhile</c> form. Use it when each iteration needs to track several variables -
+    /// for example, a pair of counters, a running accumulator, or a parser state - that cannot be folded into a single
     /// value.
     /// </para>
     /// <para>

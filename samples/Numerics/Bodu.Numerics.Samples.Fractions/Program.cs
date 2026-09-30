@@ -10,7 +10,7 @@ namespace Bodu.Numerics.Samples.Fractions;
 
 /// <summary>
 /// Entry point for the <c>Fraction&lt;T&gt;</c> sample: the exact-rational type from
-/// <c>Bodu.Numerics</c> — canonical construction and arithmetic, parse/format round-trips,
+/// <c>Bodu.Numerics</c> - canonical construction and arithmetic, parse/format round-trips,
 /// generic-math participation as an <c>INumber&lt;T&gt;</c>, and continued-fraction expansion.
 /// Everything runs offline and deterministically.
 /// </summary>

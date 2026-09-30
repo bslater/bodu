@@ -14,8 +14,8 @@ namespace Bodu.Globalization.Calendar.Samples.CustomCalendar.Scenarios;
 
 /// <summary>
 /// Demonstrates frequency-based (recurring) notable-date rules: a rule can declare a <c>Recurrence</c> source that
-/// yields many occurrences within a window instead of a single date per year. Covers the four recurrence kinds —
-/// daily interval, weekly (multi-weekday), monthly day-of-month, and monthly ordinal-weekday — authored fluently and
+/// yields many occurrences within a window instead of a single date per year. Covers the four recurrence kinds -
+/// daily interval, weekly (multi-weekday), monthly day-of-month, and monthly ordinal-weekday - authored fluently and
 /// resolved over a date range. For the full catalogue and semantics see the
 /// <see href="https://bslater.github.io/bodu/guides/calendar/strategy-reference.html">Notable-date rule strategies</see> guide.
 /// </summary>

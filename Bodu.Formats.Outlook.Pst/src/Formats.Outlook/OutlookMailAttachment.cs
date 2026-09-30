@@ -20,7 +20,7 @@ namespace Bodu.Formats.Outlook;
 /// The conveniences return <see langword="null" /> when the underlying property is absent; every attachment property
 /// remains reachable through <see cref="Properties" />. Content access is method-specific:
 /// <see cref="OpenContentStream" /> serves a by-value payload and <see cref="OpenMessage" /> serves an embedded message
-/// — each throws <see cref="NotSupportedException" /> for the other method kinds.
+/// - each throws <see cref="NotSupportedException" /> for the other method kinds.
 /// </remarks>
 public sealed class OutlookMailAttachment
 {
@@ -92,8 +92,8 @@ public sealed class OutlookMailAttachment
     /// Gets how the attachment's content is stored.
     /// </summary>
     /// <value>
-    /// The <c>PidTagAttachMethod</c> value when present and defined. When the property is absent — or, under the
-    /// tolerant validation levels, carries an undefined value — an attachment that carries a by-value payload reports
+    /// The <c>PidTagAttachMethod</c> value when present and defined. When the property is absent - or, under the
+    /// tolerant validation levels, carries an undefined value - an attachment that carries a by-value payload reports
     /// <see cref="OutlookAttachmentMethod.ByValue" /> (real-world writers frequently omit the method); otherwise
     /// <see cref="OutlookAttachmentMethod.None" />.
     /// </value>
@@ -166,7 +166,7 @@ public sealed class OutlookMailAttachment
     /// <returns>The content stream; dispose it when reading is complete.</returns>
     /// <exception cref="NotSupportedException">
     /// The attachment's <see cref="Method" /> is <see cref="OutlookAttachmentMethod.EmbeddedMessage" /> or
-    /// <see cref="OutlookAttachmentMethod.Ole" /> — the payload is an object, not a byte stream.
+    /// <see cref="OutlookAttachmentMethod.Ole" /> - the payload is an object, not a byte stream.
     /// </exception>
     /// <exception cref="OutlookPstFormatException">The by-value content payload is missing.</exception>
     /// <remarks>

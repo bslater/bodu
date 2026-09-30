@@ -6,7 +6,7 @@
 
 namespace Bodu.Security.Cryptography;
 
-// Known-answer vectors — NIST SP 800-38A, Appendix F.4.1 (OFB mode, AES-128)
+// Known-answer vectors - NIST SP 800-38A, Appendix F.4.1 (OFB mode, AES-128)
 // Source: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf
 //
 // OFB is self-inverse: the same operation is applied for both encryption and decryption.
@@ -31,7 +31,7 @@ public sealed partial class OfbModeTransformTests
     {
         yield return new object[]
         {
-            "NIST SP 800-38A F.4.1 — OFB-AES128",
+            "NIST SP 800-38A F.4.1 - OFB-AES128",
             OfbNistKey128,
             OfbNistIv,
             OfbNistPlaintext,

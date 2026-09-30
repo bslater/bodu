@@ -41,7 +41,7 @@ public partial class IndexedSetTests
     }
 
     // --------------------------------------------------------
-    // Remove — behaviour
+    // Remove - behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -58,7 +58,7 @@ public partial class IndexedSetTests
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
     }
     // --------------------------------------------------------
-    // Remove — argument validation
+    // Remove - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -93,7 +93,7 @@ public partial class IndexedSetTests
     }
 
     // --------------------------------------------------------
-    // RemoveAt — argument validation
+    // RemoveAt - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -115,7 +115,7 @@ public partial class IndexedSetTests
     }
 
     // --------------------------------------------------------
-    // RemoveAt — behaviour
+    // RemoveAt - behaviour
     // --------------------------------------------------------
 
     /// <summary>

@@ -48,7 +48,7 @@ namespace Bodu.Security.Cryptography;
 /// <strong>When to choose Twofish.</strong> Pick Twofish when interoperability with existing Twofish-based code or
 /// formats is required, or when you want an AES finalist with strong software performance and a different design
 /// philosophy from AES. For new general-purpose work, <see cref="System.Security.Cryptography.Aes" /> is the right
-/// default — hardware acceleration on most modern CPUs makes it the fastest option as well as the most widely vetted.
+/// default - hardware acceleration on most modern CPUs makes it the fastest option as well as the most widely vetted.
 /// Reach for <see cref="Serpent128" /> when you specifically want the higher round count conservatism of that AES
 /// finalist.
 /// </para>

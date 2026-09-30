@@ -77,8 +77,8 @@ public sealed partial class CachingRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that a row cached marginally in the future of the lookup instant — within the cache's clock-skew
-    /// tolerance, so it is still served — reports a clamped <see cref="TimeSpan.Zero" /> age rather than a negative one.
+    /// Verifies that a row cached marginally in the future of the lookup instant - within the cache's clock-skew
+    /// tolerance, so it is still served - reports a clamped <see cref="TimeSpan.Zero" /> age rather than a negative one.
     /// </summary>
     [TestMethod]
     public void GetRate_WhenCachedRowStampedSlightlyInFuture_ShouldClampAgeToZero()

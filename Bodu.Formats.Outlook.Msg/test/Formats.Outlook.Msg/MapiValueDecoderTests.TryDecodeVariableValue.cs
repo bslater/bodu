@@ -15,7 +15,7 @@ namespace Bodu.Formats.Outlook.Msg;
 public partial class MapiValueDecoderTests
 {
     /// <summary>
-    /// Verifies that a null payload is reported as undecodable rather than escaping as a null-reference failure —
+    /// Verifies that a null payload is reported as undecodable rather than escaping as a null-reference failure -
     /// the decoder's documented contract is that it never throws.
     /// </summary>
     [TestMethod]
@@ -37,7 +37,7 @@ public partial class MapiValueDecoderTests
     }
 
     /// <summary>
-    /// Verifies that a UTF-8 code-page string carrying a leading byte-order mark decodes without the mark — the
+    /// Verifies that a UTF-8 code-page string carrying a leading byte-order mark decodes without the mark - the
     /// encoding's <c>GetString</c> does not strip it, so the decoder must.
     /// </summary>
     [TestMethod]

@@ -112,7 +112,7 @@ public sealed partial class TomlTestCorpusTests
 
     /// <summary>
     /// Verifies that every valid v1.0.0 case, after being parsed into a node tree, written back to TOML, and reparsed,
-    /// still decodes to the values pinned by its JSON expectation — confirming the writer round-trips the corpus.
+    /// still decodes to the values pinned by its JSON expectation - confirming the writer round-trips the corpus.
     /// </summary>
     /// <param name="kat">The corpus case under test.</param>
     [TestMethod]
@@ -123,7 +123,7 @@ public sealed partial class TomlTestCorpusTests
 
     /// <summary>
     /// Verifies that every valid v1.1.0 case, after being parsed into a node tree, written back to TOML, and reparsed,
-    /// still decodes to the values pinned by its JSON expectation — confirming the writer round-trips the corpus.
+    /// still decodes to the values pinned by its JSON expectation - confirming the writer round-trips the corpus.
     /// </summary>
     /// <param name="kat">The corpus case under test.</param>
     [TestMethod]

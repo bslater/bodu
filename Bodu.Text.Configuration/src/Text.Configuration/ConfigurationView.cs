@@ -15,7 +15,7 @@ namespace Bodu.Text.Configuration;
 /// <remarks>
 /// <para>
 /// Use <see cref="ConfigurationExtensions.Resolve(IniDocumentBase, string?, ConfigurationResolveOptions?)" /> to obtain
-/// a view for a target path. The view is a one-shot snapshot — subsequent mutation of the originating document does not
+/// a view for a target path. The view is a one-shot snapshot - subsequent mutation of the originating document does not
 /// retroactively update the view.
 /// </para>
 /// <para>
@@ -36,7 +36,7 @@ namespace Bodu.Text.Configuration;
 /// IniDocument           doc  = ConfigurationDocument.Parse(text);
 /// ConfigurationView view = doc.Resolve("src/Foo.cs");
 ///
-/// // Indexer lookup — colon and dotted forms are equivalent.
+/// // Indexer lookup - colon and dotted forms are equivalent.
 /// string? level = view["logging:level:default"];
 /// string? alt   = view["logging.level.default"]; // same value
 ///

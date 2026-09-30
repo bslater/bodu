@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the ML-DSA rounding and hint primitives (FIPS 204 Algorithms 35–40).
+/// Provides the ML-DSA rounding and hint primitives (FIPS 204 Algorithms 35-40).
 /// </summary>
 internal static partial class MLDsaEngine
 {
@@ -312,8 +312,8 @@ internal static partial class MLDsaEngine
     /// <paramref name="poly" /> holds fewer than 256 coefficients.
     /// </exception>
     /// <remarks>
-    /// The scan has no early exit, so the time reveals only that a norm check happened — which restart iteration of the
-    /// signing loop runs is public by design — and not which coefficient drove the bound. Every kernel returns the same
+    /// The scan has no early exit, so the time reveals only that a norm check happened - which restart iteration of the
+    /// signing loop runs is public by design - and not which coefficient drove the bound. Every kernel returns the same
     /// value.
     /// </remarks>
     internal static int InfinityNorm(KernelKind kernel, ReadOnlySpan<int> poly)

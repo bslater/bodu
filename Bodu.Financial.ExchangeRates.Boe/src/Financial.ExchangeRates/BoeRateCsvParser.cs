@@ -27,7 +27,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// Columns whose series code is not in the configured catalogue are ignored, and cells that are empty, non-numeric, or
 /// not strictly positive are skipped, because the IADB leaves a cell blank when a currency was not quoted on a given
-/// day. A response that lacks the <c>DATE</c> header — for example, an HTML error page returned in place of the CSV —
+/// day. A response that lacks the <c>DATE</c> header - for example, an HTML error page returned in place of the CSV -
 /// is reported as a format failure.
 /// </para>
 /// </remarks>

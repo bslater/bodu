@@ -19,8 +19,8 @@ public sealed partial class MerkleTree
     /// Nodes at each level are grouped left to right in groups of <c>fanOut</c>; a full group is hashed to a parent as
     /// soon as it completes. When the input ends, whatever each level still holds is carried upward from the leaves: a
     /// lone leftover node is <em>promoted unchanged</em>, a partial group of two or more is hashed. Promotion rather
-    /// than re-hashing is what makes a fan-out of two produce RFC 6962's Merkle Tree Hash for every leaf count — the
-    /// level-by-level walk then visits exactly the nodes of the recursive definition — and an empty input folds to the
+    /// than re-hashing is what makes a fan-out of two produce RFC 6962's Merkle Tree Hash for every leaf count - the
+    /// level-by-level walk then visits exactly the nodes of the recursive definition - and an empty input folds to the
     /// empty tree's root, <c>H()</c>.
     /// </para>
     /// <para>
@@ -117,7 +117,7 @@ public sealed partial class MerkleTree
                 }
 
                 // The lone node at the highest occupied level is the root. Below that, a lone node is promoted
-                // unchanged and a partial group is hashed — the same rule that applied to full groups on the way up.
+                // unchanged and a partial group is hashed - the same rule that applied to full groups on the way up.
                 if (nodes.Count == 1 && !HasPendingAbove(level))
                     return nodes[0];
 

@@ -181,7 +181,7 @@ internal sealed class CfbSectorReader
     /// <remarks>
     /// A per-chain visited set bounds the walk to the number of distinct real sectors and rejects the first revisit as
     /// a cycle. This is what prevents a crafted self-loop or back-edge from re-reading sectors and amplifying a
-    /// caller's accumulated allocation far beyond the container size — the amplification is capped regardless of
+    /// caller's accumulated allocation far beyond the container size - the amplification is capped regardless of
     /// validation level, because the visited set is consulted before any sector is yielded.
     /// </remarks>
     private IEnumerable<uint> WalkChain(uint startSector, uint[] fat, CompoundFileError cycleError)

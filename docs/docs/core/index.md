@@ -1,19 +1,19 @@
 ---
-title: Bodu.Core — Introduction
+title: Bodu.Core - Introduction
 ---
 
 # Bodu.Core
 
 ![Bodu.Core](../../images/hero-core.svg)
 
-**Bodu.Core** is the foundation package of the Bodu suite and of the **[Core Foundations](../topics/core-foundations.md)** topic — a collection of high-performance, framework-style building blocks for .NET applications. Every other Bodu package shares its primitives: `Bodu.Collections`, `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Globalization.Calendar`, `Bodu.Numerics`, and `Bodu.Financial` all reference `Bodu.Core` for shared types like `ThrowHelper`, `WeekPattern`, the calendar-shape enums, and pooled buffers. See the [package matrix](../package-matrix.md) for the full dependency map.
+**Bodu.Core** is the foundation package of the Bodu suite and of the **[Core Foundations](../topics/core-foundations.md)** topic - a collection of high-performance, framework-style building blocks for .NET applications. Every other Bodu package shares its primitives: `Bodu.Collections`, `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Globalization.Calendar`, `Bodu.Numerics`, and `Bodu.Financial` all reference `Bodu.Core` for shared types like `ThrowHelper`, `WeekPattern`, the calendar-shape enums, and pooled buffers. See the [package matrix](../package-matrix.md) for the full dependency map.
 
 > [!NOTE]
-> The specialized generic-collection catalogue — `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, the navigable and range-keyed types, graphs, tries, and the probabilistic sketches — ships in the companion **[Bodu.Collections](../collections/index.md)** package (namespaces unchanged; it depends on `Bodu.Core`), and the thread-safe variants ship in **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** (which depends on `Bodu.Collections`). This page covers what remains in `Bodu.Core` itself.
+> The specialized generic-collection catalogue - `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, the navigable and range-keyed types, graphs, tries, and the probabilistic sketches - ships in the companion **[Bodu.Collections](../collections/index.md)** package (namespaces unchanged; it depends on `Bodu.Core`), and the thread-safe variants ship in **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** (which depends on `Bodu.Collections`). This page covers what remains in `Bodu.Core` itself.
 
 The library is organized around a family of focused namespaces, each with a clear responsibility.
 
-![Bodu.Core namespace map — the foundation namespaces and their headline types, with the collection catalogue shipping in Bodu.Collections](../../images/diagrams/core-namespace-map.svg)
+![Bodu.Core namespace map - the foundation namespaces and their headline types, with the collection catalogue shipping in Bodu.Collections](../../images/diagrams/core-namespace-map.svg)
 
 ## Namespaces and headline types
 
@@ -23,7 +23,7 @@ Top-level primitives that don't fit into a sub-namespace.
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.WeekPattern> | Immutable bitmask value type for sets of days of the week. Supports composition (`MTuW`), bitwise operators, parsing, and enumeration. |
-| <xref:Bodu.IRandomGenerator> | Abstraction over random number generators — used by helpers (and the `Bodu.Collections` catalogue) that need pluggable randomness. |
+| <xref:Bodu.IRandomGenerator> | Abstraction over random number generators - used by helpers (and the `Bodu.Collections` catalogue) that need pluggable randomness. |
 | <xref:Bodu.XorShiftRandom> | Fast non-cryptographic xor-shift PRNG implementing `IRandomGenerator`. |
 | <xref:Bodu.ThrowHelper> | Centralized parameter validation: `ThrowIfNull`, `ThrowIfOutOfRange`, `ThrowIfArrayLengthIsInsufficient`, `ThrowIfEnumValueIsUndefined`, and many more. Uses `[CallerArgumentExpression]` so call sites stay compact. |
 
@@ -35,7 +35,7 @@ Pooled buffer infrastructure.
 | <xref:Bodu.Buffers.PooledBufferBuilder`1> | `ArrayPool<T>`-backed builder for assembling byte or character spans without allocation. |
 
 ### `Bodu.Threading`
-Async coordination primitives — the async-friendly peers of the BCL synchronization types. See the [Async coordination primitives](../../guides/core/async-primitives.md) guide and the <xref:Bodu.Threading> overview.
+Async coordination primitives - the async-friendly peers of the BCL synchronization types. See the [Async coordination primitives](../../guides/core/async-primitives.md) guide and the <xref:Bodu.Threading> overview.
 
 | Type | Purpose |
 |---|---|
@@ -49,9 +49,9 @@ Functional helpers and railway primitives. See the [Memoization](../../guides/co
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Functional.Memoizer> | Wraps a pure function in a thread-safe caching delegate (single- and multi-argument). |
-| <xref:Bodu.Functional.Option`1> | An optional value — `Some(value)` or `None` — with `Map` / `Bind` / `Filter` / `Match` combinators; `default` equals `None`. |
+| <xref:Bodu.Functional.Option`1> | An optional value - `Some(value)` or `None` - with `Map` / `Bind` / `Filter` / `Match` combinators; `default` equals `None`. |
 | <xref:Bodu.Functional.Result>, <xref:Bodu.Functional.Result`1> | Success-or-failure outcomes carrying a value or a <xref:Bodu.Functional.ResultError>; `default` is a failure with an empty error. |
-| <xref:Bodu.Functional.ResultError> | The failure descriptor — optional code, never-null message, optional captured exception. |
+| <xref:Bodu.Functional.ResultError> | The failure descriptor - optional code, never-null message, optional captured exception. |
 | <xref:Bodu.Functional.Either`2> | A symmetric disjoint union with `MapLeft` / `MapRight` / `Match` / `Swap`; `default` is an explicit uninitialized state. |
 | <xref:Bodu.Functional.OptionAsyncExtensions>, <xref:Bodu.Functional.ResultAsyncExtensions> | Task-based `MapAsync` / `BindAsync` / `MatchAsync` (and `TapAsync`) companions for async pipelines. |
 
@@ -60,7 +60,7 @@ Lazy sequence factories. See the <xref:Bodu.Sequences> overview.
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Sequences.SequenceGenerator> | Lazy generators — `Range`, `NextWhile`, `Factory` — and named mathematical series: `Fibonacci`, `Farey`, `Leibniz`, `LookAndSay`, `ThueMorse`. |
+| <xref:Bodu.Sequences.SequenceGenerator> | Lazy generators - `Range`, `NextWhile`, `Factory` - and named mathematical series: `Fibonacci`, `Farey`, `Leibniz`, `LookAndSay`, `ThueMorse`. |
 
 ### `Bodu.Collections.Extensions` and `Bodu.Collections.Generic.Extensions`
 Sequence-shaping helpers that compose on top of `IEnumerable<T>` and `IList<T>`. These extension namespaces ship in `Bodu.Core`; the concrete collection types in the sibling `Bodu.Collections.*` namespaces ship in the [Bodu.Collections](../collections/index.md) package.
@@ -69,7 +69,7 @@ Sequence-shaping helpers that compose on top of `IEnumerable<T>` and `IList<T>`.
 |---|---|
 | <xref:Bodu.Collections.Extensions.IEnumerableExtensions>, <xref:Bodu.Collections.Generic.Extensions.IEnumerableExtensions> | Recursive selection (`RecursiveSelect` steered by `RecursiveSelectControl`), `CountOrDefault`, sliding windows (`Windowed`), batched enumeration (`Batch`), and other sequence helpers. |
 | <xref:Bodu.Collections.Generic.Extensions.IListExtensions> | Predicate-driven `IndexOf` / `LastIndexOf`, `ReplaceAll`, and the positional `TryMove` / `TrySwap` edits over `IList<T>`. |
-| <xref:Bodu.Collections.Generic.ShuffleHelpers>, `IEnumerableExtensions.Randomize`, <xref:Bodu.Collections.Generic.Extensions.SystemRandomAdapter>, <xref:Bodu.Collections.Generic.Extensions.RandomizationMode> | Pluggable randomness-driven shuffles backed by `IRandomGenerator` — in-place `Shuffle` over arrays / spans, lazy `ShuffleAndYield`, and `Randomize` over any sequence. `ShuffleHelpers` lives in `Bodu.Collections.Generic` but ships in `Bodu.Core`. |
+| <xref:Bodu.Collections.Generic.ShuffleHelpers>, `IEnumerableExtensions.Randomize`, <xref:Bodu.Collections.Generic.Extensions.SystemRandomAdapter>, <xref:Bodu.Collections.Generic.Extensions.RandomizationMode> | Pluggable randomness-driven shuffles backed by `IRandomGenerator` - in-place `Shuffle` over arrays / spans, lazy `ShuffleAndYield`, and `Randomize` over any sequence. `ShuffleHelpers` lives in `Bodu.Collections.Generic` but ships in `Bodu.Core`. |
 
 ### `Bodu.Extensions`
 Date, numeric, span, and array extension methods. Larger surface than the others; the highlights:
@@ -83,7 +83,7 @@ Date, numeric, span, and array extension methods. Larger surface than the others
 | <xref:Bodu.Extensions.BufferConverter> | Byte / structure conversion helpers. |
 | <xref:Bodu.Extensions.SpanExtensions> | Span-friendly helpers. |
 | <xref:Bodu.Extensions.ComparableExtensions>, <xref:Bodu.Extensions.ComparableHelper> | `Min`, `Max`, `Clamp`, `IsGreaterThan` / `IsGreaterThanOrEqual`. |
-| <xref:Bodu.Extensions.NaturalStringComparer> | Numeric-aware ("natural") string comparer — `file2` sorts before `file10` — with ordinal, case-insensitive, and culture-aware modes. See the [Natural string comparer](../../guides/core/natural-string-comparer.md) guide. |
+| <xref:Bodu.Extensions.NaturalStringComparer> | Numeric-aware ("natural") string comparer - `file2` sorts before `file10` - with ordinal, case-insensitive, and culture-aware modes. See the [Natural string comparer](../../guides/core/natural-string-comparer.md) guide. |
 | <xref:Bodu.Extensions.CalendarQuarterDefinition>, <xref:Bodu.WorkingDaysOfWeek>, <xref:Bodu.Extensions.IWeekendDefinitionProvider>, <xref:Bodu.Extensions.FiscalWeekPattern>, <xref:Bodu.Extensions.WeekOrdinal> | Calendar-shape enums and injection seams for quarter, weekend, fiscal-week, and week-ordinal computations. |
 
 ### `Bodu.Globalization.Extensions`
@@ -91,19 +91,19 @@ Culture-aware date / calendar helpers built on top of <xref:System.Globalization
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions> | A single helper, `LastDayOfWeek()` — the day that closes a culture's week, derived from the BCL `DateTimeFormatInfo.FirstDayOfWeek`. |
+| <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions> | A single helper, `LastDayOfWeek()` - the day that closes a culture's week, derived from the BCL `DateTimeFormatInfo.FirstDayOfWeek`. |
 
 ### `Bodu.Text` and `Bodu.Xml.Linq`
 Character-encoding helpers over `System.Text.Encoding` and an XML namespace helper; used internally by the other Bodu packages and available publicly when you need them. See the [Bodu.Text introduction](../text/index.md) and the [encoding helpers guide](../../guides/text-encoding/encoding-helpers.md).
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Text.EncodingDetection> | BOM sniffing — `TryDetectByPreamble(ReadOnlySpan<byte>, out Encoding?)`. |
+| <xref:Bodu.Text.EncodingDetection> | BOM sniffing - `TryDetectByPreamble(ReadOnlySpan<byte>, out Encoding?)`. |
 | <xref:Bodu.Text.EncodingExtensions> | Extension methods on `System.Text.Encoding` (preamble handling, UTF / ASCII classification, fallback configuration, rented / owned / pooled buffers), on `Encoder` / `Decoder` (chunked transcoding), and on spans (`ToBytes`, `ToChars`, `DecodeToString`, `Transcode`). |
-| <xref:Bodu.Text.StringEncodingExtensions> | `string` fast paths — `ToUtf8Bytes`, `ToBytes(encoding)`, `ToBytesWithPreamble`, `GetUtf8ByteCount`, `EncodeUtf8To`, `WriteUtf8To(IBufferWriter<byte>)`, and the pooled `GetUtf8BytesPooled` / `GetBytesPooled`. |
+| <xref:Bodu.Text.StringEncodingExtensions> | `string` fast paths - `ToUtf8Bytes`, `ToBytes(encoding)`, `ToBytesWithPreamble`, `GetUtf8ByteCount`, `EncodeUtf8To`, `WriteUtf8To(IBufferWriter<byte>)`, and the pooled `GetUtf8BytesPooled` / `GetBytesPooled`. |
 | <xref:Bodu.Xml.Linq.XmlNamespaceResolver> | `IXmlNamespaceResolver` helper used by the calendar rule parsers. |
 
-The binary-to-text radix codecs (`Base16` … `Base85`) are **not** in this package — they ship in the companion [Bodu.Text.Encoding](../text-encoding/index.md) package.
+The binary-to-text radix codecs (`Base16` … `Base85`) are **not** in this package - they ship in the companion [Bodu.Text.Encoding](../text-encoding/index.md) package.
 
 ## Scenarios this library covers
 
@@ -114,7 +114,7 @@ The binary-to-text radix codecs (`Base16` … `Base85`) are **not** in this pack
 | Async mutual exclusion, signalling, debouncing, rate limiting | <xref:Bodu.Threading.AsyncLock>, <xref:Bodu.Threading.AsyncSemaphore>, <xref:Bodu.Threading.AsyncDebouncer>, <xref:Bodu.Threading.RateGate> |
 | Optional values and success-or-failure outcomes without exceptions | <xref:Bodu.Functional.Option`1>, <xref:Bodu.Functional.Result`1>, <xref:Bodu.Functional.Either`2> |
 | Caching a pure function's results | <xref:Bodu.Functional.Memoizer> |
-| Date arithmetic — first Monday, ISO week-of-year, age | <xref:Bodu.Extensions.DateTimeExtensions>, <xref:Bodu.Extensions.DateOnlyExtensions> |
+| Date arithmetic - first Monday, ISO week-of-year, age | <xref:Bodu.Extensions.DateTimeExtensions>, <xref:Bodu.Extensions.DateOnlyExtensions> |
 | Bit / byte rotation and reversal | <xref:Bodu.Extensions.NumericExtensions> |
 | Sorting `file2` before `file10` | <xref:Bodu.Extensions.NaturalStringComparer> |
 | Sliding windows, batching, recursive selection over sequences | <xref:Bodu.Collections.Extensions.IEnumerableExtensions>, <xref:Bodu.Collections.Generic.Extensions.IEnumerableExtensions> |
@@ -130,17 +130,17 @@ The binary-to-text radix codecs (`Base16` … `Base85`) are **not** in this pack
 A handful of conventions run through the whole package; knowing them up front explains why the types look the way they do.
 
 - **Validation flows through one helper.** Every public entry point validates its arguments through <xref:Bodu.ThrowHelper>, so exception type, message, and parameter-name capture stay uniform across the suite. `ThrowHelper` is also the primary dependency the other Bodu packages take on `Bodu.Core`.
-- **Honest default values.** The railway primitives define what `default` means rather than leaving it undefined: `default(Option<T>)` is `None`, `default(Result<T>)` is a failure carrying an empty error, and `default(Either<L,R>)` is an explicit uninitialized state — a struct field that was never assigned is well-formed, never a landmine.
+- **Honest default values.** The railway primitives define what `default` means rather than leaving it undefined: `default(Option<T>)` is `None`, `default(Result<T>)` is a failure carrying an empty error, and `default(Either<L,R>)` is an explicit uninitialized state - a struct field that was never assigned is well-formed, never a landmine.
 - **Async primitives are awaitable peers, not wrappers.** The `Bodu.Threading` types re-express the BCL synchronization vocabulary (`lock`, `SemaphoreSlim`, `ManualResetEvent`) as first-class awaitables, so coordination composes with `async`/`await` without thread blocking.
 - **Pluggable randomness, never a global.** Helpers that need randomness accept an <xref:Bodu.IRandomGenerator> rather than reaching for a static <xref:System.Random>, so tests can inject a deterministic source. Neither shipped implementation is cryptographically secure.
 - **Span-first surfaces.** The buffer builder, the `Bodu.Text` encoding helpers, and the extension surfaces prefer `Span<T>` / `ReadOnlySpan<T>` overloads with UTF-8 fast paths, so the common cases avoid intermediate allocations.
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — glossary the rest of the documentation assumes.
-- **[Getting started](getting-started.md)** — install the package and run a minimal sample for each scenario above.
-- **[Core Foundations guides](../../guides/core/index.md)** — recipe-style walk-throughs for the headline types.
-- **[Bodu.Collections introduction](../collections/index.md)** — the specialized collection catalogue that builds on this package.
-- **[Bodu.Collections.Concurrent introduction](../collections-concurrent/index.md)** — the thread-safe collection companion.
-- **[Project introduction](../introduction.md)** — how Bodu.Core relates to the hashing, cryptography, calendar, and text libraries (its `ThrowHelper` underpins them all).
-- **[Core Foundations topic](../topics/core-foundations.md)** — Bodu.Core alongside its sibling members, the collection packages and the `Bodu.Text` namespace utilities.
+- **[Core concepts](concepts.md)** - glossary the rest of the documentation assumes.
+- **[Getting started](getting-started.md)** - install the package and run a minimal sample for each scenario above.
+- **[Core Foundations guides](../../guides/core/index.md)** - recipe-style walk-throughs for the headline types.
+- **[Bodu.Collections introduction](../collections/index.md)** - the specialized collection catalogue that builds on this package.
+- **[Bodu.Collections.Concurrent introduction](../collections-concurrent/index.md)** - the thread-safe collection companion.
+- **[Project introduction](../introduction.md)** - how Bodu.Core relates to the hashing, cryptography, calendar, and text libraries (its `ThrowHelper` underpins them all).
+- **[Core Foundations topic](../topics/core-foundations.md)** - Bodu.Core alongside its sibling members, the collection packages and the `Bodu.Text` namespace utilities.

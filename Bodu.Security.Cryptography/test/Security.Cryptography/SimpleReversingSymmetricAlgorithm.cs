@@ -20,7 +20,7 @@ namespace Bodu.Security.Cryptography;
 /// without cryptographic complexity.
 /// </para>
 /// <para>
-/// Encryption and decryption are identical operations — reversing a reversed block restores the original input — so the
+/// Encryption and decryption are identical operations - reversing a reversed block restores the original input - so the
 /// same key material and IV can be used for both directions in round-trip tests.
 /// </para>
 /// <para>

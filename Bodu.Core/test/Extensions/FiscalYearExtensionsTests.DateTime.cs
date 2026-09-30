@@ -16,7 +16,7 @@ public sealed class FiscalYearExtensionsDateTimeTests
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.AddFiscalYears" /> returns an equivalent <see cref="DateTime" />
-    /// (same ticks and <see cref="DateTime.Kind" />) when the <c>count</c> argument is zero — exercising the
+    /// (same ticks and <see cref="DateTime.Kind" />) when the <c>count</c> argument is zero - exercising the
     /// short-circuit branch of the method.
     /// </summary>
     [TestMethod]

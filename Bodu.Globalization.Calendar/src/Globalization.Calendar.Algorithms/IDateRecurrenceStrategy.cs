@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <para>
 /// A recurrence strategy is the multi-occurrence counterpart to <see cref="IDateCalculationStrategy" />: where a
 /// single-date strategy yields at most one occurrence per year, a recurrence strategy can yield zero, one, or many
-/// occurrences within the requested window. A <see cref="NotableDateRule" /> declares exactly one occurrence source —
+/// occurrences within the requested window. A <see cref="NotableDateRule" /> declares exactly one occurrence source -
 /// either a single-date strategy or a recurrence strategy.
 /// </para>
 /// <para>

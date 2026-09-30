@@ -12,7 +12,7 @@ namespace Bodu.Text.Serialization;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The member must be a dictionary-shaped type keyed by <see cref="string" /> — the serializer's object node type, an
+/// The member must be a dictionary-shaped type keyed by <see cref="string" /> - the serializer's object node type, an
 /// <see cref="System.Collections.Generic.IDictionary{TKey, TValue}" />, or a
 /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> whose value is the serializer's node type. A type
 /// may declare at most one extension-data member.

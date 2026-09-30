@@ -4,9 +4,9 @@ title: Financial dependency injection
 
 # Financial dependency injection
 
-The optional `Bodu.Financial.DependencyInjection` companion package wires the [`Bodu.Financial`](index.md) stack into a `Microsoft.Extensions.DependencyInjection` container. A single `AddFinancialService(...)` call registers the currency-lookup service and hands back a fluent <xref:Bodu.Financial.IFinancialServiceBuilder> on which you compose currency lookups, named monetary contexts, and exchange-rate providers. JSON registration is not part of this package — it is the `AddFinancialJson` extension in the companion `Bodu.Financial.Serialization.Json` package (see [Consuming the financial JSON options](#consuming-the-financial-json-options)). The registration extension methods live in the `Bodu.Financial` namespace, so a single `using Bodu.Financial;` brings them into scope.
+The optional `Bodu.Financial.DependencyInjection` companion package wires the [`Bodu.Financial`](index.md) stack into a `Microsoft.Extensions.DependencyInjection` container. A single `AddFinancialService(...)` call registers the currency-lookup service and hands back a fluent <xref:Bodu.Financial.IFinancialServiceBuilder> on which you compose currency lookups, named monetary contexts, and exchange-rate providers. JSON registration is not part of this package - it is the `AddFinancialJson` extension in the companion `Bodu.Financial.Serialization.Json` package (see [Consuming the financial JSON options](#consuming-the-financial-json-options)). The registration extension methods live in the `Bodu.Financial` namespace, so a single `using Bodu.Financial;` brings them into scope.
 
-If you are constructing the financial types by hand — in a console app or a test — keep using the `Bodu.Financial` constructors directly; this page is only relevant when you want the host to compose the stack for you.
+If you are constructing the financial types by hand - in a console app or a test - keep using the `Bodu.Financial` constructors directly; this page is only relevant when you want the host to compose the stack for you.
 
 ## Install
 
@@ -22,7 +22,7 @@ The entry point is the `AddFinancialService` `IServiceCollection` extension (in 
 
 | Method | Registers |
 |---|---|
-| `AddFinancialService(IServiceCollection, IConfiguration?, string sectionName = "Financial")` | The currency lookup, and binds <xref:Bodu.Financial.FinancialOptions> (currently an empty options class — see [Binding options from configuration](#binding-options-from-configuration)) from the named configuration section. The `sectionName` constant is `ServiceCollectionExtensions.DefaultConfigurationSection`. |
+| `AddFinancialService(IServiceCollection, IConfiguration?, string sectionName = "Financial")` | The currency lookup, and binds <xref:Bodu.Financial.FinancialOptions> (currently an empty options class - see [Binding options from configuration](#binding-options-from-configuration)) from the named configuration section. The `sectionName` constant is `ServiceCollectionExtensions.DefaultConfigurationSection`. |
 | `AddFinancialService(IServiceCollection, Action<IFinancialServiceBuilder> configure)` | The same, with the builder configured imperatively by the delegate. |
 
 ## Composing the builder
@@ -47,7 +47,7 @@ builder.Services.AddFinancialService(configure: financial =>
 });
 ```
 
-The delegate overload is sugar over the first form — `AddFinancialService()` followed by calls on the returned builder produces the same registrations, so chain directly when that reads better:
+The delegate overload is sugar over the first form - `AddFinancialService()` followed by calls on the returned builder produces the same registrations, so chain directly when that reads better:
 
 ```csharp
 services
@@ -57,7 +57,7 @@ services
 
 ## Named monetary contexts
 
-`AddMonetaryContext(name, context)` registers a <xref:Bodu.Financial.MonetaryContext> as a **keyed singleton**, so an application can carry several rounding regimes side by side — for example a settlement context that follows banker's rounding and a cash-desk context that snaps to the currency's cash increment:
+`AddMonetaryContext(name, context)` registers a <xref:Bodu.Financial.MonetaryContext> as a **keyed singleton**, so an application can carry several rounding regimes side by side - for example a settlement context that follows banker's rounding and a cash-desk context that snaps to the currency's cash increment:
 
 ```csharp
 services.AddFinancialService(financial =>
@@ -103,9 +103,9 @@ services.AddFinancialService(financial =>
 });
 ```
 
-To group several providers behind one registration — prioritised fallback, averaging, or per-FX-pair routing — and add read-through caching, use `AddAggregatedRateProvider(...)` from the `Bodu.Financial.ExchangeRates.Caching` package (its DI registration ships in the package, in the `Bodu.Financial.ExchangeRates` namespace), which registers an <xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider> as the application's single <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider>. `RateLookupResult.Rate.Provider` records which source answered, so the audit trail survives the composition. See the [caching and aggregating guide](exchange-rate-caching.md#dependency-injection) for the full walkthrough.
+To group several providers behind one registration - prioritised fallback, averaging, or per-FX-pair routing - and add read-through caching, use `AddAggregatedRateProvider(...)` from the `Bodu.Financial.ExchangeRates.Caching` package (its DI registration ships in the package, in the `Bodu.Financial.ExchangeRates` namespace), which registers an <xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider> as the application's single <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider>. `RateLookupResult.Rate.Provider` records which source answered, so the audit trail survives the composition. See the [caching and aggregating guide](exchange-rate-caching.md#dependency-injection) for the full walkthrough.
 
-Neither `AddFinancialService` overload registers an FX provider by default — an application that never crosses currencies pays nothing for the contract.
+Neither `AddFinancialService` overload registers an FX provider by default - an application that never crosses currencies pays nothing for the contract.
 
 ## Consuming the financial JSON options
 
@@ -125,7 +125,7 @@ string payload = JsonSerializer.Serialize(new Money<USD>(19.99m), financialJson)
 
 ## Binding options from configuration
 
-Passing an `IConfiguration` binds <xref:Bodu.Financial.FinancialOptions> from the named section (default `"Financial"`). The type currently declares no settings of its own — it is the binding seam for future options:
+Passing an `IConfiguration` binds <xref:Bodu.Financial.FinancialOptions> from the named section (default `"Financial"`). The type currently declares no settings of its own - it is the binding seam for future options:
 
 ```csharp
 builder.Services.AddFinancialService(builder.Configuration);
@@ -140,11 +140,11 @@ var app = builder.Build();
 app.Services.UseCurrencyResolution();
 ```
 
-This is a composition-root operation — it installs the container's lookup as the process-wide ambient default via `CurrencyResolution.SetDefault`. Omitting the call leaves the registry-backed default in place, so existing applications behave identically without it. Only the runtime-tagged <xref:Bodu.Financial.Money> consults the ambient lookup; `Money<TCurrency>` reads its precision from the currency tag and is unaffected.
+This is a composition-root operation - it installs the container's lookup as the process-wide ambient default via `CurrencyResolution.SetDefault`. Omitting the call leaves the registry-backed default in place, so existing applications behave identically without it. Only the runtime-tagged <xref:Bodu.Financial.Money> consults the ambient lookup; `Money<TCurrency>` reads its precision from the currency tag and is unaffected.
 
 ## End-to-end with the Generic Host
 
-A complete wiring — host builder, financial registration, and a service that consumes the dated provider through constructor injection:
+A complete wiring - host builder, financial registration, and a service that consumes the dated provider through constructor injection:
 
 ```csharp
 using Bodu.Financial;
@@ -195,7 +195,7 @@ Swapping the fixed table for a live feed later means changing one registration; 
 
 ## Swapping in a test double
 
-Because consumers depend on <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider> rather than a concrete feed, tests substitute a deterministic table — <xref:Bodu.Financial.ExchangeRates.FixedDatedRateProvider> over hand-written observations is usually all the fake you need:
+Because consumers depend on <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider> rather than a concrete feed, tests substitute a deterministic table - <xref:Bodu.Financial.ExchangeRates.FixedDatedRateProvider> over hand-written observations is usually all the fake you need:
 
 ```csharp
 using Bodu.Financial;
@@ -220,16 +220,16 @@ SettlementService sut = provider.GetRequiredService<SettlementService>();
 
 Two registration details matter for tests:
 
-- The provider registrations use `TryAdd` semantics — the *first* registration for a contract wins. Register the fake before any production wiring runs, or use `services.Replace(ServiceDescriptor.Singleton<IDatedRateProvider>(fake))` (from `Microsoft.Extensions.DependencyInjection.Extensions`) to override an existing registration.
+- The provider registrations use `TryAdd` semantics - the *first* registration for a contract wins. Register the fake before any production wiring runs, or use `services.Replace(ServiceDescriptor.Singleton<IDatedRateProvider>(fake))` (from `Microsoft.Extensions.DependencyInjection.Extensions`) to override an existing registration.
 - `UseCurrencyResolution` mutates *process-wide* ambient state. Avoid calling it in unit tests; if a test must exercise a custom ambient lookup, prefer the flow-scoped `CurrencyResolution.PushScoped(...)` from `Bodu.Financial`, which restores the previous lookup on dispose and isolates parallel tests.
 
 ## See also
 
-- [Working with `Money<TCurrency>`](money.md) — the monetary type that the resolved services back.
-- [Working with exchange rates](exchange-rates.md) — the FX provider contracts you register above.
-- [Exchange-rate types — a usage-scenario catalogue](exchange-types.md) — choosing between the provider implementations.
-- [Bodu.Financial guides](index.md) — the member overview for this package.
-- [Numerics & Financial topic guides](../topics/numerics-and-financial.md) — every guide in the topic.
-- [Numerics & Financial topic overview](../../docs/topics/numerics-and-financial.md) — package boundaries and the decision table.
-- [`IFinancialServiceBuilder`](xref:Bodu.Financial.IFinancialServiceBuilder) · [`FinancialOptions`](xref:Bodu.Financial.FinancialOptions) — the builder and bound options (in `Bodu.Financial`).
-- [Bodu.Financial API reference](xref:Bodu.Financial) — full namespace overview; the `AddFinancialService` / builder / `UseCurrencyResolution` extension methods live in the `Bodu.Financial` namespace.
+- [Working with `Money<TCurrency>`](money.md) - the monetary type that the resolved services back.
+- [Working with exchange rates](exchange-rates.md) - the FX provider contracts you register above.
+- [Exchange-rate types - a usage-scenario catalogue](exchange-types.md) - choosing between the provider implementations.
+- [Bodu.Financial guides](index.md) - the member overview for this package.
+- [Numerics & Financial topic guides](../topics/numerics-and-financial.md) - every guide in the topic.
+- [Numerics & Financial topic overview](../../docs/topics/numerics-and-financial.md) - package boundaries and the decision table.
+- [`IFinancialServiceBuilder`](xref:Bodu.Financial.IFinancialServiceBuilder) · [`FinancialOptions`](xref:Bodu.Financial.FinancialOptions) - the builder and bound options (in `Bodu.Financial`).
+- [Bodu.Financial API reference](xref:Bodu.Financial) - full namespace overview; the `AddFinancialService` / builder / `UseCurrencyResolution` extension methods live in the `Bodu.Financial` namespace.

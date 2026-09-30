@@ -13,7 +13,7 @@ public sealed record KemKnownAnswer
     : AsymmetricKnownAnswer
 {
     /// <summary>
-    /// Gets the function this vector exercises — either <c>"encapsulation"</c> or <c>"decapsulation"</c>.
+    /// Gets the function this vector exercises - either <c>"encapsulation"</c> or <c>"decapsulation"</c>.
     /// </summary>
     public required string Function { get; init; }
 

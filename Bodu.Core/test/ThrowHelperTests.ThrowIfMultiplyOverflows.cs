@@ -9,8 +9,8 @@ namespace Bodu;
 public partial class ThrowHelperTests
 {
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfMultiplyOverflows(int, int, string)" /> does not throw — and
-    /// reports nothing on the ParamName-asserting overload — when the product stays within the <see cref="int" />
+    /// Verifies that <see cref="ThrowHelper.ThrowIfMultiplyOverflows(int, int, string)" /> does not throw - and
+    /// reports nothing on the ParamName-asserting overload - when the product stays within the <see cref="int" />
     /// range, including the largest fitting square and multiplications by zero.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

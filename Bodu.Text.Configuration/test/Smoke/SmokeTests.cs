@@ -10,7 +10,7 @@ using Bodu.Text.Configuration;
 namespace Bodu.Smoke;
 
 /// <summary>
-/// Smoke tests for the Bodu Text Configuration library — one happy-path test per primary public type.
+/// Smoke tests for the Bodu Text Configuration library - one happy-path test per primary public type.
 /// </summary>
 [TestClass]
 public class SmokeTests

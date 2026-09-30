@@ -9,8 +9,8 @@ using System.Collections;
 namespace Bodu.Test.Collections;
 
 /// <summary>
-/// Wraps an array as an <see cref="IReadOnlyCollection{T}" /> only — deliberately not implementing
-/// <see cref="ICollection{T}" /> or <see cref="IList{T}" /> — so that capacity-hint and projection helpers exercise the
+/// Wraps an array as an <see cref="IReadOnlyCollection{T}" /> only - deliberately not implementing
+/// <see cref="ICollection{T}" /> or <see cref="IList{T}" /> - so that capacity-hint and projection helpers exercise the
 /// read-only-collection code path rather than the mutable-collection one.
 /// </summary>
 /// <typeparam name="T">The element type.</typeparam>

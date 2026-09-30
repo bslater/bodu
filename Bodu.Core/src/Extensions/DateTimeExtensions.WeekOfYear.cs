@@ -17,7 +17,7 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The date and time value to evaluate.</param>
     /// <returns>
-    /// An integer in the range 1 – 53 representing the week of the year that contains <paramref name="dateTime" />.
+    /// An integer in the range 1 - 53 representing the week of the year that contains <paramref name="dateTime" />.
     /// </returns>
     /// <remarks>
     /// <para>
@@ -46,7 +46,7 @@ public static partial class DateTimeExtensions
     /// used.
     /// </param>
     /// <returns>
-    /// An integer in the range 1 – 53 representing the week of the year that contains <paramref name="dateTime" />.
+    /// An integer in the range 1 - 53 representing the week of the year that contains <paramref name="dateTime" />.
     /// </returns>
     /// <remarks>
     /// <para>
@@ -69,7 +69,7 @@ public static partial class DateTimeExtensions
     /// </param>
     /// <param name="weekStart">The <see cref="DayOfWeek" /> on which each week begins.</param>
     /// <returns>
-    /// An integer in the range 1 – 53 representing the week of the year that contains <paramref name="dateTime" />.
+    /// An integer in the range 1 - 53 representing the week of the year that contains <paramref name="dateTime" />.
     /// </returns>
     /// <remarks>
     /// <para>

@@ -28,9 +28,9 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// Use the <see langword="foreach" /> statement to enumerate the queue rather than using this struct directly.
     /// </para>
     /// <para>
-    /// The enumerator captures the queue's modification version at construction. Any structural mutation —
+    /// The enumerator captures the queue's modification version at construction. Any structural mutation -
     /// <see cref="Enqueue" />, <see cref="Dequeue" />, <see cref="Update" />, <see cref="Remove" />,
-    /// <see cref="EnqueueOrUpdate" />, or <see cref="Clear" /> — invalidates an in-flight enumerator and causes
+    /// <see cref="EnqueueOrUpdate" />, or <see cref="Clear" /> - invalidates an in-flight enumerator and causes
     /// <see cref="MoveNext" /> or <see cref="Reset" /> to throw <see cref="InvalidOperationException" />.
     /// </para>
     /// </remarks>

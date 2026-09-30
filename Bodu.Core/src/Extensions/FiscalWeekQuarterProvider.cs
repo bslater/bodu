@@ -11,7 +11,7 @@ namespace Bodu.Extensions;
 
 /// <summary>
 /// Provides quarter boundary logic for a week-based retail fiscal calendar using a configurable
-/// <see cref="FiscalWeekPattern" /> (5–4–4, 4–5–4, or 4–4–5 week distribution).
+/// <see cref="FiscalWeekPattern" /> (5-4-4, 4-5-4, or 4-4-5 week distribution).
 /// </summary>
 /// <remarks>
 /// <para>
@@ -22,19 +22,19 @@ namespace Bodu.Extensions;
 /// <list type="bullet">
 /// <item>
 /// <term>Q1</term>
-/// <description>Weeks 1–13</description>
+/// <description>Weeks 1-13</description>
 /// </item>
 /// <item>
 /// <term>Q2</term>
-/// <description>Weeks 14–26</description>
+/// <description>Weeks 14-26</description>
 /// </item>
 /// <item>
 /// <term>Q3</term>
-/// <description>Weeks 27–39</description>
+/// <description>Weeks 27-39</description>
 /// </item>
 /// <item>
 /// <term>Q4</term>
-/// <description>Weeks 40–52 (or 40–53 in a 53-week year)</description>
+/// <description>Weeks 40-52 (or 40-53 in a 53-week year)</description>
 /// </item>
 /// </list>
 /// <para>
@@ -48,7 +48,7 @@ namespace Bodu.Extensions;
 /// </para>
 /// <para>
 /// The fiscal week start day is governed by the <see cref="DayOfWeek" /> supplied to the constructor. Year-specific
-/// values — the fiscal year start date, whether a given year contains 53 weeks, and quarter boundaries — are computed
+/// values - the fiscal year start date, whether a given year contains 53 weeks, and quarter boundaries - are computed
 /// on demand from either an explicit <c>fiscalYear</c> argument or from the input date itself.
 /// </para>
 /// </remarks>
@@ -74,7 +74,7 @@ public sealed class FiscalWeekQuarterProvider
     /// Initializes a new instance of the <see cref="FiscalWeekQuarterProvider" /> class using the specified anchor
     /// month and alignment options.
     /// </summary>
-    /// <param name="month">The calendar month (1–12) of the fiscal year anchor.</param>
+    /// <param name="month">The calendar month (1-12) of the fiscal year anchor.</param>
     /// <param name="dayOfWeek">
     /// The day of the week on which each fiscal week begins. Common values are <see cref="DayOfWeek.Sunday" /> and
     /// <see cref="DayOfWeek.Saturday" />. Defaults to <see cref="DayOfWeek.Saturday" />.
@@ -120,7 +120,7 @@ public sealed class FiscalWeekQuarterProvider
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="month" /> is not in the range 1–12, -or- <paramref name="dayOfWeek" /> is not a
+    /// Thrown when <paramref name="month" /> is not in the range 1-12, -or- <paramref name="dayOfWeek" /> is not a
     /// defined <see cref="DayOfWeek" /> value, -or- <paramref name="pattern" /> is not a defined
     /// <see cref="FiscalWeekPattern" /> value.
     /// </exception>
@@ -191,7 +191,7 @@ public sealed class FiscalWeekQuarterProvider
     /// <inheritdoc />
     public DateTime GetQuarterEnd(DateTime dateTime)
     {
-        // Resolve the fiscal year once and derive quarter, start, and 53-week length from the same context — the
+        // Resolve the fiscal year once and derive quarter, start, and 53-week length from the same context - the
         // delegating form re-ran the three-candidate year search and week alignments up to four times per call.
         (_, long startTicks, bool is53Week) = ResolveFiscalContext(dateTime);
         return GetQuarterEndCore(startTicks, ComputeQuarter(dateTime.Ticks, startTicks), is53Week);

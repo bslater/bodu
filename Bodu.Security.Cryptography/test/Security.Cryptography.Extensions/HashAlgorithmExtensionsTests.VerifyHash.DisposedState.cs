@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// Pins down the <see cref="HashAlgorithmExtensions.VerifyHash(HashAlgorithm, byte[], byte[])" />
 /// contract when invoked against a disposed <see cref="HashAlgorithm" />. Each overload routes
 /// through <c>ComputeHash</c> or <c>TryComputeHash</c>, which raise
-/// <see cref="ObjectDisposedException" /> on the underlying disposed instance — the extension
+/// <see cref="ObjectDisposedException" /> on the underlying disposed instance - the extension
 /// must propagate that exception unchanged rather than silently returning <see langword="false" />,
 /// rethrowing as a different type, or yielding an arbitrary success/failure verdict.
 /// </summary>
@@ -136,7 +136,7 @@ public partial class HashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that the malformed-hex shortcut path is reached BEFORE
-    /// <see cref="HashAlgorithm.ComputeHash(byte[])" /> would observe the disposed state — the
+    /// <see cref="HashAlgorithm.ComputeHash(byte[])" /> would observe the disposed state - the
     /// xml docs document that "a malformed expectedHex string is treated as a non-match and
     /// returns false", so a malformed hex argument should win over the disposed state and the
     /// method should return <see langword="false" /> rather than throw.

@@ -6,76 +6,76 @@ uid: Bodu.Extensions
 
 ## Purpose
 
-**Bodu.Extensions** is the extension-method surface of `Bodu.Core`. It carries 15+ static classes covering date / time, numeric, span, array, string, enum, comparable, sequence, and stream operations — the framework-style helpers that keep ceremony out of hot paths in the rest of the Bodu solution and in consumer code.
+**Bodu.Extensions** is the extension-method surface of `Bodu.Core`. It carries 15+ static classes covering date / time, numeric, span, array, string, enum, comparable, sequence, and stream operations - the framework-style helpers that keep ceremony out of hot paths in the rest of the Bodu solution and in consumer code.
 
 This is the single highest-leverage namespace in `Bodu.Core` by surface area. Reach for it when you need a `DateTime` calendar / week operation that the BCL doesn't ship, when you need a `decimal`-aware significant-digit rounding helper, when you need string `SliceSafe` / `Wrap` / `Quote` / `ToSlug` / case-conversion utilities, or when you need bit / byte rotation and reversal across the unsigned integer types.
 
 ## Static documentation
 
-- **[Bodu.Core introduction](~/docs/core/index.md)** — `Bodu.Extensions` summary table.
-- **[Bodu.Core getting started](~/docs/core/getting-started.md)** — date-arithmetic minimal samples.
+- **[Bodu.Core introduction](~/docs/core/index.md)** - `Bodu.Extensions` summary table.
+- **[Bodu.Core getting started](~/docs/core/getting-started.md)** - date-arithmetic minimal samples.
 
 ## Key types grouped by concern
 
 **Date and time**
 
-- <xref:Bodu.Extensions.DateTimeExtensions> — first / last / next / previous day-of-week within month / quarter / year, ISO week-of-year, day name, weekday tests, midday, end-of-day, truncation. 50+ methods.
-- <xref:Bodu.Extensions.DateOnlyExtensions> — `DateOnly`-specific equivalents plus `Age` calculation.
-- <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions> — a single helper, `LastDayOfWeek(this DateTimeFormatInfo)`, giving the day that closes a culture's week (derived from its `FirstDayOfWeek`). Lives in the sibling <xref:Bodu.Globalization.Extensions> namespace.
-- <xref:Bodu.Extensions.IQuarterDefinitionProvider>, <xref:Bodu.Extensions.IWeekendDefinitionProvider>, <xref:Bodu.Extensions.IWeekendDefinitionProviderExtensions> — pluggable calendar-shape providers for non-Gregorian or fiscal quarters and non-Saturday/Sunday weekend conventions.
-- <xref:Bodu.Extensions.FiscalWeekQuarterProvider> — a built-in `IQuarterDefinitionProvider` that derives quarters from a fiscal-week pattern (<xref:Bodu.Extensions.FiscalWeekPattern>) for 4-4-5 / 4-5-4 / 5-4-4 retail-calendar workloads.
-- <xref:Bodu.Extensions.WorkingDaysOfWeekExtensions>, <xref:Bodu.WorkingDaysOfWeek> — working-day bitmask helpers.
+- <xref:Bodu.Extensions.DateTimeExtensions> - first / last / next / previous day-of-week within month / quarter / year, ISO week-of-year, day name, weekday tests, midday, end-of-day, truncation. 50+ methods.
+- <xref:Bodu.Extensions.DateOnlyExtensions> - `DateOnly`-specific equivalents plus `Age` calculation.
+- <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions> - a single helper, `LastDayOfWeek(this DateTimeFormatInfo)`, giving the day that closes a culture's week (derived from its `FirstDayOfWeek`). Lives in the sibling <xref:Bodu.Globalization.Extensions> namespace.
+- <xref:Bodu.Extensions.IQuarterDefinitionProvider>, <xref:Bodu.Extensions.IWeekendDefinitionProvider>, <xref:Bodu.Extensions.IWeekendDefinitionProviderExtensions> - pluggable calendar-shape providers for non-Gregorian or fiscal quarters and non-Saturday/Sunday weekend conventions.
+- <xref:Bodu.Extensions.FiscalWeekQuarterProvider> - a built-in `IQuarterDefinitionProvider` that derives quarters from a fiscal-week pattern (<xref:Bodu.Extensions.FiscalWeekPattern>) for 4-4-5 / 4-5-4 / 5-4-4 retail-calendar workloads.
+- <xref:Bodu.Extensions.WorkingDaysOfWeekExtensions>, <xref:Bodu.WorkingDaysOfWeek> - working-day bitmask helpers.
 
 **Calendar-shape enums**
 
-- <xref:Bodu.Extensions.CalendarQuarterDefinition> — the quarter-year start convention: `JanuaryToDecember` (calendar year), `JulyToJune`, `AprilToMarch`, `April6ToApril5`, `March25ToMarch24`, `OctoberToSeptember`, `FebruaryToJanuary`, and `Custom` (supplied through an `IQuarterDefinitionProvider`).
-- <xref:Bodu.Extensions.DateTimeResolution> — truncation resolution.
-- <xref:Bodu.Extensions.FiscalWeekPattern> — fiscal-week enumeration.
-- <xref:Bodu.Extensions.WeekOrdinal> — `First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`.
+- <xref:Bodu.Extensions.CalendarQuarterDefinition> - the quarter-year start convention: `JanuaryToDecember` (calendar year), `JulyToJune`, `AprilToMarch`, `April6ToApril5`, `March25ToMarch24`, `OctoberToSeptember`, `FebruaryToJanuary`, and `Custom` (supplied through an `IQuarterDefinitionProvider`).
+- <xref:Bodu.Extensions.DateTimeResolution> - truncation resolution.
+- <xref:Bodu.Extensions.FiscalWeekPattern> - fiscal-week enumeration.
+- <xref:Bodu.Extensions.WeekOrdinal> - `First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`.
 
 **Numeric**
 
-- <xref:Bodu.Extensions.NumericExtensions> — `Digits`, `GetBytes`, `GreatestCommonDivisor`, `IsPrime`, `LeastCommonMultiple`, `ReverseBits`, `ReverseBytes`, `ReverseWords`, `RotateBitsLeft` / `Right`, `RoundToSignificantDigits`, unchecked arithmetic helpers.
+- <xref:Bodu.Extensions.NumericExtensions> - `Digits`, `GetBytes`, `GreatestCommonDivisor`, `IsPrime`, `LeastCommonMultiple`, `ReverseBits`, `ReverseBytes`, `ReverseWords`, `RotateBitsLeft` / `Right`, `RoundToSignificantDigits`, unchecked arithmetic helpers.
 
 **Span, array, stream, buffer**
 
-- <xref:Bodu.Extensions.SpanExtensions> — `AsReadOnly`, `ToReversed` (copying; contrast the in-place BCL `MemoryExtensions.Reverse`).
-- <xref:Bodu.Extensions.ArrayExtensions> — `Clear`, `Copy`, `Pad`, `Reverse`, `Slice`, `ToMatrix`.
-- <xref:Bodu.Extensions.StreamExtensions> — `ReadAllBytes` / `ReadAllBytesAsync` / `WriteAllBytes` / `WriteAllBytesAsync`.
-- <xref:Bodu.Extensions.BufferConverter> — `CopyTo`, `Read`, `SwapEndian`, `ToArray` over byte buffers and primitive types.
+- <xref:Bodu.Extensions.SpanExtensions> - `AsReadOnly`, `ToReversed` (copying; contrast the in-place BCL `MemoryExtensions.Reverse`).
+- <xref:Bodu.Extensions.ArrayExtensions> - `Clear`, `Copy`, `Pad`, `Reverse`, `Slice`, `ToMatrix`.
+- <xref:Bodu.Extensions.StreamExtensions> - `ReadAllBytes` / `ReadAllBytesAsync` / `WriteAllBytes` / `WriteAllBytesAsync`.
+- <xref:Bodu.Extensions.BufferConverter> - `CopyTo`, `Read`, `SwapEndian`, `ToArray` over byte buffers and primitive types.
 
 **Strings**
 
-- <xref:Bodu.Extensions.StringExtensions> — `After`, `Before`, `Between`, `Brace`, `Bracket`, `CollapseWhitespace`, `Contains` / `EndsWith` / `StartsWith` variants, `EnsureEndsWith` / `EnsureStartsWith`, `Indent`, `IsValidIdentifier`, `Keep` / `Remove` variants, `NormalizeLineEndings`, `Outdent`, `Parenthesize`, `Parse`, `PrefixLines`, `Quote`, `RemoveControlCharacters`, `RemoveDiacritics`, `SliceSafe`, case conversions (`ToCamelCase`, `ToPascalCase`, `ToSnakeCase`, `ToKebabCase`, …), `Truncate`, `Unwrap`, `Wrap`, slug generation.
-- <xref:Bodu.Extensions.IdentifierCase> — case convention enum used by `IsValidIdentifier` / case conversions.
-- <xref:Bodu.Extensions.SentenceCaseOptions>, <xref:Bodu.Extensions.TitleCaseOptions>, <xref:Bodu.Extensions.WordCasingOptions>, <xref:Bodu.Extensions.SlugOptions> — option flags consumed by the casing helpers.
+- <xref:Bodu.Extensions.StringExtensions> - `After`, `Before`, `Between`, `Brace`, `Bracket`, `CollapseWhitespace`, `Contains` / `EndsWith` / `StartsWith` variants, `EnsureEndsWith` / `EnsureStartsWith`, `Indent`, `IsValidIdentifier`, `Keep` / `Remove` variants, `NormalizeLineEndings`, `Outdent`, `Parenthesize`, `Parse`, `PrefixLines`, `Quote`, `RemoveControlCharacters`, `RemoveDiacritics`, `SliceSafe`, case conversions (`ToCamelCase`, `ToPascalCase`, `ToSnakeCase`, `ToKebabCase`, …), `Truncate`, `Unwrap`, `Wrap`, slug generation.
+- <xref:Bodu.Extensions.IdentifierCase> - case convention enum used by `IsValidIdentifier` / case conversions.
+- <xref:Bodu.Extensions.SentenceCaseOptions>, <xref:Bodu.Extensions.TitleCaseOptions>, <xref:Bodu.Extensions.WordCasingOptions>, <xref:Bodu.Extensions.SlugOptions> - option flags consumed by the casing helpers.
 
 **Comparable**
 
-- <xref:Bodu.Extensions.ComparableExtensions> — `AtLeast`, `AtMost`, `Clamp`, `IsBetween`, `IsGreaterThan`, `Max`, `Min`, …
-- <xref:Bodu.Extensions.ComparableHelper> — `Coalesce`, `Max`, `Min` over nullable comparables.
+- <xref:Bodu.Extensions.ComparableExtensions> - `AtLeast`, `AtMost`, `Clamp`, `IsBetween`, `IsGreaterThan`, `Max`, `Min`, …
+- <xref:Bodu.Extensions.ComparableHelper> - `Coalesce`, `Max`, `Min` over nullable comparables.
 
 **Enums**
 
-- <xref:Bodu.Extensions.EnumExtensions> — flag operations: `SetFlag`, `ClearFlag`, `HasAllFlags`, `HasAnyFlag`, `ToggleFlag`, plus bit-conversion helpers between flag enums and their underlying integer representations.
+- <xref:Bodu.Extensions.EnumExtensions> - flag operations: `SetFlag`, `ClearFlag`, `HasAllFlags`, `HasAnyFlag`, `ToggleFlag`, plus bit-conversion helpers between flag enums and their underlying integer representations.
 
 ## Example
 
 ```csharp
 using Bodu.Extensions;
 
-// Calendar arithmetic — first Monday of July, ISO week, age.
+// Calendar arithmetic - first Monday of July, ISO week, age.
 DateTime monday = new DateTime(2026, 7, 1).FirstDateOfWeekInMonth(DayOfWeek.Monday);
 DateTime endQ   = DateTime.Today.LastDateOfQuarter();
 int isoWeek    = DateTime.Today.IsoWeekOfYear();
 int age        = new DateOnly(1990, 5, 4).Age();
 
-// Numeric — bit operations and rounding.
+// Numeric - bit operations and rounding.
 uint rotated   = 0xDEADBEEFu.RotateBitsLeft(8);
 uint reversed  = 0x12345678u.ReverseBytes();         // 0x78563412
 decimal scaled = 1234.5678m.RoundToSignificantDigits(3);  // 1230
 
-// Strings — slug, case conversion, between.
+// Strings - slug, case conversion, between.
 string slug = "Hello, World!".ToSlug();              // "hello-world"
 string snake = "FirstName".ToSnakeCase();            // "first_name"
 string url = "https://example.com/a/b?x=1".Between("//", "/");  // "example.com"

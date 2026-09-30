@@ -21,7 +21,7 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// <para>
 /// <strong>When to choose SDBM.</strong> SDBM is the public-domain hash from the NDBM/SDBM database library and the
-/// historical default in many Unix tools — pick it when interoperating with code that has standardized on the SDBM mix,
+/// historical default in many Unix tools - pick it when interoperating with code that has standardized on the SDBM mix,
 /// or when a small, dependency-free 32-bit hash is sufficient. Empirically SDBM gives slightly better distribution than
 /// <see cref="Bernstein" /> and <see cref="ApHash" /> on short keys at the same per-byte cost. For modern hash-table
 /// workloads prefer <see cref="Fnv1a32" /> (better avalanche, same cost) or <see cref="MurmurHash3_32" /> (markedly

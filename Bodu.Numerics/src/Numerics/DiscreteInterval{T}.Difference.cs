@@ -9,8 +9,8 @@ namespace Bodu.Numerics;
 public readonly partial struct DiscreteInterval<T>
 {
     /// <summary>
-    /// Returns this interval with the integers of <paramref name="other" /> removed — the set difference
-    /// <c>this \ other</c> — as zero, one, or two disjoint intervals.
+    /// Returns this interval with the integers of <paramref name="other" /> removed - the set difference
+    /// <c>this \ other</c> - as zero, one, or two disjoint intervals.
     /// </summary>
     /// <param name="other">The interval whose integers are removed from this one.</param>
     /// <returns>The remaining integers as a <see cref="DiscreteIntervalPair{T}" />.</returns>
@@ -55,8 +55,8 @@ public readonly partial struct DiscreteInterval<T>
     }
 
     /// <summary>
-    /// Returns the symmetric difference of this interval and <paramref name="other" /> — the integers in exactly one of
-    /// the two — as zero, one, or two disjoint intervals.
+    /// Returns the symmetric difference of this interval and <paramref name="other" /> - the integers in exactly one of
+    /// the two - as zero, one, or two disjoint intervals.
     /// </summary>
     /// <param name="other">The interval to symmetric-difference with.</param>
     /// <returns>The integers covered by exactly one operand as a <see cref="DiscreteIntervalPair{T}" />.</returns>

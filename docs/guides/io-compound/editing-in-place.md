@@ -4,18 +4,18 @@ title: Editing an existing container in place
 
 # Editing an existing container in place
 
-[Authoring compound files](authoring-compound-files.md) shows two ways to write: build a detached tree with <xref:Bodu.IO.Compound.Builders.CompoundStorageBuilder> and serialize it once, or create a fresh writable <xref:Bodu.IO.Compound.CompoundFile> and `Commit`. This guide covers the third: open a container that already exists — a `.doc`, an `.xls`, a `.msg` — for update, mutate it through the same storage and stream surface you read it with, and write it back to the same destination with a single `Commit`, or throw the edits away with `Revert`.
+[Authoring compound files](authoring-compound-files.md) shows two ways to write: build a detached tree with <xref:Bodu.IO.Compound.Builders.CompoundStorageBuilder> and serialize it once, or create a fresh writable <xref:Bodu.IO.Compound.CompoundFile> and `Commit`. This guide covers the third: open a container that already exists - a `.doc`, an `.xls`, a `.msg` - for update, mutate it through the same storage and stream surface you read it with, and write it back to the same destination with a single `Commit`, or throw the edits away with `Revert`.
 
 The samples run against `sample1.doc` from the [runnable compound-file sample](../../samples/io-compound.md), a Word 2000 document copied as `report.doc`; the quoted output is what they print.
 
 ## How update mode works
 
-`CompoundFile.Open(path, FileMode.Open, FileAccess.ReadWrite)` — or the stream overload `Open(stream, FileMode.Open, FileAccess.ReadWrite, leaveOpen)` — mirrors `System.IO.Packaging.Package.Open`. It reads the whole existing container once, parses it, and loads the hierarchy into an in-memory **staging tree**: every storage's metadata and every stream's full payload. It also keeps an independent **baseline** clone of that tree. From then on:
+`CompoundFile.Open(path, FileMode.Open, FileAccess.ReadWrite)` - or the stream overload `Open(stream, FileMode.Open, FileAccess.ReadWrite, leaveOpen)` - mirrors `System.IO.Packaging.Package.Open`. It reads the whole existing container once, parses it, and loads the hierarchy into an in-memory **staging tree**: every storage's metadata and every stream's full payload. It also keeps an independent **baseline** clone of that tree. From then on:
 
 - `RootStorage` and everything beneath it operate on the staging tree. Reads see your edits immediately; the destination sees nothing.
-- `IsDirty` turns `true` on the first mutation — opening a writable cursor counts, even before anything is written — and `false` after `Commit` or `Revert`.
-- `Commit` (or `CommitAsync`) truncates the destination and **rewrites the whole container** from the staging tree. There is no in-place patching of sectors — the layout is recomputed from scratch every time.
-- `Revert` resets the staging tree to the baseline — the state loaded **at open**.
+- `IsDirty` turns `true` on the first mutation - opening a writable cursor counts, even before anything is written - and `false` after `Commit` or `Revert`.
+- `Commit` (or `CommitAsync`) truncates the destination and **rewrites the whole container** from the staging tree. There is no in-place patching of sectors - the layout is recomputed from scratch every time.
+- `Revert` resets the staging tree to the baseline - the state loaded **at open**.
 - `Dispose` without `Commit` leaves the destination exactly as it was.
 
 The mode/access combinations `Open(stream, mode, access)` accepts:
@@ -23,15 +23,15 @@ The mode/access combinations `Open(stream, mode, access)` accepts:
 | `FileMode` | `FileAccess` | Result |
 |---|---|---|
 | `Open` | `Read` | Read-only, as `CompoundFile.Open(stream)`; `buffered` applies. |
-| `Open` | `ReadWrite` | **Update mode** — loads the existing content for editing. |
+| `Open` | `ReadWrite` | **Update mode** - loads the existing content for editing. |
 | `Create` / `CreateNew` | `Write` or `ReadWrite` | A new, empty writable file, as `CompoundFile.Create`. |
 | `OpenOrCreate` | `ReadWrite` | Update mode when the stream holds content; create mode when it is empty. |
-| `Open` | `Write` | <xref:System.NotSupportedException> — mutating an existing file requires read access, because update loads a snapshot first. |
+| `Open` | `Write` | <xref:System.NotSupportedException> - mutating an existing file requires read access, because update loads a snapshot first. |
 | anything else | | <xref:System.NotSupportedException>. |
 
 The path overload adds a `FileShare` (default `FileShare.Read`) and owns the `FileStream` it opens; `FileNotFoundException` surfaces when `Open` names a file that does not exist.
 
-## Pattern 1 — add a stream to an existing `.doc` and commit
+## Pattern 1 - add a stream to an existing `.doc` and commit
 
 ```csharp
 using Bodu.IO.Compound;
@@ -84,9 +84,9 @@ notes?.Dispose();
 
 The stream must be seekable (update mode rewinds it to load the snapshot) and writable (for `Commit`). `Commit` on a non-seekable destination appends the container at the current position rather than truncating.
 
-## Pattern 2 — replace a stream's bytes
+## Pattern 2 - replace a stream's bytes
 
-A writable file hands out a **read-write cursor** from `OpenStream(name, FileMode, FileAccess)` — a real <xref:System.IO.Stream> whose `CanWrite` is `true` — and the `FileMode` decides what the cursor starts with:
+A writable file hands out a **read-write cursor** from `OpenStream(name, FileMode, FileAccess)` - a real <xref:System.IO.Stream> whose `CanWrite` is `true` - and the `FileMode` decides what the cursor starts with:
 
 | `FileMode` | Stream exists | Stream missing |
 |---|---|---|
@@ -133,7 +133,7 @@ Console.WriteLine(Encoding.UTF8.GetString(read.ReadAllBytes()));
 ```
 
 > [!NOTE]
-> A writable cursor buffers its payload in memory and flushes it into the staging tree when it is flushed or disposed — **dispose the cursor before you `Commit`**, or the bytes you wrote are not yet in the tree. `Flush()` stores a snapshot mid-life; `Dispose()` transfers the buffer. The cursor caps its payload at `int.MaxValue` bytes; larger payloads belong to the builder's deferred sources (see [Buffered vs streaming access](streaming-and-buffering.md)). `SetLength` shrinks or grows the payload.
+> A writable cursor buffers its payload in memory and flushes it into the staging tree when it is flushed or disposed - **dispose the cursor before you `Commit`**, or the bytes you wrote are not yet in the tree. `Flush()` stores a snapshot mid-life; `Dispose()` transfers the buffer. The cursor caps its payload at `int.MaxValue` bytes; larger payloads belong to the builder's deferred sources (see [Buffered vs streaming access](streaming-and-buffering.md)). `SetLength` shrinks or grows the payload.
 
 The non-throwing form takes the same mode and access:
 
@@ -178,11 +178,11 @@ file.Revert();                                                    // keep the fi
 // removed=True missing=False dirty=True
 ```
 
-`Rename` applies to a storage or a stream, keeps its payload, metadata, and position in the tree, and throws <xref:System.Collections.Generic.KeyNotFoundException> for a missing source or <xref:System.ArgumentException> for a taken target name. `Delete` removes a stream or a whole storage subtree and reports whether anything was removed. Names follow the container's rules — at most 31 UTF-16 code units, no `/` or null characters, compared case-insensitively — and the `\x05` / `\x01` control prefixes are part of the name.
+`Rename` applies to a storage or a stream, keeps its payload, metadata, and position in the tree, and throws <xref:System.Collections.Generic.KeyNotFoundException> for a missing source or <xref:System.ArgumentException> for a taken target name. `Delete` removes a stream or a whole storage subtree and reports whether anything was removed. Names follow the container's rules - at most 31 UTF-16 code units, no `/` or null characters, compared case-insensitively - and the `\x05` / `\x01` control prefixes are part of the name.
 
-A writable storage also exposes its directory metadata as settable properties — `ClassId`, `CreationTime`, `ModifiedTime`, `StateBits` — which `Commit` writes exactly as set and never stamps for you.
+A writable storage also exposes its directory metadata as settable properties - `ClassId`, `CreationTime`, `ModifiedTime`, `StateBits` - which `Commit` writes exactly as set and never stamps for you.
 
-## Pattern 3 — revert after a failed edit
+## Pattern 3 - revert after a failed edit
 
 Because nothing reaches the destination until `Commit`, a multi-step edit that fails part-way is undone by a single `Revert`:
 
@@ -211,7 +211,7 @@ static byte[] Transform() =>
 // reverted: IsDirty=False, WordDocument present=True
 ```
 
-Disposing instead of reverting has the same effect on the destination — the staged edits are simply dropped — so `Revert` matters when you intend to keep using the session.
+Disposing instead of reverting has the same effect on the destination - the staged edits are simply dropped - so `Revert` matters when you intend to keep using the session.
 
 > [!WARNING]
 > `Revert` restores the baseline captured **at open**, not the state of the last `Commit`. After a `Commit`, a `Revert` silently stages the open-time content again and reports `IsDirty == false` even though the destination now holds the committed edits; a second `Commit` would write the original content back out. If you need a "commit, then keep editing, then undo just the recent edits" flow, close and reopen the file after committing.
@@ -236,12 +236,12 @@ file.Commit();                                                    // ...which th
 
 | Guarantee | Holds? |
 |---|---|
-| Edits are invisible to the destination until `Commit`. | Yes — the destination is not touched by any mutation, cursor, or `Revert`. |
+| Edits are invisible to the destination until `Commit`. | Yes - the destination is not touched by any mutation, cursor, or `Revert`. |
 | Disposing without `Commit` leaves the destination unchanged. | Yes. |
-| A `Commit` writes every staged edit or none of them *as far as the staging tree goes*. | Yes — the layout is computed from the whole tree before the first byte is written. |
+| A `Commit` writes every staged edit or none of them *as far as the staging tree goes*. | Yes - the layout is computed from the whole tree before the first byte is written. |
 | A `Commit` that faults or is cancelled mid-write leaves the destination intact. | **No.** The destination has been truncated and partially written; the file stays dirty with the staging tree intact, so `Commit` again or `Revert`. |
-| Unchanged streams keep their bytes; storages keep their `ClassId`, timestamps, and state bits. | Yes — the rewrite preserves entry metadata and payloads; only the sector layout is recomputed. |
-| The output is byte-identical to the input when nothing changed. | No — a rewrite may lay sectors out differently from the original writer. |
+| Unchanged streams keep their bytes; storages keep their `ClassId`, timestamps, and state bits. | Yes - the rewrite preserves entry metadata and payloads; only the sector layout is recomputed. |
+| The output is byte-identical to the input when nothing changed. | No - a rewrite may lay sectors out differently from the original writer. |
 | Concurrent use of one `CompoundFile`. | Not supported. |
 
 Because a faulting `Commit` is not crash-safe, commit to a temporary copy and swap it into place when the original must survive a power failure or a full disk:
@@ -281,7 +281,7 @@ Console.WriteLine($"IsDirty={file.IsDirty}");
 // IsDirty=False
 ```
 
-The rewrite preserves what the original writer recorded — the root storage's class identifier and timestamps, and every untouched payload byte for byte:
+The rewrite preserves what the original writer recorded - the root storage's class identifier and timestamps, and every untouched payload byte for byte:
 
 ```csharp
 using Bodu.IO.Compound;
@@ -303,7 +303,7 @@ Console.WriteLine($"WordDocument identical: {a.ReadAllBytes().AsSpan().SequenceE
 
 ## In-place editing versus the builder round-trip
 
-The builder path in [Authoring compound files](authoring-compound-files.md) reaches the same outcome — load, mutate, write — with a different shape:
+The builder path in [Authoring compound files](authoring-compound-files.md) reaches the same outcome - load, mutate, write - with a different shape:
 
 ```csharp
 using Bodu.IO.Compound;
@@ -325,7 +325,7 @@ Console.WriteLine(new FileInfo("report-rebuilt.doc").Length);
 |---|---|---|
 | Entry point | `Open(…, FileMode.Open, FileAccess.ReadWrite)` | `CompoundStorageBuilder.FromFile(file)` / `Load(stream)` |
 | Mutation surface | The `CompoundStorage` / `CompoundStream` read surface plus `CreateStream`, `Delete`, `Rename`, writable cursors | The builder's dictionary-style `AddStream` / `AddStorage` / `Remove` / `Rename` |
-| Writing bytes | Through a `Stream` cursor — seek, patch, append | Whole payloads: `ReadOnlyMemory<byte>`, a deferred opener, or a file path |
+| Writing bytes | Through a `Stream` cursor - seek, patch, append | Whole payloads: `ReadOnlyMemory<byte>`, a deferred opener, or a file path |
 | Destination | The same file or stream, rewritten by `Commit` | Wherever `Save` / `WriteTo` / `ToArray` points |
 | Memory | The whole file is loaded at open | `FromFile(file, lazy: true)` defers payloads until serialization; deferred sources never load |
 | Undo | `Revert` to the open-time baseline | Discard the builder |
@@ -335,8 +335,8 @@ Reach for in-place editing when you want `Stream` semantics over the bytes or a 
 
 ## Where to go next
 
-- [Authoring compound files](authoring-compound-files.md) — the builder and create-mode paths, options, and naming rules.
-- [Authoring custom property sets](custom-property-sets.md) — `WritePropertySet` and the OLE property-set model, the commonest reason to edit a document in place.
-- [Buffered vs streaming access](streaming-and-buffering.md) — the writable cursor's memory profile and the asynchronous commit.
-- [Reading compound files](reading-compound-files.md) — the navigation surface the write path reuses.
-- [Bodu.IO.Compound guides](index.md) — every guide in this topic.
+- [Authoring compound files](authoring-compound-files.md) - the builder and create-mode paths, options, and naming rules.
+- [Authoring custom property sets](custom-property-sets.md) - `WritePropertySet` and the OLE property-set model, the commonest reason to edit a document in place.
+- [Buffered vs streaming access](streaming-and-buffering.md) - the writable cursor's memory profile and the asynchronous commit.
+- [Reading compound files](reading-compound-files.md) - the navigation surface the write path reuses.
+- [Bodu.IO.Compound guides](index.md) - every guide in this topic.

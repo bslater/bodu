@@ -10,8 +10,8 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfEnumValueIsUndefined{TEnum}" /> does not throw — and on
-    /// the ParamName-asserting overload reports nothing — for defined enum values.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfEnumValueIsUndefined{TEnum}" /> does not throw - and on
+    /// the ParamName-asserting overload reports nothing - for defined enum values.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="value">The enum value passed to the guard.</param>

@@ -8,7 +8,7 @@ A dated exchange-rate lookup rarely lands on the exact date you ask
 for. Markets close on weekends and holidays, feeds skip days, and
 accounting periods end on dates no rate was ever published for.
 [`RateLookupOptions`](xref:Bodu.Financial.ExchangeRates.RateLookupOptions)
-is the single knob that decides *what happens on a miss* — which
+is the single knob that decides *what happens on a miss* - which
 neighbouring observation (if any) answers the request, and how far
 the lookup is allowed to reach.
 
@@ -22,7 +22,7 @@ changes the result. For the narrative tour of the provider stack, see
 ## The dataset
 
 Four `USD → EUR` observations from one provider (`"ECB"`), with two
-deliberate gaps — a four-day gap that brackets a weekend, and a
+deliberate gaps - a four-day gap that brackets a weekend, and a
 three-day gap at the end:
 
 | # | Date | Weekday | Rate |
@@ -61,7 +61,7 @@ a miss either returns `false` (`TryGetRate`) or throws
 ## How resolution works in one paragraph
 
 A lookup first does a binary search for the **exact** requested date.
-On a hit it returns immediately — the policy and tolerance are never
+On a hit it returns immediately - the policy and tolerance are never
 consulted. On a miss it identifies the two bracketing observations
 (`previous` = the nearest earlier date, `next` = the nearest later
 date), the
@@ -69,7 +69,7 @@ date), the
 policy picks one of them (or neither), and *finally* the chosen
 candidate's distance from the requested date is compared against
 `ToleranceDays`. If the candidate is farther than the tolerance, the
-lookup fails. The tolerance is checked **after** selection — a policy
+lookup fails. The tolerance is checked **after** selection - a policy
 never switches to the other side because its first choice was out of
 range.
 
@@ -83,7 +83,7 @@ options directly.
 
 | Policy | Factory | On a miss it selects… |
 |---|---|---|
-| `Exact` | `RateLookupOptions.Exact` | nothing — exact date or fail. |
+| `Exact` | `RateLookupOptions.Exact` | nothing - exact date or fail. |
 | `PreviousOnOrBefore` | `PreviousWithin(days)` | the nearest **earlier** observation. |
 | `NextOnOrAfter` | `NextWithin(days)` | the nearest **later** observation. |
 | `Nearest` | *(construct directly)* | the closer of the two; an exact tie **fails**. |
@@ -103,7 +103,7 @@ new RateLookupOptions(RateDateResolution.NearestPreferNext, toleranceDays: 7);
 ```
 
 > [!NOTE]
-> `Exact` requires `ToleranceDays == 0` — a non-zero tolerance with
+> `Exact` requires `ToleranceDays == 0` - a non-zero tolerance with
 > `Exact` throws `ArgumentException` from
 > [`RateLookupOptions.Validate()`](xref:Bodu.Financial.ExchangeRates.RateLookupOptions).
 > The factories enforce this for you.
@@ -112,21 +112,21 @@ new RateLookupOptions(RateDateResolution.NearestPreferNext, toleranceDays: 7);
 
 Five requested dates against the dataset, each run through all six
 policies with a tolerance wide enough not to interfere (`7` days). A
-cell shows the **resolved observation → rate**; `—` means the lookup
+cell shows the **resolved observation → rate**; `-` means the lookup
 fails (returns `false` / throws).
 
 | Requested date | `Exact` | `PreviousOnOrBefore` | `NextOnOrAfter` | `Nearest` | `NearestPreferPrevious` | `NearestPreferNext` |
 |---|---|---|---|---|---|---|
-| **`06-14`** Fri — exact hit | `06-14` → `0.9280` | `06-14` → `0.9280` | `06-14` → `0.9280` | `06-14` → `0.9280` | `06-14` → `0.9280` | `06-14` → `0.9280` |
-| **`06-15`** Sat — prev 1d / next 3d | — | `06-14` → `0.9280` | `06-18` → `0.9300` | `06-14` → `0.9280` | `06-14` → `0.9280` | `06-14` → `0.9280` |
-| **`06-16`** Sun — tie 2d / 2d | — | `06-14` → `0.9280` | `06-18` → `0.9300` | **—** *(tie)* | `06-14` → `0.9280` | `06-18` → `0.9300` |
-| **`06-08`** Sat — before first | — | **—** *(no earlier)* | `06-10` → `0.9250` | `06-10` → `0.9250` | `06-10` → `0.9250` | `06-10` → `0.9250` |
-| **`06-25`** Tue — after last | — | `06-21` → `0.9330` | **—** *(no later)* | `06-21` → `0.9330` | `06-21` → `0.9330` | `06-21` → `0.9330` |
+| **`06-14`** Fri - exact hit | `06-14` → `0.9280` | `06-14` → `0.9280` | `06-14` → `0.9280` | `06-14` → `0.9280` | `06-14` → `0.9280` | `06-14` → `0.9280` |
+| **`06-15`** Sat - prev 1d / next 3d | - | `06-14` → `0.9280` | `06-18` → `0.9300` | `06-14` → `0.9280` | `06-14` → `0.9280` | `06-14` → `0.9280` |
+| **`06-16`** Sun - tie 2d / 2d | - | `06-14` → `0.9280` | `06-18` → `0.9300` | **-** *(tie)* | `06-14` → `0.9280` | `06-18` → `0.9300` |
+| **`06-08`** Sat - before first | - | **-** *(no earlier)* | `06-10` → `0.9250` | `06-10` → `0.9250` | `06-10` → `0.9250` | `06-10` → `0.9250` |
+| **`06-25`** Tue - after last | - | `06-21` → `0.9330` | **-** *(no later)* | `06-21` → `0.9330` | `06-21` → `0.9330` | `06-21` → `0.9330` |
 
 Three rows carry the whole lesson:
 
 - **`06-15`** sits closer to the earlier observation (1 day vs 3). All
-  three `Nearest*` policies therefore land on `06-14` — when the two
+  three `Nearest*` policies therefore land on `06-14` - when the two
   sides are *unequal*, the preference is irrelevant and the genuinely
   closer date always wins.
 - **`06-16`** is the exact midpoint of the four-day gap. This is the
@@ -148,7 +148,7 @@ it:
 ```csharp
 RateLookupResult r = provider.GetRate(
     "USD", "EUR",
-    new DateOnly(2024, 6, 15),                  // Saturday — no observation
+    new DateOnly(2024, 6, 15),                  // Saturday - no observation
     RateLookupOptions.PreviousWithin(7));
 
 r.Rate.Rate;          // 0.9280m
@@ -166,29 +166,29 @@ r.Rate.IsInverted;    // false
 
 `SignedOffsetDays` (and the `IsPreviousDate` / `IsFutureDate` flags)
 let accounting and tax workflows distinguish a *historical* fallback
-from a *forward-looking* one — often a policy requirement, and the
+from a *forward-looking* one - often a policy requirement, and the
 reason `PreviousWithin` is the usual choice for ledger postings.
 
 ## Tolerance: how far the reach extends
 
 `ToleranceDays` is the maximum distance, in days, the *selected*
 candidate may sit from the requested date. It is applied after the
-policy chooses, so it only ever **shrinks** the matrix above — it never
+policy chooses, so it only ever **shrinks** the matrix above - it never
 changes *which* side is picked, only whether that pick is accepted.
 
 Request `06-16` (the tie midpoint, 2 days from either neighbour):
 
 | Options | Selected candidate | Distance | Result |
 |---|---|---|---|
-| `PreviousWithin(1)` | `06-14` | 2 | **—** (2 > 1) |
+| `PreviousWithin(1)` | `06-14` | 2 | **-** (2 > 1) |
 | `PreviousWithin(2)` | `06-14` | 2 | `06-14` → `0.9280` |
-| `NearestWithin(1)` | `06-14` (tie → earlier) | 2 | **—** (2 > 1) |
+| `NearestWithin(1)` | `06-14` (tie → earlier) | 2 | **-** (2 > 1) |
 | `NearestWithin(2)` | `06-14` (tie → earlier) | 2 | `06-14` → `0.9280` |
 
 ```csharp
 var tight = provider.TryGetRate(
     "USD", "EUR", new DateOnly(2024, 6, 16),
-    RateLookupOptions.PreviousWithin(1), out _);   // false — 2 days > 1
+    RateLookupOptions.PreviousWithin(1), out _);   // false - 2 days > 1
 
 var ok = provider.TryGetRate(
     "USD", "EUR", new DateOnly(2024, 6, 16),
@@ -206,7 +206,7 @@ before `06-14`.
 // PreviousOnOrBefore selects 06-10 (distance 3) and never looks forward.
 provider.TryGetRate(
     "USD", "EUR", new DateOnly(2024, 6, 13),
-    RateLookupOptions.PreviousWithin(2), out _);   // false — 3 > 2
+    RateLookupOptions.PreviousWithin(2), out _);   // false - 3 > 2
 
 // Nearest picks the genuinely closer 06-14 (distance 1) and fits easily.
 provider.TryGetRate(
@@ -215,7 +215,7 @@ provider.TryGetRate(
 // near.ResolvedDate == 2024-06-14, near.OffsetDays == 1
 ```
 
-`PreviousWithin(2)` fails even though a rate sits one day away —
+`PreviousWithin(2)` fails even though a rate sits one day away -
 because `PreviousOnOrBefore` is a *directional* policy that committed
 to the earlier side before the tolerance was checked. If "closest
 within N days, either direction" is what you mean, use
@@ -236,9 +236,9 @@ var r = provider.GetRate(
 r.Rate.Rate;        // 1m / 0.9280m  ≈ 1.07758621
 r.Rate.From;        // EUR
 r.Rate.To;          // USD
-r.Rate.IsInverted;  // true   — derived from the reverse pair
+r.Rate.IsInverted;  // true   - derived from the reverse pair
 r.Rate.Provider;    // "ECB"
-r.OffsetDays;       // 0      — date resolution still ran on the USD/EUR series
+r.OffsetDays;       // 0      - date resolution still ran on the USD/EUR series
 
 // Turn it off and the same request fails:
 var found = provider.TryGetRate(
@@ -261,12 +261,12 @@ Two points decide how this composes with the date policy:
 
 `AllowSameCurrencyIdentityRate` (default `true`) makes a lookup whose
 source and destination codes are equal return a synthetic rate of `1`
-**before** any table is consulted — so it succeeds even for a pair the
+**before** any table is consulted - so it succeeds even for a pair the
 provider has never seen:
 
 ```csharp
 var r = provider.GetRate(
-    "USD", "USD", new DateOnly(2024, 6, 16),                 // a gap date — irrelevant
+    "USD", "USD", new DateOnly(2024, 6, 16),                 // a gap date - irrelevant
     RateLookupOptions.Exact);
 
 r.Rate.Rate;      // 1m
@@ -278,7 +278,7 @@ r.IsExactDate;    // true
 The well-known provider label `"Identity"` lets an audit consumer
 filter out pass-throughs without a magic string. Turn the flag off
 (`allowSameCurrencyIdentityRate: false`) and a `USD → USD` request
-falls through to the table like any other — failing unless a literal
+falls through to the table like any other - failing unless a literal
 same-currency series was loaded.
 
 ## Stacking providers: the aggregator
@@ -307,17 +307,17 @@ r.Rate.Provider;   // identifies which underlying provider answered
 
 Priority fallback is **first-available**, not best-available: if the primary
 returns a four-day-old `PreviousOnOrBefore` hit, that wins even when a
-lower-priority provider has the exact date. To combine providers differently —
+lower-priority provider has the exact date. To combine providers differently -
 averaging, per-FX-pair routing, or a custom
 [`IRateAggregationStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy)
-— see the [caching and aggregating guide](exchange-rate-caching.md).
+- see the [caching and aggregating guide](exchange-rate-caching.md).
 
 ## Pinning one date everywhere: the adapter
 
 When a consumer only accepts the timeless
 [`IRateProvider`](xref:Bodu.Financial.ExchangeRates.IRateProvider)
-surface — for example
-[`MoneyBag.ConvertTo<TTarget>(IRateProvider)`](xref:Bodu.Financial.MoneyBag) —
+surface - for example
+[`MoneyBag.ConvertTo<TTarget>(IRateProvider)`](xref:Bodu.Financial.MoneyBag) -
 but the rate should still come from a dated source resolved with a
 fixed policy,
 [`DatedRateProviderAdapter`](xref:Bodu.Financial.ExchangeRates.DatedRateProviderAdapter)
@@ -329,14 +329,14 @@ IRateProvider periodEnd = new DatedRateProviderAdapter(
     date:    new DateOnly(2024, 6, 30),                       // reporting period end
     options: RateLookupOptions.PreviousWithin(14));
 
-decimal rate = periodEnd.GetRate("USD", "EUR");              // 0.9330 — 06-21, 9 days before 06-30
+decimal rate = periodEnd.GetRate("USD", "EUR");              // 0.9330 - 06-21, 9 days before 06-30
 ```
 
 Every `GetRate(from, to)` call now resolves against `2024-06-30` under
-`PreviousWithin(14)` — the window has to span the nine-day gap back to
+`PreviousWithin(14)` - the window has to span the nine-day gap back to
 the last observation (`06-21`), a reminder that the pinned tolerance
 must be sized for the worst expected gap. The adapter returns only the
-raw `decimal` — when
+raw `decimal` - when
 you need the provenance (which date, how far off, which provider), call
 the dated provider directly and read the
 [`RateLookupResult`](xref:Bodu.Financial.ExchangeRates.RateLookupResult).
@@ -356,9 +356,9 @@ the dated provider directly and read the
 
 ## See also
 
-- [Working with exchange rates](exchange-rates.md) — the full provider-stack walkthrough.
-- [Exchange-rate types](exchange-types.md) — which exchange type to reach for, by scenario.
-- [Bodu.Financial — Core concepts](../../docs/financial/concepts.md) — the vocabulary these pages assume.
-- Lookup metadata — [`RateLookupOptions`](xref:Bodu.Financial.ExchangeRates.RateLookupOptions), [`RateDateResolution`](xref:Bodu.Financial.ExchangeRates.RateDateResolution), [`RateLookupResult`](xref:Bodu.Financial.ExchangeRates.RateLookupResult).
-- Providers — [`FixedDatedRateProvider`](xref:Bodu.Financial.ExchangeRates.FixedDatedRateProvider), [`DatedRateProviderAdapter`](xref:Bodu.Financial.ExchangeRates.DatedRateProviderAdapter); grouping via [`AggregatingRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider).
-- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.
+- [Working with exchange rates](exchange-rates.md) - the full provider-stack walkthrough.
+- [Exchange-rate types](exchange-types.md) - which exchange type to reach for, by scenario.
+- [Bodu.Financial - Core concepts](../../docs/financial/concepts.md) - the vocabulary these pages assume.
+- Lookup metadata - [`RateLookupOptions`](xref:Bodu.Financial.ExchangeRates.RateLookupOptions), [`RateDateResolution`](xref:Bodu.Financial.ExchangeRates.RateDateResolution), [`RateLookupResult`](xref:Bodu.Financial.ExchangeRates.RateLookupResult).
+- Providers - [`FixedDatedRateProvider`](xref:Bodu.Financial.ExchangeRates.FixedDatedRateProvider), [`DatedRateProviderAdapter`](xref:Bodu.Financial.ExchangeRates.DatedRateProviderAdapter); grouping via [`AggregatingRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider).
+- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** - every guide in this topic, across Bodu.Numerics and Bodu.Financial.

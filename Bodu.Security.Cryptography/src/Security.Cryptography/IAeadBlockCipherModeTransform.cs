@@ -37,7 +37,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// All implementations are stateful, not thread-safe, and <strong>single-use per message</strong>. A second call to
-/// <see cref="Encrypt" /> or <see cref="Decrypt" /> on the same instance — including after a tag-mismatch failure —
+/// <see cref="Encrypt" /> or <see cref="Decrypt" /> on the same instance - including after a tag-mismatch failure -
 /// throws <see cref="System.InvalidOperationException" />. Construct a fresh transform for every message and dispose it
 /// when finished.
 /// </para>
@@ -48,35 +48,35 @@ namespace Bodu.Security.Cryptography;
 /// <item>
 /// <term>Default high-throughput AEAD</term>
 /// <description>
-/// <see cref="GcmModeTransform" /> — single-pass, hardware-accelerated, fragile under nonce reuse.
+/// <see cref="GcmModeTransform" /> - single-pass, hardware-accelerated, fragile under nonce reuse.
 /// </description>
 /// </item>
 /// <item>
 /// <term>Constrained-environment AEAD</term>
 /// <description>
-/// <see cref="CcmModeTransform" /> — two-pass, no Galois-field arithmetic, used by Zigbee / Bluetooth Mesh.
+/// <see cref="CcmModeTransform" /> - two-pass, no Galois-field arithmetic, used by Zigbee / Bluetooth Mesh.
 /// </description>
 /// </item>
 /// <item>
 /// <term>Two-pass alternatives</term>
-/// <description><see cref="EaxModeTransform" /> — flexible nonce length, OMAC-based authentication.</description>
+/// <description><see cref="EaxModeTransform" /> - flexible nonce length, OMAC-based authentication.</description>
 /// </item>
 /// <item>
 /// <term>Misuse-resistant</term>
 /// <description>
-/// <see cref="GcmSivModeTransform" /> (RFC 8452) and <see cref="SivModeTransform" /> (RFC 5297) — nonce reuse only
+/// <see cref="GcmSivModeTransform" /> (RFC 8452) and <see cref="SivModeTransform" /> (RFC 5297) - nonce reuse only
 /// leaks message-equality.
 /// </description>
 /// </item>
 /// <item>
 /// <term>Single-pass without GCM's failure profile</term>
-/// <description><see cref="OcbModeTransform" /> — RFC 7253, single-pass, graceful nonce-reuse failure.</description>
+/// <description><see cref="OcbModeTransform" /> - RFC 7253, single-pass, graceful nonce-reuse failure.</description>
 /// </item>
 /// </list>
 /// <para>
 /// Most callers should reach for the helper methods on
 /// <see cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" /> instead of calling
-/// <see cref="ProcessAssociatedData" /> + <see cref="Encrypt" />/<see cref="Decrypt" /> directly — those wrappers size
+/// <see cref="ProcessAssociatedData" /> + <see cref="Encrypt" />/<see cref="Decrypt" /> directly - those wrappers size
 /// the output buffer correctly and return a single freshly allocated array.
 /// </para>
 /// <para>
@@ -86,35 +86,35 @@ namespace Bodu.Security.Cryptography;
 /// <item>
 /// <term>Default high-throughput AEAD</term>
 /// <description>
-/// <see cref="GcmModeTransform" /> — single-pass, hardware-accelerated, fragile under nonce reuse.
+/// <see cref="GcmModeTransform" /> - single-pass, hardware-accelerated, fragile under nonce reuse.
 /// </description>
 /// </item>
 /// <item>
 /// <term>Constrained-environment AEAD</term>
 /// <description>
-/// <see cref="CcmModeTransform" /> — two-pass, no Galois-field arithmetic, used by Zigbee / Bluetooth Mesh.
+/// <see cref="CcmModeTransform" /> - two-pass, no Galois-field arithmetic, used by Zigbee / Bluetooth Mesh.
 /// </description>
 /// </item>
 /// <item>
 /// <term>Two-pass alternatives</term>
-/// <description><see cref="EaxModeTransform" /> — flexible nonce length, OMAC-based authentication.</description>
+/// <description><see cref="EaxModeTransform" /> - flexible nonce length, OMAC-based authentication.</description>
 /// </item>
 /// <item>
 /// <term>Misuse-resistant</term>
 /// <description>
-/// <see cref="GcmSivModeTransform" /> (RFC 8452) and <see cref="SivModeTransform" /> (RFC 5297) — nonce reuse only
+/// <see cref="GcmSivModeTransform" /> (RFC 8452) and <see cref="SivModeTransform" /> (RFC 5297) - nonce reuse only
 /// leaks message-equality.
 /// </description>
 /// </item>
 /// <item>
 /// <term>Single-pass without GCM's failure profile</term>
-/// <description><see cref="OcbModeTransform" /> — RFC 7253, single-pass, graceful nonce-reuse failure.</description>
+/// <description><see cref="OcbModeTransform" /> - RFC 7253, single-pass, graceful nonce-reuse failure.</description>
 /// </item>
 /// </list>
 /// <para>
 /// Most callers should reach for the helper methods on
 /// <see cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" /> instead of calling
-/// <see cref="ProcessAssociatedData" /> + <see cref="Encrypt" />/<see cref="Decrypt" /> directly — those wrappers size
+/// <see cref="ProcessAssociatedData" /> + <see cref="Encrypt" />/<see cref="Decrypt" /> directly - those wrappers size
 /// the output buffer correctly and return a single freshly allocated array.
 /// </para>
 /// </remarks>
@@ -146,7 +146,7 @@ public interface IAeadBlockCipherModeTransform
     /// <returns>Total bytes written: <c>plaintext.Length + (TagSize / 8)</c>.</returns>
     /// <exception cref="ArgumentException"><paramref name="output" /> is too small.</exception>
     /// <exception cref="InvalidOperationException">
-    /// The instance has already encrypted or decrypted a message. AEAD transforms are single-use per message —
+    /// The instance has already encrypted or decrypted a message. AEAD transforms are single-use per message -
     /// construct a fresh instance.
     /// </exception>
     int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output);
@@ -169,7 +169,7 @@ public interface IAeadBlockCipherModeTransform
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The instance has already encrypted or decrypted a message, including after a previous tag-mismatch failure. AEAD
-    /// transforms are single-use per message — construct a fresh instance.
+    /// transforms are single-use per message - construct a fresh instance.
     /// </exception>
     /// <remarks>
     /// <para>

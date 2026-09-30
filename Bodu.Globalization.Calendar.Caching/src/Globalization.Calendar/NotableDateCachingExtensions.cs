@@ -47,7 +47,7 @@ public static class NotableDateCachingExtensions
     /// <param name="cacheFactory">
     /// An optional factory producing the <see cref="INotableDateCache" /> from the service provider. When
     /// <see langword="null" />, a default <see cref="TomlNotableDateCache" /> under the options' <c>CacheDirectory</c>
-    /// is used. Supply a factory to choose the storage structure — for example an in-memory, JSON, SQLite, or
+    /// is used. Supply a factory to choose the storage structure - for example an in-memory, JSON, SQLite, or
     /// distributed cache.
     /// </param>
     /// <returns>The same service collection, to allow chaining.</returns>

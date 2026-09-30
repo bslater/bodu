@@ -12,13 +12,13 @@ namespace Bodu.Text.Yaml;
 
 /// <summary>
 /// Verifies that the <see cref="Utf8YamlReader" /> token stream matches the structural shape of each supported
-/// vector's upstream <c>test.event</c> file — the canonical event sequence produced by a conforming YAML parser.
+/// vector's upstream <c>test.event</c> file - the canonical event sequence produced by a conforming YAML parser.
 /// </summary>
 /// <remarks>
 /// The comparison is structural: container nesting and scalar positions are compared, while scalar text, style,
 /// anchors, and tags are not (the tree profile resolves typed scalars and does not surface anchors or tags as events).
-/// Vectors that the profile resolves differently from the event model — those using aliases (resolved transparently)
-/// or spanning multiple documents — are outside the comparable subset and are skipped; the coverage test keeps that
+/// Vectors that the profile resolves differently from the event model - those using aliases (resolved transparently)
+/// or spanning multiple documents - are outside the comparable subset and are skipped; the coverage test keeps that
 /// subset from silently shrinking.
 /// </remarks>
 public partial class YamlTestCorpusTests

@@ -12,7 +12,7 @@ namespace Bodu.Text.Configuration.Infrastructure;
 /// </summary>
 internal static class ConfigurationFixtures
 {
-    /// <summary>The simplest possible non-empty document — one section with one property.</summary>
+    /// <summary>The simplest possible non-empty document - one section with one property.</summary>
     internal const string Minimal = """
 [*]
 format.indent.size = 4

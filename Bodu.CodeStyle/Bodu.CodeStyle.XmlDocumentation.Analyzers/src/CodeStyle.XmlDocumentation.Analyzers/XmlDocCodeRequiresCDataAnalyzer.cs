@@ -67,7 +67,7 @@ public sealed class XmlDocCodeRequiresCDataAnalyzer : DiagnosticAnalyzer
                 break;
             }
 
-            // First non-whitespace child is not CDATA — flag the element.
+            // First non-whitespace child is not CDATA - flag the element.
             context.ReportDiagnostic(Diagnostic.Create(
                 DiagnosticDescriptors.XmlDocCodeRequiresCData,
                 element.StartTag.GetLocation()));
@@ -76,7 +76,7 @@ public sealed class XmlDocCodeRequiresCDataAnalyzer : DiagnosticAnalyzer
 
         if (firstCData is null)
         {
-            // Element body contains nothing or only whitespace — no CDATA child present.
+            // Element body contains nothing or only whitespace - no CDATA child present.
             context.ReportDiagnostic(Diagnostic.Create(
                 DiagnosticDescriptors.XmlDocCodeRequiresCData,
                 element.StartTag.GetLocation()));
@@ -155,7 +155,7 @@ public sealed class XmlDocCodeRequiresCDataAnalyzer : DiagnosticAnalyzer
     /// </returns>
     // Walks backward from the CDATA opener through space / tab characters on the same line. When those
     // whitespace characters are immediately preceded by exactly "///" (the doc-comment prefix), the opener
-    // sits on its own /// line with a stray separating space — exactly the layout the rule forbids.
+    // sits on its own /// line with a stray separating space - exactly the layout the rule forbids.
     private static bool HasSpaceBetweenDocPrefixAndCData(XmlCDataSectionSyntax cdata)
     {
         SyntaxTree? tree = cdata.SyntaxTree;
@@ -175,7 +175,7 @@ public sealed class XmlDocCodeRequiresCDataAnalyzer : DiagnosticAnalyzer
         if (position < 2) return false;
         if (text[position] != '/' || text[position - 1] != '/' || text[position - 2] != '/') return false;
 
-        // Reject /// runs longer than three slashes (e.g. ////) — those aren't doc-comment prefixes.
+        // Reject /// runs longer than three slashes (e.g. ////) - those aren't doc-comment prefixes.
         if (position - 3 >= 0 && text[position - 3] == '/') return false;
 
         return true;

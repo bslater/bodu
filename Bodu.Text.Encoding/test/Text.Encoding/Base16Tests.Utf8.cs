@@ -73,7 +73,7 @@ public sealed partial class Base16Tests
 
     /// <summary>
     /// Verifies that the lenient UTF-8 decode path returns a <c>bytesConsumed</c> that points at the source position
-    /// where decoding stopped — mapped through the kept-character projection so the caller can resume cleanly. The
+    /// where decoding stopped - mapped through the kept-character projection so the caller can resume cleanly. The
     /// previous implementation hard-coded <c>bytesConsumed = 0</c> on partial outcomes.
     /// </summary>
     [TestMethod]
@@ -151,7 +151,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenLenientStylesAndLargeInput_ShouldTakeHeapPath()
     {
-        // 600 hex digits = 1200 UTF-8 bytes — well above the 256-byte stackalloc threshold for the lenient projection.
+        // 600 hex digits = 1200 UTF-8 bytes - well above the 256-byte stackalloc threshold for the lenient projection.
         byte[] payload = new byte[300];
         new Random(0xC0DE).NextBytes(payload);
         byte[] encoded = Base16.EncodeToUtf8(payload);

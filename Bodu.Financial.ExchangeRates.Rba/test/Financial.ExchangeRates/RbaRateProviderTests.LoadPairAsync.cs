@@ -29,7 +29,7 @@ public partial class RbaRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that a pair the RBA feed does not serve — neither side being AUD — is rejected before any download.
+    /// Verifies that a pair the RBA feed does not serve - neither side being AUD - is rejected before any download.
     /// </summary>
     [TestMethod]
     public async Task LoadPairAsync_WhenNeitherSideIsAud_ShouldThrowRateSeriesNotFoundException()

@@ -18,12 +18,12 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Consume through a concrete BLAKE-family derivative — the base class defers the final
+/// // Consume through a concrete BLAKE-family derivative - the base class defers the final
 /// // block until HashFinal so the compression call can carry isFinal: true.
 /// using HashAlgorithm hash = new Blake3();
 /// byte[] digest = hash.ComputeHash("hello"u8.ToArray());
 ///
-/// // Streaming use — the deferral remains transparent across TransformBlock calls.
+/// // Streaming use - the deferral remains transparent across TransformBlock calls.
 /// using HashAlgorithm streaming = new Blake2s();
 /// streaming.TransformBlock(buffer1, 0, buffer1.Length, null, 0);
 /// streaming.TransformBlock(buffer2, 0, buffer2.Length, null, 0);
@@ -74,10 +74,10 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <strong>When to derive from this class.</strong> Pick <see cref="DeferredFinalBlockHashAlgorithm" /> for the BLAKE
 /// family and any other algorithm whose compression function takes an explicit "is this the final block?" flag rather
-/// than padding the trailing partial block with a length encoding — <see cref="Blake3" /> is the canonical user. For
+/// than padding the trailing partial block with a length encoding - <see cref="Blake3" /> is the canonical user. For
 /// BLAKE2-style hashes that also accept an optional secret key (<see cref="Blake2b" />, <see cref="Blake2s" />) derive
 /// from <see cref="KeyedDeferredFinalBlockHashAlgorithm" />, which adds RFC 7693 key-block handling on top of this
-/// base. For Merkle–Damgård hashes (SHA-2, Tiger, Whirlpool) use <see cref="BlockHashAlgorithm" />.
+/// base. For Merkle-Damgård hashes (SHA-2, Tiger, Whirlpool) use <see cref="BlockHashAlgorithm" />.
 /// </para>
 /// </remarks>
 /// <seealso cref="BufferedBlockHashAlgorithm"/> <seealso cref="BlockHashAlgorithm"/>

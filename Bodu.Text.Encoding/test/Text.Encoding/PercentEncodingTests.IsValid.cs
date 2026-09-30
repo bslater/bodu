@@ -41,7 +41,7 @@ public sealed partial class PercentEncodingTests
     /// Verifies that whenever <see cref="PercentEncoding.IsValid(ReadOnlySpan{char}, PercentEncodingMode, PercentDecodingOptions)" />
     /// returns <see langword="true" /> (canonical), the lenient
     /// <see cref="PercentEncoding.TryDecode(ReadOnlySpan{char}, Span{byte}, out int, PercentEncodingMode, PercentDecodingOptions)" />
-    /// also succeeds. The converse does not hold — canonical validity is strictly stronger than decodability.
+    /// also succeeds. The converse does not hold - canonical validity is strictly stronger than decodability.
     /// </summary>
     /// <param name="input">The candidate input.</param>
     [TestMethod]

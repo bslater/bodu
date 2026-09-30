@@ -11,16 +11,16 @@ dotnet run --project samples/Security.Cryptography/Bodu.Security.Cryptography.Sa
 
 > **Determinism note.** X25519 and Ed25519 import *fixed* private keys, so their public keys, shared secret,
 > and signature reproduce exactly (and X25519 cross-checks the RFC vectors). ML-KEM and ML-DSA generate a
-> fresh key pair each run — and ML-KEM encapsulation and hedged ML-DSA signing draw randomness — so their
+> fresh key pair each run - and ML-KEM encapsulation and hedged ML-DSA signing draw randomness - so their
 > ciphertext / secret / signature bytes differ every run. Those scenarios therefore print only what *is*
 > deterministic: the agreement and verification booleans and the fixed byte sizes, never the secret bytes.
 
-Every scenario opens by printing a **What / Why / Expect** banner — the same three things this README
-records per scenario — so a transcript stands on its own and a reader can tell a correct run from a broken
+Every scenario opens by printing a **What / Why / Expect** banner - the same three things this README
+records per scenario - so a transcript stands on its own and a reader can tell a correct run from a broken
 one without opening the source. The `text` blocks below show the value lines only; run the sample to see
 the banner above each of them.
 
-## Scenario 1 — KeyAgreementX25519
+## Scenario 1 - KeyAgreementX25519
 
 **Intent.** Show a Diffie-Hellman key agreement: two parties who have only exchanged public keys arrive at
 the same shared secret, which no eavesdropper can compute.
@@ -43,12 +43,12 @@ public key.
   matches RFC  : True  (expected True - RFC 7748 6.1 publishes this exact secret)
 ```
 
-Both parties compute the identical secret, and it equals the published RFC value — the whole point of the
+Both parties compute the identical secret, and it equals the published RFC value - the whole point of the
 agreement, reproduced from the fixed private keys.
 
 **APIs demonstrated.** `X25519.Create`, `ImportPrivateKey`, `ExportPublicKey`, `DeriveSharedSecret`.
 
-## Scenario 2 — SignaturesEd25519
+## Scenario 2 - SignaturesEd25519
 
 **Intent.** Show a digital signature: a signer with a private key produces a signature that anyone with the
 public key can verify, and that fails for any modified message.
@@ -70,12 +70,12 @@ one message byte is flipped.
 ```
 
 Ed25519 key generation and signing are deterministic, so the public key and signature are fixed functions of
-the seed and message — the private seed never leaves the signer.
+the seed and message - the private seed never leaves the signer.
 
 **APIs demonstrated.** `Ed25519.Create`, `ImportPrivateKey`, `ExportPublicKey`, `SignData`, `ImportPublicKey`,
 `VerifyData`.
 
-## Scenario 3 — KemMlKem
+## Scenario 3 - KemMlKem
 
 **Intent.** Show a post-quantum key-encapsulation mechanism (ML-KEM / FIPS 203): instead of agreeing on a
 secret from two static keys, a sender *encapsulates* a fresh secret against a receiver's public key, and the
@@ -83,7 +83,7 @@ receiver decapsulates the ciphertext to recover it.
 
 **What it does.** For ML-KEM-512, -768, and -1024, the receiver generates a key pair, the sender encapsulates
 against the exported encapsulation key, and the receiver decapsulates. It also flips a ciphertext byte to
-show ML-KEM's implicit rejection — a tampered ciphertext yields a *different* secret rather than throwing.
+show ML-KEM's implicit rejection - a tampered ciphertext yields a *different* secret rather than throwing.
 
 **What to expect.**
 
@@ -105,7 +105,7 @@ sizes are printed.
 **APIs demonstrated.** `MLKem512` / `MLKem768` / `MLKem1024`, `GenerateKey`, `ExportEncapsulationKey`,
 `ImportEncapsulationKey`, `Encapsulate`, `Decapsulate`.
 
-## Scenario 4 — SignaturesMlDsa
+## Scenario 4 - SignaturesMlDsa
 
 **Intent.** Show post-quantum digital signatures (ML-DSA / FIPS 204) with the same accept / reject contract
 as Ed25519, across all three parameter sets.
@@ -124,7 +124,7 @@ only the public key, accepts the genuine signature, and rejects it after the mes
 ```
 
 The signature size grows with the parameter set (2420 / 3309 / 4627 bytes). ML-DSA signing is hedged with
-randomness, so the signature bytes vary per run — only the verification outcomes and sizes are printed.
+randomness, so the signature bytes vary per run - only the verification outcomes and sizes are printed.
 
 **APIs demonstrated.** `MLDsa44` / `MLDsa65` / `MLDsa87`, `GenerateKey`, `SignData`, `ExportPublicKey`,
 `ImportPublicKey`, `VerifyData`.
@@ -144,5 +144,5 @@ Bodu.Security.Cryptography.Samples.AsymmetricKeys/
 
 ## Related
 
-- `Bodu.Security.Cryptography.Samples.HashingMacAndKdf` — hashes, MACs, XOFs, KDFs, and OTPs.
-- `Bodu.Security.Cryptography.Samples.SymmetricAndAead` — block ciphers, cipher modes, AEAD, stream ciphers.
+- `Bodu.Security.Cryptography.Samples.HashingMacAndKdf` - hashes, MACs, XOFs, KDFs, and OTPs.
+- `Bodu.Security.Cryptography.Samples.SymmetricAndAead` - block ciphers, cipher modes, AEAD, stream ciphers.

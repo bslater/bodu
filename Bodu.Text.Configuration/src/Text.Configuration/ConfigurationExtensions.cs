@@ -14,8 +14,8 @@ namespace Bodu.Text.Configuration;
 /// <para>
 /// The Bodu Text Configuration model is intentionally layered on top of its raw INI document primitives rather than
 /// replacing them: an <see cref="IniDocumentBase" /> remains the source-faithful in-memory representation, and these
-/// extension methods add the configuration-specific behaviour — target-path resolution and dotted-to-colon key
-/// normalization — that turns that raw document into the resolved snapshot consumed by application code.
+/// extension methods add the configuration-specific behaviour - target-path resolution and dotted-to-colon key
+/// normalization - that turns that raw document into the resolved snapshot consumed by application code.
 /// </para>
 /// <para>
 /// The primary entry point is <see cref="Resolve(IniDocumentBase, string?, ConfigurationResolveOptions?)" />, which

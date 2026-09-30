@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 348" role="img" aria-labelledby="ccm-t ccm-d">
-  <title id="ccm-t">Bodu.Collections.Concurrent — type map</title>
+  <title id="ccm-t">Bodu.Collections.Concurrent - type map</title>
   <desc id="ccm-d">Bodu.Collections.Concurrent ships two thread-safe collections in the Bodu.Collections.Generic.Concurrent namespace. ConcurrentCircularBuffer&lt;T&gt; is a lock-free multi-producer multi-consumer ring using the Vyukov per-slot sequence protocol, implementing IProducerConsumerCollection&lt;T&gt; with overwrite-on-full semantics and snapshot enumeration. ConcurrentHashSet&lt;T&gt; is a lock-free split-ordered set of unique elements with lock-free operations throughout, exact lock-free counts, and snapshot enumeration. The package depends on Bodu.Collections, which depends on Bodu.Core.</desc>
 
   <defs>
@@ -32,7 +32,7 @@
     <rect class="ccm-pan" width="800" height="328" rx="8"/>
     <rect class="ccm-hdr" width="800" height="46" rx="8"/>
     <rect class="ccm-hdr" y="38" width="800" height="8"/>
-    <text class="ccm-ttl" x="16" y="29">Bodu.Collections.Concurrent — two thread-safe collections</text>
+    <text class="ccm-ttl" x="16" y="29">Bodu.Collections.Concurrent - two thread-safe collections</text>
     <text class="ccm-form" x="784" y="29" text-anchor="end">namespace Bodu.Collections.Generic.Concurrent</text>
 
     <!-- dependency chain -->
@@ -63,7 +63,7 @@
       <rect class="ccm-card" width="378" height="142" rx="7"/>
       <text class="ccm-name" x="14" y="22">ConcurrentHashSet&lt;T&gt;</text>
       <text class="ccm-ns" x="14" y="37">lock-free set · T : notnull</text>
-      <text class="ccm-type" x="14" y="58">region-guarded buckets — disjoint writers in parallel</text>
+      <text class="ccm-type" x="14" y="58">region-guarded buckets - disjoint writers in parallel</text>
       <text class="ccm-type" x="14" y="76">lock-free Contains · ISet&lt;T&gt; surface</text>
       <text class="ccm-type" x="14" y="94">snapshot enumeration and ToArray</text>
       <text class="ccm-type" x="14" y="112">ApproximateCount (hot path) · coherent Count</text>
@@ -73,7 +73,7 @@
     <!-- aux bar: peers -->
     <rect class="ccm-aux" x="20" y="282" width="378" height="32" rx="6"/>
     <text class="ccm-auxt" x="34" y="302">Non-concurrent peer</text>
-    <text class="ccm-auxs" x="176" y="302">CircularBuffer&lt;T&gt; — fail-fast, single-threaded</text>
+    <text class="ccm-auxs" x="176" y="302">CircularBuffer&lt;T&gt; - fail-fast, single-threaded</text>
 
     <rect class="ccm-aux" x="408" y="282" width="378" height="32" rx="6"/>
     <text class="ccm-auxt" x="422" y="302">Non-concurrent peer</text>

@@ -29,7 +29,7 @@ namespace Bodu.Globalization.Calendar;
 ///<![CDATA[
 /// TerritoryCode nsw = TerritoryCode.Parse("AU-NSW");
 /// TerritoryCode au = nsw.Parent;          // AU
-/// bool contains = au.Contains(nsw);        // true — a country contains its subdivisions
+/// bool contains = au.Contains(nsw);        // true - a country contains its subdivisions
 ///
 /// // The implicit string conversion feeds the resolution surface directly.
 /// IReadOnlyList<NotableDate> dates = service.Resolve(2026, nsw);

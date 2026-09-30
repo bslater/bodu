@@ -53,7 +53,7 @@ internal static class Skein512KnownAnswers
         "BFBEBDBCBBBAB9B8B7B6B5B4B3B2B1B0AFAEADACABAAA9A8A7A6A5A4A3A2A1A0" +
         "9F9E9D9C9B9A999897969594939291908F8E8D8C8B8A89888786858483828180";
 
-    // Same byte sequence as IncrementingTwoBlocksSkein512 — the 1024-bit truncation vectors reuse this message.
+    // Same byte sequence as IncrementingTwoBlocksSkein512 - the 1024-bit truncation vectors reuse this message.
     private const string Incrementing1024Bits = IncrementingTwoBlocksSkein512;
 
     private const string MacOneBlockSkein512 =

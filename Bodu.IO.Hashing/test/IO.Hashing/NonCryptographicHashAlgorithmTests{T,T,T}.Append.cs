@@ -57,7 +57,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     }
     /// <summary>
     /// Verifies that appending an empty span leaves <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" />
-    /// unchanged — equal to the hash of a freshly constructed instance.
+    /// unchanged - equal to the hash of a freshly constructed instance.
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]

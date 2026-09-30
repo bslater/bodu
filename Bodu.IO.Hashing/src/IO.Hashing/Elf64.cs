@@ -24,7 +24,7 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// <para>
 /// <strong>When to choose ELF64.</strong> The ELF hash is the symbol-table hash baked into UNIX System V object files
-/// and the GNU dynamic linker's <c>.gnu.hash</c> section — pick it when interoperating with ELF-format tooling or when
+/// and the GNU dynamic linker's <c>.gnu.hash</c> section - pick it when interoperating with ELF-format tooling or when
 /// reproducing a digest computed by the system linker. For general-purpose hash-table keying prefer
 /// <see cref="Fnv1a64" /> (better avalanche on the same per-byte cost) or <see cref="MurmurHash3_128" /> (much better
 /// distribution on inputs longer than ~16 bytes). The 64-bit width makes ELF64 a reasonable choice for medium-sized

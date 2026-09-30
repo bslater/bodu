@@ -10,9 +10,9 @@ namespace Bodu.CodeStyle.XmlDocumentation.Analyzers.Diagnostics;
 /// Provides the well-known Roslyn diagnostic identifiers reported by this analyzer assembly.
 /// </summary>
 /// <remarks>
-/// Diagnostic IDs follow the <c>BODU####</c> scheme — the thousands digit denotes the analyzer family; the remaining
+/// Diagnostic IDs follow the <c>BODU####</c> scheme - the thousands digit denotes the analyzer family; the remaining
 /// digits identify a specific rule. The XML-documentation family is <c>BODU1xxx</c> and is laid out as follows:
-/// <c>BODU1001</c>–<c>BODU1018</c> per-tag formatting; <c>BODU1040</c> cross-cutting formatting; <c>BODU1041</c>–<c>BODU1099</c>
+/// <c>BODU1001</c>-<c>BODU1018</c> per-tag formatting; <c>BODU1040</c> cross-cutting formatting; <c>BODU1041</c>-<c>BODU1099</c>
 /// reserved for future granular cross-cutting splits; <c>BODU1100</c>+ reserved for required-tag rules; <c>BODU1200</c>+
 /// for ordering; <c>BODU1300</c>+ for cref validity; <c>BODU1400</c>+ for content quality. See
 /// <c>Bodu.CodeStyle/README.md#diagnostic-ids</c> for the canonical range table.

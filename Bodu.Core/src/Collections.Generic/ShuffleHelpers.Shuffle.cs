@@ -11,7 +11,7 @@ namespace Bodu.Collections.Generic;
 public static partial class ShuffleHelpers
 {
     /// <summary>
-    /// Performs an in-place Fisher–Yates shuffle over the provided array.
+    /// Performs an in-place Fisher-Yates shuffle over the provided array.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the array.</typeparam>
     /// <param name="array">The array of elements to shuffle.</param>
@@ -20,7 +20,7 @@ public static partial class ShuffleHelpers
     /// Thrown if <paramref name="array" /> or <paramref name="rng" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// This method modifies the original array using the Fisher–Yates algorithm. Each element has an equal probability
+    /// This method modifies the original array using the Fisher-Yates algorithm. Each element has an equal probability
     /// of ending up in any position.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -37,7 +37,7 @@ public static partial class ShuffleHelpers
     }
 
     /// <summary>
-    /// Performs an in-place Fisher–Yates shuffle over a span of elements.
+    /// Performs an in-place Fisher-Yates shuffle over a span of elements.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the span.</typeparam>
     /// <param name="span">The span of elements to shuffle.</param>
@@ -46,7 +46,7 @@ public static partial class ShuffleHelpers
     /// Thrown if <paramref name="rng" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// This method modifies the span in-place using the Fisher–Yates algorithm. It is optimized for shuffling
+    /// This method modifies the span in-place using the Fisher-Yates algorithm. It is optimized for shuffling
     /// stack-allocated or pooled data, and does not allocate memory.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -62,7 +62,7 @@ public static partial class ShuffleHelpers
     }
 
     /// <summary>
-    /// Performs an in-place Fisher–Yates shuffle over a memory region.
+    /// Performs an in-place Fisher-Yates shuffle over a memory region.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the memory block.</typeparam>
     /// <param name="memory">The memory region to shuffle.</param>

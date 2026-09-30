@@ -13,7 +13,7 @@ namespace Bodu.Text.DotEnv;
 public static partial class DotEnvSerializer
 {
     /// <summary>
-    /// Describes a single mapped POCO member — its serialized name, type, accessors, and the attribute-derived rules
+    /// Describes a single mapped POCO member - its serialized name, type, accessors, and the attribute-derived rules
     /// that govern its inclusion and ordering.
     /// </summary>
     private sealed class Member

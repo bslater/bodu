@@ -20,7 +20,7 @@ public static class PaddingStrategies
     /// <remarks>
     /// <see cref="IPaddingStrategy.Pad" /> takes its block size in <b>bits</b>, not bytes, matching the BCL's
     /// <see cref="System.Security.Cryptography.SymmetricAlgorithm.BlockSize" /> convention. Passing 8 here would ask
-    /// for alignment to a one-byte boundary, which every scheme satisfies trivially — an easy and silent mistake, so
+    /// for alignment to a one-byte boundary, which every scheme satisfies trivially - an easy and silent mistake, so
     /// the constant is named for its unit.
     /// </remarks>
     private const int BlockSizeBits = 64;

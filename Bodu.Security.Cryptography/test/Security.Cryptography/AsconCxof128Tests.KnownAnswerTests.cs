@@ -161,7 +161,7 @@ public partial class AsconCxof128Tests
 
     /// <summary>
     /// Verifies that <see cref="AsconCxof128" /> reproduces, byte-for-byte, the exact output of every vector in the
-    /// official ascon-c <c>LWC_CXOF_KAT_128_512</c> reference file — the full 1089-row corpus, loaded dynamically from
+    /// official ascon-c <c>LWC_CXOF_KAT_128_512</c> reference file - the full 1089-row corpus, loaded dynamically from
     /// the embedded resource. The file's customisation <c>Z</c> begins at <c>0x10</c>, so this exercises the SP 800-232
     /// length-prefixed customisation-absorb path across the entire published KAT.
     /// </summary>

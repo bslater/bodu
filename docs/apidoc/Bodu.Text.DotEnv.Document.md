@@ -10,10 +10,10 @@ uid: Bodu.Text.DotEnv.Document
 
 ## Key types
 
-- <xref:Bodu.Text.DotEnv.Document.DotEnvDocument> — the disposable owner: `Parse` (from `string` or UTF-8 bytes, with an optional <xref:Bodu.Text.DotEnv.Reader.DotEnvReaderOptions>) and `RootElement`.
-- <xref:Bodu.Text.DotEnv.Document.DotEnvElement> — the cursor: `ValueKind` (a <xref:Bodu.Text.DotEnv.DotEnvValueKind>), `GetString`, `GetProperty` / `TryGetProperty`, and `EnumerateObject`.
-- <xref:Bodu.Text.DotEnv.Document.DotEnvElement.ObjectEnumerator> — the struct enumerator returned by `EnumerateObject`.
-- <xref:Bodu.Text.DotEnv.Document.DotEnvProperty> — a `Name` / `Value` pair yielded by `EnumerateObject`.
+- <xref:Bodu.Text.DotEnv.Document.DotEnvDocument> - the disposable owner: `Parse` (from `string` or UTF-8 bytes, with an optional <xref:Bodu.Text.DotEnv.Reader.DotEnvReaderOptions>) and `RootElement`.
+- <xref:Bodu.Text.DotEnv.Document.DotEnvElement> - the cursor: `ValueKind` (a <xref:Bodu.Text.DotEnv.DotEnvValueKind>), `GetString`, `GetProperty` / `TryGetProperty`, and `EnumerateObject`.
+- <xref:Bodu.Text.DotEnv.Document.DotEnvElement.ObjectEnumerator> - the struct enumerator returned by `EnumerateObject`.
+- <xref:Bodu.Text.DotEnv.Document.DotEnvProperty> - a `Name` / `Value` pair yielded by `EnumerateObject`.
 
 ## Example
 
@@ -32,4 +32,4 @@ if (env.RootElement.TryGetProperty("APP_PORT", out DotEnvElement port))
 - **Lifetime.** Elements are only valid while their document is undisposed.
 - **Export flag not surfaced.** The read-only model exposes names and values only; use the <xref:Bodu.Text.DotEnv.Nodes.DotEnvObject> DOM or the reader's `CurrentIsExport` when the prefix matters.
 - **Literal values.** No `${VAR}` interpolation is applied.
-- **See also:** the [line-formats introduction](~/docs/formats/index.md) and the [DotEnv guide](~/guides/formats/dotenv.md) (Pattern 1 — query a document).
+- **See also:** the [line-formats introduction](~/docs/formats/index.md) and the [DotEnv guide](~/guides/formats/dotenv.md) (Pattern 1 - query a document).

@@ -15,7 +15,7 @@ namespace Bodu.Text.Toml.Samples.TomlDocuments.Scenarios;
 /// Demonstrates the lowest layer: the allocation-free ref structs <see cref="Utf8TomlWriter" />
 /// (forward-only token emission into an <see cref="IBufferWriter{T}" />) and
 /// <see cref="Utf8TomlReader" /> (forward-only token pull). This is the surface the serializer
-/// and both DOMs are built on — reach for it when you need maximum control or minimum overhead.
+/// and both DOMs are built on - reach for it when you need maximum control or minimum overhead.
 /// </summary>
 public static class TokenReaderWriter
 {

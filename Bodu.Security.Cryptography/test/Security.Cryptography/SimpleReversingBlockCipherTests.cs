@@ -33,7 +33,7 @@ namespace Bodu.Security.Cryptography;
 internal sealed partial class SimpleReversingBlockCipherTests
     : BlockCipherTests<SimpleReversingBlockCipherTests, SimpleReversingBlockCipher, SimpleReversingBlockSizeVariant>
 {
-    // All KATs use a deterministic all-zero key — the key does not affect cipher output.
+    // All KATs use a deterministic all-zero key - the key does not affect cipher output.
     private static readonly byte[] DefaultKey = new byte[16];
 
     /// <inheritdoc />
@@ -73,7 +73,7 @@ internal sealed partial class SimpleReversingBlockCipherTests
     /// </remarks>
     private static IEnumerable<KnownAnswerTest> GetKats128()
     {
-        // Sequential ascending bytes — most useful for verifying byte order.
+        // Sequential ascending bytes - most useful for verifying byte order.
         yield return new KnownAnswerTest
         {
             Name = "SimpleReversing 128-bit / sequential ascending",
@@ -82,7 +82,7 @@ internal sealed partial class SimpleReversingBlockCipherTests
             CipherFactory = () => new SimpleReversingBlockCipher(DefaultKey, 16),
         };
 
-        // All-zero input — fixed point: reversing zeros yields zeros.
+        // All-zero input - fixed point: reversing zeros yields zeros.
         yield return new KnownAnswerTest
         {
             Name = "SimpleReversing 128-bit / all zeros (fixed point)",
@@ -91,7 +91,7 @@ internal sealed partial class SimpleReversingBlockCipherTests
             CipherFactory = () => new SimpleReversingBlockCipher(DefaultKey, 16),
         };
 
-        // All-0xFF input — fixed point: reversing 0xFF bytes yields 0xFF bytes.
+        // All-0xFF input - fixed point: reversing 0xFF bytes yields 0xFF bytes.
         yield return new KnownAnswerTest
         {
             Name = "SimpleReversing 128-bit / all 0xFF (fixed point)",
@@ -100,7 +100,7 @@ internal sealed partial class SimpleReversingBlockCipherTests
             CipherFactory = () => new SimpleReversingBlockCipher(DefaultKey, 16),
         };
 
-        // Alternating 0xAA/0x55 — verifies that adjacent byte positions are correctly swapped.
+        // Alternating 0xAA/0x55 - verifies that adjacent byte positions are correctly swapped.
         yield return new KnownAnswerTest
         {
             Name = "SimpleReversing 128-bit / alternating 0xAA 0x55",
@@ -109,7 +109,7 @@ internal sealed partial class SimpleReversingBlockCipherTests
             CipherFactory = () => new SimpleReversingBlockCipher(DefaultKey, 16),
         };
 
-        // Repeated 8-byte pattern — confirms that the full 16-byte block is reversed,
+        // Repeated 8-byte pattern - confirms that the full 16-byte block is reversed,
         // not two independent 8-byte halves.
         yield return new KnownAnswerTest
         {
@@ -119,7 +119,7 @@ internal sealed partial class SimpleReversingBlockCipherTests
             CipherFactory = () => new SimpleReversingBlockCipher(DefaultKey, 16),
         };
 
-        // Mixed pattern — simulates a typical block-cipher input with varied byte values.
+        // Mixed pattern - simulates a typical block-cipher input with varied byte values.
         yield return new KnownAnswerTest
         {
             Name = "SimpleReversing 128-bit / mixed pattern",
@@ -195,7 +195,7 @@ internal sealed partial class SimpleReversingBlockCipherTests
             CipherFactory = () => new SimpleReversingBlockCipher(DefaultKey, 32),
         };
 
-        // Alternating 0x00/0xFF — confirms block-wide reversal at extremes.
+        // Alternating 0x00/0xFF - confirms block-wide reversal at extremes.
         yield return new KnownAnswerTest
         {
             Name = "SimpleReversing 256-bit / alternating 0x00 0xFF",

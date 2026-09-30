@@ -17,7 +17,7 @@ internal static class Program
     /// Discovers and runs the benchmarks declared in this assembly.
     /// </summary>
     /// <param name="args">
-    /// BenchmarkDotNet command-line switches — for example <c>--filter *</c> to run every benchmark, or
+    /// BenchmarkDotNet command-line switches - for example <c>--filter *</c> to run every benchmark, or
     /// <c>--list flat</c> to enumerate them without running.
     /// </param>
     private static void Main(string[] args) =>

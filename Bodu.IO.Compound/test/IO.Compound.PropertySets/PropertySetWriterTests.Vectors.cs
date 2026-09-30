@@ -119,7 +119,7 @@ public partial class PropertySetWriterTests
             [new DateTimeOffset(2020, 1, 1, 0, 0, 0, TimeSpan.Zero), new DateTimeOffset(2021, 6, 15, 12, 0, 0, TimeSpan.Zero)]);
 
     /// <summary>
-    /// Verifies that a vector of ANSI strings round-trips, exercising odd lengths that require element padding —
+    /// Verifies that a vector of ANSI strings round-trips, exercising odd lengths that require element padding -
     /// the shape of a document-summary <c>TitlesOfParts</c> vector.
     /// </summary>
     [TestMethod]
@@ -150,7 +150,7 @@ public partial class PropertySetWriterTests
     }
 
     /// <summary>
-    /// Verifies that a variant vector infers each element's inner type from its CLR value and round-trips — the
+    /// Verifies that a variant vector infers each element's inner type from its CLR value and round-trips - the
     /// shape of a document-summary <c>HeadingPairs</c> vector (alternating heading string and part count).
     /// </summary>
     [TestMethod]

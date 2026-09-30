@@ -19,8 +19,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The warm-up runs in the background after the host has started — it yields before doing any work, so application
-/// start is never blocked — and warms every directly registered <see cref="CachingRateProvider" /> plus any keyed
+/// The warm-up runs in the background after the host has started - it yields before doing any work, so application
+/// start is never blocked - and warms every directly registered <see cref="CachingRateProvider" /> plus any keyed
 /// aggregation children named in <see cref="RateCacheWarmupOptions.Providers" />. A named child that resolves to no
 /// keyed caching provider is logged and skipped.
 /// </para>

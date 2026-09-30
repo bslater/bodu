@@ -11,15 +11,15 @@ namespace Bodu.Security.Cryptography.Samples.CustomHash;
 
 /// <summary>
 /// A small, deterministic 128-bit block hash implemented on the library's
-/// <see cref="BlockHashAlgorithm" /> base — the classic Merkle-Damgard shape that Tiger, Whirlpool,
+/// <see cref="BlockHashAlgorithm" /> base - the classic Merkle-Damgard shape that Tiger, Whirlpool,
 /// and the SHA-2 family also derive from. It consumes input in 16-byte blocks, mixes each block into
 /// four 32-bit chaining words with an add / rotate / multiply / cross-diffuse round, and finalizes by
 /// appending a <c>0x80</c> pad byte plus the little-endian message bit-length before a last avalanche.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The whole contract is four members — <see cref="AlgorithmName" />, <see cref="ProcessBlock" />,
-/// <see cref="PadBlock" />, and <see cref="ProcessFinalBlock" /> — plus <see cref="Initialize" /> to
+/// The whole contract is four members - <see cref="AlgorithmName" />, <see cref="ProcessBlock" />,
+/// <see cref="PadBlock" />, and <see cref="ProcessFinalBlock" /> - plus <see cref="Initialize" /> to
 /// reset the chaining state and a public parameterless constructor. The base class drives residual
 /// buffering, block alignment, and final-block padding orchestration, so a derived hash never has to
 /// re-implement the streaming plumbing that <see cref="System.Security.Cryptography.HashAlgorithm" />
@@ -28,8 +28,8 @@ namespace Bodu.Security.Cryptography.Samples.CustomHash;
 /// <para>
 /// This is a teaching construction, not a cryptographic primitive: it is deterministic and well-defined
 /// but makes no collision-resistance claims. Its value is showing that a consumer type slots into the
-/// exact same <see cref="System.Security.Cryptography.HashAlgorithm" /> surface — and the same shared
-/// test contract — as the shipped algorithms.
+/// exact same <see cref="System.Security.Cryptography.HashAlgorithm" /> surface - and the same shared
+/// test contract - as the shipped algorithms.
 /// </para>
 /// </remarks>
 public sealed class AdditiveDigest

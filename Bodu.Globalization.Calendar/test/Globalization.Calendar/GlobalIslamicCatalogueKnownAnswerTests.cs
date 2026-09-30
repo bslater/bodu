@@ -32,8 +32,8 @@ public sealed class GlobalIslamicCatalogueKnownAnswerTests
 
     /// <summary>
     /// Verifies that each tabular-Hijri observance resolves to the vector table's ordered occurrence list across the
-    /// full fifty-year sweep (Gregorian 1990-2039), pinning the arithmetic Hijri projection — including the years
-    /// where a short lunar date lands twice in one Gregorian year — against the astronomically cross-checked vectors.
+    /// full fifty-year sweep (Gregorian 1990-2039), pinning the arithmetic Hijri projection - including the years
+    /// where a short lunar date lands twice in one Gregorian year - against the astronomically cross-checked vectors.
     /// </summary>
     /// <param name="kat">The vector row carrying the (year, observance) input and the expected occurrence list.</param>
     [TestMethod]
@@ -55,8 +55,8 @@ public sealed class GlobalIslamicCatalogueKnownAnswerTests
 
     /// <summary>
     /// Verifies that each Umm al-Qura observance resolves to the vector table's ordered occurrence list across the
-    /// full fifty-year sweep (Gregorian 1990-2039), pinning the KACST month-table projection — including the years
-    /// where a short lunar date lands twice in one Gregorian year — against the astronomically cross-checked vectors.
+    /// full fifty-year sweep (Gregorian 1990-2039), pinning the KACST month-table projection - including the years
+    /// where a short lunar date lands twice in one Gregorian year - against the astronomically cross-checked vectors.
     /// </summary>
     /// <param name="kat">The vector row carrying the (year, observance) input and the expected occurrence list.</param>
     [TestMethod]

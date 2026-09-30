@@ -12,7 +12,7 @@ namespace Bodu.IO.Hashing.Samples.CheckDigits.Scenarios;
 /// Demonstrates why multiple schemes exist: check-digit algorithms differ in the error classes
 /// they detect. Luhn catches every single-digit error but misses some adjacent transpositions
 /// (the classic <c>09 ↔ 90</c>), while Damm and Verhoeff detect all single-digit errors AND all
-/// adjacent transpositions — the property they were invented for.
+/// adjacent transpositions - the property they were invented for.
 /// </summary>
 public static class TransposedDigits
 {

@@ -1,11 +1,11 @@
 # Bodu.Globalization.Recurrence.Samples.CronExpressions
 
-`CronExpression` — the Vixie cron form. Four scenarios cover the five-field layout and the `@`
+`CronExpression` - the Vixie cron form. Four scenarios cover the five-field layout and the `@`
 macros, the optional-seconds six-field layout and canonical text, the two Vixie semantics that
 separate this dialect from the Quartz-flavoured cron most .NET libraries implement, and the two
 failure surfaces: schedules that can never fire, and text that will not parse.
 
-Everything runs offline with fixed inputs, formatted with the invariant culture — deterministic
+Everything runs offline with fixed inputs, formatted with the invariant culture - deterministic
 output every run.
 
 ```bash
@@ -14,10 +14,10 @@ dotnet run --project samples/Globalization.Recurrence/Bodu.Globalization.Recurre
 
 NuGet consumers: `dotnet add package Bodu.Globalization.Recurrence`
 
-## Scenario 1 — CronBasics
+## Scenario 1 - CronBasics
 
 **Intent.** Show the five-field layout and the field grammar, and establish the shape of the query
-surface: unlike a recurrence rule, a cron expression has no series origin at all — it is a predicate
+surface: unlike a recurrence rule, a cron expression has no series origin at all - it is a predicate
 over instants, so the query instant is the only input `GetNextOccurrence` needs.
 
 **What it does.** Parses a catalogue of ten expressions covering a literal, a list, a range, a
@@ -77,7 +77,7 @@ prev  inclusive: 2026-03-10 14:00:00
 **APIs demonstrated.** `CronExpression.Parse(string)`, `.GetNextOccurrence(DateTime, bool)`,
 `.GetPreviousOccurrence(DateTime, bool)`, `.Equals`.
 
-## Scenario 2 — SecondsAndFormats
+## Scenario 2 - SecondsAndFormats
 
 **Intent.** Show the six-field seconds layout selected by `CronFormat`, the difference between
 inferring that layout and stating it, and the canonical text that makes equality decidable by
@@ -140,7 +140,7 @@ re-parses equal            : True
 ```
 
 The last equality row is a *non*-match, included as the control: two different schedules must
-compare unequal, and they hash differently too — a property this sample surfaced as a defect (the
+compare unequal, and they hash differently too - a property this sample surfaced as a defect (the
 hash used to mix only each field's cardinality, so every single-valued schedule collided) and which
 is now guarded by `CronExpressionTests.GetHashCode_WhenSchedulesDifferOnlyInSelectedValues_ShouldDiffer`.
 
@@ -148,7 +148,7 @@ is now guarded by `CronExpressionTests.GetHashCode_WhenSchedulesDifferOnlyInSele
 `TryParse(string, CronFormat, out CronExpression, out string)`, `CronFormat.Standard` /
 `.WithSeconds`, `.Format`, `.ToString()`, `.Equals`, `.GetHashCode()`.
 
-## Scenario 3 — VixieSemantics
+## Scenario 3 - VixieSemantics
 
 **Intent.** Pin the two behaviours where Vixie and Quartz genuinely disagree, so a reader porting a
 schedule from another library knows exactly what changes.
@@ -159,7 +159,7 @@ is restricted (including why "Friday the 13th" cannot be written in Vixie cron);
 oversized-step expressions equal their single-value equivalents; and shows Sunday accepted as 0, 7,
 and `SUN`.
 
-**What to expect.** When **both** day fields are restricted, Vixie takes their **union** — an instant
+**What to expect.** When **both** day fields are restricted, Vixie takes their **union** - an instant
 matches if *either* field matches. And "restricted" is decided by the field's **leading character**,
 not by the set of days it denotes, so `*/2` and `1-31/2` select different branches despite denoting
 the same days:
@@ -201,25 +201,25 @@ the same days:
 
 The oversized-step rows are the second divergence: cronie only *warns* ("Step size %i higher than
 possible maximum") and then runs `for (i = low; i <= high; i += step)`, which sets exactly one bit.
-Libraries that reject the same input — Cronos among them — are stricter than the dialect this
+Libraries that reject the same input - Cronos among them - are stricter than the dialect this
 implements.
 
 **APIs demonstrated.** `CronExpression.Parse`, `.GetNextOccurrence(DateTime, bool)`, `.Equals`,
 `.ToString()`.
 
-## Scenario 4 — UnreachableAndDefects
+## Scenario 4 - UnreachableAndDefects
 
 **Intent.** Show the two failure surfaces separately, because they need different handling: an
 expression that parses cleanly and can never fire, versus text that will not parse at all.
 
 **What it does.** Parses six expressions selecting a date that exists in no year and asks each for a
 next occurrence; contrasts 29 February, which is reachable but rare; runs fourteen malformed inputs
-through the defect-reporting `TryParse`; and closes with the shape a host actually uses — validating
+through the defect-reporting `TryParse`; and closes with the shape a host actually uses - validating
 a small configuration block and reporting each rejection against its key.
 
 **What to expect.** An unreachable schedule reports *no occurrence* rather than searching forever or
 throwing. Every rejection names the offending token, and the Quartz extensions are refused
-explicitly rather than silently ignored — which matters, because silently dropping an `L` would
+explicitly rather than silently ignored - which matters, because silently dropping an `L` would
 change the schedule rather than reject it:
 
 ```text
@@ -274,7 +274,7 @@ Bodu.Globalization.Recurrence.Samples.CronExpressions/
 
 ## Related
 
-- `Bodu.Globalization.Recurrence.Samples.RecurrenceRules` — the RFC 5545 `RRULE` form.
-- `Bodu.Globalization.Recurrence.Samples.SchedulingHost` — all four forms behind one adapter.
-- `corpus/recurrence/README.md` — the Cronos-derived vector table these semantics are reconciled
+- `Bodu.Globalization.Recurrence.Samples.RecurrenceRules` - the RFC 5545 `RRULE` form.
+- `Bodu.Globalization.Recurrence.Samples.SchedulingHost` - all four forms behind one adapter.
+- `corpus/recurrence/README.md` - the Cronos-derived vector table these semantics are reconciled
   against, and every divergence it records.

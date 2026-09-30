@@ -20,12 +20,12 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — OCB3 realizes both the keystream and the MAC pipelines as a single offset-driven pass over each block."/>
+/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow - OCB3 realizes both the keystream and the MAC pipelines as a single offset-driven pass over each block."/>
 /// </para>
 /// <para>
 /// OCB3 collapses the two pipelines of the generic AEAD shape above into a <em>single pass</em>: the keystream and the
 /// MAC chain share the same per-block offset Δ<sub>i</sub>, so each block is touched by the cipher exactly once. In the
-/// diagram, this corresponds to merging the top and bottom arrows that reach the MAC — the ciphertext output is
+/// diagram, this corresponds to merging the top and bottom arrows that reach the MAC - the ciphertext output is
 /// simultaneously the next input to the authentication accumulator.
 /// </para>
 /// <para>
@@ -51,7 +51,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>When to use OCB3.</strong> Pick OCB3 when you want a single-pass AEAD mode without GCM's
-/// catastrophic-on-nonce-reuse profile — OCB still requires nonces to be unique per key, but the failure mode is
+/// catastrophic-on-nonce-reuse profile - OCB still requires nonces to be unique per key, but the failure mode is
 /// graceful (only that one message's confidentiality is lost; the GHASH-key-leak amplification does not apply). OCB
 /// historically had patent encumbrances that limited adoption; the patents have since been placed into the public
 /// domain, but <see cref="GcmModeTransform" /> remains the more widely deployed choice in practice. For nonce-misuse
@@ -158,8 +158,8 @@ public sealed class OcbModeTransform
 
         _tagLen = tagSize / 8;
 
-        // RFC 7253 §2.1 — Key-dependent constants derived once per key: L_* = ENCIPHER(K, zeros(128)), and each later
-        // block of the table the double of the one before it — L_$, then L[0] to L[31].
+        // RFC 7253 §2.1 - Key-dependent constants derived once per key: L_* = ENCIPHER(K, zeros(128)), and each later
+        // block of the table the double of the one before it - L_$, then L[0] to L[31].
         _lTable = new byte[(MaxLValues + 2) * BlockBytes];
         Span<byte> table = _lTable;
         Span<byte> zeroBlock = stackalloc byte[BlockBytes];
@@ -258,8 +258,8 @@ public sealed class OcbModeTransform
     /// <remarks>
     /// <strong>Authentication pattern: write-then-clear.</strong> OCB3 recomputes its checksum over the decrypted
     /// plaintext, so the per-block decryption is written into <paramref name="output" /> first and the tag is compared
-    /// in constant time afterwards. On any failure — an authentication mismatch or an exception from the underlying
-    /// cipher mid-transform — the plaintext region of <paramref name="output" /> is zeroed before the exception
+    /// in constant time afterwards. On any failure - an authentication mismatch or an exception from the underlying
+    /// cipher mid-transform - the plaintext region of <paramref name="output" /> is zeroed before the exception
     /// propagates, so unverified plaintext never escapes. See <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for
     /// the library-wide failure contract.
     /// </remarks>
@@ -323,8 +323,8 @@ public sealed class OcbModeTransform
         }
         catch
         {
-            // Zero the plaintext region on any failure — a tag mismatch or a fault from the underlying
-            // cipher mid-transform — so the unverified plaintext this write-then-clear mode has already
+            // Zero the plaintext region on any failure - a tag mismatch or a fault from the underlying
+            // cipher mid-transform - so the unverified plaintext this write-then-clear mode has already
             // written never leaks.
             CryptographyHelper.Clear(output[..plaintextLength]);
             throw;
@@ -437,8 +437,8 @@ public sealed class OcbModeTransform
     }
 
     /// <summary>
-    /// Encrypts or decrypts the whole blocks of a message a run at a time — the offsets for up to 4 KiB first, then one
-    /// multi-block cipher call between two XORs with them — and folds the plaintext blocks into the checksum.
+    /// Encrypts or decrypts the whole blocks of a message a run at a time - the offsets for up to 4 KiB first, then one
+    /// multi-block cipher call between two XORs with them - and folds the plaintext blocks into the checksum.
     /// </summary>
     /// <param name="input">The whole blocks to transform.</param>
     /// <param name="output">The destination; may be the same memory as <paramref name="input" />.</param>

@@ -18,7 +18,7 @@ public class ConfigurationReaderInlineCommentTests
 {
     /// <summary>
     /// Verifies that <see cref="ConfigurationInlineCommentMode.Disabled" /> preserves <c>#</c> and <c>;</c>
-    /// in values verbatim — the EditorConfig-compatible behaviour.
+    /// in values verbatim - the EditorConfig-compatible behaviour.
     /// </summary>
     [TestMethod]
     public void Parse_WhenInlineDisabledAndHashInValue_ShouldKeepHashAsLiteral()

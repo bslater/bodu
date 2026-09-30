@@ -17,8 +17,8 @@ namespace Bodu.Collections.Generic;
 /// <remarks>
 /// <para>
 /// <see cref="DefaultingDictionary{TKey, TValue}" /> is the .NET analogue of Python's <c>collections.defaultdict</c>:
-/// the <see cref="ValueFactory" /> delegate fixed at construction plays the role of <c>default_factory</c>, and —
-/// exactly as in Python, where <c>__missing__</c> fires only for <c>d[key]</c> — <i>only the indexer getter</i>
+/// the <see cref="ValueFactory" /> delegate fixed at construction plays the role of <c>default_factory</c>, and -
+/// exactly as in Python, where <c>__missing__</c> fires only for <c>d[key]</c> - <i>only the indexer getter</i>
 /// materializes defaults. <see cref="TryGetValue(TKey, out TValue)" />, <see cref="ContainsKey(TKey)" />,
 /// <see cref="Remove(TKey)" />, <see cref="Count" />, and enumeration observe only entries that have actually been
 /// stored; none of them invoke the factory.
@@ -30,8 +30,8 @@ namespace Bodu.Collections.Generic;
 /// into the dictionary itself so every plain indexer read applies it.
 /// </para>
 /// <para>
-/// Reentrancy contract: when the factory itself mutates the dictionary — including adding an entry for the very key
-/// being materialized — the stored result is always the factory's <i>return value</i>. Any value the factory assigned
+/// Reentrancy contract: when the factory itself mutates the dictionary - including adding an entry for the very key
+/// being materialized - the stored result is always the factory's <i>return value</i>. Any value the factory assigned
 /// to that key during its own execution is overwritten before the indexer returns. This keeps the contract
 /// deterministic: <c>dictionary[key]</c> on a miss always stores and returns what the factory returned.
 /// </para>
@@ -49,10 +49,10 @@ namespace Bodu.Collections.Generic;
 ///<![CDATA[
 /// var groups = new DefaultingDictionary<string, List<int>>(_ => new List<int>());
 ///
-/// groups["odd"].Add(1);     // miss — the factory creates the list, it is stored, then mutated
-/// groups["odd"].Add(3);     // hit — the stored list is returned; the factory is not invoked
+/// groups["odd"].Add(1);     // miss - the factory creates the list, it is stored, then mutated
+/// groups["odd"].Add(3);     // hit - the stored list is returned; the factory is not invoked
 ///
-/// bool has = groups.ContainsKey("even");   // false — lookups never materialize defaults
+/// bool has = groups.ContainsKey("even");   // false - lookups never materialize defaults
 /// int count = groups["odd"].Count;         // 2
 ///]]>
 /// </code>

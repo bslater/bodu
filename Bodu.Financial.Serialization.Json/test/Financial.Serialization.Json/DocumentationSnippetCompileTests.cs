@@ -12,7 +12,7 @@ namespace Bodu.Financial.Serialization.Json;
 
 /// <summary>
 /// Compiles the Bodu.Financial JSON documentation guide examples that are explicitly opted in, so a code sample cannot silently
-/// drift from the public API it documents — the class of error (a renamed or removed member in a shown snippet) that
+/// drift from the public API it documents - the class of error (a renamed or removed member in a shown snippet) that
 /// prose review misses.
 /// </summary>
 /// <remarks>
@@ -74,7 +74,7 @@ public sealed class DocumentationSnippetCompileTests
                 List<Diagnostic> errors = Compile(snippet, references);
                 if (errors.Count > 0)
                 {
-                    failures.AppendLine($"{Path.GetFileName(file)} — snippet starting \"{FirstCodeLine(snippet)}\":");
+                    failures.AppendLine($"{Path.GetFileName(file)} - snippet starting \"{FirstCodeLine(snippet)}\":");
                     foreach (Diagnostic error in errors)
                         failures.AppendLine($"  {error.Id}: {error.GetMessage()}");
                 }
@@ -171,7 +171,7 @@ public sealed class DocumentationSnippetCompileTests
     /// A guide snippet usually opens with the <c>using</c> directives a reader would need. Those are lifted out of the
     /// snippet and placed with the wrapper's own directives, rather than dropped, so a snippet that declares an alias
     /// (<c>using SysComplex = System.Numerics.Complex;</c>) or a static import compiles as written. A <c>using</c>
-    /// <i>statement</i> — <c>using var</c>, or <c>using (…)</c> — is left in the body where it belongs.
+    /// <i>statement</i> - <c>using var</c>, or <c>using (…)</c> - is left in the body where it belongs.
     /// </para>
     /// <para>
     /// The snippet is then tried two ways: as the body of a method, which most guide examples are, and as
@@ -250,7 +250,7 @@ public sealed class DocumentationSnippetCompileTests
     }
 
     /// <summary>
-    /// Determines whether a line is a <c>using</c> <i>directive</i> — a plain, static, or alias import — as opposed to
+    /// Determines whether a line is a <c>using</c> <i>directive</i> - a plain, static, or alias import - as opposed to
     /// a <c>using</c> statement, which must stay in the method body.
     /// </summary>
     /// <param name="line">The trimmed source line.</param>

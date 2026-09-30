@@ -30,7 +30,7 @@ internal sealed class MultisetDebugView<T>
     }
 
     /// <summary>
-    /// Gets the element–count pairs currently held in the <see cref="Multiset{T}" />, displayed in the debugger as
+    /// Gets the element-count pairs currently held in the <see cref="Multiset{T}" />, displayed in the debugger as
     /// root-level entries.
     /// </summary>
     /// <remarks>

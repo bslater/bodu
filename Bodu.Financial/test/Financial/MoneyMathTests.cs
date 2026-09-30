@@ -15,8 +15,8 @@ namespace Bodu.Financial;
 public sealed class MoneyMathTests
 {
     /// <summary>
-    /// Verifies that <see cref="MoneyMath.AllocateByRatios" /> throws <see cref="ArgumentException" /> — a clear
-    /// domain error — rather than <see cref="DivideByZeroException" /> when every ratio is zero (a zero total weight).
+    /// Verifies that <see cref="MoneyMath.AllocateByRatios" /> throws <see cref="ArgumentException" /> - a clear
+    /// domain error - rather than <see cref="DivideByZeroException" /> when every ratio is zero (a zero total weight).
     /// </summary>
     [TestMethod]
     public void AllocateByRatios_WhenAllRatiosAreZero_ShouldThrowArgumentException()

@@ -6,8 +6,8 @@ title: Runnable samples
 
 The repository ships runnable, self-contained sample projects for the financial packages under
 [`samples/Financial/`](https://github.com/bslater/bodu/tree/master/samples/Financial). Every
-sample runs **fully offline** — exchange-rate samples build their providers from committed
-static data files instead of calling live feeds — and each carries a clearly fenced comment
+sample runs **fully offline** - exchange-rate samples build their providers from committed
+static data files instead of calling live feeds - and each carries a clearly fenced comment
 block showing how to switch to a real web provider. The samples are members of `bodu.slnx` and
 are built and executed by CI, so the code they show cannot drift from the current API.
 
@@ -35,7 +35,7 @@ shapes. *Packages: `Bodu.Financial`.*
 The flagship **static-rate-file pattern**: a committed CSV poured through
 <xref:Bodu.Financial.ExchangeRates.RateTableBuilder> into an immutable
 <xref:Bodu.Financial.ExchangeRates.RateBook>, served through
-<xref:Bodu.Financial.ExchangeRates.FixedDatedRateProvider> — the same contracts the live web
+<xref:Bodu.Financial.ExchangeRates.FixedDatedRateProvider> - the same contracts the live web
 providers implement. Works the four <xref:Bodu.Financial.ExchangeRates.RateLookupOptions>
 date-resolution modes over weekend gaps and converts typed and runtime money through dated
 rates. *Packages: `Bodu.Financial`.*
@@ -49,7 +49,7 @@ L2, surviving a simulated restart), and the
 <xref:Bodu.Financial.ExchangeRates.RateHistoryAvailability> clamping model. A closing scenario
 runs the two durable backends: a SQLite-backed cache read back by a second provider after the
 first is disposed, and two providers over one `IDistributedCache` standing in for two
-processes — with the result's `RateProvenance` still reporting `Origin=Cache` so a stored
+processes - with the result's `RateProvenance` still reporting `Origin=Cache` so a stored
 answer is never mistaken for a fresh fetch. A small counting decorator makes hit-vs-fetch
 behaviour visible throughout. *Packages: `Bodu.Financial`,
 `Bodu.Financial.ExchangeRates.Caching`, `…Caching.Sqlite`, `…Caching.Distributed`.*
@@ -81,11 +81,11 @@ wire shapes; and the `AddFinancialJson()` DI registration exposing keyed `JsonSe
 
 ### Bodu.Financial.Samples.UnitPricing
 
-Higher-than-currency precision for unit prices — a six-decimal-place share price in two-decimal
-USD — and preserving it through serialization: a <xref:Bodu.Financial.Money> carrying an explicit
+Higher-than-currency precision for unit prices - a six-decimal-place share price in two-decimal
+USD - and preserving it through serialization: a <xref:Bodu.Financial.Money> carrying an explicit
 scale (settled through a custom-scale <xref:Bodu.Financial.MonetaryContext>) whose Strict JSON shape
 records a `scale` property, unrounded <xref:Bodu.Financial.CalculatedMoney> written verbatim, and
-six-place prices round-tripping inside a POCO price list — see
+six-place prices round-tripping inside a POCO price list - see
 [Monetary precision &amp; unit pricing](../guides/financial/monetary-precision.md). *Packages:
 `Bodu.Financial`, `Bodu.Financial.Serialization.Json`.*
 
@@ -95,16 +95,16 @@ Consumer extensibility: a custom `CsvFileRateProvider` in the recommended shape 
 book → delegated fixed provider), used directly, through the conversion extensions, and under
 the caching decorator. Its companion test project derives
 `DatedRateProviderContractTests<CsvFileRateProvider>` from the in-repo
-`Bodu.Financial.ExchangeRates.Testing` project — see [Testing your own provider](../guides/financial/testing-providers.md).
+`Bodu.Financial.ExchangeRates.Testing` project - see [Testing your own provider](../guides/financial/testing-providers.md).
 *Packages: `Bodu.Financial`, `Bodu.Financial.ExchangeRates.Caching`; the test project also references
 the in-repo `Bodu.Financial.ExchangeRates.Testing` project, which is not published to NuGet.*
 
 ### Bodu.Financial.Samples.LiveRates
 
 The one sample that goes **online** (and is therefore excluded from the CI samples run): it
-fetches real published rates from a live web provider for a computed historical date — the most
+fetches real published rates from a live web provider for a computed historical date - the most
 recent Wednesday at least five days old, with a `PreviousWithin(5)` tolerance so a published
-fixing is near-certain — plus that date's trailing week as a single range read. The ECB feed is
+fixing is near-certain - plus that date's trailing week as a single range read. The ECB feed is
 active by default; RBA, BoE, Yahoo, OFX, OANDA, XE, Fixer, exchangerate.host, FRED, and IMF are
 comment-switchable blocks (the API-key sources need a key set), and every
 provider package is referenced so the switch is a comment flip. *Packages: one of the

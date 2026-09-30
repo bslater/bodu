@@ -10,15 +10,15 @@ namespace Bodu.Security.Cryptography.Extensions;
 
 /// <summary>
 /// Extends <see cref="ICryptoTransform" /> with one-shot, span/memory-aware, stream-to-stream, and async transform
-/// helpers — sized buffers, finalization, and stream pumping rolled into single calls.
+/// helpers - sized buffers, finalization, and stream pumping rolled into single calls.
 /// </summary>
 /// <remarks>
 /// <para>
 /// <see cref="ICryptoTransform" /> is the contract that every block-cipher encryptor or decryptor implements, but its
 /// raw API forces callers to size output buffers, allocate result arrays, distinguish intermediate
 /// <c>TransformBlock</c> calls from the final <c>TransformFinalBlock</c>, and reset the transform between messages.
-/// This class wraps those operations behind two verb-led names — <c>Transform</c> for whole-input processing and
-/// <c>TransformFinalBlock</c> for finalization — that hide the buffering arithmetic and give the caller back a
+/// This class wraps those operations behind two verb-led names - <c>Transform</c> for whole-input processing and
+/// <c>TransformFinalBlock</c> for finalization - that hide the buffering arithmetic and give the caller back a
 /// correctly sized result.
 /// </para>
 /// <para>
@@ -36,7 +36,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <item>
 /// <term>Caller-supplied buffers</term>
 /// <description>
-/// <c>Transform(input, destination)</c> overloads for span and memory destinations — for hot paths that want to reuse a
+/// <c>Transform(input, destination)</c> overloads for span and memory destinations - for hot paths that want to reuse a
 /// pre-allocated output buffer and have <c>destination</c> written in place. The return value is the number of bytes
 /// written.
 /// </description>
@@ -58,7 +58,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// </item>
 /// </list>
 /// <para>
-/// <see cref="ICryptoTransform" /> instances are stateful and single-use within a message — once
+/// <see cref="ICryptoTransform" /> instances are stateful and single-use within a message - once
 /// <see cref="ICryptoTransform.TransformFinalBlock(byte[], int, int)" /> has run, the transform should be disposed and
 /// a fresh one created for the next message. None of these helpers dispose the transform or the supplied streams; the
 /// caller owns the lifetime. Methods that allocate a result array always return exactly the number of bytes produced.

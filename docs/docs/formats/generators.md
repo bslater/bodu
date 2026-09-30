@@ -1,10 +1,10 @@
 ---
-title: Bodu.Text.Formats.Generators — Reflection-free binding
+title: Bodu.Text.Formats.Generators - Reflection-free binding
 ---
 
-# Bodu.Text.Formats.Generators — Reflection-free binding
+# Bodu.Text.Formats.Generators - Reflection-free binding
 
-**Bodu.Text.Formats.Generators** is an incremental Roslyn source generator that removes reflection from the [Delimited](delimited/index.md) and [INI](ini/index.md) serializer paths. Annotate a `partial` POCO with `[DelimitedRecord]` or `[IniSection]` and the generator emits, at build time, an `IDelimitedRecordFactory<TRecord>` or `IIniSectionFactory<TSection>` implementation exposed as a static `DelimitedFactory` / `IniFactory` property on the type. Pass that factory to the serializer's factory overloads and the reflection binder is never entered — which is what makes the path safe for trimming and ahead-of-time compilation.
+**Bodu.Text.Formats.Generators** is an incremental Roslyn source generator that removes reflection from the [Delimited](delimited/index.md) and [INI](ini/index.md) serializer paths. Annotate a `partial` POCO with `[DelimitedRecord]` or `[IniSection]` and the generator emits, at build time, an `IDelimitedRecordFactory<TRecord>` or `IIniSectionFactory<TSection>` implementation exposed as a static `DelimitedFactory` / `IniFactory` property on the type. Pass that factory to the serializer's factory overloads and the reflection binder is never entered - which is what makes the path safe for trimming and ahead-of-time compilation.
 
 Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic, alongside the [line formats](index.md).
 
@@ -15,10 +15,10 @@ Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topi
 
 For every annotated type the generator adds one file, `<Namespace>.<Type>.Delimited.g.cs` or `<Namespace>.<Type>.Ini.g.cs`, containing a second declaration of the partial type with:
 
-- a public static property — `DelimitedFactory` of type <xref:Bodu.Text.Delimited.IDelimitedRecordFactory`1>, or `IniFactory` of type <xref:Bodu.Text.Ini.IIniSectionFactory`1> — holding a singleton;
+- a public static property - `DelimitedFactory` of type <xref:Bodu.Text.Delimited.IDelimitedRecordFactory`1>, or `IniFactory` of type <xref:Bodu.Text.Ini.IIniSectionFactory`1> - holding a singleton;
 - a private nested class implementing the interface: a static array of the resolved wire names in declaration order (`Headers` / `Keys`), a `GetFields` / `GetEntries` method that formats each member, a `Create` method that constructs the instance and binds decoded strings back, and a `Bind` helper that matches names ordinally first and case-insensitively as a fallback.
 
-The factory maps the type's **public read/write instance properties in declaration order**, honors `[PropertyName]` for the wire name, skips members annotated `[Ignore]` (with the default `IgnoreCondition.Always`), formats and parses scalars with `InvariantCulture`, and maps a `Nullable<T>` member to and from the empty string — mirroring the runtime reflection binders so the two paths are interchangeable.
+The factory maps the type's **public read/write instance properties in declaration order**, honors `[PropertyName]` for the wire name, skips members annotated `[Ignore]` (with the default `IgnoreCondition.Always`), formats and parses scalars with `InvariantCulture`, and maps a `Nullable<T>` member to and from the empty string - mirroring the runtime reflection binders so the two paths are interchangeable.
 
 ## Wiring the generator into a project
 
@@ -43,12 +43,12 @@ To inspect the emitted source, set `<EmitCompilerGeneratedFiles>true</EmitCompil
 | Rule | Why |
 |---|---|
 | Annotated with <xref:Bodu.Text.Delimited.DelimitedRecordAttribute> or <xref:Bodu.Text.Ini.IniSectionAttribute> (a class, struct, record, or record struct). | The generator keys on the attribute's metadata name. |
-| Every declaration of the type — **and of every containing type** — is `partial`. | The factory is added as a second partial declaration (`BTFG001` otherwise). |
+| Every declaration of the type - **and of every containing type** - is `partial`. | The factory is added as a second partial declaration (`BTFG001` otherwise). |
 | Not generic, and not nested inside a generic type. | A static factory property cannot be expressed for an open type (`BTFG003` otherwise). |
-| Constructible with `new T()` — a parameterless constructor reachable from inside the type. | `Create` instantiates the type before binding; the nested factory can reach a private constructor. |
+| Constructible with `new T()` - a parameterless constructor reachable from inside the type. | `Create` instantiates the type before binding; the nested factory can reach a private constructor. |
 | Mapped members are **public instance properties with a public getter and a public, non-`init` setter**. | Static members, indexers, non-public accessors, `init`-only setters, and fields are not mapped (silently). |
-| Each mapped property's type is a supported scalar or its `Nullable<T>`: `string`, `bool`, `char`, `sbyte`/`byte`/`short`/`ushort`/`int`/`uint`/`long`/`ulong`, `float`/`double`/`decimal`, `Guid`, `DateTime`, `DateTimeOffset`, `TimeSpan`, or any enum. | Anything else — `Uri`, collections, nested objects — is skipped with `BTFG002`; the factory is still generated for the remaining members. |
-| `[Ignore]` with the default condition excludes a member; `[Ignore(Condition = …)]` with any *other* condition leaves it mapped. | The factory has no write-time conditional path — the wire is string-only. |
+| Each mapped property's type is a supported scalar or its `Nullable<T>`: `string`, `bool`, `char`, `sbyte`/`byte`/`short`/`ushort`/`int`/`uint`/`long`/`ulong`, `float`/`double`/`decimal`, `Guid`, `DateTime`, `DateTimeOffset`, `TimeSpan`, or any enum. | Anything else - `Uri`, collections, nested objects - is skipped with `BTFG002`; the factory is still generated for the remaining members. |
+| `[Ignore]` with the default condition excludes a member; `[Ignore(Condition = …)]` with any *other* condition leaves it mapped. | The factory has no write-time conditional path - the wire is string-only. |
 
 Two behaviors differ from the reflection binder by design: the options-level `PropertyNamingPolicy` is **not** applied by a factory (its header and key names are fixed at compile time, so pin names with `[PropertyName]`), and `IncludeFields` has no effect (fields are never mapped).
 
@@ -73,11 +73,11 @@ The factory overloads are exact counterparts of the reflection entry points, wit
 | <xref:Bodu.Text.Delimited.DelimitedSerializer> | `Serialize<TRecord>(IEnumerable<TRecord> records, IDelimitedRecordFactory<TRecord> factory, DelimitedSerializerOptions? options = null)` → `string`; `Serialize<TRecord>(IBufferWriter<byte> destination, IEnumerable<TRecord> records, IDelimitedRecordFactory<TRecord> factory, …)`; `Deserialize<TRecord>(string text, IDelimitedRecordFactory<TRecord> factory, …)`, `Deserialize<TRecord>(ReadOnlySpan<byte> utf8Delimited, …)`, and `Deserialize<TRecord>(Stream source, …)` → `List<TRecord>`. |
 | <xref:Bodu.Text.Ini.IniSerializer> | `SerializeSection<TSection>(string sectionName, TSection value, IIniSectionFactory<TSection> factory, IniSerializerOptions? options = null)` → `string`; `SerializeSection<TSection>(IBufferWriter<byte> destination, string sectionName, TSection value, IIniSectionFactory<TSection> factory, …)`; `DeserializeSection<TSection>(string text, string sectionName, IIniSectionFactory<TSection> factory, …)` and `DeserializeSection<TSection>(ReadOnlySpan<byte> utf8Ini, string sectionName, …)` → `TSection`. |
 
-Dialect options still apply on the factory path — `Delimiter`, `Quote`, and `NoHeader` for Delimited (a headerless document binds **positionally** in `Headers` order), and the duplicate-section / duplicate-key policies for INI (merging runs before the factory sees the entries). An empty INI section name writes or binds the document's **global keys**; a section that is absent from the input raises <xref:Bodu.Text.Ini.IniSerializationException>. `DotEnvSerializer` has no factory surface — it remains reflection-only.
+Dialect options still apply on the factory path - `Delimiter`, `Quote`, and `NoHeader` for Delimited (a headerless document binds **positionally** in `Headers` order), and the duplicate-section / duplicate-key policies for INI (merging runs before the factory sees the entries). An empty INI section name writes or binds the document's **global keys**; a section that is absent from the input raises <xref:Bodu.Text.Ini.IniSerializationException>. `DotEnvSerializer` has no factory surface - it remains reflection-only.
 
 ## Writing a factory by hand
 
-The interfaces are small enough to implement directly when the generator cannot be used — a type you do not own, a non-scalar column, or a build that cannot host analyzers. The contract for Delimited: `Headers` (column names in field order), `GetFields(record)` (values in `Headers` order), and `Create(fields, headers)` where `headers` is the document's header row, or **empty** for a headerless document, in which case bind positionally.
+The interfaces are small enough to implement directly when the generator cannot be used - a type you do not own, a non-scalar column, or a build that cannot host analyzers. The contract for Delimited: `Headers` (column names in field order), `GetFields(record)` (values in `Headers` order), and `Create(fields, headers)` where `headers` is the document's header row, or **empty** for a headerless document, in which case bind positionally.
 
 ```csharp
 using System.Globalization;
@@ -123,11 +123,11 @@ Format with `InvariantCulture` on the way out and parse with it on the way in, a
 
 ## Trimming and AOT
 
-The reflection entry points of all three line-format serializers are annotated: `DelimitedSerializer.Serialize<T>` / `Deserialize<TRecord>` / `SerializeAsync` / `DeserializeAsyncEnumerableAsync`, `IniSerializer.Serialize<T>` / `Deserialize<T>` and their stream and async variants, and every `DotEnvSerializer` entry point carry `[RequiresUnreferencedCode]` **and** `[RequiresDynamicCode]`. A project that publishes trimmed or native-AOT therefore reports `IL2026` / `IL3050` at each reflection call site. The factory overloads carry neither attribute, so routing Delimited and INI binding through a generated (or hand-written) factory is the supported way to publish trimmed or AOT-compiled binaries with these packages. The structured serializers are annotated as well — `TomlSerializer` with both attributes, `YamlSerializer` with `[RequiresUnreferencedCode]` — and have no reflection-free path today.
+The reflection entry points of all three line-format serializers are annotated: `DelimitedSerializer.Serialize<T>` / `Deserialize<TRecord>` / `SerializeAsync` / `DeserializeAsyncEnumerableAsync`, `IniSerializer.Serialize<T>` / `Deserialize<T>` and their stream and async variants, and every `DotEnvSerializer` entry point carry `[RequiresUnreferencedCode]` **and** `[RequiresDynamicCode]`. A project that publishes trimmed or native-AOT therefore reports `IL2026` / `IL3050` at each reflection call site. The factory overloads carry neither attribute, so routing Delimited and INI binding through a generated (or hand-written) factory is the supported way to publish trimmed or AOT-compiled binaries with these packages. The structured serializers are annotated as well - `TomlSerializer` with both attributes, `YamlSerializer` with `[RequiresUnreferencedCode]` - and have no reflection-free path today.
 
 ## Where to go next
 
-- **[Source generator guide](../../guides/formats/source-generator.md)** — the end-to-end walk-through: POCO, generated factory, both serializers, parity, diagnostics.
-- **[Line formats introduction](index.md)**, **[Core concepts](concepts.md)**, and **[Getting started](getting-started.md)** — the umbrella trio.
-- **[Bodu.Text.Delimited](delimited/index.md)** and **[Bodu.Text.Ini](ini/index.md)** — the two packages whose serializers accept a factory.
-- **[Package matrix](../package-matrix.md)** — status and dependencies.
+- **[Source generator guide](../../guides/formats/source-generator.md)** - the end-to-end walk-through: POCO, generated factory, both serializers, parity, diagnostics.
+- **[Line formats introduction](index.md)**, **[Core concepts](concepts.md)**, and **[Getting started](getting-started.md)** - the umbrella trio.
+- **[Bodu.Text.Delimited](delimited/index.md)** and **[Bodu.Text.Ini](ini/index.md)** - the two packages whose serializers accept a factory.
+- **[Package matrix](../package-matrix.md)** - status and dependencies.

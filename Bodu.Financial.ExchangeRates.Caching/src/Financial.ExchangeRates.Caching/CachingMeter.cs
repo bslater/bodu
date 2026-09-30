@@ -15,7 +15,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The instruments complement — never replace — the existing log messages: logs carry per-event detail while the
+/// The instruments complement - never replace - the existing log messages: logs carry per-event detail while the
 /// counters make hit ratio and failure rate measurable. Storage-failure counts increment on <em>every</em> swallowed
 /// failure, deliberately outside the rate-limited warning gate that throttles log volume, so sustained degradation is
 /// quantifiable even while its logging is suppressed.

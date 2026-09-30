@@ -31,7 +31,7 @@ public partial class BitSetTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BitSet.ToString" /> reflects mutations — the summary tracks the logical content, not
+    /// Verifies that <see cref="BitSet.ToString" /> reflects mutations - the summary tracks the logical content, not
     /// the allocation.
     /// </summary>
     [TestMethod]

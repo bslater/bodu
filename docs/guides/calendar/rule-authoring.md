@@ -4,11 +4,11 @@ title: Authoring notable date rules
 
 # Authoring notable date rules
 
-A notable date is defined by a **rule document** on the notable-date schema (`urn:bodu:globalization:calendar`): author it as XML or JSON, then load it into an immutable <xref:Bodu.Globalization.Calendar.NotableDateResource> with <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>. There is no mutable rule-object graph and no rule-provider interface — a rule is a `<Rule>` element, and a service is built over the loaded resource. This guide covers the document model directly; to assemble the same document fluently in C# instead, see [Authoring with the notable-date builder](notable-date-builder.md).
+A notable date is defined by a **rule document** on the notable-date schema (`urn:bodu:globalization:calendar`): author it as XML or JSON, then load it into an immutable <xref:Bodu.Globalization.Calendar.NotableDateResource> with <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>. There is no mutable rule-object graph and no rule-provider interface - a rule is a `<Rule>` element, and a service is built over the loaded resource. This guide covers the document model directly; to assemble the same document fluently in C# instead, see [Authoring with the notable-date builder](notable-date-builder.md).
 
 This guide walks the document model top to bottom: the `<NotableDateResource>` root and its child order, how a `<NotableDate>` concept carries one or more `<Rule>` recipes, the `<Strategy>` and `<Recurrence>` occurrence sources, importing the bundled common catalogues with `<Imports>`, and ID-targeted edits with `<Overrides>`. For the full strategy catalogue see [Notable-date rule strategies](strategy-reference.md). For the vocabulary it assumes (document vs. resource, concept vs. rule, nominal vs. observed, territory containment) read [Core concepts](../../docs/calendar/concepts.md) first. For the per-element field reference, see [NotableDateRule and adjustment-policy reference](rule-reference.md).
 
-![Rule authoring — authored document loaded into an immutable resource](../../images/diagrams/calendar-rule-authoring.svg)
+![Rule authoring - authored document loaded into an immutable resource](../../images/diagrams/calendar-rule-authoring.svg)
 
 ---
 
@@ -42,13 +42,13 @@ A minimal document declares a single fixed-date concept:
 </NotableDateResource>
 ```
 
-`id` values follow the schema's identifier pattern — lowercase, digits, and hyphens (`new-years-day`, `good-friday`). `resourceId` additionally allows dots (`data.au`, `common.global-buddhist`).
+`id` values follow the schema's identifier pattern - lowercase, digits, and hyphens (`new-years-day`, `good-friday`). `resourceId` additionally allows dots (`data.au`, `common.global-buddhist`).
 
 ---
 
 ## Concepts and rules
 
-A `<NotableDate>` is one notable-date **concept** — an `id`, a `displayName`, a default `category`, and a `<Rules>` block of one or more `<Rule>` recipes. Optional concept-level attributes set defaults the rules inherit: `defaultNonWorkingDay` marks the concept as a closure, and `defaultDurationDays` gives multi-day events their span.
+A `<NotableDate>` is one notable-date **concept** - an `id`, a `displayName`, a default `category`, and a `<Rules>` block of one or more `<Rule>` recipes. Optional concept-level attributes set defaults the rules inherit: `defaultNonWorkingDay` marks the concept as a closure, and `defaultDurationDays` gives multi-day events their span.
 
 ```xml
 <NotableDate id="anzac-day" displayName="Anzac Day" category="Remembrance" defaultNonWorkingDay="true">
@@ -79,7 +79,7 @@ A `<Rule>` is one calculation recipe. Its required `id` distinguishes it from it
 </Rule>
 ```
 
-A concept holds several rules when the same date is observed differently across subdivisions or years — for example one Labour-Day rule per Australian state, each scoped to its subdivision and carrying its own `<Strategy>`. The engine resolves the most-specific rule that applies to the requested territory and year. See [NotableDateRule and adjustment-policy reference](rule-reference.md) for every attribute.
+A concept holds several rules when the same date is observed differently across subdivisions or years - for example one Labour-Day rule per Australian state, each scoped to its subdivision and carrying its own `<Strategy>`. The engine resolves the most-specific rule that applies to the requested territory and year. See [NotableDateRule and adjustment-policy reference](rule-reference.md) for every attribute.
 
 ---
 
@@ -108,15 +108,15 @@ A one-line example of each:
 <Strategy><Algorithm key="western-easter" /></Strategy>
 ```
 
-Alongside these, the schema provides **positional** strategies (`<OrdinalDayOfMonth>`, `<DayOfYear>`, `<IsoWeekDate>`), **dynamic-reference** strategies (`<WeekdayNearRule>`, `<NthWeekdayFromRule>`), and **business-day** strategies (`<WorkingDayOffsetFromRule>`, `<WorkingDayInMonth>`) that resolve against the working-week and applicable non-working occurrences. A rule may instead declare a `<Recurrence>` — a repeating cadence (`<DailyInterval>`, `<Weekly>`, `<MonthlyDay>`, `<MonthlyWeekday>`) that yields many occurrences — and may carry a `<Duration>` whose end date is either a fixed day count or **calculated** from a second strategy. The complete catalogue, with a choosing guide and a common-scenarios cookbook, is [Notable-date rule strategies](strategy-reference.md).
+Alongside these, the schema provides **positional** strategies (`<OrdinalDayOfMonth>`, `<DayOfYear>`, `<IsoWeekDate>`), **dynamic-reference** strategies (`<WeekdayNearRule>`, `<NthWeekdayFromRule>`), and **business-day** strategies (`<WorkingDayOffsetFromRule>`, `<WorkingDayInMonth>`) that resolve against the working-week and applicable non-working occurrences. A rule may instead declare a `<Recurrence>` - a repeating cadence (`<DailyInterval>`, `<Weekly>`, `<MonthlyDay>`, `<MonthlyWeekday>`) that yields many occurrences - and may carry a `<Duration>` whose end date is either a fixed day count or **calculated** from a second strategy. The complete catalogue, with a choosing guide and a common-scenarios cookbook, is [Notable-date rule strategies](strategy-reference.md).
 
-`month` accepts either a number (`1`–`12`) or an English month name (`January`). `weekOrdinal` is a <xref:Bodu.Extensions.WeekOrdinal> value (`First`…`Fifth`, `Last`); `direction` is a <xref:Bodu.Globalization.Calendar.WeekdayProximity> value (`Before`, `OnOrBefore`, `Nearest`, `OnOrAfter`, `After`). For per-element attribute tables and worked examples see [NotableDateRule and adjustment-policy reference](rule-reference.md); for the `<Algorithm>` key catalogue and custom algorithms see [Date calculation algorithms](algorithms.md).
+`month` accepts either a number (`1`-`12`) or an English month name (`January`). `weekOrdinal` is a <xref:Bodu.Extensions.WeekOrdinal> value (`First`…`Fifth`, `Last`); `direction` is a <xref:Bodu.Globalization.Calendar.WeekdayProximity> value (`Before`, `OnOrBefore`, `Nearest`, `OnOrAfter`, `After`). For per-element attribute tables and worked examples see [NotableDateRule and adjustment-policy reference](rule-reference.md); for the `<Algorithm>` key catalogue and custom algorithms see [Date calculation algorithms](algorithms.md).
 
 ---
 
 ## Adjustment policies
 
-A weekend-substitution or "move-to-next-working-day" shift is authored once as a reusable `<AdjustmentPolicy>` in `<AdjustmentPolicies>`, then referenced from any rule via `<Adjustment policyRef="...">`. Adjustments are **always** referenced by id — there are no inline per-rule adjustment definitions.
+A weekend-substitution or "move-to-next-working-day" shift is authored once as a reusable `<AdjustmentPolicy>` in `<AdjustmentPolicies>`, then referenced from any rule via `<Adjustment policyRef="...">`. Adjustments are **always** referenced by id - there are no inline per-rule adjustment definitions.
 
 ```xml
 <AdjustmentPolicies>
@@ -139,13 +139,13 @@ A policy pairs a `<Trigger>` (when it fires) with an `<Action>` (what it does) a
 </Rule>
 ```
 
-The full trigger, action, emission, and scope vocabulary — and the worked weekend-substitution patterns for AU/NZ, the UK, and the US — are covered in [Observance adjustment rules](adjustment-rules.md) and [Holiday patterns and examples](holiday-patterns.md).
+The full trigger, action, emission, and scope vocabulary - and the worked weekend-substitution patterns for AU/NZ, the UK, and the US - are covered in [Observance adjustment rules](adjustment-rules.md) and [Holiday patterns and examples](holiday-patterns.md).
 
 ---
 
 ## Importing the common catalogues
 
-A regional document rarely starts from scratch. The base package ships a set of **common catalogues** — `global-core`, `christian-western`, `global-family`, `global-remembrance`, `global-cultural`, `global-buddhist`, `global-hindu`, and friends — that carry the bare calculation strategy for shared concepts. An `<Import>` pulls those concepts in; the local document supplies the territory scope, category, non-working flag, and any adjustment.
+A regional document rarely starts from scratch. The base package ships a set of **common catalogues** - `global-core`, `christian-western`, `global-family`, `global-remembrance`, `global-cultural`, `global-buddhist`, `global-hindu`, and friends - that carry the bare calculation strategy for shared concepts. An `<Import>` pulls those concepts in; the local document supplies the territory scope, category, non-working flag, and any adjustment.
 
 ```xml
 <Imports>
@@ -177,7 +177,7 @@ An `<Import>` with **no** `<Use>` children imports every concept in the catalogu
 
 ### Loading a document that imports
 
-`<Imports>` are resolved by a `Func<string,string?>` passed to the loader. <xref:Bodu.Globalization.Calendar.CommonNotableDateResources> exposes that resolver over the bundled catalogues — pass `CommonNotableDateResources.Resolver`:
+`<Imports>` are resolved by a `Func<string,string?>` passed to the loader. <xref:Bodu.Globalization.Calendar.CommonNotableDateResources> exposes that resolver over the bundled catalogues - pass `CommonNotableDateResources.Resolver`:
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -187,7 +187,7 @@ NotableDateResource resource =
 NotableDateService service = new NotableDateService(resource);
 ```
 
-A document with **no** `<Imports>` loads with the single-argument overload, `NotableDateResourceLoader.Load(xml)`. The companion `Bodu.Globalization.Calendar.<Region>` data packs are built exactly this way — each region resource imports from the common catalogues and is loaded through the same resolver. See [Calendar data packs](data-packs.md).
+A document with **no** `<Imports>` loads with the single-argument overload, `NotableDateResourceLoader.Load(xml)`. The companion `Bodu.Globalization.Calendar.<Region>` data packs are built exactly this way - each region resource imports from the common catalogues and is loaded through the same resolver. See [Calendar data packs](data-packs.md).
 
 ---
 
@@ -296,7 +296,7 @@ The larger sections map the same way: `<AdjustmentPolicies>` → `adjustmentPoli
 }
 ```
 
-JSON and XML are accepted by separate loader entry points — `LoadJson` for JSON, `Load` for XML — and produce identical resources; there is no auto-detection.
+JSON and XML are accepted by separate loader entry points - `LoadJson` for JSON, `Load` for XML - and produce identical resources; there is no auto-detection.
 
 ---
 
@@ -330,12 +330,12 @@ Typical errors include a duplicate concept or rule id, an unknown adjustment `po
 
 ## Where to go next
 
-- [Using NotableDateService](notable-dates.md) — loading resources, querying by date / range / year, and filtering.
-- [Notable-date rule strategies](strategy-reference.md) — every occurrence source and duration, with a choosing guide and common-scenarios cookbook.
-- [NotableDateRule and adjustment-policy reference](rule-reference.md) — the per-element field reference for the document model.
-- [Date calculation algorithms](algorithms.md) — the strategy kinds, the built-in `<Algorithm>` keys, and custom algorithms.
-- [Observance adjustment rules](adjustment-rules.md) — the full trigger / action / emission catalogues for `<AdjustmentPolicy>`.
-- [Working with non-Gregorian calendars](non-gregorian-calendars.md) — `<Fixed>` dates in Hijri / Hebrew / Persian / Chinese lunisolar calendars.
-- [Calendar data packs](data-packs.md) — the official Americas / Asia-Pacific / Europe / Middle East / Africa resources, built from these same imports.
-- [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.
-- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- [Using NotableDateService](notable-dates.md) - loading resources, querying by date / range / year, and filtering.
+- [Notable-date rule strategies](strategy-reference.md) - every occurrence source and duration, with a choosing guide and common-scenarios cookbook.
+- [NotableDateRule and adjustment-policy reference](rule-reference.md) - the per-element field reference for the document model.
+- [Date calculation algorithms](algorithms.md) - the strategy kinds, the built-in `<Algorithm>` keys, and custom algorithms.
+- [Observance adjustment rules](adjustment-rules.md) - the full trigger / action / emission catalogues for `<AdjustmentPolicy>`.
+- [Working with non-Gregorian calendars](non-gregorian-calendars.md) - `<Fixed>` dates in Hijri / Hebrew / Persian / Chinese lunisolar calendars.
+- [Calendar data packs](data-packs.md) - the official Americas / Asia-Pacific / Europe / Middle East / Africa resources, built from these same imports.
+- [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) - full type reference.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

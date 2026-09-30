@@ -11,7 +11,7 @@ namespace Bodu.Samples.Text.Configuration.ConfigCascade.Scenarios;
 /// <summary>
 /// Demonstrates the two parse entry points: <c>Parse</c> throws on the first structural error
 /// (right for generated files), while <c>ParseWithDiagnostics</c> collects
-/// <see cref="ConfigurationDiagnostic" /> rows and still returns a usable document — right for
+/// <see cref="ConfigurationDiagnostic" /> rows and still returns a usable document - right for
 /// user-authored files where an editor wants to show every problem at once.
 /// </summary>
 public static class ParseAndDiagnostics

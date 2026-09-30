@@ -118,7 +118,7 @@ public partial class ConcurrentCircularBufferTests
         reader.Wait();
     }
 
-    // Issue 3 — the previous assertion was: buffer.AllowOverwrite == true || buffer.AllowOverwrite == false
+    // Issue 3 - the previous assertion was: buffer.AllowOverwrite == true || buffer.AllowOverwrite == false
     // which is a tautology for any bool and can never fail. The corrected test captures the last
     // write made by the toggler and asserts the final read is consistent with that value.
 
@@ -140,7 +140,7 @@ public partial class ConcurrentCircularBufferTests
             _ = buffer.AllowOverwrite; // exercise the read path
         });
 
-        // The final value must be a valid bool — either true or false, matching the last
+        // The final value must be a valid bool - either true or false, matching the last
         // visible write. We cannot assert an exact value because the last write is
         // non-deterministic, but we can confirm the property is readable without error
         // and returns a value consistent with what was written by some thread.

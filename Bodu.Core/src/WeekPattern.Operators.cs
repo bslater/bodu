@@ -30,7 +30,7 @@ public partial struct WeekPattern
     }
 
     /// <summary>
-    /// Returns a new <see cref="WeekPattern" /> with all seven days toggled — selected days become unselected and vice
+    /// Returns a new <see cref="WeekPattern" /> with all seven days toggled - selected days become unselected and vice
     /// versa.
     /// </summary>
     /// <param name="pattern">The <see cref="WeekPattern" /> to complement.</param>

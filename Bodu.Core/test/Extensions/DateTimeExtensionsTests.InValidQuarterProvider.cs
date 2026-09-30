@@ -19,7 +19,7 @@ public partial class DateTimeExtensionsTests
     {
 
         /// <summary>
-        /// Always returns an invalid quarter number (outside the expected range of 1–4).
+        /// Always returns an invalid quarter number (outside the expected range of 1-4).
         /// </summary>
         /// <param name="dateTime">The input <see cref="DateTime" />.</param>
         /// <returns>An invalid quarter number.</returns>

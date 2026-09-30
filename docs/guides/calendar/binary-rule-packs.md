@@ -4,7 +4,7 @@ title: Binary rule packs
 
 # Binary rule packs
 
-A binary rule pack (`.bcal`) is the compiled form of a notable-date document: a compact, integrity-checked, sealed encoding of a **validated** <xref:Bodu.Globalization.Calendar.NotableDateResource>. Packs are written at build/authoring time and loaded at run time without parsing or semantic validation — the trim- and AOT-friendly load path for calendar data.
+A binary rule pack (`.bcal`) is the compiled form of a notable-date document: a compact, integrity-checked, sealed encoding of a **validated** <xref:Bodu.Globalization.Calendar.NotableDateResource>. Packs are written at build/authoring time and loaded at run time without parsing or semantic validation - the trim- and AOT-friendly load path for calendar data.
 
 ## When to use a pack
 
@@ -31,7 +31,7 @@ NotableDateResource resource = NotableDateResourceLoader.LoadBinary(stream);
 INotableDateService service = new NotableDateService(resource);
 ```
 
-The symmetric low-level surface is <xref:Bodu.Globalization.Calendar.NotableDateBinaryResource> — `Write(resource, stream)` / `Read(stream)` — usable with any already-built resource, including the bundled catalogues.
+The symmetric low-level surface is <xref:Bodu.Globalization.Calendar.NotableDateBinaryResource> - `Write(resource, stream)` / `Read(stream)` - usable with any already-built resource, including the bundled catalogues.
 
 A pack is **compiled output, not an authoring source**: `NotableDateDocumentBuilder.Load` rejects `.bcal` paths with `NotSupportedException`. Keep the XML/JSON document as the editable source of truth and recompile.
 
@@ -40,9 +40,9 @@ A pack is **compiled output, not an authoring source**: `NotableDateDocumentBuil
 | Guarantee | Meaning |
 |---|---|
 | **Pre-validated content** | The writer only accepts a built `NotableDateResource`; `SaveBinary` runs `Build()` (the canonical loader) first, so an invalid document can never reach a pack. |
-| **Byte stability** | The same resource always encodes to the same bytes — dictionary content is key-sorted and string interning follows deterministic traversal — so build systems can rely on pack outputs for up-to-date checks. |
+| **Byte stability** | The same resource always encodes to the same bytes - dictionary content is key-sorted and string interning follows deterministic traversal - so build systems can rely on pack outputs for up-to-date checks. |
 | **Integrity** | The header carries a SHA-256 digest of the payload; any corruption or modification fails the load before content is interpreted. |
-| **Sealed** | The reader rejects unknown format versions, unknown discriminators, undefined enum values, out-of-range string references, truncation at any byte, trailing bytes, and values outside a model constructor's domain — always as <xref:Bodu.Globalization.Calendar.NotableDateBinaryFormatException> (a `FormatException`), never as an unrelated failure. |
+| **Sealed** | The reader rejects unknown format versions, unknown discriminators, undefined enum values, out-of-range string references, truncation at any byte, trailing bytes, and values outside a model constructor's domain - always as <xref:Bodu.Globalization.Calendar.NotableDateBinaryFormatException> (a `FormatException`), never as an unrelated failure. |
 | **Behavioural fidelity** | A round-tripped resource resolves identically to the original; the test suite pins resolved-occurrence parity for every bundled catalogue and a synthetic document covering every strategy, recurrence, and duration type. |
 
 ## Format layout (version 1)
@@ -62,7 +62,7 @@ Rules encode nullable fields as presence bytes and their occurrence source as a 
 
 ## Compiling packs from the command line
 
-The `bodu-calendar` dotnet tool wraps the same compile pipeline for scripts and CI — it validates a notable-date document with the stable `BODU-CAL-*` diagnostics and compiles it to a sealed pack without writing any C#:
+The `bodu-calendar` dotnet tool wraps the same compile pipeline for scripts and CI - it validates a notable-date document with the stable `BODU-CAL-*` diagnostics and compiles it to a sealed pack without writing any C#:
 
 ```bash
 # Not on nuget.org: pack the tool from a clone and install it from that local feed.
@@ -78,7 +78,7 @@ bodu-calendar info holidays.bcal
 
 ## Compiling packs during build
 
-The `Bodu.Globalization.Calendar.Build` package adds MSBuild integration — a development dependency that compiles `NotableDatePack` items to `.bcal` incrementally on every build via the bundled `bodu-calendar` tool, with no runtime reference added to the consuming project:
+The `Bodu.Globalization.Calendar.Build` package adds MSBuild integration - a development dependency that compiles `NotableDatePack` items to `.bcal` incrementally on every build via the bundled `bodu-calendar` tool, with no runtime reference added to the consuming project:
 
 It is [not published to nuget.org](../../docs/package-matrix.md#not-published-to-nugetorg), so reference the project from a clone:
 
@@ -98,7 +98,7 @@ Each item compiles to `$(NotableDatePackOutputPath)<Filename>.bcal` (defaulting 
 
 ## Where to go next
 
-- [Builder round-trip guarantees](round-trip-guarantees.md) — the XML/JSON serialization contract the pack compiler builds on.
-- [Authoring with the notable-date builder](notable-date-builder.md) — producing the documents packs are compiled from.
-- [Calendar plugin trust](plugin-trust.md) — why data packs are the AOT-compatible alternative to code plugins.
-- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- [Builder round-trip guarantees](round-trip-guarantees.md) - the XML/JSON serialization contract the pack compiler builds on.
+- [Authoring with the notable-date builder](notable-date-builder.md) - producing the documents packs are compiled from.
+- [Calendar plugin trust](plugin-trust.md) - why data packs are the AOT-compatible alternative to code plugins.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

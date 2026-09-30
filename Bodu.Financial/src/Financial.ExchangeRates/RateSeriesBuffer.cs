@@ -14,8 +14,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The buffer maintains the same invariants as <see cref="RateSeriesStorage" /> — strictly ascending unique day numbers
-/// and strictly positive rates — but grows its arrays with spare capacity using the <see cref="List{T}" /> doubling
+/// The buffer maintains the same invariants as <see cref="RateSeriesStorage" /> - strictly ascending unique day numbers
+/// and strictly positive rates - but grows its arrays with spare capacity using the <see cref="List{T}" /> doubling
 /// rule. Single-element mutations perform a <see cref="Array.BinarySearch{T}(T[], int, int, T)" /> followed by an
 /// <see cref="Array.Copy(Array, int, Array, int, int)" /> shift. Range mutations sort and deduplicate the incoming
 /// batch, then run a two-pointer merge against the existing buffer into fresh arrays so a validation failure leaves the

@@ -116,7 +116,7 @@ public partial class FractionTests
 
     /// <summary>
     /// Verifies that the reflection-free bounded-type matrix reports the correct bounds across the full set of built-in
-    /// bounded backing types, not just <see cref="int" /> — guarding the AOT-safe <c>TryGetBounds</c> matrix against a
+    /// bounded backing types, not just <see cref="int" /> - guarding the AOT-safe <c>TryGetBounds</c> matrix against a
     /// dropped entry.
     /// </summary>
     [TestMethod]

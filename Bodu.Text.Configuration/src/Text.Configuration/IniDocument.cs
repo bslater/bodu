@@ -31,7 +31,7 @@ namespace Bodu.Text.Configuration;
 ///
 /// // Walk every named section.
 /// foreach (IniSection section in doc.Sections)
-///     Console.WriteLine($"[{section.Name}] — {section.Entries.Count} entries");
+///     Console.WriteLine($"[{section.Name}] - {section.Entries.Count} entries");
 ///
 /// // Read the global section (keys that appeared before any header).
 /// IniSection global = doc.GlobalSection;

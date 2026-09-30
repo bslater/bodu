@@ -11,10 +11,10 @@ namespace Bodu.Functional;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Each operation mirrors its synchronous counterpart — <c>MapAsync</c> pairs with
+/// Each operation mirrors its synchronous counterpart - <c>MapAsync</c> pairs with
 /// <see cref="Option{T}.Map{TResult}(Func{T, TResult})" />, <c>BindAsync</c> with
 /// <see cref="Option{T}.Bind{TResult}(Func{T, Option{TResult}})" />, and <c>MatchAsync</c> with
-/// <see cref="Option{T}.Match{TResult}(Func{T, TResult}, Func{TResult})" /> — so an asynchronous pipeline over
+/// <see cref="Option{T}.Match{TResult}(Func{T, TResult}, Func{TResult})" /> - so an asynchronous pipeline over
 /// <c>Task&lt;Option&lt;T&gt;&gt;</c> composes exactly like its synchronous equivalent.
 /// </para>
 /// <para>

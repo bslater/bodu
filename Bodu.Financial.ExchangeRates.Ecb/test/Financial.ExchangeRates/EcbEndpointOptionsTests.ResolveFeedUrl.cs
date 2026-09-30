@@ -36,8 +36,8 @@ public partial class EcbEndpointOptionsTests
     }
 
     /// <summary>
-    /// Verifies that a feed whose file name is not a plain relative name — a parent-directory reference, a rooted
-    /// path, or an absolute URL — is rejected rather than retargeting the request outside the configured base URL.
+    /// Verifies that a feed whose file name is not a plain relative name - a parent-directory reference, a rooted
+    /// path, or an absolute URL - is rejected rather than retargeting the request outside the configured base URL.
     /// </summary>
     /// <param name="fileName">The crafted feed file name.</param>
     [TestMethod]

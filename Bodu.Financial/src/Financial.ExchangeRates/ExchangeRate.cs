@@ -15,8 +15,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// An <see cref="ExchangeRate" /> is an immutable value object intended to be passed back from a provider together with
-/// resolution metadata in an <see cref="RateLookupResult" />. It carries enough context — direction, date, provider
-/// name, and inversion flag — for downstream auditability (for example, tax and accounting reports) without requiring
+/// resolution metadata in an <see cref="RateLookupResult" />. It carries enough context - direction, date, provider
+/// name, and inversion flag - for downstream auditability (for example, tax and accounting reports) without requiring
 /// the caller to reach back into the provider.
 /// </para>
 /// <example>
@@ -272,7 +272,7 @@ public readonly record struct ExchangeRate
 
     /// <summary>
     /// Determines whether this rate equals <paramref name="other" /> by its public fields. The internal observed rate
-    /// and the <see cref="FetchedAtUtc" /> fetch instant are excluded — both are provenance metadata — so two rates
+    /// and the <see cref="FetchedAtUtc" /> fetch instant are excluded - both are provenance metadata - so two rates
     /// that report the same direction, date, multiplier, provider, and inversion compare equal regardless of how each
     /// was constructed or when its source data was fetched.
     /// </summary>

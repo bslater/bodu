@@ -1,12 +1,12 @@
 ---
-title: Bodu.Text.Bencode — Getting started
+title: Bodu.Text.Bencode - Getting started
 ---
 
 # Getting started
 
 ## Install
 
-Add the package. Its one library dependency, the shared **Bodu.Text.Serialization** package (the attribute family, naming policies, and callback interfaces), is restored transitively — there is nothing else to add.
+Add the package. Its one library dependency, the shared **Bodu.Text.Serialization** package (the attribute family, naming policies, and callback interfaces), is restored transitively - there is nothing else to add.
 
 ```shell
 dotnet add package Bodu.Text.Bencode
@@ -62,7 +62,7 @@ byte[] back = node.ToByteArray();
 
 ## Read a document without a model
 
-For inspection only, the **read-only DOM** is the lighter choice — a low-allocation view over the parsed buffer, walked through `RootElement`:
+For inspection only, the **read-only DOM** is the lighter choice - a low-allocation view over the parsed buffer, walked through `RootElement`:
 
 ```csharp
 using Bodu.Text.Bencode.Document;
@@ -74,11 +74,11 @@ string name   = info.GetProperty("name").GetString();        // "ubuntu.iso"
 long   length = info.GetProperty("piece length").GetInt64(); // 262144
 ```
 
-`BencodeDocument` is disposable — wrap it in `using` and copy out any values that must outlive it, since disposal returns its pooled buffer.
+`BencodeDocument` is disposable - wrap it in `using` and copy out any values that must outlive it, since disposal returns its pooled buffer.
 
 ## Bridge a model to a DOM without re-encoding
 
-When you have a model but want to inspect or edit its shape before writing bytes, the serializer projects it straight into either DOM — no intermediate `byte[]` round trip — and binds back from a node tree:
+When you have a model but want to inspect or edit its shape before writing bytes, the serializer projects it straight into either DOM - no intermediate `byte[]` round trip - and binds back from a node tree:
 
 ```csharp
 using Bodu.Text.Bencode;
@@ -115,8 +115,8 @@ The synchronous `Serialize(Stream, …)` / `Deserialize<T>(Stream, …)` overloa
 
 Failures split into two exception types, so you can tell *bad input* apart from *wrong type*:
 
-- A **malformed document** — bytes the grammar rejects — raises <xref:Bodu.Text.Bencode.BencodeFormatException>, which carries the byte `Offset` where parsing failed.
-- A document that **parses but cannot bind** to your type — a type mismatch, a missing required member, a value the format cannot represent — raises <xref:Bodu.Text.Bencode.BencodeSerializationException>.
+- A **malformed document** - bytes the grammar rejects - raises <xref:Bodu.Text.Bencode.BencodeFormatException>, which carries the byte `Offset` where parsing failed.
+- A document that **parses but cannot bind** to your type - a type mismatch, a missing required member, a value the format cannot represent - raises <xref:Bodu.Text.Bencode.BencodeSerializationException>.
 
 ```csharp
 try
@@ -135,8 +135,8 @@ catch (BencodeSerializationException ex)
 
 ## Where to go next
 
-- **[Bodu.Text.Bencode introduction](index.md)** — what is specific to Bencode: byte strings, canonical output, the kinds it cannot represent.
-- **[Core concepts](concepts.md)** — the serializer, converter model, both DOMs, and the reader/writer seam.
-- **[Using Bencode](../../../guides/serialization/bencode/using.md)** — byte strings, canonical ordering, the DOMs, and unsupported kinds.
-- **[Writing converters](../../../guides/serialization/bencode/converters.md)** — custom shapes with `BencodeConverter<T>`.
-- **[Text & Serialization topic overview](../../topics/text-and-serialization.md)** — where the serializers sit among the codecs and document formats.
+- **[Bodu.Text.Bencode introduction](index.md)** - what is specific to Bencode: byte strings, canonical output, the kinds it cannot represent.
+- **[Core concepts](concepts.md)** - the serializer, converter model, both DOMs, and the reader/writer seam.
+- **[Using Bencode](../../../guides/serialization/bencode/using.md)** - byte strings, canonical ordering, the DOMs, and unsupported kinds.
+- **[Writing converters](../../../guides/serialization/bencode/converters.md)** - custom shapes with `BencodeConverter<T>`.
+- **[Text & Serialization topic overview](../../topics/text-and-serialization.md)** - where the serializers sit among the codecs and document formats.

@@ -10,12 +10,12 @@ namespace Bodu.Security.Cryptography.Extensions;
 
 /// <summary>
 /// Tests for the <see cref="SymmetricAlgorithmExtensions.TryCreateEncryptor(SymmetricAlgorithm, out ICryptoTransform)" />
-/// family — covering the parameterless overload and the explicit key/IV overload.
+/// family - covering the parameterless overload and the explicit key/IV overload.
 /// </summary>
 /// <remarks>
 /// The try-pattern returns <see langword="false" /> with a <see langword="null" /> out
 /// parameter for any input that would cause the underlying
-/// <see cref="SymmetricAlgorithm.CreateEncryptor(byte[], byte[])" /> to throw — null arguments,
+/// <see cref="SymmetricAlgorithm.CreateEncryptor(byte[], byte[])" /> to throw - null arguments,
 /// invalid key sizes, or invalid IV sizes.
 /// </remarks>
 public partial class SymmetricAlgorithmExtensionTests
@@ -70,7 +70,7 @@ public partial class SymmetricAlgorithmExtensionTests
         Assert.IsNotNull(transform);
     }
 
-    // ─── Failure paths — null arguments ───────────────────────────────────────────────────────
+    // ─── Failure paths - null arguments ───────────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that a null key returns <see langword="false" /> with a null out parameter.
@@ -100,7 +100,7 @@ public partial class SymmetricAlgorithmExtensionTests
         Assert.IsNull(transform);
     }
 
-    // ─── Failure paths — invalid sizes ────────────────────────────────────────────────────────
+    // ─── Failure paths - invalid sizes ────────────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that an IV with an invalid length (one byte too long) returns
@@ -138,7 +138,7 @@ public partial class SymmetricAlgorithmExtensionTests
         if (invalidKey is null)
         {
             Assert.Inconclusive(
-                $"{algorithm.GetType().Name} accepts every byte-aligned key length — " +
+                $"{algorithm.GetType().Name} accepts every byte-aligned key length - " +
                 "no invalid size can be constructed for this test.");
             return;
         }

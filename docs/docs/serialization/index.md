@@ -1,12 +1,12 @@
 ---
-title: Bodu serializers — Introduction
+title: Bodu serializers - Introduction
 ---
 
 # Bodu serializers (Bencode, TOML, and YAML)
 
 ![Bodu serializers](../../images/hero-serializers.svg)
 
-**Bodu.Text.Bencode**, **Bodu.Text.Toml**, and **Bodu.Text.Yaml** are three libraries that map your own types (POCOs, records, collections) to and from a document format. Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic, each ships its own reader, writer, DOMs, and converters, and each references the shared **Bodu.Text.Serialization** package (namespace <xref:Bodu.Text.Serialization>) for the vocabulary they have in common — the attribute family (`[PropertyName]`, `[Ignore]`, `[Converter]`, `[Required]`, `[Constructor]`, `[ExtensionData]`, …), the naming policies, the ignore / creation / unmapped-member enums, and the serialization callback interfaces. The per-format packages also compile the shared metadata resolver and converter engine from that package's source under their own format symbol:
+**Bodu.Text.Bencode**, **Bodu.Text.Toml**, and **Bodu.Text.Yaml** are three libraries that map your own types (POCOs, records, collections) to and from a document format. Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic, each ships its own reader, writer, DOMs, and converters, and each references the shared **Bodu.Text.Serialization** package (namespace <xref:Bodu.Text.Serialization>) for the vocabulary they have in common - the attribute family (`[PropertyName]`, `[Ignore]`, `[Converter]`, `[Required]`, `[Constructor]`, `[ExtensionData]`, …), the naming policies, the ignore / creation / unmapped-member enums, and the serialization callback interfaces. The per-format packages also compile the shared metadata resolver and converter engine from that package's source under their own format symbol:
 
 | Package | Namespace | Format | Entry point |
 |---|---|---|---|
@@ -14,7 +14,7 @@ title: Bodu serializers — Introduction
 | **Bodu.Text.Toml** | <xref:Bodu.Text.Toml> | [TOML](https://toml.io/) v1.0.0 / v1.1.0 (text) | <xref:Bodu.Text.Toml.TomlSerializer> |
 | **Bodu.Text.Yaml** | <xref:Bodu.Text.Yaml> | [YAML](https://yaml.org/) 1.2 core schema (text) | <xref:Bodu.Text.Yaml.YamlSerializer> |
 
-The libraries are built to the **same architecture**: the same three-tier layering, the same `System.Text.Json`-aligned vocabulary, and the same naming so that what you learn for one transfers to the next. They are *not* identical surfaces — Bencode and TOML are member-for-member twins, while YAML tunes its serializer surface to the format (more on this below) — but the mental model is shared across all three.
+The libraries are built to the **same architecture**: the same three-tier layering, the same `System.Text.Json`-aligned vocabulary, and the same naming so that what you learn for one transfers to the next. They are *not* identical surfaces - Bencode and TOML are member-for-member twins, while YAML tunes its serializer surface to the format (more on this below) - but the mental model is shared across all three.
 
 ## The three members
 
@@ -22,9 +22,9 @@ This page is the family parent: it describes the architecture the libraries shar
 
 | Library | Introduction | In one line |
 |---|---|---|
-| **Bodu.Text.Bencode** | [Bodu.Text.Bencode](bencode/index.md) | The binary BEP 3 format — byte strings as first-class values, canonical dictionary ordering, and the converter bridge for the kinds Bencode cannot represent. |
-| **Bodu.Text.Toml** | [Bodu.Text.Toml](toml/index.md) | The human-readable configuration format — a rich native value model (floats, Booleans, RFC 3339 date-times), spec-version selection (v1.0.0 / v1.1.0), and positional parse diagnostics. |
-| **Bodu.Text.Yaml** | [Bodu.Text.Yaml](yaml/index.md) | The indentation-structured format — block and flow collections, quoted and block scalars, anchors and aliases, multi-document streams, and the 1.2 core schema (opt-in 1.1 typing). |
+| **Bodu.Text.Bencode** | [Bodu.Text.Bencode](bencode/index.md) | The binary BEP 3 format - byte strings as first-class values, canonical dictionary ordering, and the converter bridge for the kinds Bencode cannot represent. |
+| **Bodu.Text.Toml** | [Bodu.Text.Toml](toml/index.md) | The human-readable configuration format - a rich native value model (floats, Booleans, RFC 3339 date-times), spec-version selection (v1.0.0 / v1.1.0), and positional parse diagnostics. |
+| **Bodu.Text.Yaml** | [Bodu.Text.Yaml](yaml/index.md) | The indentation-structured format - block and flow collections, quoted and block scalars, anchors and aliases, multi-document streams, and the 1.2 core schema (opt-in 1.1 typing). |
 
 Each library's introduction is backed by its own **core concepts** and **getting-started** pages, linked at the foot of this page.
 
@@ -46,15 +46,15 @@ Reach for the **serializer** for object mapping, a **DOM** to inspect or edit a 
 | Reach for… | When you want… |
 |---|---|
 | **TOML** | A configuration file a human will edit, with typed scalars and tables and exact parse positions. |
-| **YAML** | An indentation-structured document — multi-document streams, anchors and aliases, or interop with an existing YAML toolchain. |
-| **Bencode** | A compact, deterministic binary envelope — `.torrent` metadata, content-addressed payloads, byte strings as first-class values. |
+| **YAML** | An indentation-structured document - multi-document streams, anchors and aliases, or interop with an existing YAML toolchain. |
+| **Bencode** | A compact, deterministic binary envelope - `.torrent` metadata, content-addressed payloads, byte strings as first-class values. |
 
 ## Surface differences at a glance
 
 The architecture is shared, but the serializer surfaces differ where the format warrants it:
 
-- **Bencode and TOML** expose the full `System.Text.Json`-style surface — converters and converter factories, the complete attribute family, serialization callbacks, naming policies, and the string/number enum converters.
-- **YAML** keeps the serializer, both DOMs, the reader/writer pair, and the shared attribute/naming/callback layer, shaping members exactly like its siblings. It adds YAML-specific richness on top — anchors and aliases, block and flow collections, block scalars, opt-in 1.1 merge keys, and multi-document streams.
+- **Bencode and TOML** expose the full `System.Text.Json`-style surface - converters and converter factories, the complete attribute family, serialization callbacks, naming policies, and the string/number enum converters.
+- **YAML** keeps the serializer, both DOMs, the reader/writer pair, and the shared attribute/naming/callback layer, shaping members exactly like its siblings. It adds YAML-specific richness on top - anchors and aliases, block and flow collections, block scalars, opt-in 1.1 merge keys, and multi-document streams.
 
 Each library's own pages document its exact surface.
 
@@ -62,12 +62,12 @@ Each library's own pages document its exact surface.
 
 Three contracts hold identically across all three libraries, so they are worth learning once:
 
-- **Options are frozen on first use.** A `…SerializerOptions` instance is mutable only until the first serialize or deserialize call binds it; after that it is read-only and further mutation throws. Configure an options object fully, then reuse the *same frozen instance* across calls — it caches per-type metadata, so a shared instance is both correct and faster than a fresh one per call.
-- **Two exception types, two failure stages.** Malformed *input* — bytes or text that do not parse — raises a `…FormatException` (<xref:Bodu.Text.Bencode.BencodeFormatException>, <xref:Bodu.Text.Toml.TomlFormatException>, <xref:Bodu.Text.Yaml.YamlFormatException>). Input that parses but cannot *bind* to your type raises a `…SerializationException` (<xref:Bodu.Text.Bencode.BencodeSerializationException>, <xref:Bodu.Text.Toml.TomlSerializationException>, <xref:Bodu.Text.Yaml.YamlSerializationException>). The text formats carry line / column / offset on the format exception; catch the two separately when you need to distinguish a syntactically broken document from a schema mismatch.
+- **Options are frozen on first use.** A `…SerializerOptions` instance is mutable only until the first serialize or deserialize call binds it; after that it is read-only and further mutation throws. Configure an options object fully, then reuse the *same frozen instance* across calls - it caches per-type metadata, so a shared instance is both correct and faster than a fresh one per call.
+- **Two exception types, two failure stages.** Malformed *input* - bytes or text that do not parse - raises a `…FormatException` (<xref:Bodu.Text.Bencode.BencodeFormatException>, <xref:Bodu.Text.Toml.TomlFormatException>, <xref:Bodu.Text.Yaml.YamlFormatException>). Input that parses but cannot *bind* to your type raises a `…SerializationException` (<xref:Bodu.Text.Bencode.BencodeSerializationException>, <xref:Bodu.Text.Toml.TomlSerializationException>, <xref:Bodu.Text.Yaml.YamlSerializationException>). The text formats carry line / column / offset on the format exception; catch the two separately when you need to distinguish a syntactically broken document from a schema mismatch.
 - **UTF-8 is the native encoding.** Every `Utf8…Reader` / `Utf8…Writer` operates on UTF-8 bytes, and the serializers accept `ReadOnlySpan<byte>` and write to `IBufferWriter<byte>` without a string detour.
 
 > [!NOTE]
-> All three serializers ship the same stream facade: `Serialize<T>(IBufferWriter<byte>, …)`, `SerializeAsync(Stream, …)`, `Deserialize<T>(Stream, …)`, and `DeserializeAsync<T>(Stream, …)`. The stream overloads buffer the whole document in memory — only the stream copy itself is asynchronous — so they are conveniences over the span / string entry points rather than incremental parsers.
+> All three serializers ship the same stream facade: `Serialize<T>(IBufferWriter<byte>, …)`, `SerializeAsync(Stream, …)`, `Deserialize<T>(Stream, …)`, and `DeserializeAsync<T>(Stream, …)`. The stream overloads buffer the whole document in memory - only the stream copy itself is asynchronous - so they are conveniences over the span / string entry points rather than incremental parsers.
 
 ## Common scenarios
 
@@ -84,6 +84,6 @@ Three contracts hold identically across all three libraries, so they are worth l
 
 ## Where to go next
 
-- **Member introductions** — [Bodu.Text.Bencode](bencode/index.md), [Bodu.Text.Toml](toml/index.md), and [Bodu.Text.Yaml](yaml/index.md) for what is specific to each format, each with its own **core concepts** and **getting-started** pages.
-- **Guides** — the [serializer guides hub](../../guides/serialization/index.md), with a full set of recipes per library.
-- **[Text & Serialization topic](../topics/text-and-serialization.md)** — how the serializers sit alongside `Bodu.Text.Encoding` and `Bodu.Text.Formats`.
+- **Member introductions** - [Bodu.Text.Bencode](bencode/index.md), [Bodu.Text.Toml](toml/index.md), and [Bodu.Text.Yaml](yaml/index.md) for what is specific to each format, each with its own **core concepts** and **getting-started** pages.
+- **Guides** - the [serializer guides hub](../../guides/serialization/index.md), with a full set of recipes per library.
+- **[Text & Serialization topic](../topics/text-and-serialization.md)** - how the serializers sit alongside `Bodu.Text.Encoding` and `Bodu.Text.Formats`.

@@ -34,8 +34,8 @@ public static class NumericsJsonSerializerOptionsExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// The core <c>Bodu.Numerics</c> types carry no <c>[JsonConverter]</c> attribute — the library is
-    /// serialization-agnostic — so this call is required for <see cref="Fraction{T}" />, <see cref="Interval{T}" />,
+    /// The core <c>Bodu.Numerics</c> types carry no <c>[JsonConverter]</c> attribute - the library is
+    /// serialization-agnostic - so this call is required for <see cref="Fraction{T}" />, <see cref="Interval{T}" />,
     /// <see cref="DiscreteInterval{T}" />, <see cref="IntervalSet{T}" />, <see cref="BigDecimal" />, and
     /// <see cref="Complex{T}" /> to round-trip through their canonical shapes. The <see cref="IntervalPair{T}" /> and
     /// <see cref="DiscreteIntervalPair{T}" /> result types are transient and are not serializable; convert them with

@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Calendar.Samples.CustomAlgorithm;
 
 /// <summary>
 /// Entry point for the custom-algorithm sample: extending the date-calculation vocabulary with your
-/// own <c>INotableDateAlgorithm</c>, registered by key and referenced declaratively from rules — plus
+/// own <c>INotableDateAlgorithm</c>, registered by key and referenced declaratively from rules - plus
 /// the delegate shorthand for one-off calculations. The companion test project proves the sample's
 /// calendar against the shared data-pack contract base.
 /// </summary>

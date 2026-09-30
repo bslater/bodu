@@ -13,8 +13,8 @@ namespace Bodu.IO.Pst;
 /// §2.2.2.1).
 /// </summary>
 /// <remarks>
-/// A handful of fixed identifiers anchor every file — <see cref="MessageStore" /> (<c>0x21</c>),
-/// <see cref="NameToIdMap" /> (<c>0x61</c>), and <see cref="RootFolder" /> (<c>0x122</c>) — and are exposed here as
+/// A handful of fixed identifiers anchor every file - <see cref="MessageStore" /> (<c>0x21</c>),
+/// <see cref="NameToIdMap" /> (<c>0x61</c>), and <see cref="RootFolder" /> (<c>0x122</c>) - and are exposed here as
 /// well-known values.
 /// </remarks>
 public readonly struct PstNodeId

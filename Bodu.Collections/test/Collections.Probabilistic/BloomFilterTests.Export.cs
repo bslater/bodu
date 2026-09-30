@@ -229,7 +229,7 @@ public partial class BloomFilterTests
 
     /// <summary>
     /// Verifies that <see cref="BloomFilter{T}.Import" /> throws <see cref="ArgumentException" /> when the header
-    /// describes an invalid filter — a corrupted bit count of zero.
+    /// describes an invalid filter - a corrupted bit count of zero.
     /// </summary>
     [TestMethod]
     public void Import_WhenBitCountFieldIsCorrupted_ShouldThrowArgumentException()

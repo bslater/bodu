@@ -1,6 +1,6 @@
 # Bodu.Financial.ExchangeRates.Caching.Sqlite
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 A SQLite-backed persistent cache for `Bodu.Financial` exchange-rate providers.
 
@@ -13,8 +13,8 @@ A SQLite-backed persistent cache for `Bodu.Financial` exchange-rate providers.
 
 `SqliteRateCache` implements the `IRateCache` contract over a SQLite database, persisting one
 provider's dated rates and fetch-coverage windows so they need not be re-fetched while fresh. It is behaviourally
-identical to the in-memory and TOML caches in `Bodu.Financial.ExchangeRates.Caching` — the same freshness, merge,
-coverage, and validation semantics — and is validated against the same shared `RateCacheContractTests`.
+identical to the in-memory and TOML caches in `Bodu.Financial.ExchangeRates.Caching` - the same freshness, merge,
+coverage, and validation semantics - and is validated against the same shared `RateCacheContractTests`.
 
 ## Storage
 
@@ -32,8 +32,8 @@ coverage, and validation semantics — and is validated against the same shared 
 
 * Expiry is by caching duration: stale and semantically invalid rows are filtered on read and pruned on write; stale
   coverage windows are pruned when coverage is recorded, so the database self-cleans.
-* The independent half-writes preserve the other half — `Store` never drops coverage, and `RecordCoverage` never drops
-  rows — while `StoreFetchedRange` (the path the `CachingRateProvider` decorator uses) rewrites both the `rates`
+* The independent half-writes preserve the other half - `Store` never drops coverage, and `RecordCoverage` never drops
+  rows - while `StoreFetchedRange` (the path the `CachingRateProvider` decorator uses) rewrites both the `rates`
   and `coverage` tables for the pair in **one transaction**, so a reader never observes coverage without its rows. An
   empty-but-fetched range still records its coverage window so it is not perpetually re-fetched. The write reports an
   `RateCacheWriteStatus` (`Stored` / `Failed` / `Skipped`).
@@ -53,14 +53,14 @@ using var cache = new SqliteRateCache(options);
 IDatedRateProvider cached = new CachingRateProvider(rba, cache, new CachingRateOptions());
 ```
 
-One cache instance serves **every currency pair** for its provider — the store is keyed by
+One cache instance serves **every currency pair** for its provider - the store is keyed by
 `(provider, from_code, to_code, obs_date)`, so a single `SqliteRateCache` holds `AUD/USD`, `GBP/USD`, and any
 other pair the provider returns. There is never a cache per pair.
 
 ### Several providers in one database (without DI)
 
 Because `provider` is the leading key column, several single-provider caches can share **one** database file with no
-collisions — each provider's series stays partitioned. Construct one cache per provider over the same
+collisions - each provider's series stays partitioned. Construct one cache per provider over the same
 `DatabaseFilePath` and wrap each in its own `CachingRateProvider`:
 
 ```csharp

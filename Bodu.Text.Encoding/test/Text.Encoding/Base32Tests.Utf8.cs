@@ -31,7 +31,7 @@ public sealed partial class Base32Tests
 
     /// <summary>
     /// Verifies that when the destination is smaller than a single Base32 quantum the decoder reports no progress
-    /// rather than partial-quantum writes — the OperationStatus contract requires <c>bytesConsumed</c> to map to a
+    /// rather than partial-quantum writes - the OperationStatus contract requires <c>bytesConsumed</c> to map to a
     /// re-feedable position.
     /// </summary>
     [TestMethod]

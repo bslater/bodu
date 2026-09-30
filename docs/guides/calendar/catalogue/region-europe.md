@@ -30,7 +30,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
 
 ## BE
 
@@ -53,7 +53,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
 
 ## BG
 
@@ -79,7 +79,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Orthodox Easter Sunday | — | National | inline | Algorithm: orthodox-easter |
+| Orthodox Easter Sunday | - | National | inline | Algorithm: orthodox-easter |
 
 ## CY
 
@@ -107,7 +107,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Orthodox Easter Sunday | — | National | inline | Algorithm: orthodox-easter |
+| Orthodox Easter Sunday | - | National | inline | Algorithm: orthodox-easter |
 
 ## CZ
 
@@ -133,7 +133,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
 
 ## DE
 
@@ -163,22 +163,22 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
 
 ### Cultural
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Valentine's Day | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Fixed 14 Feb |
-| Christmas Eve | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Fixed 24 Dec |
+| Valentine's Day | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Fixed 14 Feb |
+| Christmas Eve | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Fixed 24 Dec |
 
 ### Observance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
 | International Women's Day | Yes | National + BE, MV | inline | Fixed 8 Mar |
-| Mother's Day | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | 2nd Sun May |
-| Father's Day | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | 3rd Sun Jun |
+| Mother's Day | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | 2nd Sun May |
+| Father's Day | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | 3rd Sun Jun |
 
 ## DK
 
@@ -199,14 +199,14 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
-| Whit Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Whit Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
 
 ### Observance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Constitution Day | — | National | inline | Fixed 5 Jun |
+| Constitution Day | - | National | inline | Fixed 5 Jun |
 
 ## EE
 
@@ -229,8 +229,8 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
-| Whit Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Whit Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
 
 ## ES
 
@@ -253,7 +253,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
 
 ## FI
 
@@ -278,8 +278,8 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
-| Whit Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Whit Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
 
 ## FR
 
@@ -307,25 +307,25 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
-| Whit Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Whit Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
 
 ### Cultural
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Valentine's Day | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Fixed 14 Feb |
-| April Fool's Day | — | National | [← global-cultural](theme-cultural-and-family.md#global-cultural) | Fixed 1 Apr |
-| World Music Day | — | National | inline | Fixed 21 Jun |
-| Christmas Eve | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Fixed 24 Dec |
+| Valentine's Day | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Fixed 14 Feb |
+| April Fool's Day | - | National | [← global-cultural](theme-cultural-and-family.md#global-cultural) | Fixed 1 Apr |
+| World Music Day | - | National | inline | Fixed 21 Jun |
+| Christmas Eve | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Fixed 24 Dec |
 
 ### Observance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| International Women's Day | — | National | inline | Fixed 8 Mar |
-| Mother's Day | — | National | inline | last Sun May |
-| Father's Day | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | 3rd Sun Jun |
+| International Women's Day | - | National | inline | Fixed 8 Mar |
+| Mother's Day | - | National | inline | last Sun May |
+| Father's Day | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | 3rd Sun Jun |
 
 ## GB
 
@@ -353,35 +353,35 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
 
 ### Cultural
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Burns Night | — | SCT | inline | Fixed 25 Jan |
-| Valentine's Day | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Fixed 14 Feb |
-| Saint David's Day | — | WLS | inline | Fixed 1 Mar |
-| April Fool's Day | — | National | [← global-all](theme-aggregates.md#global-all) | Fixed 1 Apr |
-| Saint George's Day | — | ENG | inline | Fixed 23 Apr |
-| Halloween | — | National | inline | Fixed 31 Oct |
-| Bonfire Night | — | National | inline | Fixed 5 Nov |
-| Christmas Eve | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Fixed 24 Dec |
+| Burns Night | - | SCT | inline | Fixed 25 Jan |
+| Valentine's Day | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Fixed 14 Feb |
+| Saint David's Day | - | WLS | inline | Fixed 1 Mar |
+| April Fool's Day | - | National | [← global-all](theme-aggregates.md#global-all) | Fixed 1 Apr |
+| Saint George's Day | - | ENG | inline | Fixed 23 Apr |
+| Halloween | - | National | inline | Fixed 31 Oct |
+| Bonfire Night | - | National | inline | Fixed 5 Nov |
+| Christmas Eve | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Fixed 24 Dec |
 
 ### Observance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| International Women's Day | — | National | inline | Fixed 8 Mar |
-| Father's Day | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | 3rd Sun Jun |
-| Mothering Sunday | — | National | inline | Easter -21 |
+| International Women's Day | - | National | inline | Fixed 8 Mar |
+| Father's Day | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | 3rd Sun Jun |
+| Mothering Sunday | - | National | inline | Easter -21 |
 
 ### Remembrance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Remembrance Day | — | National | [← global-all](theme-aggregates.md#global-all) | Fixed 11 Nov |
-| Remembrance Sunday | — | National | inline | 2nd Sun Nov |
+| Remembrance Day | - | National | [← global-all](theme-aggregates.md#global-all) | Fixed 11 Nov |
+| Remembrance Sunday | - | National | inline | 2nd Sun Nov |
 
 ## GR
 
@@ -407,7 +407,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Orthodox Easter Sunday | — | National | inline | Algorithm: orthodox-easter |
+| Orthodox Easter Sunday | - | National | inline | Algorithm: orthodox-easter |
 
 ## HR
 
@@ -433,7 +433,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
 
 ## HU
 
@@ -457,8 +457,8 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
-| Whit Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Whit Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
 
 ## IE
 
@@ -481,7 +481,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
 
 ## IT
 
@@ -505,7 +505,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
 
 ## LT
 
@@ -531,7 +531,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
 
 ## LU
 
@@ -555,7 +555,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
 
 ## LV
 
@@ -580,7 +580,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
 
 ## MT
 
@@ -607,7 +607,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
 
 ## NL
 
@@ -627,15 +627,15 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
-| Whit Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Whit Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
 
 ### Observance
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Liberation Day | — | National | inline | Fixed 5 May |
-| Good Friday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter -2 |
+| Liberation Day | - | National | inline | Fixed 5 May |
+| Good Friday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter -2 |
 
 ## PL
 
@@ -659,8 +659,8 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
-| Whit Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Whit Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
 
 ## PT
 
@@ -685,7 +685,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
 
 ## RO
 
@@ -712,7 +712,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Orthodox Easter Sunday | — | National | inline | Algorithm: orthodox-easter |
+| Orthodox Easter Sunday | - | National | inline | Algorithm: orthodox-easter |
 
 ## SE
 
@@ -737,14 +737,14 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
-| Whit Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Whit Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
 
 ### Cultural
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| New Year's Eve | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Fixed 31 Dec |
+| New Year's Eve | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Fixed 31 Dec |
 
 ## SI
 
@@ -770,8 +770,8 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
-| Whit Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Whit Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Easter +49 |
 
 ## SK
 
@@ -799,7 +799,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | Algorithm: western-easter |
 
 ---
 
@@ -807,6 +807,6 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 ## See also
 
-- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
-- **[Bodu.Globalization.Calendar guides](../index.md)** — the full guide index for the calendar runtime and its companions.
+- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- **[Bodu.Globalization.Calendar guides](../index.md)** - the full guide index for the calendar runtime and its companions.
 

@@ -19,7 +19,7 @@ namespace Bodu.Globalization.Calendar.Samples.Plugin.Contoso;
 /// exactly as a third-party plugin would be.
 /// </summary>
 /// <remarks>
-/// The plugin depends only on the contract packages — <c>Bodu.Globalization.Calendar</c> for
+/// The plugin depends only on the contract packages - <c>Bodu.Globalization.Calendar</c> for
 /// <see cref="INotableDateAlgorithm" /> and <c>Bodu.Globalization.Calendar.Plugins</c> for this
 /// interface and the attribute. It has no reference to the host application, and the host has no
 /// compile-time knowledge of the type you are reading.

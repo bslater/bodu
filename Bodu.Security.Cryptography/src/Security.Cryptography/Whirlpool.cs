@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Whirlpool is a Merkle–Damgård construction wrapped around an internal 512-bit block cipher (<c>W</c>) that borrows
+/// Whirlpool is a Merkle-Damgård construction wrapped around an internal 512-bit block cipher (<c>W</c>) that borrows
 /// the wide-trail design principles of the Rijndael family. Input is consumed in 64-byte blocks; the final message
 /// length (in bits) is appended in a 256-bit big-endian trailer after a single <c>0x80</c> padding byte, in the
 /// standard manner.
@@ -47,13 +47,13 @@ namespace Bodu.Security.Cryptography;
 /// <description>
 /// Selectable revision: <see cref="WhirlpoolVersion.WhirlpoolInfo1" /> (2000),
 /// <see cref="WhirlpoolVersion.WhirlpoolInfo1" /> (Whirlpool-T, 2001), or
-/// <see cref="WhirlpoolVersion.WhirlpoolInfo3" /> (ISO/IEC 10118-3, 2003 — default).
+/// <see cref="WhirlpoolVersion.WhirlpoolInfo3" /> (ISO/IEC 10118-3, 2003 - default).
 /// </description>
 /// </item>
 /// </list>
 /// <para>
 /// <strong>When to choose Whirlpool.</strong> Pick Whirlpool when interoperability with software that produces or
-/// expects ISO/IEC 10118-3 Whirlpool digests is required — TrueCrypt-era disk encryption metadata, certain European
+/// expects ISO/IEC 10118-3 Whirlpool digests is required - TrueCrypt-era disk encryption metadata, certain European
 /// e-government standards, and some content-addressed stores. For a modern 512-bit cryptographic hash without an
 /// interop constraint use SHA-512 or <see cref="Blake2b" />; both are faster on contemporary hardware.
 /// </para>
@@ -83,7 +83,7 @@ public sealed partial class Whirlpool
     /// <summary>Length of the Whirlpool message-length trailer appended during padding is 256 bits (32 bytes).</summary>
     private const int LengthFieldBits = 256;
 
-    /// <summary>The eight 64-bit chaining variables updated in place across the Merkle–Damgård compression.</summary>
+    /// <summary>The eight 64-bit chaining variables updated in place across the Merkle-Damgård compression.</summary>
     private readonly ulong[] _state = new ulong[8];
 
     /// <summary>The selected Whirlpool revision used to compute the hash value.</summary>
@@ -111,7 +111,7 @@ public sealed partial class Whirlpool
     /// <inheritdoc />
     /// <remarks>
     /// Returns one of <c>"Whirlpool-0"</c>, <c>"Whirlpool-T"</c>, or <c>"Whirlpool"</c> matching the configured
-    /// <see cref="Version" /> — corresponding to the 2000, 2001, and ISO/IEC 10118-3 (2003) revisions respectively.
+    /// <see cref="Version" /> - corresponding to the 2000, 2001, and ISO/IEC 10118-3 (2003) revisions respectively.
     /// </remarks>
     public override string AlgorithmName
     {
@@ -280,7 +280,7 @@ public sealed partial class Whirlpool
             ApplyRound(ref nextState, ref key, ref state, ref mul);
         }
 
-        // Miyaguchi–Preneel finalization: H_{i+1} = W_{H_i}(M) ⊕ M ⊕ H_i.
+        // Miyaguchi-Preneel finalization: H_{i+1} = W_{H_i}(M) ⊕ M ⊕ H_i.
         for (int i = 0; i < 8; i++)
             _state[i] ^= Unsafe.Add(ref state, i) ^ Unsafe.Add(ref message, i);
     }

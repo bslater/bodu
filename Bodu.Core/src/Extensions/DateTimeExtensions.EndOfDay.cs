@@ -22,7 +22,7 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>
     /// The result is calculated by extracting the date component of <paramref name="dateTime" /> and adding
-    /// <c>TicksPerDay - 1</c> to represent the last representable moment of the day — one tick before midnight of the
+    /// <c>TicksPerDay - 1</c> to represent the last representable moment of the day - one tick before midnight of the
     /// next day.
     /// </para>
     /// <para>

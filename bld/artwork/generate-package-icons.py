@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # ---------------------------------------------------------------------------------------------------------------
-# generate-package-icons.py — regenerates the per-package NuGet icon SVG sources under bld/icons/svg.
+# generate-package-icons.py - regenerates the per-package NuGet icon SVG sources under bld/icons/svg.
 #
 # Every icon shares one 128x128 template (rounded gradient tile, accent border, Bodu suite mark, a
 # per-package glyph, and a monogram chip); only accent, glyph, and monogram vary. After editing, run

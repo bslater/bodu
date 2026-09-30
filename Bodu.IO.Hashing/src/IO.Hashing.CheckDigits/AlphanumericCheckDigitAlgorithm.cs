@@ -14,7 +14,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <para>
 /// Parallel in design to <see cref="CheckDigitAlgorithm" />, this base relaxes two constraints: the input may be any
 /// subset of ASCII declared by <see cref="InputAlphabet" /> (decimal digits, or decimal digits and uppercase Latin
-/// letters), and the emitted check character may be any value of <see cref="OutputAlphabet" /> — notably including the
+/// letters), and the emitted check character may be any value of <see cref="OutputAlphabet" /> - notably including the
 /// <c>'X'</c> sentinel used by ISBN-10 and ISO 7064 MOD 11-2 to represent the check value ten.
 /// </para>
 /// <para>
@@ -25,8 +25,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// are kept distinct by design rather than unified under one base type.
 /// </para>
 /// <para>
-/// The streaming surface — <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" />,
-/// <see cref="CheckValueAlgorithm.Reset" />, and <see cref="GetCurrentCheckDigit" /> — will nonetheless feel familiar
+/// The streaming surface - <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" />,
+/// <see cref="CheckValueAlgorithm.Reset" />, and <see cref="GetCurrentCheckDigit" /> - will nonetheless feel familiar
 /// to anyone who has used a hash algorithm: input is accumulated, the computation can be restarted, and reading the
 /// current check character is non-destructive and idempotent. That resemblance is incidental convenience, not a shared
 /// contract. Concrete implementations document their empty-body behavior.
@@ -41,7 +41,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Use a concrete derivative through the abstract surface — ISIN accepts a mix of
+/// // Use a concrete derivative through the abstract surface - ISIN accepts a mix of
 /// // ASCII letters (the country code) and digits.
 /// AlphanumericCheckDigitAlgorithm algo = new Isin();
 /// algo.Append("US037833100");                          // Apple Inc.

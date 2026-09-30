@@ -431,7 +431,7 @@ public ref partial struct Utf8TomlReader
     }
 
     /// <summary>
-    /// Decodes the validated content of a basic string, resolving escape sequences and — for the multi-line form —
+    /// Decodes the validated content of a basic string, resolving escape sequences and - for the multi-line form -
     /// line-ending backslashes.
     /// </summary>
     /// <param name="content">The raw content bytes, already validated by the scan.</param>

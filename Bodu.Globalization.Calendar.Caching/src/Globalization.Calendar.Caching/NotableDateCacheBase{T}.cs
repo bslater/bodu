@@ -62,7 +62,7 @@ public abstract class NotableDateCacheBase<TOptions>
     /// <inheritdoc />
     /// <remarks>
     /// Declared <see langword="virtual" /> so a backend whose storage can answer a single year cheaper than reading the
-    /// whole territory — for example a keyed database row — can override the read while inheriting the write mechanism.
+    /// whole territory - for example a keyed database row - can override the read while inheriting the write mechanism.
     /// An override must apply the same freshness, validity, and version policy through
     /// <see cref="NotableDateCacheRules" />.
     /// </remarks>
@@ -175,8 +175,8 @@ public abstract class NotableDateCacheBase<TOptions>
     /// </returns>
     /// <remarks>
     /// The default implementation ignores the time-to-live and delegates to <see cref="WriteEntries(string,
-    /// IReadOnlyList{NotableDateCacheEntry})" />, so backends without server-side expiration — and third-party
-    /// derivations of the existing seam — are unaffected. The distributed backend overrides this to stamp an absolute
+    /// IReadOnlyList{NotableDateCacheEntry})" />, so backends without server-side expiration - and third-party
+    /// derivations of the existing seam - are unaffected. The distributed backend overrides this to stamp an absolute
     /// expiration onto each territory blob so untouched keys self-evict.
     /// </remarks>
     protected internal virtual bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries, TimeSpan ttl, DateTimeOffset asOf) =>

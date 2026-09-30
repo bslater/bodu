@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 340" role="img" aria-labelledby="bp-t bp-d">
-  <title id="bp-t">Bit-stream packing — Base16, Base32, Base64</title>
+  <title id="bp-t">Bit-stream packing - Base16, Base32, Base64</title>
   <desc id="bp-d">For power-of-two radices the encoder concatenates input bytes into a bit stream and chunks it into N-bit groups. Base16 takes 4-bit nibbles and emits two characters per byte. Base32 takes 5-bit groups and emits 8 characters per 5 input bytes. Base64 takes 6-bit groups and emits 4 characters per 3 input bytes. Each N-bit group's numeric value is its alphabet index.</desc>
 
   <defs>
@@ -30,7 +30,7 @@
     <rect class="pan" width="800" height="320" rx="8"/>
     <rect class="hdr" width="800" height="30" rx="8"/>
     <rect class="hdr" y="22" width="800" height="8"/>
-    <text class="ttl" x="16" y="20">Bit-stream packing — Base16 · Base32 · Base64</text>
+    <text class="ttl" x="16" y="20">Bit-stream packing - Base16 · Base32 · Base64</text>
 
     <!-- ============================================== Base16 row ============================================== -->
     <g transform="translate(20 56)">
@@ -88,7 +88,7 @@
       <text class="mut" x="364" y="20" text-anchor="middle">→</text>
 
       <!-- caption -->
-      <text class="mut" x="660" y="29" style="text-anchor: middle">1 byte → 2 hex chars   ·   ABCDEF / 0–9</text>
+      <text class="mut" x="660" y="29" style="text-anchor: middle">1 byte → 2 hex chars   ·   ABCDEF / 0-9</text>
     </g>
 
     <!-- ============================================== Base32 row ============================================== -->
@@ -122,7 +122,7 @@
         </g>
       </g>
 
-      <text class="mut" x="368" y="48" text-anchor="middle">each 5-bit group → alphabet index 0–31</text>
+      <text class="mut" x="368" y="48" text-anchor="middle">each 5-bit group → alphabet index 0-31</text>
 
       <!-- Output chars MZXWYTB -->
       <g class="mono" font-weight="700" font-size="13">
@@ -144,7 +144,7 @@
         </g>
       </g>
 
-      <text class="mut" x="389" y="68" text-anchor="middle">5 bytes → 8 chars   ·   A–Z / 2–7 (Standard RFC 4648 §6)</text>
+      <text class="mut" x="389" y="68" text-anchor="middle">5 bytes → 8 chars   ·   A-Z / 2-7 (Standard RFC 4648 §6)</text>
     </g>
 
     <!-- ============================================== Base64 row ============================================== -->
@@ -190,13 +190,13 @@
         </g>
       </g>
 
-      <text class="mut" x="388" y="68" text-anchor="middle">3 bytes → 4 chars   ·   A–Z / a–z / 0–9 / +  /  (Standard RFC 4648 §4)</text>
+      <text class="mut" x="388" y="68" text-anchor="middle">3 bytes → 4 chars   ·   A-Z / a-z / 0-9 / +  /  (Standard RFC 4648 §4)</text>
     </g>
 
     <!-- ============================================== Bottom notes ============================================== -->
     <g transform="translate(20 290)">
       <text class="lbl" x="0" y="0" style="text-anchor: start">Non-power-of-two radices</text>
-      <text class="mut" x="0" y="18" style="text-anchor: start"><tspan fill="#F8FAFC" font-weight="700">Base58</tspan>  uses big-integer divmod by 58 — leading zero bytes are preserved as leading '1' characters.</text>
+      <text class="mut" x="0" y="18" style="text-anchor: start"><tspan fill="#F8FAFC" font-weight="700">Base58</tspan>  uses big-integer divmod by 58 - leading zero bytes are preserved as leading '1' characters.</text>
       <text class="mut" x="0" y="32" style="text-anchor: start"><tspan fill="#F8FAFC" font-weight="700">Base85</tspan>  packs 4 input bytes into a uint32, divides four times by 85, and emits 5 characters per block.</text>
     </g>
   </g>

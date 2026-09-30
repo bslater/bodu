@@ -20,13 +20,13 @@ namespace Bodu.Text;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <c>ReadOnlySpan&lt;char&gt;</c> / <c>ReadOnlySpan&lt;byte&gt;</c> receivers express the <em>data-first</em> form —
+/// <c>ReadOnlySpan&lt;char&gt;</c> / <c>ReadOnlySpan&lt;byte&gt;</c> receivers express the <em>data-first</em> form -
 /// discoverable via IntelliSense from a span variable.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="System.Text.Encoding" /> receivers express the <em>encoding-first</em> form — useful when an encoding
+/// <see cref="System.Text.Encoding" /> receivers express the <em>encoding-first</em> form - useful when an encoding
 /// instance is the obvious starting point (for example, encoder-fluent fallback configuration).
 /// </description>
 /// </item>

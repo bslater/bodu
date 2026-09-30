@@ -9,7 +9,7 @@ using System.Globalization;
 // Generates the Islamic observance regression vectors for the bundled Hijri catalogues.
 //
 // With no argument the vectors project each observance's fixed Hijri (month, day) through
-// System.Globalization.UmAlQuraCalendar — whose embedded month table is the official KACST Umm al-Qura data — for
+// System.Globalization.UmAlQuraCalendar - whose embedded month table is the official KACST Umm al-Qura data - for
 // the global-islamic-umm-al-qura catalogue; with the argument "hijri" they project through the base class library's
 // arithmetic HijriCalendar (HijriAdjustment = 0) for the tabular global-islamic catalogue. Both modes replicate the
 // engine's calendar-year sweep semantics (a short lunar date can land twice in one Gregorian year, so a year may

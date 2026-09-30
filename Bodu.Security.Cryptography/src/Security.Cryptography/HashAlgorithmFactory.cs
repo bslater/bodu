@@ -35,7 +35,7 @@ namespace Bodu.Security.Cryptography;
 /// IHashAlgorithmFactory<SHA256> sha256 = HashAlgorithmFactory.From(() => SHA256.Create());
 /// byte[] digest = HashAlgorithmHelper.HashData(sha256, payload);
 ///
-/// // 2. Configured keyed-hash factory — applied consistently every time the consumer constructs an instance.
+/// // 2. Configured keyed-hash factory - applied consistently every time the consumer constructs an instance.
 /// IHashAlgorithmFactory<SipHash64> sip = HashAlgorithmFactory.From(() => new SipHash64 { Key = sessionKey });
 /// byte[] tag = HashAlgorithmHelper.HashData(sip, message);
 ///]]>

@@ -4,7 +4,7 @@ A guided tour of the `Bodu.Text.Encoding` catalogue: the base families
 (Base16/32/45/58/62/64/85) and their published variants, the formatting and parse-style
 option enums, the checksummed schemes built for identifiers humans re-type (Base58Check,
 Bech32), the `Guid` convenience overloads, and the name-addressable `BinaryEncodings`
-registry. Every scenario is pure computation over fixed payloads — offline and
+registry. Every scenario is pure computation over fixed payloads - offline and
 deterministic, no data files.
 
 > Note on namespaces: the sample's root namespace is `Bodu.Samples.Text.Encoding.*`. A
@@ -16,16 +16,16 @@ deterministic, no data files.
 dotnet run --project samples/Text.Encoding/Bodu.Text.Encoding.Samples.EncodingTour
 ```
 
-## Scenario 1 — VariantsTour
+## Scenario 1 - VariantsTour
 
 **Intent.** Map the catalogue: one payload through every base family shows the trade-off
 each makes (length vs alphabet safety vs padding), and one family through its variants shows
-that the alphabet is a *parameter* — switching RFC 4648 Base32 to Crockford, or Ascii85 to
+that the alphabet is a *parameter* - switching RFC 4648 Base32 to Crockford, or Ascii85 to
 Z85, is one enum argument on the same API.
 
 **What it does.** Encodes the 5-byte payload `Bodu!` through Base16, Base32, Base45, Base58,
 Base62, Base64, and Base85; then re-encodes it through the four `Base32Variant`s and two
-`Base85Variant`s (Z85 gets a 4-byte payload — it requires 4-byte alignment); and finally
+`Base85Variant`s (Z85 gets a 4-byte payload - it requires 4-byte alignment); and finally
 decodes Crockford output with the matching variant to underline that alphabets are not
 interchangeable.
 
@@ -68,17 +68,17 @@ interchangeable.
 **APIs demonstrated.** The per-family `Encode`/`Decode` statics, `Base32Variant.Standard` /
 `.HexExtended` / `.Crockford` / `.ZBase32`, `Base85Variant.Ascii85` / `.Z85`.
 
-## Scenario 2 — FormattingAndStyles
+## Scenario 2 - FormattingAndStyles
 
 **Intent.** Show the two option enums that bracket every codec. `BaseFormattingOptions`
 shapes the text you *produce* (case, `0x` prefixes, byte spacing, padding omission);
 `BaseFormatStyles` declares what you *tolerate* when parsing text someone else produced.
-Strict by default, lenient by explicit opt-in — the same philosophy as the rest of the
+Strict by default, lenient by explicit opt-in - the same philosophy as the rest of the
 solution's parsers.
 
 **What it does.** Encodes one payload with `UpperCase`, `IncludePrefix`, `InsertSpacing`,
-and (for Base64) `OmitPadding`; then parses the decorated string `0xDE AD BE EF 01 23` —
-rejected by strict `IsValid`, recovered by `AllowPrefix | IgnoreWhitespace` — and re-parses
+and (for Base64) `OmitPadding`; then parses the decorated string `0xDE AD BE EF 01 23` -
+rejected by strict `IsValid`, recovered by `AllowPrefix | IgnoreWhitespace` - and re-parses
 unpadded Base64 with `AllowMissingPadding`.
 
 **What to expect.**
@@ -115,11 +115,11 @@ unpadded Base64 with `AllowMissingPadding`.
 `.InsertSpacing` / `.OmitPadding`, `BaseFormatStyles.AllowPrefix` / `.IgnoreWhitespace` /
 `.AllowMissingPadding`, `Base16.IsValid`.
 
-## Scenario 3 — ChecksummedSchemes
+## Scenario 3 - ChecksummedSchemes
 
 **Intent.** Introduce the schemes designed for identifiers humans read aloud and re-type:
-Base58Check (Bitcoin addresses — a 4-byte double-SHA-256 checksum appended before encoding)
-and Bech32 (BIP 173 — a BCH error-detecting code plus a human-readable part). The point is
+Base58Check (Bitcoin addresses - a 4-byte double-SHA-256 checksum appended before encoding)
+and Bech32 (BIP 173 - a BCH error-detecting code plus a human-readable part). The point is
 what happens on corruption: decode *fails*, instead of silently returning wrong bytes.
 
 **What it does.** Encodes a 10-byte payload with both schemes, flips the last character of
@@ -154,10 +154,10 @@ detected encoding variant.
 **APIs demonstrated.** `Base58Check.Encode` / `.Decode`, `Bech32.EncodeFromBytes` /
 `.DecodeToBytes` (hrp + data + `Bech32Encoding` out), checksum failure as `FormatException`.
 
-## Scenario 4 — GuidConvenience
+## Scenario 4 - GuidConvenience
 
 **Intent.** Show the `Guid` overloads: identifiers destined for URLs, file names, or log
-lines encode directly — no `ToByteArray` plumbing — and the base choice sets the length:
+lines encode directly - no `ToByteArray` plumbing - and the base choice sets the length:
 36 chars as a standard Guid string, down to 22 in Base58/Base64-UrlSafe.
 
 **What it does.** Encodes one fixed Guid through `Base16.Encode(Guid)`,
@@ -191,11 +191,11 @@ lines encode directly — no `ToByteArray` plumbing — and the base choice sets
 **APIs demonstrated.** The `Encode(Guid, ...)` overloads on Base16/32/58/64,
 `Base58.DecodeGuid`.
 
-## Scenario 5 — EncodingRegistry
+## Scenario 5 - EncodingRegistry
 
 **Intent.** Show `BinaryEncodings`, the name-addressable registry: when the codec is chosen
 at runtime (a config value, protocol header, CLI flag), `Get(name)` returns an
-`IBinaryEncoding` and the consuming code stays codec-agnostic — the same interface a custom
+`IBinaryEncoding` and the consuming code stays codec-agnostic - the same interface a custom
 encoding implements (see the CustomEncoding sample).
 
 **What it does.** Looks up five encodings by their registered names, drives them through the
@@ -249,6 +249,6 @@ Bodu.Text.Encoding.Samples.EncodingTour/
 
 ## Related
 
-- `Bodu.Text.Encoding.Samples.CustomEncoding` — implementing `IBinaryEncoding` yourself,
+- `Bodu.Text.Encoding.Samples.CustomEncoding` - implementing `IBinaryEncoding` yourself,
   with the library's contract-test base proving the implementation.
 - Guides: `docs/guides/text-encoding/`.

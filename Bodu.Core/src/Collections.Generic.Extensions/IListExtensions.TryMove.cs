@@ -36,7 +36,7 @@ public static partial class IListExtensions
     /// </para>
     /// <para>
     /// The method returns <see langword="true" /> without modifying the list when the move would produce no observable
-    /// change — specifically when <paramref name="oldIndex" /> equals <paramref name="newIndex" /> (same position), or
+    /// change - specifically when <paramref name="oldIndex" /> equals <paramref name="newIndex" /> (same position), or
     /// when <paramref name="oldIndex" /> equals <paramref name="newIndex" /> minus one (the item is already directly
     /// before the insertion point and shifting it right would leave it in the same position after the index adjustment
     /// for removal).

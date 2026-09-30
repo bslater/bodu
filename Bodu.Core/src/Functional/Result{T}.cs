@@ -17,13 +17,13 @@ namespace Bodu.Functional;
 /// <para>
 /// <see cref="Result{T}" /> makes failure explicit in a signature without resorting to exceptions for expected error
 /// paths. Chain transformations with <see cref="Map{TResult}(Func{T, TResult})" /> and
-/// <see cref="Bind{TResult}(Func{T, Result{TResult}})" /> — the error propagates untouched past every combinator — and
+/// <see cref="Bind{TResult}(Func{T, Result{TResult}})" /> - the error propagates untouched past every combinator - and
 /// collapse to a final value with <see cref="Match{TResult}(Func{T, TResult}, Func{ResultError, TResult})" /> or the
 /// <c>GetValueOrDefault</c> overloads. Instances are created through the factories on the non-generic
 /// <see cref="Result" /> type: <see cref="Result.Success{T}(T)" /> and <see cref="Result.Failure{T}(ResultError)" />.
 /// </para>
 /// <para>
-/// <c>default(Result&lt;T&gt;)</c> equals a failure carrying an empty <see cref="ResultError" /> — a result that was
+/// <c>default(Result&lt;T&gt;)</c> equals a failure carrying an empty <see cref="ResultError" /> - a result that was
 /// never assigned behaves exactly like an explicit failure, so the type is total and safe to use as a field or array
 /// element without initialization. <see cref="Error" /> on <c>default(Result&lt;T&gt;)</c> is valid and returns the
 /// empty error.

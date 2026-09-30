@@ -4,11 +4,11 @@ title: Graphs and graph algorithms
 
 # Graphs and graph algorithms
 
-The `Bodu.Collections.Generic.Graphs` namespace is a compact graph toolkit: an adjacency-list container, `Graph<T>`; a static catalogue of classic algorithms, `GraphAlgorithms`; and a union-find structure, `DisjointSet<T>`. The container holds vertices of any non-nullable type connected by optionally weighted edges, and the algorithms — breadth-first and depth-first traversal, Dijkstra shortest path, Kahn topological sort, and connected components — run over read-only interfaces, so they are decoupled from how the graph is stored.
+The `Bodu.Collections.Generic.Graphs` namespace is a compact graph toolkit: an adjacency-list container, `Graph<T>`; a static catalogue of classic algorithms, `GraphAlgorithms`; and a union-find structure, `DisjointSet<T>`. The container holds vertices of any non-nullable type connected by optionally weighted edges, and the algorithms - breadth-first and depth-first traversal, Dijkstra shortest path, Kahn topological sort, and connected components - run over read-only interfaces, so they are decoupled from how the graph is stored.
 
 Edge directedness is fixed at construction by `GraphKind`, weights are finite and non-negative `double`s defaulting to `1.0`, and vertex identity follows an optional `IEqualityComparer<T>`. The algorithms reuse the library's own `Deque<T>` and `IndexedPriorityQueue<TElement, TPriority>` primitives and evaluate iteratively, so they do not overflow the stack on deep graphs. See the full API surface at <xref:Bodu.Collections.Generic.Graphs>.
 
-## Pattern 1 — Build a graph and enumerate neighbors
+## Pattern 1 - Build a graph and enumerate neighbors
 
 `Graph<T>` is directed or undirected for its whole life, chosen with `GraphKind` at construction. Vertices referenced by `AddEdge` are created on demand; you only call `AddVertex` for an isolated vertex with no edges.
 
@@ -59,7 +59,7 @@ foreach ((string neighbor, double weight) in weighted.WeightedNeighbors("A"))
 bool added = weighted.TryAddEdge("A", "B", 99.0);  // false: edge already exists
 ```
 
-Use a comparer to control vertex identity — for example, case-insensitive string vertices:
+Use a comparer to control vertex identity - for example, case-insensitive string vertices:
 
 <!-- compile -->
 ```csharp
@@ -68,7 +68,7 @@ graph.AddEdge("Node", "Other");
 Console.WriteLine(graph.ContainsVertex("NODE"));   // true
 ```
 
-## Pattern 2 — Traverse with BFS and DFS
+## Pattern 2 - Traverse with BFS and DFS
 
 `GraphAlgorithms.BreadthFirstSearch` and `DepthFirstSearch` return lazily evaluated sequences of the vertices reachable from a source, beginning with the source itself. They accept any `IReadOnlyGraph<T>`, which `Graph<T>` implements.
 
@@ -94,7 +94,7 @@ Both throw `ArgumentException` if the source is not in the graph. Because the se
 bool reachable = GraphAlgorithms.BreadthFirstSearch(graph, 1).Contains(4);   // true
 ```
 
-## Pattern 3 — Shortest path with Dijkstra
+## Pattern 3 - Shortest path with Dijkstra
 
 The shortest-path family runs Dijkstra's algorithm over non-negative weights and accepts an `IReadOnlyWeightedGraph<T>`. There are three entry points:
 
@@ -136,12 +136,12 @@ To get every distance from a source in one pass:
 ```csharp
 IReadOnlyDictionary<string, double> distances =
     GraphAlgorithms.ShortestPathLengths(graph, "A");
-// { A: 0, B: 1, C: 3 }  — unreachable vertices (e.g. Z) are omitted
+// { A: 0, B: 1, C: 3 }  - unreachable vertices (e.g. Z) are omitted
 ```
 
-Dijkstra relaxation here is backed by `IndexedPriorityQueue<TElement, TPriority>`, whose O(log n) decrease-key is exactly what an efficient Dijkstra needs — see the [indexed priority queue guide](indexed-priority-queue.md). Because weights must be non-negative, there is no negative-edge (Bellman-Ford) variant.
+Dijkstra relaxation here is backed by `IndexedPriorityQueue<TElement, TPriority>`, whose O(log n) decrease-key is exactly what an efficient Dijkstra needs - see the [indexed priority queue guide](indexed-priority-queue.md). Because weights must be non-negative, there is no negative-edge (Bellman-Ford) variant.
 
-## Pattern 4 — Topological sort
+## Pattern 4 - Topological sort
 
 `TopologicalSort` orders the vertices of a directed acyclic graph so that every edge points from an earlier vertex to a later one, using Kahn's algorithm. It is directed-only: an undirected graph throws `InvalidOperationException`.
 
@@ -154,7 +154,7 @@ graph.AddEdge("compile", "link");
 graph.AddEdge("link", "run");
 
 IReadOnlyList<string> order = GraphAlgorithms.TopologicalSort(graph);
-// compile, link, run  — every edge respected
+// compile, link, run  - every edge respected
 ```
 
 `TopologicalSort` throws `InvalidOperationException` on a cycle. When a cycle is possible, prefer the non-throwing `TryTopologicalSort`, which returns `false` and an empty list instead:
@@ -176,7 +176,7 @@ else
 }
 ```
 
-## Pattern 5 — Connected components
+## Pattern 5 - Connected components
 
 `ConnectedComponents` partitions the vertices into groups that are mutually reachable, treating every edge as undirected. For a directed graph this yields the weakly connected components.
 
@@ -195,7 +195,7 @@ IReadOnlyList<IReadOnlyList<int>> components = GraphAlgorithms.ConnectedComponen
 Console.WriteLine(components.Count);   // 3
 ```
 
-## Pattern 6 — Union-find with DisjointSet
+## Pattern 6 - Union-find with DisjointSet
 
 Sometimes you want the connectivity machinery without building a graph at all. `DisjointSet<T>` is an element-keyed union-find: each element starts in its own singleton set, `Union` merges two sets, and `Find` returns a set's canonical representative. Two elements are connected exactly when they share a representative.
 
@@ -235,8 +235,8 @@ Console.WriteLine(ds.Contains(99));     // false
 
 ## Where to go next
 
-- [Indexed priority queue](indexed-priority-queue.md) — the decrease-key heap that powers Dijkstra in Pattern 3.
-- [Choosing a collection](choosing-a-collection.md) — where the graph types sit among the other `Bodu.Collections` collections.
-- [Bodu.Collections introduction](../../docs/collections/index.md) — the headline `Bodu.Collections` building blocks.
-- [Core foundations topic](../topics/core-foundations.md) — the wider tour of buffers, collections, and extensions.
+- [Indexed priority queue](indexed-priority-queue.md) - the decrease-key heap that powers Dijkstra in Pattern 3.
+- [Choosing a collection](choosing-a-collection.md) - where the graph types sit among the other `Bodu.Collections` collections.
+- [Bodu.Collections introduction](../../docs/collections/index.md) - the headline `Bodu.Collections` building blocks.
+- [Core foundations topic](../topics/core-foundations.md) - the wider tour of buffers, collections, and extensions.
 - API reference: <xref:Bodu.Collections.Generic.Graphs>.

@@ -11,7 +11,7 @@
     analyzer stack as version-less <PackageReference> entries; the analyzer versions below satisfy
     those. The managed test harness is opted out (BoduManagedTestDependencies=false in
     Bodu.CodeStyle/Directory.Build.props), so each test project keeps its own MSTest / test-SDK /
-    coverage references — pinned here, with a per-project VersionOverride where one project tracks a
+    coverage references - pinned here, with a per-project VersionOverride where one project tracks a
     newer MSTest line.
   -->
   <PropertyGroup>

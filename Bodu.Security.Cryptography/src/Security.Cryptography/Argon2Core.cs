@@ -11,8 +11,8 @@ using System.Runtime.ExceptionServices;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Implements the Argon2 memory-hard function defined by RFC 9106 — the pre-hashing digest, the slicewise memory fill
-/// with per-variant reference indexing, the compression function <c>G</c>, and the finalization — shared by the
+/// Implements the Argon2 memory-hard function defined by RFC 9106 - the pre-hashing digest, the slicewise memory fill
+/// with per-variant reference indexing, the compression function <c>G</c>, and the finalization - shared by the
 /// <see cref="Argon2d" />, <see cref="Argon2i" />, and <see cref="Argon2id" /> public types.
 /// </summary>
 /// <remarks>
@@ -22,8 +22,8 @@ namespace Bodu.Security.Cryptography;
 /// block reads only its reference block and, on passes that XOR, its own previous contents.
 /// </para>
 /// <para>
-/// Every buffer that holds a password-derived word — the matrix, H0, the per-segment scratch, and the buffers used to
-/// build the first and last blocks — is cleared before it is released. Values the JIT keeps in registers or spills to
+/// Every buffer that holds a password-derived word - the matrix, H0, the per-segment scratch, and the buffers used to
+/// build the first and last blocks - is cleared before it is released. Values the JIT keeps in registers or spills to
 /// its own stack slots are beyond the library's reach.
 /// </para>
 /// </remarks>

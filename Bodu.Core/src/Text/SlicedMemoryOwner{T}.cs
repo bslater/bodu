@@ -75,7 +75,7 @@ internal sealed class SlicedMemoryOwner<T> : IMemoryOwner<T>
     /// Disposes the inner owner, returning its rented buffer to the originating pool.
     /// </summary>
     /// <remarks>
-    /// Safe to call repeatedly — subsequent calls are no-ops.
+    /// Safe to call repeatedly - subsequent calls are no-ops.
     /// </remarks>
     public void Dispose()
     {

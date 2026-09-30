@@ -8,8 +8,8 @@
 // compiled into this assembly (see the csproj Compile link). Each Bodu text-format package defines the same
 // alias names against its own reader/writer/options/converter/exception types, so the shared files read as
 // ordinary C# while binding to this format's ref-struct-bound surface. YAML consumes the metadata trio, the
-// structural converter factories, and the DOM node bridge — its scalar converters are format-local to
-// preserve YAML's implicit-typing coercions — so only the aliases that subset references are declared here.
+// structural converter factories, and the DOM node bridge - its scalar converters are format-local to
+// preserve YAML's implicit-typing coercions - so only the aliases that subset references are declared here.
 global using FormatConverter = Bodu.Text.Yaml.Serialization.YamlConverter;
 global using FormatConverterFactory = Bodu.Text.Yaml.Serialization.YamlConverterFactory;
 global using FormatNode = Bodu.Text.Yaml.Nodes.YamlNode;

@@ -37,7 +37,7 @@ Notable dates observed by each country in the **MiddleEast** data pack, grouped 
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| Hanukkah | — | National | Hebrew | [← global-jewish](theme-religious-non-gregorian.md#global-jewish) | 25 month Kislev (Hebrew) |
+| Hanukkah | - | National | Hebrew | [← global-jewish](theme-religious-non-gregorian.md#global-jewish) | 25 month Kislev (Hebrew) |
 
 ## JO
 
@@ -98,6 +98,6 @@ Notable dates observed by each country in the **MiddleEast** data pack, grouped 
 
 ## See also
 
-- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
-- **[Bodu.Globalization.Calendar guides](../index.md)** — the full guide index for the calendar runtime and its companions.
+- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- **[Bodu.Globalization.Calendar guides](../index.md)** - the full guide index for the calendar runtime and its companions.
 

@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Tests for the <see cref="Serpent128" /> symmetric algorithm surface — focused on the
+/// Tests for the <see cref="Serpent128" /> symmetric algorithm surface - focused on the
 /// <see cref="Serpent128.BlockMode" />, <see cref="Serpent128.BlockPadding" />, and
 /// <see cref="Serpent128.Padding" /> property setters along with the static <see cref="Serpent128.Create" />
 /// factory and the key/IV validation guard.

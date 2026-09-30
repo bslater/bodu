@@ -117,12 +117,12 @@ public readonly partial struct Money<TCurrency> :
         //   amount               → bare decimal
         //   isoCode WS+ amount   → ISO-prefixed decimal
         //   amount WS+ isoCode   → ISO-suffixed decimal
-        // where WS is a single ASCII space (no tab, no NBSP). Currency symbols ($, ¥) are rejected — they are
+        // where WS is a single ASCII space (no tab, no NBSP). Currency symbols ($, ¥) are rejected - they are
         // ambiguous across currencies and consumers needing locale-aware parsing should pre-strip.
         if (TryStripIsoPrefix(trimmed, isoCode, out numericPart)
             || TryStripIsoSuffix(trimmed, isoCode, out numericPart))
         {
-            // ISO-tagged form — proceed to numeric parse.
+            // ISO-tagged form - proceed to numeric parse.
         }
         else if (HasIsoShapedToken(trimmed))
         {
@@ -197,7 +197,7 @@ public readonly partial struct Money<TCurrency> :
 
     /// <summary>
     /// Determines whether <paramref name="s" /> contains any character that is not a digit, sign, or number-format
-    /// glyph permitted by <see cref="NumberStyles.Number" />. Used as a fast rejection check — the production parser
+    /// glyph permitted by <see cref="NumberStyles.Number" />. Used as a fast rejection check - the production parser
     /// delegates to <see cref="decimal.TryParse(ReadOnlySpan{char}, NumberStyles, IFormatProvider, out decimal)" /> to
     /// make the final accept/reject decision on the numeric portion.
     /// </summary>

@@ -9,7 +9,7 @@ using System.Buffers.Binary;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the ML-KEM sampling routines (FIPS 203 Algorithms 7–8): uniform NTT-domain sampling by rejection from a
+/// Provides the ML-KEM sampling routines (FIPS 203 Algorithms 7-8): uniform NTT-domain sampling by rejection from a
 /// SHAKE128 stream and centered-binomial noise from a SHAKE256-based PRF.
 /// </summary>
 /// <remarks>
@@ -33,7 +33,7 @@ internal static partial class MLKemEngine
     private const int NoiseSeedInputLength = 32 + 1;
 
     /// <summary>
-    /// Samples every entry of the matrix Â, entry (i, j) from SHAKE128(ρ ‖ j ‖ i) (FIPS 203 Algorithm 13, lines 3–7).
+    /// Samples every entry of the matrix Â, entry (i, j) from SHAKE128(ρ ‖ j ‖ i) (FIPS 203 Algorithm 13, lines 3-7).
     /// </summary>
     /// <param name="parameters">The parameter set supplying k.</param>
     /// <param name="rho">The 32-byte matrix seed.</param>
@@ -95,8 +95,8 @@ internal static partial class MLKemEngine
         indices[1] = index2;
         sponge.Absorb(indices);
 
-        // FIPS 203 Algorithm 7 reads the XOF three bytes at a time. Squeezing a whole rate block — 56 triples, one
-        // permutation — reads the same byte stream; the bytes left over once the polynomial is full are never used.
+        // FIPS 203 Algorithm 7 reads the XOF three bytes at a time. Squeezing a whole rate block - 56 triples, one
+        // permutation - reads the same byte stream; the bytes left over once the polynomial is full are never used.
         Span<byte> block = stackalloc byte[KeccakSponge.Shake128RateBytes];
         int count = 0;
         while (count < N)

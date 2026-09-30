@@ -9,7 +9,7 @@ namespace Bodu.Numerics;
 public partial class BigDecimalTests
 {
     /// <summary>
-    /// Verifies that numerically equal values with different trailing zeros compare equal and share a hash code — the
+    /// Verifies that numerically equal values with different trailing zeros compare equal and share a hash code - the
     /// canonical-form contract that makes <c>1.0 == 1.00</c>.
     /// </summary>
     [TestMethod]

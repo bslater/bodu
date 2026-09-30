@@ -11,7 +11,7 @@ namespace Bodu.Text.Yaml;
 /// <summary>
 /// Verifies that serializing an object graph containing a reference cycle is rejected with
 /// <see cref="YamlSerializationException" /> that identifies the cycle and the member path, rather than recursing to
-/// the depth ceiling or overflowing the stack. YAML — like the other Bodu text serializers — writes by value and does
+/// the depth ceiling or overflowing the stack. YAML - like the other Bodu text serializers - writes by value and does
 /// not preserve reference identity, so a cycle cannot be represented.
 /// </summary>
 public partial class YamlSerializerTests
@@ -37,8 +37,8 @@ public partial class YamlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that serializing an indirect reference cycle — a parent reachable from itself through a child's
-    /// back-reference — throws <see cref="YamlSerializationException" /> identifying the cycle.
+    /// Verifies that serializing an indirect reference cycle - a parent reachable from itself through a child's
+    /// back-reference - throws <see cref="YamlSerializationException" /> identifying the cycle.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenObjectGraphHasIndirectCycle_ShouldThrowWithCyclePath()

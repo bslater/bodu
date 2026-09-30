@@ -6,19 +6,19 @@ title: Evaluation modes
 
 [`TextFilterEvaluationMode`](xref:Bodu.Text.Filtering.TextFilterEvaluationMode) selects how a
 filter's rules combine into a decision. The two modes are the two models established tools already
-use — pick the one matching the mental model your users bring.
+use - pick the one matching the mental model your users bring.
 
 ## Quick reference
 
 | | `AnyMatch` (default) | `LastMatchWins` |
 |---|---|---|
 | Model | Ant / MSBuild include-exclude sets | gitignore ordered rules |
-| Order matters? | No — sets are order-independent | Yes — the last matching rule decides |
+| Order matters? | No - sets are order-independent | Yes - the last matching rule decides |
 | Unmatched value | Included when the include set is empty; otherwise rejected | Always included |
 | Exclude vs include conflict | Exclude always vetoes | Whichever matched **later** wins |
 | Cost-tier reordering | Full (cheapest-first) | Per-rule matchers only; order is semantic |
 
-## `AnyMatch` — include/exclude sets
+## `AnyMatch` - include/exclude sets
 
 A value is accepted when *(the include set is empty OR at least one include matches)* AND *no
 exclude matches*.
@@ -32,13 +32,13 @@ var filter = TextFilter.Build(
 ]);
 ```
 
-With no includes at all, everything passes unless vetoed — the exclude-only shape `.gitignore`
+With no includes at all, everything passes unless vetoed - the exclude-only shape `.gitignore`
 users expect. Declaring any include flips the filter into allowlist behavior. Because set matching
 is an order-independent OR, the engine evaluates each group cheapest-strategy-first and
-short-circuits — reordering can never change the outcome, only which of several matching patterns
+short-circuits - reordering can never change the outcome, only which of several matching patterns
 gets *reported* as the deciding one.
 
-## `LastMatchWins` — ordered rules
+## `LastMatchWins` - ordered rules
 
 Rules form one ordered list; evaluation conceptually walks it and the **last** matching rule's
 action decides. Unmatched values are included, exactly as in gitignore.
@@ -69,14 +69,14 @@ leading character. Lines always parse as wildcard patterns; declare regexes thro
 
 ## Choosing a mode
 
-- Configuration that reads like *"take these, but not those"* — `AnyMatch`.
+- Configuration that reads like *"take these, but not those"* - `AnyMatch`.
 - Configuration users will edit like a `.gitignore` file, with later lines overriding earlier
-  ones — `LastMatchWins`.
-- Need maximum throughput over huge corpora with many patterns — `AnyMatch`, which gets the full
+  ones - `LastMatchWins`.
+- Need maximum throughput over huge corpora with many patterns - `AnyMatch`, which gets the full
   cost-tier reordering.
 
 ## Where to go next
 
-- **[Patterns and globs](patterns-and-globs.md)** — the grammar the rules are written in.
-- **[Telemetry and tuning](telemetry-and-tuning.md)** — seeing which rules decide at volume.
-- **[API reference](xref:Bodu.Text.Filtering.TextFilterEvaluationMode)** — the mode enumeration.
+- **[Patterns and globs](patterns-and-globs.md)** - the grammar the rules are written in.
+- **[Telemetry and tuning](telemetry-and-tuning.md)** - seeing which rules decide at volume.
+- **[API reference](xref:Bodu.Text.Filtering.TextFilterEvaluationMode)** - the mode enumeration.

@@ -10,7 +10,7 @@ For inputs too large (or too hot) to materialize, each format exposes its forwar
 
 The readers are `ref struct` cursors over `ReadOnlySpan<byte>`: `Read()` advances, `TokenType` reports the token, `GetString()` decodes it, and `LineNumber` / `BytesConsumed` locate it. The writers emit UTF-8 to an `IBufferWriter<byte>` or a `Stream` (call `Flush()` to commit in stream mode).
 
-## Pattern 1 — walk delimited records one at a time
+## Pattern 1 - walk delimited records one at a time
 
 <!-- compile -->
 ```csharp
@@ -39,7 +39,7 @@ while (reader.Read())
 
 `reader.Headers` exposes the header row once it has been read.
 
-## Pattern 2 — stream typed records
+## Pattern 2 - stream typed records
 
 For typed rows, skip the token loop:
 
@@ -53,7 +53,7 @@ await foreach (Trade trade in DelimitedSerializer.DeserializeAsyncEnumerableAsyn
 await DelimitedSerializer.SerializeAsync(output, ProduceTradesAsync());  // IAsyncEnumerable<Trade> in
 ```
 
-## Pattern 3 — scan a DotEnv source
+## Pattern 3 - scan a DotEnv source
 
 <!-- compile -->
 ```csharp
@@ -72,7 +72,7 @@ while (reader.Read())
 }
 ```
 
-## Pattern 4 — stream INI tokens as authored
+## Pattern 4 - stream INI tokens as authored
 
 <!-- compile -->
 ```csharp
@@ -93,9 +93,9 @@ while (reader.Read())
 }
 ```
 
-Use the normalized `IniDocumentReader` when you want the logical object shape (globals hoisted, duplicate sections merged) instead of the physical file order — note it parses the whole document in its constructor, because merge is out-of-order.
+Use the normalized `IniDocumentReader` when you want the logical object shape (globals hoisted, duplicate sections merged) instead of the physical file order - note it parses the whole document in its constructor, because merge is out-of-order.
 
-## Pattern 5 — write tokens progressively
+## Pattern 5 - write tokens progressively
 
 <!-- compile -->
 ```csharp
@@ -119,11 +119,11 @@ The DotEnv and INI writers are line-oriented (`WritePropertyName` + `WriteString
 
 ## Async facades
 
-The `*Serializer` stream overloads (`SerializeAsync` / `DeserializeAsync`) buffer the document in full — only the stream copy is asynchronous. The exception is Delimited's record streaming (Pattern 2), which is genuinely incremental in both directions: `DeserializeAsyncEnumerableAsync` reads the stream in segments and yields each record as soon as its terminating line ending is observed (memory is bounded by the longest record, not the document — a record split across segments, even inside a quoted field, is retried as more data arrives), and the `IAsyncEnumerable` `SerializeAsync` overload encodes each record as it is produced and flushes to the destination in bounded batches.
+The `*Serializer` stream overloads (`SerializeAsync` / `DeserializeAsync`) buffer the document in full - only the stream copy is asynchronous. The exception is Delimited's record streaming (Pattern 2), which is genuinely incremental in both directions: `DeserializeAsyncEnumerableAsync` reads the stream in segments and yields each record as soon as its terminating line ending is observed (memory is bounded by the longest record, not the document - a record split across segments, even inside a quoted field, is retried as more data arrives), and the `IAsyncEnumerable` `SerializeAsync` overload encodes each record as it is produced and flushes to the destination in bounded batches.
 
 ## Mid-stream errors
 
-Readers throw their `*FormatException` at the offending token with `LineNumber` / byte offset attached; everything already consumed remains valid. The ref-struct readers hold no unmanaged resources — abandoning one is safe.
+Readers throw their `*FormatException` at the offending token with `LineNumber` / byte offset attached; everything already consumed remains valid. The ref-struct readers hold no unmanaged resources - abandoning one is safe.
 
 ## See also
 

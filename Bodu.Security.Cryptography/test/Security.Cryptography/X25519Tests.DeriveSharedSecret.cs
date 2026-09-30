@@ -10,7 +10,7 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Contains X25519-specific tests for <see cref="X25519.DeriveSharedSecret(ReadOnlySpan{byte})" /> — the span
+/// Contains X25519-specific tests for <see cref="X25519.DeriveSharedSecret(ReadOnlySpan{byte})" /> - the span
 /// overload and the strict RFC 7748 §6.1 low-order rejection; the agreement, determinism, missing-key, and
 /// peer-length contracts are inherited from the key-agreement base.
 /// </summary>

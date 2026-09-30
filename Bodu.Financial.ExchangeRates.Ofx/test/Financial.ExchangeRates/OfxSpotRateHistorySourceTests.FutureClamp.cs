@@ -17,7 +17,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 public partial class OfxSpotRateHistorySourceTests
 {
-    /// <summary>The fixed instant the clamp tests resolve "now" against — mid-morning UTC, so a same-day request has a clampable remainder.</summary>
+    /// <summary>The fixed instant the clamp tests resolve "now" against - mid-morning UTC, so a same-day request has a clampable remainder.</summary>
     private static readonly DateTimeOffset ClampNow = new(2026, 6, 15, 10, 30, 0, TimeSpan.Zero);
 
     /// <summary>
@@ -47,7 +47,7 @@ public partial class OfxSpotRateHistorySourceTests
 
     /// <summary>
     /// Verifies that a request whose window lies entirely in the future issues no HTTP request at all and reports no
-    /// data, rather than succeeding with an empty result — a success would let the provider mark the future range as
+    /// data, rather than succeeding with an empty result - a success would let the provider mark the future range as
     /// covered and keep serving nothing once those dates became real.
     /// </summary>
     [TestMethod]

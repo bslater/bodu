@@ -134,7 +134,7 @@ public static partial class ArrayExtensions
     }
 
     // -------------------------------------------------------------------------
-    // Array — non-generic overloads
+    // Array - non-generic overloads
     // -------------------------------------------------------------------------
 
     /// <summary>

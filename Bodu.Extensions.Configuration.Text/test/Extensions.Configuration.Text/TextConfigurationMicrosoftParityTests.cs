@@ -20,7 +20,7 @@ namespace Bodu.Extensions.Configuration.Text;
 public class TextConfigurationMicrosoftParityTests
 {
     /// <summary>
-    /// Verifies that key lookup is case-insensitive for all three providers — Bodu, INI, and JSON all use
+    /// Verifies that key lookup is case-insensitive for all three providers - Bodu, INI, and JSON all use
     /// <see cref="StringComparer.OrdinalIgnoreCase" /> on the configuration root.
     /// </summary>
     [TestMethod]
@@ -51,7 +51,7 @@ public class TextConfigurationMicrosoftParityTests
     [TestMethod]
     public void LastAddedProvider_ShouldWin_ForAllThreeProviders()
     {
-        // Each builder gets its own pair of streams — stream sources are one-shot, so a stream cannot be
+        // Each builder gets its own pair of streams - stream sources are one-shot, so a stream cannot be
         // shared across two .Build() calls.
         using (MemoryStream iniA = new(Encoding.UTF8.GetBytes("value = ini\n")))
         using (MemoryStream bodu = new(Encoding.UTF8.GetBytes("value = bodu\n")))
@@ -191,7 +191,7 @@ items.2 = third
 
     /// <summary>
     /// Verifies that a stream source on the Bodu provider exposes the same one-shot, non-reloadable surface
-    /// as the JSON stream source — both inherit from <see cref="StreamConfigurationProvider" />.
+    /// as the JSON stream source - both inherit from <see cref="StreamConfigurationProvider" />.
     /// </summary>
     [TestMethod]
     public void StreamSource_ShouldNotInheritFromFileConfigurationProvider_ForBoduAndJson()

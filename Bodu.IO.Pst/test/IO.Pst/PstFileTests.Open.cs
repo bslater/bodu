@@ -106,7 +106,7 @@ public partial class PstFileTests
 
     /// <summary>
     /// Verifies that a header declaring a file length beyond the stream's actual length is refused under strict
-    /// validation — the declared length is the one header fact the reader can cross-check — while the tolerant
+    /// validation - the declared length is the one header fact the reader can cross-check - while the tolerant
     /// levels still open the file.
     /// </summary>
     [TestMethod]

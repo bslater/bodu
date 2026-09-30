@@ -114,7 +114,7 @@ public abstract partial class AsconHash
 
     /// <inheritdoc />
     /// <remarks>
-    /// Loads the pre-computed initial state directly — no permutation is needed because the constants supplied by the
+    /// Loads the pre-computed initial state directly - no permutation is needed because the constants supplied by the
     /// derived class are already the result of applying Ascon-p12 to the raw IV.
     /// </remarks>
     public override void Initialize()

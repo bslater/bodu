@@ -16,7 +16,7 @@ public sealed class SimdOptOutTests
 {
     /// <summary>
     /// Verifies that with the disable switch set, the SIMD capability gates report unavailable regardless of the host's
-    /// hardware — the switch overrides every intrinsic check.
+    /// hardware - the switch overrides every intrinsic check.
     /// </summary>
     [TestMethod]
     public void SimdCapabilities_WhenDisableSwitchSet_ShouldReportGatesDisabled()
@@ -156,7 +156,7 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
-    /// Verifies that with SIMD disabled, scrypt — mixing through the scalar kernel, on one thread and on several —
+    /// Verifies that with SIMD disabled, scrypt - mixing through the scalar kernel, on one thread and on several -
     /// still reproduces RFC 7914, Section 12's first two vectors.
     /// </summary>
     [TestMethod]
@@ -186,7 +186,7 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
-    /// Verifies that with SIMD disabled, GCM — hashing through the scalar GHASH kernel — still matches the platform's
+    /// Verifies that with SIMD disabled, GCM - hashing through the scalar GHASH kernel - still matches the platform's
     /// <see cref="System.Security.Cryptography.AesGcm" /> on messages that fill several four-block groups and end in a
     /// partial block, with associated data of several alignments.
     /// </summary>
@@ -237,7 +237,7 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
-    /// Verifies that BLAKE3 — one of the AVX-512-accelerated primitives — reproduces the official empty-input reference
+    /// Verifies that BLAKE3 - one of the AVX-512-accelerated primitives - reproduces the official empty-input reference
     /// digest when SIMD is disabled, exercising the scalar fallback.
     /// </summary>
     [TestMethod]

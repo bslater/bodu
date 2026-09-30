@@ -36,17 +36,17 @@ namespace Bodu.Security.Cryptography;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <see cref="Skein256" /> — 256-bit state, 32-byte blocks, over <see cref="Threefish256Cipher" />.
+/// <see cref="Skein256" /> - 256-bit state, 32-byte blocks, over <see cref="Threefish256Cipher" />.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="Skein512" /> — 512-bit state, 64-byte blocks, over <see cref="Threefish512Cipher" />.
+/// <see cref="Skein512" /> - 512-bit state, 64-byte blocks, over <see cref="Threefish512Cipher" />.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="Skein1024" /> — 1024-bit state, 128-byte blocks, over <see cref="Threefish1024Cipher" />.
+/// <see cref="Skein1024" /> - 1024-bit state, 128-byte blocks, over <see cref="Threefish1024Cipher" />.
 /// </description>
 /// </item>
 /// </list>
@@ -150,7 +150,7 @@ public abstract partial class Skein
     /// Gets or sets the secret key used to switch Skein into its keyed <c>Skein-MAC</c> mode.
     /// </summary>
     /// <value>
-    /// A byte array holding the key material. An empty array — the default — produces a plain, unkeyed hash; a
+    /// A byte array holding the key material. An empty array - the default - produces a plain, unkeyed hash; a
     /// non-empty array triggers a preliminary <c>KEY</c> UBI phase whenever the algorithm is initialized. Both the
     /// getter and the setter operate on defensive copies so external callers cannot mutate the internal key.
     /// </value>
@@ -206,7 +206,7 @@ public abstract partial class Skein
     /// <summary>
     /// Gets the fully qualified algorithm name, including the state size and the configured output size.
     /// </summary>
-    /// <value>A string of the form <c>"Skein-<i>s</i>-<i>h</i>"</c> — e.g. <c>"Skein-512-256"</c>.</value>
+    /// <value>A string of the form <c>"Skein-<i>s</i>-<i>h</i>"</c> - e.g. <c>"Skein-512-256"</c>.</value>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public override string AlgorithmName
     {
@@ -223,7 +223,7 @@ public abstract partial class Skein
     /// </summary>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="CryptographicException">
-    /// The internal key storage has been cleared (set to <see langword="null" />) — the key must be reassigned before
+    /// The internal key storage has been cleared (set to <see langword="null" />) - the key must be reassigned before
     /// the instance can be reused.
     /// </exception>
     public override void Initialize()
@@ -304,12 +304,12 @@ public abstract partial class Skein
     // ----------------------------------------------------------------------------------------------------
     // Pipeline-bypass overrides.
     //
-    // Skein inherits the Merkle–Damgård <c>ProcessBlock → PadBlock → ProcessFinalBlock</c> abstracts from
+    // Skein inherits the Merkle-Damgård <c>ProcessBlock → PadBlock → ProcessFinalBlock</c> abstracts from
     // <see cref="KeyedBlockHashAlgorithm"/> for compatibility with the keyed-block test infrastructure,
     // but the UBI compression mode requires a one-block lookahead that the pipeline does not express. The
     // overrides above (Initialize, HashCore, HashFinal) drive UBI directly, so the inherited pipeline
     // methods are unreachable from any happy-path code path. They remain present as defensive contract
-    // markers — anyone routing input through the inherited pipeline by mistake gets a loud, immediate
+    // markers - anyone routing input through the inherited pipeline by mistake gets a loud, immediate
     // <see cref="InvalidOperationException"/> rather than silently incorrect output. Re-parenting Skein
     // onto a non-pipeline base would remove these throws but would also force a parallel refactor of the
     // shared keyed-block test infrastructure (SkeinTests → KeyedBlockHashAlgorithmTests → BlockHashAlgorithmTests),
@@ -317,12 +317,12 @@ public abstract partial class Skein
     // ----------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Pipeline contract marker — see the section comment above. Skein's UBI lookahead bypasses <c>ProcessBlock</c>
-    /// entirely; this override exists only to fail loudly if the inherited Merkle–Damgård pipeline is ever wired up
+    /// Pipeline contract marker - see the section comment above. Skein's UBI lookahead bypasses <c>ProcessBlock</c>
+    /// entirely; this override exists only to fail loudly if the inherited Merkle-Damgård pipeline is ever wired up
     /// against a Skein instance.
     /// </summary>
     /// <param name="block">Ignored.</param>
-    /// <exception cref="InvalidOperationException">Always thrown — this method is not on the happy path.</exception>
+    /// <exception cref="InvalidOperationException">Always thrown - this method is not on the happy path.</exception>
     protected override void ProcessBlock(ReadOnlySpan<byte> block) =>
         throw new InvalidOperationException(
             CryptoResourceStrings.Op_Invalid_SkeinBypassesProcessBlock);

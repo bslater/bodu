@@ -6,7 +6,7 @@ title: Using INI
 
 `Bodu.Text.Ini` reads and writes sectioned `[name]` / `key=value` configuration files. The value model is a two-level object-of-objects: global keys (before the first section header) hoist onto the root, and each section is a nested object of string values.
 
-## Pattern 1 — query a document
+## Pattern 1 - query a document
 
 <!-- compile -->
 ```csharp
@@ -27,7 +27,7 @@ foreach (IniProperty property in root.EnumerateObject())
 }
 ```
 
-## Pattern 2 — typed binding via the serializer
+## Pattern 2 - typed binding via the serializer
 
 Scalar members bind global keys; object-shaped members (section POCOs or `Dictionary<string, string>`) bind sections:
 
@@ -65,9 +65,9 @@ string env = all["global"]["environment"];
 
 ### Reflection-free binding
 
-Annotate a partial section type with `[IniSection]` and reference the `Bodu.Text.Formats.Generators` source generator, and a static `IniFactory` property (`IIniSectionFactory<ServerSection>`) is emitted at compile time. The section overloads — `IniSerializer.SerializeSection("server", section, ServerSection.IniFactory)` / `DeserializeSection(iniText, "server", ServerSection.IniFactory)` — bind one section through the factory instead of the reflection binder, making the path trimming- and AOT-safe. An empty section name addresses the document's global keys; duplicate-section merge still applies before binding.
+Annotate a partial section type with `[IniSection]` and reference the `Bodu.Text.Formats.Generators` source generator, and a static `IniFactory` property (`IIniSectionFactory<ServerSection>`) is emitted at compile time. The section overloads - `IniSerializer.SerializeSection("server", section, ServerSection.IniFactory)` / `DeserializeSection(iniText, "server", ServerSection.IniFactory)` - bind one section through the factory instead of the reflection binder, making the path trimming- and AOT-safe. An empty section name addresses the document's global keys; duplicate-section merge still applies before binding.
 
-## Pattern 3 — comment-preserving edits with the mutable DOM
+## Pattern 3 - comment-preserving edits with the mutable DOM
 
 <!-- compile -->
 ```csharp
@@ -86,9 +86,9 @@ root["metrics"] = metrics;
 File.WriteAllBytes("app.ini", root.ToUtf8Bytes());
 ```
 
-Every comment line from the source survives (`LeadingComments` on sections and values, `TrailingComments` per object). Layout is canonicalized: `key=value` without padding, and global entries always precede the first section header. Inline comments are not modeled — the dialect keeps everything after `=` as value content.
+Every comment line from the source survives (`LeadingComments` on sections and values, `TrailingComments` per object). Layout is canonicalized: `key=value` without padding, and global entries always precede the first section header. Inline comments are not modeled - the dialect keeps everything after `=` as value content.
 
-## Pattern 4 — duplicate policies
+## Pattern 4 - duplicate policies
 
 Duplicates are resolved when the document is materialized, controlled by `IniDocumentOptions` (also on `IniSerializerOptions`):
 
@@ -103,11 +103,11 @@ var strict = new IniDocumentOptions
 using IniDocument document = IniDocument.Parse(bytes, IniReaderOptions.Default, strict);
 ```
 
-The defaults merge repeated sections and keep the last duplicate key — the permissive Windows-profile reading. `IniSerializerDefaults.Strict` selects `Disallowed` for both — Python `configparser` strict mode.
+The defaults merge repeated sections and keep the last duplicate key - the permissive Windows-profile reading. `IniSerializerDefaults.Strict` selects `Disallowed` for both - Python `configparser` strict mode.
 
 ## The two readers
 
-`Utf8IniReader` streams the file **as authored** (section headers, keys, values, comments, in source order). The normalized `IniDocumentReader` pre-parses the whole document — duplicate-section merge declares structure out of source order — and emits the logical object-of-objects token stream that the serializer and read-only DOM consume.
+`Utf8IniReader` streams the file **as authored** (section headers, keys, values, comments, in source order). The normalized `IniDocumentReader` pre-parses the whole document - duplicate-section merge declares structure out of source order - and emits the logical object-of-objects token stream that the serializer and read-only DOM consume.
 
 ## Dialect
 
@@ -119,7 +119,7 @@ The defaults merge repeated sections and keep the last duplicate key — the per
 
 ## When to reach for `Bodu.Text.Configuration` instead
 
-When you need EditorConfig-style behaviour — glob-targeted sections, layered resolution, typed views with diagnostics — use `Bodu.Text.Configuration`. It carries its own INI document model and does not depend on this package.
+When you need EditorConfig-style behaviour - glob-targeted sections, layered resolution, typed views with diagnostics - use `Bodu.Text.Configuration`. It carries its own INI document model and does not depend on this package.
 
 ## See also
 

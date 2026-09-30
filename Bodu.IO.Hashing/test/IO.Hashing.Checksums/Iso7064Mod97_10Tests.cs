@@ -55,7 +55,7 @@ public sealed class Iso7064Mod97_10Tests
     /// </summary>
     [TestMethod]
     public void IsValid_WhenSequenceUsesNumericBody_ShouldReturnTrue() =>
-        // 79444 — published worked example for MOD 97-10.
+        // 79444 - published worked example for MOD 97-10.
         Assert.IsTrue(Iso7064Mod97_10.IsValid("79444".AsSpan()));
 
     /// <inheritdoc />

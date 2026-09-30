@@ -18,11 +18,11 @@ namespace Bodu.Collections.Generic.Trees;
 /// <para>
 /// The automaton is built once from a complete pattern set via <see cref="Build(IEnumerable{string})" /> and is
 /// immutable thereafter: its failure and output links are global invariants defined relative to the whole pattern set,
-/// so a pattern added later would invalidate the links wholesale — rebuild with the new set instead. Matching costs O(n
+/// so a pattern added later would invalidate the links wholesale - rebuild with the new set instead. Matching costs O(n
 /// + m) for text length n and m reported matches, independent of the number of patterns.
 /// </para>
 /// <para>
-/// Character comparison is ordinal. Matches — including overlapping and nested occurrences — are reported in a
+/// Character comparison is ordinal. Matches - including overlapping and nested occurrences - are reported in a
 /// deterministic order: ascending end index, then ascending pattern length. Because a lazily evaluated sequence cannot
 /// capture a <see cref="ReadOnlySpan{Char}" />, the lazy <see cref="EnumerateMatches(string)" /> takes a
 /// <see cref="string" />, while the eager <see cref="CountMatches(ReadOnlySpan{char})" /> and
@@ -114,7 +114,7 @@ public sealed class AhoCorasickAutomaton
     /// </summary>
     /// <param name="text">The text to scan.</param>
     /// <returns>
-    /// A lazily evaluated sequence of matches — overlapping and nested occurrences included — ordered ascending by end
+    /// A lazily evaluated sequence of matches - overlapping and nested occurrences included - ordered ascending by end
     /// index, then ascending by pattern length.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="text" /> is <see langword="null" />.</exception>

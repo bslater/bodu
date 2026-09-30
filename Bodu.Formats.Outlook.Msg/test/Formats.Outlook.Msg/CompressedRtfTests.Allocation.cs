@@ -57,7 +57,7 @@ public partial class CompressedRtfTests
     }
 
     /// <summary>
-    /// Verifies that decoding a multi-megabyte body allocates no more than one and a half times its output — a
+    /// Verifies that decoding a multi-megabyte body allocates no more than one and a half times its output - a
     /// growable buffer plus a final copy would double it.
     /// </summary>
     [TestMethod]
@@ -77,6 +77,6 @@ public partial class CompressedRtfTests
         Assert.AreEqual(LiteralCount, decoded.Length);
         Assert.IsTrue(
             allocated <= (long)decoded.Length * 3 / 2,
-            $"Decoding a {decoded.Length / (1024 * 1024)} MB body allocated {allocated / (1024 * 1024)} MB — the output is being copied.");
+            $"Decoding a {decoded.Length / (1024 * 1024)} MB body allocated {allocated / (1024 * 1024)} MB - the output is being copied.");
     }
 }

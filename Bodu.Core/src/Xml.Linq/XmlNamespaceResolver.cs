@@ -21,13 +21,13 @@ namespace Bodu.Xml.Linq;
 /// <see cref="Name" /> helpers that pre-qualify lookups, allowing call-sites to reference elements by local name only.
 /// </para>
 /// <para>
-/// The captured namespace is fixed for the lifetime of the instance — it is not refreshed if the underlying document
+/// The captured namespace is fixed for the lifetime of the instance - it is not refreshed if the underlying document
 /// mutates, and the resolver does not retain a reference to the root element itself. Callers that work with multiple
 /// namespaces in the same document should construct a separate resolver per namespace.
 /// </para>
 /// <para>
-/// An element without an explicit namespace carries <see cref="XNamespace.None" /> (the empty namespace) — never
-/// <see langword="null" /> — so the resolver simply captures whatever namespace the root exposes, including the empty
+/// An element without an explicit namespace carries <see cref="XNamespace.None" /> (the empty namespace) - never
+/// <see langword="null" /> - so the resolver simply captures whatever namespace the root exposes, including the empty
 /// one. Lookups then resolve against that captured namespace.
 /// </para>
 /// </remarks>
@@ -61,8 +61,8 @@ public sealed class XmlNamespaceResolver
     /// Thrown if <paramref name="root" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// <see cref="XName.Namespace" /> is never <see langword="null" /> — an element without an explicit namespace
-    /// reports <see cref="XNamespace.None" /> — so the captured namespace may be the empty namespace but the
+    /// <see cref="XName.Namespace" /> is never <see langword="null" /> - an element without an explicit namespace
+    /// reports <see cref="XNamespace.None" /> - so the captured namespace may be the empty namespace but the
     /// construction itself cannot fail for a non-null root.
     /// </remarks>
     public XmlNamespaceResolver(XElement root)

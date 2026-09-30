@@ -18,7 +18,7 @@ namespace Bodu.Financial.Extensions;
 /// trillion) and appends a single-letter magnitude suffix (<c>K</c>, <c>M</c>, <c>B</c>, or <c>T</c>) to the numeric
 /// portion of the output. The chosen format specifier (<c>C</c>, <c>G</c>, <c>L</c>, <c>N</c>, <c>F</c>, <c>D</c>)
 /// still drives where the currency designator appears, so the suffix attaches to the numeric portion in the correct
-/// culture position — for example, <c>"$1.2K"</c> in en-US for USD versus <c>"1,2K €"</c> in fr-FR for EUR.
+/// culture position - for example, <c>"$1.2K"</c> in en-US for USD versus <c>"1,2K €"</c> in fr-FR for EUR.
 /// </para>
 /// <para>
 /// The <c>R</c> specifier is not compatible with compact formatting because the round-trip form is meant to parse back

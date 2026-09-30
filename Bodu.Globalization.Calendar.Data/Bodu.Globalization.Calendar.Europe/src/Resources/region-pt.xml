@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ================================================================================================================
-  Portugal (PT) — notable-date resource pack
+  Portugal (PT) - notable-date resource pack
   ================================================================================================================
 
   Authored on the notable-date schema. All rules are scoped to territory "PT"; the
-  municipal holidays and the Azores/Madeira regional days are not modelled — only the mainland national set.
+  municipal holidays and the Azores/Madeira regional days are not modelled - only the mainland national set.
 
   How this resource is built:
 
-    * Shared European observances — including the common Catholic feasts (the Assumption and the Immaculate
-      Conception) — are IMPORTED from the europe-common hub and given a PT territory scope through the import
+    * Shared European observances - including the common Catholic feasts (the Assumption and the Immaculate
+      Conception) - are IMPORTED from the europe-common hub and given a PT territory scope through the import
       <Use> directive. The hub carries the resolved calculation strategy; the territory supplies the local
       observance.
 
@@ -69,31 +69,31 @@
       ============================================================================================================
     -->
 
-    <!-- Labour Day (Dia do Trabalhador) — 1 May; a public holiday. Strategy: Fixed date. -->
+    <!-- Labour Day (Dia do Trabalhador) - 1 May; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="pt"><Applicability><Territory code="PT" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Freedom Day (Dia da Liberdade) — 25 April, marking the 1974 Carnation Revolution. The fromYear="1974" bound excludes earlier years. Strategy: Fixed date. -->
+    <!-- Freedom Day (Dia da Liberdade) - 25 April, marking the 1974 Carnation Revolution. The fromYear="1974" bound excludes earlier years. Strategy: Fixed date. -->
     <NotableDate id="freedom-day" displayName="Freedom Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="pt"><Applicability fromYear="1974"><Territory code="PT" /></Applicability>
         <Strategy><Fixed month="April" day="25" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Portugal Day (Dia de Portugal) — 10 June, the national day, marking the death of the poet Luís de Camões in 1580. Strategy: Fixed date. -->
+    <!-- Portugal Day (Dia de Portugal) - 10 June, the national day, marking the death of the poet Luís de Camões in 1580. Strategy: Fixed date. -->
     <NotableDate id="portugal-day" displayName="Portugal Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="pt"><Applicability><Territory code="PT" /></Applicability>
         <Strategy><Fixed month="June" day="10" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Republic Day (Implantação da República) — 5 October, marking the 1910 proclamation of the republic. The fromYear="1910" bound excludes earlier years. Strategy: Fixed date. -->
+    <!-- Republic Day (Implantação da República) - 5 October, marking the 1910 proclamation of the republic. The fromYear="1910" bound excludes earlier years. Strategy: Fixed date. -->
     <NotableDate id="republic-day" displayName="Republic Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="pt"><Applicability fromYear="1910"><Territory code="PT" /></Applicability>
         <Strategy><Fixed month="October" day="5" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Restoration of Independence (Restauração da Independência) — 1 December, marking the 1640 end of the Iberian Union with Spain. The fromYear="1640" bound excludes earlier years. Strategy: Fixed date. -->
+    <!-- Restoration of Independence (Restauração da Independência) - 1 December, marking the 1640 end of the Iberian Union with Spain. The fromYear="1640" bound excludes earlier years. Strategy: Fixed date. -->
     <NotableDate id="restoration-of-independence" displayName="Restoration of Independence" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="pt"><Applicability fromYear="1640"><Territory code="PT" /></Applicability>
         <Strategy><Fixed month="December" day="1" /></Strategy></Rule></Rules>

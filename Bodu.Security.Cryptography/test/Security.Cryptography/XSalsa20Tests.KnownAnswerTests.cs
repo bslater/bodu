@@ -64,8 +64,8 @@ public sealed partial class XSalsa20Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="XSalsa20" /> encrypts each golang.org/x/crypto NaCl XSalsa20 vector — spanning the
-    /// short-message and 64-byte-keystream cases — to its published ciphertext.
+    /// Verifies that <see cref="XSalsa20" /> encrypts each golang.org/x/crypto NaCl XSalsa20 vector - spanning the
+    /// short-message and 64-byte-keystream cases - to its published ciphertext.
     /// </summary>
     /// <param name="vector">The XSalsa20 encryption vector under test.</param>
     [TestMethod]

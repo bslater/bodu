@@ -82,14 +82,14 @@ public sealed class BuddhistObservanceKnownAnswerTests
     [DataRow(2026, "buddhas-birthday-east-asian", 5, 24)]
     [DataRow(2027, "buddhas-birthday-east-asian", 5, 13)]
 
-    // Tibetan New Year (Gyalpo Losar) — including the leap-divergence year 2027 (9 March).
+    // Tibetan New Year (Gyalpo Losar) - including the leap-divergence year 2027 (9 March).
     [DataRow(2023, "losar", 2, 21)]
     [DataRow(2024, "losar", 2, 10)]
     [DataRow(2025, "losar", 2, 28)]
     [DataRow(2026, "losar", 2, 18)]
     [DataRow(2027, "losar", 3, 9)]
 
-    // Asalha Puja (Asadha full moon / Guru Purnima) — including the leap year 2026 (29 July).
+    // Asalha Puja (Asadha full moon / Guru Purnima) - including the leap year 2026 (29 July).
     [DataRow(2023, "asalha-puja", 7, 3)]
     [DataRow(2024, "asalha-puja", 7, 21)]
     [DataRow(2025, "asalha-puja", 7, 10)]

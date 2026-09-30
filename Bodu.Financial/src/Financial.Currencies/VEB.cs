@@ -12,7 +12,7 @@ namespace Bodu.Financial.Currencies;
 /// </summary>
 /// <remarks>
 /// ISO 4217 numeric code <c>862</c>; minor-unit precision <c>2</c>.
-/// Historic — demonetized on 2008-01-01, replaced by VEF.
+/// Historic - demonetized on 2008-01-01, replaced by VEF.
 /// </remarks>
 public sealed class VEB : ICurrency
 {
@@ -37,7 +37,7 @@ public sealed class VEB : ICurrency
     /// <summary>
     /// Gets a value indicating that the currency has been demonetized.
     /// </summary>
-    /// <value><see langword="true" /> — this is a historic currency.</value>
+    /// <value><see langword="true" /> - this is a historic currency.</value>
     public static bool IsHistoric => true;
 
     /// <summary>

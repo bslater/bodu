@@ -11,8 +11,8 @@ namespace Bodu.Globalization.Calendar.Samples.Caching.Scenarios;
 
 /// <summary>
 /// Demonstrates the durable file backends: <see cref="JsonNotableDateCache" /> and
-/// <see cref="TomlNotableDateCache" /> persist cached years to disk, so a fresh service instance — a new
-/// process, in real deployments — starts warm from the previous run's files.
+/// <see cref="TomlNotableDateCache" /> persist cached years to disk, so a fresh service instance - a new
+/// process, in real deployments - starts warm from the previous run's files.
 /// </summary>
 public static class FileBackedCaches
 {

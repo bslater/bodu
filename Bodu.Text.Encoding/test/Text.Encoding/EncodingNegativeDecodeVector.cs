@@ -9,7 +9,7 @@ using Bodu.Test.Kat;
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Represents a negative Known Answer Test vector — a malformed encoded input that the decoder must reject with a
+/// Represents a negative Known Answer Test vector - a malformed encoded input that the decoder must reject with a
 /// specific exception type. Negative vectors capture the contract that each encoding makes about which inputs are
 /// invalid (excluded characters, wrong lengths, misplaced padding, mismatched variants, etc.).
 /// </summary>

@@ -23,7 +23,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// consumers can re-tune verbosity per concern without category-wide log filters. The per-lookup hit and miss events
 /// default to <see cref="LogLevel.Information" /> because they run on the read hot path; the range events default to
 /// <see cref="LogLevel.Debug" />. The per-serve <see cref="RateProvenanceLogLevel" /> records the lineage of every
-/// served rate — live versus cache hit, the backend identity, and the served data's age — and also defaults to
+/// served rate - live versus cache hit, the backend identity, and the served data's age - and also defaults to
 /// <see cref="LogLevel.Debug" />. Set any member to <see cref="LogLevel.None" /> to suppress that event entirely.
 /// </para>
 /// </remarks>
@@ -94,7 +94,7 @@ public sealed class CachingRateOptions
     /// </value>
     /// <remarks>
     /// On a direct-coverage miss the provider normally issues a second backend read for the inverse pair. For a
-    /// workload that only ever fetches one orientation — the common case — that probe is a guaranteed-empty read
+    /// workload that only ever fetches one orientation - the common case - that probe is a guaranteed-empty read
     /// doubling backend I/O on every refetch. Enabling this option treats any fresh direct coverage as evidence the
     /// pair is actively fetched in the direct orientation and goes straight to the refetch, at the cost of a redundant
     /// refetch in the rare configuration where the inverse pair alone holds complete coverage for the window. The
@@ -104,7 +104,7 @@ public sealed class CachingRateOptions
 
     /// <summary>
     /// Gets or sets the maximum fraction of a pair's caching duration that is deterministically shaved off per pair, so
-    /// entries warmed together do not all expire — and refetch — at the same instant.
+    /// entries warmed together do not all expire - and refetch - at the same instant.
     /// </summary>
     /// <value>
     /// A fraction in <c>[0, 1)</c>; defaults to <c>0</c>, which disables jitter and preserves the exact configured
@@ -137,7 +137,7 @@ public sealed class CachingRateOptions
     /// begins before the entry expires, so a continuously hot pair never surfaces a miss.
     /// </para>
     /// <para>
-    /// A background refresh that fails is swallowed after logging — the hit it piggybacked on was already served — and
+    /// A background refresh that fails is swallowed after logging - the hit it piggybacked on was already served - and
     /// the next aged hit schedules a fresh attempt. Single-date hits served from the inverse pair's rows evaluate the
     /// threshold against the requested pair's effective expiry, a deliberate approximation that keeps the trigger
     /// cheap. Disposing the provider prevents new refreshes from being scheduled and abandons pending ones without
@@ -191,8 +191,8 @@ public sealed class CachingRateOptions
     /// </summary>
     /// <value>The log level; defaults to <see cref="LogLevel.Debug" />.</value>
     /// <remarks>
-    /// This per-serve diagnostic records the lineage of each result — whether it was resolved live or from the cache,
-    /// the cache backend that served it, and the served data's age — and so is richer than the per-concern hit and miss
+    /// This per-serve diagnostic records the lineage of each result - whether it was resolved live or from the cache,
+    /// the cache backend that served it, and the served data's age - and so is richer than the per-concern hit and miss
     /// events on the read hot path. Set it to <see cref="LogLevel.None" /> to suppress provenance entirely.
     /// </remarks>
     public LogLevel RateProvenanceLogLevel { get; set; } = LogLevel.Debug;

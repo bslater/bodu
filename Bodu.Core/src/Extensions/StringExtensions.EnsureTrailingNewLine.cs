@@ -25,7 +25,7 @@ public static partial class StringExtensions
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="newline" /> is the empty string.</exception>
     /// <remarks>
-    /// Comparison is ordinal — only the exact byte sequence specified by <paramref name="newline" /> counts as already
+    /// Comparison is ordinal - only the exact byte sequence specified by <paramref name="newline" /> counts as already
     /// terminated. A value ending in <c>"\r\n"</c> is not considered to end in <c>"\n"</c> for the purposes of this
     /// method.
     /// </remarks>

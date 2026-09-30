@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Consume a concrete derivative through the standard HashAlgorithm contract — the base
+/// // Consume a concrete derivative through the standard HashAlgorithm contract - the base
 /// // class drives the residual buffer and the block-aligned compression loop for you.
 /// using HashAlgorithm hash = new Blake2b();      // DeferredFinalBlockHashAlgorithm<T>
 /// byte[] digest1 = hash.ComputeHash("hello"u8.ToArray());
@@ -63,43 +63,43 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// <strong>Don't derive from this class directly.</strong> Use one of the four pattern-specific bases that extend it —
+/// <strong>Don't derive from this class directly.</strong> Use one of the four pattern-specific bases that extend it -
 /// the buffering loops and finalization shapes differ enough that the right derivation point depends on which family
 /// the algorithm belongs to:
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <term>Merkle–Damgård, unkeyed</term>
+/// <term>Merkle-Damgård, unkeyed</term>
 /// <description>
-/// <see cref="BlockHashAlgorithm" /> — Tiger, Whirlpool, Snefru, the SHA-2 family, classic block-padding hashes that
+/// <see cref="BlockHashAlgorithm" /> - Tiger, Whirlpool, Snefru, the SHA-2 family, classic block-padding hashes that
 /// finalize by padding the last partial block.
 /// </description>
 /// </item>
 /// <item>
-/// <term>Merkle–Damgård, keyed</term>
+/// <term>Merkle-Damgård, keyed</term>
 /// <description>
-/// <see cref="KeyedBlockHashAlgorithm" /> — Poly1305, SipHash, and any keyed hash whose finalization is "pad then
+/// <see cref="KeyedBlockHashAlgorithm" /> - Poly1305, SipHash, and any keyed hash whose finalization is "pad then
 /// compress".
 /// </description>
 /// </item>
 /// <item>
 /// <term>Blake-style, unkeyed</term>
 /// <description>
-/// <see cref="DeferredFinalBlockHashAlgorithm" /> — BLAKE3 and other algorithms that need to defer the last full block
+/// <see cref="DeferredFinalBlockHashAlgorithm" /> - BLAKE3 and other algorithms that need to defer the last full block
 /// so a finalization flag can be set.
 /// </description>
 /// </item>
 /// <item>
 /// <term>Blake-style, optionally keyed</term>
 /// <description>
-/// <see cref="KeyedDeferredFinalBlockHashAlgorithm" /> — BLAKE2b, BLAKE2s, and the RFC 7693 keyed-MAC variants of
+/// <see cref="KeyedDeferredFinalBlockHashAlgorithm" /> - BLAKE2b, BLAKE2s, and the RFC 7693 keyed-MAC variants of
 /// BLAKE-family hashes.
 /// </description>
 /// </item>
 /// </list>
 /// <para>
 /// Derive from <see cref="BufferedBlockHashAlgorithm" /> directly only when implementing a <em>new</em> buffering
-/// pattern that doesn't fit either family — e.g. a sponge construction with a non-Merkle–Damgård finalization step.
+/// pattern that doesn't fit either family - e.g. a sponge construction with a non-Merkle-Damgård finalization step.
 /// </para>
 /// </remarks>
 public abstract class BufferedBlockHashAlgorithm
@@ -114,7 +114,7 @@ public abstract class BufferedBlockHashAlgorithm
     /// <remarks>
     /// Derived classes implement this property to expose a stable, consumer-facing identifier suitable for logging,
     /// telemetry, registry keys, or interop with hash-name catalogues. Implementations should be pure and
-    /// side-effect-free — the value may be queried before any input has been consumed and after disposal as part of
+    /// side-effect-free - the value may be queried before any input has been consumed and after disposal as part of
     /// error reporting.
     /// </remarks>
     public abstract string AlgorithmName { get; }
@@ -285,10 +285,10 @@ public abstract class BufferedBlockHashAlgorithm
     /// </summary>
     /// <value><see langword="true" /> once disposal has begun; otherwise <see langword="false" />.</value>
     /// <remarks>
-    /// Derived classes follow the canonical dispose pattern — guard the body of their own <see cref="Dispose(bool)" />
+    /// Derived classes follow the canonical dispose pattern - guard the body of their own <see cref="Dispose(bool)" />
     /// override with <c>if (IsDisposed) return;</c>, clear their own state when <c>disposing</c> is
     /// <see langword="true" />, and call <c>base.Dispose(disposing)</c> last. Derived classes must not declare a
-    /// private <c>_disposed</c> field of their own — the latch is owned exclusively by this base class.
+    /// private <c>_disposed</c> field of their own - the latch is owned exclusively by this base class.
     /// </remarks>
     protected bool IsDisposed => _disposed;
 

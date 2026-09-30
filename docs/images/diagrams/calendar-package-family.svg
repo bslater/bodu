@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 412" role="img" aria-labelledby="cal-pf-t cal-pf-d">
-  <title id="cal-pf-t">Bodu.Globalization.Calendar — package family</title>
+  <title id="cal-pf-t">Bodu.Globalization.Calendar - package family</title>
   <desc id="cal-pf-d">The Bodu.Globalization.Calendar runtime sits at the centre of a family of companion packages. The runtime ships the rule engine, the resolution pipeline, and the working-day extensions. Companion packages ship narrower surfaces that depend on the runtime: Bodu.Globalization.Calendar.Plugins trust-gates loading of external algorithm assemblies; Bodu.Globalization.Calendar.DependencyInjection wires the service into Microsoft.Extensions.DependencyInjection; the three Bodu.Globalization.Calendar.Data.* packages ship curated public-holiday resources for the Americas, Asia-Pacific, and Europe territory bundles. Each companion can release on its own cadence without forcing a runtime rebuild.</desc>
 
   <defs>
@@ -35,7 +35,7 @@
     <rect class="cpf-pan" width="800" height="392" rx="8"/>
     <rect class="cpf-hdr" width="800" height="46" rx="8"/>
     <rect class="cpf-hdr" y="38" width="800" height="8"/>
-    <text class="cpf-ttl" x="16" y="29">Bodu.Globalization.Calendar — package family</text>
+    <text class="cpf-ttl" x="16" y="29">Bodu.Globalization.Calendar - package family</text>
     <text class="cpf-form" x="784" y="29" text-anchor="end">runtime · companions · data packs</text>
 
     <!-- Runtime hub -->
@@ -55,7 +55,7 @@
       <path d="M 138,212 L 138,200 Q 138,196 142,196 L 280,196 Q 284,196 284,192 L 284,188" marker-end="url(#cpf-arr)"/>
       <!-- DI (top-right) → runtime -->
       <path d="M 662,212 L 662,200 Q 662,196 658,196 L 520,196 Q 516,196 516,192 L 516,188" marker-end="url(#cpf-arr)"/>
-      <!-- Data packs (bottom) → runtime — three arrows -->
+      <!-- Data packs (bottom) → runtime - three arrows -->
       <path d="M 138,234 L 138,250 Q 138,254 142,254 L 280,254 Q 284,254 284,258 L 284,260" stroke-dasharray="3,3" marker-end="url(#cpf-arr)" />
       <path d="M 400,330 L 400,260" stroke-dasharray="3,3" marker-end="url(#cpf-arr)"/>
       <path d="M 662,234 L 662,250 Q 662,254 658,254 L 520,254 Q 516,254 516,258 L 516,260" stroke-dasharray="3,3" marker-end="url(#cpf-arr)"/>

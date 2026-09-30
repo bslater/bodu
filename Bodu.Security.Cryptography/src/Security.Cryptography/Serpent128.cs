@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Serpent is an Advanced Encryption Standard (AES) finalist by Ross Anderson, Eli Biham, and Lars Knudsen, first
 /// published in 1998 (NESSIE submission, <em>Serpent: A Proposal for the Advanced Encryption Standard</em>). It is a
-/// 32-round substitution–permutation network that combines eight 4-bit S-boxes with a bitsliced linear transform, and
+/// 32-round substitution-permutation network that combines eight 4-bit S-boxes with a bitsliced linear transform, and
 /// is widely regarded as one of the most conservative designs among the AES finalists.
 /// </para>
 /// <para>
@@ -51,7 +51,7 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// <para>
 /// <strong>When to choose Serpent128.</strong> Pick Serpent when a deliberately conservative AES alternative is wanted
-/// — the 32-round design has a wider security margin than AES's 14 rounds at 256-bit key, at the cost of noticeably
+/// - the 32-round design has a wider security margin than AES's 14 rounds at 256-bit key, at the cost of noticeably
 /// lower throughput. For general-purpose encryption with hardware acceleration prefer
 /// <see cref="System.Security.Cryptography.Aes" />; for an alternative AES finalist with better software performance
 /// prefer <see cref="Twofish" />. Use <see cref="Camellia" /> when ISO/IEC, CRYPTREC, or NESSIE approval is a
@@ -92,7 +92,7 @@ public sealed class Serpent128
     /// <summary>The supported Serpent block sizes, fixed at 128 bits.</summary>
     private static readonly KeySizes[] s_serpentBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
 
-    /// <summary>The supported Serpent key sizes — 128, 192, or 256 bits (the three AES key sizes).</summary>
+    /// <summary>The supported Serpent key sizes - 128, 192, or 256 bits (the three AES key sizes).</summary>
     /// <remarks>
     /// The step is 64 bits, so the range is expressed exactly by a single <see cref="KeySizes" /> entry.
     /// </remarks>

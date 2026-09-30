@@ -18,7 +18,7 @@ namespace Bodu.Extensions;
 /// an object initialiser, or use <see cref="Default" /> for the standard configuration.
 /// </para>
 /// <para>
-/// The same options object is consumed by every rich casing overload —
+/// The same options object is consumed by every rich casing overload -
 /// <see cref="StringExtensions.ToCamelCase(string, WordCasingOptions)" />,
 /// <see cref="StringExtensions.ToPascalCase(string, WordCasingOptions)" />,
 /// <see cref="StringExtensions.ToSnakeCase(string, WordCasingOptions)" />,
@@ -27,7 +27,7 @@ namespace Bodu.Extensions;
 /// <see cref="StringExtensions.ToConstantCase(string, WordCasingOptions)" />,
 /// <see cref="StringExtensions.ToDotCase(string, WordCasingOptions)" />,
 /// <see cref="StringExtensions.ToTitleCase(string, WordCasingOptions)" />, and
-/// <see cref="StringExtensions.ToSentenceCase(string, WordCasingOptions)" /> — so a single configuration can drive an
+/// <see cref="StringExtensions.ToSentenceCase(string, WordCasingOptions)" /> - so a single configuration can drive an
 /// entire formatting pipeline consistently.
 /// </para>
 /// </remarks>

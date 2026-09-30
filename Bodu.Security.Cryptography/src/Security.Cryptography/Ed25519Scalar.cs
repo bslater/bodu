@@ -136,9 +136,9 @@ internal static class Ed25519Scalar
 
     /// <summary>
     /// Runs the fixed fold-and-carry schedule that maps 24 partial limbs onto the canonical 12-limb representative
-    /// modulo L. On return limbs 0–11 hold the canonical value and all higher limbs are zero.
+    /// modulo L. On return limbs 0-11 hold the canonical value and all higher limbs are zero.
     /// </summary>
-    /// <param name="s">The limb workspace. Limbs 0–22 must be below 2^21 in magnitude and limb 23 below 2^30.</param>
+    /// <param name="s">The limb workspace. Limbs 0-22 must be below 2^21 in magnitude and limb 23 below 2^30.</param>
     /// <remarks>
     /// The schedule was validated exhaustively against direct big-integer reduction; the worst intermediate limb
     /// magnitude stays below 2^50, well inside the 64-bit signed range.
@@ -237,9 +237,9 @@ internal static class Ed25519Scalar
     }
 
     /// <summary>
-    /// Packs the canonical limbs 0–11 (21 bits each, 252 bits total) into a 32-byte little-endian encoding.
+    /// Packs the canonical limbs 0-11 (21 bits each, 252 bits total) into a 32-byte little-endian encoding.
     /// </summary>
-    /// <param name="s">The limb workspace holding the canonical value in limbs 0–11.</param>
+    /// <param name="s">The limb workspace holding the canonical value in limbs 0-11.</param>
     /// <param name="destination">The 32-byte span that receives the encoding.</param>
     private static void WriteLimbs(ReadOnlySpan<long> s, Span<byte> destination)
     {

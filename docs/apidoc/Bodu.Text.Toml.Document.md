@@ -10,11 +10,11 @@ uid: Bodu.Text.Toml.Document
 
 ## Key types
 
-- <xref:Bodu.Text.Toml.Document.TomlDocument> — the disposable owner: `Parse` (from `string` or `ReadOnlySpan<byte>`) and `RootElement`.
-- <xref:Bodu.Text.Toml.Document.TomlElement> — the value cursor: `ValueKind`, the scalar accessors `GetString` / `GetInt64` / `GetDouble` / `GetBoolean` / `GetDateTimeOffset` / `GetDateTime` / `GetDateOnly` / `GetTimeOnly`, `GetProperty` / `TryGetProperty`, an integer indexer, `GetArrayLength`, `EnumerateArray` / `EnumerateObject`, and `WriteTo`.
-- <xref:Bodu.Text.Toml.Document.TomlElement.ArrayEnumerator> / <xref:Bodu.Text.Toml.Document.TomlElement.ObjectEnumerator> — the struct enumerators returned by `EnumerateArray` / `EnumerateObject`.
-- <xref:Bodu.Text.Toml.Document.TomlProperty> — a `Name` / `Value` pair yielded by `EnumerateObject`.
-- <xref:Bodu.Text.Toml.Document.TomlDocumentOptions> — `SpecVersion` and `MaxDepth`.
+- <xref:Bodu.Text.Toml.Document.TomlDocument> - the disposable owner: `Parse` (from `string` or `ReadOnlySpan<byte>`) and `RootElement`.
+- <xref:Bodu.Text.Toml.Document.TomlElement> - the value cursor: `ValueKind`, the scalar accessors `GetString` / `GetInt64` / `GetDouble` / `GetBoolean` / `GetDateTimeOffset` / `GetDateTime` / `GetDateOnly` / `GetTimeOnly`, `GetProperty` / `TryGetProperty`, an integer indexer, `GetArrayLength`, `EnumerateArray` / `EnumerateObject`, and `WriteTo`.
+- <xref:Bodu.Text.Toml.Document.TomlElement.ArrayEnumerator> / <xref:Bodu.Text.Toml.Document.TomlElement.ObjectEnumerator> - the struct enumerators returned by `EnumerateArray` / `EnumerateObject`.
+- <xref:Bodu.Text.Toml.Document.TomlProperty> - a `Name` / `Value` pair yielded by `EnumerateObject`.
+- <xref:Bodu.Text.Toml.Document.TomlDocumentOptions> - `SpecVersion` and `MaxDepth`.
 
 ## Example
 
@@ -33,4 +33,4 @@ foreach (TomlProperty property in server.EnumerateObject())
 
 - **Lifetime.** Elements are only valid while their document is undisposed.
 - **Kind-checked accessors.** Calling an accessor that does not match `ValueKind` throws <xref:System.InvalidOperationException>; check `ValueKind` (a <xref:Bodu.Text.Toml.TomlValueKind>) first when the shape is not known.
-- **See also:** the [Bodu.Text.Toml introduction](~/docs/serialization/toml/index.md) and the [Using TOML](~/guides/serialization/toml/using.md) guide (Pattern 7 — Inspect a document with the read-only DOM).
+- **See also:** the [Bodu.Text.Toml introduction](~/docs/serialization/toml/index.md) and the [Using TOML](~/guides/serialization/toml/using.md) guide (Pattern 7 - Inspect a document with the read-only DOM).

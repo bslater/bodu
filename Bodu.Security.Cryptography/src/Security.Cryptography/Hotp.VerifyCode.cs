@@ -61,7 +61,7 @@ public static partial class Hotp
     /// <paramref name="algorithm" /> is not a defined <see cref="OtpHashAlgorithm" /> value.
     /// </exception>
     /// <remarks>
-    /// The full window is always scanned — matching does not short-circuit — so the loop's duration does not reveal
+    /// The full window is always scanned - matching does not short-circuit - so the loop's duration does not reveal
     /// which counter matched. A wide <paramref name="lookAhead" /> weakens security by admitting more candidate codes;
     /// RFC 4226 recommends a small look-ahead combined with throttling of failed attempts.
     /// </remarks>

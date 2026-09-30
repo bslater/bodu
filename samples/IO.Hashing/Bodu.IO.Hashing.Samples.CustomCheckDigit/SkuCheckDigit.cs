@@ -12,7 +12,7 @@ namespace Bodu.IO.Hashing.Samples.CustomCheckDigit;
 /// A custom weighted mod-10 check-digit scheme for internal SKU numbers, implementing the
 /// library's <see cref="CheckDigitAlgorithm" /> contract. Digits are weighted with the classic
 /// repeating <c>7, 3, 1</c> cycle from the left, summed, and the check digit is the value that
-/// brings the total to a multiple of ten — the shape used by several transport and inventory
+/// brings the total to a multiple of ten - the shape used by several transport and inventory
 /// schemes, and deliberately different from Luhn's double-and-fold.
 /// </summary>
 /// <remarks>

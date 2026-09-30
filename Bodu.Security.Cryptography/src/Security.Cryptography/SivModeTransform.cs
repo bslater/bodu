@@ -15,11 +15,11 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — SIV inverts the usual order by running the MAC pipeline first (S2V) to derive a synthetic IV, which is then used as the CTR counter."/>
+/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow - SIV inverts the usual order by running the MAC pipeline first (S2V) to derive a synthetic IV, which is then used as the CTR counter."/>
 /// </para>
 /// <para>
-/// SIV <em>inverts</em> the order shown in the generic AEAD diagram: the bottom pipeline runs <b>first</b> — S2V/CMAC
-/// over the associated data and plaintext produces the synthetic IV, which is both the tag and the CTR counter base —
+/// SIV <em>inverts</em> the order shown in the generic AEAD diagram: the bottom pipeline runs <b>first</b> - S2V/CMAC
+/// over the associated data and plaintext produces the synthetic IV, which is both the tag and the CTR counter base -
 /// and only then does the top pipeline encrypt the plaintext under that derived counter. That reversal is what makes
 /// SIV misuse-resistant: re-encrypting the same message yields the same ciphertext, but confidentiality is not lost
 /// beyond confirming message equality.
@@ -28,10 +28,10 @@ namespace Bodu.Security.Cryptography;
 /// SIV requires two independent ciphers keyed with different material:
 /// <list type="bullet">
 /// <item>
-/// <description><c>s2vCipher</c> (K₁) — used by CMAC and S2V to derive the synthetic IV.</description>
+/// <description><c>s2vCipher</c> (K₁) - used by CMAC and S2V to derive the synthetic IV.</description>
 /// </item>
 /// <item>
-/// <description><c>ctrCipher</c> (K₂) — used by AES-CTR to encrypt the plaintext.</description>
+/// <description><c>ctrCipher</c> (K₂) - used by AES-CTR to encrypt the plaintext.</description>
 /// </item>
 /// </list>
 /// </para>
@@ -53,12 +53,12 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="IAeadBlockCipherModeTransform" /> convention.
 /// </para>
 /// <para>
-/// <strong>When to use SIV.</strong> Pick AES-SIV when deterministic authenticated encryption is wanted — key wrapping
+/// <strong>When to use SIV.</strong> Pick AES-SIV when deterministic authenticated encryption is wanted - key wrapping
 /// (RFC 5297 §6 / RFC 5649), envelope encryption schemes that need stable ciphertext for deduplication, or any context
 /// that cannot maintain a per-message nonce. SIV is two-pass and slower than <see cref="GcmModeTransform" /> on
 /// commodity hardware, but it has the strongest misuse-resistance profile in this library: re-encrypting the same
 /// <c>(plaintext, AAD)</c> tuple produces the same ciphertext, but distinct messages remain confidential and authentic.
-/// <see cref="GcmSivModeTransform" /> is the RFC 8452 alternative — same misuse-resistance category, different MAC
+/// <see cref="GcmSivModeTransform" /> is the RFC 8452 alternative - same misuse-resistance category, different MAC
 /// (POLYVAL) and key schedule, typically faster on AES-NI/PCLMULQDQ hardware.
 /// </para>
 /// </remarks>
@@ -72,7 +72,7 @@ namespace Bodu.Security.Cryptography;
 /// // SIV uses a doubled key: first half drives the MAC, second half drives CTR encryption.
 /// using IBlockCipher s2v = new AesBlockCipher(macKey);
 /// using IBlockCipher ctr = new AesBlockCipher(encKey);
-/// byte[] iv = new byte[s2v.BlockSize / 8]; // ignored by SIV — present for interface compatibility
+/// byte[] iv = new byte[s2v.BlockSize / 8]; // ignored by SIV - present for interface compatibility
 /// using IAeadBlockCipherModeTransform siv = new SivModeTransform(s2v, ctr, iv);
 ///
 /// byte[] sealed_ = siv.Encrypt(plaintext, associatedData: header);
@@ -141,7 +141,7 @@ public sealed class SivModeTransform
         _s2vCipher = s2vCipher;
         _ctrCipher = ctrCipher;
 
-        // iv is intentionally unused — SIV derives its own synthetic IV.
+        // iv is intentionally unused - SIV derives its own synthetic IV.
     }
 
     /// <inheritdoc />
@@ -203,8 +203,8 @@ public sealed class SivModeTransform
     /// <remarks>
     /// <strong>Authentication pattern: write-then-clear.</strong> The synthetic IV is recomputed by S2V over the
     /// decrypted plaintext, so the CTR decryption is written into <paramref name="output" /> first and the SIV is
-    /// compared in constant time afterwards. On any failure — an authentication mismatch or an exception from either
-    /// underlying cipher mid-transform — the plaintext region of <paramref name="output" /> is zeroed before the
+    /// compared in constant time afterwards. On any failure - an authentication mismatch or an exception from either
+    /// underlying cipher mid-transform - the plaintext region of <paramref name="output" /> is zeroed before the
     /// exception propagates, so unverified plaintext never escapes. See
     /// <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the library-wide failure contract.
     /// </remarks>
@@ -253,8 +253,8 @@ public sealed class SivModeTransform
         }
         catch
         {
-            // Zero the plaintext region on any failure — a SIV mismatch or a fault from either underlying
-            // cipher mid-transform — so the unverified plaintext this write-then-clear mode has already
+            // Zero the plaintext region on any failure - a SIV mismatch or a fault from either underlying
+            // cipher mid-transform - so the unverified plaintext this write-then-clear mode has already
             // written never leaks.
             CryptographyHelper.Clear(output[..plaintextLength]);
             throw;
@@ -356,7 +356,7 @@ public sealed class SivModeTransform
             }
 
             // Last component = plaintext. A plaintext shorter than a block, the empty one included, is padded with
-            // 10* — <one> is only for a call with no strings, which cannot happen here.
+            // 10* - <one> is only for a call with no strings, which cannot happen here.
             if (plaintext.Length >= BlockBytes)
             {
                 var cmac = NewCmac(scratch);

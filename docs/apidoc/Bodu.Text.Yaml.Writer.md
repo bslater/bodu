@@ -10,8 +10,8 @@ uid: Bodu.Text.Yaml.Writer
 
 ## Key types
 
-- <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter> — the `ref struct` writer: `WriteStartMapping` / `WriteEndMapping`, `WriteStartSequence` / `WriteEndSequence`, `WritePropertyName`, and the scalar writers `WriteString`, `WriteInteger`, `WriteDouble`, `WriteBoolean`, `WriteNull`.
-- <xref:Bodu.Text.Yaml.Writer.YamlWriterOptions> — `IndentSize`, `MaxDepth`, and `NewLine`.
+- <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter> - the `ref struct` writer: `WriteStartMapping` / `WriteEndMapping`, `WriteStartSequence` / `WriteEndSequence`, `WritePropertyName`, and the scalar writers `WriteString`, `WriteInteger`, `WriteDouble`, `WriteBoolean`, `WriteNull`.
+- <xref:Bodu.Text.Yaml.Writer.YamlWriterOptions> - `IndentSize`, `MaxDepth`, and `NewLine`.
 
 ## Example
 
@@ -38,4 +38,4 @@ string yaml = Encoding.UTF8.GetString(buffer.WrittenSpan);   // "host: localhost
 - **Safe scalar presentation.** Each string is written plain when unambiguous and double-quoted otherwise, so a value such as `"yes"` or `"8080"` reads back as a string; empty collections are emitted as `{}` / `[]` so they round-trip as empty rather than null.
 - **Block style only.** The writer emits block mappings and sequences with configurable indentation; anchors, aliases, tags, and comments are not written.
 - **Shared state.** The writer is a `ref struct` whose state lives behind one shared reference, so a copy passed by value continues the same document.
-- **See also:** the [Bodu.Text.Yaml introduction](~/docs/serialization/yaml/index.md) and the [Using YAML](~/guides/serialization/yaml/using.md) guide (Pattern 9 — Drive the low-level reader and writer).
+- **See also:** the [Bodu.Text.Yaml introduction](~/docs/serialization/yaml/index.md) and the [Using YAML](~/guides/serialization/yaml/using.md) guide (Pattern 9 - Drive the low-level reader and writer).

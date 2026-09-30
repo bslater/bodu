@@ -4,9 +4,9 @@ title: Using Threefish-1024
 
 # Using Threefish-1024
 
-<xref:Bodu.Security.Cryptography.Threefish1024> is the largest variant in the Threefish family: **1024-bit (128-byte) blocks** with a **1024-bit (128-byte) key** and a **128-bit (16-byte) tweak**. Reach for Threefish-1024 when you want the widest plausible block size — for example in domains that demand very large key/block margins, or where you want to encrypt a chunk that's naturally 128 bytes wide without chaining overhead per inner field.
+<xref:Bodu.Security.Cryptography.Threefish1024> is the largest variant in the Threefish family: **1024-bit (128-byte) blocks** with a **1024-bit (128-byte) key** and a **128-bit (16-byte) tweak**. Reach for Threefish-1024 when you want the widest plausible block size - for example in domains that demand very large key/block margins, or where you want to encrypt a chunk that's naturally 128 bytes wide without chaining overhead per inner field.
 
-![Threefish round function — MIX, word permutation, and subkey injection](../../images/diagrams/threefish-round.svg)
+![Threefish round function - MIX, word permutation, and subkey injection](../../images/diagrams/threefish-round.svg)
 
 > [!NOTE]
 > Encrypt/decrypt ships an AVX-512 fast path that engages automatically on supporting hardware. See [Hardware acceleration & SIMD opt-out](hardware-acceleration.md) for when it runs and how to force the scalar path.
@@ -20,7 +20,7 @@ title: Using Threefish-1024
 | Tweak size | 128 bits (16 bytes) | Fixed across the Threefish family. |
 | IV size | 1024 bits (128 bytes) | Always matches the block size. |
 
-## Encrypt and decrypt — CBC + PKCS7
+## Encrypt and decrypt - CBC + PKCS7
 
 <!-- compile -->
 ```csharp
@@ -57,7 +57,7 @@ using (var alg = new Threefish1024 { BlockMode = CipherModeKind.CBC, Padding = P
 Debug.Assert(plaintext.SequenceEqual(recovered));
 ```
 
-## Encrypt and decrypt — CTR (stream mode)
+## Encrypt and decrypt - CTR (stream mode)
 
 ```csharp
 using var alg = new Threefish1024
@@ -77,20 +77,20 @@ Debug.Assert(plaintext.SequenceEqual(recovered));
 
 ## Trade-offs worth knowing
 
-- **Most rounds in the family.** Threefish-1024 runs **80 rounds** over sixteen 64-bit words, injecting a subkey every four rounds plus a final injection — 21 subkeys in all. That is the largest key schedule of the family and therefore the largest per-instance memory footprint. Throughput is roughly half of Threefish-512 on the same CPU.
+- **Most rounds in the family.** Threefish-1024 runs **80 rounds** over sixteen 64-bit words, injecting a subkey every four rounds plus a final injection - 21 subkeys in all. That is the largest key schedule of the family and therefore the largest per-instance memory footprint. Throughput is roughly half of Threefish-512 on the same CPU.
 - **Padding waste.** A PKCS7 round-up to the next 128-byte boundary costs *more* than the 32-byte Threefish-256 round-up. If your plaintexts are short, Threefish-256 produces smaller ciphertexts.
-- **Same 128-bit tweak.** The tweak does not scale with the block — it is 16 bytes here exactly as in Threefish-256/512, so the per-context domain-separation pattern ([Threefish-256](threefish-256.md#what-the-tweak-is--and-why-it-is-not-an-iv)) carries over unchanged.
+- **Same 128-bit tweak.** The tweak does not scale with the block - it is 16 bytes here exactly as in Threefish-256/512, so the per-context domain-separation pattern ([Threefish-256](threefish-256.md#what-the-tweak-is--and-why-it-is-not-an-iv)) carries over unchanged.
 - **When to prefer it.** When your natural record size is already ≥ 128 bytes, when you want a single-block encryption of a large structured field, or when you want the widest defensive margin against future block-size attacks. For everyday use [Threefish-512](threefish-512.md) is the better balance.
 
 ## The raw primitive
 
-`Threefish1024Cipher` is the underlying <xref:Bodu.Security.Cryptography.IBlockCipher> — a 128-byte key and 16-byte tweak in its constructor, one 128-byte block per `Encrypt` / `Decrypt` call. Use it for hand-composed pipelines; see [Composing primitives](composing-primitives.md). Like the rest of the family its 128-byte block is far too wide for the 128-bit-block AEAD transforms, so authenticate with encrypt-then-MAC or use the AES-based [AEAD modes](aead-modes.md).
+`Threefish1024Cipher` is the underlying <xref:Bodu.Security.Cryptography.IBlockCipher> - a 128-byte key and 16-byte tweak in its constructor, one 128-byte block per `Encrypt` / `Decrypt` call. Use it for hand-composed pipelines; see [Composing primitives](composing-primitives.md). Like the rest of the family its 128-byte block is far too wide for the 128-bit-block AEAD transforms, so authenticate with encrypt-then-MAC or use the AES-based [AEAD modes](aead-modes.md).
 
 ## Where to go next
 
-- [Encryption basics](encryption-basics.md) — the Key/IV/Tweak lifecycle.
-- [Cipher block modes](cipher-modes.md) — CFB / OFB / ECB also work with `Threefish1024`.
-- [Padding](padding.md) — which padding scheme pairs with which mode.
-- [Composing primitives](composing-primitives.md) — `Threefish1024Cipher` + mode + padding by hand.
+- [Encryption basics](encryption-basics.md) - the Key/IV/Tweak lifecycle.
+- [Cipher block modes](cipher-modes.md) - CFB / OFB / ECB also work with `Threefish1024`.
+- [Padding](padding.md) - which padding scheme pairs with which mode.
+- [Composing primitives](composing-primitives.md) - `Threefish1024Cipher` + mode + padding by hand.
 - Other variants: [Threefish-256](threefish-256.md), [Threefish-512](threefish-512.md).
-- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

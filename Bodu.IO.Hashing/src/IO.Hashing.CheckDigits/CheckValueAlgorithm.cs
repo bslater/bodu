@@ -21,9 +21,9 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// can validate heterogeneous identifier formats through a single reference type.
 /// </para>
 /// <para>
-/// The intermediate base classes retain their more precise result surfaces — <c>GetCurrentCheckDigit()</c> returning a
+/// The intermediate base classes retain their more precise result surfaces - <c>GetCurrentCheckDigit()</c> returning a
 /// <see cref="char" /> on the single-character branches and <c>GetCurrentCheckDigits(Span{char})</c> on the
-/// multi-character branch — and implement <see cref="GetCurrentCheckValue" /> by delegation.
+/// multi-character branch - and implement <see cref="GetCurrentCheckValue" /> by delegation.
 /// </para>
 /// <para>
 /// Instances are <b>not</b> thread-safe. Each thread that needs a running check should construct its own instance.

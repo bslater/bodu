@@ -44,7 +44,7 @@ public static partial class StringExtensions
     /// </exception>
     /// <remarks>
     /// The flag-based overload maps onto <see cref="WordCasingOptions" /> with an empty acronym catalogue, so only
-    /// fully-uppercase input tokens are preserved as acronyms — lower-case words are never promoted to a canonical
+    /// fully-uppercase input tokens are preserved as acronyms - lower-case words are never promoted to a canonical
     /// acronym spelling.
     /// </remarks>
     public static string ToTitleCase(this string value, TitleCaseOptions options)

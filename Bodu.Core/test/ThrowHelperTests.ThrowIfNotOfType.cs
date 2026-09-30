@@ -24,7 +24,7 @@ public partial class ThrowHelperTests
     }
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType{T}" /> for the <see cref="int" /> instantiation
-    /// does not throw — and on the ParamName-asserting overload reports nothing — for an int instance.
+    /// does not throw - and on the ParamName-asserting overload reports nothing - for an int instance.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="value">The value passed to the guard.</param>

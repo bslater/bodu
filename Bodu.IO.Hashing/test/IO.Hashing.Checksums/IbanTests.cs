@@ -54,7 +54,7 @@ public sealed class IbanTests
 
     /// <summary>
     /// Verifies that <see cref="Iban.IsValid(ReadOnlySpan{char})" /> rejects sequences shorter than four
-    /// characters — the minimum CC+DD prefix length.
+    /// characters - the minimum CC+DD prefix length.
     /// </summary>
     [TestMethod]
     public void IsValid_WhenSequenceIsShorterThanMinimum_ShouldReturnFalse()
@@ -70,7 +70,7 @@ public sealed class IbanTests
     /// <inheritdoc />
     /// <remarks>
     /// IBAN's canonical text form interleaves the check digits between the country code and BBAN
-    /// (<c>CC + DD + BBAN</c>), so this override supplies positive vectors in that layout — and a handful of
+    /// (<c>CC + DD + BBAN</c>), so this override supplies positive vectors in that layout - and a handful of
     /// negative vectors covering whitespace, tampered check digits, and non-numeric check positions.
     /// </remarks>
     protected override IEnumerable<MultiCharCheckDigitIsValidKnownAnswer> GetIsValidKnownAnswers()

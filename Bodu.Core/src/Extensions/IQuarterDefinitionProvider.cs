@@ -14,13 +14,13 @@ namespace Bodu.Extensions;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Implementations describe a recurring quarter rule — a fiscal or logical calendar definition that is independent of
+/// Implementations describe a recurring quarter rule - a fiscal or logical calendar definition that is independent of
 /// any single year. Year-specific values, such as quarter start and end dates or whether a fiscal year contains a 53rd
 /// week, are derived on demand from the <see cref="DateTime" /> or <see cref="DateOnly" /> input, or from an explicit
 /// <c>fiscalYear</c> argument.
 /// </para>
 /// <para>
-/// Example use cases include 4–4–5 calendars, academic terms, retail fiscal calendars, or historical reporting quarters
+/// Example use cases include 4-4-5 calendars, academic terms, retail fiscal calendars, or historical reporting quarters
 /// that do not align with calendar or standard financial quarters.
 /// </para>
 /// <para>
@@ -62,7 +62,7 @@ namespace Bodu.Extensions;
 public interface IQuarterDefinitionProvider
 {
     /// <summary>
-    /// Returns the quarter number (1–4) that contains the specified <see cref="DateTime" />.
+    /// Returns the quarter number (1-4) that contains the specified <see cref="DateTime" />.
     /// </summary>
     /// <param name="dateTime">The input <see cref="DateTime" /> for which to determine the quarter.</param>
     /// <returns>
@@ -74,7 +74,7 @@ public interface IQuarterDefinitionProvider
     int GetQuarter(DateTime dateTime);
 
     /// <summary>
-    /// Returns the quarter number (1–4) that contains the specified <see cref="DateOnly" />.
+    /// Returns the quarter number (1-4) that contains the specified <see cref="DateOnly" />.
     /// </summary>
     /// <param name="dateOnly">The input <see cref="DateOnly" /> for which to determine the quarter.</param>
     /// <returns>
@@ -99,9 +99,9 @@ public interface IQuarterDefinitionProvider
     DateTime GetQuarterEnd(DateTime dateTime);
 
     /// <summary>
-    /// Returns the last day of the specified quarter number (1–4) within the given fiscal year.
+    /// Returns the last day of the specified quarter number (1-4) within the given fiscal year.
     /// </summary>
-    /// <param name="quarter">The quarter number (1–4).</param>
+    /// <param name="quarter">The quarter number (1-4).</param>
     /// <param name="fiscalYear">The fiscal year whose quarter boundary is being requested.</param>
     /// <returns>
     /// A <see cref="DateTime" /> set to midnight (00:00:00) on the last day of the specified quarter.
@@ -124,9 +124,9 @@ public interface IQuarterDefinitionProvider
     DateOnly GetQuarterEndDate(DateOnly dateOnly);
 
     /// <summary>
-    /// Returns the last day of the specified quarter number (1–4) within the given fiscal year.
+    /// Returns the last day of the specified quarter number (1-4) within the given fiscal year.
     /// </summary>
-    /// <param name="quarter">The quarter number (1–4).</param>
+    /// <param name="quarter">The quarter number (1-4).</param>
     /// <param name="fiscalYear">The fiscal year whose quarter boundary is being requested.</param>
     /// <returns>A <see cref="DateOnly" /> representing the final day of the specified quarter.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -150,9 +150,9 @@ public interface IQuarterDefinitionProvider
     DateTime GetQuarterStart(DateTime dateTime);
 
     /// <summary>
-    /// Returns the first day of the specified quarter number (1–4) within the given fiscal year.
+    /// Returns the first day of the specified quarter number (1-4) within the given fiscal year.
     /// </summary>
-    /// <param name="quarter">The quarter number (1–4).</param>
+    /// <param name="quarter">The quarter number (1-4).</param>
     /// <param name="fiscalYear">The fiscal year whose quarter boundary is being requested.</param>
     /// <returns>
     /// A <see cref="DateTime" /> set to midnight (00:00:00) on the first day of the specified quarter.
@@ -177,9 +177,9 @@ public interface IQuarterDefinitionProvider
     DateOnly GetQuarterStartDate(DateOnly dateOnly);
 
     /// <summary>
-    /// Returns the first day of the specified quarter number (1–4) within the given fiscal year.
+    /// Returns the first day of the specified quarter number (1-4) within the given fiscal year.
     /// </summary>
-    /// <param name="quarter">The quarter number (1–4).</param>
+    /// <param name="quarter">The quarter number (1-4).</param>
     /// <param name="fiscalYear">The fiscal year whose quarter boundary is being requested.</param>
     /// <returns>A <see cref="DateOnly" /> representing the first day of the specified quarter.</returns>
     /// <exception cref="ArgumentOutOfRangeException">

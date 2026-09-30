@@ -144,7 +144,7 @@ public static partial class Base32
     /// Standard and HexExtended variants enforce this; Crockford and Z-Base32 omit the check.
     /// </param>
     /// <param name="requireCanonical">
-    /// Whether the input must be in canonical form — the unused bits of the final partial group must be zero.
+    /// Whether the input must be in canonical form - the unused bits of the final partial group must be zero.
     /// </param>
     /// <param name="destination">The destination span.</param>
     /// <param name="bytesWritten">

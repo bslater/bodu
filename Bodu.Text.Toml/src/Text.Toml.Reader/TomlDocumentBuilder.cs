@@ -100,7 +100,7 @@ internal sealed class TomlDocumentBuilder
     /// <returns>The flat row store describing the document.</returns>
     /// <exception cref="TomlFormatException">Thrown when the source is not valid TOML.</exception>
     /// <remarks>
-    /// The store is returned without copying — the builder's own backing list becomes the document's store — and is
+    /// The store is returned without copying - the builder's own backing list becomes the document's store - and is
     /// pre-sized from the source length so it grows without repeated doubling for typical documents.
     /// </remarks>
     internal List<TomlReaderRow> Parse(ReadOnlySpan<byte> source)
@@ -145,7 +145,7 @@ internal sealed class TomlDocumentBuilder
     /// <returns>The initial row-store capacity.</returns>
     /// <remarks>
     /// Flat TOML produces roughly one row per dozen bytes of key/value text. The estimate is clamped to a ceiling so a
-    /// large but sparse document — for example one dominated by long string values — cannot over-allocate the store;
+    /// large but sparse document - for example one dominated by long string values - cannot over-allocate the store;
     /// such a document simply grows it on demand instead.
     /// </remarks>
     private static int EstimateRowCapacity(int sourceLength) =>

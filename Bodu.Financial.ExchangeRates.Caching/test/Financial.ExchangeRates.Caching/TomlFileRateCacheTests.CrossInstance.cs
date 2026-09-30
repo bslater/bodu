@@ -7,8 +7,8 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Verifies that two independent <see cref="TomlFileRateCache" /> instances sharing one cache directory — the
-/// cross-process case, where no in-process per-pair lock is shared — never corrupt the store: the atomic temp-and-move
+/// Verifies that two independent <see cref="TomlFileRateCache" /> instances sharing one cache directory - the
+/// cross-process case, where no in-process per-pair lock is shared - never corrupt the store: the atomic temp-and-move
 /// write keeps each pair file internally consistent, so a reader never observes coverage without its rows.
 /// </summary>
 public sealed partial class TomlFileRateCacheTests

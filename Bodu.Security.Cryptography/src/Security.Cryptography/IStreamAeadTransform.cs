@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Represents a stream-cipher authenticated-encryption (AEAD) transform — an <see cref="IAeadTransform" /> backed by a
+/// Represents a stream-cipher authenticated-encryption (AEAD) transform - an <see cref="IAeadTransform" /> backed by a
 /// stream cipher and a one-time message-authentication code rather than a block-cipher mode. The extended-nonce
 /// Poly1305 AEADs (<see cref="XChaCha20Poly1305" />, <see cref="XSalsa20Poly1305" />,
 /// <see cref="XSalsa20Poly1305Aead" /> ) implement this surface.

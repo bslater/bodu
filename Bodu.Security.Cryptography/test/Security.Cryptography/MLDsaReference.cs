@@ -8,8 +8,8 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Provides the ML-DSA arithmetic that <see cref="MLDsaEngine" />'s Montgomery reduction and multiply-and-shift
-/// decomposition replaced — every coefficient reduced with the remainder operator, and the decomposition computed by
-/// division — kept as an independent oracle that the engine's arithmetic tests hold it to.
+/// decomposition replaced - every coefficient reduced with the remainder operator, and the decomposition computed by
+/// division - kept as an independent oracle that the engine's arithmetic tests hold it to.
 /// </summary>
 internal static class MLDsaReference
 {

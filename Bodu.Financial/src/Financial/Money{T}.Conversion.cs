@@ -133,7 +133,7 @@ public readonly partial struct Money<TCurrency>
     /// Thrown when <paramref name="decimals" /> is negative or greater than <see cref="MinorUnits" />.
     /// </exception>
     /// <remarks>
-    /// Use this to coarsen below the currency's natural precision — for example, rounding USD to whole dollars before
+    /// Use this to coarsen below the currency's natural precision - for example, rounding USD to whole dollars before
     /// display. Rounding above <see cref="MinorUnits" /> has no effect because the stored amount is already limited to
     /// the minor-unit precision.
     /// </remarks>

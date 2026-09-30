@@ -14,7 +14,7 @@
     <TestSessionTimeout>3600000</TestSessionTimeout>
 
     <!--
-      Stress run: only the tests tagged [TestCategory("Stress")] — long-running, high-iteration loops kept out
+      Stress run: only the tests tagged [TestCategory("Stress")] - long-running, high-iteration loops kept out
       of the regular tiers because they exceed the standard session timeout. Run on demand.
       Pass this file via the dotnet test settings switch, e.g. /p:RunSettingsFilePath=stress.runsettings.
     -->

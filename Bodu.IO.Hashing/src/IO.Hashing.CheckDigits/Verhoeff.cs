@@ -99,11 +99,11 @@ public sealed partial class Verhoeff
 
     /// <summary>
     /// Determines whether the supplied sequence, comprising a body followed by a trailing Verhoeff check digit, is
-    /// valid — that is, whether the final running value evaluates to zero.
+    /// valid - that is, whether the final running value evaluates to zero.
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence evaluates as valid under Verhoeff; otherwise, <see langword="false" /> —
+    /// <see langword="true" /> if the sequence evaluates as valid under Verhoeff; otherwise, <see langword="false" /> -
     /// including the case where <paramref name="digitsIncludingCheck" /> is empty or contains a character outside the
     /// range <c>'0'</c> to <c>'9'</c>.
     /// </returns>

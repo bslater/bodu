@@ -11,7 +11,7 @@ namespace Bodu.Financial.Samples.CachedRates;
 /// <summary>
 /// A delegating <see cref="IDatedRateProvider" /> that records every call reaching the inner source.
 /// The caching scenarios wrap their "upstream" in this so the console output can prove which lookups
-/// were served from the cache and which had to touch the source — with a live web provider, each
+/// were served from the cache and which had to touch the source - with a live web provider, each
 /// recorded call would be an HTTP fetch.
 /// </summary>
 public sealed class CountingRateProvider

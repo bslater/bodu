@@ -153,8 +153,8 @@ public partial class TomlSerializerTests
     /// offset date-time, carrying the local offset rather than the local form.
     /// </summary>
     /// <remarks>
-    /// The numeric offset depends on the host time zone, so this test asserts the structural form — an offset date-time
-    /// rather than a bare local date-time — instead of an exact offset.
+    /// The numeric offset depends on the host time zone, so this test asserts the structural form - an offset date-time
+    /// rather than a bare local date-time - instead of an exact offset.
     /// </remarks>
     [TestMethod]
     public void Serialize_WhenDateTimeLocal_ShouldWriteOffsetDateTime()
@@ -238,7 +238,7 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that an <see cref="object" />-typed member holding a bare <see cref="object" /> serializes as an empty
-    /// table — the TOML analogue of the empty JSON object — which the writer canonically emits as an empty header
+    /// table - the TOML analogue of the empty JSON object - which the writer canonically emits as an empty header
     /// section.
     /// </summary>
     [TestMethod]

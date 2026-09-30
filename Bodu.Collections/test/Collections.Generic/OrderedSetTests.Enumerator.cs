@@ -98,7 +98,7 @@ public partial class OrderedSetTests
         Assert.IsFalse(enumerator.MoveNext());
     }
     // --------------------------------------------------------
-    // GetEnumerator — typed struct
+    // GetEnumerator - typed struct
     // --------------------------------------------------------
 
     /// <summary>

@@ -22,7 +22,7 @@ namespace Bodu.IO.Hashing;
 /// <para>
 /// Resolution must be wired through <c>DynamicDataDisplayNameDeclaringType</c> because MSTest 4.x resolves the display
 /// name method via <see cref="TypeInfo.GetDeclaredMethod(string)" />, which does not walk inheritance. Hosting the
-/// helper on a non-generic static class lets every test class — base, intermediate, or concrete — share a single
+/// helper on a non-generic static class lets every test class - base, intermediate, or concrete - share a single
 /// implementation.
 /// </para>
 /// </remarks>

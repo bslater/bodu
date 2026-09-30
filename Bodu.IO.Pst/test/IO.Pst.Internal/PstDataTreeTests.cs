@@ -276,7 +276,7 @@ public partial class PstDataTreeTests
 
     /// <summary>
     /// Verifies that segment resolution of an <c>XBLOCK</c>-backed node preserves each data block as its own segment,
-    /// in list order — the boundary information the flattened payload discards and the heap-on-node requires.
+    /// in list order - the boundary information the flattened payload discards and the heap-on-node requires.
     /// </summary>
     [TestMethod]
     public void ResolveSegments_WhenNodeHasAnXBlock_ShouldPreserveBlockBoundaries()

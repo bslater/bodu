@@ -12,7 +12,7 @@ namespace Bodu.Financial.Currencies;
 /// </summary>
 /// <remarks>
 /// ISO 4217 numeric code <c>642</c>; minor-unit precision <c>2</c>.
-/// Historic — demonetized on 2005-07-01, replaced by RON.
+/// Historic - demonetized on 2005-07-01, replaced by RON.
 /// </remarks>
 public sealed class ROL : ICurrency
 {
@@ -37,7 +37,7 @@ public sealed class ROL : ICurrency
     /// <summary>
     /// Gets a value indicating that the currency has been demonetized.
     /// </summary>
-    /// <value><see langword="true" /> — this is a historic currency.</value>
+    /// <value><see langword="true" /> - this is a historic currency.</value>
     public static bool IsHistoric => true;
 
     /// <summary>

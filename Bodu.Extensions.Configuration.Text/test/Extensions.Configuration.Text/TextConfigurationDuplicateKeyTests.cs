@@ -60,7 +60,7 @@ service.name = Second
 
     /// <summary>
     /// Verifies that when the same key is set in multiple matching sections, the last matching section
-    /// wins after resolution — confirming the bridge preserves the document resolver's section ordering.
+    /// wins after resolution - confirming the bridge preserves the document resolver's section ordering.
     /// </summary>
     [TestMethod]
     public void Build_WhenSameKeyInMultipleMatchingSections_ShouldUseLastMatchingSection()
@@ -83,7 +83,7 @@ format.indent.size = 2
 
     /// <summary>
     /// Verifies that when the same key is set across multiple <em>providers</em>, Microsoft's
-    /// last-added-provider-wins rule applies — the second <c>AddTextConfigurationStream</c> call overrides the first.
+    /// last-added-provider-wins rule applies - the second <c>AddTextConfigurationStream</c> call overrides the first.
     /// </summary>
     [TestMethod]
     public void Build_WhenSameKeyInMultipleProviders_ShouldUseLastAddedProvider()

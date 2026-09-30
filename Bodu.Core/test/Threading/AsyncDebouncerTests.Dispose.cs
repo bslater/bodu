@@ -82,7 +82,7 @@ public sealed partial class AsyncDebouncerTests
 
     /// <summary>
     /// Verifies that disposing the debouncer while an in-flight callback completes concurrently does not surface
-    /// <see cref="ObjectDisposedException" /> from <see cref="AsyncDebouncer.Dispose" /> — the completing callback
+    /// <see cref="ObjectDisposedException" /> from <see cref="AsyncDebouncer.Dispose" /> - the completing callback
     /// disposes its per-run <see cref="CancellationTokenSource" /> while <see cref="AsyncDebouncer.Dispose" />
     /// cancels the same source it captured under the gate.
     /// </summary>

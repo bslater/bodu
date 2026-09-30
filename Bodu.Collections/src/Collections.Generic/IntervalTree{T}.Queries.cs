@@ -24,7 +24,7 @@ public sealed partial class IntervalTree<T>
     /// </para>
     /// <para>
     /// The sequence is live: each fresh iteration re-resolves against the tree's current state. Within a single
-    /// iteration it is fail-fast — any structural mutation causes the next advance to throw
+    /// iteration it is fail-fast - any structural mutation causes the next advance to throw
     /// <see cref="InvalidOperationException" />.
     /// </para>
     /// </remarks>
@@ -45,13 +45,13 @@ public sealed partial class IntervalTree<T>
     /// <returns>A lazily evaluated sequence of the intervals overlapping the window.</returns>
     /// <remarks>
     /// <para>
-    /// An interval matches when it shares at least one point with the window — touching at a single common endpoint
+    /// An interval matches when it shares at least one point with the window - touching at a single common endpoint
     /// counts, because both the stored intervals and the window are closed. Duplicate intervals are repeated once per
     /// stored occurrence. Iterating costs O(log n + k) for k reported intervals in the common case.
     /// </para>
     /// <para>
     /// The sequence is live: each fresh iteration re-resolves against the tree's current state. Within a single
-    /// iteration it is fail-fast — any structural mutation causes the next advance to throw
+    /// iteration it is fail-fast - any structural mutation causes the next advance to throw
     /// <see cref="InvalidOperationException" />.
     /// </para>
     /// </remarks>
@@ -78,7 +78,7 @@ public sealed partial class IntervalTree<T>
     /// <see langword="true" /> if at least one stored interval contains the point; otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// This is the early-exit form of <see cref="QueryPoint" /> — a single O(log n) descent regardless of how many
+    /// This is the early-exit form of <see cref="QueryPoint" /> - a single O(log n) descent regardless of how many
     /// intervals match.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="point" /> is <see langword="null" />.</exception>
@@ -99,7 +99,7 @@ public sealed partial class IntervalTree<T>
     /// <see langword="true" /> if at least one stored interval overlaps the window; otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// This is the early-exit form of <see cref="QueryOverlaps" /> — a single O(log n) descent regardless of how many
+    /// This is the early-exit form of <see cref="QueryOverlaps" /> - a single O(log n) descent regardless of how many
     /// intervals match.
     /// </remarks>
     /// <exception cref="ArgumentNullException">

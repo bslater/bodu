@@ -16,19 +16,19 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/xts-mode.svg" alt="XTS data flow — the tweak cipher encrypts the sector number, successive α multiplications in GF(2^128) derive per-block tweaks T_j, and each block is XORed with T_j before and after the data cipher."/>
+/// <img src="../images/diagrams/xts-mode.svg" alt="XTS data flow - the tweak cipher encrypts the sector number, successive α multiplications in GF(2^128) derive per-block tweaks T_j, and each block is XORed with T_j before and after the data cipher."/>
 /// </para>
 /// <para>
 /// XTS requires two independent ciphers keyed with different material:
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <c>dataCipher</c> (Key₁) — encrypts or decrypts the data. Shown as <b>E_K₁</b> in the central column of the diagram.
+/// <c>dataCipher</c> (Key₁) - encrypts or decrypts the data. Shown as <b>E_K₁</b> in the central column of the diagram.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <c>tweakCipher</c> (Key₂) — encrypts the sector number (tweak). Shown as <b>E_K₂</b> on the left.
+/// <c>tweakCipher</c> (Key₂) - encrypts the sector number (tweak). Shown as <b>E_K₂</b> on the left.
 /// </description>
 /// </item>
 /// </list>
@@ -40,7 +40,7 @@ namespace Bodu.Security.Cryptography;
 /// <strong>Implementation scope.</strong> This transform implements the XEX core for whole 128-bit blocks and does
 /// <strong>not</strong> perform ciphertext stealing: input whose length is not a multiple of the block size is rejected
 /// rather than stolen, so it is not interoperable with IEEE 1619 data units that end on a partial block. The GF(2<sup>128</sup>)
-/// tweak reduction is defined only for 128-bit blocks, so both ciphers must have a 128-bit block size — the constructor
+/// tweak reduction is defined only for 128-bit blocks, so both ciphers must have a 128-bit block size - the constructor
 /// rejects any other width.
 /// </para>
 /// <para>
@@ -54,18 +54,18 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// The horizontal tweak bus in the diagram corresponds to this successive <c>·α</c> multiplication: each <b>·α </b> box
 /// doubles the tweak in GF(2¹²⁸) so the Tⱼ arriving at cell <em>j</em> is αʲ times the base tweak. The two XOR nodes
-/// inside each cell — before and after the data cipher — realize the <c>⊕ T_j</c> pairs in the equation above.
+/// inside each cell - before and after the data cipher - realize the <c>⊕ T_j</c> pairs in the equation above.
 /// </para>
 /// <para>
 /// GF(2^128) multiplication uses the primitive polynomial x^128 + x^7 + x^2 + x + 1 with little-endian bit
 /// representation (byte 0, bit 0 = coefficient of x^0), identical to IEEE 1619.
 /// </para>
 /// <para>
-/// <strong>When to use XTS.</strong> The standard mode for sector-level disk encryption — used by BitLocker, FileVault,
+/// <strong>When to use XTS.</strong> The standard mode for sector-level disk encryption - used by BitLocker, FileVault,
 /// dm-crypt/LUKS, VeraCrypt, and the IEEE 1619 disk-encryption specification. XTS is designed specifically for the
 /// random-access, fixed-size-block setting where ciphertext expansion is impossible (the on-disk sector size cannot
 /// grow), which means it provides confidentiality but <em>no authentication</em>. Do not use XTS for protecting
-/// messages over untrusted channels — pick an AEAD mode (<see cref="GcmModeTransform" />,
+/// messages over untrusted channels - pick an AEAD mode (<see cref="GcmModeTransform" />,
 /// <see cref="EaxModeTransform" />) for that. For new disk encryption designs that can afford a per-sector tag,
 /// AEAD-based alternatives (Adiantum, AES-XTS-HMAC, or storage-specific AEAD modes) provide stronger guarantees.
 /// </para>
@@ -76,7 +76,7 @@ namespace Bodu.Security.Cryptography;
 /// using System.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
-/// // XTS uses two independent keys — Key1 for data, Key2 for the tweak. Never share keys.
+/// // XTS uses two independent keys - Key1 for data, Key2 for the tweak. Never share keys.
 /// using IBlockCipher data = new AesBlockCipher(key1);
 /// using IBlockCipher tweak = new AesBlockCipher(key2);
 /// byte[] sectorNumber = BitConverter.GetBytes((long)42); // little-endian sector number, padded to block size
@@ -218,7 +218,7 @@ public sealed class XtsModeTransform
     /// <summary>
     /// Releases the resources used by this instance and zeroes the retained tweak so that key-equivalent state does not
     /// linger in memory after disposal. The underlying data and tweak <see cref="IBlockCipher" /> instances are not
-    /// disposed by this type — ownership remains with the caller.
+    /// disposed by this type - ownership remains with the caller.
     /// </summary>
     /// <remarks>
     /// Idempotent.

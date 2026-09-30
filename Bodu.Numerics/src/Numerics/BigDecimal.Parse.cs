@@ -137,7 +137,7 @@ public readonly partial struct BigDecimal
             return false;
 
         // Concatenate the integer and fraction digits without the separator. The scratch buffer is sized from the
-        // (attacker-controlled) input length, so it must not be a stackalloc — rent from the pool for large inputs
+        // (attacker-controlled) input length, so it must not be a stackalloc - rent from the pool for large inputs
         // to avoid a stack overflow while still supporting arbitrarily long values.
         int totalDigits = integerPart.Length + fractionPart.Length;
         char[]? rented = null;

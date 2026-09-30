@@ -21,7 +21,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Consume through a concrete derivative — the shared 64-bit finalization layout
+/// // Consume through a concrete derivative - the shared 64-bit finalization layout
 /// // is identical across every Adler64Base subclass.
 /// Adler64Base hash = new Adler64();
 /// hash.Append("Wikipedia"u8);

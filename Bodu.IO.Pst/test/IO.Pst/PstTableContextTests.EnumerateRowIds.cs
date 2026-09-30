@@ -77,6 +77,6 @@ public partial class PstTableContextTests
         long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
 
         Assert.AreEqual(RowCount, count);
-        Assert.IsTrue(allocated < 8 * 1024, $"Enumerating {RowCount} row identifiers allocated {allocated} bytes — rows are being copied.");
+        Assert.IsTrue(allocated < 8 * 1024, $"Enumerating {RowCount} row identifiers allocated {allocated} bytes - rows are being copied.");
     }
 }

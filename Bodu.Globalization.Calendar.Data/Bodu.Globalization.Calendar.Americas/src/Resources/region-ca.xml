@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ================================================================================================================
-  Canada (CA) — notable-date resource pack
+  Canada (CA) - notable-date resource pack
   ================================================================================================================
 
   National rules are scoped to territory "CA"; provincial and territorial rules use their ISO 3166-2 subdivision
@@ -103,7 +103,7 @@
     -->
 
     <!--
-      Family Day — the third Monday in February. One concept carrying a rule per province that observes it, each
+      Family Day - the third Monday in February. One concept carrying a rule per province that observes it, each
       gated by the year the province adopted the holiday (AB 1990, SK 2007, ON 2008, BC 2013, NB 2018). British
       Columbia is the exception: it observed Family Day on the SECOND Monday from 2013 to 2018, then moved to the
       third Monday from 2019 to align with the other provinces, so it carries two date-bounded rules. The same
@@ -122,7 +122,7 @@
     </NotableDate>
 
     <!--
-      Islander Day — Prince Edward Island's name for the third-Monday-in-February holiday, observed from 2009.
+      Islander Day - Prince Edward Island's name for the third-Monday-in-February holiday, observed from 2009.
       Strategy: DayOfWeekInMonth (third Monday).
     -->
     <NotableDate id="island-day" displayName="Islander Day" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -131,7 +131,7 @@
     </NotableDate>
 
     <!--
-      Louis Riel Day — Manitoba's name for the third-Monday-in-February holiday, observed from 2008. Strategy:
+      Louis Riel Day - Manitoba's name for the third-Monday-in-February holiday, observed from 2008. Strategy:
       DayOfWeekInMonth (third Monday).
     -->
     <NotableDate id="louis-riel-day" displayName="Louis Riel Day" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -140,7 +140,7 @@
     </NotableDate>
 
     <!--
-      Nova Scotia Heritage Day — Nova Scotia's name for the third-Monday-in-February holiday, observed from 2015.
+      Nova Scotia Heritage Day - Nova Scotia's name for the third-Monday-in-February holiday, observed from 2015.
       Strategy: DayOfWeekInMonth (third Monday).
     -->
     <NotableDate id="nova-scotia-heritage-day" displayName="Nova Scotia Heritage Day" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -159,7 +159,7 @@
     -->
 
     <!--
-      Newfoundland Memorial Day — 1 July, commemorating the Royal Newfoundland Regiment's losses at Beaumont-Hamel
+      Newfoundland Memorial Day - 1 July, commemorating the Royal Newfoundland Regiment's losses at Beaumont-Hamel
       in 1916; observed alongside Canada Day. Strategy: Fixed day-of-month.
     -->
     <NotableDate id="nl-memorial-day" displayName="Memorial Day (Newfoundland and Labrador)" category="Remembrance" defaultNonWorkingDay="true">
@@ -168,7 +168,7 @@
     </NotableDate>
 
     <!--
-      St. Patrick's Day (Newfoundland and Labrador) — observed on the Monday nearest 17 March. Strategy:
+      St. Patrick's Day (Newfoundland and Labrador) - observed on the Monday nearest 17 March. Strategy:
       WeekdayNearDate (Monday nearest 17 March).
     -->
     <NotableDate id="nl-st-patricks-day" displayName="St. Patrick's Day (Newfoundland and Labrador)" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -177,7 +177,7 @@
     </NotableDate>
 
     <!--
-      St. George's Day (Newfoundland and Labrador) — observed on the Monday nearest 23 April. Strategy:
+      St. George's Day (Newfoundland and Labrador) - observed on the Monday nearest 23 April. Strategy:
       WeekdayNearDate (Monday nearest 23 April).
     -->
     <NotableDate id="nl-st-georges-day" displayName="St. George's Day (Newfoundland and Labrador)" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -186,7 +186,7 @@
     </NotableDate>
 
     <!--
-      Discovery Day (Newfoundland and Labrador) — observed on the Monday nearest 24 June, marking John Cabot's 1497
+      Discovery Day (Newfoundland and Labrador) - observed on the Monday nearest 24 June, marking John Cabot's 1497
       landfall. Distinct from Yukon's August Discovery Day below. Strategy: WeekdayNearDate (Monday nearest 24 June).
     -->
     <NotableDate id="nl-discovery-day" displayName="Discovery Day (Newfoundland and Labrador)" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -195,7 +195,7 @@
     </NotableDate>
 
     <!--
-      Orangemen's Day (Newfoundland and Labrador) — observed on the Monday nearest 12 July. Strategy:
+      Orangemen's Day (Newfoundland and Labrador) - observed on the Monday nearest 12 July. Strategy:
       WeekdayNearDate (Monday nearest 12 July).
     -->
     <NotableDate id="orangemens-day" displayName="Orangemen's Day (Newfoundland and Labrador)" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -210,7 +210,7 @@
     -->
 
     <!--
-      Victoria Day — the Monday on or before 24 May (so the penultimate Monday of May), a national statutory
+      Victoria Day - the Monday on or before 24 May (so the penultimate Monday of May), a national statutory
       holiday. Strategy: WeekdayNearDate (Monday on or before 24 May).
     -->
     <NotableDate id="victoria-day" displayName="Victoria Day" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -219,7 +219,7 @@
     </NotableDate>
 
     <!--
-      National Patriots' Day (Journée nationale des patriotes) — the Monday on or before 24 May; Quebec observes
+      National Patriots' Day (Journée nationale des patriotes) - the Monday on or before 24 May; Quebec observes
       this in place of Victoria Day on the same date. Subdivision-scoped, so it resolves only for a CA-QC query.
       Strategy: WeekdayNearDate (Monday on or before 24 May).
     -->
@@ -229,7 +229,7 @@
     </NotableDate>
 
     <!--
-      National Indigenous Peoples Day — 21 June. A national observance held since 1996 (working day), and a
+      National Indigenous Peoples Day - 21 June. A national observance held since 1996 (working day), and a
       statutory non-working holiday in the Northwest Territories (from 2022) and Yukon. Territory shadowing returns
       the territorial rule for CA-NT/CA-YT and the national observance rule elsewhere. Strategy: Fixed day-of-month.
     -->
@@ -241,7 +241,7 @@
     </NotableDate>
 
     <!--
-      Fête nationale du Québec (Saint-Jean-Baptiste Day) — 24 June, a Quebec-only statutory holiday with a weekend
+      Fête nationale du Québec (Saint-Jean-Baptiste Day) - 24 June, a Quebec-only statutory holiday with a weekend
       roll. Subdivision-scoped, so a national "CA" query returns nothing. Strategy: Fixed day-of-month.
     -->
     <NotableDate id="fete-nationale-quebec" displayName="Fête nationale du Québec" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -250,7 +250,7 @@
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
     </NotableDate>
 
-    <!-- Canada Day — 1 July, the national statutory holiday, with a weekend roll. Strategy: Fixed day-of-month. -->
+    <!-- Canada Day - 1 July, the national statutory holiday, with a weekend roll. Strategy: Fixed day-of-month. -->
     <NotableDate id="canada-day" displayName="Canada Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
         <Strategy><Fixed month="July" day="1" /></Strategy>
@@ -258,7 +258,7 @@
     </NotableDate>
 
     <!--
-      Nunavut Day — 9 July, a Nunavut-only statutory holiday observed since the territory's creation in 1999, with
+      Nunavut Day - 9 July, a Nunavut-only statutory holiday observed since the territory's creation in 1999, with
       a weekend roll. Strategy: Fixed day-of-month.
     -->
     <NotableDate id="nunavut-day" displayName="Nunavut Day" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -275,14 +275,14 @@
       concepts below carry one subdivision-scoped rule each; a national "CA" query resolves none of them.
     -->
 
-    <!-- British Columbia Day — first Monday in August, British Columbia only. Strategy: DayOfWeekInMonth (first Monday). -->
+    <!-- British Columbia Day - first Monday in August, British Columbia only. Strategy: DayOfWeekInMonth (first Monday). -->
     <NotableDate id="british-columbia-day" displayName="British Columbia Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="bc"><Applicability><Territory code="CA-BC" /></Applicability>
         <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!--
-      Civic Holiday — first Monday in August, the generic name used where no province-specific name applies. A
+      Civic Holiday - first Monday in August, the generic name used where no province-specific name applies. A
       single rule lists every applicable subdivision (ON, MB, SK, NU, NT); the engine matches any of them. Strategy:
       DayOfWeekInMonth (first Monday).
     -->
@@ -292,7 +292,7 @@
     </NotableDate>
 
     <!--
-      Heritage Day — Alberta's first-Monday-in-August day. An optional (non-statutory) observance in Alberta, so it
+      Heritage Day - Alberta's first-Monday-in-August day. An optional (non-statutory) observance in Alberta, so it
       is a working day. Strategy: DayOfWeekInMonth (first Monday).
     -->
     <NotableDate id="heritage-day" displayName="Heritage Day" category="Observance" defaultNonWorkingDay="false">
@@ -300,14 +300,14 @@
         <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- New Brunswick Day — first Monday in August, New Brunswick only. Strategy: DayOfWeekInMonth (first Monday). -->
+    <!-- New Brunswick Day - first Monday in August, New Brunswick only. Strategy: DayOfWeekInMonth (first Monday). -->
     <NotableDate id="new-brunswick-day" displayName="New Brunswick Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="nb"><Applicability><Territory code="CA-NB" /></Applicability>
         <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!--
-      Discovery Day — third Monday in August, Yukon only (commemorating the 1896 Klondike gold discovery; distinct
+      Discovery Day - third Monday in August, Yukon only (commemorating the 1896 Klondike gold discovery; distinct
       from the first-Monday August holiday and from Newfoundland's June Discovery Day). Strategy: DayOfWeekInMonth
       (third Monday).
     -->
@@ -322,14 +322,14 @@
       ============================================================================================================
     -->
 
-    <!-- Labour Day — first Monday in September, a national statutory holiday. Strategy: DayOfWeekInMonth (first Monday). -->
+    <!-- Labour Day - first Monday in September, a national statutory holiday. Strategy: DayOfWeekInMonth (first Monday). -->
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
         <Strategy><DayOfWeekInMonth month="September" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!--
-      National Day for Truth and Reconciliation — 30 September, a federal statutory holiday established 2021, with a
+      National Day for Truth and Reconciliation - 30 September, a federal statutory holiday established 2021, with a
       weekend roll. The fromYear bound excludes earlier years. Strategy: Fixed day-of-month.
     -->
     <NotableDate id="truth-and-reconciliation-day" displayName="National Day for Truth and Reconciliation" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -339,7 +339,7 @@
     </NotableDate>
 
     <!--
-      Remembrance Day — 11 November, a remembrance day treated as a statutory holiday (non-working) here, with a
+      Remembrance Day - 11 November, a remembrance day treated as a statutory holiday (non-working) here, with a
       weekend roll. (Statutory status actually varies by province; this pack treats it as non-working nationally.)
       Strategy: Fixed day-of-month.
     -->

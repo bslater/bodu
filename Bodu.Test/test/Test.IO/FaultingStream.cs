@@ -17,7 +17,7 @@ namespace Bodu.Test.IO;
 /// recover from the same instance.
 /// </para>
 /// <para>
-/// Use this stream in tests that verify error propagation — confirming that a consumer forwards the exception to its
+/// Use this stream in tests that verify error propagation - confirming that a consumer forwards the exception to its
 /// caller without deadlocking any internal workers or leaving the consumer in an inconsistent state that prevents
 /// reuse.
 /// </para>

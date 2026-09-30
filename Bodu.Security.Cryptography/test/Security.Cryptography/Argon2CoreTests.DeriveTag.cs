@@ -38,7 +38,7 @@ public sealed partial class Argon2CoreTests
             Argon2Tests.RecordedCorpusVectors().Where(row => ((KdfKnownAnswer)row[0]).Memory <= PoisonedVectorMaxMemoryKiB));
 
     /// <summary>
-    /// Gets every vector of up to 16 MiB whose lanes can be divided among threads — RFC 9106's, the reference
+    /// Gets every vector of up to 16 MiB whose lanes can be divided among threads - RFC 9106's, the reference
     /// implementation's with more than one lane, and the recorded 1.0.0 corpus at every lane count from one to eight.
     /// </summary>
     /// <returns>One row per vector, each holding a single <see cref="KdfKnownAnswer" />.</returns>
@@ -60,7 +60,7 @@ public sealed partial class Argon2CoreTests
 
     /// <summary>
     /// Verifies that every compression kernel the processor supports produces the known tag, whichever one dispatch
-    /// would select — so an AVX2 host holds the AVX2, SSSE3, and scalar kernels, and an ARM64 host the AdvSimd and
+    /// would select - so an AVX2 host holds the AVX2, SSSE3, and scalar kernels, and an ARM64 host the AdvSimd and
     /// scalar kernels, to every vector of up to 16 MiB.
     /// </summary>
     /// <param name="vector">The vector derived with each kernel.</param>
@@ -80,7 +80,7 @@ public sealed partial class Argon2CoreTests
 
     /// <summary>
     /// Verifies that a derivation over a matrix pre-filled with garbage still produces the known tag, on the calling
-    /// thread alone and with its lanes divided among threads, proving that no block is read before it is written — the
+    /// thread alone and with its lanes divided among threads, proving that no block is read before it is written - the
     /// invariant that lets a matrix come uninitialized from native memory or all-zero from the pool.
     /// </summary>
     /// <param name="vector">The vector replayed over the poisoned matrix.</param>

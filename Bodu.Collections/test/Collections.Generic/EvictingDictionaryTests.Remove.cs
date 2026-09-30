@@ -214,7 +214,7 @@ public partial class EvictingDictionaryTests
         dictionary.Touch("B");
         dictionary.Add("C", 3); // cycles A then B; A (oldest after cycling) is evicted.
 
-        // B was cycled during eviction — its internal node reference must have been updated.
+        // B was cycled during eviction - its internal node reference must have been updated.
         // Before the fix, Remove("B") could either leave B's node orphaned (old Remove for SC)
         // or throw InvalidOperationException (new Remove using a stale node from old cycling code).
         bool result = dictionary.Remove("B");

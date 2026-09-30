@@ -9,8 +9,8 @@ namespace Bodu.Globalization.Calendar;
 public sealed partial class ReloadableNotableDateServiceTests
 {
     /// <summary>
-    /// Verifies that concurrent queries racing repeated reloads always observe a complete, consistent result — the
-    /// special day on either the pre-reload or post-reload date, never a torn or empty state — exercising the lock-free
+    /// Verifies that concurrent queries racing repeated reloads always observe a complete, consistent result - the
+    /// special day on either the pre-reload or post-reload date, never a torn or empty state - exercising the lock-free
     /// snapshot fast path and the gated rebuild.
     /// </summary>
     [TestMethod]

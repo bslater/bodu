@@ -51,7 +51,7 @@ public static partial class Rfc8439VectorReader
 
             if (!inSection)
             {
-                // Match the real heading only — the table-of-contents entry carries a trailing dot leader and page
+                // Match the real heading only - the table-of-contents entry carries a trailing dot leader and page
                 // number, so an exact (whitespace-normalized) match rejects it.
                 if (Normalize(trimmed).Equals(Normalize(sectionTitle), StringComparison.OrdinalIgnoreCase))
                     inSection = true;

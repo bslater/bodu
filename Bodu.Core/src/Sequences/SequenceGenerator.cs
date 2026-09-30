@@ -8,9 +8,9 @@ namespace Bodu.Sequences;
 
 /// <summary>
 /// Provides static factory methods that produce lazily evaluated <see cref="IEnumerable{T}" /> sequences without
-/// materializing the underlying collection — both general-purpose shapes (<c>Range</c>, <c>NextWhile</c>,
+/// materializing the underlying collection - both general-purpose shapes (<c>Range</c>, <c>NextWhile</c>,
 /// <c>Factory</c>) and a catalogue of well-known mathematical sequences (Fibonacci, Farey, Leibniz, look-and-say, and
-/// Thue–Morse).
+/// Thue-Morse).
 /// </summary>
 /// <remarks>
 /// <para>
@@ -28,7 +28,7 @@ namespace Bodu.Sequences;
 /// can adapt non-collection iteration sources to the LINQ pipeline.
 /// </para>
 /// <para>
-/// The mathematical catalogue is intentionally narrow — it covers reference sequences that appear repeatedly in
+/// The mathematical catalogue is intentionally narrow - it covers reference sequences that appear repeatedly in
 /// numerical recipes, algorithm exercises, and educational material, but it is not a general-purpose recurrence
 /// framework. Most of these generators take inclusive bounds over the value space (<c>min</c>, <c>max</c>) rather than
 /// element counts, while the Farey and look-and-say overloads accept an order or count parameter where bounds are not
@@ -53,7 +53,7 @@ namespace Bodu.Sequences;
 ///     conditionHandler: value => value > 0,
 ///     resultSelector: prev => prev * 2);
 ///
-/// // Fibonacci numbers up to 100 — the value bound, not a fixed count.
+/// // Fibonacci numbers up to 100 - the value bound, not a fixed count.
 /// foreach (long fib in SequenceGenerator.Fibonacci(min: 0, max: 100))
 ///     Console.WriteLine(fib); // 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89
 ///]]>

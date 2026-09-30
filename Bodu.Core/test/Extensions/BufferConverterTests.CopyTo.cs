@@ -214,7 +214,7 @@ public partial class BufferConverterTests
     }
 
     // =========================================================================
-    // CopyTo<T>(T, byte[], int) — single-value writer
+    // CopyTo<T>(T, byte[], int) - single-value writer
     // =========================================================================
 
     /// <summary>
@@ -279,7 +279,7 @@ public partial class BufferConverterTests
     }
 
     // =========================================================================
-    // CopyTo<T>(byte[], int, T[], int) — overload without explicit targetIndex
+    // CopyTo<T>(byte[], int, T[], int) - overload without explicit targetIndex
     // =========================================================================
 
     /// <summary>

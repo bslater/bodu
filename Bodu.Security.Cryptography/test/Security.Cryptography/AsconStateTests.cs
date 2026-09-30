@@ -33,7 +33,7 @@ public class AsconStateTests
     // ── Permute ───────────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Verifies that <see cref="AsconState.Permute" /> changes the state — a non-zero input must
+    /// Verifies that <see cref="AsconState.Permute" /> changes the state - a non-zero input must
     /// not produce the same values after a permutation (probabilistic sanity check).
     /// </summary>
     [TestMethod]
@@ -49,7 +49,7 @@ public class AsconStateTests
 
     /// <summary>
     /// Verifies that applying the ASCON permutation twice with the same round count produces
-    /// different output from a single application — i.e., the permutation is not self-inverse.
+    /// different output from a single application - i.e., the permutation is not self-inverse.
     /// </summary>
     [TestMethod]
     public void Permute_AppliedTwice_ShouldProduceDifferentStateFromOnce()
@@ -88,7 +88,7 @@ public class AsconStateTests
 
     /// <summary>
     /// Verifies that <see cref="AsconState.AbsorbRate64" /> XORs the input bytes into <c>S0</c>
-    /// using little-endian byte order and leaves <c>S1</c>–<c>S4</c> unchanged.
+    /// using little-endian byte order and leaves <c>S1</c>-<c>S4</c> unchanged.
     /// </summary>
     [TestMethod]
     public void AbsorbRate64_WhenAbsorbingBytes_ShouldXorIntoS0LittleEndian()
@@ -123,7 +123,7 @@ public class AsconStateTests
 
     /// <summary>
     /// Verifies that <see cref="AsconState.AbsorbRate128" /> XORs the input bytes into
-    /// <c>S0</c> and <c>S1</c> using little-endian byte order and leaves <c>S2</c>–<c>S4</c>
+    /// <c>S0</c> and <c>S1</c> using little-endian byte order and leaves <c>S2</c>-<c>S4</c>
     /// unchanged.
     /// </summary>
     [TestMethod]

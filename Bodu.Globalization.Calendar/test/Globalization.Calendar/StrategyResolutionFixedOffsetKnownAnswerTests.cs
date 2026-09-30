@@ -44,7 +44,7 @@ public sealed class StrategyResolutionFixedOffsetKnownAnswerTests
         AssertNoOccurrenceInYear("fixed-to-2020", 2025);
 
     /// <summary>
-    /// Verifies the rule applicability year window: a rule bounded to 2020–2030 inclusive resolves for an in-window
+    /// Verifies the rule applicability year window: a rule bounded to 2020-2030 inclusive resolves for an in-window
     /// year, an unbounded rule always resolves, and a year below or above the window produces no occurrence. Ported from
     /// the non-cadence rows of the v1 <c>IsApplicable_TruthTable</c> (the v1 <c>OccurrenceYears</c> cadence has no v2
     /// authoring surface and is excluded).

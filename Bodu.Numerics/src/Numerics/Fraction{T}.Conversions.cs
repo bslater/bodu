@@ -236,8 +236,8 @@ public readonly partial struct Fraction<T>
         if (quotientBits < -1080)
             return negative ? -0.0 : 0.0;
 
-        // Shift the numerator so the truncated integer quotient carries ~108 significant bits — twice the double
-        // mantissa — making the division's truncation error vanish below the final rounding, then undo the shift with
+        // Shift the numerator so the truncated integer quotient carries ~108 significant bits - twice the double
+        // mantissa - making the division's truncation error vanish below the final rounding, then undo the shift with
         // an exact power-of-two scale (ScaleB handles overflow to infinity and gradual underflow).
         int shift = 108 - (int)quotientBits;
         BigInteger quotient = shift >= 0

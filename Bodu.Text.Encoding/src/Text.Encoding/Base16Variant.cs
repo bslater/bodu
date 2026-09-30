@@ -11,7 +11,7 @@ namespace Bodu.Text.Encoding;
 /// </summary>
 /// <remarks>
 /// Base16 encodes each byte as two hexadecimal characters. The variants differ only in the case of the alphabetic
-/// digits <c>a</c>–<c>f</c>; both decode identically because hexadecimal parsing is case-insensitive. The same case
+/// digits <c>a</c>-<c>f</c>; both decode identically because hexadecimal parsing is case-insensitive. The same case
 /// selection can also be expressed through <see cref="BaseFormattingOptions.UpperCase" /> on the option-based
 /// overloads; the variant overloads provide the uniform <c>(bytes, variant, options)</c> shape shared with the other
 /// Base-N families, and the variant takes precedence over the option for the alphabet case.

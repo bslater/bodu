@@ -18,8 +18,8 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Derived classes — <see cref="Threefish256Cipher" />, <see cref="Threefish512Cipher" />, and
-/// <see cref="Threefish1024Cipher" /> — supply the block size, word count, rotation schedule, and round count for a
+/// Derived classes - <see cref="Threefish256Cipher" />, <see cref="Threefish512Cipher" />, and
+/// <see cref="Threefish1024Cipher" /> - supply the block size, word count, rotation schedule, and round count for a
 /// specific Threefish variant, along with their own <see cref="Encrypt" /> and <see cref="Decrypt" /> implementations.
 /// </para>
 /// <para>
@@ -31,7 +31,7 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract.
 /// </para>
 /// </remarks>
-/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
+/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives - direct use vs.
 /// SymmetricAlgorithm</seealso>
 public abstract partial class ThreefishBlockCipher
     : IBlockCipher

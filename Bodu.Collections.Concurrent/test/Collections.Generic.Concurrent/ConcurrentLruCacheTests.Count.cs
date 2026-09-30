@@ -41,7 +41,7 @@ public partial class ConcurrentLruCacheTests
     }
 
     /// <summary>
-    /// Verifies that after single-threaded adds with interleaved maintenance the count never exceeds the capacity —
+    /// Verifies that after single-threaded adds with interleaved maintenance the count never exceeds the capacity -
     /// the transient overshoot window requires concurrent in-flight writers.
     /// </summary>
     [TestMethod]

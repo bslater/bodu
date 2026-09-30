@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 /// Tests for <see cref="Poly1305Core" />, the Poly1305 authenticator behind <see cref="Poly1305" /> and the Poly1305
 /// AEADs, grouped into member-named partial files. Tags are held to the published RFC 8439 vectors and, over seeded
 /// keys, messages and ways of splitting them, to <see cref="Poly1305Reference" />, the radix-2^26 arithmetic the core
-/// replaced. Every block loop — the scalar loop and each vector kernel, driven explicitly whichever one dispatch picks —
+/// replaced. Every block loop - the scalar loop and each vector kernel, driven explicitly whichever one dispatch picks -
 /// is held to both.
 /// </summary>
 [TestClass]
@@ -103,7 +103,7 @@ public sealed partial class Poly1305CoreTests
     }
 
     /// <summary>
-    /// Returns whether every byte of a core — key schedule, accumulator and held bytes alike — is zero.
+    /// Returns whether every byte of a core - key schedule, accumulator and held bytes alike - is zero.
     /// </summary>
     /// <param name="core">The core.</param>
     /// <returns><see langword="true" /> when the core holds only zeros.</returns>

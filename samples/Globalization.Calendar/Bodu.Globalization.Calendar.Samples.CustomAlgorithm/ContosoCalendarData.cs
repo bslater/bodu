@@ -11,7 +11,7 @@ using Bodu.Globalization.Calendar.Builder;
 namespace Bodu.Globalization.Calendar.Samples.CustomAlgorithm;
 
 /// <summary>
-/// The sample's calendar packaged as a data-pack-shaped factory — the same
+/// The sample's calendar packaged as a data-pack-shaped factory - the same
 /// <c>SupportedCountries</c> / <c>LoadResource</c> / <c>CreateService</c> surface the regional
 /// packs expose. Shaping a custom calendar this way makes it a drop-in peer of the shipped packs
 /// and, importantly, lets the shared <c>CalendarDataTestsBase</c> contract tests validate it (see

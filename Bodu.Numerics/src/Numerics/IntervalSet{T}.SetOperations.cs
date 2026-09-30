@@ -52,7 +52,7 @@ public readonly partial struct IntervalSet<T> : IEquatable<IntervalSet<T>>
     }
 
     /// <summary>
-    /// Returns the intersection of this set with <paramref name="interval" /> — the members shared with it.
+    /// Returns the intersection of this set with <paramref name="interval" /> - the members shared with it.
     /// </summary>
     /// <param name="interval">The interval to intersect with.</param>
     /// <returns>The normalized intersection.</returns>
@@ -81,7 +81,7 @@ public readonly partial struct IntervalSet<T> : IEquatable<IntervalSet<T>>
     }
 
     /// <summary>
-    /// Returns the intersection of this set with <paramref name="other" /> — the members in both.
+    /// Returns the intersection of this set with <paramref name="other" /> - the members in both.
     /// </summary>
     /// <param name="other">The set to intersect with.</param>
     /// <returns>The normalized intersection.</returns>
@@ -105,7 +105,7 @@ public readonly partial struct IntervalSet<T> : IEquatable<IntervalSet<T>>
     }
 
     /// <summary>
-    /// Returns this set with the members of <paramref name="interval" /> removed — the set difference.
+    /// Returns this set with the members of <paramref name="interval" /> removed - the set difference.
     /// </summary>
     /// <param name="interval">The interval to subtract.</param>
     /// <returns>The normalized difference.</returns>
@@ -134,7 +134,7 @@ public readonly partial struct IntervalSet<T> : IEquatable<IntervalSet<T>>
     }
 
     /// <summary>
-    /// Returns this set with the members of <paramref name="other" /> removed — the set difference.
+    /// Returns this set with the members of <paramref name="other" /> removed - the set difference.
     /// </summary>
     /// <param name="other">The set to subtract.</param>
     /// <returns>The normalized difference.</returns>
@@ -151,7 +151,7 @@ public readonly partial struct IntervalSet<T> : IEquatable<IntervalSet<T>>
     }
 
     /// <summary>
-    /// Returns the complement of this set — every value not in the set, over the whole line
+    /// Returns the complement of this set - every value not in the set, over the whole line
     /// <c>(-&#x221E;, +&#x221E;)</c>.
     /// </summary>
     /// <returns>The complement set.</returns>
@@ -175,7 +175,7 @@ public readonly partial struct IntervalSet<T> : IEquatable<IntervalSet<T>>
     }
 
     /// <summary>
-    /// Determines whether this set equals <paramref name="other" /> — the same normalized pieces in the same order.
+    /// Determines whether this set equals <paramref name="other" /> - the same normalized pieces in the same order.
     /// </summary>
     /// <param name="other">The set to compare against.</param>
     /// <returns>

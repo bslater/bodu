@@ -130,7 +130,7 @@ public partial class RunningQuantileTests
     }
 
     /// <summary>
-    /// Verifies that copying the estimator snapshots its state — the copy and the original accumulate independently
+    /// Verifies that copying the estimator snapshots its state - the copy and the original accumulate independently
     /// afterwards.
     /// </summary>
     [TestMethod]

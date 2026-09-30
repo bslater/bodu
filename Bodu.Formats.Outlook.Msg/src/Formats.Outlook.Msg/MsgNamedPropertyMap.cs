@@ -13,7 +13,7 @@ namespace Bodu.Formats.Outlook.Msg;
 /// </summary>
 /// <remarks>
 /// The mapping is file-specific: entry <c>i</c> of the entry stream defines the property identifier <c>0x8000 + i</c>.
-/// Each 8-byte entry carries a name identifier or string-stream offset, a kind bit, and a GUID index — <c>1</c> for
+/// Each 8-byte entry carries a name identifier or string-stream offset, a kind bit, and a GUID index - <c>1</c> for
 /// <c>PS_MAPI</c>, <c>2</c> for <c>PS_PUBLIC_STRINGS</c>, and <c>3 + n</c> for the <c>n</c>-th GUID of the GUID stream.
 /// The per-bucket hash streams the format also stores are write-time acceleration and are ignored on read.
 /// </remarks>

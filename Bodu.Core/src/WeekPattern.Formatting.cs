@@ -50,20 +50,20 @@ public partial struct WeekPattern
     /// A format string determining day ordering and the unselected-day placeholder. Supported values:
     /// <list type="bullet">
     /// <item>
-    /// <description><c>'S'</c> or <c>'s'</c> — Sunday-to-Saturday; unselected = <c>'_'</c>.</description>
+    /// <description><c>'S'</c> or <c>'s'</c> - Sunday-to-Saturday; unselected = <c>'_'</c>.</description>
     /// </item>
     /// <item>
-    /// <description><c>'M'</c> or <c>'m'</c> — Monday-to-Sunday; unselected = <c>'_'</c>.</description>
+    /// <description><c>'M'</c> or <c>'m'</c> - Monday-to-Sunday; unselected = <c>'_'</c>.</description>
     /// </item>
     /// <item>
     /// <description>
-    /// <c>'E'</c>, <c>'U'</c>, <c>'D'</c>, <c>'A'</c> — Sunday-to-Saturday with space, underscore, dash, or asterisk
+    /// <c>'E'</c>, <c>'U'</c>, <c>'D'</c>, <c>'A'</c> - Sunday-to-Saturday with space, underscore, dash, or asterisk
     /// for unselected days respectively.
     /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// <c>'0'</c>, <c>'1'</c>, <c>'B'</c>, or <c>"01"</c> — Binary: <c>'1'</c> selected, <c>'0'</c> unselected.
+    /// <c>'0'</c>, <c>'1'</c>, <c>'B'</c>, or <c>"01"</c> - Binary: <c>'1'</c> selected, <c>'0'</c> unselected.
     /// </description>
     /// </item>
     /// <item>

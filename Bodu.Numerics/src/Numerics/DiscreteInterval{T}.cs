@@ -10,8 +10,8 @@ using System.Numerics;
 namespace Bodu.Numerics;
 
 /// <summary>
-/// Represents an immutable interval over a discrete integer domain — a set of consecutive integers of type
-/// <typeparamref name="T" /> — with successor/predecessor-aware emptiness and adjacency.
+/// Represents an immutable interval over a discrete integer domain - a set of consecutive integers of type
+/// <typeparamref name="T" /> - with successor/predecessor-aware emptiness and adjacency.
 /// </summary>
 /// <typeparam name="T">The integer type used for the interval's endpoints.</typeparam>
 /// <remarks>
@@ -23,15 +23,15 @@ namespace Bodu.Numerics;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <b>Emptiness reflects representable membership.</b> An open interval whose bounds are consecutive integers — for
-/// example <c>(1, 2)</c> — contains no integer and is therefore empty, unlike the non-empty continuous interval over
+/// <b>Emptiness reflects representable membership.</b> An open interval whose bounds are consecutive integers - for
+/// example <c>(1, 2)</c> - contains no integer and is therefore empty, unlike the non-empty continuous interval over
 /// the same bounds.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <b>Adjacency is by successor.</b> Two intervals that leave no integer between them — for example <c>[1, 2]</c> and
-/// <c>[3, 4]</c> — are adjacent and union to a single run <c>[1, 4]</c>, because no integer lies in the gap.
+/// <b>Adjacency is by successor.</b> Two intervals that leave no integer between them - for example <c>[1, 2]</c> and
+/// <c>[3, 4]</c> - are adjacent and union to a single run <c>[1, 4]</c>, because no integer lies in the gap.
 /// </description>
 /// </item>
 /// </list>
@@ -43,9 +43,9 @@ namespace Bodu.Numerics;
 /// family.
 /// </para>
 /// <para>
-/// <b>Domain scope.</b> This type is deliberately integer-only — its domain is <see cref="IBinaryInteger{TSelf}" />. It
+/// <b>Domain scope.</b> This type is deliberately integer-only - its domain is <see cref="IBinaryInteger{TSelf}" />. It
 /// is not a general discrete-domain abstraction: ranges over <see cref="System.DateOnly" />, <see cref="char" />, enum
-/// values, or a custom successor domain are out of scope. For a disconnected result — the union of several runs — use
+/// values, or a custom successor domain are out of scope. For a disconnected result - the union of several runs - use
 /// <see cref="IntervalSet{T}" />.
 /// </para>
 /// </remarks>
@@ -54,7 +54,7 @@ namespace Bodu.Numerics;
 ///<![CDATA[
 /// using Bodu.Numerics;
 ///
-/// DiscreteInterval<int>.Open(1, 2).IsEmpty;                 // True — no integer strictly between 1 and 2
+/// DiscreteInterval<int>.Open(1, 2).IsEmpty;                 // True - no integer strictly between 1 and 2
 ///
 /// var a = DiscreteInterval<int>.Closed(1, 2);
 /// var b = DiscreteInterval<int>.Closed(3, 4);

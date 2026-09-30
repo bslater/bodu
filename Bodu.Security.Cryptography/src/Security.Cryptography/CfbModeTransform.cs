@@ -14,13 +14,13 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/classic-modes.svg" alt="CFB panel — the previous ciphertext is fed back as the cipher input; its encryption produces a keystream XORed with plaintext."/>
+/// <img src="../images/diagrams/classic-modes.svg" alt="CFB panel - the previous ciphertext is fed back as the cipher input; its encryption produces a keystream XORed with plaintext."/>
 /// </para>
 /// <para>
 /// Both directions use the cipher's encryption primitive: encryption computes <c>Cᵢ = Pᵢ ⊕ E(IVᵢ)</c> and decryption
 /// <c>Pᵢ = Cᵢ ⊕ E(IVᵢ)</c>, with <c>IV₀</c> supplied by the caller and <c>IVᵢ₊₁ = Cᵢ</c> for subsequent blocks. See <b>
 /// panel 3</b> of the diagram above: the dashed feedback lines carry ciphertext blocks back into the next cipher input
-/// — the cipher runs the same direction (encrypt) for both encryption and decryption, and the plaintext simply XORs
+/// - the cipher runs the same direction (encrypt) for both encryption and decryption, and the plaintext simply XORs
 /// into or out of the resulting keystream.
 /// </para>
 /// <para>
@@ -28,7 +28,7 @@ namespace Bodu.Security.Cryptography;
 /// message under a given key.
 /// </para>
 /// <para>
-/// <strong>When to use CFB.</strong> Pick CFB only for interoperability with legacy formats — it was the stream-cipher
+/// <strong>When to use CFB.</strong> Pick CFB only for interoperability with legacy formats - it was the stream-cipher
 /// mode of choice in PGP / OpenPGP and certain disk-encryption layouts. CFB removes the padding requirement that
 /// <see cref="CbcModeTransform" /> imposes, but inherits the same lack of authentication and adds bit-flip propagation
 /// across multiple blocks. For new code prefer <see cref="CtrModeTransform" /> for stream-cipher behavior, or an AEAD
@@ -136,8 +136,8 @@ public sealed class CfbModeTransform
     }
 
     /// <summary>
-    /// Decrypts whole blocks a run at a time: the run's feedback inputs — the current IV and every ciphertext block but
-    /// the last — are copied aside, encrypted with one multi-block call, and XORed with the ciphertext.
+    /// Decrypts whole blocks a run at a time: the run's feedback inputs - the current IV and every ciphertext block but
+    /// the last - are copied aside, encrypted with one multi-block call, and XORed with the ciphertext.
     /// </summary>
     /// <param name="input">The ciphertext, a whole number of blocks.</param>
     /// <param name="output">The destination; may be the same memory as <paramref name="input" />.</param>
@@ -185,7 +185,7 @@ public sealed class CfbModeTransform
     /// <summary>
     /// Releases the resources used by this instance and zeroes the running feedback register so that key-equivalent
     /// state does not linger in memory after disposal. The underlying <see cref="IBlockCipher" /> is not disposed by
-    /// this type — ownership remains with the caller.
+    /// this type - ownership remains with the caller.
     /// </summary>
     /// <remarks>
     /// Idempotent.

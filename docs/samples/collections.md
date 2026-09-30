@@ -6,8 +6,8 @@ title: Runnable samples
 
 The repository ships runnable, self-contained sample projects for `Bodu.Collections` under
 [`samples/Collections/`](https://github.com/bslater/bodu/tree/master/samples/Collections). All
-three samples are **offline and deterministic** — string-keyed scenarios supply a stable ordinal
-comparer so that per-process string-hash randomization cannot vary the output — and are members
+three samples are **offline and deterministic** - string-keyed scenarios supply a stable ordinal
+comparer so that per-process string-hash randomization cannot vary the output - and are members
 of `bodu.slnx`, built and executed by CI, so the code they show cannot drift from the current
 API. Each sample's README documents every scenario individually: its intent, what the code does,
 the output to expect, and the APIs demonstrated.
@@ -48,5 +48,5 @@ cardinality and the ~1.04/√m standard error). *Package: `Bodu.Collections`.*
 
 ## Related
 
-- [Collections.Concurrent samples](collections-concurrent.md) — the thread-safe variants.
-- [Core samples](core.md) — the foundational library the collections build on.
+- [Collections.Concurrent samples](collections-concurrent.md) - the thread-safe variants.
+- [Core samples](core.md) - the foundational library the collections build on.

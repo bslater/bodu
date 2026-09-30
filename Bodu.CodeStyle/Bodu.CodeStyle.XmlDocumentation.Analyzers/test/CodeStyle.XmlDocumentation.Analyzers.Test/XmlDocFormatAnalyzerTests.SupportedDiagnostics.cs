@@ -15,7 +15,7 @@ public partial class XmlDocFormatAnalyzerTests
 {
     /// <summary>
     /// Verifies that <see cref="XmlDocFormatAnalyzer" /> advertises only the formatting diagnostics it actually
-    /// emits — the per-tag formatting IDs and the cross-cutting ID — and not the content-quality
+    /// emits - the per-tag formatting IDs and the cross-cutting ID - and not the content-quality
     /// (<c>BODU1405</c>/<c>BODU1406</c>) or configuration (<c>BODU0001</c>) diagnostics owned by other analyzers.
     /// </summary>
     [TestMethod]

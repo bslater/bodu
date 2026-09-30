@@ -12,7 +12,7 @@ namespace Bodu.Numerics.Samples.StreamingStatistics.Scenarios;
 /// <summary>
 /// Demonstrates <see cref="RunningQuantile{T}" />: a streaming quantile estimator that approximates a
 /// chosen percentile from a single pass over the data, holding only a handful of markers instead of
-/// the whole stream — the classic technique for tracking a median or a p95 latency online.
+/// the whole stream - the classic technique for tracking a median or a p95 latency online.
 /// </summary>
 public static class Quantiles
 {

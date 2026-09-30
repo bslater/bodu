@@ -30,7 +30,7 @@ public sealed class BoeRateProviderOptions
     internal static readonly DateOnly DailySpotSeriesEpoch = new(1975, 1, 2);
 
     /// <summary>
-    /// Gets or sets the endpoint options describing the provider's connection to the Bank of England IADB — the base
+    /// Gets or sets the endpoint options describing the provider's connection to the Bank of England IADB - the base
     /// URL, query path, transport timeout, and request identity.
     /// </summary>
     /// <value>The endpoint options; defaults to a new <see cref="BoeEndpointOptions" /> targeting the IADB.</value>
@@ -78,9 +78,9 @@ public sealed class BoeRateProviderOptions
     /// </value>
     /// <remarks>
     /// The IADB daily spot series (<c>XUDL*</c>) begin on 2 January 1975 for the longest-running currencies; some
-    /// series start later (the euro series begins 4 January 1999, with the launch of the euro). The value is advisory —
+    /// series start later (the euro series begins 4 January 1999, with the launch of the euro). The value is advisory -
     /// it bounds the earliest date worth requesting for the configured <see cref="Series" /> catalogue, not a
-    /// per-series guarantee — so narrow it when the catalogue is restricted to later-inception series.
+    /// per-series guarantee - so narrow it when the catalogue is restricted to later-inception series.
     /// </remarks>
     public RateHistoryAvailability HistoryAvailability { get; set; } =
         RateHistoryAvailability.Since(DailySpotSeriesEpoch);

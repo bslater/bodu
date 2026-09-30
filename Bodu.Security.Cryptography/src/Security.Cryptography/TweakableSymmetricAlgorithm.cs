@@ -27,7 +27,7 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="CreateDecryptor(byte[], byte[], byte[])" />, and <see cref="GenerateTweak" />.
 /// </para>
 /// <para>
-/// <strong>What is a tweak?</strong> A tweak is a third keying input alongside key and IV — a per-message (or
+/// <strong>What is a tweak?</strong> A tweak is a third keying input alongside key and IV - a per-message (or
 /// per-position) value that varies the cipher's behavior without renegotiating the key. Tweaks are what make tweakable
 /// block ciphers a natural fit for disk encryption (the sector number is the tweak), authenticated modes built from the
 /// cipher (the message position is the tweak), and protocols that need to bind ciphertext to a position or message
@@ -37,23 +37,23 @@ namespace Bodu.Security.Cryptography;
 /// <strong>Concrete implementations.</strong> The library ships <see cref="Threefish256" />,
 /// <see cref="Threefish512" />, and <see cref="Threefish1024" /> as the production tweakable ciphers (Threefish is the
 /// cipher under the hood of Skein). The <see cref="Serpent256" />/<see cref="Serpent512" />/<see cref="Serpent1024" />
-/// wide-block variants are also tweakable but non-standard — see their headers for the experimental-only caveat.
+/// wide-block variants are also tweakable but non-standard - see their headers for the experimental-only caveat.
 /// </para>
 /// <para>
 /// <strong>Companion try-pattern helpers.</strong> The
 /// <see cref="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions" /> class adds
 /// <c>TryCreateEncryptor</c> and <c>TryCreateDecryptor</c> wrappers that return <see langword="false" /> when the
-/// supplied key/IV/tweak combination is invalid — useful when keying material is user-supplied.
+/// supplied key/IV/tweak combination is invalid - useful when keying material is user-supplied.
 /// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Construct via a concrete derivative — Threefish is the production tweakable cipher family.
+/// // Construct via a concrete derivative - Threefish is the production tweakable cipher family.
 /// using TweakableSymmetricAlgorithm alg = new Threefish256();
 /// alg.GenerateKey();
 /// alg.GenerateIV();
-/// alg.GenerateTweak();      // unique to TweakableSymmetricAlgorithm — supplies the per-message tweak
+/// alg.GenerateTweak();      // unique to TweakableSymmetricAlgorithm - supplies the per-message tweak
 ///
 /// // CreateEncryptor / CreateDecryptor accept the additional tweak argument.
 /// using ICryptoTransform encryptor = alg.CreateEncryptor(alg.Key, alg.IV, alg.Tweak);

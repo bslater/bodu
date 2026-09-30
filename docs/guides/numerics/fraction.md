@@ -17,14 +17,14 @@ The type works with any backing type that implements
 `uint`, `long`, `ulong`, `Int128`, `UInt128`, `BigInteger`, and
 consumer-defined integer types built on the generic-math interfaces.
 Use `Fraction<BigInteger>` whenever a calculation chains several
-multiplications or divisions — overflow is not possible and there is
+multiplications or divisions - overflow is not possible and there is
 no narrowing step.
 
 ## Creating fractions
 
 Use the static factory methods on `Fraction<T>` directly when the
 backing type is fixed. Unlike `Interval<T>`, there is no non-generic
-helper class for inference — pick the backing type up front.
+helper class for inference - pick the backing type up front.
 
 <!-- compile -->
 ```csharp
@@ -32,8 +32,8 @@ using Bodu.Numerics;
 
 // Two-argument factories normalise on construction.
 Fraction<int> half     = Fraction<int>.Create(1, 2);     // 1/2
-Fraction<int> twoFourths = Fraction<int>.Create(2, 4);   // 1/2 — auto-reduced
-Fraction<int> negThirds  = Fraction<int>.Create(3, -4);  // -3/4 — sign flipped to numerator
+Fraction<int> twoFourths = Fraction<int>.Create(2, 4);   // 1/2 - auto-reduced
+Fraction<int> negThirds  = Fraction<int>.Create(3, -4);  // -3/4 - sign flipped to numerator
 
 // Single-argument factory for whole numbers.
 Fraction<int> seven = new Fraction<int>(7);              // 7/1
@@ -59,14 +59,14 @@ conditions through a `false` return without throwing.
 
 <!-- compile -->
 ```csharp
-Fraction<int>.FromDecimal(0.125m);              // 1/8 — exact decimal
-Fraction<int>.FromDouble(0.5);                  // 1/2 — exact for round halves
-Fraction<BigInteger>.FromDouble(Math.PI);       // Very large rational — Math.PI bits
+Fraction<int>.FromDecimal(0.125m);              // 1/8 - exact decimal
+Fraction<int>.FromDouble(0.5);                  // 1/2 - exact for round halves
+Fraction<BigInteger>.FromDouble(Math.PI);       // Very large rational - Math.PI bits
 Fraction<int>.FromBigInteger(7, 3);             // Narrows BigInteger → int safely
 ```
 
 `FromDecimal` is exact: it decomposes the `decimal`'s mantissa and
-scale. `FromDouble` is exact in the IEEE 754 sense — it decomposes the
+scale. `FromDouble` is exact in the IEEE 754 sense - it decomposes the
 `double`'s mantissa and exponent, which may produce a fraction with a
 very large denominator for values that look "nice" in base 10
 (`FromDouble(0.1)` is not `1/10`). For a *best rational
@@ -81,7 +81,7 @@ approximation* to a real number within a denominator bound, use
 <!-- compile -->
 ```csharp
 Fraction<int> piApprox = Fraction<int>.Approximate(Math.PI, maxDenominator: 1000);
-// 355/113 — the Zǔ Chōngzhī approximation, error ≈ 2.7×10⁻⁷
+// 355/113 - the Zǔ Chōngzhī approximation, error ≈ 2.7×10⁻⁷
 ```
 
 `Approximate(value, maxDenominator)` uses convergents of the
@@ -98,7 +98,7 @@ bound.
 ```csharp
 Fraction<int> phi = Fraction<int>.Create(610, 377);
 int[] coeffs = phi.ToContinuedFraction();
-// [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] — golden-ratio convergent
+// [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] - golden-ratio convergent
 
 Fraction<int> reconstructed = Fraction<int>.FromContinuedFraction(coeffs);
 ```
@@ -126,15 +126,15 @@ value too large for `T` is bounded *before* it is narrowed.
 <!-- compile -->
 ```csharp
 var pi = Fraction<int>.Create(355, 113);
-pi.LimitDenominator(100);                    // 311/99 — closest with denominator ≤ 100
-Fraction<int>.Approximate(0.1, 1000);        // 1/10 — recovers the intended rational from a double
+pi.LimitDenominator(100);                    // 311/99 - closest with denominator ≤ 100
+Fraction<int>.Approximate(0.1, 1000);        // 1/10 - recovers the intended rational from a double
 ```
 
 ## Canonical form
 
 Every `Fraction<T>` is reduced to GCD-normalised form, with the sign
 on the numerator and the denominator strictly positive. This means
-`2/4` and `1/2` are indistinguishable after construction — there is
+`2/4` and `1/2` are indistinguishable after construction - there is
 no unreduced form to preserve. Equality compares the canonical
 components, so `Fraction<int>.Create(2, 4) == Fraction<int>.Create(1, 2)`
 is `true`.
@@ -143,7 +143,7 @@ is `true`.
 ```csharp
 var a = Fraction<int>.Create(2, 4);    // 1/2
 var b = Fraction<int>.Create(1, 2);    // 1/2
-var c = Fraction<int>.Create(-3, -6);  // 1/2 — both negatives cancel
+var c = Fraction<int>.Create(-3, -6);  // 1/2 - both negatives cancel
 
 Console.WriteLine(a == b);             // True
 Console.WriteLine(a == c);             // True
@@ -165,12 +165,12 @@ representation `(numerator: 0, denominator: 0)` is interpreted as
 | `IsZero` | Numerator is zero. |
 | `IsInteger` / `IsWhole` | Canonical denominator is one. `IsWhole` is an alias for `IsInteger`. |
 | `IsProper` | Magnitude strictly less than one (`|numerator| < denominator`). |
-| `IsImproper` | Magnitude at least one — the negation of `IsProper`. |
+| `IsImproper` | Magnitude at least one - the negation of `IsProper`. |
 | `IsUnit` | Numerator magnitude is one (a unit fraction such as `1/7` or `-1/7`). |
 | `IsNegative` / `IsPositive` | Sign classification; both are `false` for zero. |
 | `IsEvenInteger` / `IsOddInteger` | `true` only when the value is an integer *and* the numerator has the stated parity. A non-integer is neither even nor odd. |
-| `IsCanonical` | Always `true` — the type maintains the invariant. |
-| `IsReducible` | Always `false` — there is no unreduced form to reduce. |
+| `IsCanonical` | Always `true` - the type maintains the invariant. |
+| `IsReducible` | Always `false` - there is no unreduced form to reduce. |
 
 `Reduce()` returns the value unchanged for the same reason `IsReducible` is `false`: reduction already happened at construction. It exists so generic code that expects a `Reduce` step compiles and behaves correctly.
 
@@ -179,7 +179,7 @@ representation `(numerator: 0, denominator: 0)` is interpreted as
 ```csharp
 Fraction<int>.Zero;       // 0/1
 Fraction<int>.One;        // 1/1
-Fraction<int>.MinusOne;   // -1/1 — throws OverflowException if T is unsigned
+Fraction<int>.MinusOne;   // -1/1 - throws OverflowException if T is unsigned
 Fraction<int>.MinValue;   // T.MinValue/1
 Fraction<int>.MaxValue;   // T.MaxValue/1
 ```
@@ -200,7 +200,7 @@ a + b;     // 5/6
 a - b;     // -1/6
 a * b;     // 1/6
 a / b;     // 2/3
-a % b;     // 1/3   — remainder of the floored quotient
+a % b;     // 1/3   - remainder of the floored quotient
 -a;        // -1/3
 ++a;       // 4/3
 ```
@@ -210,11 +210,11 @@ Convenience methods cover the common patterns:
 ```csharp
 a.Abs();                       // magnitude
 a.Negate();                    // unary negation
-a.Reciprocal();                // 3/1 — throws DivideByZeroException on 0
+a.Reciprocal();                // 3/1 - throws DivideByZeroException on 0
 a.Invert();                    // alias for Reciprocal()
-a.Pow(3);                      // 1/27 — negative exponents allowed via reciprocal
-a.Squared();                   // 1/9 — alias for a * a
-a.Cubed();                     // 1/27 — alias for a * a * a
+a.Pow(3);                      // 1/27 - negative exponents allowed via reciprocal
+a.Squared();                   // 1/9 - alias for a * a
+a.Cubed();                     // 1/27 - alias for a * a * a
 a.Remainder(b);                // alias for a % b
 ```
 
@@ -223,7 +223,7 @@ a.Remainder(b);                // alias for a % b
 - `Pow(0)` returns `One` for every value, **including** `Fraction<T>.Zero` (the conventional `0⁰ = 1`).
 - A negative exponent raises the *reciprocal* to the corresponding magnitude, so `Fraction<int>.Create(2, 3).Pow(-2)` is `9/4`. Applying a negative exponent to zero throws <xref:System.DivideByZeroException>, and an exponent magnitude exceeding `int.MaxValue` throws <xref:System.OverflowException>.
 
-The `%` operator (and its `Remainder` alias) returns the remainder of the *floored-quotient* division and carries the **sign of the dividend** — so `Fraction<int>.Create(7, 2) % Fraction<int>.Create(1, 1)` is `1/2`. Dividing by zero throws <xref:System.DivideByZeroException>.
+The `%` operator (and its `Remainder` alias) returns the remainder of the *floored-quotient* division and carries the **sign of the dividend** - so `Fraction<int>.Create(7, 2) % Fraction<int>.Create(1, 1)` is `1/2`. Dividing by zero throws <xref:System.DivideByZeroException>.
 
 ### Overflow handling
 
@@ -243,7 +243,7 @@ entirely:
 <!-- compile -->
 ```csharp
 var hugeBI = Fraction<BigInteger>.Create(int.MaxValue, 1);
-var doubledBI = hugeBI + hugeBI;   // 4294967294/1 — no overflow
+var doubledBI = hugeBI + hugeBI;   // 4294967294/1 - no overflow
 ```
 
 ### Unsigned backing types
@@ -251,7 +251,7 @@ var doubledBI = hugeBI + hugeBI;   // 4294967294/1 — no overflow
 `Fraction<T>` accepts unsigned backing types (`uint`, `ulong`, `byte`,
 …) but negative values cannot be represented. Any operation that
 would produce a negative numerator on an unsigned backing type throws
-`OverflowException` at runtime — including `MinusOne`, unary `-`,
+`OverflowException` at runtime - including `MinusOne`, unary `-`,
 `Negate()`, the reciprocal of a value larger than one, and certain
 subtraction patterns.
 
@@ -263,14 +263,14 @@ var b = Fraction<int>.Create(2, 5);
 
 a < b;                                      // True
 a.CompareTo(b);                             // -1
-Fraction<int>.Compare(a, b);                // -1 — static cross-multiply
+Fraction<int>.Compare(a, b);                // -1 - static cross-multiply
 
 Fraction<int>.Min(a, b);                    // 1/3
 Fraction<int>.Max(a, b);                    // 2/5
 Fraction<int>.Clamp(value, lo: a, hi: b);   // clamps to [1/3, 2/5]
 ```
 
-Equality compares canonical components, not raw structural fields —
+Equality compares canonical components, not raw structural fields -
 because the canonical form is unique, two fractions are equal exactly
 when they represent the same rational value. The hash code is derived
 from the same canonical components, so equal fractions share a hash
@@ -283,7 +283,7 @@ code.
 Fraction<int> three = 3;
 
 // Explicit narrowing conversions to numeric types.
-decimal d = (decimal) Fraction<int>.Create(1, 4);   // 0.25m — throws on decimal overflow
+decimal d = (decimal) Fraction<int>.Create(1, 4);   // 0.25m - throws on decimal overflow
 double  x = (double)  Fraction<int>.Create(1, 3);   // 0.3333333333333333
 float   f = (float)   Fraction<int>.Create(1, 3);   // 0.33333334
 
@@ -291,7 +291,7 @@ float   f = (float)   Fraction<int>.Create(1, 3);   // 0.33333334
 Fraction<long>.Create(very_large, 1).TryToDecimal(out decimal v);
 
 // Truncated integer extraction.
-Fraction<int>.Create(7, 3).ToInteger();             // 2 — truncates toward zero
+Fraction<int>.Create(7, 3).ToInteger();             // 2 - truncates toward zero
 Fraction<int>.Create(-7, 3).ToBigInteger();         // -2
 
 // Cross-backing-type conversion.
@@ -308,7 +308,7 @@ The conversion surface divides cleanly into *exact* and *approximate* directions
 | `FromDecimal` / `(Fraction<T>)decimal` | in | exact (mantissa × 10⁻ˢᶜᵃˡᵉ) | `OverflowException` if the canonical components exceed `T` |
 | `FromDouble` / `(Fraction<T>)double` | in | exact in the IEEE-754 sense (mantissa × 2ᵉˣᵖ) | `ArgumentException` on non-finite input; `OverflowException` on narrowing |
 | `ToDecimal` / `(decimal)` | out | rounded to `decimal` precision | `OverflowException` outside `decimal` range |
-| `ToDouble` / `ToSingle` | out | rounded to `double` / `float` | never throws — saturates to `±Infinity` outside the finite range; `TryToDouble` / `TryToSingle` return `false` in that case |
+| `ToDouble` / `ToSingle` | out | rounded to `double` / `float` | never throws - saturates to `±Infinity` outside the finite range; `TryToDouble` / `TryToSingle` return `false` in that case |
 | `ToInteger` / `ToBigInteger` / `GetWholePart` | out | truncated **toward zero** | `ToInteger` / `GetWholePart` may overflow `T` for an out-of-range integer part |
 | `As<TOther>` | re-backing | exact (same canonical value) | `OverflowException` if a component does not fit `TOther` |
 
@@ -323,15 +323,15 @@ var x = Fraction<int>.Create(7, 3);   // 2.333…
 x.Floor();        // 2/1
 x.Ceiling();      // 3/1
 x.Truncate();     // 2/1
-x.Round();        // 2/1 — banker's rounding (to-even)
+x.Round();        // 2/1 - banker's rounding (to-even)
 x.Round(MidpointRounding.AwayFromZero);  // 3/1
 
 x.GetWholePart();      // 2 (T)
 x.GetFractionalPart(); // 1/3
 var (whole, frac) = x.ToMixedParts();    // (2, 1/3)
-var (w, fn, fd) = x;                     // (2, 1, 3) — three-way Deconstruct: whole, fractional numerator, denominator
+var (w, fn, fd) = x;                     // (2, 1, 3) - three-way Deconstruct: whole, fractional numerator, denominator
 
-var (n, d) = Fraction<int>.Create(7, 3); // (7, 3) — Deconstruct over canonical components
+var (n, d) = Fraction<int>.Create(7, 3); // (7, 3) - Deconstruct over canonical components
 ```
 
 The full <xref:System.MidpointRounding> enum is supported on `Round`.
@@ -340,7 +340,7 @@ The full <xref:System.MidpointRounding> enum is supported on `Round`.
 
 `Fraction<T>` implements `INumber<Fraction<T>>` and
 `ISignedNumber<Fraction<T>>`. The standard identities and predicates
-are provided — but as **explicit interface implementations**, so they
+are provided - but as **explicit interface implementations**, so they
 are not callable on the concrete type: `Fraction<int>.AdditiveIdentity`
 or `Fraction<int>.IsNaN(x)` does not compile. They are reached through
 a generic type parameter constrained to the interface, which is exactly
@@ -354,8 +354,8 @@ static void Inspect<T>(T x, T y) where T : INumber<T>
     T one  = T.MultiplicativeIdentity;  // 1/1
 
     T.IsZero(T.Zero);                   // True
-    T.IsInteger(x);                     // True for 4/2 — canonical is 2/1
-    T.IsNaN(x);                         // False — Fraction<T> is never NaN
+    T.IsInteger(x);                     // True for 4/2 - canonical is 2/1
+    T.IsNaN(x);                         // False - Fraction<T> is never NaN
     T.IsFinite(x);                      // True
     T.IsRealNumber(x);                  // True
 
@@ -375,8 +375,8 @@ public counterpart on the concrete type: `Fraction<T>.Zero`, `One`, and
 classification predicates.
 
 This means `Fraction<T>` slots into algorithms written against the
-`INumber` abstractions — `Sum`, `Aggregate`, generic linear-algebra
-routines — without special-casing.
+`INumber` abstractions - `Sum`, `Aggregate`, generic linear-algebra
+routines - without special-casing.
 
 `MaxMagnitude` / `MinMagnitude` compare absolute values and break a tie
 by sign, mirroring the BCL convention: `MaxMagnitude` prefers the
@@ -408,9 +408,9 @@ static T Saturating<T, TOther>(TOther value)
     where TOther : INumberBase<TOther> =>
     T.CreateSaturating(value);
 
-Checked<Fraction<int>, int>(42);           // 42/1 — exact integer source
-Checked<Fraction<int>, decimal>(0.25m);    // 1/4  — exact decimal source
-Saturating<Fraction<int>, double>(1e30);   // MaxValue — clamps instead of throwing
+Checked<Fraction<int>, int>(42);           // 42/1 - exact integer source
+Checked<Fraction<int>, decimal>(0.25m);    // 1/4  - exact decimal source
+Saturating<Fraction<int>, double>(1e30);   // MaxValue - clamps instead of throwing
 ```
 
 See [Generic-math constraints](generic-math-constraints.md) for the
@@ -428,10 +428,10 @@ The backing type is constrained as `where T : IBinaryInteger<T>`.
 |---|---|
 | `"3"`, `"-5"` | Whole-number fractions: 3/1, -5/1 |
 | `"3/4"`, `"-7/2"` | Ratios |
-| `"2 1/3"` | Mixed numbers: 7/3 — sign applies to whole result |
-| `"½"`, `"⅖"` | Unicode vulgar fractions (18 glyphs — see [Formatting and parsing](formatting-and-parsing.md)) |
+| `"2 1/3"` | Mixed numbers: 7/3 - sign applies to whole result |
+| `"½"`, `"⅖"` | Unicode vulgar fractions (18 glyphs - see [Formatting and parsing](formatting-and-parsing.md)) |
 | `"2⅜"` | Whole + vulgar fraction: 19/8 |
-| `"50%"`, `"3/4%"` | Percentage form — trailing `%` divides denominator by 100 |
+| `"50%"`, `"3/4%"` | Percentage form - trailing `%` divides denominator by 100 |
 
 Leading / trailing whitespace is trimmed. Numeric components parse
 with `NumberStyles.None`, so scientific notation and group separators
@@ -462,7 +462,7 @@ var x = Fraction<int>.Create(7, 3);
 x.ToString();         // "7/3"
 x.ToString("M");      // "2 1/3"
 x.ToString("U");      // "2⅓"
-x.ToString("P");      // "700/3%" — 7/3 × 100 = 700/3, already in lowest terms
+x.ToString("P");      // "700/3%" - 7/3 × 100 = 700/3, already in lowest terms
 ```
 
 The percentage form is a *ratio*, not a mixed number: `Fraction<int>.Create(7, 4).ToString("P")` is `"175%"` (700/4 reduces to 175/1) and `Fraction<int>.Create(3, 4).ToString("P")` is `"75%"`. Any specifier other than `G`/`M`/`U`/`P` (case-insensitive) throws <xref:System.FormatException>.
@@ -476,7 +476,7 @@ Helper convenience methods:
 ## JSON
 
 JSON support ships in the companion
-`Bodu.Numerics.Serialization.Json` package — the core library is
+`Bodu.Numerics.Serialization.Json` package - the core library is
 serialization-agnostic. Register the converters with
 `AddNumericsJsonConverters`; the default `Strict` policy emits the
 canonical **object** form:
@@ -541,7 +541,7 @@ same rational value compare equal. Equal fractions share a hash code.
   free either. For hot inner loops where overflow cannot happen and
   exactness is not required, plain `int` arithmetic is faster.
 - **NaN / infinity semantics.** `Fraction<T>` does not model `NaN` or
-  infinity — division by zero throws, non-finite `double` input to
+  infinity - division by zero throws, non-finite `double` input to
   `FromDouble` throws, and the IEEE 754 propagation rules do not
   apply. If you need NaN-aware arithmetic, stay with `double`.
 - **Storage in an unsigned backing type when negative values are
@@ -554,6 +554,6 @@ same rational value compare equal. Equal fractions share a hash code.
 - [`Fraction<T>` API reference](xref:Bodu.Numerics.Fraction`1)
 - [`FractionJsonConverter<T>` API reference](xref:Bodu.Numerics.Serialization.Json.FractionJsonConverter`1)
 - [`FractionJsonConverterFactory`](xref:Bodu.Numerics.Serialization.Json.FractionJsonConverterFactory)
-- [`Interval<T>` guide](interval.md) — the other `Bodu.Numerics` value type.
-- [`Money<TCurrency>` guide](../financial/money.md) — uses `Fraction<BigInteger>` as the precision escape hatch via `ToFraction()` / `FromFraction()` / `MultiplyExact()`.
-- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.
+- [`Interval<T>` guide](interval.md) - the other `Bodu.Numerics` value type.
+- [`Money<TCurrency>` guide](../financial/money.md) - uses `Fraction<BigInteger>` as the precision escape hatch via `ToFraction()` / `FromFraction()` / `MultiplyExact()`.
+- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** - every guide in this topic, across Bodu.Numerics and Bodu.Financial.

@@ -14,7 +14,7 @@ public sealed record KeyValidationKnownAnswer
     : AsymmetricKnownAnswer
 {
     /// <summary>
-    /// Gets the role of the candidate key — for KEMs, either <c>"encapsulation"</c> or <c>"decapsulation"</c>.
+    /// Gets the role of the candidate key - for KEMs, either <c>"encapsulation"</c> or <c>"decapsulation"</c>.
     /// </summary>
     public required string Kind { get; init; }
 

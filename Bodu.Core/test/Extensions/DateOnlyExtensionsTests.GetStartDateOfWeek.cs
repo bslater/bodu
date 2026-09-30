@@ -29,7 +29,7 @@ public partial class DateOnlyExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> GetStartDateOfWeekFirstDayWeekTestCases => new[]
     {
-        new object[] { 2025, 1,  new DateOnly(2025, 1, 1) },   // week 1 begins on Jan 1 (Wednesday) — a partial week under FirstDay
+        new object[] { 2025, 1,  new DateOnly(2025, 1, 1) },   // week 1 begins on Jan 1 (Wednesday) - a partial week under FirstDay
         new object[] { 2025, 2,  new DateOnly(2025, 1, 5) },   // week 2 begins at the first Sunday after Jan 1
         new object[] { 2025, 53, new DateOnly(2025, 12, 28) }, // last week of 2025 begins Sun 28 Dec
         new object[] { 2024, 1,  new DateOnly(2024, 1, 1) },   // Jan 1 2024 is a Monday; week 1 still begins on Jan 1

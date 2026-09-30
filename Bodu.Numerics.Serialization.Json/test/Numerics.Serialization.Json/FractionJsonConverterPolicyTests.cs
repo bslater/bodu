@@ -40,7 +40,7 @@ public class FractionJsonConverterPolicyTests
     }
 
     /// <summary>
-    /// Verifies that the core <see cref="Fraction{T}" /> type carries no <c>[JsonConverter]</c> attribute — the library
+    /// Verifies that the core <see cref="Fraction{T}" /> type carries no <c>[JsonConverter]</c> attribute - the library
     /// is serialization-agnostic, so JSON support requires registering the converters from this package.
     /// </summary>
     [TestMethod]
@@ -139,7 +139,7 @@ public class FractionJsonConverterPolicyTests
     }
 
     /// <summary>
-    /// Verifies that the strict policy rejects a JSON token at the top level — only the canonical object is accepted.
+    /// Verifies that the strict policy rejects a JSON token at the top level - only the canonical object is accepted.
     /// </summary>
     [TestMethod]
     public void StrictPolicy_WhenReadingCompactString_ShouldThrowJsonException()

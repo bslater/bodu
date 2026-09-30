@@ -14,13 +14,13 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// variants (byte array, hex, memory), stream-shape behaviours, and error propagation.
 /// </summary>
 /// <remarks>
-/// <c>VerifyHashAsync</c> propagates all exceptions — <see cref="IOException" />,
-/// <see cref="OperationCanceledException" />, and null-argument errors — to the caller.
+/// <c>VerifyHashAsync</c> propagates all exceptions - <see cref="IOException" />,
+/// <see cref="OperationCanceledException" />, and null-argument errors - to the caller.
 /// Swallow-and-return-<see langword="false" /> behaviour belongs to <c>TryVerifyHashAsync</c>.
 /// </remarks>
 public partial class HashAlgorithmExtensionsTests
 {
-    // ─── Expected-hash variants — matching input ──────────────────────────────────────────────
+    // ─── Expected-hash variants - matching input ──────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that a stream whose content matches the expected hex string returns
@@ -79,7 +79,7 @@ public partial class HashAlgorithmExtensionsTests
     /// </summary>
     /// <remarks>
     /// Parsing the hex expected value is a prerequisite to computing the stream hash. If parsing
-    /// fails, the stream should never be touched — this test asserts that via
+    /// fails, the stream should never be touched - this test asserts that via
     /// <see cref="MonitoringStream.Reads" />.
     /// </remarks>
     [TestMethod]
@@ -129,8 +129,8 @@ public partial class HashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="IncrementingByteStream" /> — which returns at most half of its
-    /// remaining bytes per read — produces the correct hash, exercising the accumulation loop
+    /// Verifies that <see cref="IncrementingByteStream" /> - which returns at most half of its
+    /// remaining bytes per read - produces the correct hash, exercising the accumulation loop
     /// under guaranteed partial reads.
     /// </summary>
     [TestMethod]
@@ -163,8 +163,8 @@ public partial class HashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="ThrottledIncrementingByteStream" /> — which delays each read
-    /// to simulate slow I/O — produces the same hash as direct computation.
+    /// Verifies that a <see cref="ThrottledIncrementingByteStream" /> - which delays each read
+    /// to simulate slow I/O - produces the same hash as direct computation.
     /// </summary>
     [TestMethod]
     public async Task VerifyHashAsync_WhenSourceIsThrottledIncrementingByteStream_ShouldReturnTrue()
@@ -185,8 +185,8 @@ public partial class HashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="FixedLengthIncrementingStream" /> — which delivers sequential
-    /// bytes in partial reads — produces the correct hash.
+    /// Verifies that a <see cref="FixedLengthIncrementingStream" /> - which delivers sequential
+    /// bytes in partial reads - produces the correct hash.
     /// </summary>
     [TestMethod]
     public async Task VerifyHashAsync_WhenSourceIsFixedLengthIncrementingStream_ShouldReturnTrue()
@@ -233,7 +233,7 @@ public partial class HashAlgorithmExtensionsTests
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
 
-        // Fault after 1 byte — well before EOF — to confirm the exception is not swallowed.
+        // Fault after 1 byte - well before EOF - to confirm the exception is not swallowed.
         using var stream = new FaultingStream(SampleData, throwAfterBytes: 1);
 
         await Assert.ThrowsExactlyAsync<IOException>(async () =>

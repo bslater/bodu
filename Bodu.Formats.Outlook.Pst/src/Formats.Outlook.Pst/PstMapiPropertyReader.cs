@@ -120,7 +120,7 @@ internal static class PstMapiPropertyReader
     }
 
     /// <summary>
-    /// Decodes a table row's present cells into the shared value model — the shape of recipient rows, whose properties
+    /// Decodes a table row's present cells into the shared value model - the shape of recipient rows, whose properties
     /// are row-resident rather than held in a property context.
     /// </summary>
     /// <param name="row">The container's table row.</param>
@@ -307,7 +307,7 @@ internal static class PstMapiPropertyReader
 
     /// <summary>
     /// Decodes the variable-size multi-value layout: <c>ulCount</c>, then <c>ulCount</c> offsets from the payload
-    /// start, then the element data — element <c>i</c> spans its offset to the next offset (the last to the payload
+    /// start, then the element data - element <c>i</c> spans its offset to the next offset (the last to the payload
     /// end).
     /// </summary>
     /// <param name="type">The base element type.</param>

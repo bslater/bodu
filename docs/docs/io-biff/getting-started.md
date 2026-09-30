@@ -1,8 +1,8 @@
 ---
-title: Bodu.IO.Biff — Getting started
+title: Bodu.IO.Biff - Getting started
 ---
 
-# Bodu.IO.Biff — Getting started
+# Bodu.IO.Biff - Getting started
 
 Unfamiliar with terms like *record*, *substream*, *CONTINUE*, *shared string table*, or *RK*? Read [Core concepts](concepts.md) first.
 
@@ -12,11 +12,11 @@ Unfamiliar with terms like *record*, *substream*, *CONTINUE*, *shared string tab
 dotnet add package Bodu.IO.Biff
 ```
 
-Targets `net8.0`. Depends on `Bodu.Core` (shared throw-helpers) and `System.Text.Encoding.CodePages` (BIFF5 byte strings). For the spreadsheet view — sheets, cells by position, number formats, dates — install `Bodu.Formats.Excel.Binary` instead (it references this package) and see [its introduction](../excel/index.md).
+Targets `net8.0`. Depends on `Bodu.Core` (shared throw-helpers) and `System.Text.Encoding.CodePages` (BIFF5 byte strings). For the spreadsheet view - sheets, cells by position, number formats, dates - install `Bodu.Formats.Excel.Binary` instead (it references this package) and see [its introduction](../excel/index.md).
 
 ## Walk a record stream
 
-The reader takes the bytes of a BIFF stream. Where they come from is up to you — for an `.xls` file, the `Workbook` stream of the compound file, read with `Bodu.IO.Compound`:
+The reader takes the bytes of a BIFF stream. Where they come from is up to you - for an `.xls` file, the `Workbook` stream of the compound file, read with `Bodu.IO.Compound`:
 
 ```csharp
 using Bodu.IO.Biff;
@@ -120,7 +120,7 @@ Console.WriteLine($"{value.Length} chars, unicode={text.IsUnicode}, wide={text.I
 
 ## Read a sheet substream with a known version
 
-A sheet's substream carries its own `BOF`, so a reader started at the sheet's offset establishes the version itself. When you want the version-dependent accessors to work before that — or you are resuming from a saved state — seed the reader:
+A sheet's substream carries its own `BOF`, so a reader started at the sheet's offset establishes the version itself. When you want the version-dependent accessors to work before that - or you are resuming from a saved state - seed the reader:
 
 ```csharp
 using Bodu.IO.Biff;
@@ -181,7 +181,7 @@ writer.WriteEof();
 byte[] stream = output.WrittenSpan.ToArray();
 ```
 
-The writer serializes records; assembling a workbook — ordering, the `BOUNDSHEET` offsets, the compound-file container — is the caller's job, which is why `BytesCommitted` is exposed.
+The writer serializes records; assembling a workbook - ordering, the `BOUNDSHEET` offsets, the compound-file container - is the caller's job, which is why `BytesCommitted` is exposed.
 
 ## Copy a stream, preserving everything
 
@@ -240,7 +240,7 @@ Console.WriteLine($"{workbook.BiffVersion}: {workbook.Worksheets.Count} sheets")
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — the full vocabulary.
-- **[Record reference](records.md)** — every record the codec decodes and writes, by version.
-- **[Runnable sample](../../samples/io-biff.md)** — the `BiffBasics` console project.
-- **API reference** — [Bodu.IO.Biff](xref:Bodu.IO.Biff).
+- **[Core concepts](concepts.md)** - the full vocabulary.
+- **[Record reference](records.md)** - every record the codec decodes and writes, by version.
+- **[Runnable sample](../../samples/io-biff.md)** - the `BiffBasics` console project.
+- **API reference** - [Bodu.IO.Biff](xref:Bodu.IO.Biff).

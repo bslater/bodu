@@ -12,8 +12,8 @@ namespace Bodu.Financial.Samples.CurrencyServices;
 /// <summary>
 /// An <see cref="ICurrencyLookup" /> decorator that only resolves an allow-listed set of ISO codes.
 /// Systems that settle in a fixed set of currencies install a lookup like this so that everything
-/// flowing through the ambient <see cref="CurrencyResolution" /> seam — parsing, formatting,
-/// minor-unit resolution — rejects currencies the system does not support.
+/// flowing through the ambient <see cref="CurrencyResolution" /> seam - parsing, formatting,
+/// minor-unit resolution - rejects currencies the system does not support.
 /// </summary>
 public sealed class RestrictedCurrencyLookup
     : ICurrencyLookup

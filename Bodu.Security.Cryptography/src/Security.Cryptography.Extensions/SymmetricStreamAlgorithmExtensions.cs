@@ -12,8 +12,8 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="SymmetricStreamAlgorithm" /> exposes the building blocks — <c>CreateEncryptor</c>, <c>CreateDecryptor</c>
-/// , and <see cref="System.Security.Cryptography.CryptoStream" /> interop — but stops short of the operations callers
+/// <see cref="SymmetricStreamAlgorithm" /> exposes the building blocks - <c>CreateEncryptor</c>, <c>CreateDecryptor</c>
+/// , and <see cref="System.Security.Cryptography.CryptoStream" /> interop - but stops short of the operations callers
 /// actually invoke: "encrypt this byte array" or "decrypt this stream into that one". This class collapses the usual
 /// setup (instantiate the transform, drain the source, dispose in order) into a single call per scenario, with
 /// overloads aligned to the input shape.

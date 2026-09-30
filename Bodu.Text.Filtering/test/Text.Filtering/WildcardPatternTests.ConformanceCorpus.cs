@@ -84,7 +84,7 @@ public partial class WildcardPatternTests
         Assert.AreEqual(kat.Expected, Match(kat.Pattern, kat.Text, kat.IgnoreCase));
 
     /// <summary>
-    /// Gets rows that are legal in a source engine but are documented build-time errors in this grammar — POSIX glob
+    /// Gets rows that are legal in a source engine but are documented build-time errors in this grammar - POSIX glob
     /// admits <c>]</c> as the first class member (<c>[]]</c>), while this library requires the escape <c>[\]]</c>.
     /// </summary>
     public static IEnumerable<object[]> ConformanceDivergenceInvalidKats
@@ -146,9 +146,9 @@ public partial class WildcardPatternTests
     }
 
     /// <summary>
-    /// Verifies that the classic exponential-backtracking input — many <c>*a</c> segments against a long run of
+    /// Verifies that the classic exponential-backtracking input - many <c>*a</c> segments against a long run of
     /// <c>a</c> characters, the input that hangs naive recursive matchers and motivated wildmatch's iterative
-    /// algorithm — completes correctly in polynomial time on the two-pointer matcher.
+    /// algorithm - completes correctly in polynomial time on the two-pointer matcher.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]

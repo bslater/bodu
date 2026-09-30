@@ -29,8 +29,8 @@ namespace Bodu.Collections.Probabilistic;
 /// Elements are hashed via the supplied <see cref="IEqualityComparer{T}" /> (or
 /// <see cref="EqualityComparer{T}.Default" />): the comparer's 32-bit
 /// <see cref="IEqualityComparer{T}.GetHashCode(T)" /> is expanded through a deterministic SplitMix64-style avalanche
-/// into two 64-bit values combined by Kirsch–Mitzenmacher double hashing. All entropy therefore derives from the 32-bit
-/// comparer hash — standard practice for comparer-based sketches — which bounds the achievable false-positive floor by
+/// into two 64-bit values combined by Kirsch-Mitzenmacher double hashing. All entropy therefore derives from the 32-bit
+/// comparer hash - standard practice for comparer-based sketches - which bounds the achievable false-positive floor by
 /// the collision rate of that hash.
 /// </para>
 /// <para>
@@ -39,8 +39,8 @@ namespace Bodu.Collections.Probabilistic;
 /// meaningful when re-imported within the same process, or when a custom comparer with a stable hash is used.
 /// </para>
 /// <para>
-/// <see cref="UnionWith" /> merges another filter into this one by bitwise OR. The two filters must be compatible — the
-/// same <see cref="BitCount" />, the same <see cref="HashCount" />, and the same (or equal) comparer — which in
+/// <see cref="UnionWith" /> merges another filter into this one by bitwise OR. The two filters must be compatible - the
+/// same <see cref="BitCount" />, the same <see cref="HashCount" />, and the same (or equal) comparer - which in
 /// practice means they were constructed with the same parameters. After the merge this filter reports an element as
 /// possibly present when either source filter would have.
 /// </para>
@@ -61,8 +61,8 @@ namespace Bodu.Collections.Probabilistic;
 ///
 /// seen.Add(42);
 ///
-/// Console.WriteLine(seen.MightContain(42));   // True  — added items are always found
-/// Console.WriteLine(seen.MightContain(4711)); // False (usually) — may rarely be a false positive
+/// Console.WriteLine(seen.MightContain(42));   // True  - added items are always found
+/// Console.WriteLine(seen.MightContain(4711)); // False (usually) - may rarely be a false positive
 ///]]>
 /// </code>
 /// </example>
@@ -402,7 +402,7 @@ public sealed class BloomFilter<T>
     /// <remarks>
     /// <para>
     /// Compatibility requires identical <see cref="BitCount" /> and <see cref="HashCount" /> and the same or an equal
-    /// comparer instance — in practice, filters constructed with the same parameters. The other filter is not modified.
+    /// comparer instance - in practice, filters constructed with the same parameters. The other filter is not modified.
     /// Merging raises this filter's bit density and therefore its <see cref="EstimatedFalsePositiveRate" />.
     /// </para>
     /// <para>

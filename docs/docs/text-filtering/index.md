@@ -1,5 +1,5 @@
 ---
-title: Bodu.Text.Filtering — Introduction
+title: Bodu.Text.Filtering - Introduction
 ---
 
 # Bodu.Text.Filtering
@@ -8,8 +8,8 @@ title: Bodu.Text.Filtering — Introduction
 
 `Bodu.Text.Filtering` filters lists of text values through include/exclude pattern sets. Glob
 (wildcard) and regular-expression patterns compile once into an immutable
-[`TextFilter`](xref:Bodu.Text.Filtering.TextFilter) that is then applied to any number of values —
-designed for bulk work in the 100k+ values × 10–100+ patterns range, with built-in telemetry that
+[`TextFilter`](xref:Bodu.Text.Filtering.TextFilter) that is then applied to any number of values -
+designed for bulk work in the 100k+ values × 10-100+ patterns range, with built-in telemetry that
 reports what matched, what was vetoed, and by which pattern.
 
 Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic.
@@ -19,8 +19,8 @@ Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topi
 A filter is a compiled set of **rules**. Each rule is a
 [`TextFilterPattern`](xref:Bodu.Text.Filtering.TextFilterPattern): a pattern text, an **action**
 (include or exclude), a **kind** (glob or regex), and an optional per-pattern case override. You
-compile the set once — with `TextFilter.Build`, `TextFilter.Parse`, or a
-[`TextFilterBuilder`](xref:Bodu.Text.Filtering.TextFilterBuilder) — and then ask it questions:
+compile the set once - with `TextFilter.Build`, `TextFilter.Parse`, or a
+[`TextFilterBuilder`](xref:Bodu.Text.Filtering.TextFilterBuilder) - and then ask it questions:
 `IsMatch(value)`, `Evaluate(value)` (which also reports the deciding pattern), or
 `Filter(sequence)`.
 
@@ -39,10 +39,10 @@ The library deliberately adopts designs users already know from established tool
 [`TextFilterEvaluationMode`](xref:Bodu.Text.Filtering.TextFilterEvaluationMode) selects how rules
 combine:
 
-- **`AnyMatch`** (default) — the Ant / MSBuild set model. A value is accepted when the include set
+- **`AnyMatch`** (default) - the Ant / MSBuild set model. A value is accepted when the include set
   is empty **or** at least one include matches, **and** no exclude matches. Declaration order never
   affects the outcome, which frees the engine to evaluate the cheapest patterns first.
-- **`LastMatchWins`** — the gitignore model. Rules form one ordered list; the last matching rule's
+- **`LastMatchWins`** - the gitignore model. Rules form one ordered list; the last matching rule's
   action decides, and unmatched values are included. A later include re-admits what an earlier
   exclude rejected; allowlists start with an exclude-everything rule (`!*`).
 
@@ -60,7 +60,7 @@ case-insensitive by default.
 | `{a,b}` | alternation, expanded at build time |
 | `\x` | literal `x` (escapes metacharacters) |
 
-Anything richer is a `TextFilterPatternKind.Regex` pattern — compiled preferring the linear-time
+Anything richer is a `TextFilterPatternKind.Regex` pattern - compiled preferring the linear-time
 `NonBacktracking` engine, always with a match timeout, and timeouts fail safe (a timed-out exclude
 still vetoes).
 
@@ -72,15 +72,15 @@ is evaluated cheapest-first with short-circuiting:
 `*` (match-all) → literal equality → prefix / suffix (`abc*`, `*abc`, `abc*def`) → contains
 (`*abc*`) → general wildcard matcher → regex.
 
-`{error,warn}*` expands at build time into two cheap prefix matchers — alternation costs nothing at
+`{error,warn}*` expands at build time into two cheap prefix matchers - alternation costs nothing at
 evaluation time.
 
 ## Main types
 
 ### The engine
 
-- [`TextFilter`](xref:Bodu.Text.Filtering.TextFilter) — `Build` / `Parse`, `IsMatch`, `Evaluate`, `GetMatchingPatterns`, `Filter` / `FilterToList`, `GetStatistics`, `Observer`.
-- [`TextFilterBuilder`](xref:Bodu.Text.Filtering.TextFilterBuilder) — fluent `AddInclude` / `AddExclude` / `AddIncludeRegex` / `AddParsed`.
+- [`TextFilter`](xref:Bodu.Text.Filtering.TextFilter) - `Build` / `Parse`, `IsMatch`, `Evaluate`, `GetMatchingPatterns`, `Filter` / `FilterToList`, `GetStatistics`, `Observer`.
+- [`TextFilterBuilder`](xref:Bodu.Text.Filtering.TextFilterBuilder) - fluent `AddInclude` / `AddExclude` / `AddIncludeRegex` / `AddParsed`.
 
 ### The model
 
@@ -95,15 +95,15 @@ evaluation time.
 
 ## Common scenarios
 
-- **Log/line selection** — keep `error*`/`warn*` lines, veto `*debug*` noise, stream through `Filter`.
-- **Name allowlists and blocklists** — parse a config file's raw lines with the gitignore conventions.
-- **Routing and diagnostics** — `Evaluate` reports the deciding pattern; `GetMatchingPatterns` reports every matching pattern.
-- **Filter tuning** — per-pattern hit counts show which patterns actually decide outcomes at volume.
+- **Log/line selection** - keep `error*`/`warn*` lines, veto `*debug*` noise, stream through `Filter`.
+- **Name allowlists and blocklists** - parse a config file's raw lines with the gitignore conventions.
+- **Routing and diagnostics** - `Evaluate` reports the deciding pattern; `GetMatchingPatterns` reports every matching pattern.
+- **Filter tuning** - per-pattern hit counts show which patterns actually decide outcomes at volume.
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — the vocabulary: actions, kinds, modes, tiers, deciding patterns.
-- **[Getting started](getting-started.md)** — install and minimal samples.
-- **[Guides](../../guides/text-filtering/index.md)** — pattern grammar, evaluation modes, telemetry.
-- **[Runnable samples](../../samples/text-filtering.md)** — the FilteringTour console sample.
-- **[API reference](xref:Bodu.Text.Filtering)** — full type-by-type docs.
+- **[Core concepts](concepts.md)** - the vocabulary: actions, kinds, modes, tiers, deciding patterns.
+- **[Getting started](getting-started.md)** - install and minimal samples.
+- **[Guides](../../guides/text-filtering/index.md)** - pattern grammar, evaluation modes, telemetry.
+- **[Runnable samples](../../samples/text-filtering.md)** - the FilteringTour console sample.
+- **[API reference](xref:Bodu.Text.Filtering)** - full type-by-type docs.

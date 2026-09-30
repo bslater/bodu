@@ -9,7 +9,7 @@ using Bodu.Text.Yaml.Document;
 namespace Bodu.Text.Yaml.Samples.YamlDocuments.Scenarios;
 
 /// <summary>
-/// Demonstrates the read-only <see cref="YamlDocument" /> DOM — the <c>JsonDocument</c>-style layer
+/// Demonstrates the read-only <see cref="YamlDocument" /> DOM - the <c>JsonDocument</c>-style layer
 /// for inspect-without-materializing workflows: one parse, cheap <see cref="YamlElement" /> cursors
 /// over it, typed getters, and safe probing for optional keys. The document owns the parsed data,
 /// so it is <see cref="IDisposable" />.

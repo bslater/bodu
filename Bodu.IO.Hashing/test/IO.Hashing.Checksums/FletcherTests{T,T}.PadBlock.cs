@@ -31,8 +31,8 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
         Assert.AreEqual(0xAA, padded[0]);
     }
     /// <summary>
-    /// Verifies that enabling final-block padding on a Fletcher derivative — and forcing a residual into the
-    /// buffer — drives <see cref="Fletcher{TSelf}.PadBlock(System.ReadOnlySpan{byte}, ulong)" /> without throwing
+    /// Verifies that enabling final-block padding on a Fletcher derivative - and forcing a residual into the
+    /// buffer - drives <see cref="Fletcher{TSelf}.PadBlock(System.ReadOnlySpan{byte}, ulong)" /> without throwing
     /// and produces a hash of the configured length.
     /// </summary>
     [TestMethod]

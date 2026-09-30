@@ -90,7 +90,7 @@ public class RateDateSearchTests
     [TestMethod]
     public void TrySelectCandidate_WhenNearestAndPreviousCloser_ShouldSelectPrevious()
     {
-        // requested 1003 — previous 1000 distance 3, next 1010 distance 7
+        // requested 1003 - previous 1000 distance 3, next 1010 distance 7
         bool found = RateDateSearch.TrySelectCandidate(
             s_dayNumbers, 1003, RateDateResolution.Nearest, 0, 1, out int candidate);
 
@@ -105,7 +105,7 @@ public class RateDateSearchTests
     [TestMethod]
     public void TrySelectCandidate_WhenNearestAndNextCloser_ShouldSelectNext()
     {
-        // requested 1008 — previous 1000 distance 8, next 1010 distance 2
+        // requested 1008 - previous 1000 distance 8, next 1010 distance 2
         bool found = RateDateSearch.TrySelectCandidate(
             s_dayNumbers, 1008, RateDateResolution.Nearest, 0, 1, out int candidate);
 
@@ -120,7 +120,7 @@ public class RateDateSearchTests
     [TestMethod]
     public void TrySelectCandidate_WhenNearestAndTie_ShouldFail()
     {
-        // requested 1005 — previous 1000 distance 5, next 1010 distance 5
+        // requested 1005 - previous 1000 distance 5, next 1010 distance 5
         bool found = RateDateSearch.TrySelectCandidate(
             s_dayNumbers, 1005, RateDateResolution.Nearest, 0, 1, out int candidate);
 

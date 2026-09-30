@@ -12,15 +12,15 @@ namespace Bodu.Globalization.Calendar.Caching;
 
 /// <summary>
 /// Compiles the calendar caching guide examples that are explicitly opted in, so a code sample cannot silently drift
-/// from the public API it documents — the class of error (a renamed or removed member in a shown snippet) that prose
+/// from the public API it documents - the class of error (a renamed or removed member in a shown snippet) that prose
 /// review misses.
 /// </summary>
 /// <remarks>
 /// A fenced <c>csharp</c> block is compiled only when the line immediately preceding its opening fence is the
 /// sentinel <c>&lt;!-- compile --&gt;</c>. Each opted-in block is compiled as the body of a method against the same
 /// assemblies this test references (the calendar core, the caching layer, and the Americas data pack), so an opted-in
-/// block must be method-body statements that resolve against those references. Illustrative fragments — including the
-/// SQLite, Redis, and dependency-injection registrations, whose packages this test host does not reference — stay
+/// block must be method-body statements that resolve against those references. Illustrative fragments - including the
+/// SQLite, Redis, and dependency-injection registrations, whose packages this test host does not reference - stay
 /// unmarked and are not compiled. This test scans only the <c>docs/guides/calendar/caching</c> subfolder: the
 /// calendar-core snippet test scans <c>docs/guides/calendar</c> non-recursively and cannot compile caching types, so
 /// the caching guide deliberately lives one level down.

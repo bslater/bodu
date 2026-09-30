@@ -9,7 +9,7 @@ using System.Collections;
 namespace Bodu.Text.Delimited.Document;
 
 /// <summary>
-/// Represents a single element — the document array, a record, or a field value — within a
+/// Represents a single element - the document array, a record, or a field value - within a
 /// <see cref="DelimitedDocument" />, shaped after <c>System.Text.Json</c>'s <c>JsonElement</c>.
 /// </summary>
 public readonly struct DelimitedElement

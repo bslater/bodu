@@ -26,7 +26,7 @@ namespace Bodu.IO.Hashing;
 /// has not yet consumed input. <see cref="Reset" /> returns the instance to the reconfigurable state.
 /// </para>
 /// <para>
-/// <strong>When to choose Bernstein.</strong> djb2 is the canonical "C-style" hash for short string keys — language
+/// <strong>When to choose Bernstein.</strong> djb2 is the canonical "C-style" hash for short string keys - language
 /// symbol tables, environment-variable maps, and small associative containers. Pick it when interoperating with code
 /// that has standardized on djb2 (Perl, Python's older string hash, Tcl variable tables, etc.) or when the seed/variant
 /// flexibility is useful. Empirically the XOR-modified form (<c>djb2a</c>, <see cref="UseModifiedAlgorithm" /> set to

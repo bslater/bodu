@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="sh-title sh-desc">
-  <title id="sh-title">SipHash SipRound — the ARX mixing network</title>
+  <title id="sh-title">SipHash SipRound - the ARX mixing network</title>
   <desc id="sh-desc">One SipRound mixes the four 64-bit state words v0, v1, v2, and v3 using only additions modulo 2^64, fixed bit rotations, and exclusive-OR. The two halves are processed in parallel: v0 absorbs v1 and v2 absorbs v3, the partner words are rotated and XORed back, then v0 and v2 are swapped diagonally and v0 is rotated by 32. SipHash-2-4 applies two such rounds per 8-byte message block and four during finalization.</desc>
 
   <defs>
@@ -50,7 +50,7 @@
     <rect class="panel" width="800" height="300" rx="8"/>
     <rect class="header" width="800" height="46" rx="8"/>
     <rect class="header" y="38" width="800" height="8"/>
-    <text class="title" x="16" y="20">SipHash SipRound — add, rotate, XOR on four 64-bit words</text>
+    <text class="title" x="16" y="20">SipHash SipRound - add, rotate, XOR on four 64-bit words</text>
     <text class="formula" x="784" y="38" text-anchor="end">v ← (v + v) mod 2⁶⁴;   v ← v ⋘ k;   v ← v ⊕ v</text>
 
     <!-- ===== input words (left column) ===== -->
@@ -164,6 +164,6 @@
     </g>
 
     <!-- footer note -->
-    <text class="sub" x="20" y="290">ARX only — no S-boxes or lookup tables. The 128-bit key seeds v0..v3, so the network is invertible only with knowledge of the key.</text>
+    <text class="sub" x="20" y="290">ARX only - no S-boxes or lookup tables. The 128-bit key seeds v0..v3, so the network is invertible only with knowledge of the key.</text>
   </g>
 </svg>

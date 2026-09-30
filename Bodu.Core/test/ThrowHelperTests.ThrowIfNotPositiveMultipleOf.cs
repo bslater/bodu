@@ -10,8 +10,8 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNotPositiveMultipleOf{T}" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for accepted positive multiples of the divisor.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotPositiveMultipleOf{T}" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for accepted positive multiples of the divisor.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="value">The value passed to the guard.</param>

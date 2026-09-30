@@ -12,7 +12,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </summary>
 /// <remarks>
 /// <para>
-/// GTIN-14 — the logistics-tier GS1 identifier derived by prefixing an EAN-13 with a single indicator digit — shares
+/// GTIN-14 - the logistics-tier GS1 identifier derived by prefixing an EAN-13 with a single indicator digit - shares
 /// its weight pattern with EAN-13, UPC-A, and ISBN-13. The static helpers on this type enforce a strict 13-digit body
 /// length (14-digit full sequence); the streaming surface is length-agnostic.
 /// </para>
@@ -91,7 +91,7 @@ public sealed class Gtin14
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
     /// <see langword="true" /> if the sequence is exactly <see cref="SequenceLength" /> digits and evaluates as valid
-    /// under GTIN-14; otherwise, <see langword="false" /> — including the case where
+    /// under GTIN-14; otherwise, <see langword="false" /> - including the case where
     /// <paramref name="digitsIncludingCheck" /> is empty.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck) =>

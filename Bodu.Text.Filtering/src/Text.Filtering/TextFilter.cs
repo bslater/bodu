@@ -17,18 +17,18 @@ namespace Bodu.Text.Filtering;
 /// <para>
 /// A filter is built once from its patterns via <see cref="Build(IEnumerable{TextFilterPattern})" /> (or parsed from
 /// raw lines via <see cref="Parse(IEnumerable{string})" />) and then evaluated many times. At build time every wildcard
-/// pattern is classified into the cheapest strategy its shape permits — whole-string equality for literals,
+/// pattern is classified into the cheapest strategy its shape permits - whole-string equality for literals,
 /// prefix/suffix comparison for <c>abc*</c> / <c>*abc</c> / <c>abc*def</c>, substring search for <c>*abc*</c>, the
-/// general wildcard matcher otherwise — and regular expressions compile preferring the linear-time
+/// general wildcard matcher otherwise - and regular expressions compile preferring the linear-time
 /// <see cref="RegexOptions.NonBacktracking" /> engine. In <see cref="TextFilterEvaluationMode.AnyMatch" /> mode the
 /// include and exclude groups are additionally evaluated cheapest-strategy-first, which cannot change the outcome
 /// because group matching is an order-independent OR.
 /// </para>
 /// <para>
 /// <b>Semantics.</b> In <see cref="TextFilterEvaluationMode.AnyMatch" /> (the default), a value is accepted when the
-/// include set is empty or at least one include matches, and no exclude matches — the Ant / MSBuild model. In
+/// include set is empty or at least one include matches, and no exclude matches - the Ant / MSBuild model. In
 /// <see cref="TextFilterEvaluationMode.LastMatchWins" />, the last matching rule decides and unmatched values are
-/// included — the gitignore model.
+/// included - the gitignore model.
 /// </para>
 /// <para>
 /// <b>Thread safety.</b> The compiled matching state is immutable, so <see cref="IsMatch(string)" />,
@@ -184,7 +184,7 @@ public sealed partial class TextFilter
         }
         else
         {
-            // LastMatchWins keeps declaration order verbatim — order IS the semantics there, so no cost sorting.
+            // LastMatchWins keeps declaration order verbatim - order IS the semantics there, so no cost sorting.
             // Brace-expanded alternatives stay adjacent to their siblings, preserving each rule's position.
             ordered = [.. compiled];
         }
@@ -232,8 +232,8 @@ public sealed partial class TextFilter
     /// <returns>The constructed expression.</returns>
     /// <exception cref="ArgumentException">The pattern is not a valid regular expression.</exception>
     /// <remarks>
-    /// <see cref="RegexOptions.NonBacktracking" /> guarantees linear-time matching — exactly what a bulk filtering
-    /// engine wants — but rejects backreferences, lookarounds, and automata beyond its node budget with
+    /// <see cref="RegexOptions.NonBacktracking" /> guarantees linear-time matching - exactly what a bulk filtering
+    /// engine wants - but rejects backreferences, lookarounds, and automata beyond its node budget with
     /// <see cref="NotSupportedException" />; those patterns rebuild on the backtracking engine, where
     /// <paramref name="timeout" /> is the ReDoS guard.
     /// </remarks>

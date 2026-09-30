@@ -24,8 +24,8 @@ public partial class AsconHash256Tests
         MinNonZeroBytesForLongInput = 28,
         // The Empty vector and the GetExpectedHashesForIncrementalInput sequence below come directly
         // from the ASCON reference implementation (ascon-c, LWC_HASH_KAT_128_256.txt). The remaining
-        // canonical-input digests are computed from the same reference algorithm — NIST SP 800-232,
-        // ASCON-HASH256 — applied to the canonical shared inputs declared in CryptoKatInputs. They are
+        // canonical-input digests are computed from the same reference algorithm - NIST SP 800-232,
+        // ASCON-HASH256 - applied to the canonical shared inputs declared in CryptoKatInputs. They are
         // cross-checked against the published incremental KAT (the entries for input lengths 0..9 below)
         // to confirm the permutation, IV, padding and squeezing schedule are bit-exact with the reference.
         KnownAnswers =

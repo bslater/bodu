@@ -174,7 +174,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// <summary>
     /// Verifies that <see cref="SymmetricAlgorithm.CreateEncryptor(byte[], byte[])" /> throws
     /// <see cref="CryptographicException" /> when the IV is non-null but has the wrong length, even in ECB
-    /// mode — a supplied IV must always be valid if provided.
+    /// mode - a supplied IV must always be valid if provided.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(InvalidBlockSizeBytesData))]

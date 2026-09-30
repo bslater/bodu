@@ -20,7 +20,7 @@ public partial class MapiPropertyCollectionTests
     }
 
     /// <summary>
-    /// Verifies that lookup is keyed by the full tag — the same identifier with a different type is reported absent.
+    /// Verifies that lookup is keyed by the full tag - the same identifier with a different type is reported absent.
     /// </summary>
     [TestMethod]
     public void Contains_WhenSameIdDifferentType_ShouldReturnFalse()

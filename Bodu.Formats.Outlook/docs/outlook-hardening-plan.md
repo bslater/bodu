@@ -1,4 +1,4 @@
-# Outlook library hardening — security, exception discipline, performance
+# Outlook library hardening - security, exception discipline, performance
 
 **Date:** 2026-09-03
 **Status:** Phase A (tests) complete; Phase B (fixes) in progress.
@@ -11,7 +11,7 @@ real corpora, but it is not yet safe against hostile input: four
 unbounded-work/allocation holes (one an uncatchable stack overflow), a
 family of "wrong exception type escapes the documented contract"
 defects, two silent-wrong-answer paths at the default validation level,
-no caller-tunable resource limits, and a consistent 2–4× copy pattern
+no caller-tunable resource limits, and a consistent 2-4× copy pattern
 on payloads. Every finding was verified against source before this plan
 was written.
 
@@ -19,9 +19,9 @@ was written.
 
 - **Tests first.** Every regression test was authored, committed, and
   confirmed failing (Phase A) before any production change (Phase B).
-  Tests that need new API landed with declarations only — validated
+  Tests that need new API landed with declarations only - validated
   option properties with defaults, an enum member, method signatures
-  whose bodies are the eventual contract — so the behavioural tests
+  whose bodies are the eventual contract - so the behavioural tests
   still went red.
 - **No restructuring** beyond the established `shared/` source-compile
   precedent (`#if MSG / #elif OUTLOOK_PST`).
@@ -35,7 +35,7 @@ was written.
 
 | Decision | Choice |
 |---|---|
-| Container limits | `PstFileOptions.MaxNodeDataLength` (256 MiB; materialization only — `OpenDataStream` stays unbounded) and `MaxDataTreeLeaves` (65,536; both paths). NBT/BBT depth 16 and BTH index levels 8 are constants. |
+| Container limits | `PstFileOptions.MaxNodeDataLength` (256 MiB; materialization only - `OpenDataStream` stays unbounded) and `MaxDataTreeLeaves` (65,536; both paths). NBT/BBT depth 16 and BTH index levels 8 are constants. |
 | Reader limits | `MaxEmbeddedMessageDepth` (16) and `MaxDecompressedRtfBytes` (64 MiB) on both reader option types; `OutlookMailStoreReaderOptions.MaxNodeDataLength` passes through. |
 | `CompressedRtf` | `rawSize` above `min(payload × 8 + 4096, maxOutputBytes)` is malformed; output is pre-sized and stops at `rawSize`; truncated tokens are malformed. |
 | Strict-mode corrections | `PT_NULL` / `PT_UNSPECIFIED` and a zero FILETIME decode as present-with-null. |
@@ -47,10 +47,10 @@ was written.
 Solution build green. Full Regression tier per project; every failure
 below is a new test, and no previously green test regressed.
 
-**Bodu.IO.Pst.Test** — 20 red of 308 (+2 excluded from the run because
+**Bodu.IO.Pst.Test** - 20 red of 308 (+2 excluded from the run because
 they crash the test host today: `PstBTreeTests.EnumerateNodes_When
 BranchPageReferencesItself_…` and `TryGetNode_WhenBranchPageReferences
-Itself_…` — "Test host process crashed : Stack overflow"):
+Itself_…` - "Test host process crashed : Stack overflow"):
 `ReadHeader_WhenIndexLevelsExceedSpecMaximum`,
 `EnumerateRecords_WhenIndexItemReferencesItself`,
 `ReadAllBytes_WhenLogicalPayloadExceedsMaterializationLimit`,
@@ -67,11 +67,11 @@ Itself_…` — "Test host process crashed : Stack overflow"):
 `Ctor_WhenIndexExceeds27Bits`, `GetGuid_WhenPayloadExceedsSixteenBytes`,
 and the five `…ShouldReport…Category` guards.
 
-**Bodu.Formats.Outlook.Test** — 2 red of 164:
+**Bodu.Formats.Outlook.Test** - 2 red of 164:
 `GetInt32_WhenStoredAsInt16_ShouldWiden`,
 `GetInt64_WhenStoredAsNarrowerIntegerType_ShouldWiden`.
 
-**Bodu.Formats.Outlook.Msg.Test** — 32 red of 216:
+**Bodu.Formats.Outlook.Msg.Test** - 32 red of 216:
 `Open_WhenBitFlipped_ShouldDecodeCleanOrThrowSanctionedFamily`
 (`CompoundFileFormatException` leaks at Compatible),
 `Decompress_WhenDeclaredRawSizeIsHuge` (`OutOfMemoryException`),
@@ -92,7 +92,7 @@ properties), `OpenMessage_WhenNestingExceedsMaxEmbeddedMessageDepth`,
 `Decode_WhenDeclaredSizeDisagreesWithStream`,
 `EnumerateIndexed_WhenIndexIsDuplicatedUnderCompatible`.
 
-**Bodu.Formats.Outlook.Pst.Test** — 14 red of 74:
+**Bodu.Formats.Outlook.Pst.Test** - 14 red of 74:
 `OpenContentStream_WhenPayloadIsLarge_ShouldNotCopyIt` (39 MB copied),
 `OpenMessage_WhenNestingExceedsMaxEmbeddedMessageDepth`,
 `BodyRtf_WhenDecompressedSizeExceedsOption`, `BodyRtf_WhenReadTwice`,
@@ -106,21 +106,21 @@ properties), `OpenMessage_WhenNestingExceedsMaxEmbeddedMessageDepth`,
 
 ## Phase B tranches
 
-- **H1** — process-killing and unbounded-work holes: B-tree depth and
+- **H1** - process-killing and unbounded-work holes: B-tree depth and
   level checks, BTH index-level cap and descent-path check, data-tree
   materialization and fan-out limits, `CompressedRtf` bounds, embedded
   message depth.
-- **H2** — exception contract and silent wrong answers: `.msg` container
+- **H2** - exception contract and silent wrong answers: `.msg` container
   translation, the shared NAMEID parser, cache key split, container
   mediums, decoder UTC/null/BOM, disposal guards, strict cross-checks.
-- **H3** — CPU amplification and accessor correctness: `.msg` stream
+- **H3** - CPU amplification and accessor correctness: `.msg` stream
   index, widened accessor probes, folder encoding inheritance,
   store-node fallback.
-- **H4** — allocation and copy reduction, each pinned by a measured
+- **H4** - allocation and copy reduction, each pinned by a measured
   guard.
-- **H5** — parity, documentation alignment, regression closure.
+- **H5** - parity, documentation alignment, regression closure.
 
-## Status — landed 2026-09-03
+## Status - landed 2026-09-03
 
 All five tranches landed on `claude/next-up-n6wu7r` as one `fix(...)` commit
 each (H1 `d65aca0`, H2 `9aef729`, H3 `729ebdc`, H4 `daa5a44`, H5 this
@@ -137,7 +137,7 @@ Deviations from the plan as written, each forced by evidence during Phase B:
 | `.msg` stream lookup | Index the property streams inside `MsgPropertyDecoder`; no `Bodu.IO.Compound` change. | `CompoundStorage.FindChild` builds a per-storage name index on its first lookup (read-only files only). | The reader can only open a stream by name, and `TryOpenStream` scanned the directory per call, so an index in the decoder could not make the decode linear. The change is internal, private, and transparent. |
 | Linked decoder tests | Link the `.Msg` `CompressedRtf` / `MapiValueDecoder` / `MapiEncodingResolver` unit tests into the `.Pst` test project. | `MapiValueDecoderTests*` and `MapiEncodingResolverTests` are linked (namespace selected by `OUTLOOK_PST`); `CompressedRtfTests` is not. | The `CompressedRtfTests` root asserts the `.msg` exception type and shares helpers across its partials; the PST copy of `CompressedRtf` is exercised end to end by `OutlookMailMessageTests.Bodies` instead. |
 | `PstTableContext.EnumerateRows` strict surplus | Throw when the matrix is longer than the index. | Throws under Strict only when the matrix carries whole rows beyond the index count, counted across every block. | Tolerant reads stop at the index; the strict check must not misfire on the last block's slack. |
-| `OutlookMailAttachment.OpenContentStream` | Return `PstNode.OpenDataStream()` for a subnode-resident payload. | Wraps the decoded array read-only via `MemoryMarshal.TryGetArray`. | The property collection has already materialized the payload by the time the stream is opened; the zero-copy wrap meets the memory guard without a second read path. Streaming without materialization needs a container API for opening a property value as a stream — a follow-on. |
+| `OutlookMailAttachment.OpenContentStream` | Return `PstNode.OpenDataStream()` for a subnode-resident payload. | Wraps the decoded array read-only via `MemoryMarshal.TryGetArray`. | The property collection has already materialized the payload by the time the stream is opened; the zero-copy wrap meets the memory guard without a second read path. Streaming without materialization needs a container API for opening a property value as a stream - a follow-on. |
 
 Every follow-on the pass recorded has since landed: the value-stream API
 (below), and on 2026-09-04 the ANSI PST format (`Bodu.IO.Pst/docs/
@@ -147,10 +147,10 @@ single-allocation value read (a pre-sized `CfbSectorReader.ReadChain` plus
 a zero-copy hand-off from a read-only cursor in `MsgContainer.TryReadStream`),
 the removal of the dead `MsgStreamNames` storage-name formatters, and the
 `CompressedRtfTests` link into the PST test project under the `OUTLOOK_PST`
-namespace switch — closing the one linking gap the deviation table above
+namespace switch - closing the one linking gap the deviation table above
 records. Only the 4 KiB-page OST variant remains outside the readers.
 
-## Streaming property values — landed 2026-09-04
+## Streaming property values - landed 2026-09-04
 
 The last place a single property could force a large allocation was the
 attachment payload: `OutlookMailAttachment.Properties` (and anything reading
@@ -172,5 +172,5 @@ Guards: the 318 MB subnode tree reports its length and streams under an
 `.msg` fixture decode, report `Method` / `Size`, and stream under 8 MiB and
 1 MiB ceilings respectively; small payloads keep decoding inline; the
 malformed sweeps drain the new paths. Only the attachment payload is
-deferred — widening deferral to other binaries is a separate decision.
+deferred - widening deferral to other binaries is a separate decision.
 

@@ -41,7 +41,7 @@ public readonly partial struct DiscreteInterval<T>
     }
 
     /// <summary>
-    /// Returns the intersection of this interval with <paramref name="other" /> — the integers in both.
+    /// Returns the intersection of this interval with <paramref name="other" /> - the integers in both.
     /// </summary>
     /// <param name="other">The interval to intersect with.</param>
     /// <returns>The intersection, or <see cref="Empty" /> when the two share no integer.</returns>
@@ -131,7 +131,7 @@ public readonly partial struct DiscreteInterval<T>
         a.LowerUnbounded || b.UpperUnbounded || a._first <= b._last;
 
     /// <summary>
-    /// Determines whether this interval and <paramref name="other" /> are successor-adjacent — the successor of one's
+    /// Determines whether this interval and <paramref name="other" /> are successor-adjacent - the successor of one's
     /// last integer is the other's first integer, leaving no integer between them.
     /// </summary>
     /// <param name="other">The interval to test.</param>

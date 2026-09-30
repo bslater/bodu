@@ -7,7 +7,7 @@
 namespace Bodu.Financial;
 
 /// <summary>
-/// Verifies <see cref="MonetaryContext" /> — its defaults, scale resolution, rounding application, and validation.
+/// Verifies <see cref="MonetaryContext" /> - its defaults, scale resolution, rounding application, and validation.
 /// </summary>
 [TestClass]
 public partial class MonetaryContextTests

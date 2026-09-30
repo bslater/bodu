@@ -20,8 +20,8 @@ public static partial class StringExtensions
     /// </summary>
     /// <param name="value">The candidate path segment to sanitise.</param>
     /// <returns>
-    /// A string in which each invalid character — including <see cref="Path.DirectorySeparatorChar" /> and
-    /// <see cref="Path.AltDirectorySeparatorChar" /> — has been replaced by <c>'_'</c>; the original instance when
+    /// A string in which each invalid character - including <see cref="Path.DirectorySeparatorChar" /> and
+    /// <see cref="Path.AltDirectorySeparatorChar" /> - has been replaced by <c>'_'</c>; the original instance when
     /// nothing required replacement. Returns <c>"_"</c> when the input is empty so that the result is never itself an
     /// empty segment.
     /// </returns>
@@ -31,7 +31,7 @@ public static partial class StringExtensions
     /// <remarks>
     /// Use this when composing a path from user input where each component must be a single segment without embedded
     /// separators. For a full file name (no embedded separators required as a rule), prefer
-    /// <see cref="ToSafeFileName(string)" /> — the two differ only in whether path separators are stripped.
+    /// <see cref="ToSafeFileName(string)" /> - the two differ only in whether path separators are stripped.
     /// </remarks>
     public static string ToSafePathSegment(this string value)
     {

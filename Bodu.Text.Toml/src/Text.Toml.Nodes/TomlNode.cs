@@ -13,14 +13,14 @@ namespace Bodu.Text.Toml.Nodes;
 
 /// <summary>
 /// Represents a single node in a mutable TOML document object model, serving as the base for the three concrete node
-/// kinds — <see cref="TomlObject" />, <see cref="TomlArray" />, and <see cref="TomlValue" />.
+/// kinds - <see cref="TomlObject" />, <see cref="TomlArray" />, and <see cref="TomlValue" />.
 /// </summary>
 /// <remarks>
 /// <para>
 /// A node tree is editable in place: containers expose the standard collection surfaces, scalar values can be replaced,
 /// and any node can be re-serialized to normalized TOML through <see cref="WriteTo" /> or <see cref="ToUtf8Bytes" />.
-/// TOML defines eight scalar value kinds — a string, a 64-bit integer, a float, a Boolean, and the four date-time kinds
-/// — and has no null token, so the model defines no null node; a tree that still contains a <see langword="null" />
+/// TOML defines eight scalar value kinds - a string, a 64-bit integer, a float, a Boolean, and the four date-time kinds
+/// - and has no null token, so the model defines no null node; a tree that still contains a <see langword="null" />
 /// entry cannot be written.
 /// </para>
 /// <para>

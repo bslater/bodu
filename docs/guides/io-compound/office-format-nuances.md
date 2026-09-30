@@ -7,7 +7,7 @@ title: Office format nuances
 The OLE2 / Compound File Binary (CFB) container that
 [`CompoundFile`](xref:Bodu.IO.Compound.CompoundFile) reads is the
 structured-storage envelope behind the *legacy* binary Microsoft Office
-formats — Excel `.xls`, Word `.doc`, PowerPoint `.ppt`, and Outlook
+formats - Excel `.xls`, Word `.doc`, PowerPoint `.ppt`, and Outlook
 `.msg`. Each of these is a compound file whose root storage holds one or
 more well-known named streams and storages. The file extension tells you
 nothing the container does not; the *names of the entries* are what
@@ -16,7 +16,7 @@ identify the format.
 This guide maps the well-known stream and storage names to the formats
 that use them, and shows how to identify a format by walking the root
 storage. One boundary up front:
-[`Bodu.IO.Compound` exposes the envelope only](reading-compound-files.md) —
+[`Bodu.IO.Compound` exposes the envelope only](reading-compound-files.md) -
 it gives you the named streams as raw bytes and does not interpret any
 application format. Parsing the BIFF / Word / PowerPoint / MAPI payloads
 inside those streams is a separate concern; for `.xls` specifically, point
@@ -30,14 +30,14 @@ set of entries directly under the root storage:
 
 | Format | Extension | Distinguishing root entry | Kind |
 |---|---|---|---|
-| Excel workbook | `.xls` | `Workbook` (older files: `Book`) | Stream — BIFF8 record sequence |
+| Excel workbook | `.xls` | `Workbook` (older files: `Book`) | Stream - BIFF8 record sequence |
 | Word document | `.doc` | `WordDocument` (+ `0Table` / `1Table`, `Data`) | Stream(s) |
 | PowerPoint | `.ppt` | `PowerPoint Document` (+ `Current User`, `Pictures`) | Stream(s) |
 | Outlook message | `.msg` | `__substg1.0_*`, `__attach_*`, `__recip_*`, `__properties_version1.0` | Streams + storages |
 
 Notes that matter when probing:
 
-- **Excel** keeps its entire workbook in a single `Workbook` stream — a
+- **Excel** keeps its entire workbook in a single `Workbook` stream - a
   flat BIFF8 record sequence. Very old files name it `Book`. Both are
   direct children of the root storage.
 - **Word** stores the main text in `WordDocument` and its formatting
@@ -60,7 +60,7 @@ All four also typically carry the summary-information property-set streams
 Because the format is defined by entry names, identification is just a walk
 of the root storage's direct children. `EnumerateEntries` yields a
 [`CompoundEntryInfo`](xref:Bodu.IO.Compound.CompoundEntryInfo) snapshot
-(carrying `Name`, `EntryType`, and `Length`) for every child — storage
+(carrying `Name`, `EntryType`, and `Length`) for every child - storage
 *and* stream:
 
 ```csharp
@@ -100,7 +100,7 @@ using Bodu.IO.Compound;
 
 using FileStream source = File.OpenRead(path);
 if (!CompoundFile.IsCompoundFile(source))
-    return;   // not an OLE2 file at all — e.g. a .xlsx (ZIP) or plain text
+    return;   // not an OLE2 file at all - e.g. a .xlsx (ZIP) or plain text
 
 using CompoundFile file = CompoundFile.Open(source, leaveOpen: true);
 Console.WriteLine(IdentifyOfficeFormat(file));
@@ -109,7 +109,7 @@ Console.WriteLine(IdentifyOfficeFormat(file));
 `IsCompoundFile` inspects only the eight-byte OLE2 signature and restores
 the stream position, so it is cheap to call ahead of a full open. A
 modern `.xlsx` / `.docx` / `.pptx` is a ZIP archive, **not** a compound
-file, and returns `false` here — these formats are out of scope for
+file, and returns `false` here - these formats are out of scope for
 `Bodu.IO.Compound`.
 
 ## Walking a `.msg` storage tree
@@ -147,13 +147,13 @@ foreach (CompoundStorage attach in msg.RootStorage.EnumerateStorages())
 The `__substg1.0_` suffix encodes the MAPI property tag: the first four hex
 digits are the property id and the last four the property type (`001F` =
 Unicode string, `0102` = binary, and so on). `Bodu.IO.Compound` hands you
-those streams as bytes — decoding the MAPI property model from them is the
+those streams as bytes - decoding the MAPI property model from them is the
 caller's job.
 
 ## Reading an `.xls` workbook
 
 For `.xls` you *can* open the `Workbook` stream directly and read its BIFF8
-records yourself, but you do not have to — that is exactly what
+records yourself, but you do not have to - that is exactly what
 [`Bodu.Formats.Excel.Binary`](xref:Bodu.Formats.Excel.ExcelBinaryWorkbook)
 exists for. It builds on `Bodu.IO.Compound`, locates the `Workbook`
 stream, and exposes worksheet cell values without you touching the record
@@ -175,7 +175,7 @@ stream access pattern.
 
 ## See also
 
-- [Reading compound files](reading-compound-files.md) — opening a container, walking the hierarchy, and reading a stream's bytes.
-- [Buffered vs streaming access](streaming-and-buffering.md) — the `CompoundStream` cursor for large payloads.
-- [Reading property sets](property-sets.md) — the `\x05SummaryInformation` streams these formats carry.
-- API reference — <xref:Bodu.IO.Compound.CompoundFile>, <xref:Bodu.IO.Compound.CompoundStorage>, <xref:Bodu.IO.Compound.CompoundEntryInfo>, and <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook> for `.xls`.
+- [Reading compound files](reading-compound-files.md) - opening a container, walking the hierarchy, and reading a stream's bytes.
+- [Buffered vs streaming access](streaming-and-buffering.md) - the `CompoundStream` cursor for large payloads.
+- [Reading property sets](property-sets.md) - the `\x05SummaryInformation` streams these formats carry.
+- API reference - <xref:Bodu.IO.Compound.CompoundFile>, <xref:Bodu.IO.Compound.CompoundStorage>, <xref:Bodu.IO.Compound.CompoundEntryInfo>, and <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook> for `.xls`.

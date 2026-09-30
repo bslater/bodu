@@ -42,7 +42,7 @@ public sealed partial class Adler32CTests
             QuickBrownFox = "5BCD0FDA",
             Zeros16 = "00100001",
 
-            // Long-input regression vectors for issue #127 — Adler-32C uses modulus 65536, so
+            // Long-input regression vectors for issue #127 - Adler-32C uses modulus 65536, so
             // expected digests are computed by the per-byte canonical recurrence (and verified
             // against the scalar reference implementation) for the (byte)(i & 0xFF) sequence.
             Additional =

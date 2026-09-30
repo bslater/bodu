@@ -10,12 +10,12 @@ uid: Bodu.Security.Cryptography.Extensions
 
 ## Key types
 
-- <xref:Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions> — convenience methods on `System.Security.Cryptography.SymmetricAlgorithm` for one-shot encrypt / decrypt over spans and arrays.
-- <xref:Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions> — convenience methods on <xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm> for one-shot stream-cipher encrypt / decrypt and span-friendly variants.
-- <xref:Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions> — convenience methods on <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm> — Threefish — including tweak-passing one-shot APIs.
-- <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> — convenience methods on `System.Security.Cryptography.HashAlgorithm` for one-shot hashing over spans and string / encoding pairs.
-- <xref:Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions> — convenience methods on `System.Security.Cryptography.ICryptoTransform` for one-shot transform-block / transform-final-block use without managing intermediate buffers.
-- <xref:Bodu.Security.Cryptography.Extensions.AeadTransformExtensions> — `byte[]`-returning `Encrypt` / `Decrypt` overloads over the stream-cipher AEAD transforms (<xref:Bodu.Security.Cryptography.Poly1305AeadTransform> and friends), so callers can seal / open a message without sizing the output span by hand.
+- <xref:Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions> - convenience methods on `System.Security.Cryptography.SymmetricAlgorithm` for one-shot encrypt / decrypt over spans and arrays.
+- <xref:Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions> - convenience methods on <xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm> for one-shot stream-cipher encrypt / decrypt and span-friendly variants.
+- <xref:Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions> - convenience methods on <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm> - Threefish - including tweak-passing one-shot APIs.
+- <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> - convenience methods on `System.Security.Cryptography.HashAlgorithm` for one-shot hashing over spans and string / encoding pairs.
+- <xref:Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions> - convenience methods on `System.Security.Cryptography.ICryptoTransform` for one-shot transform-block / transform-final-block use without managing intermediate buffers.
+- <xref:Bodu.Security.Cryptography.Extensions.AeadTransformExtensions> - `byte[]`-returning `Encrypt` / `Decrypt` overloads over the stream-cipher AEAD transforms (<xref:Bodu.Security.Cryptography.Poly1305AeadTransform> and friends), so callers can seal / open a message without sizing the output span by hand.
 
 ## Example
 
@@ -29,7 +29,7 @@ blowfish.GenerateIV();
 blowfish.BlockMode    = CipherModeKind.CBC;
 blowfish.BlockPadding = PaddingModeKind.PKCS7;
 
-// SymmetricAlgorithmExtensions.Encrypt / Decrypt: one-shot over a span or array —
+// SymmetricAlgorithmExtensions.Encrypt / Decrypt: one-shot over a span or array -
 // creates the transform, runs it, and disposes it for you.
 byte[] ciphertext = blowfish.Encrypt(plaintext);
 byte[] plain      = blowfish.Decrypt(ciphertext);
@@ -38,5 +38,5 @@ byte[] plain      = blowfish.Decrypt(ciphertext);
 ## Notes
 
 - **Allocation-aware overloads.** Where the BCL surface only ships allocating variants, the extensions add span-based or buffer-passing overloads.
-- **No new primitives.** This namespace adds no new cipher or hash *algorithms* — it ships only the convenience surfaces. The algorithms themselves live in the parent <xref:Bodu.Security.Cryptography> namespace.
+- **No new primitives.** This namespace adds no new cipher or hash *algorithms* - it ships only the convenience surfaces. The algorithms themselves live in the parent <xref:Bodu.Security.Cryptography> namespace.
 - **See also:** the [Bodu.Security.Cryptography introduction](~/docs/cryptography/index.md), the [encryption basics guide](~/guides/cryptography/encryption-basics.md), the [composing primitives guide](~/guides/cryptography/composing-primitives.md).

@@ -1,11 +1,11 @@
 # Bodu.Globalization.Calendar.Build
 
 
-> **API stability — Preview.** The MSBuild surface — the `NotableDatePack` item and the
-> properties that configure it — is largely settled but is still being finalized ahead of the 1.0
+> **API stability - Preview.** The MSBuild surface - the `NotableDatePack` item and the
+> properties that configure it - is largely settled but is still being finalized ahead of the 1.0
 > release and may change; breaking changes can land in a minor version until then.
 >
-> This package is **not published to nuget.org** — see the
+> This package is **not published to nuget.org** - see the
 > [package matrix](../docs/docs/package-matrix.md#not-published-to-nugetorg). Reference the project
 > from a clone.
 
@@ -20,7 +20,7 @@ documents to sealed `.bcal` binary packs during build, incrementally, via the `b
 ```
 
 Each item compiles to `<Filename>.bcal` under the intermediate output path and is copied beside the
-application output, ready for `NotableDateResourceLoader.LoadBinary`. Compilation is incremental —
+application output, ready for `NotableDateResourceLoader.LoadBinary`. Compilation is incremental -
 an unchanged document is never recompiled, and the format's byte-stable output keeps downstream
 up-to-date checks sound. An invalid document fails the build with the tool's stable `BODU-CAL-*`
 diagnostic lines in the log.

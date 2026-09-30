@@ -12,7 +12,7 @@ namespace Bodu.Financial.Samples.AggregatedRates.Scenarios;
 /// <summary>
 /// Demonstrates <see cref="AverageStrategy" />: every child that can serve the pair contributes, and
 /// the aggregate returns the mean under a synthetic provider label. Use it to smooth small
-/// discrepancies between comparable sources — but not for auditable conversions, because the result
+/// discrepancies between comparable sources - but not for auditable conversions, because the result
 /// no longer traces to a single published rate.
 /// </summary>
 public static class Averaging

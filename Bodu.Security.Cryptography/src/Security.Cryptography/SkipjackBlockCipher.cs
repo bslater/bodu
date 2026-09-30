@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography;
 /// implementation published in FIPS PUB 185 (1994).
 /// </summary>
 /// <seealso href="https://csrc.nist.gov/csrc/media/publications/fips/185/archive/1994-02-09/documents/fips185.pdf">FIPS
-/// PUB 185 — Escrowed Encryption Standard (Skipjack)</seealso>
+/// PUB 185 - Escrowed Encryption Standard (Skipjack)</seealso>
 /// <remarks>
 /// <para>
 /// Skipjack is a legacy symmetric block cipher whose 32 rounds alternate between two nonlinear rules known as <em>Rule
@@ -52,7 +52,7 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Direct single-block use. Skipjack is a legacy 80-bit-key cipher — use only for legacy
+/// // Direct single-block use. Skipjack is a legacy 80-bit-key cipher - use only for legacy
 /// // compatibility, never for new systems.
 /// byte[] key = new byte[10];   // 80-bit key
 /// RandomNumberGenerator.Fill(key);
@@ -69,7 +69,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
+/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives - direct use vs.
 /// SymmetricAlgorithm</seealso> <seealso cref="Skipjack"/>
 public sealed class SkipjackBlockCipher
     : IBlockCipher
@@ -77,7 +77,7 @@ public sealed class SkipjackBlockCipher
     /// <summary>Length of the Skipjack key is 80 bits (10 bytes).</summary>
     public const int KeySize = 80;
 
-    /// <summary>The fixed Skipjack F-table — the 256-entry byte substitution table used by the cipher.</summary>
+    /// <summary>The fixed Skipjack F-table - the 256-entry byte substitution table used by the cipher.</summary>
     /// <remarks>
     /// This is the only nonlinear component used by the 16-bit G permutation. Every round calls G once, and G performs
     /// four F-table substitutions keyed by four consecutive bytes from the 80-bit key schedule.

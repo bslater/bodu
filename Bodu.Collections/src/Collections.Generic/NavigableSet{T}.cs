@@ -9,7 +9,7 @@ using System.Diagnostics;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Represents a sorted set augmented with order statistics — an <see cref="ISet{T}" /> that keeps its elements in
+/// Represents a sorted set augmented with order statistics - an <see cref="ISet{T}" /> that keeps its elements in
 /// comparer order and answers nearest-neighbour (<see cref="TryGetFloor" /> / <see cref="TryGetCeiling" /> /
 /// <see cref="TryGetHigher" /> / <see cref="TryGetLower" />), rank/select (<see cref="IndexOf" /> /
 /// <see cref="GetAt" />), and range-counting queries in O(log n).
@@ -44,12 +44,12 @@ namespace Bodu.Collections.Generic;
 /// prices.Add(10.25m);
 /// prices.Add(10.50m);
 ///
-/// prices.TryGetFloor(10.30m, out decimal floor);    // 10.25 — greatest element <= 10.30
-/// prices.TryGetCeiling(10.30m, out decimal ceiling);// 10.50 — least element >= 10.30
+/// prices.TryGetFloor(10.30m, out decimal floor);    // 10.25 - greatest element <= 10.30
+/// prices.TryGetCeiling(10.30m, out decimal ceiling);// 10.50 - least element >= 10.30
 ///
-/// int rank = prices.IndexOf(10.25m);                // 1 — zero-based rank in sorted order
-/// decimal median = prices.GetAt(prices.Count / 2);  // 10.25 — k-th smallest
-/// int inBand = prices.CountInRange(10.00m, 10.30m); // 2 — O(log n), no iteration
+/// int rank = prices.IndexOf(10.25m);                // 1 - zero-based rank in sorted order
+/// decimal median = prices.GetAt(prices.Count / 2);  // 10.25 - k-th smallest
+/// int inBand = prices.CountInRange(10.00m, 10.30m); // 2 - O(log n), no iteration
 ///]]>
 /// </code>
 /// </example>
@@ -96,7 +96,7 @@ public sealed partial class NavigableSet<T>
     /// <param name="comparer">The ordering comparer, or <see langword="null" /> to use the default comparer.</param>
     /// <remarks>
     /// The source is sorted and deduplicated (comparer-equal duplicates keep the first occurrence), then built directly
-    /// into a balanced tree — O(n log n) overall, O(n) after the sort.
+    /// into a balanced tree - O(n log n) overall, O(n) after the sort.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">

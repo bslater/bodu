@@ -47,7 +47,7 @@ public sealed partial class GhashTests
     }
 
     /// <summary>
-    /// Verifies that GHASH of NIST SP 800-38D's test case 2 inputs — the GCM specification's one-block example —
+    /// Verifies that GHASH of NIST SP 800-38D's test case 2 inputs - the GCM specification's one-block example -
     /// matches the published <c>GHASH(H, A, C)</c>.
     /// </summary>
     /// <param name="kernel">The kernel's name.</param>
@@ -82,8 +82,8 @@ public sealed partial class GhashTests
     }
 
     /// <summary>
-    /// Verifies that one GHASH step matches the bit-serial reference for every pair of boundary operands — zero, every
-    /// bit set, and each single-bit element — as block and as key.
+    /// Verifies that one GHASH step matches the bit-serial reference for every pair of boundary operands - zero, every
+    /// bit set, and each single-bit element - as block and as key.
     /// </summary>
     /// <param name="kernel">The kernel's name.</param>
     [TestMethod]
@@ -132,7 +132,7 @@ public sealed partial class GhashTests
     }
 
     /// <summary>
-    /// Verifies that GHASH over five blocks — one four-block group and one single block — matches the bit-serial
+    /// Verifies that GHASH over five blocks - one four-block group and one single block - matches the bit-serial
     /// reference under thousands of random keys, which exercises the key powers each key prepares.
     /// </summary>
     /// <param name="kernel">The kernel's name.</param>
@@ -162,8 +162,8 @@ public sealed partial class GhashTests
     }
 
     /// <summary>
-    /// Verifies that each kernel matches the bit-serial reference for GHASH at every data length from 0 to 200 bytes —
-    /// every tail, and every position relative to a four-block group — from a non-zero state.
+    /// Verifies that each kernel matches the bit-serial reference for GHASH at every data length from 0 to 200 bytes -
+    /// every tail, and every position relative to a four-block group - from a non-zero state.
     /// </summary>
     /// <param name="kernel">The kernel's name.</param>
     [TestMethod]

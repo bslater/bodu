@@ -36,8 +36,8 @@ public partial class StringExtensionsTests
     public void NullIfWhiteSpace_WhenInvoked_ShouldReturnExpected(string? value, string? expected) => Assert.AreEqual(expected, value.NullIfWhiteSpace());
 
     /// <summary>
-    /// Verifies that <see cref="StringExtensions.NullIfWhiteSpace(string?)" /> returns the original instance —
-    /// not a copy — when the input contains non-whitespace characters.
+    /// Verifies that <see cref="StringExtensions.NullIfWhiteSpace(string?)" /> returns the original instance -
+    /// not a copy - when the input contains non-whitespace characters.
     /// </summary>
     [TestMethod]
     public void NullIfWhiteSpace_WhenInputIsMeaningful_ShouldReturnSameInstance()

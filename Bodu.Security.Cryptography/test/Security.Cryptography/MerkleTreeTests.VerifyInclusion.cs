@@ -14,8 +14,8 @@ namespace Bodu.Security.Cryptography;
 /// and its leaf-hash overload.
 /// </summary>
 /// <remarks>
-/// The negative cases follow the systematic mutation matrix that production RFC 6962 implementations use — corrupt
-/// the index, the tree size, the root, the leaf, and every position of the path — rather than a fixed handful of
+/// The negative cases follow the systematic mutation matrix that production RFC 6962 implementations use - corrupt
+/// the index, the tree size, the root, the leaf, and every position of the path - rather than a fixed handful of
 /// scenarios, because a verifier's failures hide in the cases nobody thought to enumerate.
 /// </remarks>
 public partial class MerkleTreeTests
@@ -201,7 +201,7 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that an internal node offered as the proved entry is rejected — the second-preimage attack applied to
+    /// Verifies that an internal node offered as the proved entry is rejected - the second-preimage attack applied to
     /// proof verification, where an attacker presents a node's preimage as a leaf and truncates the path.
     /// </summary>
     [TestMethod]

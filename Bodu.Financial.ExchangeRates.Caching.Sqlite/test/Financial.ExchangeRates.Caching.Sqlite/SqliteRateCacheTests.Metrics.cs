@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates.Caching.Sqlite;
 public sealed partial class SqliteRateCacheTests
 {
     /// <summary>
-    /// Verifies that a swallowed storage failure — a write against a read-only database — increments the
+    /// Verifies that a swallowed storage failure - a write against a read-only database - increments the
     /// storage-failure counter with the provider tag.
     /// </summary>
     [TestMethod]

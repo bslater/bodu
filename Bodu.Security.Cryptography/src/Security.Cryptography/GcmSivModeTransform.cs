@@ -17,11 +17,11 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — GCM-SIV runs a POLYVAL-based MAC over nonce, associated data, and plaintext to derive a synthetic tag, then uses that tag as the CTR initial counter."/>
+/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow - GCM-SIV runs a POLYVAL-based MAC over nonce, associated data, and plaintext to derive a synthetic tag, then uses that tag as the CTR initial counter."/>
 /// </para>
 /// <para>
-/// GCM-SIV shares SIV's misuse-resistant ordering — the MAC pipeline runs before the keystream pipeline so that the tag
-/// doubles as the CTR counter base — but swaps GHASH for <b>POLYVAL</b>, which is GHASH composed with a byte/bit
+/// GCM-SIV shares SIV's misuse-resistant ordering - the MAC pipeline runs before the keystream pipeline so that the tag
+/// doubles as the CTR counter base - but swaps GHASH for <b>POLYVAL</b>, which is GHASH composed with a byte/bit
 /// reflection that makes little-endian processing efficient on modern processors.
 /// </para>
 /// <para>
@@ -53,13 +53,13 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="IAeadBlockCipherModeTransform" /> convention.
 /// </para>
 /// <para>
-/// <strong>When to use GCM-SIV.</strong> The right modern AEAD pick when nonce uniqueness cannot be guaranteed —
+/// <strong>When to use GCM-SIV.</strong> The right modern AEAD pick when nonce uniqueness cannot be guaranteed -
 /// distributed systems where a coordinator might re-issue the same nonce after a crash, key wrapping, deduplication, or
 /// any context where a fresh nonce per message is impractical. Under nonce reuse, GCM-SIV's only leak is that two
-/// identical <c>(plaintext, AAD)</c> pairs encrypt to identical ciphertexts — confidentiality and authenticity for
+/// identical <c>(plaintext, AAD)</c> pairs encrypt to identical ciphertexts - confidentiality and authenticity for
 /// distinct messages remain intact. Throughput is lower than <see cref="GcmModeTransform" /> because of the two-pass
 /// MAC-then-encrypt structure; for nonce-disciplined high-throughput contexts prefer GCM.
-/// <see cref="SivModeTransform" /> is the AES-SIV (RFC 5297) sibling — also misuse-resistant but with a different MAC
+/// <see cref="SivModeTransform" /> is the AES-SIV (RFC 5297) sibling - also misuse-resistant but with a different MAC
 /// (S2V) and key schedule.
 /// </para>
 /// </remarks>
@@ -229,9 +229,9 @@ public sealed class GcmSivModeTransform
     /// <remarks>
     /// <strong>Authentication pattern: write-then-clear.</strong> The candidate plaintext is decrypted into
     /// <paramref name="output" /> first because the synthetic IV used by AES-GCM-SIV is derived over the plaintext. The
-    /// tag is then compared in constant time; on any failure — an authentication mismatch or an exception from the
-    /// underlying cipher mid-transform — the plaintext region of <paramref name="output" /> is zeroed via
-    /// <see cref="CryptographyHelper.Clear" /> before the exception propagates — no plaintext is observable to the
+    /// tag is then compared in constant time; on any failure - an authentication mismatch or an exception from the
+    /// underlying cipher mid-transform - the plaintext region of <paramref name="output" /> is zeroed via
+    /// <see cref="CryptographyHelper.Clear" /> before the exception propagates - no plaintext is observable to the
     /// caller. See <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the library-wide failure contract.
     /// </remarks>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
@@ -266,8 +266,8 @@ public sealed class GcmSivModeTransform
         }
         catch
         {
-            // Zero the plaintext region on any failure — a tag mismatch or a fault from the underlying
-            // cipher mid-transform — so the unverified plaintext this write-then-clear mode has already
+            // Zero the plaintext region on any failure - a tag mismatch or a fault from the underlying
+            // cipher mid-transform - so the unverified plaintext this write-then-clear mode has already
             // written never leaks.
             CryptographyHelper.Clear(output[..plaintextLength]);
             throw;
@@ -354,8 +354,8 @@ public sealed class GcmSivModeTransform
     /// <summary>
     /// Derives K_auth (16 bytes) and K_enc (16 or 32 bytes, as long as the key-generating key) from the master cipher
     /// and nonce per RFC 8452 Section 4. Block <c>i</c> is <c>LE32(i) || nonce</c>, and each key is the first 8 bytes
-    /// of the encryptions of consecutive blocks: blocks 0 and 1 for K_auth, then blocks 2 and 3 — and 4 and 5 for a
-    /// 256-bit key-generating key — for K_enc. All the blocks are encrypted in one multi-block call.
+    /// of the encryptions of consecutive blocks: blocks 0 and 1 for K_auth, then blocks 2 and 3 - and 4 and 5 for a
+    /// 256-bit key-generating key - for K_enc. All the blocks are encrypted in one multi-block call.
     /// </summary>
     /// <param name="cipher">The master block cipher keyed with the key-generating key.</param>
     /// <param name="nonce">The 12-byte nonce.</param>

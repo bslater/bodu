@@ -9,8 +9,8 @@ namespace Bodu.IO.Pst;
 public partial class PstNodeTests
 {
     /// <summary>
-    /// Verifies that the message node's subnode tree surfaces its recipient and attachment tables — the private
-    /// namespace the message layer will consume — with the owner recorded as each subnode's parent.
+    /// Verifies that the message node's subnode tree surfaces its recipient and attachment tables - the private
+    /// namespace the message layer will consume - with the owner recorded as each subnode's parent.
     /// </summary>
     [TestMethod]
     public void EnumerateSubnodes_WhenMessageNode_ShouldExposeRecipientAndAttachmentTables()

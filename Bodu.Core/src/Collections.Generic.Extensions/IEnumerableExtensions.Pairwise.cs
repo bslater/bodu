@@ -27,7 +27,7 @@ public static partial class IEnumerableExtensions
     /// enumerated, and it is enumerated exactly once in a single forward pass using only O(1) working memory.
     /// </para>
     /// <para>
-    /// This is the primitive for neighbour comparison — monotonic checks, gap detection, deltas, and change detection.
+    /// This is the primitive for neighbour comparison - monotonic checks, gap detection, deltas, and change detection.
     /// Because only the previous element is retained, the operator can be bounded over an infinite source with
     /// <see cref="System.Linq.Enumerable.Take{TSource}(IEnumerable{TSource}, int)" />.
     /// </para>

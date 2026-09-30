@@ -50,7 +50,7 @@ public sealed partial class NavigableDictionary<TKey, TValue>
 
         /// <inheritdoc />
         /// <remarks>
-        /// Performs a linear O(n) walk, matching <see cref="NavigableDictionary{TKey, TValue}.ContainsValue" /> —
+        /// Performs a linear O(n) walk, matching <see cref="NavigableDictionary{TKey, TValue}.ContainsValue" /> -
         /// values are not indexed.
         /// </remarks>
         public bool Contains(TValue item) =>

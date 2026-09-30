@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the number-theoretic transform over Z₃₃₂₉ used by ML-KEM (FIPS 203 Algorithms 9–12).
+/// Provides the number-theoretic transform over Z₃₃₂₉ used by ML-KEM (FIPS 203 Algorithms 9-12).
 /// </summary>
 internal static partial class MLKemEngine
 {
@@ -20,7 +20,7 @@ internal static partial class MLKemEngine
     /// <summary>128⁻¹ · 2^16 mod q: the inverse transform's final scaling by 128⁻¹, in Montgomery form.</summary>
     private const int InverseOf128Montgomery = 512;
 
-    /// <summary>Twiddle factors ζ^BitRev₇(i) · 2^16 mod q for i = 0–127, in Montgomery form so that <see cref="MontgomeryReduce" /> of a product with one yields the plain product. Computed once at type initialization rather than transcribed, eliminating table-copy defects.</summary>
+    /// <summary>Twiddle factors ζ^BitRev₇(i) · 2^16 mod q for i = 0-127, in Montgomery form so that <see cref="MontgomeryReduce" /> of a product with one yields the plain product. Computed once at type initialization rather than transcribed, eliminating table-copy defects.</summary>
     private static readonly int[] s_zetas = BuildZetaTable();
 
     /// <summary>Base-case multipliers γ[i] = ζ^(2·BitRev₇(i) + 1) mod q for the degree-two pairwise products.</summary>
@@ -169,7 +169,7 @@ internal static partial class MLKemEngine
     }
 
     /// <summary>
-    /// Multiplies two polynomials in the NTT domain (FIPS 203 Algorithms 11–12) using the 128 degree-two base-case
+    /// Multiplies two polynomials in the NTT domain (FIPS 203 Algorithms 11-12) using the 128 degree-two base-case
     /// products, with the kernel dispatch selects.
     /// </summary>
     /// <param name="left">The first NTT-domain polynomial. Coefficients in [0, q).</param>
@@ -183,7 +183,7 @@ internal static partial class MLKemEngine
         MultiplyNtt(KernelKind.Auto, left, right, destination);
 
     /// <summary>
-    /// Multiplies two polynomials in the NTT domain (FIPS 203 Algorithms 11–12) using the 128 degree-two base-case
+    /// Multiplies two polynomials in the NTT domain (FIPS 203 Algorithms 11-12) using the 128 degree-two base-case
     /// products, with the specified kernel.
     /// </summary>
     /// <param name="kernel">

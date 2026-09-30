@@ -338,7 +338,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// <returns><see langword="true" /> if the field parsed; otherwise <see langword="false" />.</returns>
     private static bool TryParseField(string field, int min, int max, Func<string, int?>? names, bool weekday, bool[] mask, out bool restricted, ref bool unsupported, ref string? failureMessage)
     {
-        // Vixie decides whether a day field is restricted from its leading character alone — cronie sets DOM_STAR /
+        // Vixie decides whether a day field is restricted from its leading character alone - cronie sets DOM_STAR /
         // DOW_STAR when the field begins with '*', before the field's values are parsed. A stepped star such as
         // "*/2" is therefore unrestricted while the equivalent explicit range "1-31/2" is restricted, even though
         // both denote the same days; the difference selects the union or intersection branch in DayMatches.
@@ -398,7 +398,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     }
 
     /// <summary>
-    /// Parses a single field element — <c>*</c>, a value, a range, or any of these with a <c>/step</c> — into the mask.
+    /// Parses a single field element - <c>*</c>, a value, a range, or any of these with a <c>/step</c> - into the mask.
     /// </summary>
     /// <param name="part">The element text.</param>
     /// <param name="min">The inclusive minimum value.</param>

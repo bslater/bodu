@@ -36,8 +36,8 @@ public partial class ExcelWorksheetReaderTests
     }
 
     /// <summary>
-    /// Verifies that records carrying no cell value — ROW, BLANK, MULBLANK, DIMENSIONS, and records the codec does
-    /// not name — are skipped between value cells.
+    /// Verifies that records carrying no cell value - ROW, BLANK, MULBLANK, DIMENSIONS, and records the codec does
+    /// not name - are skipped between value cells.
     /// </summary>
     [TestMethod]
     public void TryReadCell_WhenNonValueRecordsInterleaved_ShouldSkipThem()

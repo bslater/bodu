@@ -114,7 +114,7 @@ public static partial class Base16
     /// <paramref name="destination" /> is too small.
     /// </returns>
     /// <remarks>
-    /// This method never throws for malformed input — it returns <see langword="false" /> instead. Callers that require
+    /// This method never throws for malformed input - it returns <see langword="false" /> instead. Callers that require
     /// exception semantics should use <see cref="Decode(ReadOnlySpan{char}, BaseFormatStyles)" />.
     /// </remarks>
     public static bool TryDecode(ReadOnlySpan<char> chars, Span<byte> destination, out int bytesWritten, BaseFormatStyles style = BaseFormatStyles.None)

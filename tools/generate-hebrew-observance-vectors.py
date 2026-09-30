@@ -25,7 +25,7 @@ HEBREW_EPOCH = -1373428
 
 
 def is_leap_year(hebrew_year: int) -> bool:
-    """A Hebrew year is leap when it inserts Adar I — 7 times per 19-year Metonic cycle."""
+    """A Hebrew year is leap when it inserts Adar I - 7 times per 19-year Metonic cycle."""
     return (7 * hebrew_year + 1) % 19 < 7
 
 

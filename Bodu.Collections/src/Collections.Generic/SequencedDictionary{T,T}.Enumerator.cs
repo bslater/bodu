@@ -16,7 +16,7 @@ public partial class SequencedDictionary<TKey, TValue>
     /// <returns>An <see cref="Enumerator" /> over the dictionary's entries.</returns>
     /// <remarks>
     /// Entries are produced in insertion order, or access order when access ordering is enabled. Any mutation of the
-    /// dictionary — including reads that reposition entries in access-order mode — invalidates the enumerator.
+    /// dictionary - including reads that reposition entries in access-order mode - invalidates the enumerator.
     /// </remarks>
     public Enumerator GetEnumerator() =>
         new(this);

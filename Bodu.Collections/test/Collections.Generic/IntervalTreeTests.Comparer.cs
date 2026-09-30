@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic;
 public partial class IntervalTreeTests
 {
     /// <summary>
-    /// Verifies that a case-insensitive comparer governs endpoint ordering, containment, and stabbing — intervals
+    /// Verifies that a case-insensitive comparer governs endpoint ordering, containment, and stabbing - intervals
     /// added and queried with differing case behave identically.
     /// </summary>
     [TestMethod]
@@ -43,7 +43,7 @@ public partial class IntervalTreeTests
     }
 
     /// <summary>
-    /// Verifies that the endpoint-order guard applies the injected comparer — a pair that is reversed only under
+    /// Verifies that the endpoint-order guard applies the injected comparer - a pair that is reversed only under
     /// the custom comparer throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]

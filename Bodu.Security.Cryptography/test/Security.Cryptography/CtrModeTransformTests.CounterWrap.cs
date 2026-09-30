@@ -56,7 +56,7 @@ public sealed partial class CtrModeTransformTests
 
     /// <summary>
     /// Verifies that the counter-wrap latch trips at the true 2^n counter rollover even when the initial counter is
-    /// non-zero — the counter reaching all-zero (a full-space rollover) is what latches, not a match against the
+    /// non-zero - the counter reaching all-zero (a full-space rollover) is what latches, not a match against the
     /// initial value.
     /// </summary>
     /// <remarks>

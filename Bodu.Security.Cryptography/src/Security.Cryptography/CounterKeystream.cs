@@ -15,8 +15,8 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Encrypting counters a run at a time rather than a block at a time lets a cipher amortize its per-call cost — for
-/// <see cref="AesBlockCipher" />, one call into the platform's AES for the whole run instead of one per 16 bytes —
+/// Encrypting counters a run at a time rather than a block at a time lets a cipher amortize its per-call cost - for
+/// <see cref="AesBlockCipher" />, one call into the platform's AES for the whole run instead of one per 16 bytes -
 /// while a cipher that keeps the default <see cref="IBlockCipher.EncryptBlocks" /> still encrypts one block per call,
 /// exactly as before.
 /// </para>
@@ -59,7 +59,7 @@ internal static class CounterKeystream
 
     /// <summary>
     /// Applies the CTR keystream of a 128-bit block cipher whose counter blocks start at
-    /// <paramref name="initialCounter" /> and increment as a big-endian 128-bit integer, modulo <c>2¹²⁸</c> — the
+    /// <paramref name="initialCounter" /> and increment as a big-endian 128-bit integer, modulo <c>2¹²⁸</c> - the
     /// counter of EAX and SIV.
     /// </summary>
     /// <param name="cipher">The cipher whose encrypt primitive produces the keystream.</param>

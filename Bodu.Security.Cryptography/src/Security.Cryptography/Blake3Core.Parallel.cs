@@ -69,7 +69,7 @@ internal static partial class Blake3Core
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Each subtree is divided into parts of at most 64 chunks — the batch one thread compresses on its stack — and the
+    /// Each subtree is divided into parts of at most 64 chunks - the batch one thread compresses on its stack - and the
     /// parts of every subtree are claimed from one shared counter by the calling thread and up to
     /// <paramref name="maxDegreeOfParallelism" /> − 1 workers, so one call pays for one hand-off however many subtrees
     /// it holds. Each subtree's parts are then joined, level by level, on the calling thread. Every chaining value is

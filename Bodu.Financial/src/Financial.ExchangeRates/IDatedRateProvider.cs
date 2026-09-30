@@ -24,7 +24,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// policy) so callers can opt into the documented safe default by omission.
 /// </para>
 /// <para>
-/// Every getter returns the same element type — a single <see cref="RateLookupResult" /> for the point lookups, and an
+/// Every getter returns the same element type - a single <see cref="RateLookupResult" /> for the point lookups, and an
 /// <see cref="IEnumerable{T}" /> of them for the range lookups. The synchronous getters and the asynchronous getters
 /// resolve identical results; the asynchronous surface exists because an implementation backed by a remote feed may
 /// fetch on demand, and the synchronous surface may block to do so (or serve only already-loaded data, at the

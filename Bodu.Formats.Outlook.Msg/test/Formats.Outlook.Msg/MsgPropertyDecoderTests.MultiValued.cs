@@ -43,7 +43,7 @@ public partial class MsgPropertyDecoderTests
     }
 
     /// <summary>
-    /// Verifies that a multi-valued fixed-length property decodes from a single packed stream — no element streams.
+    /// Verifies that a multi-valued fixed-length property decodes from a single packed stream - no element streams.
     /// </summary>
     [TestMethod]
     public void Decode_WhenMultiValuedInt32_ShouldDecodePackedStream()

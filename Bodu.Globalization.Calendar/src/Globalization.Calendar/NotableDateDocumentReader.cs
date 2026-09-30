@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Shapes a parsed notable-date document from an <see cref="IDocumentNode" /> tree, so the XML and JSON parsers share a
-/// single schema-binding implementation. Format-specific concerns — XML schema validation and the raw parse — stay with
+/// single schema-binding implementation. Format-specific concerns - XML schema validation and the raw parse - stay with
 /// the two public parsers; everything structural lives here.
 /// </summary>
 internal static class NotableDateDocumentReader

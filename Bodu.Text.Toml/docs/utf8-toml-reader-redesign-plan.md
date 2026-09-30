@@ -1,7 +1,7 @@
-# `Utf8TomlReader` Redesign — Implementation Plan
+# `Utf8TomlReader` Redesign - Implementation Plan
 
 **Date:** 2026-06-11
-**Status:** Executed — Phases A and B are delivered on this branch (A1 `60766028`, A2/A3
+**Status:** Executed - Phases A and B are delivered on this branch (A1 `60766028`, A2/A3
 `9df3f109`, A4 `f9650e0e`, B1 `64074c62`, B2 `d3168a64`, B3/B4 `0d51f4c7`). Deviations from the
 plan as written: B3 and B4 landed as one commit (the public swap and the test port are not
 separately compilable); the `TomlDocumentReader` internal tree ctor was dropped (every entry
@@ -21,8 +21,8 @@ and are not re-argued here.
 
 ## 0. Ground rules for the whole effort
 
-- **Safety net first.** The 2,584-test suite — including the 1,410-case toml-test conformance
-  corpus in both spec profiles — must be green after every work item. No work item may be merged
+- **Safety net first.** The 2,584-test suite - including the 1,410-case toml-test conformance
+  corpus in both spec profiles - must be green after every work item. No work item may be merged
   with a skipped or weakened test; behavioral changes land only where this plan explicitly calls
   them out (byte-true offsets, exception-site split).
 - **One commit per work item** on the session branch, in the order below. Each work item leaves
@@ -45,7 +45,7 @@ and are not re-argued here.
 
 ---
 
-## Phase A — byte-native core behind the existing surface
+## Phase A - byte-native core behind the existing surface
 
 Phase A replaces the char-based `TomlDocumentParser` (1,620 lines, `string _src`,
 `Substring`/`StringBuilder` throughout) with a byte-native lexer + structural builder, while the
@@ -55,7 +55,7 @@ for the phase as a whole: full suite + corpus green; the doc-sized UTF-16 decode
 `TomlDocumentParser` itself are gone; offsets flowing into `TomlReaderNode.Offset` and
 `TomlFormatException` are byte-true.
 
-### A1 — Pin the façade: exact token-stream characterization tests
+### A1 - Pin the façade: exact token-stream characterization tests
 
 **New file:** `test/Utf8TomlReaderTests.TokenStream.cs`
 
@@ -68,7 +68,7 @@ Phase B `TomlDocumentReader`, complementing the corpus (which pins *values*, not
 
 *Exit:* new tests green against the current implementation; committed before any production change.
 
-### A2 — `TomlLexer`: the internal byte-native source-order lexer
+### A2 - `TomlLexer`: the internal byte-native source-order lexer
 
 **New files:** `src/Text.Toml.Reader/TomlLexer.cs` (+ partials per `.filenesting.json` as needed:
 `TomlLexer.Strings.cs`, `TomlLexer.Numbers.cs`, `TomlLexer.DateTimes.cs`),
@@ -86,10 +86,10 @@ date-time accessors that parse from bytes at the call site.
   `Float`, `Boolean`, the four date-time kinds, `Newline` is *not* surfaced (line discipline is
   enforced, not tokenized).
 - **Context tracking** is the lexer's own job (it is lexical, not structural): a small mode
-  machine — line start expects a header or key; after `=` expects a value; inside `[ … ]` expects
-  values; inside `{ … }` alternates key/value — with a depth counter for bracket nesting. This is
+  machine - line start expects a header or key; after `=` expects a value; inside `[ … ]` expects
+  values; inside `{ … }` alternates key/value - with a depth counter for bracket nesting. This is
   what lets `1234` lex as a key in key position and an integer in value position.
-- **Validation scope — lexical only:** UTF-8 validity (validated incrementally during scanning;
+- **Validation scope - lexical only:** UTF-8 validity (validated incrementally during scanning;
   no up-front decode), string termination and escape correctness, number/date-time grammar
   (including underscore rules, leading-zero rules, the RFC 3339 component ranges currently in
   `MakeDate`/`MakeTime`/`MakeDateTime`), newline discipline (bare `\r`, control characters),
@@ -116,7 +116,7 @@ sweeps tagged `[TestCategory("Regression")]`.
 
 *Exit:* lexer green standalone; production pipeline untouched (parser still in place).
 
-### A3 — `TomlDocumentBuilder`: the one authoritative structural parser
+### A3 - `TomlDocumentBuilder`: the one authoritative structural parser
 
 **New file:** `src/Text.Toml.Reader/TomlDocumentBuilder.cs`
 
@@ -132,22 +132,22 @@ Structural errors throw `TomlFormatException` carrying the lexer-reported positi
 offending token. The builder consumes the lexer in method scope only (a `ref struct` local), so
 the class shape is unconstrained.
 
-**New test file:** `test/TomlDocumentBuilderTests.cs` — targeted structural tests asserting the
+**New test file:** `test/TomlDocumentBuilderTests.cs` - targeted structural tests asserting the
 lexical/structural split explicitly: every rule enforced by an identity set has at least one test
 proving the *builder* (not the lexer) rejects it, with position. The corpus's 983 invalid cases
 provide the exhaustive sweep once A4 lands.
 
 *Exit:* builder green standalone against direct unit tests; pipeline still untouched.
 
-### A4 — Cut over the pipeline; delete the char-based parser
+### A4 - Cut over the pipeline; delete the char-based parser
 
-**Modified:** `src/Text.Toml.Reader/Utf8TomlReader.cs` — the ctor becomes
+**Modified:** `src/Text.Toml.Reader/Utf8TomlReader.cs` - the ctor becomes
 `TomlReaderNode root = new TomlDocumentBuilder().Parse(utf8Toml, options.SpecVersion, maxDepth)`
 followed by the existing `Flatten`; `Decode` and `s_utf8` are deleted (UTF-8 validation now
 happens in the lexer). XML docs updated: the constructor still parses fully, but no longer
-"decodes" — keep the documented normalized contract otherwise verbatim.
+"decodes" - keep the documented normalized contract otherwise verbatim.
 **Deleted:** `src/Text.Toml.Reader/TomlDocumentParser.cs` (including `EnsureValidScalarValues`).
-**Modified:** `src/Text.Toml/TomlFormatException.cs` — `Offset` XML docs change from the
+**Modified:** `src/Text.Toml/TomlFormatException.cs` - `Offset` XML docs change from the
 documented character-offset compromise to byte offsets (completes review finding m6).
 
 **Behavioral deltas to absorb (the only intended ones):**
@@ -167,21 +167,21 @@ delivered" and commit.
 
 ---
 
-## Phase B — the public swap
+## Phase B - the public swap
 
 Phase B ships the deliberate break from the assessment's §5 inventory. It starts only after
 Phase A is merged and stable.
 
-### B1 — Introduce `TomlDocumentReader` (the normalized cursor, renamed)
+### B1 - Introduce `TomlDocumentReader` (the normalized cursor, renamed)
 
 **New file:** `src/Text.Toml.Reader/TomlDocumentReader.cs`
 
 Move the current `Utf8TomlReader` implementation (token list, `Read`/`Skip`/`TokenType`/
 `CurrentDepth`/`Get*`, `Flatten`) into a new public `ref struct TomlDocumentReader`:
 
-- Public ctors `(ReadOnlySpan<byte>)` and `(ReadOnlySpan<byte>, TomlReaderOptions)` — parse via
+- Public ctors `(ReadOnlySpan<byte>)` and `(ReadOnlySpan<byte>, TomlReaderOptions)` - parse via
   the builder, then flatten (today's behavior under the new, honest name).
-- Internal ctor `(TomlTableNode root)` — flatten an already-built tree; used by the engine and
+- Internal ctor `(TomlTableNode root)` - flatten an already-built tree; used by the engine and
   DOMs so one parse feeds binding without reconstructing.
 - XML docs are the current `Utf8TomlReader` docs with the framing corrected: this type *walks a
   parsed document*; it does not read UTF-8 source.
@@ -189,9 +189,9 @@ Move the current `Utf8TomlReader` implementation (token list, `Read`/`Skip`/`Tok
 During B1, `Utf8TomlReader` temporarily remains as-is (both types compile side by side) so the
 migration commits stay reviewable.
 
-### B2 — Migrate the converter surface
+### B2 - Migrate the converter surface
 
-**Modified:** `src/Text.Toml.Serialization/TomlConverterOfT.cs` — the public abstract `Read`
+**Modified:** `src/Text.Toml.Serialization/TomlConverterOfT.cs` - the public abstract `Read`
 becomes:
 
 ```csharp
@@ -206,34 +206,34 @@ internal ctor), `TomlSerializer.Deserialize` overloads, `TomlNode.Parse`/`ReadFr
 (`TomlNode.cs:227-299`), and `TomlDocument.Parse`/`ReadValue` (`TomlDocument.cs:104-175`).
 
 *Exit:* solution builds with `Utf8TomlReader` no longer referenced by any production code; full
-suite green (tests still reference it — migrated in B4).
+suite green (tests still reference it - migrated in B4).
 
-### B3 — Re-point `Utf8TomlReader` at the lexer
+### B3 - Re-point `Utf8TomlReader` at the lexer
 
-**Modified:** `src/Text.Toml/TomlTokenType.cs` — add `TableHeader`, `ArrayTableHeader`, `Key`,
+**Modified:** `src/Text.Toml/TomlTokenType.cs` - add `TableHeader`, `ArrayTableHeader`, `Key`,
 `Comment`, `StartInlineTable`, `EndInlineTable`; existing 13 members keep their values.
-**Rewritten:** `src/Text.Toml.Reader/Utf8TomlReader.cs` — becomes the public face of the Phase A
+**Rewritten:** `src/Text.Toml.Reader/Utf8TomlReader.cs` - becomes the public face of the Phase A
 lexer (rename `TomlLexer` → `Utf8TomlReader`, internal enum mapped onto the extended public
 `TomlTokenType`, members per the assessment §4.1: `ValueSpan`, `HasEscapes`, `TokenStartIndex`,
-`LineNumber`, `ColumnNumber`, lazy `Get*`). The ctor no longer throws on structural errors —
+`LineNumber`, `ColumnNumber`, lazy `Get*`). The ctor no longer throws on structural errors -
 only lexical ones, surfaced from `Read()` as scanning proceeds; XML docs specify the
 lexical-vs-structural split and the source-order vocabulary up front, with the header/key token
 example from the assessment.
 **Modified:** `TomlDocumentBuilder` consumes the renamed type.
 
-### B4 — Port the test suite
+### B4 - Port the test suite
 
 - `test/Utf8TomlReaderTests.*.cs` (13 files) → `test/TomlDocumentReaderTests.*.cs`: rename class
   and constructor calls; token-contract content (including the A1 `TokenStream` pins) carries
-  over verbatim — that is the proof the normalized contract survived the rename.
+  over verbatim - that is the proof the normalized contract survived the rename.
 - `test/TomlLexerTests.*.cs` → `test/Utf8TomlReaderTests.*.cs`: the lexer tests become the new
   public reader's contract tests, re-targeted at the public type and extended with public-surface
   cases (token vocabulary as `TomlTokenType`, `Skip()` over source-order containers, `Comment`
-  surfacing, structural-error *non*-rejection — e.g. a duplicate key lexes cleanly).
+  surfacing, structural-error *non*-rejection - e.g. a duplicate key lexes cleanly).
 - `test/TomlDocumentBuilderTests.cs` is unchanged (still pins the structural split).
 - Corpus and serializer suites are untouched by design; they must stay green throughout.
 
-### B5 — Documentation and release notes
+### B5 - Documentation and release notes
 
 - Update `toml-spec-compliance-review.md` I1 and m6 to resolved, pointing at the assessment and
   this plan.
@@ -270,7 +270,7 @@ independently valuable (assessment risk register, last row).
 
 ---
 
-## Follow-up — Utf8Json tier 1/2 parity pass (delivered)
+## Follow-up - Utf8Json tier 1/2 parity pass (delivered)
 
 After Phase B, the reader and writer were brought to `Utf8JsonReader`/`Utf8JsonWriter` tier 1/2
 parity, scoped against the real S.T.J sources:
@@ -278,11 +278,11 @@ parity, scoped against the real S.T.J sources:
 - **Reader tier 2** (`Utf8TomlReader`): `CurrentDepth` (bracket depth, `Utf8JsonReader`
   convention), `TrySkip`, `ValueTextEquals` over UTF-8/string/char spans (allocation-free
   escape-free fast path), `GetComment`, and the widened typed-accessor menu in
-  `Utf8TomlReader.TryGet.cs` — narrowing integer `Get*`/`TryGet*` (`byte`…`ulong`), `GetSingle`
+  `Utf8TomlReader.TryGet.cs` - narrowing integer `Get*`/`TryGet*` (`byte`…`ulong`), `GetSingle`
   and `GetDecimal` parsed exactly from the raw literal, `GetGuid`/`TryGetGuid`. Accessors are
   token-type strict (integer family ← `Integer`, float family ← `Float`), preserving TOML's
   typed value model.
-- **Writer tier 1** (`Utf8TomlWriter`): canonical emission is byte-native — `TomlCanonicalWriter`
+- **Writer tier 1** (`Utf8TomlWriter`): canonical emission is byte-native - `TomlCanonicalWriter`
   renders through the span-leasing `TomlUtf8Emitter` straight into the destination
   `IBufferWriter<byte>`, deleting the `StringBuilder` rendering, the document-sized UTF-16
   string, and the final transcode. Output is byte-identical. The buffered layout tree remains by

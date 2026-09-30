@@ -15,9 +15,9 @@ namespace Bodu.Text.Configuration;
 /// <remarks>
 /// <para>
 /// The options bag is a profile-grouped set of <c>init</c>-only properties. Start from a named preset that matches the
-/// hosting flavour — <see cref="Bodu" /> for the default Bodu Text Configuration semantics,
+/// hosting flavour - <see cref="Bodu" /> for the default Bodu Text Configuration semantics,
 /// <see cref="EditorConfigCompatible" /> for strict EditorConfig parity, <see cref="Strict" /> for fail-fast behaviour,
-/// or <see cref="Relaxed" /> for lenient parsing — and override the specific properties that need to differ. Use
+/// or <see cref="Relaxed" /> for lenient parsing - and override the specific properties that need to differ. Use
 /// <see cref="For(ConfigurationProfile)" /> when the profile is data-driven (for example, read from configuration).
 /// </para>
 /// <para>

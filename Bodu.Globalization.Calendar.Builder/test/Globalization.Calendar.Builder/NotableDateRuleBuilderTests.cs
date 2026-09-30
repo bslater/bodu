@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar.Builder;
 
 /// <summary>
-/// Contains unit tests for <see cref="NotableDateRuleBuilder" /> — the single-strategy invariant and argument guards.
+/// Contains unit tests for <see cref="NotableDateRuleBuilder" /> - the single-strategy invariant and argument guards.
 /// </summary>
 [TestClass]
 public partial class NotableDateRuleBuilderTests

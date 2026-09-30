@@ -73,7 +73,7 @@ public partial class Utf8YamlReaderTests
 
     /// <summary>
     /// Verifies that an alias referencing an anchored scalar is resolved transparently, so the token stream repeats the
-    /// anchored value with no alias-specific token — pinning that alias resolution happens below the reader surface.
+    /// anchored value with no alias-specific token - pinning that alias resolution happens below the reader surface.
     /// </summary>
     [TestMethod]
     public void Read_WhenAliasReferencesAnchoredScalar_ShouldEmitResolvedValue()

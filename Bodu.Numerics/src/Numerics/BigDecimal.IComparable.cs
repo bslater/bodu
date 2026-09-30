@@ -55,15 +55,15 @@ public readonly partial struct BigDecimal
     }
 
     /// <summary>
-    /// Computes conservative lower and upper bounds on a nonzero value's base-ten integer exponent — the <c>D</c> for
-    /// which the absolute value lies in <c>[10^(D-1), 10^D)</c> — from the unscaled value's bit length.
+    /// Computes conservative lower and upper bounds on a nonzero value's base-ten integer exponent - the <c>D</c> for
+    /// which the absolute value lies in <c>[10^(D-1), 10^D)</c> - from the unscaled value's bit length.
     /// </summary>
     /// <param name="value">The nonzero value whose exponent bounds are computed.</param>
     /// <returns>An inclusive <c>(low, high)</c> exponent range guaranteed to contain the true exponent.</returns>
     /// <remarks>
     /// A positive integer with bit length <c>b</c> has between <c>⌊(b−1)·log₁₀2⌋+1</c> and <c>⌊b·log₁₀2⌋+1</c> decimal
     /// digits. The bounds are widened by one digit on each side to absorb double-precision rounding at the floor
-    /// boundaries, keeping the range conservative — a wider range only means falling back to the exact comparison.
+    /// boundaries, keeping the range conservative - a wider range only means falling back to the exact comparison.
     /// </remarks>
     private static (long Low, long High) IntegerExponentBounds(in BigDecimal value)
     {

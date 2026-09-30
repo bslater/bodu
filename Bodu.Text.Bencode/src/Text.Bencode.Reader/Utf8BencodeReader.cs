@@ -24,9 +24,9 @@ namespace Bodu.Text.Bencode.Reader;
 /// <see cref="ValueSpan" />, and <see cref="GetString" />. Integer tokens span the union of the signed and unsigned
 /// 64-bit ranges [<see cref="long.MinValue" />, <see cref="ulong.MaxValue" /> ]; values above
 /// <see cref="long.MaxValue" /> are readable only through <see cref="GetUInt64" />. The reader enforces the canonical
-/// Bencode grammar — integers without leading zeros or negative zero, byte-string lengths without leading zeros,
+/// Bencode grammar - integers without leading zeros or negative zero, byte-string lengths without leading zeros,
 /// dictionary keys that are byte strings in strictly ascending bytewise order, balanced containers, and a single root
-/// value with no trailing bytes — raising <see cref="BencodeFormatException" /> on any departure from that canonical
+/// value with no trailing bytes - raising <see cref="BencodeFormatException" /> on any departure from that canonical
 /// form.
 /// </para>
 /// <para>
@@ -815,8 +815,8 @@ public ref struct Utf8BencodeReader
     }
 
     /// <summary>
-    /// Tracks the state of an open container during a read. A mutable struct held in the shared frame list — one small
-    /// copy per nesting level rather than a heap allocation per container entered — and mutated in place through
+    /// Tracks the state of an open container during a read. A mutable struct held in the shared frame list - one small
+    /// copy per nesting level rather than a heap allocation per container entered - and mutated in place through
     /// <see cref="CollectionsMarshal.AsSpan{T}(List{T})" /> references.
     /// </summary>
     private struct Frame

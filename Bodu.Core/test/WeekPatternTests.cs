@@ -267,7 +267,7 @@ public partial class WeekPatternTests
         yield return new object[] { "M WTF S", "ME", (byte)0b1101110 };
         yield return new object[] { "M WTF S", "me", (byte)0b1101110 };
 
-        // Mixed selection — use two-char specifiers for Monday-first inputs
+        // Mixed selection - use two-char specifiers for Monday-first inputs
         yield return new object[] { "S_T_T_S", "SU", (byte)0b1010101 };
         yield return new object[] { "s_t_t_s", "su", (byte)0b1010101 };
         yield return new object[] { "M-W-F--", "MD", (byte)0b0101010 };
@@ -283,7 +283,7 @@ public partial class WeekPatternTests
         yield return new object[] { "MTWTFSS", "M", (byte)0b1111111 };
         yield return new object[] { "mtwtfss", "m", (byte)0b1111111 };
 
-        // Single-char unselected specifiers — Sunday-first inputs only.
+        // Single-char unselected specifiers - Sunday-first inputs only.
         // Monday-first inputs require two-char specifiers ('MU', 'MD', etc.).
         yield return new object[] { "S_T_T_S", "U", (byte)0b1010101 };
         yield return new object[] { "S*T*T*S", "A", (byte)0b1010101 };

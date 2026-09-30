@@ -1,15 +1,15 @@
-# Line-oriented text formats — quartet redesign assessment
+# Line-oriented text formats - quartet redesign assessment
 
 **Date:** 2026-07-21
-**Status:** Approved — implementation sequenced as tranches T0–T6.
-**Relates to:** [`ROADMAP.md`](../../ROADMAP.md) *Active focus #4 — "Consolidate
-the two text-format tiers"* and *Architectural patterns #1 — the System.Text.Json-shaped
+**Status:** Approved - implementation sequenced as tranches T0-T6.
+**Relates to:** [`ROADMAP.md`](../../ROADMAP.md) *Active focus #4 - "Consolidate
+the two text-format tiers"* and *Architectural patterns #1 - the System.Text.Json-shaped
 quartet*.
 
 This assessment settles the architecture, naming, packaging, breaking-change
 inventory, and risk positions for redesigning the three line-oriented formats
-in `Bodu.Text.Formats` — **Delimited** (RFC 4180 CSV/TSV), **DotEnv**, and
-**INI** — onto the modern quartet architecture used by `Bodu.Text.Bencode`,
+in `Bodu.Text.Formats` - **Delimited** (RFC 4180 CSV/TSV), **DotEnv**, and
+**INI** - onto the modern quartet architecture used by `Bodu.Text.Bencode`,
 `Bodu.Text.Toml`, and `Bodu.Text.Yaml`. The per-tranche work items live in the
 plan; this document is the decision record they do not re-argue.
 
@@ -19,15 +19,15 @@ plan; this document is the decision record they do not re-argue.
 
 The repository ships two parallel structured-text architectures:
 
-- **The quartet** (Bencode/Toml/Yaml) — a ref-struct `Utf8*Reader` /
+- **The quartet** (Bencode/Toml/Yaml) - a ref-struct `Utf8*Reader` /
   `Utf8*Writer` token surface over UTF-8 `byte`s, a `*Serializer` POCO mapper
   built on the shared `Bodu.Text.Serialization` source, a mutable `*Node` DOM,
   and a read-only `*Document` DOM. This is *Architectural pattern #1* and the
   documented template for every structured-text format.
 
-- **The line-oriented trio** (`Bodu.Text.Formats`) — `char`/`string` I/O over
+- **The line-oriented trio** (`Bodu.Text.Formats`) - `char`/`string` I/O over
   `TextReader`/`TextWriter`, a static `Parse`/`Format`/`TryParse` facade, a
-  streaming `*Reader`/`*Writer` pair, immutable DOMs (INI is the exception —
+  streaming `*Reader`/`*Writer` pair, immutable DOMs (INI is the exception -
   mutable and authorable), and `GetValue<T>` typed access over
   `ISpanParsable<T>`. No byte surface, no token ref-struct, no serializer.
 
@@ -39,13 +39,13 @@ inconsistency rather than freezing it into the public surface.
 
 ## 2. Decisions
 
-### D1 — Retrofit onto the quartet (not a documented split)
+### D1 - Retrofit onto the quartet (not a documented split)
 
 The three formats are rebuilt from the ground up on the quartet template. The
 `char`/`TextReader` facade, the `*ParseOptions` structs, and the bespoke
 immutable DOMs are retired.
 
-### D2 — One assembly per format (forced), three standalone packages + umbrella
+### D2 - One assembly per format (forced), three standalone packages + umbrella
 
 A format joins `Bodu.Text.Serialization` by (a) defining a compile symbol
 (e.g. `TOML`), (b) `Compile Include`-ing `Bodu.Text.Serialization/shared/**`,
@@ -59,8 +59,8 @@ namespace `#elif <SYMBOL>` arm to every shared file that declares a namespace
 
 Because the aliases are 1:1, **three formats cannot co-exist in one assembly
 that compiles the shared source once.** The redesign therefore splits
-`Bodu.Text.Formats` into three standalone libraries — `Bodu.Text.Delimited`,
-`Bodu.Text.DotEnv`, `Bodu.Text.Ini` — each a peer of Bencode/Toml/Yaml. This is
+`Bodu.Text.Formats` into three standalone libraries - `Bodu.Text.Delimited`,
+`Bodu.Text.DotEnv`, `Bodu.Text.Ini` - each a peer of Bencode/Toml/Yaml. This is
 consistent with the roadmap's own language that "Bencode and TOML are fully
 extracted to their own libraries."
 
@@ -69,7 +69,7 @@ extracted to their own libraries."
 umbrella preserves the Wave-2 release-manifest entry and any existing package
 reference to `Bodu.Text.Formats`, minimizing manifest and sample churn.
 
-### D3 — `FormatReader` binds directly for DotEnv/Delimited; INI needs a pre-parse
+### D3 - `FormatReader` binds directly for DotEnv/Delimited; INI needs a pre-parse
 
 For Bencode, `FormatReader = Utf8BencodeReader` directly, because Bencode source
 order *is* tree order. TOML needs a separate `TomlDocumentReader` because
@@ -79,14 +79,14 @@ source order.
 The three line formats are **flat and in source order**, so:
 
 - **DotEnv** and **Delimited** bind `FormatReader = Utf8<Fmt>Reader` directly
-  (the Bencode pattern — no pre-parse type).
+  (the Bencode pattern - no pre-parse type).
 - **INI** is the exception: duplicate-section **merge** (`[foo]` … later
   `[foo]` appends) declares structure out of source order, exactly TOML's
   condition. INI therefore keeps a public forward-only `Utf8IniReader` **and** a
   pre-parse `IniDocumentReader` (materialized flat-row store, TOML-identical
   shape) that also backs the read-only `IniDocument` DOM.
 
-### D4 — Format-local scalar converters (string-only wire)
+### D4 - Format-local scalar converters (string-only wire)
 
 All three formats carry every scalar on the wire as a **string** (DotEnv/INI
 values; every CSV field). The shared token-strict scalar converters
@@ -107,7 +107,7 @@ and the structural factories (object/dictionary/collection/enum/nullable).
 The `NodeConverter` DOM↔serializer bridge is **not** adopted initially (same
 posture as Yaml).
 
-### D5 — Trivia asymmetry (deliberate, documented)
+### D5 - Trivia asymmetry (deliberate, documented)
 
 The read-only `*Document` DOMs are **trivia-free** (comments dropped) like the
 quartet. The **mutable `.Nodes` DOMs for DotEnv and INI bear comment trivia**
@@ -117,9 +117,9 @@ faithful. INI's trivia-bearing mutable DOM is the successor to today's
 the quartet's "DOMs are trivia-free" convention is deliberately broken, and it
 is ratified here rather than discovered later.
 
-### D6 — Decouple `Bodu.Text.Configuration`
+### D6 - Decouple `Bodu.Text.Configuration`
 
-`ConfigurationDocument : IniDocumentBase` today — Configuration's document model
+`ConfigurationDocument : IniDocumentBase` today - Configuration's document model
 *inherits* the INI mutable, comment-trivia DOM, and `ConfigurationReader` builds
 `IniSection`/`IniEntry`/`IniComment` directly. Rather than force the new
 `Bodu.Text.Ini` DOM to remain Configuration's base class, **decouple**: move the
@@ -130,7 +130,7 @@ DOM" coupling is removed.
 
 ## 3. Target per-format value & token model
 
-Common quartet skeleton each project receives — folders under `src/` mirroring
+Common quartet skeleton each project receives - folders under `src/` mirroring
 `Bodu.Text.Toml` exactly:
 
 ```
@@ -160,10 +160,10 @@ read-only Document. INI section/entry comments live on the mutable DOM only.
 **Streaming preserved.** DotEnv/INI are line-incremental and Delimited is
 row-incremental via resumable `Utf8<Fmt>Reader` + `<Fmt>ReaderState` over
 `ReadOnlySequence<byte>`. The shared `<Fmt>Serializer` facade stays
-buffered-in-full (quartet parity — `SerializeAsync`/`DeserializeAsync` buffer
+buffered-in-full (quartet parity - `SerializeAsync`/`DeserializeAsync` buffer
 then issue one async stream copy). **Delimited additionally gets a first-class
-incremental surface** — `DelimitedSerializer.DeserializeAsyncEnumerable<TRecord>(Stream)`
-and a streaming `SerializeAsync(Stream, IAsyncEnumerable<TRecord>)` — driven off
+incremental surface** - `DelimitedSerializer.DeserializeAsyncEnumerable<TRecord>(Stream)`
+and a streaming `SerializeAsync(Stream, IAsyncEnumerable<TRecord>)` - driven off
 the resumable reader/writer, which also delivers the roadmap's "Layer an
 `IAsyncEnumerable<T>` projection" item for `Bodu.Text.Formats`.
 
@@ -184,11 +184,11 @@ the resumable reader/writer, which also delivers the roadmap's "Layer an
 
 | Consumer | Coupling | Migration |
 |---|---|---|
-| `Bodu.Text.Configuration` | `ConfigurationDocument : IniDocumentBase`; builds `IniSection`/`IniEntry`/`IniComment` | **Decouple (D6)** — internalize the trivia model; drop the Formats dependency |
+| `Bodu.Text.Configuration` | `ConfigurationDocument : IniDocumentBase`; builds `IniSection`/`IniEntry`/`IniComment` | **Decouple (D6)** - internalize the trivia model; drop the Formats dependency |
 | `Bodu.Extensions.Configuration.Text` | consumes `ConfigurationDocument` + `IniDocumentBase`; references the trio directly | repoint to the three new assemblies |
 | `Bodu.Financial.ExchangeRates.Imf` / `.Boe` | `using Bodu.Text.Delimited;` → `Delimited.Parse` + `DelimitedDocument`/`DelimitedRow`/`DelimitedParseOptions` | migrate to the new `Bodu.Text.Delimited` DOM/serializer (T2) |
 | `samples/Text.Formats/*`, `samples/Text.Configuration/*` | trio API throughout | rewrite to the quartet (T6) |
-| `DocumentationSnippetCompileTests` | trio API in guide snippets | rewrite with the guide pages (T6) — the compile guard fails the build until done |
+| `DocumentationSnippetCompileTests` | trio API in guide snippets | rewrite with the guide pages (T6) - the compile guard fails the build until done |
 
 ## 6. Documentation corrections uncovered
 
@@ -204,14 +204,14 @@ model (no promoted shared contract base), and T6 corrects the CLAUDE.md claim.
 | Tranche | Scope | Effort | Risk |
 |---|---|---|---|
 | T0 | This assessment + 3 per-format design notes | M | L |
-| T1 | DotEnv quartet (template-establishing; flattest) | L | L–M |
-| T2 | Delimited quartet + `IAsyncEnumerable` streaming + RFC 4180 corpus | L–XL | M |
+| T1 | DotEnv quartet (template-establishing; flattest) | L | L-M |
+| T2 | Delimited quartet + `IAsyncEnumerable` streaming + RFC 4180 corpus | L-XL | M |
 | T3 | INI quartet (two readers, merge, trivia DOM) | XL | H |
-| T4 | Configuration + bridge decouple (atomic with T3) | L–XL | H |
+| T4 | Configuration + bridge decouple (atomic with T3) | L-XL | H |
 | T5 | Retire trio + umbrella package | M | M |
 | T6 | Docs / ROADMAP / CLAUDE.md / samples | M | L |
 
-**Top risks:** (1) the forced one-assembly-per-format split — committed here;
+**Top risks:** (1) the forced one-assembly-per-format split - committed here;
 (2) INI duplicate-section merge forcing a pre-parse reader + the trivia-bearing
 DOM deviation; (3) the `Bodu.Text.Configuration` inheritance coupling, migrated
 atomically with the INI redesign (T3+T4 land together or `bodu.slnx` does not

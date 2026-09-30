@@ -120,7 +120,7 @@ public static partial class Base62
         result = null;
         error = null;
 
-        // Base62 decoding accumulates into a growing BigInteger, so a naive decode is O(n²) in the input length — an
+        // Base62 decoding accumulates into a growing BigInteger, so a naive decode is O(n²) in the input length - an
         // algorithmic-complexity denial-of-service on untrusted input. Cap the input length so the worst-case cost
         // stays bounded while still admitting any realistic encoded payload.
         if (chars.Length > MaxDecodeInputLength)

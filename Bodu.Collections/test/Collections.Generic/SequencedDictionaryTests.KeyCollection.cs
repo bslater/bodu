@@ -144,7 +144,7 @@ public partial class SequencedDictionaryTests
     /// </summary>
     /// <remarks>
     /// The keys view is exposed through a compiler-generated iterator, whose <see cref="IEnumerator.Reset" />
-    /// implementation throws <see cref="NotSupportedException" /> — unlike the BCL <c>Dictionary.KeyCollection</c>.
+    /// implementation throws <see cref="NotSupportedException" /> - unlike the BCL <c>Dictionary.KeyCollection</c>.
     /// </remarks>
     [TestMethod]
     public void KeyCollection_WhenResetCalled_ShouldThrowExactly()

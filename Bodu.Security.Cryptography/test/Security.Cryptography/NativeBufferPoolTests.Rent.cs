@@ -57,7 +57,7 @@ public sealed partial class NativeBufferPoolTests
 
     /// <summary>
     /// Verifies that the shared pool retains up to one buffer per processor, each of up to 256 MiB, for thirty idle
-    /// seconds — the defaults the documentation states.
+    /// seconds - the defaults the documentation states.
     /// </summary>
     [TestMethod]
     public void Shared_WhenCreated_ShouldUseTheDocumentedDefaults()

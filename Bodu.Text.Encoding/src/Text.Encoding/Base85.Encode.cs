@@ -41,7 +41,7 @@ public static partial class Base85
     /// <param name="options">
     /// Formatting options. When the variant is <see cref="Base85Variant.Ascii85" /> and
     /// <see cref="BaseFormattingOptions.IncludePrefix" /> is set, the output is wrapped in the Adobe Ascii85
-    /// <c>&lt;~</c> and <c>~&gt;</c> delimiters. For <see cref="Base85Variant.Z85" /> the flag is ignored — Z85 has no
+    /// <c>&lt;~</c> and <c>~&gt;</c> delimiters. For <see cref="Base85Variant.Z85" /> the flag is ignored - Z85 has no
     /// standard delimiter convention.
     /// </param>
     /// <returns>A Base85 string.</returns>
@@ -136,7 +136,7 @@ public static partial class Base85
         int totalUpper = emitDelimiters ? upperBound + Ascii85DelimiterLength : upperBound;
 
         // If destination already meets the worst-case bound we can encode directly into it. Otherwise we encode
-        // into a rented scratch buffer and copy only when the ACTUAL written length fits — so callers that pre-size
+        // into a rented scratch buffer and copy only when the ACTUAL written length fits - so callers that pre-size
         // destination for the actual output (which may be shorter when the Ascii85 'z' shortcut is used) succeed.
         if (destination.Length >= totalUpper)
         {
@@ -271,7 +271,7 @@ public static partial class Base85
         int upperBound = GetMaxEncodedLength(bytes.Length, variant);
         int totalUpper = emitDelimiters ? upperBound + Ascii85DelimiterLength : upperBound;
 
-        // Fast path: destination meets the worst-case bound — encode in place.
+        // Fast path: destination meets the worst-case bound - encode in place.
         if (destination.Length >= totalUpper)
         {
             int pos = 0;

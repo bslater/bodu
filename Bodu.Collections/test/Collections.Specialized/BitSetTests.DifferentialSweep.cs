@@ -12,8 +12,8 @@ public partial class BitSetTests
     private const int SweepUniverse = 2048;
 
     /// <summary>
-    /// Verifies that 10,000 seeded random mutations — single-bit set/clear/flip, the value overload, and the three
-    /// range operations — leave the <see cref="BitSet" /> in exactly the state predicted by a <see cref="bool" />
+    /// Verifies that 10,000 seeded random mutations - single-bit set/clear/flip, the value overload, and the three
+    /// range operations - leave the <see cref="BitSet" /> in exactly the state predicted by a <see cref="bool" />
     /// -array oracle, including full bit state, cardinality, length, next-set/next-clear walks, and enumeration
     /// order.
     /// </summary>
@@ -76,7 +76,7 @@ public partial class BitSetTests
     }
 
     /// <summary>
-    /// Verifies that each in-place logical operation — And, Or, Xor, AndNot — and the Intersects query produce
+    /// Verifies that each in-place logical operation - And, Or, Xor, AndNot - and the Intersects query produce
     /// exactly the oracle-computed result for seeded random operands of differing lengths, in both operand orders.
     /// </summary>
     [TestMethod]

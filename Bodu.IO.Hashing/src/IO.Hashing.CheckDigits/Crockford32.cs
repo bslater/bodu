@@ -15,8 +15,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <remarks>
 /// <para>
 /// Crockford's Base32 specification defines an optional trailing check symbol equal to the encoded integer value taken
-/// modulo 37. The body is decoded as a Base32 number using the thirty-two-symbol Crockford alphabet (<c>'0'</c>–
-/// <c>'9'</c> and <c>'A'</c>–<c>'Z'</c> excluding <c>'I'</c>, <c>'L'</c>, <c>'O'</c>, and <c>'U'</c>); decoding is
+/// modulo 37. The body is decoded as a Base32 number using the thirty-two-symbol Crockford alphabet (<c>'0'</c>-
+/// <c>'9'</c> and <c>'A'</c>-<c>'Z'</c> excluding <c>'I'</c>, <c>'L'</c>, <c>'O'</c>, and <c>'U'</c>); decoding is
 /// case-insensitive and treats <c>'I'</c>/<c>'L'</c> as <c>1</c> and <c>'O'</c> as <c>0</c>. The running value is
 /// reduced modulo 37 by Horner's method, so arbitrarily long inputs are processed without arbitrary-precision
 /// arithmetic.
@@ -104,7 +104,7 @@ public sealed class Crockford32
     /// <param name="valueIncludingCheck">The complete sequence including the trailing check symbol.</param>
     /// <returns>
     /// <see langword="true" /> if the sequence evaluates as valid under the Crockford Base32 modulo-37 scheme;
-    /// otherwise, <see langword="false" /> — including the case where <paramref name="valueIncludingCheck" /> is empty,
+    /// otherwise, <see langword="false" /> - including the case where <paramref name="valueIncludingCheck" /> is empty,
     /// contains a body character outside the Crockford Base32 alphabet, or ends with an unrecognized check symbol.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck)

@@ -27,7 +27,7 @@ public partial class PstTableContextTests
     }
 
     /// <summary>
-    /// Verifies that an empty table — no index records and a null row matrix — reports a count of zero and enumerates
+    /// Verifies that an empty table - no index records and a null row matrix - reports a count of zero and enumerates
     /// no rows.
     /// </summary>
     [TestMethod]

@@ -4,7 +4,7 @@ title: Line-format guides
 
 # Line-format guides
 
-Recipe-style walk-throughs for the Bodu line formats — **`Bodu.Text.Delimited`**, **`Bodu.Text.DotEnv`**, and **`Bodu.Text.Ini`** (available together through the `Bodu.Text.Formats` umbrella package).
+Recipe-style walk-throughs for the Bodu line formats - **`Bodu.Text.Delimited`**, **`Bodu.Text.DotEnv`**, and **`Bodu.Text.Ini`** (available together through the `Bodu.Text.Formats` umbrella package).
 
 If you are new to the family, start with the [introduction](../../docs/formats/index.md), the [Core concepts](../../docs/formats/concepts.md) glossary, and the [getting-started page](../../docs/formats/getting-started.md). The guides below assume you know the quartet vocabulary (token reader/writer, serializer, mutable node DOM, read-only document DOM).
 
@@ -12,7 +12,7 @@ If you are new to the family, start with the [introduction](../../docs/formats/i
 
 Each format is a self-contained `System.Text.Json`-shaped library: a forward-only `Utf8*Reader` / `Utf8*Writer` pair over UTF-8 bytes, a `*Serializer` that binds POCOs and dictionaries with the shared attribute/naming-policy/callback layer, a mutable `*Node` DOM for authoring, and a disposable read-only `*Document` DOM for querying.
 
-> The serializer infrastructure (attributes, naming policies, callbacks) is shared with the **TOML**, **Bencode**, and **YAML** libraries — see the [Bodu serializer guides](../serialization/index.md).
+> The serializer infrastructure (attributes, naming policies, callbacks) is shared with the **TOML**, **Bencode**, and **YAML** libraries - see the [Bodu serializer guides](../serialization/index.md).
 
 ## Namespace map
 
@@ -24,14 +24,14 @@ Each format is a self-contained `System.Text.Json`-shaped library: a forward-onl
 
 ## Guides
 
-- [Choosing a text format](choosing-a-format.md) — which format fits which job, round-trip fidelity, error recovery.
-- [Using delimited (CSV / TSV)](delimited.md) — documents, typed records, dialect policies, CSV↔TSV conversion.
-- [Using DotEnv](dotenv.md) — literal values, quoting, export prefixes, typed settings.
-- [Using INI](ini.md) — global keys and sections, comment-preserving edits, duplicate policies.
-- [Streams and token-level I/O](streaming.md) — the forward-only readers/writers and the record-streaming serializer surface.
-- [Errors across the line formats](error-handling.md) — the `*FormatException` / `*SerializationException` pair per format, what each carries, and which reader policies tolerate dirty input.
-- [Reflection-free binding with the source generator](source-generator.md) — emit `IDelimitedRecordFactory<TRecord>` / `IIniSectionFactory<TSection>` implementations at build time for trimming- and AOT-safe binding.
-- [Writer options and DOM options](writer-options-and-dom-options.md) — every `*WriterOptions`, `*NodeOptions`, and `*DocumentOptions` struct across the line formats and the serializer DOMs, with the effect of each knob.
+- [Choosing a text format](choosing-a-format.md) - which format fits which job, round-trip fidelity, error recovery.
+- [Using delimited (CSV / TSV)](delimited.md) - documents, typed records, dialect policies, CSV↔TSV conversion.
+- [Using DotEnv](dotenv.md) - literal values, quoting, export prefixes, typed settings.
+- [Using INI](ini.md) - global keys and sections, comment-preserving edits, duplicate policies.
+- [Streams and token-level I/O](streaming.md) - the forward-only readers/writers and the record-streaming serializer surface.
+- [Errors across the line formats](error-handling.md) - the `*FormatException` / `*SerializationException` pair per format, what each carries, and which reader policies tolerate dirty input.
+- [Reflection-free binding with the source generator](source-generator.md) - emit `IDelimitedRecordFactory<TRecord>` / `IIniSectionFactory<TSection>` implementations at build time for trimming- and AOT-safe binding.
+- [Writer options and DOM options](writer-options-and-dom-options.md) - every `*WriterOptions`, `*NodeOptions`, and `*DocumentOptions` struct across the line formats and the serializer DOMs, with the effect of each knob.
 
 ## Suggested reading path
 
@@ -42,5 +42,5 @@ Each format is a self-contained `System.Text.Json`-shaped library: a forward-onl
 
 ## Where to go next
 
-- The [serializer guides](../serialization/index.md) for the shared attribute family, naming policies, and callbacks — including [Migrating from System.Text.Json](../serialization/migrating-from-system-text-json.md) and [Serializer options: freezing, caching, and thread safety](../serialization/options-and-lifetime.md), both of which cover the line formats too.
+- The [serializer guides](../serialization/index.md) for the shared attribute family, naming policies, and callbacks - including [Migrating from System.Text.Json](../serialization/migrating-from-system-text-json.md) and [Serializer options: freezing, caching, and thread safety](../serialization/options-and-lifetime.md), both of which cover the line formats too.
 - `Bodu.Text.Configuration` when you need EditorConfig-style layered configuration rather than raw INI.

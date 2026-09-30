@@ -127,7 +127,7 @@ public sealed partial class Salsa20Tests
     /// <summary>
     /// Verifies that <see cref="Salsa20" /> reproduces every ECRYPT verified vector: each sampled keystream fragment at
     /// its absolute offset, and the XOR digest folded over the full generated keystream (512 bytes for sets 1-5,
-    /// 131,072 bytes for set 6 — confirming correct 64-bit block-counter progression across thousands of blocks).
+    /// 131,072 bytes for set 6 - confirming correct 64-bit block-counter progression across thousands of blocks).
     /// </summary>
     /// <param name="vector">The ECRYPT vector under test.</param>
     [TestMethod]

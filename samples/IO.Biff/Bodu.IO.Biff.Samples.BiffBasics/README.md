@@ -12,12 +12,12 @@ Everything runs offline against the committed `Data/sample-biff8.xls` (the
 BIFF8 fixture the Excel reader's tests use). The codec has no compound-file
 dependency, so the sample extracts the `Workbook` stream with
 `Bodu.IO.Compound` before handing the bytes to `BiffReader`; point
-`Program.SamplePath` at any other `.xls` — BIFF5 (`Book` stream) or BIFF8
-(`Workbook` stream) — to explore your own file.
+`Program.SamplePath` at any other `.xls` - BIFF5 (`Book` stream) or BIFF8
+(`Workbook` stream) - to explore your own file.
 
-## Scenario 1 — RecordCensus
+## Scenario 1 - RecordCensus
 
-**Intent.** The codec's defining property is that an unrecognised record is not an error — a real `.xls` holds records from decades of writers, most of which no consumer cares about.
+**Intent.** The codec's defining property is that an unrecognised record is not an error - a real `.xls` holds records from decades of writers, most of which no consumer cares about.
 
 **What it does.** Walks every record in the workbook stream, counting them by identifier and reporting the version and code page the stream established.
 
@@ -42,9 +42,9 @@ dependency, so the sample extracts the `Workbook` stream with
     0x00FD LabelSst                    215
 ```
 
-## Scenario 2 — CellsAndSharedStrings
+## Scenario 2 - CellsAndSharedStrings
 
-**Intent.** BIFF8 stores most strings once in a shared table and has cells reference them by index, so a label cell on its own is meaningless — and the table can span `CONTINUE` records, splitting a string mid-character.
+**Intent.** BIFF8 stores most strings once in a shared table and has cells reference them by index, so a label cell on its own is meaningless - and the table can span `CONTINUE` records, splitting a string mid-character.
 
 **What it does.** Decodes the cell records through their typed accessors and resolves label cells through `BiffSstReader`, which walks the table across its continuation boundaries.
 
@@ -72,11 +72,11 @@ dependency, so the sample extracts the `Workbook` stream with
   15821 value-bearing cell records in 'Data' (first 12 shown)
 ```
 
-## Scenario 3 — WriteAndReadBack
+## Scenario 3 - WriteAndReadBack
 
 **Intent.** A codec that can only read is half a codec, and the round trip is what proves the framing is understood rather than merely tolerated.
 
-**What it does.** Emits a workbook stream record by record — including a shared string table large enough to need splitting — then reads it back and compares.
+**What it does.** Emits a workbook stream record by record - including a shared string table large enough to need splitting - then reads it back and compares.
 
 **What to expect.**
 
@@ -98,7 +98,7 @@ dependency, so the sample extracts the `Workbook` stream with
       cached text "cached result"
 ```
 
-## Scenario 4 — MalformedInput
+## Scenario 4 - MalformedInput
 
 **Intent.** A codec reading untrusted binary has to fail predictably, and an unsupported version is a different conversation from a corrupt file.
 
@@ -109,9 +109,9 @@ dependency, so the sample extracts the `Workbook` stream with
 ```text
 --- Malformed input ---
 
-  truncated header          : format error at offset 36 — The BIFF stream ends with 3 trailing byte(s), too few to form a record header.
-  payload overruns buffer   : format error at offset 36 — The record 0x005C at offset 36 declares a 112-byte payload that runs past the end of the data.
-  truncated NUMBER payload  : format error at offset n/a — The Number record payload is too short or malformed.
+  truncated header          : format error at offset 36 - The BIFF stream ends with 3 trailing byte(s), too few to form a record header.
+  payload overruns buffer   : format error at offset 36 - The record 0x005C at offset 36 declares a 112-byte payload that runs past the end of the data.
+  truncated NUMBER payload  : format error at offset n/a - The Number record payload is too short or malformed.
   BIFF4 stream              : unsupported version (marker 0x0409)
   unknown record            : ok, 1 record(s)
   chunked read: 4 complete record(s), 36 bytes consumed, waiting for more data

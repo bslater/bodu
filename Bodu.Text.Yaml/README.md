@@ -1,6 +1,6 @@
 # Bodu.Text.Yaml
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 A YAML library for .NET 8. It maps plain CLR objects to and from YAML through a configurable converter model, over a token reader and writer, with both a mutable and a read-only document object model. The public surface matches the sibling `Bodu.Text.Toml` and `Bodu.Text.Bencode` libraries, so the patterns transfer directly between them.
 
@@ -14,22 +14,22 @@ Targets `net8.0`.
 
 ## Conformance profile
 
-Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-schema, JSON-compatible tree model for configuration data. It is a predictable configuration- and document-mapping library, not a full YAML 1.2 representation-graph processor. The profile is enforced — inputs that fall outside it are rejected with `YamlFormatException` rather than silently degraded — and the enforcement is gated by the vendored `yaml-test-suite` conformance corpus (see [Conformance corpus](#conformance-corpus)).
+Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-schema, JSON-compatible tree model for configuration data. It is a predictable configuration- and document-mapping library, not a full YAML 1.2 representation-graph processor. The profile is enforced - inputs that fall outside it are rejected with `YamlFormatException` rather than silently degraded - and the enforcement is gated by the vendored `yaml-test-suite` conformance corpus (see [Conformance corpus](#conformance-corpus)).
 
 **Supported**
 
 - Block and flow sequences and mappings.
 - Plain, single-quoted, double-quoted, literal (`|`), and folded (`>`) scalars, with chomping and indentation indicators.
 - Comments, the `---` / `...` document markers, and multi-document streams.
-- Implicit typing under the YAML 1.2 core schema by default (only `true`/`false` are booleans — no "Norway problem"), with opt-in YAML 1.1 typing via `SpecVersion` (`yes`/`no`, `on`/`off`, `y`/`n`, sexagesimal numbers). A document's `%YAML` directive is honored for scalar resolution, overriding the configured `SpecVersion` for that document.
+- Implicit typing under the YAML 1.2 core schema by default (only `true`/`false` are booleans - no "Norway problem"), with opt-in YAML 1.1 typing via `SpecVersion` (`yes`/`no`, `on`/`off`, `y`/`n`, sexagesimal numbers). A document's `%YAML` directive is honored for scalar resolution, overriding the configured `SpecVersion` for that document.
 - Anchors and aliases, subject to **acyclic** tree resolution.
 - The core tags (`!!str`, `!!null`, `!!bool`, `!!int`, `!!float`) and `%TAG` handle expansion. An explicit core tag whose content is invalid for the tag (for example `!!int abc`) is rejected, not silently degraded.
 - The YAML 1.1 merge key (`<<`) as an **opt-in** compatibility feature (`YamlMergeKeyBehavior`, on the reader, document, and serializer options).
 
 **Rejected** (each throws `YamlFormatException`)
 
-- **Complex (non-scalar) mapping keys** — keys must resolve to scalar strings. A sequence or mapping used as a key is rejected, not coerced.
-- **Duplicate mapping keys** — by default (configurable via `YamlDuplicateKeyBehavior`).
+- **Complex (non-scalar) mapping keys** - keys must resolve to scalar strings. A sequence or mapping used as a key is rejected, not coerced.
+- **Duplicate mapping keys** - by default (configurable via `YamlDuplicateKeyBehavior`).
 - **Duplicate / overriding anchors and cyclic aliases.** A repeated anchor name is rejected: anchor override is a YAML representation-graph feature outside this tree profile.
 - **Tabs used as indentation** (tabs remain legal as separation whitespace).
 - **Invalid UTF-8, unpaired surrogates, invalid Unicode escapes, and non-printable control characters.**
@@ -62,9 +62,9 @@ The `yaml/yaml-test-suite` corpus is linked into the repository as the **`yaml-t
 git submodule update --init Bodu.Text.Yaml/test/yaml-test-suite
 ```
 
-The Regression test tier reads each upstream case through `YamlTestCorpusReader`, which walks the submodule directory tree and classifies each case in code into a `YamlTestVector` KAT — `SupportedPass`, `SupportedParseOnly`, `SupportedFail`, or `UnsupportedFeatureRejected`. Classification is derived from the case's own files (an `error` file marks an expected failure; an `in.json` marks a supported-valid case); the valid upstream cases the profile deliberately rejects or parses without value comparison are held by identifier in `YamlTestCorpusReader`'s two profile sets. A governance suite asserts every case resolves to exactly one category (**zero known gaps**), the by-name profile identifiers all resolve to real cases, the case and category counts match the values pinned in `YamlTestCorpusReader`, supported-pass vectors match their JSON expectation, round-trip through the writer, and produce a reader token stream whose structural shape matches the vector's `test.event` file (over the alias-free, single-document subset), and every profile-unsupported vector is rejected for a specific, recognized reason. To move to a newer suite release, check out the new tag inside the submodule, commit the updated pointer, update the pinned counts, and classify any added cases.
+The Regression test tier reads each upstream case through `YamlTestCorpusReader`, which walks the submodule directory tree and classifies each case in code into a `YamlTestVector` KAT - `SupportedPass`, `SupportedParseOnly`, `SupportedFail`, or `UnsupportedFeatureRejected`. Classification is derived from the case's own files (an `error` file marks an expected failure; an `in.json` marks a supported-valid case); the valid upstream cases the profile deliberately rejects or parses without value comparison are held by identifier in `YamlTestCorpusReader`'s two profile sets. A governance suite asserts every case resolves to exactly one category (**zero known gaps**), the by-name profile identifiers all resolve to real cases, the case and category counts match the values pinned in `YamlTestCorpusReader`, supported-pass vectors match their JSON expectation, round-trip through the writer, and produce a reader token stream whose structural shape matches the vector's `test.event` file (over the alias-free, single-document subset), and every profile-unsupported vector is rejected for a specific, recognized reason. To move to a newer suite release, check out the new tag inside the submodule, commit the updated pointer, update the pinned counts, and classify any added cases.
 
-> **Reader note.** `Utf8YamlReader` exposes a forward-only token surface like `System.Text.Json.Utf8JsonReader`, but it is **buffered**: the constructor parses the whole document into an in-memory node store and `Read()` walks it. It is the analogue of the TOML library's `TomlDocumentReader` cursor, not the streaming `Utf8TomlReader` scanner — YAML's indentation context, back-referencing aliases, and merge keys cannot be resolved in a single forward pass.
+> **Reader note.** `Utf8YamlReader` exposes a forward-only token surface like `System.Text.Json.Utf8JsonReader`, but it is **buffered**: the constructor parses the whole document into an in-memory node store and `Read()` walks it. It is the analogue of the TOML library's `TomlDocumentReader` cursor, not the streaming `Utf8TomlReader` scanner - YAML's indentation context, back-referencing aliases, and merge keys cannot be resolved in a single forward pass.
 
 ## API shape
 

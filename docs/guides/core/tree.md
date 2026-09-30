@@ -4,13 +4,13 @@ title: N-ary tree
 
 # N-ary tree
 
-<xref:Bodu.Collections.Generic.Trees.Tree`1> is a mutable **n-ary tree node**: every instance carries a `Value`, an optional `Parent`, and an ordered list of `Children`, and is at the same time the root of the subtree beneath it. There is no separate "tree" container — a root is simply a node whose `Parent` is `null` — so the same type models an org chart, a file system, a parsed outline, or a scene graph.
+<xref:Bodu.Collections.Generic.Trees.Tree`1> is a mutable **n-ary tree node**: every instance carries a `Value`, an optional `Parent`, and an ordered list of `Children`, and is at the same time the root of the subtree beneath it. There is no separate "tree" container - a root is simply a node whose `Parent` is `null` - so the same type models an org chart, a file system, a parsed outline, or a scene graph.
 
 The type lives in `Bodu.Collections.Generic.Trees` alongside the trie family, but it is not a trie: it has no keys, no lookup, and no ordering constraint. Use it when the *shape* of the hierarchy is the data. For keyed prefix structures see [Tries and text search](trie.md); for flattening an existing object graph without building nodes, see `RecursiveSelect` in [Sequence operators and generators](sequence-operators.md#pattern-7--recursiveselect-and-recursiveselectcontrol).
 
 All examples below were run; the comments show the actual results.
 
-## Pattern 1 — build a tree
+## Pattern 1 - build a tree
 
 <!-- compile -->
 ```csharp
@@ -28,15 +28,15 @@ company.AddChild(support);                                                  // a
 
 int direct   = company.ChildCount;              // 3
 bool isRoot  = company.IsRoot;                  // true
-bool wasRoot = support.IsRoot;                  // false — attached now
-int depth    = engineering.Depth;               // 1 — edges from the root
-int height   = company.Height;                  // 2 — edges on the longest downward path
+bool wasRoot = support.IsRoot;                  // false - attached now
+int depth    = engineering.Depth;               // 1 - edges from the root
+int height   = company.Height;                  // 2 - edges on the longest downward path
 string owner = support.Parent?.Value ?? "";     // "Company"
 ```
 
-`AddChild(T value)` creates and appends a child and returns it, so a tree can be built fluently from the top down. `AddChild(Tree<T> child)` attaches an existing **detached** node (one whose `Parent` is `null`) with its whole subtree; the node must not already have a parent and must not be an ancestor of the target, or `InvalidOperationException` is thrown. `Children` is a live read-only view — it reflects later adds and removes but cannot be mutated directly, which is how the parent and acyclicity invariants stay intact.
+`AddChild(T value)` creates and appends a child and returns it, so a tree can be built fluently from the top down. `AddChild(Tree<T> child)` attaches an existing **detached** node (one whose `Parent` is `null`) with its whole subtree; the node must not already have a parent and must not be an ancestor of the target, or `InvalidOperationException` is thrown. `Children` is a live read-only view - it reflects later adds and removes but cannot be mutated directly, which is how the parent and acyclicity invariants stay intact.
 
-## Pattern 2 — traversals
+## Pattern 2 - traversals
 
 Six enumerations are available on every node and apply to the subtree rooted at that node:
 
@@ -54,10 +54,10 @@ three.AddChild(6);
 var pre    = root.PreOrder().Select(n => n.Value);      // 1 2 4 5 3 6
 var post   = root.PostOrder().Select(n => n.Value);     // 4 5 2 6 3 1
 var level  = root.LevelOrder().Select(n => n.Value);    // 1 2 3 4 5 6
-var desc   = root.Descendants().Select(n => n.Value);   // 2 4 5 3 6  — pre-order minus the node itself
+var desc   = root.Descendants().Select(n => n.Value);   // 2 4 5 3 6  - pre-order minus the node itself
 var leaves = root.Leaves().Select(n => n.Value);        // 4 5 6
-var anc    = two.Children[1].Ancestors().Select(n => n.Value);   // 2 1 — parent first, root last
-var sub    = two.PreOrder().Select(n => n.Value);       // 2 4 5 — traversals are per subtree
+var anc    = two.Children[1].Ancestors().Select(n => n.Value);   // 2 1 - parent first, root last
+var sub    = two.PreOrder().Select(n => n.Value);       // 2 4 5 - traversals are per subtree
 Tree<int> top = two.Children[1].Root();                 // the node holding 1
 ```
 
@@ -69,9 +69,9 @@ Tree<int> top = two.Children[1].Root();                 // the node holding 1
 | `Descendants()` | pre-order | no |
 | `Leaves()` | pre-order, nodes with `IsLeaf == true` only | yes, if it is itself a leaf |
 | `Ancestors()` | parent, grandparent, …, root | no |
-| `Root()` | — | returns the topmost ancestor (the node itself when it is a root) |
+| `Root()` | - | returns the topmost ancestor (the node itself when it is a root) |
 
-Every traversal is **lazy** (`yield`-based) and **iterative** — an explicit stack or queue rather than recursion — so arbitrarily deep trees can be walked without a stack overflow:
+Every traversal is **lazy** (`yield`-based) and **iterative** - an explicit stack or queue rather than recursion - so arbitrarily deep trees can be walked without a stack overflow:
 
 <!-- compile -->
 ```csharp
@@ -87,9 +87,9 @@ int height = root.Height;                   // 200000
 int depth  = cursor.Depth;                  // 200000
 ```
 
-`Depth` and `Height` are computed on demand — `Depth` walks up to the root (O(depth)), `Height` walks the subtree (O(subtree size)) — so cache them if you need them in a hot loop.
+`Depth` and `Height` are computed on demand - `Depth` walks up to the root (O(depth)), `Height` walks the subtree (O(subtree size)) - so cache them if you need them in a hot loop.
 
-## Pattern 3 — mutate: detach, re-attach, replace values, clear
+## Pattern 3 - mutate: detach, re-attach, replace values, clear
 
 <!-- compile -->
 ```csharp
@@ -100,10 +100,10 @@ var a = root.AddChild("a");
 var b = root.AddChild("b");
 var a1 = a.AddChild("a1");
 
-bool removed = root.RemoveChild(b);        // true — b is now a detached root with its own subtree intact
+bool removed = root.RemoveChild(b);        // true - b is now a detached root with its own subtree intact
 bool bIsRoot = b.IsRoot;                   // true
-bool first   = a1.Remove();                // true  — detaches a1 from a
-bool second  = a1.Remove();                // false — already a root
+bool first   = a1.Remove();                // true  - detaches a1 from a
+bool second  = a1.Remove();                // false - already a root
 a.AddChild(a1);                            // re-attach the detached node
 string parent = a1.Parent!.Value;          // "a"
 
@@ -124,15 +124,15 @@ bool aRoot = a.IsRoot;                     // true
 | Member | Effect | Returns |
 |---|---|---|
 | `AddChild(T value)` | Appends a new child. | the new node |
-| `AddChild(Tree<T> child)` | Appends a detached subtree. Throws `ArgumentNullException` for `null`, `InvalidOperationException` if `child` has a parent or is an ancestor of this node. | — |
+| `AddChild(Tree<T> child)` | Appends a detached subtree. Throws `ArgumentNullException` for `null`, `InvalidOperationException` if `child` has a parent or is an ancestor of this node. | - |
 | `RemoveChild(Tree<T> child)` | Detaches a direct child (subtree preserved). | `true` if found |
 | `Remove()` | Detaches this node from its parent. | `true` if it had one |
-| `Clear()` | Detaches every child. | — |
-| `Value` (get/set) | The payload. | — |
+| `Clear()` | Detaches every child. | - |
+| `Value` (get/set) | The payload. | - |
 
-Removal never destroys a subtree — a removed node keeps its children and can be re-attached anywhere, including under a different root.
+Removal never destroys a subtree - a removed node keeps its children and can be re-attached anywhere, including under a different root.
 
-## Pattern 4 — mutation during traversal
+## Pattern 4 - mutation during traversal
 
 Traversals do **not** carry a version counter, so there is no fail-fast exception: mutating the tree while one of its enumerations is live produces *undefined results* (skipped or repeated nodes are possible). Snapshot first, then mutate:
 
@@ -157,10 +157,10 @@ int remaining = root.ChildCount;                    // 1
 | You have | Reach for |
 |---|---|
 | A hierarchy whose *shape* is the data, edited over time (outline, org chart, scene graph) | `Tree<T>` |
-| An existing object graph with a child collection you only need to *walk* | `RecursiveSelect` (no node allocation) — see [Sequence operators](sequence-operators.md) |
-| String keys with prefix lookup or autocomplete | `Trie` / `Trie<TValue>` / `RadixTrie` — see [Tries and text search](trie.md) |
-| Arbitrary edges (cycles, multiple parents, weights) | `Graph<T>` — see [Graphs and graph algorithms](graphs.md) |
-| Disjoint groups merged over time | `DisjointSet<T>` — see [Graphs and graph algorithms](graphs.md) |
+| An existing object graph with a child collection you only need to *walk* | `RecursiveSelect` (no node allocation) - see [Sequence operators](sequence-operators.md) |
+| String keys with prefix lookup or autocomplete | `Trie` / `Trie<TValue>` / `RadixTrie` - see [Tries and text search](trie.md) |
+| Arbitrary edges (cycles, multiple parents, weights) | `Graph<T>` - see [Graphs and graph algorithms](graphs.md) |
+| Disjoint groups merged over time | `DisjointSet<T>` - see [Graphs and graph algorithms](graphs.md) |
 
 ## API summary
 
@@ -177,8 +177,8 @@ int remaining = root.ChildCount;                    // 1
 
 ## Where to go next
 
-- [Tries and text search](trie.md) — the keyed structures that share this namespace.
-- [Sequence operators and generators](sequence-operators.md) — `RecursiveSelect` for walking hierarchies you do not own.
-- [Graphs and graph algorithms](graphs.md) — when the structure is not a tree.
-- [`Bodu.Collections.Generic.Trees` API reference](xref:Bodu.Collections.Generic.Trees) — full namespace overview.
-- **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.
+- [Tries and text search](trie.md) - the keyed structures that share this namespace.
+- [Sequence operators and generators](sequence-operators.md) - `RecursiveSelect` for walking hierarchies you do not own.
+- [Graphs and graph algorithms](graphs.md) - when the structure is not a tree.
+- [`Bodu.Collections.Generic.Trees` API reference](xref:Bodu.Collections.Generic.Trees) - full namespace overview.
+- **[Core Foundations guides](../topics/core-foundations.md)** - every guide in this topic.

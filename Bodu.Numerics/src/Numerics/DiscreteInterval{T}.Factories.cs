@@ -9,7 +9,7 @@ namespace Bodu.Numerics;
 public readonly partial struct DiscreteInterval<T>
 {
     /// <summary>
-    /// Gets the canonical empty interval — the interval that contains no integer. Equal to every other empty
+    /// Gets the canonical empty interval - the interval that contains no integer. Equal to every other empty
     /// <see cref="DiscreteInterval{T}" /> and to the default value.
     /// </summary>
     /// <value>An interval whose <see cref="IsEmpty" /> is <see langword="true" />.</value>
@@ -17,14 +17,14 @@ public readonly partial struct DiscreteInterval<T>
         default;
 
     /// <summary>
-    /// Gets the unbounded interval <c>(-&#x221E;, +&#x221E;)</c> — every integer of <typeparamref name="T" />.
+    /// Gets the unbounded interval <c>(-&#x221E;, +&#x221E;)</c> - every integer of <typeparamref name="T" />.
     /// </summary>
     /// <value>An interval unbounded on both sides.</value>
     public static DiscreteInterval<T> All =>
         new(T.Zero, T.Zero, (byte)(LowerUnboundedFlag | UpperUnboundedFlag));
 
     /// <summary>
-    /// Creates the closed interval <c>[lower, upper]</c> — every integer from <paramref name="lower" /> to
+    /// Creates the closed interval <c>[lower, upper]</c> - every integer from <paramref name="lower" /> to
     /// <paramref name="upper" /> inclusive.
     /// </summary>
     /// <param name="lower">The inclusive lower bound.</param>
@@ -36,7 +36,7 @@ public readonly partial struct DiscreteInterval<T>
         FromInclusive(lower, upper);
 
     /// <summary>
-    /// Creates the open interval <c>(lower, upper)</c> — every integer strictly between the bounds. Adjacent integer
+    /// Creates the open interval <c>(lower, upper)</c> - every integer strictly between the bounds. Adjacent integer
     /// bounds (for example <c>(1, 2)</c>) admit no integer and yield <see cref="Empty" />.
     /// </summary>
     /// <param name="lower">The exclusive lower bound.</param>
@@ -48,7 +48,7 @@ public readonly partial struct DiscreteInterval<T>
             : Empty;
 
     /// <summary>
-    /// Creates the closed-open interval <c>[lower, upper)</c> — every integer from <paramref name="lower" /> inclusive
+    /// Creates the closed-open interval <c>[lower, upper)</c> - every integer from <paramref name="lower" /> inclusive
     /// up to but excluding <paramref name="upper" />.
     /// </summary>
     /// <param name="lower">The inclusive lower bound.</param>
@@ -60,7 +60,7 @@ public readonly partial struct DiscreteInterval<T>
             : Empty;
 
     /// <summary>
-    /// Creates the open-closed interval <c>(lower, upper]</c> — every integer above <paramref name="lower" /> up to and
+    /// Creates the open-closed interval <c>(lower, upper]</c> - every integer above <paramref name="lower" /> up to and
     /// including <paramref name="upper" />.
     /// </summary>
     /// <param name="lower">The exclusive lower bound.</param>
@@ -80,7 +80,7 @@ public readonly partial struct DiscreteInterval<T>
         new(value, value, PopulatedFlag);
 
     /// <summary>
-    /// Creates the lower-bounded interval <c>[lower, +&#x221E;)</c> — every integer greater than or equal to
+    /// Creates the lower-bounded interval <c>[lower, +&#x221E;)</c> - every integer greater than or equal to
     /// <paramref name="lower" />.
     /// </summary>
     /// <param name="lower">The inclusive lower bound.</param>
@@ -89,7 +89,7 @@ public readonly partial struct DiscreteInterval<T>
         new(lower, T.Zero, UpperUnboundedFlag);
 
     /// <summary>
-    /// Creates the lower-bounded interval <c>(lower, +&#x221E;)</c> — every integer greater than
+    /// Creates the lower-bounded interval <c>(lower, +&#x221E;)</c> - every integer greater than
     /// <paramref name="lower" />.
     /// </summary>
     /// <param name="lower">The exclusive lower bound.</param>
@@ -103,7 +103,7 @@ public readonly partial struct DiscreteInterval<T>
             : Empty;
 
     /// <summary>
-    /// Creates the upper-bounded interval <c>(-&#x221E;, upper]</c> — every integer less than or equal to
+    /// Creates the upper-bounded interval <c>(-&#x221E;, upper]</c> - every integer less than or equal to
     /// <paramref name="upper" />.
     /// </summary>
     /// <param name="upper">The inclusive upper bound.</param>
@@ -112,7 +112,7 @@ public readonly partial struct DiscreteInterval<T>
         new(T.Zero, upper, LowerUnboundedFlag);
 
     /// <summary>
-    /// Creates the upper-bounded interval <c>(-&#x221E;, upper)</c> — every integer less than <paramref name="upper" />.
+    /// Creates the upper-bounded interval <c>(-&#x221E;, upper)</c> - every integer less than <paramref name="upper" />.
     /// </summary>
     /// <param name="upper">The exclusive upper bound.</param>
     /// <returns>

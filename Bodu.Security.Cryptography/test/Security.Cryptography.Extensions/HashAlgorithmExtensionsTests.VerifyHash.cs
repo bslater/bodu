@@ -20,7 +20,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// </remarks>
 public partial class HashAlgorithmExtensionsTests
 {
-    // ─── Byte-array, span, and memory overloads — matching input ──────────────────────────────
+    // ─── Byte-array, span, and memory overloads - matching input ──────────────────────────────
 
     /// <summary>
     /// Verifies that the byte-array overload returns <see langword="true" /> when the input

@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// The three members correspond exactly to the algorithms admitted by RFC 6238 and to the <c>algorithm</c> label used
 /// in the <c>otpauth://</c> provisioning URI (<c>SHA1</c>, <c>SHA256</c>, <c>SHA512</c>). No other hash algorithm is
-/// valid for one-time passwords, so — unlike <see cref="System.Security.Cryptography.HashAlgorithmName" /> — this
+/// valid for one-time passwords, so - unlike <see cref="System.Security.Cryptography.HashAlgorithmName" /> - this
 /// closed enumeration cannot express an unsupported choice.
 /// </para>
 /// <para>

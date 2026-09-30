@@ -42,7 +42,7 @@ public partial class IntervalTreeTests
     }
 
     /// <summary>
-    /// Verifies that both closed endpoints are inclusive — stabbing at the low or the high endpoint yields the
+    /// Verifies that both closed endpoints are inclusive - stabbing at the low or the high endpoint yields the
     /// interval.
     /// </summary>
     [TestMethod]
@@ -105,7 +105,7 @@ public partial class IntervalTreeTests
     }
 
     /// <summary>
-    /// Verifies that the lazy stabbing sequence is fail-fast — mutating the tree mid-iteration throws
+    /// Verifies that the lazy stabbing sequence is fail-fast - mutating the tree mid-iteration throws
     /// <see cref="InvalidOperationException" /> on the next advance.
     /// </summary>
     [TestMethod]
@@ -121,7 +121,7 @@ public partial class IntervalTreeTests
     }
 
     /// <summary>
-    /// Verifies that the sequence is live — a fresh iteration reflects mutations made after the query was obtained.
+    /// Verifies that the sequence is live - a fresh iteration reflects mutations made after the query was obtained.
     /// </summary>
     [TestMethod]
     public void QueryPoint_WhenIteratedAfterMutation_ShouldReflectCurrentState()

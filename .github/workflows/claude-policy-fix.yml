@@ -2,7 +2,7 @@ name: Claude Policy Fix
 
 # Fix-and-LEARN arm of the policy pipeline. When a policy check fails (Policy Gate or Claude
 # Policy Review), this launches Claude Code to bring the change into conformance AND to distil
-# what was caught back into bld/policy/POLICIES.md — so the next authoring session applies the
+# what was caught back into bld/policy/POLICIES.md - so the next authoring session applies the
 # rule upstream, before CI catches it again. Over time, recurring Tier-2 (judgment) catches get
 # promoted into Tier-1 (deterministic) checks in check-policy.sh, migrating enforcement upstream.
 #
@@ -15,7 +15,7 @@ name: Claude Policy Fix
 #   4. Still failing → step 2 again, up to MAX_ATTEMPTS; then it escalates to a human.
 #
 # ── Required secrets ────────────────────────────────────────────────────────────────────────
-#   ANTHROPIC_API_KEY          Claude Code credential (or CLAUDE_CODE_OAUTH_TOKEN — swap the input).
+#   ANTHROPIC_API_KEY          Claude Code credential (or CLAUDE_CODE_OAUTH_TOKEN - swap the input).
 #   CLAUDE_APP_ID              GitHub App id whose installation token pushes the fix. The app needs
 #   CLAUDE_APP_PRIVATE_KEY       Contents + Pull requests: write. Using an APP (or PAT) instead of
 #                              GITHUB_TOKEN is REQUIRED, or the pushed fix won't re-trigger the
@@ -107,7 +107,7 @@ jobs:
 
             if (attempts >= maxAttempts) {
               const body = [
-                marker, '## 🛑 Claude Policy Fix — stopped', '',
+                marker, '## 🛑 Claude Policy Fix - stopped', '',
                 `Reached the cap of **${maxAttempts} attempts** without reaching policy conformance. ` +
                 `This needs a human.`, '', `attempts: ${attempts} (capped)`, '',
                 '_Push a commit of your own to reset the counter and re-arm the fixer._',
@@ -120,7 +120,7 @@ jobs:
 
             const next = attempts + 1;
             const body = [
-              marker, '## 🤖 Claude Policy Fix — working', '',
+              marker, '## 🤖 Claude Policy Fix - working', '',
               `A policy check failed on \`${headSha.substring(0, 7)}\`. Bringing the change into ` +
               `conformance and recording the lesson.`, '', `attempts: ${next}`, '',
               `_Automated attempt ${next} of ${maxAttempts}. Push your own commit to reset._`,
@@ -168,21 +168,21 @@ jobs:
             You are the fix-and-learn agent for the Bodu coding-policy pipeline. A policy check
             failed on this pull request branch (${{ steps.gate.outputs.head_branch }}); attempt
             ${{ steps.gate.outputs.attempt }} of ${{ env.MAX_ATTEMPTS }}. Read CLAUDE.md and
-            bld/policy/POLICIES.md first — POLICIES.md is the policy registry and the learning surface.
+            bld/policy/POLICIES.md first - POLICIES.md is the policy registry and the learning surface.
 
-            STEP 1 — Identify the violations.
+            STEP 1 - Identify the violations.
               • Deterministic (Tier-1): run
                     POLICY_BASE_REF=${{ steps.gate.outputs.base_sha }} POLICY_HEAD_REF=HEAD bash bld/check-policy.sh
                     bash bld/check-folder-namespace-alignment.sh
                 and read every violation it prints.
               • Judgment (Tier-2): read the "Claude Policy Review" comment on this PR for its findings.
 
-            STEP 2 — Fix them, minimally, following CLAUDE.md and the conforming form in POLICIES.md
+            STEP 2 - Fix them, minimally, following CLAUDE.md and the conforming form in POLICIES.md
             for each policy ID. Do NOT weaken tests, suppress analyzers, or make unrelated changes.
             Do NOT edit `.github/workflows/**`, signing files, `*.snk`, `NuGet.config`, or `global.json`.
             Re-run the deterministic checks until they pass clean.
 
-            STEP 3 — LEARN. This is what makes the pipeline self-improving. For each violation you
+            STEP 3 - LEARN. This is what makes the pipeline self-improving. For each violation you
             fixed, append an entry to the Learning log in bld/policy/POLICIES.md, INSIDE the
             `<!-- LEARNING-LOG:START -->` / `<!-- LEARNING-LOG:END -->` markers (replace the
             "No entries yet" placeholder if present), using the entry format documented in that file.
@@ -195,10 +195,10 @@ jobs:
                 script so it is caught upstream and for free next time.
               • Otherwise record "Promoted: none".
 
-            STEP 4 — Commit everything (the code fix AND the POLICIES.md / check-policy.sh updates)
+            STEP 4 - Commit everything (the code fix AND the POLICIES.md / check-policy.sh updates)
             with a message whose body includes the literal marker ${{ env.FIXER_MARKER }} on its own
             line, then `git push`. If you could not reach a clean conforming state, do NOT push a
-            partial fix — end your turn with a clear diagnosis of what a human must decide.
+            partial fix - end your turn with a clear diagnosis of what a human must decide.
           claude_args: |
             --max-turns 60
             --allowedTools "Bash,Edit,MultiEdit,Write,Read,Glob,Grep"

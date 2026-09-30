@@ -16,7 +16,7 @@ byte-identical across runs despite the concurrency.
 
 | Sample | Demonstrates | Packages |
 |---|---|---|
-| `Bodu.Collections.Concurrent.Samples.ThreadSafeCollections` | `ConcurrentCircularBuffer<T>` as a bounded FIFO ring through `IProducerConsumerCollection<T>`, `ConcurrentHashSet<T>` lock-free membership and set operations, and `ConcurrentEvictingDictionary<,>` single-flight `GetOrAdd` (a counted factory that runs exactly once for a repeated key), `ItemEvicted`, and eviction order — closed by a parallel workload verified through deterministic aggregates | `Bodu.Collections.Concurrent` |
+| `Bodu.Collections.Concurrent.Samples.ThreadSafeCollections` | `ConcurrentCircularBuffer<T>` as a bounded FIFO ring through `IProducerConsumerCollection<T>`, `ConcurrentHashSet<T>` lock-free membership and set operations, and `ConcurrentEvictingDictionary<,>` single-flight `GetOrAdd` (a counted factory that runs exactly once for a repeated key), `ItemEvicted`, and eviction order - closed by a parallel workload verified through deterministic aggregates | `Bodu.Collections.Concurrent` |
 
 The sample project has its own README with the four-part per-scenario breakdown (Intent /
 What it does / What to expect / APIs demonstrated).

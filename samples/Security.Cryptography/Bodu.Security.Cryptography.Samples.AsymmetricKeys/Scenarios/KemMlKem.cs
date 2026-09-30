@@ -13,8 +13,8 @@ namespace Bodu.Security.Cryptography.Samples.AsymmetricKeys.Scenarios;
 /// </summary>
 /// <remarks>
 /// Key generation and encapsulation draw fresh randomness, so the ciphertext and shared-secret bytes differ
-/// every run. Only the derived facts are deterministic — the two sides agree, and ML-KEM's implicit
-/// rejection means a tampered ciphertext decapsulates to a <em>different</em> secret rather than throwing —
+/// every run. Only the derived facts are deterministic - the two sides agree, and ML-KEM's implicit
+/// rejection means a tampered ciphertext decapsulates to a <em>different</em> secret rather than throwing -
 /// so the scenario prints those booleans (and the fixed sizes), never the secret bytes.
 /// </remarks>
 public static class KemMlKem
@@ -48,7 +48,7 @@ public static class KemMlKem
         using var receiver = factory();
         receiver.GenerateKey();
 
-        // The sender needs only the public encapsulation key — importing it here models receiving it over the wire.
+        // The sender needs only the public encapsulation key - importing it here models receiving it over the wire.
         using var sender = factory();
         sender.ImportEncapsulationKey(receiver.ExportEncapsulationKey());
 

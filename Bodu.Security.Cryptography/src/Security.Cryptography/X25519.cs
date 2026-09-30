@@ -206,7 +206,7 @@ public sealed partial class X25519
     /// <remarks>
     /// <para>
     /// This import is purely syntactic: it validates only the 32-byte length and stores the u-coordinate verbatim. It
-    /// does not prove the point is contributory or reject low-order points — RFC 7748 defines X25519 over u-coordinates
+    /// does not prove the point is contributory or reject low-order points - RFC 7748 defines X25519 over u-coordinates
     /// and places the all-zero-output check at key-agreement time.
     /// <see cref="DeriveSharedSecret(ReadOnlySpan{byte})" /> performs that mandatory rejection;
     /// <see cref="IsLowOrderPoint" /> is available for callers that want to screen a peer key before agreement.

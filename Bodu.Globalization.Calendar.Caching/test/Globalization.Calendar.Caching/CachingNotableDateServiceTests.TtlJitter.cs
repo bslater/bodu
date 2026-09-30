@@ -32,8 +32,8 @@ public sealed partial class CachingNotableDateServiceTests
     }
 
     /// <summary>
-    /// Verifies that with jitter enabled a cached year expires at the territory's jittered instant — earlier than the
-    /// configured time-to-live — and recomputes.
+    /// Verifies that with jitter enabled a cached year expires at the territory's jittered instant - earlier than the
+    /// configured time-to-live - and recomputes.
     /// </summary>
     [TestMethod]
     public void Resolve_WhenTtlJitterEnabled_ShouldRecomputeAtTheJitteredInstant()

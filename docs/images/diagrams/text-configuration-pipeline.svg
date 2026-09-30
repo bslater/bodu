@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 280" role="img" aria-labelledby="cp-t cp-d">
   <title id="cp-t">Bodu Text Configuration pipeline</title>
-  <desc id="cp-d">The Bodu.Text.Configuration pipeline runs in four stages. Source text is tokenised by ConfigurationReader and produces an immutable ConfigurationDocument (which inherits the IniDocumentBase model from Bodu.Text.Ini). The ConfigurationDocument is projected by ConfigurationResolver for a specific target path, layering the preamble plus matching glob-anchored sections in source order to produce a ConfigurationView. The view exposes typed accessors — GetString, GetInt32, GetBoolean, GetEnum, and GetValue&lt;T&gt; for any ISpanParsable — that return the effective value for each colon-delimited configuration key.</desc>
+  <desc id="cp-d">The Bodu.Text.Configuration pipeline runs in four stages. Source text is tokenised by ConfigurationReader and produces an immutable ConfigurationDocument (which inherits the IniDocumentBase model from Bodu.Text.Ini). The ConfigurationDocument is projected by ConfigurationResolver for a specific target path, layering the preamble plus matching glob-anchored sections in source order to produce a ConfigurationView. The view exposes typed accessors - GetString, GetInt32, GetBoolean, GetEnum, and GetValue&lt;T&gt; for any ISpanParsable - that return the effective value for each colon-delimited configuration key.</desc>
 
   <defs>
     <style>
@@ -36,7 +36,7 @@
     <rect class="hdr" y="22" width="800" height="8"/>
     <text class="ttl" x="16" y="20">Bodu.Text.Configuration pipeline</text>
 
-    <!-- ===== Top row — PARSE (left-to-right, teal) ===== -->
+    <!-- ===== Top row - PARSE (left-to-right, teal) ===== -->
     <text class="row" x="20" y="58">PARSE  ▸ source text → ConfigurationDocument</text>
 
     <g transform="translate(20 70)">
@@ -72,7 +72,7 @@
     <!-- ===== Middle separator ===== -->
     <line x1="20" y1="138" x2="780" y2="138" stroke="#334155" stroke-width="1"/>
 
-    <!-- ===== Bottom row — RESOLVE (left-to-right, purple) ===== -->
+    <!-- ===== Bottom row - RESOLVE (left-to-right, purple) ===== -->
     <text class="rowd" x="20" y="160">RESOLVE  ▸ ConfigurationDocument + targetPath → typed values</text>
 
     <g transform="translate(20 172)">

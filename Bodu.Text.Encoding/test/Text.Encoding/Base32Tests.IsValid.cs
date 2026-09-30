@@ -53,10 +53,10 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void IsValid_WhenAllowMissingPaddingAndExcessivePadding_ShouldStillReturnFalse()
     {
-        // "MY========" — 1 data char + 8 padding chars (canonical is 6). Invalid even with lenient padding.
+        // "MY========" - 1 data char + 8 padding chars (canonical is 6). Invalid even with lenient padding.
         Assert.IsFalse(Base32.IsValid("MY========".AsSpan(), Base32Variant.Standard, BaseFormatStyles.AllowMissingPadding));
 
-        // "MZXW6YTBOI=" — 10 data chars + 1 padding char (canonical is 6 for 10%8=2 data). Invalid.
+        // "MZXW6YTBOI=" - 10 data chars + 1 padding char (canonical is 6 for 10%8=2 data). Invalid.
         Assert.IsFalse(Base32.IsValid("MZXW6YTBOI=".AsSpan(), Base32Variant.Standard, BaseFormatStyles.AllowMissingPadding));
     }
 

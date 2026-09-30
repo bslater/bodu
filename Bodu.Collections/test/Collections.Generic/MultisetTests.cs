@@ -338,7 +338,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Constructor — from collection
+    // Constructor - from collection
     // --------------------------------------------------------
 
     /// <summary>
@@ -354,7 +354,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Constructor — with comparer
+    // Constructor - with comparer
     // --------------------------------------------------------
 
     /// <summary>
@@ -384,7 +384,7 @@ public partial class MultisetTests
         Assert.AreEqual(2, mvd.CountOf("A"));
     }
     // --------------------------------------------------------
-    // Constructor — default
+    // Constructor - default
     // --------------------------------------------------------
 
     /// <summary>

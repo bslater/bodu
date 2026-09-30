@@ -9,7 +9,7 @@ namespace Bodu.Globalization.Recurrence;
 public partial class RecurrenceRuleTests
 {
     /// <summary>
-    /// Verifies that a rule that can never match — 30 February yearly — enumerates empty rather than looping, with
+    /// Verifies that a rule that can never match - 30 February yearly - enumerates empty rather than looping, with
     /// the end of the representable calendar as the search bound.
     /// </summary>
     [TestMethod]

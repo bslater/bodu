@@ -12,7 +12,7 @@ namespace Bodu.Formats.Outlook;
 public partial class OutlookMailStoreTests
 {
     /// <summary>
-    /// Verifies that opening the reference fixture and walking to the oracle folder and message succeeds — the
+    /// Verifies that opening the reference fixture and walking to the oracle folder and message succeeds - the
     /// happy-path smoke over the primary public type.
     /// </summary>
     [TestMethod]

@@ -23,7 +23,7 @@ public sealed partial class AhoCorasickAutomatonTests
     }
 
     /// <summary>
-    /// Verifies that an absent pattern — including a strict prefix of a built pattern — is not reported as contained.
+    /// Verifies that an absent pattern - including a strict prefix of a built pattern - is not reported as contained.
     /// </summary>
     [TestMethod]
     public void ContainsPattern_WhenPatternAbsent_ShouldReturnFalse()

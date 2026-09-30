@@ -1,6 +1,6 @@
 # Bodu.Globalization.Calendar.Samples.NotableDatesBasics
 
-Querying public holidays and observances from an embedded regional data pack — the calendar
+Querying public holidays and observances from an embedded regional data pack - the calendar
 family's front door. Everything is offline: the rule data ships as embedded XML resources inside
 the data-pack assembly, so output is deterministic and no network or configuration is needed.
 
@@ -37,7 +37,7 @@ supported-territory count and the pack's country list.
 ```
 
 The 22 dates mix categories: public holidays that stop work and cultural observances that do
-not — each occurrence carries `Category` and `IsNonWorkingDay` so consumers never guess. The
+not - each occurrence carries `Category` and `IsNonWorkingDay` so consumers never guess. The
 Easter dates came from the shared catalogue's computus algorithm via the pack's imports.
 
 **APIs demonstrated.** `AsiaPacificCalendarData.CreateService` / `SupportedCountries`,
@@ -51,7 +51,7 @@ ISO 3166-2 subdivision: a subdivision territory sees the national rules *plus* i
 where both define the same concept the most specific rule wins.
 
 **What it does.** Creates AU, AU-VIC, and AU-NSW services, compares the 2026 counts, pins each
-state's Labour Day (the classic shadowing example — one concept, different rule per state), and
+state's Labour Day (the classic shadowing example - one concept, different rule per state), and
 lists the concepts that exist only in the Victorian view.
 
 **What to expect.**
@@ -64,7 +64,7 @@ lists the concepts that exist only in the Victorian view.
 ```
 
 Victoria observes the second Monday of March (2026-03-09 is the published date), New South
-Wales the first Monday of October — same concept id, different declarative rule, selected by
+Wales the first Monday of October - same concept id, different declarative rule, selected by
 the territory string alone.
 
 **APIs demonstrated.** Subdivision territories (`"AU-VIC"`, `"AU-NSW"`) through
@@ -73,11 +73,11 @@ the territory string alone.
 ### FilteringAndCategories (`Scenarios/FilteringAndCategories.cs`)
 
 **Intent.** "Which dates count?" belongs in the query, not in post-filtering. `NotableDateFilter`
-is an immutable, composable predicate — build the policy once ("public holidays that actually
+is an immutable, composable predicate - build the policy once ("public holidays that actually
 stop work"), reuse it everywhere.
 
 **What it does.** Resolves 2024 unfiltered, by category, with a composed
-`ForCategory(PublicHoliday).And(IsNonWorkingDay())`, negated (`IsNonWorkingDay().Not()` — the
+`ForCategory(PublicHoliday).And(IsNonWorkingDay())`, negated (`IsNonWorkingDay().Not()` - the
 observances), and by name (`WithName("Christmas Day")`).
 
 **What to expect.**
@@ -88,10 +88,10 @@ observances), and by name (`WithName("Christmas Day")`).
   Christmas Day 2024: 2024-12-25 (Wednesday)  (one row here, but a name filter can return several - a concept may be emitted by more than one rule)
 ```
 
-The counts narrow from every notable date to the public holidays. The last two coincide here —
-every Australian public holiday in 2024 is also a day off — but they remain different filters,
+The counts narrow from every notable date to the public holidays. The last two coincide here -
+every Australian public holiday in 2024 is also a day off - but they remain different filters,
 and in a territory with a working public holiday they diverge. Easter Sunday appearing among
-the *working-day* rows is the give-away detail — in Australia the Sunday itself is not a public holiday in most
+the *working-day* rows is the give-away detail - in Australia the Sunday itself is not a public holiday in most
 states, which is exactly the kind of nuance the rule data encodes and a hard-coded list gets
 wrong.
 
@@ -101,11 +101,11 @@ wrong.
 ### ObservedDates (`Scenarios/ObservedDates.cs`)
 
 **Intent.** When a holiday falls on a weekend, many jurisdictions observe it on a weekday
-in-lieu. Show that the adjustment machinery does this declaratively — and that the resolved
+in-lieu. Show that the adjustment machinery does this declaratively - and that the resolved
 occurrence keeps its full lineage: emitted date, actual date, observed flag, and reason.
 
-**What it does.** Resolves the 2021 Christmas window for AU — the classic double-substitution
-year (Christmas Saturday, Boxing Day Sunday) — and contrasts 2024, where Christmas falls
+**What it does.** Resolves the 2021 Christmas window for AU - the classic double-substitution
+year (Christmas Saturday, Boxing Day Sunday) - and contrasts 2024, where Christmas falls
 mid-week and nothing fires.
 
 **What to expect.**
@@ -118,7 +118,7 @@ mid-week and nothing fires.
   2024 contrast: 2024-12-25 (Wednesday) observed flag: False  (expected False - the same rules stay quiet when the holiday already falls on a weekday)
 ```
 
-Boxing Day lands on *Tuesday* the 28th, not Monday — conflict-aware substitution, because
+Boxing Day lands on *Tuesday* the 28th, not Monday - conflict-aware substitution, because
 Christmas already claimed the Monday. `2021-12-27` for Christmas Day is the published
 known-good date.
 
@@ -129,7 +129,7 @@ adjustment/emission behaviour of the pack's rules over a `DateRange` resolve.
 
 **Intent.** Resolving a range runs every rule for every year in it, so a decade costs ten times
 one year. Show `ResolveAsync` yielding a civil year at a time instead of materializing the whole
-result — and cancellation actually stopping the remaining computation.
+result - and cancellation actually stopping the remaining computation.
 
 **What it does.** Streams a decade of non-working occurrences, counting them per year, then
 streams the same range again and cancels once the first year is past.
@@ -142,8 +142,8 @@ streams the same range again and cancels once the first year is past.
   Cancelled after streaming 44 occurrences - later years never resolved.  (cancellation is observed between years, so an abandoned query stops rather than finishing in the background)
 ```
 
-A civil year is the natural granularity because that is the unit the rules are evaluated in —
-there is no partial year to yield — and cancellation is observed at the same boundary. The
+A civil year is the natural granularity because that is the unit the rules are evaluated in -
+there is no partial year to yield - and cancellation is observed at the same boundary. The
 streamed results are element-for-element what the synchronous `Resolve` returns over the same
 range: streaming changes *when* a consumer gets them, not *what* they are.
 
@@ -152,13 +152,13 @@ cancellationToken)`, `IAsyncEnumerable<NotableDate>` enumeration, cooperative ca
 
 ### ExpandedTimeline (`Scenarios/ExpandedTimeline.cs`)
 
-**Intent.** The AU pack emits each substituted holiday once, on its observed day — the nominal
+**Intent.** The AU pack emits each substituted holiday once, on its observed day - the nominal
 day survives only as `ActualDate`. Show `WithActualOccurrences()` reconstructing the full
 sequential story: every affected day as its own occurrence, actual and observed alike.
 
 **What it does.** Resolves the same 2021 Christmas window, prints the raw observed-only result
-(two occurrences, dated 27 and 28 December), then expands it — 25 and 26 December reappear as
-actual occurrences — and demonstrates that expanding again is a no-op.
+(two occurrences, dated 27 and 28 December), then expands it - 25 and 26 December reappear as
+actual occurrences - and demonstrates that expanding again is a no-op.
 
 **What to expect.**
 
@@ -176,7 +176,7 @@ actual occurrences — and demonstrates that expanding again is a no-op.
 
 The synthesized occurrences match the shape the engine emits when a policy declares
 `ActualAndObserved`: `IsObserved` is `false`, no adjustment policy or reason, and every other
-field — including `DisplayName` — carries over. The expansion skips occurrences whose actual day
+field - including `DisplayName` - carries over. The expansion skips occurrences whose actual day
 is already present, which is what makes the second call a no-op.
 
 **APIs demonstrated.** `NotableDateSequenceExtensions.WithActualOccurrences`, the

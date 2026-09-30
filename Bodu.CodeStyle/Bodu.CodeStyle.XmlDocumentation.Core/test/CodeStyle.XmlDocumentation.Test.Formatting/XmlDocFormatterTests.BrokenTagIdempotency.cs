@@ -59,7 +59,7 @@ public partial class XmlDocFormatterTests
 
     /// <summary>
     /// Verifies that a malformed-name doc comment (left unchanged on the first pass) is also left unchanged on
-    /// the second pass — the formatter never claims it has changed an input it cannot parse.
+    /// the second pass - the formatter never claims it has changed an input it cannot parse.
     /// </summary>
     [TestMethod]
     public void Format_WhenMalformedTagNameSplit_ShouldStayUnchangedAcrossPasses()

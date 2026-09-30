@@ -15,8 +15,8 @@ namespace Bodu.Extensions;
 /// Range checks and bounded arithmetic are some of the most repeated patterns in business code, yet expressing them
 /// with raw <see cref="IComparable{T}.CompareTo(T)" /> is verbose and easy to get wrong (off-by-one boundaries, swapped
 /// arguments, missing <see cref="IComparer{T}" /> threads). This class wraps those checks behind verb-led names that
-/// match the way callers describe the intent — <c>IsBetween</c>, <c>IsOutside</c>, <c>AtLeast</c>, <c>AtMost</c>,
-/// <c>Clamp</c>, <c>Min</c>, <c>Max</c> — so the call site reads as a fluent assertion rather than a comparison
+/// match the way callers describe the intent - <c>IsBetween</c>, <c>IsOutside</c>, <c>AtLeast</c>, <c>AtMost</c>,
+/// <c>Clamp</c>, <c>Min</c>, <c>Max</c> - so the call site reads as a fluent assertion rather than a comparison
 /// expression.
 /// </para>
 /// <para>

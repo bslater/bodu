@@ -24,7 +24,7 @@ namespace Bodu.Numerics.Serialization.Json;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <see cref="NumericsJsonPolicy.Strict" /> — canonical object form <c>{ "real": 3, "imaginary": 4 }</c>; rejects
+/// <see cref="NumericsJsonPolicy.Strict" /> - canonical object form <c>{ "real": 3, "imaginary": 4 }</c>; rejects
 /// duplicate properties and non-object tokens. A finite component is written as a JSON number; a non-finite component
 /// is written as one of the JSON strings <c>"NaN"</c>, <c>"Infinity"</c>, or <c>"-Infinity"</c>, since JSON numbers
 /// cannot represent those values. Either representation is accepted on read.
@@ -32,14 +32,14 @@ namespace Bodu.Numerics.Serialization.Json;
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="NumericsJsonPolicy.Lenient" /> — same object shape as <see cref="NumericsJsonPolicy.Strict" />, but a
+/// <see cref="NumericsJsonPolicy.Lenient" /> - same object shape as <see cref="NumericsJsonPolicy.Strict" />, but a
 /// top-level JSON string token is accepted and routed through
 /// <see cref="Complex{T}.Parse(ReadOnlySpan{char}, IFormatProvider?)" /> as a tolerant fallback.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="NumericsJsonPolicy.Compact" /> — string form <c>"&lt;3; 4&gt;"</c>; reads delegate to
+/// <see cref="NumericsJsonPolicy.Compact" /> - string form <c>"&lt;3; 4&gt;"</c>; reads delegate to
 /// <see cref="Complex{T}.TryParse(ReadOnlySpan{char}, IFormatProvider?, out Complex{T})" /> and writes call
 /// <see cref="Complex{T}.ToString(string?, IFormatProvider?)" /> with the invariant culture.
 /// </description>

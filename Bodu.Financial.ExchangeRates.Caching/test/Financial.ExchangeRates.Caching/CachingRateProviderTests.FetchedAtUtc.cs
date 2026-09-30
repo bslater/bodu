@@ -82,7 +82,7 @@ public sealed partial class CachingRateProviderTests
 
         Assert.AreEqual(RateOrigin.Cache, hit.Provenance.Origin);
 
-        // The cache-write instant is Now; the hit is two hours later, so the provenance age is two hours — independent
+        // The cache-write instant is Now; the hit is two hours later, so the provenance age is two hours - independent
         // of the much older upstream fetch instant carried on the rate.
         Assert.AreEqual(TimeSpan.FromHours(2), hit.Provenance.Age);
         Assert.AreEqual(Now, hit.Provenance.CachedAtUtc);

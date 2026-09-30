@@ -313,7 +313,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
                 // IsDisposed is the protected disposed-state probe on BufferedBlockHashAlgorithm{T}.
                 // It exists specifically so derived classes can no-op a second Dispose() without throwing,
-                // so it must remain readable after disposal — the inverse of the rule this test enforces
+                // so it must remain readable after disposal - the inverse of the rule this test enforces
                 // for every other property.
                 "IsDisposed",
             ])
@@ -362,7 +362,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
     /// <summary>
     /// Yields the unkeyed known-answer vectors declared by the specification for the given <paramref name="variant" />.
-    /// Vectors that carry a per-row key are excluded — they are driven by the keyed-hash test path instead.
+    /// Vectors that carry a per-row key are excluded - they are driven by the keyed-hash test path instead.
     /// </summary>
     /// <param name="variant">The variant to generate test vectors for.</param>
     /// <returns>A sequence of <see cref="KnownAnswerTest" /> instances driving named-input assertions.</returns>

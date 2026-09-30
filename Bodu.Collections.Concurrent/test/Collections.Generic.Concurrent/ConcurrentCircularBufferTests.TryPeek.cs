@@ -35,7 +35,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(1));
         buffer.Enqueue(new TestItem(2));
 
-        // Full, overwrite disabled — TryPeek returns the current oldest (1)
+        // Full, overwrite disabled - TryPeek returns the current oldest (1)
         Assert.IsTrue(buffer.TryPeek(out TestItem? beforeToggle));
         Assert.AreEqual(1, beforeToggle!.Value);
 
@@ -70,7 +70,7 @@ public partial class ConcurrentCircularBufferTests
                 for (int i = 0; i < 1000; i++)
                 {
                     // The contract under test is that concurrent peeking never throws or tears when the
-                    // head slot holds null — not that any particular interleaving is observed.
+                    // head slot holds null - not that any particular interleaving is observed.
                     buffer.TryPeek(out _);
                     Thread.SpinWait(20);
                 }
@@ -103,8 +103,8 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsFalse(buffer.TryPeek(out _));
     }
 
-    // Previously tested with capacity = 1. Migrated to capacity = 2 — the minimum supported
-    // value — following the implementation change that requires capacity >= 2 for the Vyukov
+    // Previously tested with capacity = 1. Migrated to capacity = 2 - the minimum supported
+    // value - following the implementation change that requires capacity >= 2 for the Vyukov
     // MPMC sequence protocol to be correct.
     //
     // The behaviour under test is equivalent: after the buffer holds its maximum number of
@@ -260,7 +260,7 @@ public partial class ConcurrentCircularBufferTests
 
         // Deterministic warmup: seed one item and observe it before the enqueuer / dequeuer /
         // peeker race begins. Without this the `observed > 0` assertion is hostage to scheduler
-        // luck — on a loaded CI runner the dequeuer can consistently drain the buffer faster
+        // luck - on a loaded CI runner the dequeuer can consistently drain the buffer faster
         // than the peeker samples it, leaving every TryPeek call observing an empty buffer.
         buffer.Enqueue(new TestItem(-1));
         if (buffer.TryPeek(out TestItem? seed) && seed != null)
@@ -300,7 +300,7 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> retries — rather than returning a stale value — when the
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> retries - rather than returning a stale value - when the
     /// slot's coordination sequence is observed to be greater than the publication mark, which models the
     /// "another thread dequeued this slot" race window in the consumer protocol. Once the sequence is corrected back into the
     /// published state, the peek succeeds and returns the live head element.
@@ -317,7 +317,7 @@ public partial class ConcurrentCircularBufferTests
         var slotArray = (Array)bufferField.GetValue(buffer)!;
 
         // Read the current head-slot Sequence and pre-bump it so the first iteration of TryPeek
-        // observes diff > 0 (the "stale head read — another thread dequeued this slot" branch).
+        // observes diff > 0 (the "stale head read - another thread dequeued this slot" branch).
         object slot0 = slotArray.GetValue(0)!;
         FieldInfo sequenceField = slot0.GetType().GetField("Sequence", BindingFlags.Instance | BindingFlags.Public)!;
         int originalSequence = (int)sequenceField.GetValue(slot0)!;
@@ -327,7 +327,7 @@ public partial class ConcurrentCircularBufferTests
 
         // Run the realign worker on a separate thread that restores the published sequence
         // shortly after the peek begins. TryPeek has no retry budget on the diff > 0 branch, so
-        // a missed realign would hang the test runner — Task.WaitAll's timeout below converts
+        // a missed realign would hang the test runner - Task.WaitAll's timeout below converts
         // that into a test failure instead.
         var realignTask = Task.Run(() =>
         {
@@ -347,7 +347,7 @@ public partial class ConcurrentCircularBufferTests
         bool completed = Task.WaitAll([realignTask, peekTask], TimeSpan.FromSeconds(10));
 
         Assert.IsTrue(completed,
-            "TryPeek did not return after the slot sequence was restored — possible scheduling issue or missed realign.");
+            "TryPeek did not return after the slot sequence was restored - possible scheduling issue or missed realign.");
         Assert.IsTrue(peekResult, "TryPeek must eventually succeed once the slot sequence realigns with the head.");
         Assert.IsNotNull(captured);
         Assert.AreEqual(1, captured!.Value);

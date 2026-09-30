@@ -17,7 +17,7 @@ namespace Bodu.Globalization.Calendar;
 /// <remarks>
 /// <para>
 /// A pack is written from an already-built resource, so only content that passed the canonical loader's validation is
-/// ever encoded, and reading a pack skips parsing and validation entirely — the trim- and AOT-friendly load path. The
+/// ever encoded, and reading a pack skips parsing and validation entirely - the trim- and AOT-friendly load path. The
 /// format is <em>sealed</em>: it enumerates the engine's strategy, recurrence, and duration types exhaustively with
 /// one-byte discriminators, carries no type names and no extension points, and the reader rejects unknown versions,
 /// unknown discriminators, undefined enum values, out-of-range references, truncation, and payload-digest mismatches
@@ -138,7 +138,7 @@ public static partial class NotableDateBinaryResource
         writer.WriteNullableString(policy.TriggerHandlerKey);
 
         // Handler parameters are written key-sorted so identical dictionaries encode identically regardless of the
-        // insertion order they were built with — part of the byte-stability contract.
+        // insertion order they were built with - part of the byte-stability contract.
         writer.WriteVarUInt((uint)policy.HandlerParameters.Count);
         foreach (KeyValuePair<string, string> pair in policy.HandlerParameters.OrderBy(p => p.Key, StringComparer.Ordinal))
         {

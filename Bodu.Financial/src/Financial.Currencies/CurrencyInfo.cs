@@ -98,7 +98,7 @@ public sealed record CurrencyInfo(
     /// <param name="isoCode">The three-letter uppercase ISO code.</param>
     /// <param name="code">When this method returns <see langword="true" />, the matching enum value.</param>
     /// <returns>
-    /// <see langword="true" /> when <paramref name="isoCode" /> matches a currency in the enum — active or historic;
+    /// <see langword="true" /> when <paramref name="isoCode" /> matches a currency in the enum - active or historic;
     /// otherwise <see langword="false" />.
     /// </returns>
     /// <remarks>

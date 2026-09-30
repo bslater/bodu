@@ -29,8 +29,8 @@ namespace Bodu.Collections.Probabilistic;
 /// Elements are hashed via the supplied <see cref="IEqualityComparer{T}" /> (or
 /// <see cref="EqualityComparer{T}.Default" />): the comparer's 32-bit
 /// <see cref="IEqualityComparer{T}.GetHashCode(T)" /> is expanded through a deterministic SplitMix64-style avalanche
-/// into two 64-bit values combined by Kirsch–Mitzenmacher double hashing, one probe per row. All entropy therefore
-/// derives from the 32-bit comparer hash — standard practice for comparer-based sketches — which bounds the achievable
+/// into two 64-bit values combined by Kirsch-Mitzenmacher double hashing, one probe per row. All entropy therefore
+/// derives from the 32-bit comparer hash - standard practice for comparer-based sketches - which bounds the achievable
 /// error floor by the collision rate of that hash: two elements with equal comparer hashes share every counter.
 /// </para>
 /// <para>
@@ -403,7 +403,7 @@ public sealed class CountMinSketch<T>
     /// <remarks>
     /// <para>
     /// Compatibility requires identical <see cref="Width" /> and <see cref="Depth" /> and the same or an equal comparer
-    /// instance — in practice, sketches constructed with the same parameters. The other sketch is not modified, and
+    /// instance - in practice, sketches constructed with the same parameters. The other sketch is not modified, and
     /// <see cref="TotalCount" /> becomes the sum of both totals. Merging a sketch with itself doubles every count.
     /// </para>
     /// <para>

@@ -25,7 +25,7 @@ public static partial class ExchangeRateEnumerableExtensions
     /// <remarks>
     /// <para>
     /// Unlike <see cref="FixedDatedRateProvider(IEnumerable{ExchangeRate})" />, this materializer accepts rates for the
-    /// same pair from multiple providers — each (pair, provider) combination becomes its own series — so the results of
+    /// same pair from multiple providers - each (pair, provider) combination becomes its own series - so the results of
     /// aggregated or multi-source range lookups round-trip without error. When two observations share the same pair,
     /// provider, and date, the later element wins (upsert semantics, matching <see cref="RateTableBuilder.Upsert" />),
     /// so re-materializing overlapping fetches is resilient rather than throwing.

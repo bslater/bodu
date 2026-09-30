@@ -231,7 +231,7 @@ public partial class DequeTests
 
     /// <summary>
     /// Verifies that <see cref="Deque{T}.AddFirst(T)" /> on a full, growable deque grows instead of evicting even
-    /// when <see cref="DequeOverflowPolicy.EvictOpposite" /> is configured — growth always wins over the policy.
+    /// when <see cref="DequeOverflowPolicy.EvictOpposite" /> is configured - growth always wins over the policy.
     /// </summary>
     [TestMethod]
     public void AddFirst_WhenAllowGrowTrueAndPolicyEvictOpposite_ShouldGrowWithoutEvicting()
@@ -254,7 +254,7 @@ public partial class DequeTests
 
     /// <summary>
     /// Verifies that <see cref="Deque{T}.AddLast(T)" /> on a full, growable deque grows instead of evicting even when
-    /// <see cref="DequeOverflowPolicy.EvictOpposite" /> is configured — growth always wins over the policy.
+    /// <see cref="DequeOverflowPolicy.EvictOpposite" /> is configured - growth always wins over the policy.
     /// </summary>
     [TestMethod]
     public void AddLast_WhenAllowGrowTrueAndPolicyEvictOpposite_ShouldGrowWithoutEvicting()
@@ -340,7 +340,7 @@ public partial class DequeTests
 
     /// <summary>
     /// Verifies that an exception thrown from an <see cref="Deque{T}.ItemEvicting" /> handler vetoes the eviction in
-    /// place — the exception propagates, no element is removed or added, and <see cref="Deque{T}.ItemEvicted" /> is
+    /// place - the exception propagates, no element is removed or added, and <see cref="Deque{T}.ItemEvicted" /> is
     /// not raised.
     /// </summary>
     [TestMethod]

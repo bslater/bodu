@@ -1,12 +1,12 @@
 ---
-title: Bodu.IO.Compound — Introduction
+title: Bodu.IO.Compound - Introduction
 ---
 
 # Bodu.IO.Compound
 
 ![Bodu.IO.Compound](../../images/hero-io-compound.svg)
 
-**Bodu.IO.Compound** is a reader and writer for the OLE2 / Compound File Binary (CFB) container format — the structured-storage envelope used by legacy Microsoft Office documents (`.xls`, `.doc`, `.ppt`, `.msg`) and other technologies. Part of the **[Binary Formats & I/O](../topics/binary-formats.md)** topic, it opens existing containers — exposing the embedded storage hierarchy and the raw byte payload of each named stream — and authors new ones through `CompoundFile.Create` and the `Bodu.IO.Compound.Builders` API, with no application-format knowledge of its own.
+**Bodu.IO.Compound** is a reader and writer for the OLE2 / Compound File Binary (CFB) container format - the structured-storage envelope used by legacy Microsoft Office documents (`.xls`, `.doc`, `.ppt`, `.msg`) and other technologies. Part of the **[Binary Formats & I/O](../topics/binary-formats.md)** topic, it opens existing containers - exposing the embedded storage hierarchy and the raw byte payload of each named stream - and authors new ones through `CompoundFile.Create` and the `Bodu.IO.Compound.Builders` API, with no application-format knowledge of its own.
 
 A compound file is effectively a small file system embedded in a single file. <xref:Bodu.IO.Compound.CompoundFile> is the managed counterpart of the COM `StgOpenStorage` entry point: navigation begins at the root storage and descends through nested storages to stream leaves.
 
@@ -16,7 +16,7 @@ A compound file is effectively a small file system embedded in a single file. <x
 |---|---|---|---|
 | **File** | <xref:Bodu.IO.Compound.CompoundFile> | `StgOpenStorage` | Opens the container and anchors the hierarchy at `RootStorage`. |
 | **Storage** | <xref:Bodu.IO.Compound.CompoundStorage> | `IStorage` | A named container of child storages and streams. |
-| **Stream** | <xref:Bodu.IO.Compound.CompoundStream> | `IStream` | A named, file-like leaf with an opaque byte payload; itself a seekable <xref:System.IO.Stream> cursor over those bytes — read-only from a read-opened file, read-write on a writable file. |
+| **Stream** | <xref:Bodu.IO.Compound.CompoundStream> | `IStream` | A named, file-like leaf with an opaque byte payload; itself a seekable <xref:System.IO.Stream> cursor over those bytes - read-only from a read-opened file, read-write on a writable file. |
 
 ## Key concepts
 
@@ -32,10 +32,10 @@ For the full glossary, see [Core concepts](concepts.md).
 
 ## Scope and limitations
 
-- **Reading and writing.** This introduction focuses on the read path; the library also **authors** CFB containers — `CompoundFile.Create` plus `Commit`, the detached `CompoundStorageBuilder`, and the property-set builders. See the [Authoring compound files](../../guides/io-compound/authoring-compound-files.md) guide.
+- **Reading and writing.** This introduction focuses on the read path; the library also **authors** CFB containers - `CompoundFile.Create` plus `Commit`, the detached `CompoundStorageBuilder`, and the property-set builders. See the [Authoring compound files](../../guides/io-compound/authoring-compound-files.md) guide.
 - **No format interpretation.** The reader surfaces named streams and their bytes; understanding a `Workbook` or `WordDocument` stream is the caller's job. The narrow BIFF8 `.xls` reader in [Bodu.Formats.Excel.Binary](../excel/index.md) is the worked example of a format reader layered on top.
 
-## Worked example — open, navigate, read
+## Worked example - open, navigate, read
 
 A single flow traces the container end-to-end:
 
@@ -76,30 +76,30 @@ byte[] bytes = workbook.ReadAllBytes();
 | Author a container | `CompoundStorageBuilder.CreateRoot()` → `AddStream` → `Save` (or `CompoundFile.Create` + `Commit`) |
 | Commit a writable file asynchronously | `await file.CommitAsync()` |
 
-## Headline types — <xref:Bodu.IO.Compound>
+## Headline types - <xref:Bodu.IO.Compound>
 
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.IO.Compound.CompoundFile> | Opens or creates a CFB container and anchors the hierarchy; static `Open` / `OpenRead` / `IsCompoundFile` readers and the `Create` writer (finalized by `Commit` / `CommitAsync`), plus the `SetSummaryInformation` / `SetDocumentSummaryInformation` property-set writers. |
-| <xref:Bodu.IO.Compound.CompoundStorage> | A storage node — enumerates children, resolves child storages and streams by name, and (on a writable file) creates, deletes, renames, writes property sets, and carries settable entry metadata. |
-| <xref:Bodu.IO.Compound.CompoundStream> | A stream node and seekable `Stream` cursor in one — `ReadAllBytes` for the whole payload, `AsMemory` for a whole-payload view, `Stat` for metadata, an async-capable `ReadAsync`, and `Write` / `SetLength` on a writable cursor. |
-| <xref:Bodu.IO.Compound.CompoundEntryInfo> | An immutable metadata snapshot — name, <xref:Bodu.IO.Compound.CompoundEntryType>, length, class id, timestamps, and red-black <xref:Bodu.IO.Compound.CompoundEntryColor>. |
-| <xref:Bodu.IO.Compound.CompoundFileOptions> | Read options — <xref:Bodu.IO.Compound.CompoundReadStrategy> (buffered / streaming / auto) and <xref:Bodu.IO.Compound.CompoundValidationLevel> (strict / compatible / minimal). |
+| <xref:Bodu.IO.Compound.CompoundStorage> | A storage node - enumerates children, resolves child storages and streams by name, and (on a writable file) creates, deletes, renames, writes property sets, and carries settable entry metadata. |
+| <xref:Bodu.IO.Compound.CompoundStream> | A stream node and seekable `Stream` cursor in one - `ReadAllBytes` for the whole payload, `AsMemory` for a whole-payload view, `Stat` for metadata, an async-capable `ReadAsync`, and `Write` / `SetLength` on a writable cursor. |
+| <xref:Bodu.IO.Compound.CompoundEntryInfo> | An immutable metadata snapshot - name, <xref:Bodu.IO.Compound.CompoundEntryType>, length, class id, timestamps, and red-black <xref:Bodu.IO.Compound.CompoundEntryColor>. |
+| <xref:Bodu.IO.Compound.CompoundFileOptions> | Read options - <xref:Bodu.IO.Compound.CompoundReadStrategy> (buffered / streaming / auto) and <xref:Bodu.IO.Compound.CompoundValidationLevel> (strict / compatible / minimal). |
 | <xref:Bodu.IO.Compound.CompoundFileException> | The common base for every compound-file failure; `CompoundFileFormatException` (with a <xref:Bodu.IO.Compound.CompoundFileError> `Category`) and `CompoundStreamNotFoundException` derive from it. |
 
-## Property sets — <xref:Bodu.IO.Compound.PropertySets>
+## Property sets - <xref:Bodu.IO.Compound.PropertySets>
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.IO.Compound.PropertySets.SummaryInformation> | Typed view over the `\x05SummaryInformation` stream — title, author, timestamps, counts. |
+| <xref:Bodu.IO.Compound.PropertySets.SummaryInformation> | Typed view over the `\x05SummaryInformation` stream - title, author, timestamps, counts. |
 | <xref:Bodu.IO.Compound.PropertySets.DocumentSummaryInformation> | Typed view over the `\x05DocumentSummaryInformation` stream. |
 | <xref:Bodu.IO.Compound.PropertySets.OlePropertySet> | The underlying code-paged, sectioned property map for non-standard properties. |
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — full vocabulary: container, storage, stream, sector chain, mini-stream, directory, property set.
-- **[Getting started](getting-started.md)** — install + minimal samples for opening, navigating, and reading.
-- **[Bodu.IO.Compound guides](../../guides/io-compound/index.md)** — reading files, buffered vs streaming access, and property sets.
-- **API reference** — [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.IO.Compound.PropertySets](xref:Bodu.IO.Compound.PropertySets).
-- **[Binary Formats & I/O topic overview](../topics/binary-formats.md)** — where the container reader sits beneath the format readers.
+- **[Core concepts](concepts.md)** - full vocabulary: container, storage, stream, sector chain, mini-stream, directory, property set.
+- **[Getting started](getting-started.md)** - install + minimal samples for opening, navigating, and reading.
+- **[Bodu.IO.Compound guides](../../guides/io-compound/index.md)** - reading files, buffered vs streaming access, and property sets.
+- **API reference** - [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.IO.Compound.PropertySets](xref:Bodu.IO.Compound.PropertySets).
+- **[Binary Formats & I/O topic overview](../topics/binary-formats.md)** - where the container reader sits beneath the format readers.
 - **For the BIFF8 `.xls` reader built on this package**, see [Bodu.Formats.Excel.Binary](../excel/index.md).

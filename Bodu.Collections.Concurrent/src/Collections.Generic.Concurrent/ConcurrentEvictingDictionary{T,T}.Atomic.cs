@@ -26,8 +26,8 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// <remarks>
     /// <para>
     /// The comparison uses <see cref="EqualityComparer{TValue}.Default" />. A successful update counts as an access for
-    /// the configured <see cref="EvictingDictionaryPolicy" /> — identical to the replace path of
-    /// <see cref="Add(TKey, TValue)" /> — repositioning the key for recency-tracked policies and, when time-based
+    /// the configured <see cref="EvictingDictionaryPolicy" /> - identical to the replace path of
+    /// <see cref="Add(TKey, TValue)" /> - repositioning the key for recency-tracked policies and, when time-based
     /// expiration is configured, starting a fresh lease. A missing or expired key yields <see langword="false" />; an
     /// expired-but-unpurged entry is lazily removed as an eviction before the method returns.
     /// </para>
@@ -72,7 +72,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// <remarks>
     /// <para>
     /// The update factory is invoked <em>inside</em> the owning segment's lock, so it runs at most once per call even
-    /// under concurrent contention — the single-flight behavior shared with <see cref="GetOrAdd(TKey, TValue)" />. The
+    /// under concurrent contention - the single-flight behavior shared with <see cref="GetOrAdd(TKey, TValue)" />. The
     /// factory blocks every other operation on the same segment while it runs, so keep it short and never call back
     /// into this dictionary from it. If the factory throws, nothing is added or updated and the exception propagates.
     /// </para>
@@ -114,7 +114,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// <remarks>
     /// <para>
     /// Both factories are invoked <em>inside</em> the owning segment's lock, so exactly one runs per call and it runs
-    /// at most once — the single-flight behavior shared with <see cref="GetOrAdd(TKey, Func{TKey, TValue})" />. A
+    /// at most once - the single-flight behavior shared with <see cref="GetOrAdd(TKey, Func{TKey, TValue})" />. A
     /// factory blocks every other operation on the same segment while it runs, so keep it short and never call back
     /// into this dictionary from it. If a factory throws, nothing is added or updated and the exception propagates.
     /// </para>

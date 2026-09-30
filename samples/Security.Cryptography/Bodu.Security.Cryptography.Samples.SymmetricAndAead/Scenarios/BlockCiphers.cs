@@ -9,8 +9,8 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography.Samples.SymmetricAndAead.Scenarios;
 
 /// <summary>
-/// Encrypts and decrypts a single block with a spread of the library's block ciphers — Threefish (256 /
-/// 512 / 1024), Twofish, Camellia, Serpent, Skipjack, and Blowfish — in ECB mode with no padding, using a
+/// Encrypts and decrypts a single block with a spread of the library's block ciphers - Threefish (256 /
+/// 512 / 1024), Twofish, Camellia, Serpent, Skipjack, and Blowfish - in ECB mode with no padding, using a
 /// fixed key so each ciphertext is reproducible, and confirms the round trip recovers the plaintext.
 /// </summary>
 public static class BlockCiphers

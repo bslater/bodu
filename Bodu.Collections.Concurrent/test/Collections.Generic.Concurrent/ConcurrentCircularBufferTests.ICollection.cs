@@ -158,11 +158,11 @@ public partial class ConcurrentCircularBufferTests
         var array = new TestItem[3];
         ((ICollection)buffer).CopyTo(array, 0);
         Assert.AreEqual(2, array[0]?.Value,
-            "First element should be 2 — the oldest remaining item after the dequeue.");
+            "First element should be 2 - the oldest remaining item after the dequeue.");
         Assert.AreEqual(3, array[1]?.Value,
             "Second element should be 3, preserving FIFO order across the wrap boundary.");
         Assert.AreEqual(4, array[2]?.Value,
-            "Third element should be 4 — the item enqueued after the wrap.");
+            "Third element should be 4 - the item enqueued after the wrap.");
     }
 
     /// <summary>

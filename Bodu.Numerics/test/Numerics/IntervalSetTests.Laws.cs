@@ -13,7 +13,7 @@ public partial class IntervalSetTests
     private static readonly int[] SamplePoints = { -1, 0, 1, 2, 3, 4, 5, 6, 7 };
 
     /// <summary>
-    /// Enumerates a representative universe of interval sets over <see cref="int" /> endpoints — empty, single-piece,
+    /// Enumerates a representative universe of interval sets over <see cref="int" /> endpoints - empty, single-piece,
     /// disconnected, and unbounded shapes.
     /// </summary>
     /// <returns>The set universe.</returns>
@@ -153,7 +153,7 @@ public partial class IntervalSetTests
     }
 
     /// <summary>
-    /// Verifies De Morgan's laws — <c>¬(a ∪ b) == ¬a ∩ ¬b</c> and <c>¬(a ∩ b) == ¬a ∪ ¬b</c> — over the finite universe,
+    /// Verifies De Morgan's laws - <c>¬(a ∪ b) == ¬a ∩ ¬b</c> and <c>¬(a ∩ b) == ¬a ∪ ¬b</c> - over the finite universe,
     /// where complement is taken over the whole line.
     /// </summary>
     [TestMethod]
@@ -180,7 +180,7 @@ public partial class IntervalSetTests
     }
 
     /// <summary>
-    /// Verifies that every set produced by a binary operation is in canonical normalized form — no empty pieces, and no
+    /// Verifies that every set produced by a binary operation is in canonical normalized form - no empty pieces, and no
     /// two consecutive pieces that overlap or are adjacent (which would have merged during normalization).
     /// </summary>
     [TestMethod]
@@ -205,7 +205,7 @@ public partial class IntervalSetTests
 
     /// <summary>
     /// Asserts that <paramref name="set" /> holds no empty pieces and that no two consecutive pieces overlap or are
-    /// adjacent — i.e. no consecutive pair could be unioned into a single interval.
+    /// adjacent - i.e. no consecutive pair could be unioned into a single interval.
     /// </summary>
     /// <param name="set">The set to validate.</param>
     /// <param name="label">A human-readable label for the failure message.</param>

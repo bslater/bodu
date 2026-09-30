@@ -23,8 +23,8 @@ namespace Bodu.Security.Cryptography;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <strong>Self-inverse XOR.</strong> Encryption and decryption are identical — both XOR the plaintext or ciphertext
-/// with the keystream — so the same code path serves both directions and the transform direction is irrelevant.
+/// <strong>Self-inverse XOR.</strong> Encryption and decryption are identical - both XOR the plaintext or ciphertext
+/// with the keystream - so the same code path serves both directions and the transform direction is irrelevant.
 /// </description>
 /// </item>
 /// <item>

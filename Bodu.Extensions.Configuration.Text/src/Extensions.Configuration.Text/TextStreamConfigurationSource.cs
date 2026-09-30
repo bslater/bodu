@@ -22,7 +22,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// is attached. The caller is responsible for the stream's lifetime; the provider does not dispose it.
 /// </para>
 /// <para>
-/// Use this shape when the configuration text lives somewhere other than the file system — embedded resources,
+/// Use this shape when the configuration text lives somewhere other than the file system - embedded resources,
 /// in-memory test inputs, content downloaded from a config service, or content authored by another part of the host
 /// process. <see cref="TargetPath" />, <see cref="ParseOptions" />, and <see cref="ResolveOptions" /> behave the same
 /// way as on the file-backed source.

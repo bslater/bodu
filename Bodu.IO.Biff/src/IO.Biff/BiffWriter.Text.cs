@@ -172,7 +172,7 @@ public ref partial struct BiffWriter
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a string is longer than 65,535 characters.</exception>
     /// <remarks>
     /// A string's header is never split across records; its characters may be, at a character boundary, and each
-    /// continued run restarts with its own flags byte — the rules <see cref="BiffSstReader" /> decodes by.
+    /// continued run restarts with its own flags byte - the rules <see cref="BiffSstReader" /> decodes by.
     /// </remarks>
     public void WriteSst(scoped ReadOnlySpan<string> strings, uint totalReferenceCount)
     {
@@ -284,7 +284,7 @@ public ref partial struct BiffWriter
     }
 
     /// <summary>
-    /// Computes the encoded size of a string structure — length prefix, flags, and characters — under the version being
+    /// Computes the encoded size of a string structure - length prefix, flags, and characters - under the version being
     /// emitted.
     /// </summary>
     /// <param name="text">The text.</param>

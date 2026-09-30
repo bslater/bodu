@@ -14,12 +14,12 @@ dotnet run --project samples/Financial/Bodu.Financial.Samples.CurrencyServices
 
 **Intent.** Before the resolution seam and host wiring, the raw material: the shipped ISO 4217
 catalogue and the `CurrencyInfo` record every money value resolves against. The headline fact is
-that minor units are *per-currency data*, not a universal "two decimal places" — a money type
+that minor units are *per-currency data*, not a universal "two decimal places" - a money type
 that hard-codes two decimals is already wrong for the yen and the dinar.
 
 **What it does.** Reports the registry size (`CurrencyRegistry.All`), then queries a
-`CurrencyLookupService` (`ICurrencyLookup`) by ISO code for USD, JPY, and BHD — three currencies
-with 2, 0, and 3 minor units respectively — printing each `CurrencyInfo`'s numeric code, English
+`CurrencyLookupService` (`ICurrencyLookup`) by ISO code for USD, JPY, and BHD - three currencies
+with 2, 0, and 3 minor units respectively - printing each `CurrencyInfo`'s numeric code, English
 name, symbol, and minor-unit count. It closes with the `CurrencyCode` enum bridge
 (`CurrencyInfo.FromCurrencyCode`) resolving the same registry entry from a strongly-typed code.
 
@@ -36,7 +36,7 @@ name, symbol, and minor-unit count. It closes with the `CurrencyCode` enum bridg
   Enum bridge: CurrencyCode.USD -> USD #840
 ```
 
-JPY settles in whole yen and BHD in thousandths — the same reason `Money` reads its scale from
+JPY settles in whole yen and BHD in thousandths - the same reason `Money` reads its scale from
 the currency rather than a constant. The lookup service is the indexed front door (by ISO code,
 numeric code, symbol, region, or culture); `CurrencyRegistry` is the flat catalogue behind it.
 The symbols read `(none)` because the shipped registry entries carry ISO metadata, not display
@@ -50,11 +50,11 @@ glyphs (symbol/culture presentation is a separate, opt-in concern).
 
 **Intent.** Runtime `Money` resolves currency metadata (minor units, names, parse validation)
 through the ambient `CurrencyResolution.Current` lookup rather than a threaded dependency. The
-seam has two levers: `PushScoped` swaps the lookup for a scope (async-flow-safe — the test
+seam has two levers: `PushScoped` swaps the lookup for a scope (async-flow-safe - the test
 lever), and `SetDefault` is the one-time composition-root promotion. This scenario shows the
 scoped lever changing observable parsing behaviour.
 
-**What it does.** Queries the default lookup for AUD metadata, parses `"THB 25.00"` (accepted —
+**What it does.** Queries the default lookup for AUD metadata, parses `"THB 25.00"` (accepted -
 THB is in the full ISO registry), then pushes a `RestrictedCurrencyLookup` (a delegating
 allow-list decorator over the current lookup, defined in this sample) scoped to AUD/USD/EUR:
 inside the scope USD parses but THB is rejected; after disposing the scope THB parses again.
@@ -71,7 +71,7 @@ Parse "THB 25.00" (restricted scope) : rejected - not an allowed currency
   Parse "THB 25.00" (scope disposed)   : THB 25.00
 ```
 
-The same parse call gives three different outcomes purely from the ambient scope — that is the
+The same parse call gives three different outcomes purely from the ambient scope - that is the
 seam working. A system that settles in a fixed currency set installs a lookup like
 `RestrictedCurrencyLookup` so unsupported currencies fail *everywhere* the seam is consulted,
 not just at hand-written checkpoints.
@@ -82,7 +82,7 @@ contrast), `ICurrencyLookup` (all six members, via the delegating decorator), `M
 
 ### NamedContexts (`Scenarios/NamedContexts.cs`)
 
-**Intent.** Different parts of one application legitimately settle money under different rules —
+**Intent.** Different parts of one application legitimately settle money under different rules -
 retail totals round away from zero, treasury keeps banker's rounding. `MonetaryContext` bundles
 that policy as an immutable record, and named (keyed) DI registrations let each consumer ask for
 its own by name instead of hard-coding policy at call sites.
@@ -105,7 +105,7 @@ resolves the Retail context back out of the container as a keyed service.
 
 19.985 is a midpoint: away-from-zero pushes it up to 19.99, banker's rounding takes the even
 neighbour 19.98. One cent, two policies, both explicit. The keyed resolution proves the DI path
-yields the identical settlement — consumers take `[FromKeyedServices("Retail")] MonetaryContext`.
+yields the identical settlement - consumers take `[FromKeyedServices("Retail")] MonetaryContext`.
 
 **APIs demonstrated.** `MonetaryContext.Default` + record `with` overrides,
 `MidpointRoundingStrategy.AwayFromZero` / `ToEven`, `CalculatedMoney.RoundToMoney(context)`,
@@ -121,7 +121,7 @@ core services; the returned builder adds a rate provider; `AddFinancialJson` (fr
 **What it does.** Composes a `ServiceCollection` with `AddFinancialService()`,
 `AddFinancialJson(Compact)`, and an offline `FixedDatedRateProvider` instance registered via
 `AddDatedExchangeRateProvider`; builds the provider; calls `UseCurrencyResolution()`; then
-consumes each registration — the `ICurrencyLookup` (numeric-code query), the keyed financial
+consumes each registration - the `ICurrencyLookup` (numeric-code query), the keyed financial
 `JsonSerializerOptions`, and the `IDatedRateProvider`.
 
 **What to expect.**
@@ -135,7 +135,7 @@ consumes each registration — the `ICurrencyLookup` (numeric-code query), the k
 ```
 
 The JSON line prints the compact string shape because the *keyed options* carry the policy the
-builder configured — consumers resolve `JsonSerializerOptions` by the
+builder configured - consumers resolve `JsonSerializerOptions` by the
 `FinancialJsonServiceCollectionExtensions.JsonOptionsKey` key instead of building their own. The rate
 line comes from the registered offline instance; a live provider package would replace that one
 registration with its `Add<Source>ExchangeRates()` and nothing else changes.

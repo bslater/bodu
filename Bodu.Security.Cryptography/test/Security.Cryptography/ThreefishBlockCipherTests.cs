@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Tests for the <see cref="ThreefishBlockCipher" /> abstract base — specifically for members defined
+/// Tests for the <see cref="ThreefishBlockCipher" /> abstract base - specifically for members defined
 /// at the base class level that are not exercised by the variant-specific
 /// <see cref="BlockCipherTests{TTest, TCipher, TVariant}" /> harness.
 /// </summary>

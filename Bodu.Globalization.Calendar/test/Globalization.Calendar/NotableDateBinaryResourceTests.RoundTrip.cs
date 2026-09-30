@@ -9,8 +9,8 @@ namespace Bodu.Globalization.Calendar;
 public sealed partial class NotableDateBinaryResourceTests
 {
     /// <summary>
-    /// Verifies that the comprehensive synthetic resource — every strategy, recurrence, and duration discriminator
-    /// plus the full policy and applicability field surface — survives a write/read cycle with canonical-form
+    /// Verifies that the comprehensive synthetic resource - every strategy, recurrence, and duration discriminator
+    /// plus the full policy and applicability field surface - survives a write/read cycle with canonical-form
     /// equality: re-encoding the decoded resource reproduces the original bytes exactly.
     /// </summary>
     [TestMethod]
@@ -43,7 +43,7 @@ public sealed partial class NotableDateBinaryResourceTests
     }
 
     /// <summary>
-    /// Verifies that writing the same resource twice produces identical bytes — the stability contract build systems
+    /// Verifies that writing the same resource twice produces identical bytes - the stability contract build systems
     /// rely on for up-to-date checks.
     /// </summary>
     [TestMethod]

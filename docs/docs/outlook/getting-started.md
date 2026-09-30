@@ -1,8 +1,8 @@
 ---
-title: Bodu.Formats.Outlook — Getting started
+title: Bodu.Formats.Outlook - Getting started
 ---
 
-# Bodu.Formats.Outlook — Getting started
+# Bodu.Formats.Outlook - Getting started
 
 Unfamiliar with terms like *property tag*, *named property*, *attachment method*, *code page*, or *validation level*? Read [Core concepts](concepts.md) first.
 
@@ -20,13 +20,13 @@ dotnet add package Bodu.Formats.Outlook.Pst
 
 Both target `net8.0` and share the single `Bodu.Formats.Outlook` namespace. Dependencies, from the project files:
 
-- `Bodu.Formats.Outlook.Msg` — `Bodu.Formats.Outlook`, `Bodu.IO.Compound` (the OLE2 container), `Bodu.Core`, and `System.Text.Encoding.CodePages` (Windows code pages for `String8` properties).
-- `Bodu.Formats.Outlook.Pst` — `Bodu.Formats.Outlook`, `Bodu.IO.Pst` (the node-database container, which itself references `Bodu.Collections`), `Bodu.Core`, and `System.Text.Encoding.CodePages`.
-- `Bodu.Formats.Outlook` alone — `Bodu.Core` only. Reference it directly from a library that models MAPI properties without opening files.
+- `Bodu.Formats.Outlook.Msg` - `Bodu.Formats.Outlook`, `Bodu.IO.Compound` (the OLE2 container), `Bodu.Core`, and `System.Text.Encoding.CodePages` (Windows code pages for `String8` properties).
+- `Bodu.Formats.Outlook.Pst` - `Bodu.Formats.Outlook`, `Bodu.IO.Pst` (the node-database container, which itself references `Bodu.Collections`), `Bodu.Core`, and `System.Text.Encoding.CodePages`.
+- `Bodu.Formats.Outlook` alone - `Bodu.Core` only. Reference it directly from a library that models MAPI properties without opening files.
 
 ## Sniff before opening
 
-Both sessions expose a cheap probe that restores the stream position afterwards. `IsMsgFile` checks for an OLE2 compound file whose root holds the `__properties_version1.0` stream (the root class identifier is not required — real-world writers omit it); `IsPstFile` checks the PST magics and answers `true` for any variant.
+Both sessions expose a cheap probe that restores the stream position afterwards. `IsMsgFile` checks for an OLE2 compound file whose root holds the `__properties_version1.0` stream (the root class identifier is not required - real-world writers omit it); `IsPstFile` checks the PST magics and answers `true` for any variant.
 
 <!-- compile -->
 ```csharp
@@ -69,7 +69,7 @@ Every convenience is nullable and returns `null` when the message does not carry
 
 ## Open a `.pst` file and walk the folders
 
-`RootFolder` is structural — user folders (the IPM subtree) hang beneath it — so walk `EnumerateSubfolders` recursively. Enumerations stream the folder's tables one row block at a time; nothing is materialized ahead of iteration.
+`RootFolder` is structural - user folders (the IPM subtree) hang beneath it - so walk `EnumerateSubfolders` recursively. Enumerations stream the folder's tables one row block at a time; nothing is materialized ahead of iteration.
 
 <!-- compile -->
 ```csharp
@@ -87,7 +87,7 @@ static void Walk(OutlookMailFolder folder, int indent)
         $"{folder.MessageCount?.ToString() ?? "?"} messages, {folder.UnreadCount?.ToString() ?? "?"} unread");
 
     foreach (OutlookMailMessage message in folder.EnumerateMessages())
-        Console.WriteLine($"{pad}  {message.SentTime:u}  {message.Subject} — {message.SenderName}");
+        Console.WriteLine($"{pad}  {message.SentTime:u}  {message.Subject} - {message.SenderName}");
 
     foreach (OutlookMailFolder child in folder.EnumerateSubfolders())
         Walk(child, indent + 1);
@@ -116,7 +116,7 @@ Console.WriteLine(body);
 
 ## Save an attachment and open an attached message
 
-Check `Method` before choosing the accessor — `OpenContentStream()` serves a by-value payload, `OpenMessage()` an embedded message, and each throws <xref:System.NotSupportedException> for the other kinds.
+Check `Method` before choosing the accessor - `OpenContentStream()` serves a by-value payload, `OpenMessage()` an embedded message, and each throws <xref:System.NotSupportedException> for the other kinds.
 
 <!-- compile -->
 ```csharp
@@ -168,13 +168,13 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 
 ## Look up a named property
 
-Named identifiers (at or above `0x8000`) are assigned per file. Resolve the durable identity — a property-set GUID plus a number or a name — to this file's identifier, then address the property collection with the expected wire type. The two members have the same names on both sessions; the `.pst` mapping is store-wide.
+Named identifiers (at or above `0x8000`) are assigned per file. Resolve the durable identity - a property-set GUID plus a number or a name - to this file's identifier, then address the property collection with the expected wire type. The two members have the same names on both sessions; the `.pst` mapping is store-wide.
 
 <!-- compile -->
 ```csharp
 using Bodu.Formats.Outlook;
 
-// PS_PUBLIC_STRINGS "Keywords" — the category list.
+// PS_PUBLIC_STRINGS "Keywords" - the category list.
 var keywords = new MapiNamedProperty(
     new Guid("00020329-0000-0000-C000-000000000046"), "Keywords");
 
@@ -252,11 +252,11 @@ var options = new OutlookMailStoreReaderOptions
 using var store = OutlookMailStore.Open(File.OpenRead("archive.pst"), options);
 ```
 
-The defaults — `Compatible` validation, 16 levels of nesting, 64 MiB of decompressed RTF, 1 MiB of inline attachment, and (for `.pst`) 256 MiB of node data — suit real-world files; see [resource limits](concepts.md#resource-limits) for what each one guards.
+The defaults - `Compatible` validation, 16 levels of nesting, 64 MiB of decompressed RTF, 1 MiB of inline attachment, and (for `.pst`) 256 MiB of node data - suit real-world files; see [resource limits](concepts.md#resource-limits) for what each one guards.
 
 ## Handle malformed input
 
-The two readers report failures differently beneath the shared <xref:Bodu.Formats.Outlook.OutlookFormatException> base. The `.msg` reader wraps container corruption — the <xref:Bodu.IO.Compound.CompoundFileFormatException> is the `InnerException` — while the `.pst` reader lets the <xref:Bodu.IO.Pst.PstFileException> family propagate unwrapped and reserves <xref:Bodu.Formats.Outlook.OutlookPstFormatException> for messaging-level violations.
+The two readers report failures differently beneath the shared <xref:Bodu.Formats.Outlook.OutlookFormatException> base. The `.msg` reader wraps container corruption - the <xref:Bodu.IO.Compound.CompoundFileFormatException> is the `InnerException` - while the `.pst` reader lets the <xref:Bodu.IO.Pst.PstFileException> family propagate unwrapped and reserves <xref:Bodu.Formats.Outlook.OutlookPstFormatException> for messaging-level violations.
 
 <!-- compile -->
 ```csharp
@@ -292,7 +292,7 @@ catch (PstUnsupportedFormatException)
 }
 catch (PstFileException ex)
 {
-    Console.WriteLine($"Container corruption: {ex.Error} — {ex.Message}");
+    Console.WriteLine($"Container corruption: {ex.Error} - {ex.Message}");
 }
 catch (OutlookPstFormatException ex)
 {
@@ -302,8 +302,8 @@ catch (OutlookPstFormatException ex)
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — the vocabulary in depth, including the code-page and resource-limit rules.
-- **[Introduction](index.md)** — the package table, scenarios, and headline types.
-- **[Reading `.msg` files](../../guides/outlook/reading-msg-files.md)** and **[Properties and named properties](../../guides/outlook/properties-and-named-properties.md)** — the recipe-style guides.
-- **[Bodu.IO.Pst getting started](../io-pst/getting-started.md)** and the **[PST runnable sample](../../samples/io-pst.md)** — the container beneath the mail-store reader.
-- **API reference** — [Bodu.Formats.Outlook](xref:Bodu.Formats.Outlook) · [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.IO.Pst](xref:Bodu.IO.Pst).
+- **[Core concepts](concepts.md)** - the vocabulary in depth, including the code-page and resource-limit rules.
+- **[Introduction](index.md)** - the package table, scenarios, and headline types.
+- **[Reading `.msg` files](../../guides/outlook/reading-msg-files.md)** and **[Properties and named properties](../../guides/outlook/properties-and-named-properties.md)** - the recipe-style guides.
+- **[Bodu.IO.Pst getting started](../io-pst/getting-started.md)** and the **[PST runnable sample](../../samples/io-pst.md)** - the container beneath the mail-store reader.
+- **API reference** - [Bodu.Formats.Outlook](xref:Bodu.Formats.Outlook) · [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.IO.Pst](xref:Bodu.IO.Pst).

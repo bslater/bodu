@@ -1,11 +1,11 @@
 # Bodu.Globalization.Recurrence.Samples.RecurrenceRules
 
-`RecurrenceRule` — the RFC 5545 `RRULE` form. Five scenarios cover parsing and canonical
+`RecurrenceRule` - the RFC 5545 `RRULE` form. Five scenarios cover parsing and canonical
 formatting, the `BY*` expansion and limiting semantics that implementations most often disagree on,
 week numbering under `WKST`, the fluent `RecurrenceRuleBuilder`, and the four ways an occurrence
 stream gets bounded.
 
-Everything runs offline with fixed inputs, formatted with the invariant culture — deterministic
+Everything runs offline with fixed inputs, formatted with the invariant culture - deterministic
 output every run.
 
 ```bash
@@ -14,10 +14,10 @@ dotnet run --project samples/Globalization.Recurrence/Bodu.Globalization.Recurre
 
 NuGet consumers: `dotnet add package Bodu.Globalization.Recurrence`
 
-## Scenario 1 — RuleBasics
+## Scenario 1 - RuleBasics
 
 **Intent.** Show the shape of the type: a rule is *pure syntax*. It carries no start instant, so the
-series origin is supplied per query — which is what keeps it free of hidden state and safe to cache
+series origin is supplied per query - which is what keeps it free of hidden state and safe to cache
 or share.
 
 **What it does.** Parses `FREQ=MONTHLY;BYDAY=1FR;COUNT=5`, reads every part back as a typed property
@@ -80,7 +80,7 @@ guard.
 `.IsEveryOccurrence` and its `==` / `!=` operators, `RecurrenceRule.GetOccurrences(DateTime)`,
 `.ToString()`, `.Equals`.
 
-## Scenario 2 — ByPartSemantics
+## Scenario 2 - ByPartSemantics
 
 **Intent.** Pin the four `BY*` behaviours that recurrence libraries most often get wrong. Each one
 has a documented upstream defect behind it, and each is the sort of thing that looks like a bug
@@ -91,10 +91,10 @@ until you read the RFC.
 date; a `BYSETPOS` rule queried from two different anchors in the same week; and an
 `INTERVAL=14` daily rule filtered by `BYMONTH`, printing the gaps between survivors.
 
-**What to expect.** Invalid dates are *skipped, never clamped* — February, April, June, September and
+**What to expect.** Invalid dates are *skipped, never clamped* - February, April, June, September and
 November simply have no 31st, so they are absent rather than rolled back. Colliding `BY` values
 contribute one occurrence each, not two. `BYSETPOS=1` gives the same Monday for both anchors
-(the Wednesday anchor does not promote Wednesday to position 1 — the period's position 1 is still
+(the Wednesday anchor does not promote Wednesday to position 1 - the period's position 1 is still
 its Monday, which merely falls before the start). And the fourteen-day grid is never restarted by the
 month filter, which the gaps prove: every gap is a multiple of 14.
 
@@ -123,15 +123,15 @@ gaps in days                 : 14, 42, 14, 294, 14
 ```
 
 The gap `42` is three fourteen-day steps across November, and `294` is twenty-one of them across the
-rest of the year — both multiples of 14, which is the observable proof the grid survived the filter.
+rest of the year - both multiples of 14, which is the observable proof the grid survived the filter.
 
 **APIs demonstrated.** `RecurrenceRule.Parse` with `BYMONTHDAY` (including negative day numbers),
 `BYDAY` ordinals, `BYSETPOS`, `BYMONTH`, and `INTERVAL`; `RecurrenceRule.GetOccurrences(DateTime)`.
 
-## Scenario 3 — WeekNumbering
+## Scenario 3 - WeekNumbering
 
 **Intent.** Show that `WKST` reparameterises week *numbering*, not just weekly intervals. It changes
-which dates `BYWEEKNO` resolves to and which years have a fifty-third week — and numbered weeks
+which dates `BYWEEKNO` resolves to and which years have a fifty-third week - and numbered weeks
 straddle the calendar year, so week 1 can begin in December.
 
 **What it does.** Runs the RFC's own `WKST=MO` / `WKST=SU` fortnightly pair; resolves `BYWEEKNO=1`
@@ -139,9 +139,9 @@ both with and without a `BYDAY` limit; resolves week 20 under two different week
 week 53 and week −1.
 
 **What to expect.** The two week starts select genuinely different dates. `BYWEEKNO=1;BYDAY=MO` from
-2025 yields **2025-12-29** — a date in the *previous* calendar year, because 2026's week 1 begins
+2025 yields **2025-12-29** - a date in the *previous* calendar year, because 2026's week 1 begins
 there. Without a `BYDAY` limit, `BYWEEKNO` expands to the whole seven-day week. Week 53 exists only
-in some years, so it skips 2021–2025 entirely:
+in some years, so it skips 2021-2025 entirely:
 
 ```text
 --- Week numbering - WKST and BYWEEKNO ---
@@ -166,7 +166,7 @@ BYWEEKNO=-1;BYDAY=MO     : 2026-12-28, 2027-12-27, 2028-12-25
 **APIs demonstrated.** `RecurrenceRule.Parse` with `WKST`, `BYWEEKNO` (positive and negative), and
 `BYDAY`; `RecurrenceRule.GetOccurrences(DateTime)`.
 
-## Scenario 4 — BuildingRules
+## Scenario 4 - BuildingRules
 
 **Intent.** Show `RecurrenceRuleBuilder` as the fluent alternative to hand-writing `RRULE` text, and
 `WeekDayNum` as the value that carries an optional ordinal alongside a weekday.
@@ -174,13 +174,13 @@ BYWEEKNO=-1;BYDAY=MO     : 2026-12-28, 2027-12-27, 2028-12-25
 **What it does.** Builds a fortnightly Monday/Wednesday/Friday rule and asserts it equals the parsed
 text form; builds "third Thursday" and "last Friday" rules with ordinal and negative-ordinal
 `WeekDayNum` values; shows the `IsEveryOccurrence` flag and deconstruction; builds two realistic
-bounded rules — US Thanksgiving via `UNTIL`, and quarter-end via `BySetPos(-1)`; contrasts two
+bounded rules - US Thanksgiving via `UNTIL`, and quarter-end via `BySetPos(-1)`; contrasts two
 week starts through `WithWeekStart`; covers the remaining date-selecting parts (`ByMonthDay`,
 `ByYearDay`, `ByWeekNo`); and closes with the time-of-day parts, which build and round-trip but do
 not enumerate.
 
 **What to expect.** The builder is a spelling of the same grammar, so the built rule equals the
-parsed one — the property that makes it safe in configuration code. Ordinals render as `3TH` and
+parsed one - the property that makes it safe in configuration code. Ordinals render as `3TH` and
 `-1FR` in the rule's canonical text:
 
 ```text
@@ -222,24 +222,24 @@ occurrences: 2026-03-31, 2026-06-30, 2026-09-30, 2026-12-31
 ```
 
 `WithWeekStart` is the one worth pausing on. Monday is the default, and a default is omitted from
-canonical text — so the two fortnightly rules print almost identically while selecting different
+canonical text - so the two fortnightly rules print almost identically while selecting different
 dates, and only the second carries a visible `WKST`. That is exactly the failure mode a builder
 makes easy: the call is in the chain, but invisible in the result.
 
-`ByHour`/`ByMinute`/`BySecond` build and round-trip, but this library enumerates **dates** — so a
+`ByHour`/`ByMinute`/`BySecond` build and round-trip, but this library enumerates **dates** - so a
 rule relying on them to place several occurrences inside one day is outside what `GetOccurrences`
 models, as is any sub-daily `FREQ`.
 
 > The canonical token for a `WeekDayNum` is read from the rule that carries it, because
 > `WeekDayNum.ToString()` currently emits the compiler-generated record form rather than its
-> iCalendar token — see the *Known wrinkle* note in the domain README.
+> iCalendar token - see the *Known wrinkle* note in the domain README.
 
-**APIs demonstrated.** `RecurrenceRuleBuilder` — every member: `.WithInterval` / `.WithCount` /
+**APIs demonstrated.** `RecurrenceRuleBuilder` - every member: `.WithInterval` / `.WithCount` /
 `.WithUntil` / `.WithWeekStart` / `.ByDay` (both overloads) / `.ByMonth` / `.ByMonthDay` /
-`.ByYearDay` / `.ByWeekNo` / `.ByHour` / `.ByMinute` / `.BySecond` / `.BySetPos` / `.Build` —
+`.ByYearDay` / `.ByWeekNo` / `.ByHour` / `.ByMinute` / `.BySecond` / `.BySetPos` / `.Build` -
 plus `WeekDayNum` construction and `Deconstruct`, and `RecurrenceFrequency`.
 
-## Scenario 5 — BoundedEnumeration
+## Scenario 5 - BoundedEnumeration
 
 **Intent.** Show the four ways an occurrence stream gets bounded, and the two point queries that
 answer a scheduling question without enumerating anything.
@@ -295,6 +295,6 @@ Bodu.Globalization.Recurrence.Samples.RecurrenceRules/
 
 ## Related
 
-- `Bodu.Globalization.Recurrence.Samples.RecurrenceSets` — composing rules with `RDATE` / `EXDATE`.
-- `Bodu.Globalization.Recurrence.Samples.CronExpressions` — the cron form of the same query surface.
-- `Bodu.Globalization.Recurrence.Samples.SchedulingHost` — all four forms behind one adapter.
+- `Bodu.Globalization.Recurrence.Samples.RecurrenceSets` - composing rules with `RDATE` / `EXDATE`.
+- `Bodu.Globalization.Recurrence.Samples.CronExpressions` - the cron form of the same query surface.
+- `Bodu.Globalization.Recurrence.Samples.SchedulingHost` - all four forms behind one adapter.

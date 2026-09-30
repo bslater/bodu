@@ -34,8 +34,8 @@ public partial class StringExtensionsTests
     public void NullIfEmpty_WhenInvoked_ShouldReturnExpected(string? value, string? expected) => Assert.AreEqual(expected, value.NullIfEmpty());
 
     /// <summary>
-    /// Verifies that <see cref="StringExtensions.NullIfEmpty(string?)" /> returns the original instance — not
-    /// a copy — when the input is non-empty.
+    /// Verifies that <see cref="StringExtensions.NullIfEmpty(string?)" /> returns the original instance - not
+    /// a copy - when the input is non-empty.
     /// </summary>
     [TestMethod]
     public void NullIfEmpty_WhenInputIsNonEmpty_ShouldReturnSameInstance()

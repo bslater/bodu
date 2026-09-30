@@ -66,7 +66,7 @@ public abstract class SignatureAlgorithmTests<TTest, TAlgorithm>
     }
 
     /// <summary>
-    /// Verifies that flipping a bit at the start, middle, or end of the signature — or in the message — causes
+    /// Verifies that flipping a bit at the start, middle, or end of the signature - or in the message - causes
     /// verification to return <see langword="false" />.
     /// </summary>
     [TestMethod]
@@ -103,7 +103,7 @@ public abstract class SignatureAlgorithmTests<TTest, TAlgorithm>
     }
 
     /// <summary>
-    /// Verifies that signing without a private key — and verifying without a public key — throws
+    /// Verifies that signing without a private key - and verifying without a public key - throws
     /// <see cref="CryptographicException" />.
     /// </summary>
     [TestMethod]

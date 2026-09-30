@@ -14,8 +14,8 @@ namespace Bodu.Security.Cryptography.Benchmarks;
 
 /// <summary>
 /// Measures throughput, latency, and allocation for the primitives the cryptography performance plans
-/// (<c>plans/crypto-performance.md</c> and <c>plans/crypto-performance-followups.md</c>) target, next to the BCL and — on
-/// Linux — OpenSSL on the same machine.
+/// (<c>plans/crypto-performance.md</c> and <c>plans/crypto-performance-followups.md</c>) target, next to the BCL and - on
+/// Linux - OpenSSL on the same machine.
 /// </summary>
 /// <remarks>
 /// <para>

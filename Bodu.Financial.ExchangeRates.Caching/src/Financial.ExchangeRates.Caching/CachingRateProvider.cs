@@ -15,12 +15,12 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <remarks>
 /// <para>
 /// Use this to add read-through caching to one rate source. To group several cached sources behind a single entry point
-/// — with priority-fallback, averaging, or per-pair routing — compose them with an
+/// - with priority-fallback, averaging, or per-pair routing - compose them with an
 /// <see cref="AggregatingRateProvider" />.
 /// </para>
 /// <para>
-/// The provider is storage-agnostic: it does not choose or construct a cache, so the storage structure — TOML or JSON
-/// files, the on-disk layout and date partitioning, an in-memory cache, SQLite, or a distributed cache — is the
+/// The provider is storage-agnostic: it does not choose or construct a cache, so the storage structure - TOML or JSON
+/// files, the on-disk layout and date partitioning, an in-memory cache, SQLite, or a distributed cache - is the
 /// caller's decision. Supply any <see cref="IRateCache" />, already bound to its provider, to the constructor.
 /// </para>
 /// </remarks>
@@ -34,7 +34,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 ///     new FileRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" });
 /// IDatedRateProvider cachedRba = new CachingRateProvider(rba, fileCache, options);
 ///
-/// // Or any other IRateCache — for example an in-memory cache.
+/// // Or any other IRateCache - for example an in-memory cache.
 /// IDatedRateProvider cachedEcb = new CachingRateProvider(ecb, new InMemoryRateCache("ECB"), options);
 ///]]>
 /// </code>

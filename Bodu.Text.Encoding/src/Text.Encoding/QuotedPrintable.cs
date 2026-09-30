@@ -14,8 +14,8 @@ namespace Bodu.Text.Encoding;
 /// <para>
 /// Quoted-Printable represents mostly-7-bit-safe octets as readable text: printable ASCII passes through literally,
 /// while other octets are escaped as <c>=HH</c> with uppercase hexadecimal digits. Encoded lines are kept within a
-/// configurable limit (76 characters by default) by inserting soft line breaks — a trailing <c>=</c> followed by the
-/// newline — which the decoder removes.
+/// configurable limit (76 characters by default) by inserting soft line breaks - a trailing <c>=</c> followed by the
+/// newline - which the decoder removes.
 /// </para>
 /// <para>
 /// <see cref="QuotedPrintableEncodingMode.Binary" /> treats the whole input as arbitrary octets and escapes CR and LF;
@@ -30,7 +30,7 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// <para>
 /// Because correct use depends on the mode and decoding options, this is a static type and is intentionally not
-/// registered in <see cref="BinaryEncodings" /> — the parameterless <see cref="IBinaryEncoding" /> contract cannot
+/// registered in <see cref="BinaryEncodings" /> - the parameterless <see cref="IBinaryEncoding" /> contract cannot
 /// carry that information.
 /// </para>
 /// </remarks>
@@ -39,7 +39,7 @@ namespace Bodu.Text.Encoding;
 ///<![CDATA[
 /// byte[] data = "café = møney"u8.ToArray();
 ///
-/// // Binary mode (default) — arbitrary octets, 76-column soft wrapping, CRLF.
+/// // Binary mode (default) - arbitrary octets, 76-column soft wrapping, CRLF.
 /// string encoded = QuotedPrintable.Encode(data);
 ///
 /// // Round-trip.
@@ -305,7 +305,7 @@ public static partial class QuotedPrintable
     private static char HexLow(byte value) => ToHexDigit(value & 0x0F);
 
     /// <summary>
-    /// Maps a nibble (0–15) to its upper-case hexadecimal digit.
+    /// Maps a nibble (0-15) to its upper-case hexadecimal digit.
     /// </summary>
     /// <param name="nibble">The nibble value.</param>
     /// <returns>The hexadecimal digit.</returns>
@@ -315,7 +315,7 @@ public static partial class QuotedPrintable
     /// Attempts to map a hexadecimal digit to its value, honouring the lowercase relaxation.
     /// </summary>
     /// <param name="c">The candidate digit.</param>
-    /// <param name="allowLowercase">Whether lowercase <c>a</c>–<c>f</c> are accepted.</param>
+    /// <param name="allowLowercase">Whether lowercase <c>a</c>-<c>f</c> are accepted.</param>
     /// <param name="value">When this method returns, contains the digit value.</param>
     /// <returns><see langword="true" /> when <paramref name="c" /> is an accepted hex digit.</returns>
     private static bool TryHexValue(char c, bool allowLowercase, out int value)

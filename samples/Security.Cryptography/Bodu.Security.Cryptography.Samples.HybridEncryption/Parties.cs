@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography.Samples.HybridEncryption;
 /// <para>
 /// What cannot be fixed is the <em>ephemeral</em> key HPKE generates inside every <c>Setup</c> call: that is the whole
 /// point of the construction, and there is deliberately no API to inject it. So the encapsulation and the ciphertext
-/// differ on every run, and the scenarios print only facts that do not — round-trip equality, sizes, suite
+/// differ on every run, and the scenarios print only facts that do not - round-trip equality, sizes, suite
 /// identifiers, and rejection outcomes. Printing a ciphertext here would produce a sample whose documented output
 /// could never be reproduced.
 /// </para>

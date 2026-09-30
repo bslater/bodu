@@ -11,7 +11,7 @@ namespace Bodu.Samples.Text.Formats.ConfigFiles.Scenarios;
 
 /// <summary>
 /// Demonstrates the forward-only <see cref="Utf8DotEnvReader" />: one token in memory at a time, with the line number
-/// attached — the surface for scanning env files without materializing a document, e.g. a linter that flags
+/// attached - the surface for scanning env files without materializing a document, e.g. a linter that flags
 /// suspicious keys as it streams.
 /// </summary>
 public static class DotEnvStreamingReader

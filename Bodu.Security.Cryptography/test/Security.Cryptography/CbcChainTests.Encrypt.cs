@@ -37,8 +37,8 @@ public sealed partial class CbcChainTests
     }
 
     /// <summary>
-    /// Verifies that chains carried from call to call through the chaining value — alternating long chains, which
-    /// reset the cipher's cached chain, with short ones — match one platform chain over the whole input.
+    /// Verifies that chains carried from call to call through the chaining value - alternating long chains, which
+    /// reset the cipher's cached chain, with short ones - match one platform chain over the whole input.
     /// </summary>
     [TestMethod]
     public void Encrypt_WhenChainIsSplitAcrossCalls_ShouldMatchOnePlatformChain()
@@ -64,7 +64,7 @@ public sealed partial class CbcChainTests
     }
 
     /// <summary>
-    /// Verifies that encrypting in place — the output being exactly the input — gives the platform's ciphertext on both
+    /// Verifies that encrypting in place - the output being exactly the input - gives the platform's ciphertext on both
     /// paths.
     /// </summary>
     [TestMethod]

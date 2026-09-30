@@ -75,7 +75,7 @@ public static partial class DateTimeExtensions
     /// This overload supports calendar-aware computations for systems such as <see cref="HebrewCalendar" />,
     /// <see cref="HijriCalendar" />, <see cref="JapaneseCalendar" />, and others supported by .NET.
     /// <paramref name="dateTime" /> is first projected into the target calendar, so the result is equivalent to
-    /// <c>calendar.GetDaysInMonth(calendar.GetYear(dateTime), calendar.GetMonth(dateTime))</c> — the length of the
+    /// <c>calendar.GetDaysInMonth(calendar.GetYear(dateTime), calendar.GetMonth(dateTime))</c> - the length of the
     /// calendar's own month containing the date, not the Gregorian month. If <paramref name="calendar" /> is
     /// <see langword="null" />, the <see cref="DateTimeFormatInfo.Calendar" /> of
     /// <see cref="CultureInfo.CurrentCulture" /> is used.

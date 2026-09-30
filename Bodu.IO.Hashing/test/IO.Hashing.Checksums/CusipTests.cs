@@ -59,7 +59,7 @@ public sealed class CusipTests
 
     /// <summary>
     /// Verifies that <see cref="Cusip.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose body contains a
-    /// character outside <c>'0'</c>–<c>'9'</c>, <c>'A'</c>–<c>'Z'</c>, and the punctuation sentinels.
+    /// character outside <c>'0'</c>-<c>'9'</c>, <c>'A'</c>-<c>'Z'</c>, and the punctuation sentinels.
     /// </summary>
     [TestMethod]
     public void IsValid_WhenBodyContainsInvalidCharacter_ShouldReturnFalse()

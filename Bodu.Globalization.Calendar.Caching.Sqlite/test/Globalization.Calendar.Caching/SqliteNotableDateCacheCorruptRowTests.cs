@@ -9,8 +9,8 @@ using Microsoft.Data.Sqlite;
 namespace Bodu.Globalization.Calendar.Caching;
 
 /// <summary>
-/// Verifies that <see cref="SqliteNotableDateCache" /> treats a corrupt stored row — an unparsable occurrences JSON
-/// blob or computed instant — as a skipped row rather than a thrown exception, preserving the best-effort read
+/// Verifies that <see cref="SqliteNotableDateCache" /> treats a corrupt stored row - an unparsable occurrences JSON
+/// blob or computed instant - as a skipped row rather than a thrown exception, preserving the best-effort read
 /// contract even when <see cref="NotableDateCacheOptions.ThrowOnStorageFailure" /> is set.
 /// </summary>
 [TestClass]
@@ -68,7 +68,7 @@ public sealed class SqliteNotableDateCacheCorruptRowTests
     }
 
     /// <summary>
-    /// Verifies that a truncated occurrences blob — valid JSON tokens cut off mid-array — is skipped without throwing.
+    /// Verifies that a truncated occurrences blob - valid JSON tokens cut off mid-array - is skipped without throwing.
     /// </summary>
     [TestMethod]
     public void GetYear_WhenOccurrencesBlobIsTruncated_ShouldSkipRow()
@@ -114,7 +114,7 @@ public sealed class SqliteNotableDateCacheCorruptRowTests
     }
 
     /// <summary>
-    /// Verifies that a store for a new year — which reads and merges the territory's existing rows — succeeds when one
+    /// Verifies that a store for a new year - which reads and merges the territory's existing rows - succeeds when one
     /// stored row is corrupt, dropping the corrupt row and keeping the valid ones.
     /// </summary>
     [TestMethod]

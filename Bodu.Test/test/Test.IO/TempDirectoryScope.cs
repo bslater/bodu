@@ -71,7 +71,7 @@ public sealed class TempDirectoryScope
         }
         catch
         {
-            // Best-effort cleanup — leaking a temp directory is preferable to throwing during teardown.
+            // Best-effort cleanup - leaking a temp directory is preferable to throwing during teardown.
         }
     }
 }

@@ -19,7 +19,7 @@ NotableDateResource resource = NotableDateResourceLoader.Load(xml, CommonNotable
 NotableDateService  service  = new NotableDateService(resource);
 ```
 
-Resolution *behaviour* is carried by the resource itself — its `<ResolutionPolicy>` decides duplicate handling, same-day collisions, the priority direction, observed-date inclusion, and the working week. To change those, edit the document or build the resource differently; see [Identity and resolution](identity-and-resolution.md). Runtime *collaborators* are supplied through <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions>, an object with `init`-only properties (there is no positional-collaborator constructor):
+Resolution *behaviour* is carried by the resource itself - its `<ResolutionPolicy>` decides duplicate handling, same-day collisions, the priority direction, observed-date inclusion, and the working week. To change those, edit the document or build the resource differently; see [Identity and resolution](identity-and-resolution.md). Runtime *collaborators* are supplied through <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions>, an object with `init`-only properties (there is no positional-collaborator constructor):
 
 | Property | Type | Purpose |
 |---|---|---|
@@ -29,7 +29,7 @@ Resolution *behaviour* is carried by the resource itself — its `<ResolutionPol
 | `TriggerHandlers` | `IAdjustmentTriggerHandlerRegistry?` | Consulted when an adjustment **trigger** is `AdjustmentTrigger.Custom`. |
 | `Providers` | `IEnumerable<INotableDateProvider>?` | Code-first providers that contribute finished occurrences. |
 
-Set only the properties you need — unset ones keep the built-in defaults:
+Set only the properties you need - unset ones keep the built-in defaults:
 
 <!-- compile -->
 ```csharp
@@ -112,7 +112,7 @@ An <xref:Bodu.Globalization.Calendar.IAdjustmentHandler> implements `DateOnly? A
 
 ## Code-first providers
 
-When a source cannot be expressed as an authored rule — occurrences pulled from a database, an HR system, or computed by bespoke logic — implement <xref:Bodu.Globalization.Calendar.INotableDateProvider> and register it through `NotableDateServiceOptions.Providers`. A provider returns finished <xref:Bodu.Globalization.Calendar.NotableDate> occurrences for a requested range and territory:
+When a source cannot be expressed as an authored rule - occurrences pulled from a database, an HR system, or computed by bespoke logic - implement <xref:Bodu.Globalization.Calendar.INotableDateProvider> and register it through `NotableDateServiceOptions.Providers`. A provider returns finished <xref:Bodu.Globalization.Calendar.NotableDate> occurrences for a requested range and territory:
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -144,7 +144,7 @@ NotableDateService service = new NotableDateService(
     resource, new NotableDateServiceOptions { Providers = new[] { new CompanyEventsProvider() } });
 ```
 
-Provider occurrences are *terminal*: the service intersects them with the requested range and applies any query filter, but they do **not** pass through adjustment policies or declarative overrides — a provider that needs an observed-date shift must compute it itself. They do take part in the final ordering and the resource's same-day collision policy alongside resource occurrences.
+Provider occurrences are *terminal*: the service intersects them with the requested range and applies any query filter, but they do **not** pass through adjustment policies or declarative overrides - a provider that needs an observed-date shift must compute it itself. They do take part in the final ordering and the resource's same-day collision policy alongside resource occurrences.
 
 ## Swapping the rule set at runtime
 
@@ -155,11 +155,11 @@ A resource is immutable, so a *live* change means loading a new resource and swa
 var provider = new MutableNotableDateResourceProvider(AsiaPacificCalendarData.LoadResource("AU"));
 INotableDateService service = new ReloadableNotableDateService(provider);
 
-// later, when the rules change — the live service picks it up atomically on the next query:
+// later, when the rules change - the live service picks it up atomically on the next query:
 provider.Reload(AsiaPacificCalendarData.LoadResource("NZ"));
 ```
 
-`ReloadableNotableDateService` accepts the same optional collaborators as `NotableDateService` (custom algorithm registry, collision resolver, adjustment-handler registries) after the provider argument. The pairing is what the DI companion's `AddReloadableNotableDateService` registers for you — see [Calendar dependency injection](dependency-injection.md).
+`ReloadableNotableDateService` accepts the same optional collaborators as `NotableDateService` (custom algorithm registry, collision resolver, adjustment-handler registries) after the provider argument. The pairing is what the DI companion's `AddReloadableNotableDateService` registers for you - see [Calendar dependency injection](dependency-injection.md).
 
 ## Localizing display names
 
@@ -279,18 +279,18 @@ IPluginTrustPolicy custom = new DelegatingPluginTrustPolicy(ctx =>
 
 The loader signals failure with the <xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginException> hierarchy:
 
-- <xref:Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException> — the trust policy rejected the assembly; it is never activated.
-- <xref:Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException> — the assembly lacks a `[assembly: NotableDatePlugin(…)]` attribute.
-- <xref:Bodu.Globalization.Calendar.Plugins.PluginActivationException> — the named plugin type could not be instantiated.
+- <xref:Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException> - the trust policy rejected the assembly; it is never activated.
+- <xref:Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException> - the assembly lacks a `[assembly: NotableDatePlugin(…)]` attribute.
+- <xref:Bodu.Globalization.Calendar.Plugins.PluginActivationException> - the named plugin type could not be instantiated.
 
 See the [Plugins package reference](xref:Bodu.Globalization.Calendar.Plugins) for the full type list.
 
 ## Where to go next
 
-- [Using NotableDateService](notable-dates.md) — query patterns, filters, and range queries.
-- [Calendar dependency injection](dependency-injection.md) — registering the service (and the reloadable pair) through `IServiceCollection`.
-- [Date calculation algorithms](algorithms.md) — built-in keys and implementing `INotableDateAlgorithm`.
-- [Observance adjustment rules](adjustment-rules.md) — triggers, actions, and custom adjustment handlers.
-- [Authoring notable date rules](rule-authoring.md) — XML / JSON documents, imports, and overrides.
-- [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.
-- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- [Using NotableDateService](notable-dates.md) - query patterns, filters, and range queries.
+- [Calendar dependency injection](dependency-injection.md) - registering the service (and the reloadable pair) through `IServiceCollection`.
+- [Date calculation algorithms](algorithms.md) - built-in keys and implementing `INotableDateAlgorithm`.
+- [Observance adjustment rules](adjustment-rules.md) - triggers, actions, and custom adjustment handlers.
+- [Authoring notable date rules](rule-authoring.md) - XML / JSON documents, imports, and overrides.
+- [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) - full type reference.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

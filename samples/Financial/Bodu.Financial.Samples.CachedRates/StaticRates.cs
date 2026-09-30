@@ -13,7 +13,7 @@ namespace Bodu.Financial.Samples.CachedRates;
 /// <summary>
 /// Loads the committed static rate file into a provider that stands in for a live web source. Every
 /// scenario in this sample wraps the result in a caching decorator exactly as it would wrap a real
-/// <c>RbaRateProvider</c> or <c>EcbRateProvider</c> — the contracts are identical.
+/// <c>RbaRateProvider</c> or <c>EcbRateProvider</c> - the contracts are identical.
 /// </summary>
 public static class StaticRates
 {

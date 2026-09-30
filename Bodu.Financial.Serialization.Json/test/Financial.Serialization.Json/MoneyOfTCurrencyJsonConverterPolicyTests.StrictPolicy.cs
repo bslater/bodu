@@ -13,7 +13,7 @@ public partial class MoneyOfTCurrencyJsonConverterPolicyTests
 {
 
     /// <summary>
-    /// Verifies that the strict policy continues to reject lowercase ISO codes — i.e. lenient adds tolerance
+    /// Verifies that the strict policy continues to reject lowercase ISO codes - i.e. lenient adds tolerance
     /// without back-porting it onto Strict.
     /// </summary>
     [TestMethod]

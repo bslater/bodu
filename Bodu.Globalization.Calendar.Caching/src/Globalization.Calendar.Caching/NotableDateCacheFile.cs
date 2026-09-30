@@ -11,8 +11,8 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// arrays: the per-year entry metadata and the occurrences that belong to those years.
 /// </summary>
 /// <remarks>
-/// The occurrences are stored flat rather than nested under each year — each occurrence row carries its own
-/// <see cref="NotableDateCacheOccurrenceRow.Year" /> and <see cref="NotableDateCacheOccurrenceRow.Version" /> — so the
+/// The occurrences are stored flat rather than nested under each year - each occurrence row carries its own
+/// <see cref="NotableDateCacheOccurrenceRow.Year" /> and <see cref="NotableDateCacheOccurrenceRow.Version" /> - so the
 /// document is a shallow structure that both the TOML and JSON serializers round-trip without nested arrays of tables.
 /// A cached year that yielded no occurrences appears only in <see cref="Entries" /> with no matching occurrence rows.
 /// </remarks>

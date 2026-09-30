@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides helpers for the PHC string format shared by the Argon2 and scrypt password-hash encodings — most notably
+/// Provides helpers for the PHC string format shared by the Argon2 and scrypt password-hash encodings - most notably
 /// the unpadded Base64 ("B64") encoding the format mandates for salt and hash fields.
 /// </summary>
 /// <remarks>

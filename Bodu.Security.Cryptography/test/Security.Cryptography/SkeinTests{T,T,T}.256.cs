@@ -10,8 +10,8 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Contains unit tests for the <see cref="Skein256" /> hash algorithm across every supported
-/// (output size, operating mode) combination — the four <see cref="Skein256TestVariant" /> hash variants and the
-/// matching Skein-MAC-256 variants — driven from the Skein 1.3 / NIST CD known-answer test vectors and the
+/// (output size, operating mode) combination - the four <see cref="Skein256TestVariant" /> hash variants and the
+/// matching Skein-MAC-256 variants - driven from the Skein 1.3 / NIST CD known-answer test vectors and the
 /// Appendix B initial chaining values.
 /// </summary>
 [TestClass]

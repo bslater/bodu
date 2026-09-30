@@ -81,7 +81,7 @@ public partial class CrcLookupTableCacheTests
     /// <summary>
     /// Verifies that <see cref="CrcLookupTableCache.GetLookupTable" /> returns a table whose length is
     /// <c>2^min(size, 8)</c> for every valid combination of <paramref name="size" />, <paramref name="polynomial" />,
-    /// and <paramref name="reflectIn" /> — covering the inclusive boundaries (1-bit and 64-bit), the common
+    /// and <paramref name="reflectIn" /> - covering the inclusive boundaries (1-bit and 64-bit), the common
     /// 16/32-bit widths, and the polynomial edge values (zero and all-ones).
     /// </summary>
     /// <param name="size">The CRC width in bits.</param>

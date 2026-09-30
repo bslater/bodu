@@ -7,7 +7,7 @@ engine. Each sample is a standalone project; run one with:
 dotnet run --project samples/Text.Filtering/<SampleName>
 ```
 
-Every sample is pure computation over fixed in-code corpora — offline and deterministic, no data
+Every sample is pure computation over fixed in-code corpora - offline and deterministic, no data
 files.
 
 ## Sample → pattern → package matrix

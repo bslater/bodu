@@ -21,7 +21,7 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// <remarks>
 /// <para>
 /// On write a defined value is emitted as its mapped member name; a value that does not correspond to a single defined
-/// member — an undefined value or a combination of flags — falls back to the value's decimal or comma-separated string
+/// member - an undefined value or a combination of flags - falls back to the value's decimal or comma-separated string
 /// form. On read a string is matched case-insensitively against the member names and then, as a fallback, parsed by the
 /// runtime so numeric and combined-flag strings are accepted. When <see cref="_allowIntegerValues" /> is
 /// <see langword="true" /> an integer token is also accepted and converted to the underlying enumeration value.

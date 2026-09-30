@@ -25,7 +25,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>Construction.</strong> Most callers use <see cref="HashAlgorithmFactory.From{T}(System.Func{T})" /> to wrap
-/// a delegate rather than calling this constructor directly — the static helper makes the call site read more naturally
+/// a delegate rather than calling this constructor directly - the static helper makes the call site read more naturally
 /// and avoids the trailing generic-type repetition. Direct construction is appropriate when the type needs to be
 /// assigned to a field that has the concrete <see cref="DelegateHashAlgorithmFactory{T}" /> type rather than the
 /// <see cref="IHashAlgorithmFactory{T}" /> interface.
@@ -34,12 +34,12 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Wrap a delegate via the static helper — the call site reads more naturally than the
+/// // Wrap a delegate via the static helper - the call site reads more naturally than the
 /// // constructor and avoids the trailing generic-type repetition.
 /// IHashAlgorithmFactory<SipHash64> factory = HashAlgorithmFactory.From(() =>
 ///     new SipHash64 { Key = sharedKey });
 ///
-/// // Resolve and use — the factory hands out a freshly-keyed instance each time.
+/// // Resolve and use - the factory hands out a freshly-keyed instance each time.
 /// using SipHash64 hash = factory.Create();
 /// byte[] digest = hash.ComputeHash("hello"u8.ToArray());
 ///

@@ -5,7 +5,7 @@
     <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-    <Title>Bodu — Delimited</Title>
+    <Title>Bodu - Delimited</Title>
     <Description>A self-contained delimited-text (RFC 4180 CSV/TSV) library for .NET 8, shaped after System.Text.Json and matching the sibling Bodu.Text.Toml surface: the forward-only ref-struct Utf8DelimitedReader/Utf8DelimitedWriter token surface over UTF-8, a mutable DelimitedNode DOM, a read-only DelimitedDocument DOM, and the DelimitedSerializer record mapper with an IAsyncEnumerable streaming surface. A delimited document is an array of records.</Description>
     <PackageTags>$(PackageTags);text;delimited;csv;tsv;rfc4180;serialization;serializer</PackageTags>
   </PropertyGroup>

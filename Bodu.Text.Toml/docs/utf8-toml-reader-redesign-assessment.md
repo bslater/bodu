@@ -1,12 +1,12 @@
-# `Utf8TomlReader` Redesign — Assessment and Target Design
+# `Utf8TomlReader` Redesign - Assessment and Target Design
 
 **Date:** 2026-06-11
-**Status:** Implemented — see the implementation plan for the delivered work items.
+**Status:** Implemented - see the implementation plan for the delivered work items.
 **Implementation plan:** [`utf8-toml-reader-redesign-plan.md`](./utf8-toml-reader-redesign-plan.md)
 **Relates to:** finding I1 of [`toml-spec-compliance-review.md`](./toml-spec-compliance-review.md)
 **Decisions taken:** assessment covers both phases (UTF-8 span-native core *and* lexer/builder
 separation); benchmarks consciously skipped (recorded as a risk in §7); the public token contract
-will be **deliberately broken** in the eventual implementation — `Utf8TomlReader` becomes a true
+will be **deliberately broken** in the eventual implementation - `Utf8TomlReader` becomes a true
 source-order reader and the converter architecture is redesigned around it.
 
 ---
@@ -18,7 +18,7 @@ claims:
 
 1. The type is named and shaped like `Utf8JsonReader` (a `ref struct` exposing `Read()`, `Skip()`,
    `CurrentDepth`, token types) but its constructor decodes the whole input, parses it, and
-   materializes two further representations before the first `Read()` — the abstraction is
+   materializes two further representations before the first `Read()` - the abstraction is
    misleading even though the behavior is correct.
 2. The pipeline carries four representations:
    `UTF-8 bytes → UTF-16 string → TomlReaderNode tree → List<TomlReaderToken> → consumer`.
@@ -37,13 +37,13 @@ claims:
 
 - **The mismatch is real.** It is finding I1 of the spec-compliance review, verified at source:
   the constructor decodes the entire input to a `string`
-  (`Utf8TomlReader.cs` — `Decode`, strict `UTF8Encoding`), runs `TomlDocumentParser.Parse()` to a
+  (`Utf8TomlReader.cs` - `Decode`, strict `UTF8Encoding`), runs `TomlDocumentParser.Parse()` to a
   fully validated node tree, then flattens it depth-first into `List<TomlReaderToken>`; `Read()`
   is a cursor over that list. A `ref struct` whose entire mutable state lives in heap objects gets
   the *restrictions* of the `Utf8JsonReader` idiom (no boxing, no async, no capture) with none of
   the zero-allocation *benefits*.
 - **The four-representation pipeline is accurately described**, and the duplicated representations
-  — not raw speed — are correctly identified as the main cost. Per document parsed today the
+  - not raw speed - are correctly identified as the main cost. Per document parsed today the
   library allocates: a doc-sized UTF-16 string, a `TomlReaderNode` tree with boxed scalars, a
   token list re-boxing nothing but re-referencing everything, plus `StringBuilder`s and
   `Substring` copies along the way.
@@ -51,7 +51,7 @@ claims:
   implicit-vs-explicit tracking, arrays of tables, duplicate definitions, inline-table
   closedness, offsets. These are exactly the rules implemented by the five identity sets in
   `TomlDocumentParser` (`_headerDefined`, `_dotted`, `_inline`, `_implicitSuper`, `_tableArrays`)
-  and they are the part of the system most worth protecting — they are now pinned by 1,410
+  and they are the part of the system most worth protecting - they are now pinned by 1,410
   toml-test conformance cases in both spec profiles.
 - **The scoping discipline is right**: single-span/final-block first, defer
   `ReadOnlySequence`/resumability, preserve `Toml.Parse`-style entry points.
@@ -59,7 +59,7 @@ claims:
 
 ### 2.2 What the proposal underweights
 
-**(a) TOML cannot be POCO-deserialized in one source-order pass — and the converters are the
+**(a) TOML cannot be POCO-deserialized in one source-order pass - and the converters are the
 primary public consumers of the reader.** Out-of-line headers make a table's members
 non-contiguous in source order:
 
@@ -74,7 +74,7 @@ timeout = 5
 enabled = true
 ```
 
-The serializer's binding loops require the *normalized tree-order* contract — a table's entire
+The serializer's binding loops require the *normalized tree-order* contract - a table's entire
 contents contiguous between `StartTable`/`EndTable`, with out-of-line headers merged into nested
 position, and every `PropertyName` immediately followed by its complete value:
 
@@ -89,19 +89,19 @@ position, and every `PropertyName` immediately followed by its complete value:
   `CollectionConverter<…>.Read` over arrays (`CollectionConverter.cs:73-74`), and
   `TomlNode.ReadFrom` recursively (`TomlNode.cs:264-299`).
 
-Feeding these loops from a source-order reader is impossible without buffering the document —
+Feeding these loops from a source-order reader is impossible without buffering the document -
 which is what the current implementation does. The proposal's step 3 ("make the DOM parser
 consume the new reader") is correct but incomplete: it is silent on the serializer, which is the
 larger consumer surface (~20 built-in converters plus any external custom converters).
 
-**(b) The architecture therefore needs three boxes, not two.** The proposal's target diagram —
+**(b) The architecture therefore needs three boxes, not two.** The proposal's target diagram -
 
 ```
 UTF-8 bytes → Utf8TomlReader ─┬─ direct consumer
                               └─ TomlDocumentBuilder → object model
 ```
 
-— omits the binding layer. The honest target is:
+- omits the binding layer. The honest target is:
 
 ```
 UTF-8 bytes
@@ -121,20 +121,20 @@ dichotomy: choosing Option 2 *implies* a second, normalized reader type for the 
 A JSON reader can stop after extracting one value. In TOML, a table is not known complete until
 end of input (a later `[a.b]` may legally extend the namespace), and duplicate/redefinition
 validation is inherently whole-document. A source-order reader can *lexically* skip values it
-does not care about — a real win — but it cannot deliver "validated subset reads" the way
+does not care about - a real win - but it cannot deliver "validated subset reads" the way
 `Utf8JsonReader` can. The benefit is smaller than the JSON analogy suggests and should not be the
 selling point.
 
 **(d) The performance motivation is unquantified.** The repository has no benchmark
 infrastructure (no BenchmarkDotNet, no `[Benchmark]`, no perf-tagged tests), and the full
 1,410-document conformance corpus parses in ~0.3 s inside the MSTest harness. For the stated
-primary workload (5–50 KB configuration files) the proposal itself concedes the user-facing
+primary workload (5-50 KB configuration files) the proposal itself concedes the user-facing
 difference may be small. The decision has been made to proceed on architectural grounds and skip
 benchmarks; §7 records this as an accepted risk.
 
 ### 2.3 Verdict
 
-**The redesign is worthwhile — as a foundational correction, exactly as the proposal's closing
+**The redesign is worthwhile - as a foundational correction, exactly as the proposal's closing
 line frames it.** Option 2 is the right direction, with two corrections to its blueprint:
 
 1. The target architecture must include the document builder *and* a normalized binding cursor
@@ -160,13 +160,13 @@ type (`TomlDocumentReader`), not as a peer "reader of TOML text".
 |---|---|---|---|
 | `TomlSerializer.Deserialize` (string/UTF-8/Stream/async) | `TomlSerializer.cs:155-205` | constructs reader, hands `ref` to engine | Yes (transitively) |
 | `TomlSerializerEngine.Deserialize` | `TomlSerializerEngine.cs:55-66` | first `Read()`, dispatch to converter | Implicit |
-| **`TomlConverter<T>.Read` (public abstract)** | `TomlConverterOfT.cs:55` | positioning contract (first token → last token) | **Critical — public API** |
+| **`TomlConverter<T>.Read` (public abstract)** | `TomlConverterOfT.cs:55` | positioning contract (first token → last token) | **Critical - public API** |
 | `ObjectConverter<T>.Read` | `ObjectConverter.cs:45-71` | `while Read() && != EndTable`, `PropertyName`→value adjacency, `Skip()` | Critical |
 | `DictionaryConverter<…>.Read` | `DictionaryConverter.cs:89-94` | same loop shape | Critical |
 | `CollectionConverter<…>.Read` | `CollectionConverter.cs:73-74` | `while Read() && != EndArray` | Moderate (arrays are contiguous in source order too) |
 | `TomlNode.ReadFrom` / `TomlNode.Parse` | `TomlNode.cs:264-299`, `:208-232` | recursive descent over tree-order tokens | Critical |
 | `TomlDocument.Parse` (read-only DOM) | `TomlDocument.cs:96-112` | flattens token stream into `Row[]` index | Critical |
-| `Bodu.Extensions.Configuration.Text.TomlConfigurationParser` | `TomlConfigurationParser.cs:49-52` | `TomlDocument.Parse` only | Indirect — insulated if `TomlDocument` keeps working |
+| `Bodu.Extensions.Configuration.Text.TomlConfigurationParser` | `TomlConfigurationParser.cs:49-52` | `TomlDocument.Parse` only | Indirect - insulated if `TomlDocument` keeps working |
 
 Every binding/DOM consumer depends critically on tree order; none can consume source order
 directly. The conformance corpus and the 2,584-test suite pin the *observable values* these
@@ -188,13 +188,13 @@ paths (`AppendEscape`/`AppendUnicodeEscape`, `char.ConvertFromUtf32`); the `'﻿
 (`:137-141`); the up-front surrogate validation pass (`EnsureValidScalarValues`, `:179-206`,
 redundant once scanning is byte-native); and char-based `_pos`/`_lineStart` offsets that
 propagate into `TomlReaderNode.Offset` and `TomlFormatException` (the reason `Offset` is
-currently documented as a *character* offset — review finding m6).
+currently documented as a *character* offset - review finding m6).
 
 ---
 
 ## 4. Target design
 
-### 4.1 `Utf8TomlReader` — redesigned as a true source-order lexer (public, breaking)
+### 4.1 `Utf8TomlReader` - redesigned as a true source-order lexer (public, breaking)
 
 A forward-only, single-span, final-block lexer over `ReadOnlySpan<byte>`:
 
@@ -214,7 +214,7 @@ A forward-only, single-span, final-block lexer over `ReadOnlySpan<byte>`:
 - **Lazy decoding**: `ValueSpan` (raw UTF-8 slice), `HasEscapes`; `GetString()` decodes on
   demand (escape-free literals can be transcoded straight from the span); numbers and date-times
   parsed from bytes at the `Get*` call.
-- **Positions**: `TokenStartIndex` (byte offset), `LineNumber`, `ColumnNumber` — all byte-true.
+- **Positions**: `TokenStartIndex` (byte offset), `LineNumber`, `ColumnNumber` - all byte-true.
 - **Validation split**: the lexer enforces *lexical* well-formedness only (UTF-8 validity, string
   termination and escapes, number/date-time grammar, newline discipline, control characters,
   spec-version gating of `\e`/`\x`/optional-seconds/inline-table relaxations). All *structural*
@@ -225,7 +225,7 @@ A forward-only, single-span, final-block lexer over `ReadOnlySpan<byte>`:
   input (`isFinalBlock` semantics), async. The struct layout should not preclude adding a
   sequence-backed constructor later.
 
-### 4.2 `TomlDocumentBuilder` — the one authoritative parser (internal)
+### 4.2 `TomlDocumentBuilder` - the one authoritative parser (internal)
 
 Consumes the lexer and owns everything in today's `TomlDocumentParser` *except* lexing: the five
 identity sets, redefinition rules, AoT append semantics, depth bounding, and tree
@@ -234,10 +234,10 @@ All three entry surfaces converge on it: `TomlSerializer.Deserialize`, `TomlNode
 `TomlDocument.Parse`. The 1,410-case conformance corpus revalidates the builder wholesale after
 the move.
 
-### 4.3 `TomlDocumentReader` — the normalized binding cursor (public, new name)
+### 4.3 `TomlDocumentReader` - the normalized binding cursor (public, new name)
 
-Today's `Utf8TomlReader` implementation — the tree-order token cursor with
-`Read`/`Skip`/`TokenType`/`CurrentDepth`/`Get*` — survives under the name `TomlDocumentReader`,
+Today's `Utf8TomlReader` implementation - the tree-order token cursor with
+`Read`/`Skip`/`TokenType`/`CurrentDepth`/`Get*` - survives under the name `TomlDocumentReader`,
 constructed by the engine over the builder's output. The converter API migrates to it:
 
 ```csharp
@@ -264,12 +264,12 @@ review finding m6 properly instead of the current documented char-offset comprom
 | `Utf8TomlReader` token semantics: tree-order → source-order; ctor no longer throws on *structural* errors (only lexical); new members (`ValueSpan`, `TokenStartIndex`, …) | **Breaking (behavioral + additive)** | Any external code reading tokens directly | Consumers wanting the old behavior switch to `TomlDocumentReader` |
 | `TomlConverter<T>.Read` parameter type → `ref TomlDocumentReader` | **Breaking (signature)** | All external custom converters; ~20 internal converters | Mechanical: same contract, new type name |
 | `TomlTokenType` gains `TableHeader`, `ArrayTableHeader`, `Key`, `Comment`, `StartInlineTable`, `EndInlineTable` | Additive | Exhaustive `switch`es over the enum | Existing members keep their values |
-| `TomlDocumentReader` introduced | Additive | — | — |
+| `TomlDocumentReader` introduced | Additive | - | - |
 | `TomlFormatException.Offset` char → byte offsets | Behavioral (documented) | Anyone comparing offsets on non-ASCII input | Release note |
 | `TomlSerializer.*`, `TomlNode.Parse`, `TomlDocument.Parse`, `Utf8TomlWriter`, all attributes/options | **Unchanged** | `Bodu.Extensions.Configuration.Text` is fully insulated via `TomlDocument` | None |
 
-**Test strategy.** The 2,584-test suite — including the 1,410-case toml-test corpus run in both
-spec profiles — pins observable parse/bind/write behavior and is the safety net for the entire
+**Test strategy.** The 2,584-test suite - including the 1,410-case toml-test corpus run in both
+spec profiles - pins observable parse/bind/write behavior and is the safety net for the entire
 rewrite. New coverage required: lexer-level token-contract tests (source-order vocabulary,
 `ValueSpan` slices, lazy-decode equivalence, byte positions, lexical-vs-structural error split)
 and migration tests proving `TomlDocumentReader` emits today's exact token sequences (the
@@ -279,12 +279,12 @@ existing `Utf8TomlReaderTests.*` largely become `TomlDocumentReaderTests.*` verb
 
 ## 6. Phasing
 
-- **Phase A — internal rewrite behind the existing surface (no public break).**
+- **Phase A - internal rewrite behind the existing surface (no public break).**
   Implement the byte-native lexer and `TomlDocumentBuilder`; rewrite `TomlDocumentParser` as the
   builder consuming the lexer; the existing public `Utf8TomlReader` keeps its current normalized
   contract as a temporary façade over the new pipeline. Exit criteria: full suite + corpus green;
   the doc-sized UTF-16 string, the separate decode pass, and `EnsureValidScalarValues` are gone.
-- **Phase B — the public swap.**
+- **Phase B - the public swap.**
   Introduce `TomlDocumentReader` (the façade, renamed); migrate `TomlConverter<T>.Read` and all
   built-in converters; re-point `Utf8TomlReader` at the source-order lexer; port the reader test
   suite; ship release notes for the inventory in §5.

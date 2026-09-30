@@ -14,7 +14,7 @@ namespace Bodu.IO.Hashing.Samples.ChecksumTour.Scenarios;
 /// Demonstrates the incremental surfaces: chunked <c>Append</c> equals the one-shot digest, a
 /// <see cref="HashingStream" /> checksums bytes as they flow through ordinary stream I/O, and
 /// <see cref="IResumableHashAlgorithm" /> extends a stored digest with new data without
-/// replaying the original input — the append-only log pattern.
+/// replaying the original input - the append-only log pattern.
 /// </summary>
 public static class StreamingResumable
 {

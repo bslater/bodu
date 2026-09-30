@@ -70,7 +70,7 @@ public partial class NumericExtensionsTests
     ];
 
     // --------------------------------------------------
-    // byte[] — incremental lookup-table cross-check
+    // byte[] - incremental lookup-table cross-check
     // --------------------------------------------------
 
     /// <summary>
@@ -502,7 +502,7 @@ public partial class NumericExtensionsTests
         Assert.AreEqual(expected, value.ReverseBits(bitLength));
 
     // --------------------------------------------------
-    // byte — ReverseBits(value, bitLength)
+    // byte - ReverseBits(value, bitLength)
     // --------------------------------------------------
 
     /// <summary>
@@ -518,7 +518,7 @@ public partial class NumericExtensionsTests
         Assert.AreEqual((byte)0, value.ReverseBits(0));
 
     // --------------------------------------------------
-    // uint — ReverseBits(value, bitLength)
+    // uint - ReverseBits(value, bitLength)
     // --------------------------------------------------
 
     /// <summary>
@@ -533,7 +533,7 @@ public partial class NumericExtensionsTests
         Assert.AreEqual(0u, value.ReverseBits(0));
 
     // --------------------------------------------------
-    // ulong — ReverseBits(value, bitLength)
+    // ulong - ReverseBits(value, bitLength)
     // --------------------------------------------------
 
     /// <summary>
@@ -548,7 +548,7 @@ public partial class NumericExtensionsTests
         Assert.AreEqual(0ul, value.ReverseBits(0));
 
     // --------------------------------------------------
-    // ushort — ReverseBits(value, bitLength)
+    // ushort - ReverseBits(value, bitLength)
     // --------------------------------------------------
 
     /// <summary>
@@ -589,7 +589,7 @@ public partial class NumericExtensionsTests
     }
 
     // --------------------------------------------------
-    // byte[] — null / exception
+    // byte[] - null / exception
     // --------------------------------------------------
 
     /// <summary>
@@ -605,7 +605,7 @@ public partial class NumericExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="NumericExtensions.ReverseBits(byte[])" /> does not modify the original
-    /// array — the result is a distinct new allocation.
+    /// array - the result is a distinct new allocation.
     /// </summary>
     [TestMethod]
     public void ReverseBits_WhenByteArrayIsValid_ShouldNotMutateOriginalArray()
@@ -619,7 +619,7 @@ public partial class NumericExtensionsTests
     }
 
     // --------------------------------------------------
-    // byte[] — valid inputs
+    // byte[] - valid inputs
     // --------------------------------------------------
 
     /// <summary>

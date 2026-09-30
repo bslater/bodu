@@ -383,7 +383,7 @@ internal static class XmlDocTokenizer
                 searchFrom = closeIndex + 1;
             }
 
-            // Inline tag without a matching closer — fall through and treat as a block start.
+            // Inline tag without a matching closer - fall through and treat as a block start.
         }
 
         end = position;
@@ -615,7 +615,7 @@ internal static class XmlDocTokenizer
             if (ch == '\n' || ch == '\r' || ch == ' ' || ch == '\t')
             {
                 // Newlines outside quotes can never survive on a single line; collapse them. Horizontal
-                // whitespace runs collapse only when attribute-spacing preservation is off — otherwise each
+                // whitespace runs collapse only when attribute-spacing preservation is off - otherwise each
                 // whitespace character is emitted as a space so the authored spacing is kept.
                 if (ch == '\n' || ch == '\r' || collapseOutsideQuotes)
                 {

@@ -4,11 +4,11 @@ title: Hosting schedules
 
 # Hosting schedules
 
-`Bodu.Globalization.Recurrence` deliberately ships no timer, no poller, no last-run store, and no clock: every query is a pure function of the instants you pass in. That leaves a host with four small jobs — normalise the four schedule forms behind one query surface, decide *when* to ask, persist what has already run, and convert between wall-clock and zone at its own boundary. This guide shows each one in a shape that stays reproducible in a test, mirroring the repository's `Bodu.Globalization.Recurrence.Samples.SchedulingHost` sample.
+`Bodu.Globalization.Recurrence` deliberately ships no timer, no poller, no last-run store, and no clock: every query is a pure function of the instants you pass in. That leaves a host with four small jobs - normalise the four schedule forms behind one query surface, decide *when* to ask, persist what has already run, and convert between wall-clock and zone at its own boundary. This guide shows each one in a shape that stays reproducible in a test, mirroring the repository's `Bodu.Globalization.Recurrence.Samples.SchedulingHost` sample.
 
-For the library's own statement of the contract — purity, offsets, and the due-ness recipe — see the [recurrence overview](index.md).
+For the library's own statement of the contract - purity, offsets, and the due-ness recipe - see the [recurrence overview](index.md).
 
-## Pattern 1 — one adapter over the four forms
+## Pattern 1 - one adapter over the four forms
 
 The forms differ in what they need to answer a query: a rule and an interval need a series origin, a cron expression and a set do not. Capturing the origin at configuration time reduces every form to `Next(after, inclusive)` / `Previous(before, inclusive)`, which is exactly the pair every form guarantees with identical flag semantics. The adapter is a hosting decision, so the package does not ship one:
 
@@ -88,9 +88,9 @@ public sealed class Schedule : ISchedule
 
 Every `TryParse` above is the defect-naming overload, so a bad configuration line surfaces its reason verbatim ("The cron field '60' is not valid.") without exception-driven control flow. Validate all entries and report every defect at start-up rather than failing on the first.
 
-## Pattern 2 — a reproducible catch-up loop over `TimeProvider`
+## Pattern 2 - a reproducible catch-up loop over `TimeProvider`
 
-Because nothing in the library asks what time it is, the host owns the clock. Take a <xref:System.TimeProvider> (or simply the `now` instant) as a parameter and the whole loop becomes a pure function you can drive from a test with `FakeTimeProvider` — no sleeping, no flakiness. Walking `Next` forward from the last recorded run to `now` enumerates exactly the missed occurrences; the backward query answers "should something have run?" without walking at all:
+Because nothing in the library asks what time it is, the host owns the clock. Take a <xref:System.TimeProvider> (or simply the `now` instant) as a parameter and the whole loop becomes a pure function you can drive from a test with `FakeTimeProvider` - no sleeping, no flakiness. Walking `Next` forward from the last recorded run to `now` enumerates exactly the missed occurrences; the backward query answers "should something have run?" without walking at all:
 
 ```csharp
 using Bodu.Globalization.Recurrence;
@@ -138,7 +138,7 @@ CatchUpDecision health = CatchUp.Evaluate(probe!, lastRun, resumedAt);
 CatchUpDecision report = CatchUp.Evaluate(weekly!, lastRun, resumedAt);
 // Missed: []                                 NextDue: 2026-03-16 00:00
 
-bool fireNow = CatchUp.IsDue(nightly!, lastRun, resumedAt);   // true — one catch-up run, not a backlog
+bool fireNow = CatchUp.IsDue(nightly!, lastRun, resumedAt);   // true - one catch-up run, not a backlog
 ```
 
 Whether to replay every missed occurrence (the `Missed` list) or run once (the due-ness comparison) is a per-job policy: a report that must exist for every period replays; a cache refresh runs once. The library's answer is an instant in both cases, so the choice is yours and is made in code you can test.
@@ -189,9 +189,9 @@ public sealed class ScheduleRunner : BackgroundService
 
 The periodic timer takes the same `TimeProvider`, so a test can advance a `FakeTimeProvider` past the tick and the run instant together and assert exactly which jobs fired.
 
-## Pattern 3 — persisting the last-run instant
+## Pattern 3 - persisting the last-run instant
 
-The only state a host needs per schedule is the instant its job last **completed** — the `lastCompleted` in the due-ness comparison and, for an anchored interval, potentially the anchor itself. Store it as UTC and treat its absence as "never ran":
+The only state a host needs per schedule is the instant its job last **completed** - the `lastCompleted` in the due-ness comparison and, for an anchored interval, potentially the anchor itself. Store it as UTC and treat its absence as "never ran":
 
 <!-- compile -->
 ```csharp
@@ -221,7 +221,7 @@ Two rules keep this robust:
 
 Because every form round-trips through canonical text and compares by value, the schedule text is a good store key: a changed configuration line is a new key and starts fresh, which is usually what you want.
 
-## Pattern 4 — daylight saving and time zones at the boundary
+## Pattern 4 - daylight saving and time zones at the boundary
 
 Rule, cron, and set schedules name a **wall-clock** time. The library evaluates them in whatever offset you pass and never consults `TimeZoneInfo`, so "02:00 every day in Sydney" needs the host to (1) ask for the next wall-clock occurrence, (2) resolve it against the zone, deciding skipped and ambiguous times to its own policy, and (3) wait on the resulting instant. Doing the conversion per evaluation is what keeps the schedule correct across a transition:
 
@@ -256,11 +256,11 @@ public static class ZonedSchedule
 }
 ```
 
-An anchored interval has no such problem: it is exact elapsed time, so `PT6H` is six hours on the spring-forward day too — anchor it in UTC and pass `nowUtc` as-is. Keep the zone policy in one place like this so it is visible and testable; the library will never silently pick one for you.
+An anchored interval has no such problem: it is exact elapsed time, so `PT6H` is six hours on the spring-forward day too - anchor it in UTC and pass `nowUtc` as-is. Keep the zone policy in one place like this so it is visible and testable; the library will never silently pick one for you.
 
-## Pattern 5 — skip non-working days with the calendar package
+## Pattern 5 - skip non-working days with the calendar package
 
-"Every night at 02:00, except on public holidays" is a filter over the occurrence stream, applied from outside: the recurrence package carries no holiday data and takes no dependency on the calendar package. `IsNonWorkingDay` — the `DateTime` / `DateTimeOffset` / `DateOnly` extension in the `Bodu.Extensions` namespace of `Bodu.Globalization.Calendar` — answers `true` for weekends and for the territory's resolved non-working notable dates, so it is the one predicate to apply. Walk `Next` until it passes:
+"Every night at 02:00, except on public holidays" is a filter over the occurrence stream, applied from outside: the recurrence package carries no holiday data and takes no dependency on the calendar package. `IsNonWorkingDay` - the `DateTime` / `DateTimeOffset` / `DateOnly` extension in the `Bodu.Extensions` namespace of `Bodu.Globalization.Calendar` - answers `true` for weekends and for the territory's resolved non-working notable dates, so it is the one predicate to apply. Walk `Next` until it passes:
 
 ```csharp
 using Bodu.Extensions;                    // IsNonWorkingDay
@@ -289,12 +289,12 @@ DateTime? second = NextWorkingRun(first!.Value);                        // 2026-
 // along with the weekend; the observed date comes from the data pack's adjustment rules.
 ```
 
-The same predicate works over a windowed `GetOccurrences` with LINQ's `Where`, as the [overview](index.md#calendar-aware-filtering-is-composition-not-a-feature) shows. Pass a `WeekPattern` as the optional trailing argument to change the working week, or use `IsNotableDate` to test the notable dates alone — see [Working-day arithmetic](../calendar/working-days.md).
+The same predicate works over a windowed `GetOccurrences` with LINQ's `Where`, as the [overview](index.md#calendar-aware-filtering-is-composition-not-a-feature) shows. Pass a `WeekPattern` as the optional trailing argument to change the working week, or use `IsNotableDate` to test the notable dates alone - see [Working-day arithmetic](../calendar/working-days.md).
 
 ## Where to go next
 
-- **[RFC 5545 recurrence rules](rrule.md)**, **[Cron expressions](cron.md)**, **[Anchored intervals](anchored-intervals.md)**, **[Recurrence sets](recurrence-sets.md)** — the per-form references.
-- **[Runnable samples](../../samples/recurrence.md)** — `Bodu.Globalization.Recurrence.Samples.SchedulingHost` runs the adapter, configuration validation, offset-aware queries, and the catch-up loop offline.
-- **[Working-day arithmetic](../calendar/working-days.md)** — everything `IsNonWorkingDay` and its siblings can do.
+- **[RFC 5545 recurrence rules](rrule.md)**, **[Cron expressions](cron.md)**, **[Anchored intervals](anchored-intervals.md)**, **[Recurrence sets](recurrence-sets.md)** - the per-form references.
+- **[Runnable samples](../../samples/recurrence.md)** - `Bodu.Globalization.Recurrence.Samples.SchedulingHost` runs the adapter, configuration validation, offset-aware queries, and the catch-up loop offline.
+- **[Working-day arithmetic](../calendar/working-days.md)** - everything `IsNonWorkingDay` and its siblings can do.
 - **[Bodu.Globalization.Recurrence API reference](xref:Bodu.Globalization.Recurrence)**
-- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

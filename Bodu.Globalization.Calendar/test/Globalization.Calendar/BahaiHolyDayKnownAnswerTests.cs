@@ -146,7 +146,7 @@ public sealed class BahaiHolyDayKnownAnswerTests
     /// The measured relationship between the engine's Universal-Time equinox model and the official Tehran-anchored
     /// reckoning is asymmetric and year-uniform: the engine is exact in the thirty years whose official Naw-Ruz is
     /// 20 March and exactly one day early in the twenty Tehran-sunset boundary years whose official Naw-Ruz is
-    /// 21 March — never late and never mixed within a year. The sweep therefore asserts the signed bound
+    /// 21 March - never late and never mixed within a year. The sweep therefore asserts the signed bound
     /// (official minus one day, or official) rather than a symmetric tolerance.
     /// </para>
     /// </remarks>

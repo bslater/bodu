@@ -43,7 +43,7 @@ public partial class IndexedSetTests
     }
 
     // --------------------------------------------------------
-    // Insert — behaviour
+    // Insert - behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -76,7 +76,7 @@ public partial class IndexedSetTests
     }
 
     // --------------------------------------------------------
-    // Insert — argument validation
+    // Insert - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -145,7 +145,7 @@ public partial class IndexedSetTests
     }
 
     // --------------------------------------------------------
-    // TryInsert — behaviour
+    // TryInsert - behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -162,7 +162,7 @@ public partial class IndexedSetTests
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
     }
     // --------------------------------------------------------
-    // TryInsert — argument validation
+    // TryInsert - argument validation
     // --------------------------------------------------------
 
     /// <summary>

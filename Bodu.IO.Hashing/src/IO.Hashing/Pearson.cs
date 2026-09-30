@@ -25,8 +25,8 @@ namespace Bodu.IO.Hashing;
 /// result, using a different initialization for each output byte to reduce collisions.
 /// </para>
 /// <para>
-/// <strong>When to choose Pearson.</strong> Pearson is interesting in two niches: extremely small lookup tables — a
-/// Pearson byte is the cheapest way to hash a key into a 256-bucket index — and resource-poor embedded targets where a
+/// <strong>When to choose Pearson.</strong> Pearson is interesting in two niches: extremely small lookup tables - a
+/// Pearson byte is the cheapest way to hash a key into a 256-bucket index - and resource-poor embedded targets where a
 /// 256-byte permutation table is small enough to fit in cache and a 64-bit-sized hash can be assembled from eight
 /// independent 8-bit hashes without ever needing wide-integer arithmetic. For modern hash-table workloads with
 /// realistic key spaces, prefer <see cref="Fnv1a32" /> / <see cref="Fnv1a64" /> or <see cref="MurmurHash3" />;

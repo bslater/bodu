@@ -58,7 +58,7 @@ public partial class IndexedPriorityQueueTests
 
     /// <summary>
     /// Verifies that copying into an array whose element type is incompatible with the pair type throws
-    /// <see cref="ArgumentException" /> without writing any element — the incompatible element type is validated up
+    /// <see cref="ArgumentException" /> without writing any element - the incompatible element type is validated up
     /// front, so the destination is left untouched. (The pair type is a sealed struct, so a mismatch already faults
     /// on the first element; this pins the fail-fast, no-partial-write contract.)
     /// </summary>

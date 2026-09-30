@@ -46,7 +46,7 @@ namespace Bodu.Security.Cryptography;
 /// <strong>Lifecycle.</strong> Each instance encrypts or decrypts exactly one message. A second call to
 /// <see cref="Encrypt" /> or <see cref="Decrypt" /> throws <see cref="InvalidOperationException" />. The instance must
 /// be disposed when finished; <see cref="Dispose" /> clears the GHASH subkey, initial counter, running counter, and
-/// cached associated data. The supplied <see cref="IBlockCipher" /> is not disposed by this type — ownership remains
+/// cached associated data. The supplied <see cref="IBlockCipher" /> is not disposed by this type - ownership remains
 /// with the caller.
 /// </para>
 /// <para>
@@ -57,10 +57,10 @@ namespace Bodu.Security.Cryptography;
 /// are dead code through the public <see cref="ReadOnlySpan{Byte}" /> surface today (the <see cref="int" />-typed
 /// length caps inputs at ≈ 2 GiB, far below either limit) but document the invariant at the call site and protect any
 /// future surface that admits longer inputs. The 32-bit counter is separately guarded against wrapping past
-/// <c>0xFFFFFFFF</c> — see <c>Encrypt_WhenCounterWouldWrapPast0xFFFFFFFF</c>.
+/// <c>0xFFFFFFFF</c> - see <c>Encrypt_WhenCounterWouldWrapPast0xFFFFFFFF</c>.
 /// </para>
 /// <para>
-/// <strong>When to use GCM.</strong> The default modern AEAD mode — single-pass, parallelisable, and
+/// <strong>When to use GCM.</strong> The default modern AEAD mode - single-pass, parallelisable, and
 /// hardware-accelerated on AES-NI / PCLMULQDQ. The cost is fragility under nonce reuse: a single repeated
 /// <c>(key, nonce)</c> pair leaks the GHASH subkey and forfeits authentication forever. For nonce-misuse resistance
 /// prefer <see cref="GcmSivModeTransform" /> or <see cref="SivModeTransform" />; for constrained environments prefer
@@ -68,11 +68,11 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="OcbModeTransform" />.
 /// </para>
 /// <para>
-/// <strong>When to use GCM.</strong> The default modern AEAD mode — TLS 1.2/1.3, IPsec ESP, SSH, QUIC, and most
+/// <strong>When to use GCM.</strong> The default modern AEAD mode - TLS 1.2/1.3, IPsec ESP, SSH, QUIC, and most
 /// file-format AEAD layers all use AES-GCM. Single-pass, parallelisable, hardware-accelerated on AES-NI / PCLMULQDQ,
 /// and the fastest AEAD on commodity x86/ARM. The cost is fragility under nonce reuse: a single repeated
 /// <c>(key, nonce)</c> pair leaks the GHASH key and forfeits authentication forever. Use only when the caller can <em>
-/// guarantee</em> nonce uniqueness — usually via a 96-bit counter or a random nonce drawn from a large enough space.
+/// guarantee</em> nonce uniqueness - usually via a 96-bit counter or a random nonce drawn from a large enough space.
 /// For nonce-misuse resistance prefer <see cref="GcmSivModeTransform" /> or <see cref="SivModeTransform" />; for
 /// constrained environments prefer <see cref="CcmModeTransform" />; for a single-pass alternative without GCM's
 /// fragility profile prefer <see cref="OcbModeTransform" />.
@@ -86,7 +86,7 @@ namespace Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography.Extensions;
 ///
 /// using IBlockCipher cipher = new AesBlockCipher(key);
-/// // GCM takes the 96-bit (12-byte) nonce directly — J0 is derived internally as nonce || 0x00000001.
+/// // GCM takes the 96-bit (12-byte) nonce directly - J0 is derived internally as nonce || 0x00000001.
 /// using IAeadBlockCipherModeTransform gcm = new GcmModeTransform(cipher, nonce);
 /// byte[] sealed_ = gcm.Encrypt(plaintext, associatedData: header);
 /// using IAeadBlockCipherModeTransform dec = new GcmModeTransform(cipher, nonce);
@@ -186,8 +186,8 @@ public sealed class GcmModeTransform
     /// <see cref="NonceSize" /> bytes.
     /// </exception>
     /// <remarks>
-    /// Convenience overload over the span form for callers using the <see cref="Nonce" /> value type — typically
-    /// produced by <see cref="Nonce.Random(int)" /> — which keeps nonces distinct from keys and tags in calling code.
+    /// Convenience overload over the span form for callers using the <see cref="Nonce" /> value type - typically
+    /// produced by <see cref="Nonce.Random(int)" /> - which keeps nonces distinct from keys and tags in calling code.
     /// </remarks>
     public GcmModeTransform(IBlockCipher cipher, Nonce nonce)
         : this(cipher, nonce.AsSpan(), nameof(nonce), useInitialCounterBlock: false)
@@ -328,7 +328,7 @@ public sealed class GcmModeTransform
 
                 // Verify before producing plaintext. On failure, zero whatever the caller passed in
                 // so a pre-filled output buffer cannot leak data the caller may have used to seed
-                // the destination — defense-in-depth aligned with AsconAead128.Decrypt.
+                // the destination - defense-in-depth aligned with AsconAead128.Decrypt.
                 if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
                 {
                     CryptographyHelper.Clear(output[..plaintextLength]);
@@ -347,8 +347,8 @@ public sealed class GcmModeTransform
         }
         catch
         {
-            // Zero the plaintext region on any failure — a tag mismatch or a fault from the underlying
-            // cipher mid-transform — so partially written plaintext or keystream bytes never leak.
+            // Zero the plaintext region on any failure - a tag mismatch or a fault from the underlying
+            // cipher mid-transform - so partially written plaintext or keystream bytes never leak.
             CryptographyHelper.Clear(output[..plaintextLength]);
             throw;
         }
@@ -360,7 +360,7 @@ public sealed class GcmModeTransform
 
     /// <summary>
     /// Releases all resources used by this instance and clears the GHASH subkey, initial counter, running counter, and
-    /// cached associated data from memory. Idempotent. Does not dispose the supplied <see cref="IBlockCipher" /> —
+    /// cached associated data from memory. Idempotent. Does not dispose the supplied <see cref="IBlockCipher" /> -
     /// ownership remains with the caller.
     /// </summary>
     public void Dispose()
@@ -526,7 +526,7 @@ public sealed class GcmModeTransform
     /// <param name="output">The destination span; must be at least <paramref name="input" />.Length bytes.</param>
     /// <exception cref="CryptographicException">
     /// The plaintext / ciphertext length would step the GCM counter past <c>0xFFFFFFFF</c> while another block remains
-    /// to be processed (NIST SP 800-38D §5.2.1.1 — at most <c>2^32 − 2</c> blocks per <c>(key, nonce)</c>).
+    /// to be processed (NIST SP 800-38D §5.2.1.1 - at most <c>2^32 − 2</c> blocks per <c>(key, nonce)</c>).
     /// </exception>
     /// <remarks>
     /// Each run of counters stops after the block that takes the counter to <c>0xFFFFFFFF</c>, so the blocks before a

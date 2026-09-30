@@ -20,7 +20,7 @@ public sealed partial class MerkleTree
     /// <param name="entries">The later tree's entries, in order.</param>
     /// <param name="firstSize">The number of entries in the earlier tree.</param>
     /// <returns>
-    /// The proof, or an empty proof when the two sizes are equal or the earlier tree is empty — in both cases the
+    /// The proof, or an empty proof when the two sizes are equal or the earlier tree is empty - in both cases the
     /// consistency is established by the sizes and roots alone.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="entries" /> is <see langword="null" />.</exception>
@@ -81,13 +81,13 @@ public sealed partial class MerkleTree
     /// <remarks>
     /// <para>
     /// This is <see href="https://www.rfc-editor.org/rfc/rfc6962#section-2.1.2">RFC 6962 §2.1.2</see>. Unlike inclusion
-    /// verification, both sizes and both roots are inputs, and the proof must reconstruct <em>both</em> — so there is
+    /// verification, both sizes and both roots are inputs, and the proof must reconstruct <em>both</em> - so there is
     /// no analogue here of the tree-size ambiguity that the bound root exists to close.
     /// </para>
     /// <para>
     /// Three degenerate cases are decided before the walk. A <paramref name="secondSize" /> below
     /// <paramref name="firstSize" /> is rejected outright: a log cannot shrink. Equal sizes require an <em>empty</em>
-    /// proof and identical roots — a non-empty proof between equal sizes is rejected rather than walked, because the
+    /// proof and identical roots - a non-empty proof between equal sizes is rejected rather than walked, because the
     /// only evidence that could be offered is evidence of something else. A <paramref name="firstSize" /> of zero
     /// likewise requires an empty proof, since every tree extends the empty tree.
     /// </para>

@@ -40,7 +40,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public async Task VerifyHashAsync_WhenCalledAfterAppend_ShouldIgnorePriorState()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        algorithm.Append(new byte[] { 100, 200 }); // prior state — must be discarded
+        algorithm.Append(new byte[] { 100, 200 }); // prior state - must be discarded
 
         using MemoryStream stream = new(s_sampleData);
 

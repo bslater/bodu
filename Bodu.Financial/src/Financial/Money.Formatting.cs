@@ -85,44 +85,44 @@ public readonly partial struct Money
     /// <list type="bullet">
     /// <item>
     /// <description>
-    /// <c>null</c>, <c>""</c>, or <c>"G"</c> — the ISO 4217 code followed by the amount with minor-unit precision and
+    /// <c>null</c>, <c>""</c>, or <c>"G"</c> - the ISO 4217 code followed by the amount with minor-unit precision and
     /// culture-aware grouping (e.g. <c>"USD 1,234.56"</c>).
     /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// <c>"C"</c> — the culture's native currency format when its region currency matches <see cref="Code" />, or the
+    /// <c>"C"</c> - the culture's native currency format when its region currency matches <see cref="Code" />, or the
     /// ISO code substituted into the culture's currency-position slot when they differ.
     /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// <c>"L"</c> — the amount followed by the currency's English-language name, sourced from
+    /// <c>"L"</c> - the amount followed by the currency's English-language name, sourced from
     /// <see cref="CurrencyRegistry" />. Falls back to the ISO-code form when the currency is not registered or has no
     /// English name.
     /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// <c>"R"</c> — invariant round-trip form (e.g. <c>"USD 1234.56"</c>); the supplied <paramref name="provider" /> is
+    /// <c>"R"</c> - invariant round-trip form (e.g. <c>"USD 1234.56"</c>); the supplied <paramref name="provider" /> is
     /// ignored and the <c>"~"</c> prefix and precision suffixes are rejected.
     /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// <c>"N"</c>, <c>"F"</c>, or <c>"D"</c> — bare numeric form with no currency designator. <c>"D"</c> is a
+    /// <c>"N"</c>, <c>"F"</c>, or <c>"D"</c> - bare numeric form with no currency designator. <c>"D"</c> is a
     /// Bodu-specific alias for <c>"F"</c>.
     /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// Prefix <c>"~"</c> on <c>"C"</c>, <c>"G"</c>, or <c>"L"</c> — elide the currency designator entirely when the
+    /// Prefix <c>"~"</c> on <c>"C"</c>, <c>"G"</c>, or <c>"L"</c> - elide the currency designator entirely when the
     /// culture's region currency matches <see cref="Code" />.
     /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// Any specifier other than <c>"R"</c> with a numeric suffix (<c>"C4"</c>, <c>"L0"</c>) — explicit fractional-digit
+    /// Any specifier other than <c>"R"</c> with a numeric suffix (<c>"C4"</c>, <c>"L0"</c>) - explicit fractional-digit
     /// count overriding the currency's natural precision.
     /// </description>
     /// </item>

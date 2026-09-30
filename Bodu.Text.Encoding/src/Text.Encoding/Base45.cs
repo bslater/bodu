@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Provides Base45 encoding and decoding of binary data as defined by RFC 9285 — the compact alphanumeric encoding used
+/// Provides Base45 encoding and decoding of binary data as defined by RFC 9285 - the compact alphanumeric encoding used
 /// to carry binary payloads inside a QR code's Alphanumeric mode.
 /// </summary>
 /// <remarks>
@@ -22,7 +22,7 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// <para>
 /// Because the space character is itself a Base45 symbol, whitespace skipping via
-/// <see cref="BaseFormatStyles.IgnoreWhitespace" /> applies only to tab, carriage return, and line feed — never to the
+/// <see cref="BaseFormatStyles.IgnoreWhitespace" /> applies only to tab, carriage return, and line feed - never to the
 /// space character. The decoder is strict per RFC 9285 §6: it rejects characters outside the alphabet, an encoded
 /// length whose value modulo three is one, and any three-character group that decodes to a value greater than
 /// <c>65535</c> (or any two-character group greater than <c>255</c>).
@@ -42,7 +42,7 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static partial class Base45
 {
-    /// <summary>The RFC 9285 §4.2 Base45 alphabet, indexed by symbol value <c>0</c>–<c>44</c>.</summary>
+    /// <summary>The RFC 9285 §4.2 Base45 alphabet, indexed by symbol value <c>0</c>-<c>44</c>.</summary>
     private const string Alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:";
 
     /// <summary>The encoding radix.</summary>
@@ -91,7 +91,7 @@ public static partial class Base45
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="charCount" /> is negative.</exception>
     /// <remarks>
     /// The returned value is exact for well-formed input (two bytes per three-character group plus one for a trailing
-    /// two-character group). When <paramref name="charCount" /> modulo three is one — a length the decoder rejects —
+    /// two-character group). When <paramref name="charCount" /> modulo three is one - a length the decoder rejects -
     /// the value still serves as a safe buffer size.
     /// </remarks>
     public static int GetMaxDecodedLength(int charCount)
@@ -155,7 +155,7 @@ public static partial class Base45
 
     /// <summary>
     /// Indicates whether <paramref name="c" /> is an ignorable whitespace character under
-    /// <see cref="BaseFormatStyles.IgnoreWhitespace" /> — tab, carriage return, or line feed. The space character is a
+    /// <see cref="BaseFormatStyles.IgnoreWhitespace" /> - tab, carriage return, or line feed. The space character is a
     /// Base45 symbol and is never treated as ignorable.
     /// </summary>
     /// <param name="c">The character to test.</param>

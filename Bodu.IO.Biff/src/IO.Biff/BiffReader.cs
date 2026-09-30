@@ -26,7 +26,7 @@ namespace Bodu.IO.Biff;
 /// The BIFF version is established from the first <c>BOF</c> record (or supplied through
 /// <see cref="BiffReaderOptions.Version" />) and the code page for byte strings from the <c>CODEPAGE</c> record (or
 /// <see cref="BiffReaderOptions.CodePage" />); the reader keeps no other state, and in particular no workbook, sheet,
-/// or cell model. A record whose identifier the codec does not name is never an error — it remains readable through
+/// or cell model. A record whose identifier the codec does not name is never an error - it remains readable through
 /// <see cref="RecordId" /> and <see cref="ValueSpan" />.
 /// </para>
 /// <para>
@@ -232,7 +232,7 @@ public ref partial struct BiffReader
     /// </summary>
     /// <returns>
     /// <see langword="true" /> when a record was read; <see langword="false" /> at the clean end of the supplied bytes,
-    /// or — when <see cref="IsFinalBlock" /> is <see langword="false" /> — when the next record is incomplete and more
+    /// or - when <see cref="IsFinalBlock" /> is <see langword="false" /> - when the next record is incomplete and more
     /// data is needed.
     /// </returns>
     /// <exception cref="BiffFormatException">

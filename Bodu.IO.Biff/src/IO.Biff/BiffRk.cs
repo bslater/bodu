@@ -13,7 +13,7 @@ namespace Bodu.IO.Biff;
 /// <remarks>
 /// Bit 0 set means the decoded value is divided by 100; bit 1 set means the high 30 bits are a signed integer, clear
 /// means they are the most significant 30 bits of a double whose remaining 34 bits are zero. Not every double has an RK
-/// form — <see cref="TryEncode" /> reports when a value must be written as a <c>NUMBER</c> record instead.
+/// form - <see cref="TryEncode" /> reports when a value must be written as a <c>NUMBER</c> record instead.
 /// </remarks>
 public static class BiffRk
 {

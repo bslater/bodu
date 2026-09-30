@@ -4,9 +4,9 @@ title: Observance adjustment rules
 
 # Observance adjustment rules
 
-An **adjustment policy** shifts a resolved *nominal* date — the date the resolution strategy computed — into an *observed* date when a trigger condition fires. Most real-world public-holiday systems require adjustments: Christmas moving to a Monday when it falls on a Saturday, ANZAC Day moving to the next working day when it collides with a weekend, or a substitute Monday for any date that falls on a Sunday.
+An **adjustment policy** shifts a resolved *nominal* date - the date the resolution strategy computed - into an *observed* date when a trigger condition fires. Most real-world public-holiday systems require adjustments: Christmas moving to a Monday when it falls on a Saturday, ANZAC Day moving to the next working day when it collides with a weekend, or a substitute Monday for any date that falls on a Sunday.
 
-In the notable-date schema, an adjustment policy is **reusable and named**: it is declared once in the document's top-level `<AdjustmentPolicies>` element and referenced from a rule by id. There are **no inline per-rule adjustment definitions** — a rule always points at a policy with `<Adjustment policyRef="…" />`. This page covers nominal vs. observed dates, the reusable <xref:Bodu.Globalization.Calendar.AdjustmentPolicy> model, the full <xref:Bodu.Globalization.Calendar.AdjustmentTrigger> and <xref:Bodu.Globalization.Calendar.AdjustmentAction> catalogues, the `<Emission>` element and <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> values, `<Scope>`, and how to plug in a custom trigger or action.
+In the notable-date schema, an adjustment policy is **reusable and named**: it is declared once in the document's top-level `<AdjustmentPolicies>` element and referenced from a rule by id. There are **no inline per-rule adjustment definitions** - a rule always points at a policy with `<Adjustment policyRef="…" />`. This page covers nominal vs. observed dates, the reusable <xref:Bodu.Globalization.Calendar.AdjustmentPolicy> model, the full <xref:Bodu.Globalization.Calendar.AdjustmentTrigger> and <xref:Bodu.Globalization.Calendar.AdjustmentAction> catalogues, the `<Emission>` element and <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> values, `<Scope>`, and how to plug in a custom trigger or action.
 
 For the element-by-element reference, see [NotableDateRule and adjustment-policy reference](rule-reference.md). For where adjustments sit in the overall resolution process, see [The resolution pipeline](resolution-pipeline.md).
 
@@ -14,12 +14,12 @@ For the element-by-element reference, see [NotableDateRule and adjustment-policy
 
 ## Nominal date vs. observed date
 
-![Nominal date vs. observed date — a weekend-rollover worked example](../../images/diagrams/calendar-nominal-vs-observed.svg)
+![Nominal date vs. observed date - a weekend-rollover worked example](../../images/diagrams/calendar-nominal-vs-observed.svg)
 
 Two terms appear throughout this page and the wider documentation:
 
-- **Nominal date** — what the rule's resolution strategy computes, before any adjustment runs. For Christmas Day this is *25 December*; for Easter Monday it is *Easter Sunday + 1 day*. The nominal date depends only on the rule and the year, and is carried on the resolved occurrence as `NotableDate.ActualDate`.
-- **Observed date** — what the adjustment pipeline emits and what consumers actually see in `NotableDate.Date`. When the nominal date is acceptable (e.g. Christmas falls on a Thursday) the observed date equals the nominal. When an adjustment fires (e.g. Christmas falls on a Saturday and a weekend-rollover policy relocates it) the observed date is the *substitute*.
+- **Nominal date** - what the rule's resolution strategy computes, before any adjustment runs. For Christmas Day this is *25 December*; for Easter Monday it is *Easter Sunday + 1 day*. The nominal date depends only on the rule and the year, and is carried on the resolved occurrence as `NotableDate.ActualDate`.
+- **Observed date** - what the adjustment pipeline emits and what consumers actually see in `NotableDate.Date`. When the nominal date is acceptable (e.g. Christmas falls on a Thursday) the observed date equals the nominal. When an adjustment fires (e.g. Christmas falls on a Saturday and a weekend-rollover policy relocates it) the observed date is the *substitute*.
 
 Most occurrences have `Date == ActualDate` and `IsObserved == false`. When an adjustment fires, `IsObserved` is `true` and the occurrence records which policy moved it (`AdjustmentPolicyId`) and why (`AdjustmentReason`):
 
@@ -29,11 +29,11 @@ foreach (NotableDate date in service.Resolve(2027, "AU"))
     if (date.IsObserved)
         Console.WriteLine(
             $"{date.DisplayName}: observed {date.Date:d MMM} (nominal {date.ActualDate:d MMM}) " +
-            $"via {date.AdjustmentPolicyId} — {date.AdjustmentReason}");
+            $"via {date.AdjustmentPolicyId} - {date.AdjustmentReason}");
 }
 ```
 
-`NotableDate.IsObserved` is the flag (there is no `WasAdjusted` *property* — `NotableDateFilter.WasAdjusted()` is a filter factory you can compose into a query):
+`NotableDate.IsObserved` is the flag (there is no `WasAdjusted` *property* - `NotableDateFilter.WasAdjusted()` is a filter factory you can compose into a query):
 
 ```csharp
 // Only the adjusted (observed) occurrences for the year.
@@ -44,8 +44,8 @@ IReadOnlyList<NotableDate> adjusted = service.Resolve(2027, "AU", NotableDateFil
 
 Two jurisdictional styles dominate real-world public-holiday law, and the policy model supports both through the `<Emission>` element:
 
-- **Adjust in place — the nominal date is gone.** The single occurrence moves to the observed date. There is one `NotableDate` for the year; `Date` holds the observed date and `ActualDate` records the nominal. This is `<Emission mode="ObservedOnly" />` and is typical of Australian / New Zealand public holidays.
-- **Emit an additional observed date — keep the nominal *and* the substitute.** The pipeline returns two `NotableDate` instances for the year: the nominal occurrence and the substitute. This is `<Emission mode="ActualAndObserved" />` and is typical of UK bank holidays, where the nominal date retains its religious / cultural significance and the substitute is a separate working-day closure. (The legacy `ObservedAsAdditional` mode is `[Obsolete]` and behaves identically — it is normalised to `ActualAndObserved` at load time, so author `ActualAndObserved` in new documents.)
+- **Adjust in place - the nominal date is gone.** The single occurrence moves to the observed date. There is one `NotableDate` for the year; `Date` holds the observed date and `ActualDate` records the nominal. This is `<Emission mode="ObservedOnly" />` and is typical of Australian / New Zealand public holidays.
+- **Emit an additional observed date - keep the nominal *and* the substitute.** The pipeline returns two `NotableDate` instances for the year: the nominal occurrence and the substitute. This is `<Emission mode="ActualAndObserved" />` and is typical of UK bank holidays, where the nominal date retains its religious / cultural significance and the substitute is a separate working-day closure. (The legacy `ObservedAsAdditional` mode is `[Obsolete]` and behaves identically - it is normalised to `ActualAndObserved` at load time, so author `ActualAndObserved` in new documents.)
 
 Use adjust-in-place when the authority treats the holiday as *moved*; emit-additional when the nominal date keeps its own weight. The data packs follow each jurisdiction's prevailing convention. The full list of emission modes is in [Emission modes](#emission-modes) below.
 
@@ -109,7 +109,7 @@ A rule's `<Adjustments>` element may list several `<Adjustment policyRef="…" /
 | `IfNthOccurrenceInMonth` | The nominal date is the `weekOrdinal`-th occurrence of its weekday in the month. | `weekOrdinal` |
 | `Custom` | A registered <xref:Bodu.Globalization.Calendar.IAdjustmentTriggerHandler> returns `true`. | `handlerKey` |
 
-The weekend-related triggers (`IfWeekend`, `IfWeekday`, `IfNonWorkingDay`, `IfWorkingDay`) interpret "weekend" against the working week carried by the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> (default Monday–Friday). For a `SundayToThursday` working week — common in some Middle-Eastern territories — Friday and Saturday are the weekend.
+The weekend-related triggers (`IfWeekend`, `IfWeekday`, `IfNonWorkingDay`, `IfWorkingDay`) interpret "weekend" against the working week carried by the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> (default Monday-Friday). For a `SundayToThursday` working week - common in some Middle-Eastern territories - Friday and Saturday are the weekend.
 
 ```xml
 <!-- Move only when the nominal date is a Saturday. -->
@@ -142,9 +142,9 @@ The weekend-related triggers (`IfWeekend`, `IfWeekday`, `IfNonWorkingDay`, `IfWo
 | `Suppress` | Drop the occurrence entirely. | *(none)* |
 | `Custom` | Delegate the move to a registered <xref:Bodu.Globalization.Calendar.IAdjustmentHandler>. | `handlerKey` |
 
-`MoveToNextWeekday` / `MoveToPreviousWeekday` care only about the working week (weekends). `MoveToNextWorkingDay` / `MoveToPreviousWorkingDay` additionally skip other non-working occurrences — the right choice when a substitute must not land on another holiday — and accept `maxSearchDays` to cap how far they scan.
+`MoveToNextWeekday` / `MoveToPreviousWeekday` care only about the working week (weekends). `MoveToNextWorkingDay` / `MoveToPreviousWorkingDay` additionally skip other non-working occurrences - the right choice when a substitute must not land on another holiday - and accept `maxSearchDays` to cap how far they scan.
 
-The companion attributes have defaults when omitted: `skipWeekends` defaults to `true`, `skipNonWorkingDates` to `false`, and `days` (for `AddDays`) to `0`. `maxSearchDays` is unbounded when unset. So a bare `<Action type="MoveToNextWorkingDay" />` rolls past weekends but *not* past other holidays — set `skipNonWorkingDates="true"` for the Boxing-Day-style "skip past the Christmas substitute too" behaviour.
+The companion attributes have defaults when omitted: `skipWeekends` defaults to `true`, `skipNonWorkingDates` to `false`, and `days` (for `AddDays`) to `0`. `maxSearchDays` is unbounded when unset. So a bare `<Action type="MoveToNextWorkingDay" />` rolls past weekends but *not* past other holidays - set `skipNonWorkingDates="true"` for the Boxing-Day-style "skip past the Christmas substitute too" behaviour.
 
 ```xml
 <!-- Skip forward past weekends and any other non-working dates, searching at most 7 days. -->
@@ -173,10 +173,10 @@ The companion attributes have defaults when omitted: `skipWeekends` defaults to 
 | `ActualOnly` | Only the nominal date; the computed substitute is discarded. |
 | `ObservedOnly` *(adjust-in-place)* | Only the observed date; the nominal date is not emitted separately. |
 | `ActualAndObserved` *(keep-both)* | Both the nominal and the observed dates, as two occurrences. |
-| `ObservedAsAdditional` | **`[Obsolete]`** — behaves identically to `ActualAndObserved` and is normalised to it at load time. Prefer `ActualAndObserved`. |
-| `Suppress` | Nothing — the occurrence is dropped for the year. |
+| `ObservedAsAdditional` | **`[Obsolete]`** - behaves identically to `ActualAndObserved` and is normalised to it at load time. Prefer `ActualAndObserved`. |
+| `Suppress` | Nothing - the occurrence is dropped for the year. |
 
-`ObservedOnly` is the AU/NZ "the holiday moved" style; `ActualAndObserved` is the UK "keep the nominal, add a bank-holiday substitute" style. Which of the emitted occurrences governs inclusion in a *range* query is a separate, resource-level decision — the <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> — covered in [Rule identity, priority, and observed-date resolution](identity-and-resolution.md).
+`ObservedOnly` is the AU/NZ "the holiday moved" style; `ActualAndObserved` is the UK "keep the nominal, add a bank-holiday substitute" style. Which of the emitted occurrences governs inclusion in a *range* query is a separate, resource-level decision - the <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> - covered in [Rule identity, priority, and observed-date resolution](identity-and-resolution.md).
 
 ```xml
 <!-- UK bank-holiday style: keep 25 December, add a working-day substitute when it is a weekend. -->
@@ -189,7 +189,7 @@ The companion attributes have defaults when omitted: `skipWeekends` defaults to 
 
 ---
 
-## Scope — bounding a policy
+## Scope - bounding a policy
 
 An `<Scope>` element restricts a policy to particular territories, calendars, categories, rules, or years. A policy with no `<Scope>` applies wherever a rule references it (the runtime default is <xref:Bodu.Globalization.Calendar.AdjustmentScope>`.Global`).
 
@@ -205,7 +205,7 @@ An `<Scope>` element restricts a policy to particular territories, calendars, ca
 </AdjustmentPolicy>
 ```
 
-`<Scope>` children mirror rule applicability: `<Territory code="…" />` (with the usual containment — a scope of `AU` matches `AU-NSW` queries), `<Calendar name="…" />`, `<Category value="…" />`, `<NotableDate ref="…" />`, `<Rule notableDateRef="…" ruleRef="…" />`, and `<OnlyYear value="…" />` / `<ExceptYear value="…" />`, plus the `fromYear` / `toYear` attributes on `<Scope>` itself. A policy is considered only when its scope matches the resolution context; otherwise it is skipped before its trigger is evaluated.
+`<Scope>` children mirror rule applicability: `<Territory code="…" />` (with the usual containment - a scope of `AU` matches `AU-NSW` queries), `<Calendar name="…" />`, `<Category value="…" />`, `<NotableDate ref="…" />`, `<Rule notableDateRef="…" ruleRef="…" />`, and `<OnlyYear value="…" />` / `<ExceptYear value="…" />`, plus the `fromYear` / `toYear` attributes on `<Scope>` itself. A policy is considered only when its scope matches the resolution context; otherwise it is skipped before its trigger is evaluated.
 
 ---
 
@@ -237,7 +237,7 @@ A rule references policies by id, and they are evaluated in ascending `priority`
 
 ---
 
-## Worked pattern — Christmas and Boxing Day substitution
+## Worked pattern - Christmas and Boxing Day substitution
 
 When Christmas Day moves to Monday, Boxing Day (26 December) must skip to Tuesday rather than also landing on Monday. Give Christmas a weekend-roll policy at a *higher* priority (lower number) than Boxing Day's `IfNonWorkingDay` policy so the relocated Christmas is already settled when Boxing Day is evaluated:
 
@@ -260,8 +260,8 @@ For 2027 (Christmas on Saturday, Boxing Day on Sunday), resolving `service.Resol
 
 | Nominal | Policy | Observed |
 |---|---|---|
-| Sat 25 Dec — Christmas Day | `weekend-to-next-weekday` (`IfWeekend → MoveToNextWeekday`) | Mon 27 Dec |
-| Sun 26 Dec — Boxing Day | `skip-nonworking` (`IfNonWorkingDay → MoveToNextWorkingDay`): Sun → non-working, Mon 27 → non-working (Christmas substitute), Tue 28 → working | Tue 28 Dec |
+| Sat 25 Dec - Christmas Day | `weekend-to-next-weekday` (`IfWeekend → MoveToNextWeekday`) | Mon 27 Dec |
+| Sun 26 Dec - Boxing Day | `skip-nonworking` (`IfNonWorkingDay → MoveToNextWorkingDay`): Sun → non-working, Mon 27 → non-working (Christmas substitute), Tue 28 → working | Tue 28 Dec |
 
 Both occurrences come back with `IsObserved == true`, their `ActualDate` carrying the original 25 / 26 December.
 
@@ -271,7 +271,7 @@ Both occurrences come back with `IsObserved == true`, their `ActualDate` carryin
 
 When the built-in trigger and action values cannot express your logic, supply a custom handler and reference it from the policy by `handlerKey`. Triggers and actions have separate contracts and separate registries.
 
-### Custom trigger — `IAdjustmentTriggerHandler`
+### Custom trigger - `IAdjustmentTriggerHandler`
 
 A custom trigger implements <xref:Bodu.Globalization.Calendar.IAdjustmentTriggerHandler>, whose single method `bool ShouldAdjust(AdjustmentTriggerContext context)` returns whether the policy should fire. Register it under a key in an <xref:Bodu.Globalization.Calendar.AdjustmentTriggerHandlerRegistry> (chainable `Register(key, handler)`; the registry implements `Contains` / `TryGet`). The <xref:Bodu.Globalization.Calendar.AdjustmentTriggerContext> exposes `BaseDate` (the nominal date under evaluation), `Territory`, the `Policy` being applied, the `ResolutionContext`, and the policy's handler `Parameters`:
 
@@ -298,7 +298,7 @@ var triggerHandlers = new AdjustmentTriggerHandlerRegistry()
 </AdjustmentPolicy>
 ```
 
-### Custom action — `IAdjustmentHandler`
+### Custom action - `IAdjustmentHandler`
 
 A custom action implements <xref:Bodu.Globalization.Calendar.IAdjustmentHandler>, whose method `DateOnly? Adjust(AdjustmentHandlerContext context)` returns the observed date (or `null` to leave the date unchanged). Register it in an <xref:Bodu.Globalization.Calendar.AdjustmentHandlerRegistry>. The <xref:Bodu.Globalization.Calendar.AdjustmentHandlerContext> carries the same `BaseDate`, `Territory`, `Policy`, and `ResolutionContext` members as the trigger context, and parameters declared on the policy's `<Parameters>` block are available as `Parameters`:
 
@@ -328,15 +328,15 @@ var handlers = new AdjustmentHandlerRegistry()
 
 ### Wiring the registries into the service
 
-Both registries are carried on a <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions> object passed to the second <xref:Bodu.Globalization.Calendar.NotableDateService> constructor. The options object exposes five `init`-only collaborator slots — `Algorithms`, `CollisionResolver`, `Handlers` (action), `TriggerHandlers`, and `Providers` — each independently optional:
+Both registries are carried on a <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions> object passed to the second <xref:Bodu.Globalization.Calendar.NotableDateService> constructor. The options object exposes five `init`-only collaborator slots - `Algorithms`, `CollisionResolver`, `Handlers` (action), `TriggerHandlers`, and `Providers` - each independently optional:
 
 ```csharp
 using Bodu.Globalization.Calendar;
 
 var service = new NotableDateService(resource, new NotableDateServiceOptions
 {
-    Handlers        = handlers,         // IAdjustmentHandlerRegistry — custom actions
-    TriggerHandlers = triggerHandlers,  // IAdjustmentTriggerHandlerRegistry — custom triggers
+    Handlers        = handlers,         // IAdjustmentHandlerRegistry - custom actions
+    TriggerHandlers = triggerHandlers,  // IAdjustmentTriggerHandlerRegistry - custom triggers
 });
 ```
 
@@ -346,9 +346,9 @@ The `handlerKey` on `<Trigger>` is looked up in the trigger registry; the `handl
 
 ## Where to go next
 
-- [NotableDateRule and adjustment-policy reference](rule-reference.md) — the element-by-element schema for rules and policies.
-- [The resolution pipeline](resolution-pipeline.md) — how adjustment policies are evaluated within the overall resolution flow.
-- [Rule identity, priority, and observed-date resolution](identity-and-resolution.md) — emission modes and observed-date range inclusion in depth.
-- [Holiday patterns and examples](holiday-patterns.md) — complete worked examples for UK, US, AU, Easter, and lunar holidays.
-- [Building and extending the service](building-the-service.md) — wiring the handler and trigger registries into a `NotableDateService`.
-- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- [NotableDateRule and adjustment-policy reference](rule-reference.md) - the element-by-element schema for rules and policies.
+- [The resolution pipeline](resolution-pipeline.md) - how adjustment policies are evaluated within the overall resolution flow.
+- [Rule identity, priority, and observed-date resolution](identity-and-resolution.md) - emission modes and observed-date range inclusion in depth.
+- [Holiday patterns and examples](holiday-patterns.md) - complete worked examples for UK, US, AU, Easter, and lunar holidays.
+- [Building and extending the service](building-the-service.md) - wiring the handler and trigger registries into a `NotableDateService`.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

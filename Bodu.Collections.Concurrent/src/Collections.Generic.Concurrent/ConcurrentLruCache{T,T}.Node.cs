@@ -43,7 +43,7 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
         /// <summary>The key the node is stored under. Immutable.</summary>
         private readonly TKey _key;
 
-        /// <summary>The cached value. Immutable — updates replace the node.</summary>
+        /// <summary>The cached value. Immutable - updates replace the node.</summary>
         private readonly TValue _value;
 
         /// <summary>Indicates whether the entry has been read since the maintenance cycle last examined it. Set lock-free by readers; cleared by the maintainer.</summary>
@@ -104,7 +104,7 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
         /// <param name="newState">The state to move to.</param>
         /// <returns>
         /// <see langword="true" /> if the transition was applied; <see langword="false" /> if the node was no longer in
-        /// <paramref name="expectedState" /> — which under this type's protocol means it was concurrently removed.
+        /// <paramref name="expectedState" /> - which under this type's protocol means it was concurrently removed.
         /// </returns>
         internal bool TryTransition(int expectedState, int newState) =>
             Interlocked.CompareExchange(ref _state, newState, expectedState) == expectedState;

@@ -21,7 +21,7 @@ namespace Bodu.Functional;
 /// <see cref="Failure{T}(ResultError)" />.
 /// </para>
 /// <para>
-/// <c>default(Result)</c> equals a failure carrying an empty <see cref="ResultError" /> — a result that was never
+/// <c>default(Result)</c> equals a failure carrying an empty <see cref="ResultError" /> - a result that was never
 /// assigned behaves exactly like an explicit failure, so the type is total and safe to use as a field or array element
 /// without initialization. <see cref="Error" /> on <c>default(Result)</c> is valid and returns the empty error.
 /// </para>

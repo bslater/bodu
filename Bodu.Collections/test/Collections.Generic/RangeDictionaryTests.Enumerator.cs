@@ -117,7 +117,7 @@ public partial class RangeDictionaryTests
         Assert.IsFalse(enumerator.MoveNext());
     }
     // --------------------------------------------------------
-    // GetEnumerator — typed struct
+    // GetEnumerator - typed struct
     // --------------------------------------------------------
 
     /// <summary>

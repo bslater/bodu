@@ -49,7 +49,7 @@ public sealed partial class AnchoredInterval
     /// </returns>
     /// <remarks>
     /// Because the series starts at <c>anchor + interval</c>, the query answers <see langword="null" /> until the first
-    /// occurrence has passed — the anchor itself is never returned. Due-ness therefore stays the caller's comparison
+    /// occurrence has passed - the anchor itself is never returned. Due-ness therefore stays the caller's comparison
     /// <c>lastCompleted &lt; GetPreviousOccurrence(now, inclusive: true)</c>, with missed occurrences coalescing
     /// structurally.
     /// </remarks>

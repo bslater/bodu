@@ -27,7 +27,7 @@ public sealed partial class Base45Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base45.IsValid(ReadOnlySpan{char}, BaseFormatStyles)" /> rejects malformed inputs —
+    /// Verifies that <see cref="Base45.IsValid(ReadOnlySpan{char}, BaseFormatStyles)" /> rejects malformed inputs -
     /// triplet overflow, an alien character, and an invalid length.
     /// </summary>
     /// <param name="text">The candidate text.</param>

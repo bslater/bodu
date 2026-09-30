@@ -1,8 +1,8 @@
 ---
-title: Bodu.Text.Encoding — Getting started
+title: Bodu.Text.Encoding - Getting started
 ---
 
-# Bodu.Text.Encoding — Getting started
+# Bodu.Text.Encoding - Getting started
 
 Unfamiliar with terms like *alphabet*, *terminal quantum*, *padding*, or *variant*? Read [Core concepts](concepts.md)
 first.
@@ -88,7 +88,7 @@ if (Base16.TryDecode(userInput.AsSpan(), buffer, out int bytesWritten))
 }
 else
 {
-    // malformed input — show an error
+    // malformed input - show an error
 }
 ```
 
@@ -155,7 +155,7 @@ byte[] backFromHex = hex.FromBase16String();
 ```csharp
 using Bodu.Text.Encoding;
 
-// RFC 9285 — the encoding the EU Digital COVID Certificate carries in a QR code.
+// RFC 9285 - the encoding the EU Digital COVID Certificate carries in a QR code.
 byte[] payload = "Hello!!"u8.ToArray();
 string base45 = Base45.Encode(payload);   // "%69 VD92EX0"
 
@@ -167,7 +167,7 @@ byte[] back = Base45.Decode(base45);
 ```csharp
 using Bodu.Text.Encoding;
 
-// URL-safe, no special characters — ideal for short links and slugs.
+// URL-safe, no special characters - ideal for short links and slugs.
 byte[] random = RandomNumberGenerator.GetBytes(16);
 string id = Base62.Encode(random);
 
@@ -179,7 +179,7 @@ byte[] bytes = Base62.Decode(id);
 ```csharp
 using Bodu.Text.Encoding;
 
-// Each core family (Base16/32/58/64/85) encodes a Guid directly — no manual 16-byte buffer.
+// Each core family (Base16/32/58/64/85) encodes a Guid directly - no manual 16-byte buffer.
 Guid id = Guid.NewGuid();
 
 string b58 = Base58.Encode(id);                  // ~22 chars, no 0/O/I/l ambiguity
@@ -224,11 +224,11 @@ byte[] decoded = Base58Check.Decode(encoded);   // verifies the checksum, then s
 ```csharp
 using Bodu.Text.Encoding;
 
-// Compact, self-delimiting — round-trips without external metadata.
+// Compact, self-delimiting - round-trips without external metadata.
 string compact = Base85.Encode("hello"u8.ToArray(), Base85Variant.GitCompact);   // "Xk~0{Zv"
 byte[] back    = Base85.Decode(compact, Base85Variant.GitCompact);
 
-// Exact Git line primitive — always five characters per group; caller tracks the length.
+// Exact Git line primitive - always five characters per group; caller tracks the length.
 string padded  = Base85.EncodeGitPadded(new byte[] { 0x01 });             // "0RR91"
 byte[] bytes   = Base85.DecodeGitPadded(padded, decodedLength: 1);
 ```
@@ -252,7 +252,7 @@ using Bodu.Text.Encoding;
 // URI component (default).
 string component = PercentEncoding.EncodeString("a/b?c=d");   // "a%2Fb%3Fc%3Dd"
 
-// HTML form field — space becomes '+'.
+// HTML form field - space becomes '+'.
 string field = PercentEncoding.EncodeString("a b+c", mode: PercentEncodingMode.FormUrlEncoded); // "a+b%2Bc"
 
 string value = PercentEncoding.DecodeString("a%2Fb");         // "a/b"
@@ -283,7 +283,7 @@ Debug.Assert(original.SequenceEqual(recovered));
 
 ## Where to go next
 
-- **[Bodu.Text.Encoding guides](../../guides/text-encoding/index.md)** — per-encoding deep dives.
-- **[Core concepts](concepts.md)** — vocabulary refresher.
-- **[Introduction](index.md)** — type map and scenario index.
-- **[Bodu.Text.Encoding API reference](xref:Bodu.Text.Encoding)** — full type-by-type docs.
+- **[Bodu.Text.Encoding guides](../../guides/text-encoding/index.md)** - per-encoding deep dives.
+- **[Core concepts](concepts.md)** - vocabulary refresher.
+- **[Introduction](index.md)** - type map and scenario index.
+- **[Bodu.Text.Encoding API reference](xref:Bodu.Text.Encoding)** - full type-by-type docs.

@@ -29,7 +29,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// </remarks>
     private sealed class Core
     {
-        /// <summary>The permanent sentinel for bucket 0 (split-order key 0) — the entry point of the list. Never marked or removed.</summary>
+        /// <summary>The permanent sentinel for bucket 0 (split-order key 0) - the entry point of the list. Never marked or removed.</summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Member of a private nested type, so only the enclosing set can reach it; its lock-free algorithm reads the node state directly and updates the mutable fields through Volatile and Interlocked by-reference operations, which require fields.")]
         internal readonly Node _head;
 

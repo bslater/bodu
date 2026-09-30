@@ -26,8 +26,8 @@ internal sealed partial class YamlParser
         CoerceTags();
 
         // Merge expansion appends alias rows, so the budget is re-checked over the post-injection store. Expansion
-        // cannot introduce a cycle — aliases only ever point backward, and a merge source whose subtree contains the
-        // receiving mapping is already rejected above through the merge key's own alias — so cycle detection is not
+        // cannot introduce a cycle - aliases only ever point backward, and a merge source whose subtree contains the
+        // receiving mapping is already rejected above through the merge key's own alias - so cycle detection is not
         // re-run.
         if (ExpandMergeKeys())
             EnforceExpansionBudget();
@@ -40,7 +40,7 @@ internal sealed partial class YamlParser
     /// <remarks>
     /// Aliases are stored as shared references, so the parsed row graph is linear in the input size, but every consumer
     /// that walks the graph (the node DOM, the read-only document, and the serializer) expands each alias into a full
-    /// copy of its target. Chained aliases amplify exponentially — the "billion laughs" attack. This pass computes the
+    /// copy of its target. Chained aliases amplify exponentially - the "billion laughs" attack. This pass computes the
     /// materialized node count once, memoized over the (already acyclic) graph, and rejects the document before any
     /// consumer can exhaust memory. It runs after <see cref="DetectAliasCycles" /> so the walk is guaranteed to
     /// terminate.

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ================================================================================================================
-  Denmark (DK) — notable-date resource pack
+  Denmark (DK) - notable-date resource pack
   ================================================================================================================
 
   Authored on the notable-date schema. All rules are scoped to territory "DK".
@@ -16,7 +16,7 @@
 
   Weekend substitution: a single reusable weekend-roll policy is declared below and applied only to New Year's Day.
 
-  Note: Great Prayer Day (Store Bededag) — the fourth Friday after Easter — was abolished as a public holiday from
+  Note: Great Prayer Day (Store Bededag) - the fourth Friday after Easter - was abolished as a public holiday from
   2024 and is intentionally not modelled here.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.dk">
@@ -77,13 +77,13 @@
       ============================================================================================================
     -->
 
-    <!-- Second Day of Christmas (Anden juledag) — 26 December; a public holiday. Strategy: Fixed date. -->
+    <!-- Second Day of Christmas (Anden juledag) - 26 December; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="dk"><Applicability><Territory code="DK" /></Applicability>
         <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Constitution Day (Grundlovsdag) — 5 June, marking the 1849 constitution; an observance and a partial day off, not a full public holiday. The fromYear="1849" bound excludes earlier years. Strategy: Fixed date. -->
+    <!-- Constitution Day (Grundlovsdag) - 5 June, marking the 1849 constitution; an observance and a partial day off, not a full public holiday. The fromYear="1849" bound excludes earlier years. Strategy: Fixed date. -->
     <NotableDate id="constitution-day" displayName="Constitution Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="dk"><Applicability fromYear="1849"><Territory code="DK" /></Applicability>
         <Strategy><Fixed month="June" day="5" /></Strategy></Rule></Rules>

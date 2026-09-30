@@ -22,7 +22,7 @@ namespace Bodu.Numerics;
 /// <see cref="Minimum" /> and <see cref="Maximum" /> always describe exactly those samples, and until the window fills
 /// (<see cref="IsFull" />) they describe the samples received so far. Both extrema are tracked exactly in
 /// <typeparamref name="T" /> using the classic pair of monotonic deques, so each sample is pushed and popped at most
-/// once per deque — amortized O(1) per <see cref="Add" /> with no per-sample allocation.
+/// once per deque - amortized O(1) per <see cref="Add" /> with no per-sample allocation.
 /// </para>
 /// <para>
 /// Samples must be finite: NaN and infinite values are rejected by <see cref="Add" />. For the sum and mean over the

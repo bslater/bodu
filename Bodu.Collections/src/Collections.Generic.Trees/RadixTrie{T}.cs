@@ -27,8 +27,8 @@ namespace Bodu.Collections.Generic.Trees;
 /// <para>
 /// The public surface mirrors <see cref="Trie{TValue}" /> member-for-member, so the two types are drop-in
 /// interchangeable; prefer <see cref="RadixTrie{TValue}" /> when keys share long unbranching runs (URLs, file paths,
-/// identifiers). The empty string is a valid key. Enumeration order — whether through <see cref="GetEnumerator" />,
-/// <see cref="KeysWithPrefix(string)" />, or <see cref="ItemsWithPrefix(string)" /> — is unspecified in this version.
+/// identifiers). The empty string is a valid key. Enumeration order - whether through <see cref="GetEnumerator" />,
+/// <see cref="KeysWithPrefix(string)" />, or <see cref="ItemsWithPrefix(string)" /> - is unspecified in this version.
 /// The trie is not thread-safe for concurrent mutation.
 /// </para>
 /// </remarks>

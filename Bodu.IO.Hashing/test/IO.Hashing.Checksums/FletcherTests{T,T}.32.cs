@@ -43,7 +43,7 @@ public sealed partial class Fletcher32Tests
                 Empty = "00000000",
                 Abc = "018A00C6",
 
-                // QuickBrownFox suppressed — tracked by issue #167 (Adler/Fletcher KAT mismatch
+                // QuickBrownFox suppressed - tracked by issue #167 (Adler/Fletcher KAT mismatch
                 // observed on PR #166 CI: index 1 expected 0xCD, actual 0xDC). Restore once the
                 // root cause is identified and fixed.
                 QuickBrownFox = "5BA30FD9",

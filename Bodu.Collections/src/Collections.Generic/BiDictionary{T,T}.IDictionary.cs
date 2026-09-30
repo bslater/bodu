@@ -56,7 +56,7 @@ public sealed partial class BiDictionary<TKey, TValue> :
     /// <inheritdoc cref="System.Collections.Generic.IDictionary{TKey, TValue}.this" />
     /// <remarks>
     /// <para>
-    /// Assigning a new key adds the pair; assigning an existing key re-binds it — the key's previous value is unbound
+    /// Assigning a new key adds the pair; assigning an existing key re-binds it - the key's previous value is unbound
     /// from the inverse index so it no longer resolves through <see cref="TryGetKey(TValue, out TKey)" /> or
     /// <see cref="ContainsValue(TValue)" />.
     /// </para>
@@ -135,7 +135,7 @@ public sealed partial class BiDictionary<TKey, TValue> :
     /// Duplicate keys follow the strict <see cref="System.Collections.Generic.Dictionary{TKey, TValue}.Add(TKey,
     /// TValue)" /> contract and always throw. A duplicate value is resolved by <see cref="DuplicateValuePolicy" />:
     /// under <see cref="BiDictionaryDuplicateValuePolicy.Replace" /> the previous binding holding the value is evicted
-    /// — its key is removed — before the new pair is added.
+    /// - its key is removed - before the new pair is added.
     /// </remarks>
     public void Add(TKey key, TValue value)
     {
@@ -201,7 +201,7 @@ public sealed partial class BiDictionary<TKey, TValue> :
     /// <inheritdoc />
     /// <remarks>
     /// Enumeration follows the forward index's unspecified, insertion-biased order. As with
-    /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" />, adding an entry — through either view —
+    /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" />, adding an entry - through either view -
     /// invalidates the enumerator, which then throws <see cref="InvalidOperationException" />; do not mutate the
     /// dictionary while enumerating it.
     /// </remarks>

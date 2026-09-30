@@ -35,8 +35,8 @@ internal static partial class Argon2Core
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static void FillBlock(ref ulong state, ref ulong scratch, ref ulong reference, ref ulong next, bool withXor)
         {
-            // R = X xor Y replaces X in the state. The scratch keeps R for the final combination — or R xor the
-            // destination's old contents, on passes that XOR — so the destination can be overwritten in one sweep.
+            // R = X xor Y replaces X in the state. The scratch keeps R for the final combination - or R xor the
+            // destination's old contents, on passes that XOR - so the destination can be overwritten in one sweep.
             if (withXor)
             {
                 for (int k = 0; k < WordsPerBlock; k++)
@@ -115,7 +115,7 @@ internal static partial class Argon2Core
         }
 
         /// <summary>
-        /// The Argon2 mixing function <c>GB</c> — the BLAKE2b round function augmented with 64-bit multiplications (RFC
+        /// The Argon2 mixing function <c>GB</c> - the BLAKE2b round function augmented with 64-bit multiplications (RFC
         /// 9106, Section 3.6).
         /// </summary>
         /// <param name="v">The word the offsets are relative to.</param>

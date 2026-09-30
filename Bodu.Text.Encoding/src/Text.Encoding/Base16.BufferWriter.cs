@@ -17,7 +17,7 @@ public static partial class Base16
     /// <param name="source">The bytes to encode.</param>
     /// <param name="writer">The buffer writer that receives the encoded characters.</param>
     /// <param name="options">
-    /// Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this overload —
+    /// Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this overload -
     /// formatted output (spacing, prefix, line breaks) is not compatible with the writer's contiguous span contract.
     /// For decorated output, call <see cref="Encode(ReadOnlySpan{byte}, BaseFormattingOptions)" /> and write the
     /// resulting string explicitly.

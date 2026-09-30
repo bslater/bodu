@@ -6,13 +6,13 @@ union-find (`Bodu.Collections.Generic.Graphs`), and the tree / trie family with 
 multi-pattern scanner (`Bodu.Collections.Generic.Trees`). Five scenarios.
 
 Everything runs offline with fixed inputs. String-keyed graph vertices use a supplied `StableStringComparer`
-so adjacency iteration — and therefore traversal order — is identical on every run.
+so adjacency iteration - and therefore traversal order - is identical on every run.
 
 ```bash
 dotnet run --project samples/Collections/Bodu.Collections.Samples.RangesGraphsTrees
 ```
 
-## Scenario 1 — RangesAndIntervalTree
+## Scenario 1 - RangesAndIntervalTree
 
 **Intent.** Distinguish the two interval models. `RangeSet<T>` / `RangeDictionary<,>` store *disjoint*
 half-open ranges and coalesce adjacent ones on insertion; `IntervalTree<,>` stores *arbitrary overlapping*
@@ -53,7 +53,7 @@ the interval tree returns every interval whose inclusive span covers the query (
 `.EndExclusive`); `RangeDictionary<,>.Add` / indexer / `.TryGetValue`; `IntervalTree<,>.Add` / `.QueryPoint` /
 `.QueryOverlaps`.
 
-## Scenario 2 — GraphAlgorithms
+## Scenario 2 - GraphAlgorithms
 
 **Intent.** Show `Graph<T>` together with the static `GraphAlgorithms` helpers over a single weighted,
 directed acyclic graph: breadth-first traversal, Dijkstra shortest path by summed weight, and a topological
@@ -90,7 +90,7 @@ costs 12 (via `restore`, beating the direct `clone→build` edge of weight 9):
 `.VertexCount` / `.EdgeCount`; `GraphAlgorithms.BreadthFirstSearch`, `.TryShortestPath` (returns
 `ShortestPathResult<T>` with `.Path` / `.Distance` / `.Found`), `.TopologicalSort`.
 
-## Scenario 3 — DisjointSetUnionFind
+## Scenario 3 - DisjointSetUnionFind
 
 **Intent.** Show `DisjointSet<T>` (union-find): a partition of elements into disjoint groups that merges two
 groups in near-constant amortized time and answers same-group membership queries.
@@ -127,7 +127,7 @@ through `ben`, while `amy` and `dan` remain in different components:
 
 **APIs demonstrated.** `DisjointSet<T>(IEnumerable<T>)`, `.SetCount`, `.Union`, `.AreConnected`, `.Find`.
 
-## Scenario 4 — TreesAndTries
+## Scenario 4 - TreesAndTries
 
 **Intent.** Cover the tree and trie family: `Tree<T>` (an n-ary tree with multiple traversal orders),
 `Trie<TValue>` (a character trie mapping string keys to values with prefix search), and `RadixTrie` (a
@@ -169,16 +169,16 @@ distinguishes a stored key (`ten`) from a mere prefix (`te`):
 indexer / `.KeysWithPrefix` / `.StartsWith`; `RadixTrie(IEnumerable<string>)`, `.KeysWithPrefix` /
 `.Contains`.
 
-## Scenario 5 — MultiPatternSearch
+## Scenario 5 - MultiPatternSearch
 
 **Intent.** Show `AhoCorasickAutomaton<TValue>`: a finite-state machine that scans text once and reports every
-occurrence of any registered pattern — including overlapping matches — in a single linear pass regardless of
+occurrence of any registered pattern - including overlapping matches - in a single linear pass regardless of
 how many patterns there are.
 
 **What it does.** Builds an automaton from a keyword→category dictionary of four words, then enumerates all
 matches over the text `"ushers"` and counts them.
 
-**What to expect.** Three patterns hide inside the six-letter word — `she`, `he`, and `hers` — and the scanner
+**What to expect.** Three patterns hide inside the six-letter word - `she`, `he`, and `hers` - and the scanner
 finds all of them (with their categories and half-open spans) in one pass:
 
 ```text
@@ -221,7 +221,7 @@ Bodu.Collections.Samples.RangesGraphsTrees/
 
 ## Related
 
-- `Bodu.Collections.Samples.CollectionCatalogue` — the ring, deque, evicting cache, multi-maps and sets, the
+- `Bodu.Collections.Samples.CollectionCatalogue` - the ring, deque, evicting cache, multi-maps and sets, the
   bidirectional and navigable dictionaries, and the indexed priority queue.
-- `Bodu.Collections.Samples.ProbabilisticSketches` — the Bloom filter, count-min sketch, and HyperLogLog
+- `Bodu.Collections.Samples.ProbabilisticSketches` - the Bloom filter, count-min sketch, and HyperLogLog
   approximate sketches.

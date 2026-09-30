@@ -12,16 +12,16 @@ dotnet run --project samples/Financial/Bodu.Financial.Samples.MoneyBasics
 ### RoundingTiers (`Scenarios/RoundingTiers.cs`)
 
 **Intent.** Answer the central design question of the money model: *when* should rounding
-happen? The library offers three tiers — round every step, round once at settlement, or compute
-exactly — and this scenario makes the difference visible on one calculation.
+happen? The library offers three tiers - round every step, round once at settlement, or compute
+exactly - and this scenario makes the difference visible on one calculation.
 
 **What it does.** Compounds 10,000.00 USD at 5% p.a. monthly for 12 months, three ways:
 
-1. `Money<USD>` in a loop — every `*=` rounds the running balance to USD's two minor units
+1. `Money<USD>` in a loop - every `*=` rounds the running balance to USD's two minor units
    before the next month compounds it.
-2. `CalculatedMoney` in the same loop — intermediates keep full `decimal` precision; nothing
+2. `CalculatedMoney` in the same loop - intermediates keep full `decimal` precision; nothing
    rounds until `RoundToMoney(MidpointRounding.ToEven)` settles once at the end.
-3. `MultiplyExact` with the true rational factor `(1205/1200)^12` as a `Fraction<BigInteger>` —
+3. `MultiplyExact` with the true rational factor `(1205/1200)^12` as a `Fraction<BigInteger>` -
    no decimal truncation at all; one rounding when the product lands back in `Money<USD>`.
 
 **What to expect.**
@@ -37,7 +37,7 @@ exactly — and this scenario makes the difference visible on one calculation.
   calculations deferred, and use fractions when the factor itself must be exact.
 ```
 
-The per-step total is 2 cents higher — that drift is the accumulated per-operation rounding,
+The per-step total is 2 cents higher - that drift is the accumulated per-operation rounding,
 which is exactly what tiers 2 and 3 exist to avoid. Deferred and exact agree here because
 decimal's 28-digit precision absorbs this particular chain; the fraction tier is the guarantee
 that holds even when it would not.
@@ -50,11 +50,11 @@ that holds even when it would not.
 
 **Intent.** Zoom in on the deferred tier on its own terms. `RoundingTiers` shows `CalculatedMoney`
 as one of three options; this scenario is the close-up: a full-precision carrier that accumulates
-a multi-step calculation and rounds *exactly once*, at materialization — so the single rounding
+a multi-step calculation and rounds *exactly once*, at materialization - so the single rounding
 decision, and which way a leftover half-cent falls, is explicit rather than smeared across steps.
 
 **What it does.** Sums three line items as `CalculatedMoney` values (9.99 + 9.99 + 6.95 = 26.93,
-unrounded), splits the bill two ways with the `/` operator (13.465 — a half-cent with no
+unrounded), splits the bill two ways with the `/` operator (13.465 - a half-cent with no
 representation in USD's two minor units), and materializes that one deferred value twice:
 `RoundToMoney()` (banker's default) and `RoundToMoney(MidpointRounding.AwayFromZero)`.
 
@@ -70,10 +70,10 @@ Split 2 ways (unrounded): 13.465 USD
   13.465 is a half-cent midpoint: banker's takes the even neighbour, away-from-zero rounds up.
 ```
 
-The intermediate 13.465 is carried at full precision — a `Money<USD>` would have rounded it away
+The intermediate 13.465 is carried at full precision - a `Money<USD>` would have rounded it away
 at the division. Because it is a genuine midpoint, the two settlement rules disagree by a cent:
 banker's rounding takes the even neighbour (13.46), away-from-zero rounds up (13.47). One value,
-one rounding, two documented policies — the calculation never rounds until you tell it to.
+one rounding, two documented policies - the calculation never rounds until you tell it to.
 
 **APIs demonstrated.** `CalculatedMoney(decimal, CurrencyCode)` constructor, the `+` and `/`
 operators, `CalculatedMoney.Amount`, `CalculatedMoney.RoundToMoney()` /
@@ -83,7 +83,7 @@ operators, `CalculatedMoney.Amount`, `CalculatedMoney.RoundToMoney()` /
 
 **Intent.** Show the duality the library is built around: `Money<TCurrency>` fixes the currency
 at compile time (mixing currencies is a build error), while runtime `Money` carries the currency
-as data — and the bridges between them are *checked*, so a wiring mistake surfaces at the
+as data - and the bridges between them are *checked*, so a wiring mistake surfaces at the
 boundary instead of silently mislabelling an amount.
 
 **What it does.** Builds a typed USD total (19.995 rounds to 20.00 under banker's rounding, then
@@ -102,7 +102,7 @@ the cross-currency compile error.
   TryAs<JPY>  : false - the runtime value is USD, not JPY
 ```
 
-The value is identical through every bridge — widening is lossless; only the *static* type
+The value is identical through every bridge - widening is lossless; only the *static* type
 changes. The final line is the safety property: the runtime value knows it is USD and refuses to
 become `Money<JPY>`.
 
@@ -112,7 +112,7 @@ become `Money<JPY>`.
 ### Allocation (`Scenarios/Allocation.cs`)
 
 **Intent.** Splitting money by naive division loses or invents cents (100.00 / 3 → 3 × 33.33 =
-99.99). Largest-remainder allocation guarantees the parts always re-total to the original — the
+99.99). Largest-remainder allocation guarantees the parts always re-total to the original - the
 property invoicing, payouts, and cost-splitting all need.
 
 **What it does.** Splits 100.00 USD three ways equally and by 50/30/20 ratios, splits 1,000 JPY
@@ -132,7 +132,7 @@ declared by the CHF currency tag.
 
 The extra cent lands on the first part (largest remainder first), the parts differ by at most
 one minor unit, and the printed sum proves nothing was lost. JPY allocates in whole yen because
-the currency declares zero minor units. Cash rounding is a separate, per-currency policy — the
+the currency declares zero minor units. Cash rounding is a separate, per-currency policy - the
 7.02 electronic amount is valid; only the *cash* form snaps to 7.00.
 
 **APIs demonstrated.** `Money<T>.Allocate(int)`, `Money<T>.Allocate(ReadOnlySpan<decimal>)`,
@@ -168,9 +168,9 @@ reusable `MoneyFormatter` fluently; round-trips the `"R"` invariant form through
   TryParse         : "not money" -> false
 ```
 
-`~C` prints no `$` because the en-US region currency *is* USD — the designator is elided exactly
+`~C` prints no `$` because the en-US region currency *is* USD - the designator is elided exactly
 when it adds nothing. The `R` line is the storage pattern: culture-independent out, strict parse
-back, equality preserved. `LenientImport` trims and upcases `usd` — the spreadsheet-ingestion
+back, equality preserved. `LenientImport` trims and upcases `usd` - the spreadsheet-ingestion
 mode.
 
 **APIs demonstrated.** `Money.ToString(format, provider)` and the specifier vocabulary,
@@ -182,7 +182,7 @@ mode.
 
 **Intent.** Real systems hold balances in several currencies at once. `MoneyBag` is the
 immutable per-currency ledger, and the question this scenario answers: how do you total a
-multi-currency ledger into one reporting currency — and *prove* how you got there?
+multi-currency ledger into one reporting currency - and *prove* how you got there?
 
 **What it does.** Builds a ledger (AUD + USD, adds EUR, merges more USD with `+=`, subtracts
 AUD), prints the per-currency balances, reads a typed balance back, then converts the whole bag
@@ -206,7 +206,7 @@ to AUD twice: once through a simple `(from, to) => rate` delegate, and once thro
     USD     370.75 x 1.5230 [Treasury]    = 564.652250
 ```
 
-Balances iterate in stable ISO order. The two totals agree — the audit changes *explainability*,
+Balances iterate in stable ISO order. The two totals agree - the audit changes *explainability*,
 not arithmetic. Each audit line carries the source amount, the resolved rate with its provider
 label, and the raw (pre-rounding-policy) converted value; the AUD line shows `1 (identity)`
 because the target currency's own balance needs no rate (its `Rate` is `null`).
@@ -228,7 +228,7 @@ because the target currency's own balance needs no rate (its `Rate` is `null`).
 values.
 
 **What it does.** Registers the financial converters (from the `Bodu.Financial.Serialization.Json`
-companion package — the core types carry no `[JsonConverter]` attribute, so registration is
+companion package - the core types carry no `[JsonConverter]` attribute, so registration is
 required) on three `JsonSerializerOptions` instances
 (`Strict` default, `Compact`, `Lenient`), serializes a `Money<USD>` and a `MoneyBag` under them,
 round-trips the strict shape, and deserializes a lowercase-ISO document under `Lenient`.
@@ -247,8 +247,8 @@ round-trips the strict shape, and deserializes a lowercase-ISO document under `L
 
 Strict is the canonical object shape for persistence and audit (duplicate properties and
 currency mismatches are rejected). Compact collapses money to a single string and bags to a flat
-ISO→amount map — for APIs and logs. Lenient is Strict's shape with whitespace/casing forgiveness
-for external feeds — not a storage format.
+ISO→amount map - for APIs and logs. Lenient is Strict's shape with whitespace/casing forgiveness
+for external feeds - not a storage format.
 
 **APIs demonstrated.** `JsonSerializerOptions.AddFinancialJsonConverters(FinancialJsonPolicy)`,
 `FinancialJsonPolicy.Strict` / `Compact` / `Lenient`, the `Money<T>` / `Money` / `MoneyBag`

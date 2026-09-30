@@ -21,7 +21,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>When to choose ISO/IEC 7816-4.</strong> Pick this when interoperating with smart-card, EMV, or ISO crypto
-/// tooling — the <c>0x80</c>/<c>0x00</c> sentinel scheme is the standard there. It is also the padding used by the
+/// tooling - the <c>0x80</c>/<c>0x00</c> sentinel scheme is the standard there. It is also the padding used by the
 /// SHA-3 / Keccak family and by CMAC. For general-purpose .NET / Java / OpenSSL interop prefer
 /// <see cref="Pkcs7Padding" />; for AEAD modes that handle their own alignment use <see cref="NoPadding" />.
 /// </para>
@@ -126,7 +126,7 @@ public sealed class Iso7816_4Padding
 
             // Before the terminator is found, every byte must be 0x00. After the terminator
             // is found (including the terminator byte itself), no further constraint applies
-            // to that iteration — the bytes further left belong to the plaintext.
+            // to that iteration - the bytes further left belong to the plaintext.
             int constraint = terminatorSeen | is00;
             valid &= constraint;
         }

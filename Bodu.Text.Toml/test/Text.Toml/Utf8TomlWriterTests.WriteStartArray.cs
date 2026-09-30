@@ -125,8 +125,8 @@ public sealed partial class Utf8TomlWriterTests
     }
 
     /// <summary>
-    /// Verifies that a table reached inside a nested array — where the enclosing member is a plain array rather than an
-    /// array of tables — is emitted in inline <c>{ … }</c> form, and the nested array stays inline.
+    /// Verifies that a table reached inside a nested array - where the enclosing member is a plain array rather than an
+    /// array of tables - is emitted in inline <c>{ … }</c> form, and the nested array stays inline.
     /// </summary>
     /// <remarks>
     /// A direct array-of-tables member surfaces as <c>[[header]]</c> blocks; only a table that appears within a value

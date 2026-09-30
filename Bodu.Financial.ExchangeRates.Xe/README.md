@@ -1,13 +1,13 @@
 # Bodu.Financial.ExchangeRates.Xe
 
-> **API stability — Experimental.** The public API surface and behaviour are still evolving and may change or be removed without a major-version bump.
+> **API stability - Experimental.** The public API surface and behaviour are still evolving and may change or be removed without a major-version bump.
 
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **XE.com**
 charting-rates JSON service.
 
 It fetches the XE `api/protected/charting-rates` endpoint, decodes the delta-encoded
 series, and serves the results as `Bodu.Financial.ExchangeRates.ExchangeRate` values through the
-standard `IDatedRateProvider` and `IRateProvider` contracts — so it
+standard `IDatedRateProvider` and `IRateProvider` contracts - so it
 composes with `Money.ConvertTo`, the caching and aggregating providers, and the rest of
 the Bodu.Financial FX stack. It is a logical sister to
 [`Bodu.Financial.ExchangeRates.Yahoo`](../Bodu.Financial.ExchangeRates.Yahoo): the same
@@ -34,17 +34,17 @@ RateRangeResult series =
 The XE charting-rates endpoint requires an `Authorization: Basic` token that XE does not
 publish as a stable credential. The provider acquires it automatically (an
 `IXeAuthTokenProvider`): it fetches the bootstrap page, scans the `_next` script chunks it
-references for a credential built by a `btoa(...)` call next to a `Basic ` literal — for
-example `e.set("Authorization", `` `Basic ${btoa("user:secret")}` `` `)` — and base64-encodes
+references for a credential built by a `btoa(...)` call next to a `Basic ` literal - for
+example `e.set("Authorization", `` `Basic ${btoa("user:secret")}` `` `)` - and base64-encodes
 it. When no referenced chunk matches, lazily-loaded chunk URLs reconstructed from the
 webpack runtime's chunk map are scanned as a fallback. The token is cached and refreshed
 once when the endpoint rejects it (`401`/`403`). This depends on the XE website's current
 structure and is therefore **inherently brittle**; the package carries no affiliation with
 or endorsement by XE.
 
-> **Best-effort — not for production-critical sourcing.** Because the token is recovered by
+> **Best-effort - not for production-critical sourcing.** Because the token is recovered by
 > scraping an unversioned public page, a change to XE's markup or bundling can silently
-> reduce the provider to empty results — a broken scraper looks the same as "no rate for
+> reduce the provider to empty results - a broken scraper looks the same as "no rate for
 > this pair". Do not rely on this provider as your sole rate source in production. Pair it
 > with a stable primary feed (for example ECB, Bank of England, or RBA) via the aggregating
 > provider, or gate it behind your own health check that distinguishes "scraper broke" from
@@ -67,18 +67,18 @@ or endorsement by XE.
   when `AllowSynchronousNetworkAccess` is enabled (it is `false` by default).
 - **No provider-local disk cache.** The provider keeps only an in-memory store of the pairs
   and windows it has fetched this session. For durable caching across processes, compose it
-  with the generic caching provider — `AddCachedRateProvider<…>` from the
+  with the generic caching provider - `AddCachedRateProvider<…>` from the
   [`Bodu.Financial.ExchangeRates.Caching`](../Bodu.Financial.ExchangeRates.Caching) package.
 
 ## HTTP client and lifetime
 
 The provider is `IDisposable` and offers two construction styles:
 
-- `new XeRateProvider(options, ...)` — the provider builds, owns, and disposes its
+- `new XeRateProvider(options, ...)` - the provider builds, owns, and disposes its
   own `HttpClient`, created via `RateProviderHttpClientFactory.Create` from the configured
   user agent and timeout. Dispose the provider (for example with `using`) to release the
   client.
-- `new XeRateProvider(httpClient, options, ...)` — you supply the client and own its
+- `new XeRateProvider(httpClient, options, ...)` - you supply the client and own its
   lifetime; the provider never disposes a client it did not create. This is the form the
   `*.DependencyInjection` package uses, backed by `IHttpClientFactory`.
 
@@ -101,7 +101,7 @@ The provider is `IDisposable` and offers two construction styles:
 ## Dependency injection
 
 The package ships its own `AddXeExchangeRates` registration in the
-`Bodu.Financial.ExchangeRates` namespace — there is no separate `*.DependencyInjection`
+`Bodu.Financial.ExchangeRates` namespace - there is no separate `*.DependencyInjection`
 package.
 
 ## Logging

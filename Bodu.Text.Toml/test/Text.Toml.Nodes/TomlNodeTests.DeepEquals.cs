@@ -46,7 +46,7 @@ public partial class TomlNodeTests
     }
 
     /// <summary>
-    /// Verifies that nodes of different kinds never compare equal, even when their textual renderings match —
+    /// Verifies that nodes of different kinds never compare equal, even when their textual renderings match -
     /// including an integer against a float of the same numeric value.
     /// </summary>
     [TestMethod]

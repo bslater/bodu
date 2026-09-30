@@ -188,7 +188,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.CopyTo(verify, 0);
 
         Assert.AreEqual(99, verify[0].Value,
-            "CopyTo is a shallow copy — mutating a reference-type element via the destination array affects the same " +
+            "CopyTo is a shallow copy - mutating a reference-type element via the destination array affects the same " +
             "object held in the buffer, as both reference the same instance.");
     }
 

@@ -42,8 +42,8 @@ internal static class TomlCanonicalWriter
     /// <param name="emitter">The destination emitter.</param>
     /// <param name="table">The table to write.</param>
     /// <param name="path">
-    /// The dotted header path of the table, empty for the document root. The list is shared through the recursion —
-    /// each section pushes its key before descending and pops it after — so no per-section path copy is made.
+    /// The dotted header path of the table, empty for the document root. The list is shared through the recursion -
+    /// each section pushes its key before descending and pops it after - so no per-section path copy is made.
     /// </param>
     /// <remarks>
     /// A member is emitted inline when it is a scalar, or an array that is not an array of tables; it is emitted as a

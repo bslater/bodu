@@ -26,7 +26,7 @@ public sealed partial class ConcurrentCircularBuffer<T> :
     /// </para>
     /// <para>
     /// Because the enumerator operates on a snapshot, it will never throw
-    /// <see cref="System.InvalidOperationException" /> due to concurrent modification — unlike enumerators on
+    /// <see cref="System.InvalidOperationException" /> due to concurrent modification - unlike enumerators on
     /// non-concurrent collections.
     /// </para>
     /// </remarks>

@@ -13,7 +13,7 @@ namespace Bodu.Financial.Samples.CustomProvider;
 /// <summary>
 /// Verifies that the sample <see cref="CsvFileRateProvider" /> satisfies the shared dated-provider
 /// contract by deriving the <see cref="DatedRateProviderContractTests{TProvider}" /> base shipped in
-/// <c>Bodu.Financial.ExchangeRates.Testing</c> — the same base every built-in provider passes. This is
+/// <c>Bodu.Financial.ExchangeRates.Testing</c> - the same base every built-in provider passes. This is
 /// the pattern for validating any consumer-written <see cref="IDatedRateProvider" />: supply the
 /// seeded provider and its known/unknown dates, and the base exercises the full lookup surface
 /// (sync/async equivalence, date resolution, inverse and identity fallbacks, provenance, misses).

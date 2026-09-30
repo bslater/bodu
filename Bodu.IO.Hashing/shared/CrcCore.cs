@@ -20,7 +20,7 @@ namespace Bodu.IO.Hashing.Checksums;
 #endif
 
 /// <summary>
-/// Provides the shared CRC primitives — lookup-table construction and the reflected inner loops — consumed by the
+/// Provides the shared CRC primitives - lookup-table construction and the reflected inner loops - consumed by the
 /// <c>Bodu.IO.Hashing</c> CRC engine and source-compiled into the format readers that verify vendor CRC variants.
 /// </summary>
 /// <remarks>
@@ -29,7 +29,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// implementation behind the public <c>CrcLookupTableBuilder</c> facade and the reflected inner loops of the <c>Crc</c>
 /// engine in <c>Bodu.IO.Hashing</c>, and it is source-compiled (no package dependency) into <c>Bodu.IO.Pst</c> and
 /// <c>Bodu.Formats.Outlook.Msg</c>, whose container formats specify a reflected CRC-32 with a zero initial value and no
-/// final exclusive-or — parameters outside the published RevEng catalogue. The consuming project selects the namespace
+/// final exclusive-or - parameters outside the published RevEng catalogue. The consuming project selects the namespace
 /// with the <c>PST</c> / <c>MSG</c> preprocessor symbols, following the <c>Bodu.Text.Serialization/shared</c> pattern.
 /// </para>
 /// <para>
@@ -175,7 +175,7 @@ internal static class CrcCore
     /// <param name="crc">The CRC accumulator on entry.</param>
     /// <param name="tables">The eight interleaved slicing tables for the active reflected polynomial.</param>
     /// <param name="t0">The ordinary byte-wise reflected table (equal to <c>tables[0]</c>), used for the tail.</param>
-    /// <param name="width">The CRC width in bits — either 32 or 64.</param>
+    /// <param name="width">The CRC width in bits - either 32 or 64.</param>
     /// <returns>The CRC accumulator after consuming <paramref name="data" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static ulong UpdateReflectedSlicing(ReadOnlySpan<byte> data, ulong crc, ulong[][] tables, ulong[] t0, int width)

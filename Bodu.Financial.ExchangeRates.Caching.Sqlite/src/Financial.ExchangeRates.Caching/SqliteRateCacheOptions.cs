@@ -15,8 +15,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The database location is supplied either as a <see cref="DatabaseFilePath" /> — the simplest form, a path to a
-/// SQLite file that is created on first use — or as a fully specified <see cref="ConnectionString" /> for advanced
+/// The database location is supplied either as a <see cref="DatabaseFilePath" /> - the simplest form, a path to a
+/// SQLite file that is created on first use - or as a fully specified <see cref="ConnectionString" /> for advanced
 /// scenarios such as a shared in-memory database or custom connection flags. At least one must be set;
 /// <see cref="ConnectionString" /> takes precedence when both are supplied.
 /// </para>
@@ -24,10 +24,10 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// A single database file may be shared by several caches: each cache stores exactly one provider, and the provider is
 /// the leading column of the rate and coverage keys, so multiple single-provider caches pointed at the same file keep
 /// their series partitioned with no collisions. <see cref="UseWriteAheadLogging" /> and <see cref="BusyTimeout" />
-/// govern how concurrent writers — multiple cache instances, or separate processes — sharing one file behave.
+/// govern how concurrent writers - multiple cache instances, or separate processes - sharing one file behave.
 /// </para>
 /// <para>
-/// Expiry is not a storage concern — it is supplied per call by the caching provider — so this type carries only the
+/// Expiry is not a storage concern - it is supplied per call by the caching provider - so this type carries only the
 /// storage location and connection settings in addition to the bound provider.
 /// </para>
 /// </remarks>
@@ -59,7 +59,7 @@ public class SqliteRateCacheOptions
     /// shared in-memory database (<c>Data Source=name;Mode=Memory;Cache=Shared</c>) or custom connection flags.
     /// </para>
     /// <para>
-    /// A supplied value is not parsed or validated when the options are constructed — only its presence is checked. A
+    /// A supplied value is not parsed or validated when the options are constructed - only its presence is checked. A
     /// malformed or unusable connection string is therefore not rejected up front; it surfaces later at connect time,
     /// where the cache's best-effort behaviour degrades to an empty read or a skipped write rather than throwing.
     /// </para>
@@ -77,7 +77,7 @@ public class SqliteRateCacheOptions
     /// <para>
     /// WAL lets readers run concurrently with a writer and lifts write throughput when several caches or processes
     /// share one file, which is the recommended mode for a database holding more than one provider's series. The
-    /// setting is applied best-effort: a database that does not support WAL — notably an in-memory database — is left
+    /// setting is applied best-effort: a database that does not support WAL - notably an in-memory database - is left
     /// in its native journal mode rather than failing.
     /// </para>
     /// <para>

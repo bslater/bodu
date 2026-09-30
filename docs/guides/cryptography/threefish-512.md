@@ -6,7 +6,7 @@ title: Using Threefish-512
 
 <xref:Bodu.Security.Cryptography.Threefish512> is the 512-bit variant of the Threefish tweakable block cipher family. It operates on **512-bit (64-byte) blocks** with a **512-bit (64-byte) key** and a **128-bit (16-byte) tweak**. Of the three Threefish variants, this is the one used as the core of the standard Skein hash function.
 
-![Threefish round function — MIX, word permutation, and subkey injection](../../images/diagrams/threefish-round.svg)
+![Threefish round function - MIX, word permutation, and subkey injection](../../images/diagrams/threefish-round.svg)
 
 > [!NOTE]
 > Encrypt/decrypt ships an AVX-512 fast path that engages automatically on supporting hardware. See [Hardware acceleration & SIMD opt-out](hardware-acceleration.md) for when it runs and how to force the scalar path.
@@ -20,7 +20,7 @@ title: Using Threefish-512
 | Tweak size | 128 bits (16 bytes) | Fixed across the Threefish family. |
 | IV size | 512 bits (64 bytes) | Always matches the block size. |
 
-## Encrypt and decrypt — CBC + PKCS7
+## Encrypt and decrypt - CBC + PKCS7
 
 <!-- compile -->
 ```csharp
@@ -57,7 +57,7 @@ using (var alg = new Threefish512 { BlockMode = CipherModeKind.CBC, Padding = Pa
 Debug.Assert(plaintext.SequenceEqual(recovered));
 ```
 
-## Encrypt and decrypt — CTR (stream mode, parallelisable)
+## Encrypt and decrypt - CTR (stream mode, parallelisable)
 
 ```csharp
 using var alg = new Threefish512
@@ -118,7 +118,7 @@ byte[] EncryptRecord(byte[] key, byte[] iv, long recordId, byte[] plaintext)
 }
 ```
 
-The 8-byte little-endian record ID fills the low half of the 16-byte tweak; the high half stays zero, leaving room to encode a second discriminator (a table ID, a tenant ID) if you need it. Because the tweak is mixed into every round's subkey, two records with different IDs are cryptographically unrelated even under the same key and IV — see [Threefish-256](threefish-256.md#what-the-tweak-is--and-why-it-is-not-an-iv) for the mechanism.
+The 8-byte little-endian record ID fills the low half of the 16-byte tweak; the high half stays zero, leaving room to encode a second discriminator (a table ID, a tenant ID) if you need it. Because the tweak is mixed into every round's subkey, two records with different IDs are cryptographically unrelated even under the same key and IV - see [Threefish-256](threefish-256.md#what-the-tweak-is--and-why-it-is-not-an-iv) for the mechanism.
 
 ## Why 512 is the general-purpose pick
 
@@ -126,16 +126,16 @@ Of the three Threefish variants, Threefish-512 is the one used as the core of th
 
 - Its 64-byte block is wide enough to keep CBC's birthday bound irrelevant and large enough to amortise per-block overhead, yet its key schedule is far cheaper than Threefish-1024's.
 - Throughput is roughly double Threefish-1024 on the same CPU for the same data.
-- Padding waste rounds up to 64 bytes rather than 128 — material when records are a few hundred bytes.
+- Padding waste rounds up to 64 bytes rather than 128 - material when records are a few hundred bytes.
 
 Choose [Threefish-256](threefish-256.md) when ciphertext size on short messages matters most, and [Threefish-1024](threefish-1024.md) only when you specifically want the widest block.
 
-The raw primitive is `Threefish512Cipher`, an <xref:Bodu.Security.Cryptography.IBlockCipher> taking a 64-byte key and 16-byte tweak — use it for hand-composed pipelines ([Composing primitives](composing-primitives.md)).
+The raw primitive is `Threefish512Cipher`, an <xref:Bodu.Security.Cryptography.IBlockCipher> taking a 64-byte key and 16-byte tweak - use it for hand-composed pipelines ([Composing primitives](composing-primitives.md)).
 
 ## Where to go next
 
-- [Encryption basics](encryption-basics.md) — the Key/IV/Tweak lifecycle.
-- [Cipher block modes](cipher-modes.md) — CFB / OFB / ECB also work with `Threefish512`.
-- [Padding](padding.md) — which padding scheme pairs with which mode.
+- [Encryption basics](encryption-basics.md) - the Key/IV/Tweak lifecycle.
+- [Cipher block modes](cipher-modes.md) - CFB / OFB / ECB also work with `Threefish512`.
+- [Padding](padding.md) - which padding scheme pairs with which mode.
 - Other variants: [Threefish-256](threefish-256.md), [Threefish-1024](threefish-1024.md).
-- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

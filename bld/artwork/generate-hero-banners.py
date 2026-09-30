@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # ---------------------------------------------------------------------------------------------------------------
-# generate-hero-banners.py — regenerates every docs/images/hero-*.svg from one canonical template.
+# generate-hero-banners.py - regenerates every docs/images/hero-*.svg from one canonical template.
 #
 # All hero banners share identical scaffolding (480x220 dark gradient card, a 150x160 left panel, a
 # bidirectional arrow pair, a 142x160 right panel, and a bottom caption); only the accent colour, the
@@ -172,7 +172,7 @@ def add(name, title, aria, accent, lheader, lbody, up, down, rheader, rbody, cap
 
 # --- Foundation ---------------------------------------------------------------------------------------------
 
-add("hero-core", "Bodu.Core", "Bodu.Core — the foundation package: buffers, threading, functional seams, text, validation",
+add("hero-core", "Bodu.Core", "Bodu.Core - the foundation package: buffers, threading, functional seams, text, validation",
     "#3B82F6", "Bodu.Core",
     mono(["PooledBufferBuilder", "WeekPattern", "AsyncLock · RateGate", "Option · Result",
           "Memoizer · Either", "SequenceGenerator"], y0=44, dy=18),
@@ -181,7 +181,7 @@ add("hero-core", "Bodu.Core", "Bodu.Core — the foundation package: buffers, th
           "XML helpers", '<tspan fill="#60A5FA">ThrowHelper</tspan>'], y0=44, dy=18),
     "buffers · threading · railway seams · text · xml")
 
-add("hero-collections", "Bodu.Collections", "Bodu.Collections — bounded, ordered, and probabilistic collections",
+add("hero-collections", "Bodu.Collections", "Bodu.Collections - bounded, ordered, and probabilistic collections",
     "#34D399", "CircularBuffer&lt;T&gt;", ring("#34D399"),
     "enqueue", "dequeue", "Catalogue",
     mono(["Deque&lt;T&gt;", "EvictingDictionary", "IndexedPriorityQueue", "RangeDictionary",
@@ -190,7 +190,7 @@ add("hero-collections", "Bodu.Collections", "Bodu.Collections — bounded, order
     "bounded · ordered · navigable · probabilistic", gid="col")
 
 
-add("hero-collections-concurrent", "Bodu.Collections.Concurrent", "Bodu.Collections.Concurrent — thread-safe collection variants",
+add("hero-collections-concurrent", "Bodu.Collections.Concurrent", "Bodu.Collections.Concurrent - thread-safe collection variants",
     "#60A5FA", "Threads",
     "\n".join([
         mono(["producer 1", None, "producer 2", None, "consumer"], y0=48, dy=19, size=10),
@@ -221,7 +221,7 @@ add("hero-collections-concurrent", "Bodu.Collections.Concurrent", "Bodu.Collecti
 
 # --- Hashing & crypto ---------------------------------------------------------------------------------------
 
-add("hero-io", "Bodu.IO.Hashing", "Bodu.IO.Hashing — non-cryptographic hashing, CRC catalogue, and check digits",
+add("hero-io", "Bodu.IO.Hashing", "Bodu.IO.Hashing - non-cryptographic hashing, CRC catalogue, and check digits",
     "#FB923C", "input bytes",
     "\n".join([
         mono(['<tspan fill="#94A3B8">0x</tspan>a7 <tspan fill="#94A3B8">0x</tspan>f3 <tspan fill="#94A3B8">0x</tspan>18',
@@ -241,7 +241,7 @@ add("hero-io", "Bodu.IO.Hashing", "Bodu.IO.Hashing — non-cryptographic hashing
           '<tspan fill="#60A5FA">Damm · ISO 7064</tspan>'], y0=44, dy=16, size=10),
     "RevEng CRC catalogue · streaming · resumable · check digits", gid="iohash")
 
-add("hero-crypto", "Bodu.Security.Cryptography", "Bodu.Security.Cryptography — block ciphers, AEAD, keyed hashes, and post-quantum algorithms",
+add("hero-crypto", "Bodu.Security.Cryptography", "Bodu.Security.Cryptography - block ciphers, AEAD, keyed hashes, and post-quantum algorithms",
     "#F87171", "symmetric",
     mono(["Threefish · Skein", "Blowfish · Twofish", "Camellia · Skipjack", "Ascon AEAD",
           "BLAKE2 · BLAKE3", "SipHash · Poly1305", '<tspan fill="#94A3B8" font-size="9">EAX · GCM · OCB · SIV</tspan>'],
@@ -254,7 +254,7 @@ add("hero-crypto", "Bodu.Security.Cryptography", "Bodu.Security.Cryptography —
 
 # --- Text ----------------------------------------------------------------------------------------------------
 
-add("hero-text", "Bodu.Text", "Bodu.Text — text-encoding utilities in the Bodu.Core foundation package",
+add("hero-text", "Bodu.Text", "Bodu.Text - text-encoding utilities in the Bodu.Core foundation package",
     "#F472B6", "Bodu.Text",
     mono(["EncodingDetection", "EncodingExtensions", "StringEncoding", "Extensions", None,
           '<tspan fill="#94A3B8" font-size="9">namespace in Bodu.Core</tspan>'], y0=46, dy=18),
@@ -263,7 +263,7 @@ add("hero-text", "Bodu.Text", "Bodu.Text — text-encoding utilities in the Bodu
           '<tspan fill="#60A5FA">GetString(span)</tspan>', '<tspan fill="#60A5FA">TryGetBytes(…)</tspan>'], y0=44, dy=17, size=10),
     "encoding detection · span-first conversions")
 
-add("hero-text-encoding", "Bodu.Text.Encoding", "Bodu.Text.Encoding — binary-to-text encodings from Base16 to Base85",
+add("hero-text-encoding", "Bodu.Text.Encoding", "Bodu.Text.Encoding - binary-to-text encodings from Base16 to Base85",
     "#FBBF24", "bytes",
     "\n".join([
         mono(['<tspan fill="#94A3B8">0x</tspan>48 <tspan fill="#94A3B8">0x</tspan>65 <tspan fill="#94A3B8">0x</tspan>6C',
@@ -290,7 +290,7 @@ add("hero-text-encoding", "Bodu.Text.Encoding", "Bodu.Text.Encoding — binary-t
     </g>''']),
     "RFC 4648 · Crockford · Base64Url · Z85 · Ascii85", gid="tenc")
 
-add("hero-formats", "Bodu.Text.Formats", "Bodu.Text.Formats — Delimited, DotEnv, and INI document formats",
+add("hero-formats", "Bodu.Text.Formats", "Bodu.Text.Formats - Delimited, DotEnv, and INI document formats",
     "#34D399", "documents",
     mono(["Delimited", '<tspan fill="#94A3B8">RFC 4180 CSV · TSV</tspan>', None,
           "DotEnv", '<tspan fill="#94A3B8">.env key=value</tspan>', None,
@@ -300,7 +300,7 @@ add("hero-formats", "Bodu.Text.Formats", "Bodu.Text.Formats — Delimited, DotEn
           '<tspan fill="#94A3B8" font-size="9">round-trip preserving</tspan>'], y0=44, dy=16, size=10),
     "three text document formats · one package", gid="fmt")
 
-add("hero-toml", "Bodu.Text.Toml", "Bodu.Text.Toml — TOML reader and writer over a typed value model",
+add("hero-toml", "Bodu.Text.Toml", "Bodu.Text.Toml - TOML reader and writer over a typed value model",
     "#FBBF24", "TOML text",
     mono(['title <tspan fill="#FBBF24">=</tspan> <tspan fill="#60A5FA">"app"</tspan>', None,
           '<tspan fill="#FBBF24">[</tspan>owner<tspan fill="#FBBF24">]</tspan>',
@@ -314,7 +314,7 @@ add("hero-toml", "Bodu.Text.Toml", "Bodu.Text.Toml — TOML reader and writer ov
           "    name", "    dob", '<tspan fill="#60A5FA">  db</tspan>', "    ports[]"], y0=42, dy=16, size=11),
     "typed · v1.0 / v1.1 · canonical", gid="tml")
 
-add("hero-bencode", "Bodu.Text.Bencode", "Bodu.Text.Bencode — framed BEP 3 serialization",
+add("hero-bencode", "Bodu.Text.Bencode", "Bodu.Text.Bencode - framed BEP 3 serialization",
     "#34D399", "object tree",
     mono(["dict", '<tspan fill="#60A5FA">  "announce"</tspan>', '    "tracker..."',
           '<tspan fill="#60A5FA">  "info"</tspan>', "    dict",
@@ -325,7 +325,7 @@ add("hero-bencode", "Bodu.Text.Bencode", "Bodu.Text.Bencode — framed BEP 3 ser
           '<tspan fill="#FBBF24">e</tspan>', '<tspan fill="#FBBF24">e</tspan>'], y0=42, dy=16, size=11),
     "framed · self-describing · canonical", gid="bnc")
 
-add("hero-yaml", "Bodu.Text.Yaml", "Bodu.Text.Yaml — YAML reader and writer over a typed node model",
+add("hero-yaml", "Bodu.Text.Yaml", "Bodu.Text.Yaml - YAML reader and writer over a typed node model",
     "#60A5FA", "YAML text",
     mono(['title<tspan fill="#FBBF24">:</tspan> <tspan fill="#60A5FA">app</tspan>', None,
           'owner<tspan fill="#FBBF24">:</tspan>',
@@ -340,7 +340,7 @@ add("hero-yaml", "Bodu.Text.Yaml", "Bodu.Text.Yaml — YAML reader and writer ov
     "block · flow · anchors · 1.2 core", gid="yml")
 
 add("hero-text-serialization", "Bodu.Text.Serialization",
-    "Bodu.Text.Serialization — shared primitives for the System.Text.Json-shaped serializers",
+    "Bodu.Text.Serialization - shared primitives for the System.Text.Json-shaped serializers",
     "#A78BFA", "shared core",
     mono(['<tspan fill="#A78BFA">[BoduPropertyName]</tspan>',
           '<tspan fill="#A78BFA">[BoduIgnore]</tspan>',
@@ -355,8 +355,8 @@ add("hero-text-serialization", "Bodu.Text.Serialization",
           '<tspan fill="#94A3B8">ignore · naming enums</tspan>'], y0=44, dy=17, size=10.5),
     "format-agnostic seams · consumed per format", gid="tser")
 
-add("hero-serializers", "Bodu serializers — Bencode · TOML · YAML",
-    "Bodu serializers — Bencode, TOML, and YAML sharing one System.Text.Json-aligned shape",
+add("hero-serializers", "Bodu serializers - Bencode · TOML · YAML",
+    "Bodu serializers - Bencode, TOML, and YAML sharing one System.Text.Json-aligned shape",
     "#A78BFA", "three formats",
     "\n".join([
         '''    <g stroke="#334155" stroke-width="1.2">
@@ -383,7 +383,7 @@ add("hero-serializers", "Bodu serializers — Bencode · TOML · YAML",
           '<tspan fill="#94A3B8" font-size="9">System.Text.Json-aligned</tspan>'], y0=46, dy=17, size=10),
     "three self-contained libraries · one architecture", gid="ser")
 
-add("hero-configuration", "Bodu.Text.Configuration", "Bodu.Text.Configuration — file-targeted configuration layering",
+add("hero-configuration", "Bodu.Text.Configuration", "Bodu.Text.Configuration - file-targeted configuration layering",
     "#A78BFA", "sections",
     mono(['<tspan fill="#94A3B8">preamble</tspan>', "root = true", None,
           '<tspan fill="#2DD4BF">[*.cs]</tspan>', "indent = 4", None,
@@ -395,7 +395,7 @@ add("hero-configuration", "Bodu.Text.Configuration", "Bodu.Text.Configuration �
     "layer · glob-match · last-wins · resolve", gid="tcfg")
 
 add("hero-extensions-config", "Bodu.Extensions.Configuration.Text",
-    "Bodu.Extensions.Configuration.Text — Microsoft.Extensions.Configuration bridge",
+    "Bodu.Extensions.Configuration.Text - Microsoft.Extensions.Configuration bridge",
     "#2DD4BF", "providers",
     mono(['<tspan fill="#94A3B8">appsettings.json</tspan>', '<tspan fill="#94A3B8">env. variables</tspan>',
           '<tspan fill="#2DD4BF">Bodu .editorconfig</tspan>', '<tspan fill="#94A3B8">command line</tspan>', None,
@@ -408,7 +408,7 @@ add("hero-extensions-config", "Bodu.Extensions.Configuration.Text",
 
 # --- Formats -------------------------------------------------------------------------------------------------
 
-add("hero-delimited", "Bodu.Text.Delimited", "Bodu.Text.Delimited — character-separated record parsing",
+add("hero-delimited", "Bodu.Text.Delimited", "Bodu.Text.Delimited - character-separated record parsing",
     "#34D399", "row model",
     mono(['<tspan fill="#F8FAFC" font-weight="700">name  age  city</tspan>',
           "Alice  30   Paris", "Bob    25   London", "Eve    35   Rome", None,
@@ -420,7 +420,7 @@ add("hero-delimited", "Bodu.Text.Delimited", "Bodu.Text.Delimited — character-
           'Eve<tspan fill="#FBBF24">,</tspan>35<tspan fill="#FBBF24">,</tspan>Rome'], y0=44, dy=20, size=11),
     "delimited · quoted · header-keyed", gid="dlm")
 
-add("hero-dotenv", "Bodu.Text.DotEnv", "Bodu.Text.DotEnv — environment-file key/value parsing",
+add("hero-dotenv", "Bodu.Text.DotEnv", "Bodu.Text.DotEnv - environment-file key/value parsing",
     "#FBBF24", "entries",
     mono(['<tspan fill="#F8FAFC" font-weight="700">HOST </tspan> localhost',
           '<tspan fill="#F8FAFC" font-weight="700">PORT </tspan> 8080',
@@ -434,7 +434,7 @@ add("hero-dotenv", "Bodu.Text.DotEnv", "Bodu.Text.DotEnv — environment-file ke
           '<tspan fill="#60A5FA">DEBUG</tspan><tspan fill="#FBBF24">=</tspan>true'], y0=42, dy=16, size=11),
     "key=value · quoted · ordered", gid="env")
 
-add("hero-ini", "Bodu.Text.Ini", "Bodu.Text.Ini — section-organised configuration documents",
+add("hero-ini", "Bodu.Text.Ini", "Bodu.Text.Ini - section-organised configuration documents",
     "#60A5FA", "document",
     mono(['<tspan fill="#94A3B8">preamble</tspan>', "  root = true", None,
           '<tspan fill="#F8FAFC" font-weight="700">[server]</tspan>', "  host = ...", "  port = 8080", None,
@@ -448,7 +448,7 @@ add("hero-ini", "Bodu.Text.Ini", "Bodu.Text.Ini — section-organised configurat
 
 # --- Numerics & financial ------------------------------------------------------------------------------------
 
-add("hero-numerics", "Bodu.Numerics", "Bodu.Numerics — exact rational arithmetic and bounded intervals",
+add("hero-numerics", "Bodu.Numerics", "Bodu.Numerics - exact rational arithmetic and bounded intervals",
     "#A78BFA", "Fraction&lt;T&gt;",
     "\n".join([
         '''    <g font-family="'Consolas','Menlo',monospace">
@@ -474,7 +474,7 @@ add("hero-numerics", "Bodu.Numerics", "Bodu.Numerics — exact rational arithmet
     "canonical · BigInteger-promoted · INumber&lt;T&gt;", gid="num")
 
 add("hero-numerics-json", "Bodu.Numerics.Serialization.Json",
-    "Bodu.Numerics.Serialization.Json — System.Text.Json converters for fractions and intervals",
+    "Bodu.Numerics.Serialization.Json - System.Text.Json converters for fractions and intervals",
     "#A78BFA", "Bodu.Numerics",
     "\n".join([
         mono(["Fraction&lt;T&gt;"], y0=48, dy=17),
@@ -493,7 +493,7 @@ add("hero-numerics-json", "Bodu.Numerics.Serialization.Json",
           '  <tspan fill="#FBBF24">}</tspan>', '<tspan fill="#FBBF24">}</tspan>'], y0=42, dy=16, size=10),
     "options.AddNumericsJsonConverters() · NumericsJsonPolicy", gid="numjson")
 
-add("hero-financial", "Bodu.Financial", "Bodu.Financial — type-safe monetary primitives with audit-grade FX",
+add("hero-financial", "Bodu.Financial", "Bodu.Financial - type-safe monetary primitives with audit-grade FX",
     "#34D399", "Money&lt;USD&gt;",
     "\n".join([
         '''    <g font-family="'Consolas','Menlo',monospace" text-anchor="middle">
@@ -509,7 +509,7 @@ add("hero-financial", "Bodu.Financial", "Bodu.Financial — type-safe monetary p
     "type-safe · ISO 4217 · audit-grade FX · fair allocation", gid="fin")
 
 add("hero-financial-di", "Bodu.Financial.DependencyInjection",
-    "Bodu.Financial.DependencyInjection — service registration for financial services",
+    "Bodu.Financial.DependencyInjection - service registration for financial services",
     "#34D399", "Bodu.Financial",
     mono(["Money · Money&lt;T&gt;", "CurrencyCode", "ICurrency catalogue", "ExchangeRate", None,
           '<tspan fill="#94A3B8">rounding · allocation</tspan>'], y0=46, dy=16, size=10.5),
@@ -521,7 +521,7 @@ add("hero-financial-di", "Bodu.Financial.DependencyInjection",
     "IFinancialServiceBuilder · FinancialOptions", gid="findi")
 
 add("hero-financial-json", "Bodu.Financial.Serialization.Json",
-    "Bodu.Financial.Serialization.Json — System.Text.Json converters for money and exchange rates",
+    "Bodu.Financial.Serialization.Json - System.Text.Json converters for money and exchange rates",
     "#34D399", "Bodu.Financial",
     mono(["Money · Money&lt;T&gt;", "MoneyBag", "ExchangeRate", "CurrencyPair", None,
           '<tspan fill="#94A3B8">serialization-agnostic core</tspan>'], y0=46, dy=17),
@@ -535,7 +535,7 @@ add("hero-financial-json", "Bodu.Financial.Serialization.Json",
 
 # --- Calendar ------------------------------------------------------------------------------------------------
 
-add("hero-calendar", "Bodu.Globalization.Calendar", "Bodu.Globalization.Calendar — resource-driven notable-date engine",
+add("hero-calendar", "Bodu.Globalization.Calendar", "Bodu.Globalization.Calendar - resource-driven notable-date engine",
     "#FBBF24", "April",
     "\n".join([
         calendar_grid("#FBBF24", {2, 5, 9}),
@@ -547,7 +547,7 @@ add("hero-calendar", "Bodu.Globalization.Calendar", "Bodu.Globalization.Calendar
     "rule-driven notable dates · range resolution", gid="cal")
 
 add("hero-recurrence", "Bodu.Globalization.Recurrence",
-    "Bodu.Globalization.Recurrence — RFC 5545 RRULE and cron recurrence evaluation",
+    "Bodu.Globalization.Recurrence - RFC 5545 RRULE and cron recurrence evaluation",
     "#2DD4BF", "RRULE",
     "\n".join([
         calendar_grid("#2DD4BF", {1, 8, 15}),
@@ -560,7 +560,7 @@ add("hero-recurrence", "Bodu.Globalization.Recurrence",
     "RRULE occurrence enumeration · cron next/previous", gid="recur")
 
 add("hero-calendar-builder", "Bodu.Globalization.Calendar.Builder",
-    "Bodu.Globalization.Calendar.Builder — fluent authoring for notable-date documents",
+    "Bodu.Globalization.Calendar.Builder - fluent authoring for notable-date documents",
     "#FBBF24", "DocumentBuilder",
     "\n".join([
         '''    <g stroke="#334155" stroke-width="1">
@@ -591,7 +591,7 @@ add("hero-calendar-builder", "Bodu.Globalization.Calendar.Builder",
     "author · serialize · load · resolve", gid="calb")
 
 add("hero-calendar-di", "Bodu.Globalization.Calendar.DependencyInjection",
-    "Bodu.Globalization.Calendar.DependencyInjection — service registration for the notable-date engine",
+    "Bodu.Globalization.Calendar.DependencyInjection - service registration for the notable-date engine",
     "#60A5FA", "NotableDateService",
     "\n".join([
         calendar_grid("#60A5FA", {2, 5, 11}),
@@ -604,7 +604,7 @@ add("hero-calendar-di", "Bodu.Globalization.Calendar.DependencyInjection",
     "using Bodu.Globalization.Calendar;", gid="caldi")
 
 add("hero-calendar-plugins", "Bodu.Globalization.Calendar.Plugins",
-    "Bodu.Globalization.Calendar.Plugins — trust-gated loading of external date algorithms",
+    "Bodu.Globalization.Calendar.Plugins - trust-gated loading of external date algorithms",
     "#2DD4BF", "External assembly",
     "\n".join([
         mono(["MyAlgorithms.dll", None, '<tspan fill="#2DD4BF">INotableDate</tspan>',
@@ -633,7 +633,7 @@ add("hero-calendar-plugins", "Bodu.Globalization.Calendar.Plugins",
     "trust-gated assembly loading", gid="calplg")
 
 add("hero-calendar-tool", "Bodu.Globalization.Calendar.Tool",
-    "Bodu.Globalization.Calendar.Tool — the bodu-calendar command-line compiler and lint",
+    "Bodu.Globalization.Calendar.Tool - the bodu-calendar command-line compiler and lint",
     "#60A5FA", "bodu-calendar",
     mono(['<tspan fill="#60A5FA">$</tspan> lint holidays.xml',
           '  <tspan fill="#34D399">0 errors, 0 warnings</tspan>', None,
@@ -648,7 +648,7 @@ add("hero-calendar-tool", "Bodu.Globalization.Calendar.Tool",
     "lint · compile · info", gid="caltool")
 
 add("hero-calendar-build", "Bodu.Globalization.Calendar.Build",
-    "Bodu.Globalization.Calendar.Build — MSBuild compilation of notable-date rule packs",
+    "Bodu.Globalization.Calendar.Build - MSBuild compilation of notable-date rule packs",
     "#A78BFA", "app.csproj",
     mono(['<tspan fill="#94A3B8">&lt;ItemGroup&gt;</tspan>',
           ' <tspan fill="#A78BFA">&lt;NotableDatePack</tspan>',
@@ -663,7 +663,7 @@ add("hero-calendar-build", "Bodu.Globalization.Calendar.Build",
     "NotableDatePack → sealed .bcal", gid="calbld")
 
 add("hero-calendar-caching", "Bodu.Globalization.Calendar.Caching",
-    "Bodu.Globalization.Calendar.Caching — per-territory, per-year caching for notable-date services",
+    "Bodu.Globalization.Calendar.Caching - per-territory, per-year caching for notable-date services",
     "#FB923C", "NotableDateService",
     mono(['<tspan fill="#FB923C">CachingNotableDateService</tspan>', None,
           'AU <tspan fill="#94A3B8">2026 ✓ 2027 ✓</tspan>',
@@ -680,7 +680,7 @@ add("hero-calendar-caching", "Bodu.Globalization.Calendar.Caching",
     "compute a territory-year once · serve it cached", gid="calcache")
 
 add("hero-calendar-caching-distributed", "Bodu.Globalization.Calendar.Caching.Distributed",
-    "Bodu.Globalization.Calendar.Caching.Distributed — IDistributedCache / Redis backend for the notable-date cache",
+    "Bodu.Globalization.Calendar.Caching.Distributed - IDistributedCache / Redis backend for the notable-date cache",
     "#F87171", "IDistributedCache",
     mono(['<tspan fill="#F87171">DistributedNotableDateCache</tspan>', None,
           '<tspan fill="#94A3B8">app-1 ─┐</tspan>',
@@ -696,7 +696,7 @@ add("hero-calendar-caching-distributed", "Bodu.Globalization.Calendar.Caching.Di
     "Redis · SQL Server · any backend", gid="caldist")
 
 add("hero-calendar-caching-sqlite", "Bodu.Globalization.Calendar.Caching.Sqlite",
-    "Bodu.Globalization.Calendar.Caching.Sqlite — durable SQLite backend for the notable-date cache",
+    "Bodu.Globalization.Calendar.Caching.Sqlite - durable SQLite backend for the notable-date cache",
     "#60A5FA", "calendar.db",
     "\n".join([
         '''    <g stroke="#60A5FA" stroke-width="1.6" fill="#0F172A">
@@ -711,7 +711,7 @@ add("hero-calendar-caching-sqlite", "Bodu.Globalization.Calendar.Caching.Sqlite"
     "lookup", "persist", "Notable dates",
     mono(['<tspan fill="#60A5FA">AddSqliteNotableDateCache(…)</tspan>', None, "CachingNotableDate",
           'Service <tspan fill="#94A3B8">read-through</tspan>', None,
-          '<tspan fill="#94A3B8" font-size="9">survives restarts —</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">survives restarts -</tspan>',
           '<tspan fill="#94A3B8" font-size="9">compute once per year</tspan>'], y0=44, dy=16, size=9.5),
     "durable single-file cache · zero server", gid="calsql")
 
@@ -732,7 +732,7 @@ CAL_IDS = {"africa": "Africa", "americas": "Americas", "asiapacific": "AsiaPacif
 
 for slug, region, accent, hl, codes, lnote, caption in CAL_PACKS:
     pkg = "Bodu.Globalization.Calendar." + CAL_IDS[slug]
-    add(f"hero-calendar-{slug}", pkg, f"{pkg} — embedded notable-date resource pack for {region}",
+    add(f"hero-calendar-{slug}", pkg, f"{pkg} - embedded notable-date resource pack for {region}",
         accent, region,
         "\n".join([calendar_grid(accent, hl), note(lnote, x=12, y=148)]),
         "resolve", "import", "Territories",
@@ -760,13 +760,13 @@ FX_PROVIDERS = [
 
 for slug, short, s1, s2, accent, chip, pair, history, pnote, register, desc, pid in FX_PROVIDERS:
     pkg = f"Bodu.Financial.ExchangeRates.{pid}"
-    add(f"hero-fx-{slug}", pkg, f"{pkg} — {desc} exchange-rate provider",
+    add(f"hero-fx-{slug}", pkg, f"{pkg} - {desc} exchange-rate provider",
         accent, short, provider_left(accent, s1, s2, chip, pair),
         "fetch", "parse", "Provider", provider_right(accent, history, pnote),
         f"services.{register}()", gid="fx" + slug)
 
 add("hero-fx", "Bodu.Financial.ExchangeRates",
-    "Bodu.Financial.ExchangeRates — web exchange-rate provider infrastructure",
+    "Bodu.Financial.ExchangeRates - web exchange-rate provider infrastructure",
     "#34D399", "WebRateProvider",
     "\n".join([
         '''    <g stroke="#334155" stroke-width="1">
@@ -792,7 +792,7 @@ add("hero-fx", "Bodu.Financial.ExchangeRates",
     "base classes for BOE \u00b7 ECB \u00b7 RBA \u00b7 Yahoo \u00b7 OFX \u00b7 XE \u00b7 OANDA", gid="fx")
 
 add("hero-fx-di", "Bodu.Financial.ExchangeRates.DependencyInjection",
-    "Bodu.Financial.ExchangeRates.DependencyInjection — resilient HttpClient wiring for exchange-rate providers",
+    "Bodu.Financial.ExchangeRates.DependencyInjection - resilient HttpClient wiring for exchange-rate providers",
     "#34D399", "named HttpClient",
     "\n".join([
         '''    <g stroke="#334155" stroke-width="1">
@@ -818,7 +818,7 @@ add("hero-fx-di", "Bodu.Financial.ExchangeRates.DependencyInjection",
     "shared machinery for BOE · ECB · RBA · Yahoo · OFX · XE · OANDA", gid="fxdi")
 
 add("hero-fx-caching", "Bodu.Financial.ExchangeRates.Caching",
-    "Bodu.Financial.ExchangeRates.Caching — read-through caching and aggregation for exchange-rate providers",
+    "Bodu.Financial.ExchangeRates.Caching - read-through caching and aggregation for exchange-rate providers",
     "#34D399", "IRateCache",
     "\n".join([
         '''    <g stroke="#334155" stroke-width="1">
@@ -851,7 +851,7 @@ add("hero-fx-caching", "Bodu.Financial.ExchangeRates.Caching",
     "AddCachedRateProvider · AddAggregatedRateProvider", gid="fxcache")
 
 add("hero-fx-caching-distributed", "Bodu.Financial.ExchangeRates.Caching.Distributed",
-    "Bodu.Financial.ExchangeRates.Caching.Distributed — IDistributedCache backend for exchange-rate caching",
+    "Bodu.Financial.ExchangeRates.Caching.Distributed - IDistributedCache backend for exchange-rate caching",
     "#F87171", "IDistributedCache",
     "\n".join([
         '''    <g stroke="#F87171" stroke-width="1.4" fill="#0F172A">
@@ -881,7 +881,7 @@ add("hero-fx-caching-distributed", "Bodu.Financial.ExchangeRates.Caching.Distrib
     "one durable rate cache for the whole fleet", gid="fxdist")
 
 add("hero-fx-caching-sqlite", "Bodu.Financial.ExchangeRates.Caching.Sqlite",
-    "Bodu.Financial.ExchangeRates.Caching.Sqlite — durable SQLite backend for exchange-rate caching",
+    "Bodu.Financial.ExchangeRates.Caching.Sqlite - durable SQLite backend for exchange-rate caching",
     "#60A5FA", "rates.db",
     "\n".join([
         '''    <g stroke="#60A5FA" stroke-width="1.6" fill="#0F172A">
@@ -896,14 +896,14 @@ add("hero-fx-caching-sqlite", "Bodu.Financial.ExchangeRates.Caching.Sqlite",
     "lookup", "persist", "Rate cache",
     mono(['<tspan fill="#60A5FA">AddSqliteRateCache(…)</tspan>', None, "CachingRate",
           'Provider <tspan fill="#94A3B8">read-through</tspan>', None,
-          '<tspan fill="#94A3B8" font-size="9">survives restarts —</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">survives restarts -</tspan>',
           '<tspan fill="#94A3B8" font-size="9">fetch once per range</tspan>'], y0=44, dy=16, size=9.5),
     "durable single-file cache · zero server", gid="fxsql")
 
 # --- IO / formats --------------------------------------------------------------------------------------------
 
 add("hero-io-compound", "Bodu.IO.Compound",
-    "Bodu.IO.Compound — reader and writer for the OLE2 Compound File Binary container",
+    "Bodu.IO.Compound - reader and writer for the OLE2 Compound File Binary container",
     "#60A5FA", "CompoundFile",
     mono(['<tspan fill="#60A5FA">Root Storage</tspan>',
           '<tspan fill="#94A3B8">├─</tspan> Workbook',
@@ -932,7 +932,7 @@ add("hero-io-compound", "Bodu.IO.Compound",
     "OLE2 / CFB structured storage · staged builder", gid="iocmp")
 
 add("hero-io-pst", "Bodu.IO.Pst",
-    "Bodu.IO.Pst — read-only node-database reader for the Outlook PST container",
+    "Bodu.IO.Pst - read-only node-database reader for the Outlook PST container",
     "#A78BFA", "MS-PST NDB",
     mono(['<tspan fill="#94A3B8">!BDN</tspan> header · CRC',
           '<tspan fill="#94A3B8">NBT</tspan> node B-tree',
@@ -947,7 +947,7 @@ add("hero-io-pst", "Bodu.IO.Pst",
     "node database · checksums verified · raw payloads", gid="iopst")
 
 add("hero-io-biff", "Bodu.IO.Biff",
-    "Bodu.IO.Biff — low-level codec for the BIFF5 and BIFF8 record streams inside .xls workbooks",
+    "Bodu.IO.Biff - low-level codec for the BIFF5 and BIFF8 record streams inside .xls workbooks",
     "#F59E0B", "BIFF records",
     mono(['<tspan fill="#94A3B8">BOF</tspan> · vers · dt',
           'record id · length · payload',
@@ -962,7 +962,7 @@ add("hero-io-biff", "Bodu.IO.Biff",
     "record framing · typed accessors · reader + writer", gid="iobiff")
 
 add("hero-excel", "Bodu.Formats.Excel.Binary",
-    "Bodu.Formats.Excel.Binary — BIFF8 records decoded into worksheet cells",
+    "Bodu.Formats.Excel.Binary - BIFF8 records decoded into worksheet cells",
     "#34D399", "BIFF8 records",
     mono(['<tspan fill="#94A3B8">FD 00</tspan> LABELSST', '<tspan fill="#94A3B8">7E 02</tspan> RK',
           '<tspan fill="#94A3B8">BD 00</tspan> MULRK', '<tspan fill="#94A3B8">06 00</tspan> FORMULA', None,
@@ -990,7 +990,7 @@ add("hero-excel", "Bodu.Formats.Excel.Binary",
     "read-only BIFF8 · shared strings · used range", gid="xls")
 
 add("hero-outlook", "Bodu.Formats.Outlook",
-    "Bodu.Formats.Outlook — the shared MAPI value model for the Outlook format readers",
+    "Bodu.Formats.Outlook - the shared MAPI value model for the Outlook format readers",
     "#60A5FA", "MapiPropertyTag",
     mono(['<tspan fill="#94A3B8">0x0037</tspan> 001F Subject', '<tspan fill="#94A3B8">0x0C1A</tspan> 001F SenderName',
           '<tspan fill="#94A3B8">0x3701</tspan> 0102 AttachData', '<tspan fill="#94A3B8">0x8000</tspan>+ named range', None,
@@ -1003,7 +1003,7 @@ add("hero-outlook", "Bodu.Formats.Outlook",
     "property tags · typed values · named identities", gid="olk")
 
 add("hero-outlook-msg", "Bodu.Formats.Outlook.Msg",
-    "Bodu.Formats.Outlook.Msg — the read-only .msg reader over the OLE2 container",
+    "Bodu.Formats.Outlook.Msg - the read-only .msg reader over the OLE2 container",
     "#2DD4BF", "MS-OXMSG streams",
     mono(["__properties_version1.0", "__substg1.0_0037001F", "__recip_version1.0_#…", "__attach_version1.0_#…",
           "__nameid_version1.0", None,
@@ -1016,7 +1016,7 @@ add("hero-outlook-msg", "Bodu.Formats.Outlook.Msg",
     "MAPI properties · recipients · attachments · bodies", gid="olkmsg")
 
 add("hero-outlook-pst", "Bodu.Formats.Outlook.Pst",
-    "Bodu.Formats.Outlook.Pst — the read-only .pst mail-store reader over the PST node database",
+    "Bodu.Formats.Outlook.Pst - the read-only .pst mail-store reader over the PST node database",
     "#FBBF24", "MS-PST nodes",
     mono(['<tspan fill="#94A3B8">0x0021</tspan> message store', '<tspan fill="#94A3B8">0x0122</tspan> root folder',
           '<tspan fill="#94A3B8">0x0061</tspan> name-to-id map', 'hierarchy · contents TC', 'message PC · subnodes', None,

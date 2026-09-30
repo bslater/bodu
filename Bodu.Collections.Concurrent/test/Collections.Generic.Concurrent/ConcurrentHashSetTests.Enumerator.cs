@@ -37,7 +37,7 @@ public partial class ConcurrentHashSetTests
     }
 
     /// <summary>
-    /// Verifies that the enumerator iterates a point-in-time snapshot — additions and removals made after the
+    /// Verifies that the enumerator iterates a point-in-time snapshot - additions and removals made after the
     /// enumerator is created are not observed.
     /// </summary>
     [TestMethod]

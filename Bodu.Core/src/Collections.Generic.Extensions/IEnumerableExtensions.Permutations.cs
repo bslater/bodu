@@ -29,7 +29,7 @@ public static partial class IEnumerableExtensions
     /// <para>
     /// Rows are ordered lexicographically by the source positions they select: the first row preserves source order,
     /// and each subsequent row is the next arrangement in position order. Elements are treated positionally, so
-    /// duplicate values produce duplicate rows. Each row is an independent snapshot — retaining or mutating one row
+    /// duplicate values produce duplicate rows. Each row is an independent snapshot - retaining or mutating one row
     /// never affects another.
     /// </para>
     /// <para>
@@ -86,13 +86,13 @@ public static partial class IEnumerableExtensions
     /// <remarks>
     /// <para>
     /// This method uses deferred execution. Negative <paramref name="size" /> values are rejected eagerly at the call
-    /// site, but the source count is only known once enumeration begins, so the <c>size &gt; count</c> contract —
-    /// producing an empty sequence rather than throwing — is observed on iteration. The source is materialized into a
+    /// site, but the source count is only known once enumeration begins, so the <c>size &gt; count</c> contract -
+    /// producing an empty sequence rather than throwing - is observed on iteration. The source is materialized into a
     /// buffer when enumeration begins and is enumerated exactly once.
     /// </para>
     /// <para>
     /// Rows are ordered lexicographically by the source positions they select. Elements are treated positionally, so
-    /// duplicate values produce duplicate rows. Each row is an independent snapshot — retaining or mutating one row
+    /// duplicate values produce duplicate rows. Each row is an independent snapshot - retaining or mutating one row
     /// never affects another. A <paramref name="size" /> of 0 yields exactly one empty row, matching the mathematical
     /// convention that <em>P(n, 0)</em> = 1.
     /// </para>
@@ -175,7 +175,7 @@ public static partial class IEnumerableExtensions
 
             if (candidate == items.Length)
             {
-                // No further position available at this depth — backtrack.
+                // No further position available at this depth - backtrack.
                 depth--;
                 continue;
             }

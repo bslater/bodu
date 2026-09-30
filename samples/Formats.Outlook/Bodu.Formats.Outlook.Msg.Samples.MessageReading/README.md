@@ -4,7 +4,7 @@ Reading an Outlook `.msg` message with `Bodu.Formats.Outlook.Msg`, over the shar
 `Bodu.Formats.Outlook` MAPI value model. Two scenarios: the surface a consumer extracting mail
 actually uses, and the tag-addressed property collection underneath it.
 
-The reader is read-only by design, so this sample ships **no binary fixture** — it authors its own
+The reader is read-only by design, so this sample ships **no binary fixture** - it authors its own
 `.msg` with `Bodu.IO.Compound` and reads it back, which keeps the run offline and deterministic and
 makes the container layout visible rather than opaque. See `MsgAuthor.cs`.
 
@@ -33,7 +33,7 @@ wire, and the attachment's CSV reads back byte for byte.
 ### The property model under the conveniences
 
 **Intent.** Show that the conveniences are a lookup into a decoded collection, not a separate
-parse — and that any tag the file carries is reachable.
+parse - and that any tag the file carries is reachable.
 
 **What it does.** Enumerates every decoded property with its tag, type, and value; reads the
 subject both through `message.Subject` and by its raw `0x0037` tag; then asks for a tag the message
@@ -65,6 +65,6 @@ dotnet add package Bodu.IO.Compound
 
 ## Related
 
-- `samples/IO.Pst` — the `.pst` mail store, where the same value model is reached through
+- `samples/IO.Pst` - the `.pst` mail store, where the same value model is reached through
   `OutlookMailStore` over a far larger container.
-- `samples/IO.Compound` — the OLE2 container reader, editor, and writer a `.msg` is built on.
+- `samples/IO.Compound` - the OLE2 container reader, editor, and writer a `.msg` is built on.

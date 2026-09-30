@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 380" role="img" aria-labelledby="ics-t ics-d">
-  <title id="ics-t">Compound File Binary (CFB) — a file system inside one file</title>
+  <title id="ics-t">Compound File Binary (CFB) - a file system inside one file</title>
   <desc id="ics-d">A compound file is a structured-storage envelope: one physical file that begins with the OLE2 signature D0 CF 11 E0 and holds a header, allocation tables, and a directory of sectors. CompoundFile.Open parses that container and exposes a logical hierarchy. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStream leaves. A CompoundStorage is the managed counterpart of the COM IStorage interface; a CompoundStream is the counterpart of IStream and carries the opaque byte payload.</desc>
 
   <defs>
@@ -33,7 +33,7 @@
     <rect class="ics-pan" width="800" height="360" rx="8"/>
     <rect class="ics-hdr" width="800" height="46" rx="8"/>
     <rect class="ics-hdr" y="38" width="800" height="8"/>
-    <text class="ics-ttl" x="16" y="22">Compound File Binary (CFB) — a file system inside one file</text>
+    <text class="ics-ttl" x="16" y="22">Compound File Binary (CFB) - a file system inside one file</text>
     <text class="ics-form" x="784" y="22" text-anchor="end">.xls · .doc · .ppt · .msg</text>
     <text class="ics-mut" x="16" y="38">CompoundFile.Open parses the physical container and exposes the logical storage hierarchy</text>
 
@@ -47,10 +47,10 @@
       <text class="ics-byte" x="24" y="49">D0 CF 11 E0 A1 B1 1A E1</text>
 
       <rect class="ics-seg" x="14" y="64" width="222" height="34" rx="4"/>
-      <text class="ics-sub" x="24" y="85">FAT / mini-FAT — sector chains</text>
+      <text class="ics-sub" x="24" y="85">FAT / mini-FAT - sector chains</text>
 
       <rect class="ics-seg" x="14" y="106" width="222" height="34" rx="4"/>
-      <text class="ics-sub" x="24" y="127">Directory — one entry per node</text>
+      <text class="ics-sub" x="24" y="127">Directory - one entry per node</text>
 
       <rect class="ics-seg" x="14" y="148" width="222" height="80" rx="4"/>
       <text class="ics-mut" x="24" y="166">Sectors (regular + mini stream)</text>

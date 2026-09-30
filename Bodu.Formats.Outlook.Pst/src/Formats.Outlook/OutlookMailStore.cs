@@ -19,13 +19,13 @@ namespace Bodu.Formats.Outlook;
 /// <para>
 /// The session owns its <see cref="PstFile" /> container (and the source stream unless it is left open); every
 /// <see cref="OutlookMailFolder" /> and <see cref="OutlookMailMessage" /> obtained from it is a view bound to the
-/// session's lifetime — disposing the store invalidates them all. Reads are lazy and streaming-first: opening parses
+/// session's lifetime - disposing the store invalidates them all. Reads are lazy and streaming-first: opening parses
 /// only the container header, folder and message enumerations stream table rows, and each object decodes its properties
 /// once on first access.
 /// </para>
 /// <para>
-/// The session is single-threaded, matching the container's documented contract: its members — and the members of every
-/// view obtained from it — must not be called concurrently.
+/// The session is single-threaded, matching the container's documented contract: its members - and the members of every
+/// view obtained from it - must not be called concurrently.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -38,7 +38,7 @@ namespace Bodu.Formats.Outlook;
 /// {
 ///     Console.WriteLine(folder.DisplayName);
 ///     foreach (OutlookMailMessage message in folder.EnumerateMessages())
-///         Console.WriteLine($"  {message.Subject} — {message.SenderName}");
+///         Console.WriteLine($"  {message.Subject} - {message.SenderName}");
 /// }
 ///]]>
 /// </code>
@@ -124,7 +124,7 @@ public sealed partial class OutlookMailStore
     /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
     /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <remarks>
-    /// The root folder itself is structural — user folders (the IPM subtree) hang beneath it. Walk
+    /// The root folder itself is structural - user folders (the IPM subtree) hang beneath it. Walk
     /// <see cref="OutlookMailFolder.EnumerateSubfolders" /> to reach them.
     /// </remarks>
     public OutlookMailFolder RootFolder

@@ -47,7 +47,7 @@ public partial class PooledBufferBuilderTests
 
     /// <summary>
     /// Verifies that <see cref="PooledBufferBuilder{T}.ToArrayAndDispose"/> returns a copy that is independent of
-    /// any underlying pooled buffer — mutating the returned array does not corrupt subsequent pool consumers.
+    /// any underlying pooled buffer - mutating the returned array does not corrupt subsequent pool consumers.
     /// </summary>
     [TestMethod]
     public void ToArrayAndDispose_WhenCalled_ShouldReturnIndependentCopyNotAliasingPooledBuffer()

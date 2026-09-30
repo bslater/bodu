@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// would have to stream the input a second time.
 /// </para>
 /// <para>
-/// The leaf hashes cost <c>leafCount × hashLength</c> bytes to retain — for a 512 MiB input at one-mebibyte blocks that
+/// The leaf hashes cost <c>leafCount × hashLength</c> bytes to retain - for a 512 MiB input at one-mebibyte blocks that
 /// is 512 hashes, or 16 KiB. A caller that needs only the root and not a path should use
 /// <see cref="MerkleTree.ComputeRootOfBlocks(System.IO.Stream, int, MerkleTreeDiagnostics, System.Threading.CancellationToken)" />,
 /// which folds the tree as it reads and never holds more than a logarithmic number of hashes.
@@ -41,7 +41,7 @@ public sealed class MerkleBlockComputation
     }
 
     /// <summary>
-    /// Gets the tree's root hash — the unbound Merkle Tree Hash, not a length-bound root.
+    /// Gets the tree's root hash - the unbound Merkle Tree Hash, not a length-bound root.
     /// </summary>
     /// <value>
     /// The root, which is the hash of zero bytes when <see cref="InputLength" /> is zero, and the sole leaf's hash when

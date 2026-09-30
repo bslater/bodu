@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography.Samples.AsymmetricKeys.Scenarios;
 /// </summary>
 public static class KeyAgreementX25519
 {
-    // RFC 7748 §6.1 — Alice's and Bob's private scalars, and the expected public keys and shared secret.
+    // RFC 7748 §6.1 - Alice's and Bob's private scalars, and the expected public keys and shared secret.
     private const string AlicePrivateHex = "77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a";
     private const string BobPrivateHex = "5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb";
     private const string ExpectedAlicePublicHex = "8520f0098930a754748b7ddcb43ef75a0dbf3a0d26381af4eba4a98eaa9b4e6a";

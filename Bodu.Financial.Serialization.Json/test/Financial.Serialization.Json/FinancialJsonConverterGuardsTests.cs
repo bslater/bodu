@@ -13,7 +13,7 @@ namespace Bodu.Financial.Serialization.Json;
 /// <summary>
 /// Verifies the defensive reader guards in the financial JSON converters. The unexpected-end and
 /// expected-property-name guards cannot be reached through <see cref="JsonSerializer" /> with a complete, comment-free
-/// document — the reader enforces object grammar first — so they are driven directly: an unexpected end via a
+/// document - the reader enforces object grammar first - so they are driven directly: an unexpected end via a
 /// truncated buffer read in non-final-block mode, and an unexpected token via comment-handling that surfaces a comment
 /// where a property name is required.
 /// </summary>

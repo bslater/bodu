@@ -1,10 +1,10 @@
 # DotEnv → quartet design note
 
 **Date:** 2026-07-21
-**Status:** Design — implements tranche **T1** (template-establishing format).
+**Status:** Design - implements tranche **T1** (template-establishing format).
 **Relates to:** [`line-formats-quartet-redesign-assessment.md`](./line-formats-quartet-redesign-assessment.md).
 
-DotEnv is the flattest of the three line formats — a single ordered object of
+DotEnv is the flattest of the three line formats - a single ordered object of
 string-valued keys, no arrays, no nesting, values always string. It is done
 **first** because it exercises the entire quartet + shared-serialization wiring
 with the least format-specific noise, so the pattern it sets is the cleanest
@@ -16,13 +16,13 @@ A single flat, ordered **object** of `string → string`. The root is always an
 object; there is no array form and no nested object form. Closest quartet
 analogue: a Bencode dictionary at the root, but with string-only scalar values.
 
-## Token model — `DotEnvTokenType`
+## Token model - `DotEnvTokenType`
 
 ```
 None, StartObject, EndObject, PropertyName, String, Comment
 ```
 
-No `StartArray`/`EndArray` — DotEnv has no array syntax.
+No `StartArray`/`EndArray` - DotEnv has no array syntax.
 
 `Utf8DotEnvReader` (`public ref partial struct` over `ReadOnlySpan<byte>` +
 `ReadOnlySequence<byte>`) **is the `FormatReader`** (Bencode pattern; no
@@ -45,7 +45,7 @@ EndObject
 ```
 
 - `export ` is a **reader flag** (`bool CurrentIsExport`) on the property, not a
-  token — presentation trivia preserved by the mutable DOM, dropped by the
+  token - presentation trivia preserved by the mutable DOM, dropped by the
   read-only Document.
 - Typed accessors follow the quartet shape but coerce the string:
   `GetString()`, `ValueTextEquals(...)`, `BytesConsumed`, and `GetXxx()` over
@@ -60,7 +60,7 @@ EndObject
 `Stream`): `WriteStartObject`/`WriteEndObject`/`WritePropertyName`/`WriteString`/
 `WriteComment`, `Flush`/`Dispose`/`Reset`, `BytesCommitted`/`BytesPending`.
 
-## Mutable DOM (`Text.DotEnv.Nodes`) — trivia-bearing (D5)
+## Mutable DOM (`Text.DotEnv.Nodes`) - trivia-bearing (D5)
 
 - `DotEnvNode` (abstract) / `DotEnvObject` (the only container; ordered
   `string → DotEnvNode` map) / `DotEnvValue` (string). **No `DotEnvArray`.**
@@ -71,7 +71,7 @@ EndObject
   `ToUtf8Bytes()`, `DeepClone()`, `DeepEquals(...)`, implicit conversions from
   `string`.
 
-## Read-only DOM (`Text.DotEnv.Document`) — trivia-free, `IDisposable`
+## Read-only DOM (`Text.DotEnv.Document`) - trivia-free, `IDisposable`
 
 `DotEnvDocument` / `DotEnvElement` / `DotEnvProperty`, `JsonElement`-shaped
 (`ValueKind`, `GetString`/`GetXxx`, `GetProperty`, `TryGetProperty`,
@@ -80,7 +80,7 @@ dropped (documented).
 
 ## Serializer (`DotEnvSerializer`)
 
-Standard facade — `Serialize` (string / `IBufferWriter<byte>`), `Deserialize`
+Standard facade - `Serialize` (string / `IBufferWriter<byte>`), `Deserialize`
 (string / `ReadOnlySpan<byte>` / `Stream`), `SerializeAsync`/`DeserializeAsync`
 (`Stream`, buffered-in-full). Binding targets: `Dictionary<string,string>`,
 `IDictionary<string,string>`, or a flat POCO whose properties are string /
@@ -95,7 +95,7 @@ first use, `DotEnvSerializerDefaults`) reuses the shared attribute /
 Today's `DotEnvParseOptions` knobs move onto the reader/writer/serializer
 options: `AllowExportPrefix`, `AllowInlineComments`, `PreserveComments`, and
 `DuplicateKeyBehavior` (`Bodu.Text.DuplicateKeyPolicy`, which relocates into the
-DotEnv root bucket since DotEnv now owns it — INI carries its own copy after the
+DotEnv root bucket since DotEnv now owns it - INI carries its own copy after the
 Configuration decouple, or the enum is duplicated per owner).
 
 ## Tests (colocated in `Bodu.Text.DotEnv.Test`)

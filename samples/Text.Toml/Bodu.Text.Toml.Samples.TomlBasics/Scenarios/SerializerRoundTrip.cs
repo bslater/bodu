@@ -11,7 +11,7 @@ namespace Bodu.Text.Toml.Samples.TomlBasics.Scenarios;
 
 /// <summary>
 /// Demonstrates the serializer's core loop: deserialize a committed TOML file into a typed POCO
-/// graph (nested tables, an array of tables), then serialize it back and read it again — the
+/// graph (nested tables, an array of tables), then serialize it back and read it again - the
 /// System.Text.Json-shaped workflow, for TOML.
 /// </summary>
 public static class SerializerRoundTrip

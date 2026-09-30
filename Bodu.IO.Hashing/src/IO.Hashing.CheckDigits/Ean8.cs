@@ -90,7 +90,7 @@ public sealed class Ean8
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
     /// <see langword="true" /> if the sequence is exactly <see cref="SequenceLength" /> digits and evaluates as valid
-    /// under EAN-8; otherwise, <see langword="false" /> — including the case where
+    /// under EAN-8; otherwise, <see langword="false" /> - including the case where
     /// <paramref name="digitsIncludingCheck" /> is empty.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck) =>

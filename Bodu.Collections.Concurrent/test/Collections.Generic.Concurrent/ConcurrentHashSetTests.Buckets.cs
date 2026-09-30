@@ -10,7 +10,7 @@ public partial class ConcurrentHashSetTests
 {
     /// <summary>
     /// Verifies that the bucket-shortcut array doubles once the element count exceeds twice the bucket count, and
-    /// doubles again on the next threshold — the load-factor policy of the split-ordered table.
+    /// doubles again on the next threshold - the load-factor policy of the split-ordered table.
     /// </summary>
     [TestMethod]
     public void BucketCount_WhenLoadFactorExceeded_ShouldDouble()
@@ -31,7 +31,7 @@ public partial class ConcurrentHashSetTests
     }
 
     /// <summary>
-    /// Verifies that every element added before a growth cycle remains reachable afterwards — growth copies bucket
+    /// Verifies that every element added before a growth cycle remains reachable afterwards - growth copies bucket
     /// shortcuts but never moves nodes, so lookups through both old and new shortcut arrays must keep succeeding.
     /// </summary>
     [TestMethod]
@@ -55,7 +55,7 @@ public partial class ConcurrentHashSetTests
     }
 
     /// <summary>
-    /// Verifies that a bucket whose shortcut is only created after several growth cycles still resolves lookups —
+    /// Verifies that a bucket whose shortcut is only created after several growth cycles still resolves lookups -
     /// lazy initialization must find the correct splice position via the parent sentinel chain.
     /// </summary>
     [TestMethod]

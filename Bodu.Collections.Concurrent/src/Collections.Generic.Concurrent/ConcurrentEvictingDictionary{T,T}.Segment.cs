@@ -23,8 +23,8 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// <para>
     /// Removals caused by capacity pressure or expiry are never surfaced as events from inside the segment (a handler
     /// running under the stripe lock could block the stripe or deadlock). Instead, every mutating method takes a
-    /// <c>ref</c> eviction buffer that the parent drains — raising <see cref="ItemEvicted" /> and updating
-    /// <see cref="EvictionCount" /> — after the stripe lock has been released.
+    /// <c>ref</c> eviction buffer that the parent drains - raising <see cref="ItemEvicted" /> and updating
+    /// <see cref="EvictionCount" /> - after the stripe lock has been released.
     /// </para>
     /// <para>
     /// The only member safe to call without the stripe lock is <see cref="CountApproximate" />, which reads a count
@@ -202,7 +202,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
 
         /// <summary>
         /// Determines whether a live entry exists for the specified key, leaving both the expiration deadline and the
-        /// capacity-policy metadata untouched — a genuine pure read. An expired entry it encounters is still lazily
+        /// capacity-policy metadata untouched - a genuine pure read. An expired entry it encounters is still lazily
         /// removed and reported as absent. The caller must hold the stripe lock.
         /// </summary>
         /// <param name="key">The key to locate.</param>

@@ -12,7 +12,7 @@ namespace Bodu.Test.IO;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Use this stream in tests that need to verify that a consumer correctly accumulates partial reads — for example, when
+/// Use this stream in tests that need to verify that a consumer correctly accumulates partial reads - for example, when
 /// the chunk size is smaller than the processing block size, or when a chunk size larger than the block size crosses
 /// block boundaries at unexpected offsets.
 /// </para>

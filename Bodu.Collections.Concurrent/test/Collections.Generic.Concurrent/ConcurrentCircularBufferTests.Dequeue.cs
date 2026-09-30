@@ -73,7 +73,7 @@ public partial class ConcurrentCircularBufferTests
             {
                 try
                 {
-                    // Dequeue may throw when empty — allowed; should not throw any other exception
+                    // Dequeue may throw when empty - allowed; should not throw any other exception
                     buffer.Dequeue();
                 }
                 catch (InvalidOperationException)
@@ -215,7 +215,7 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(4, buffer.Dequeue().Value);
     }
 
-    // Issue 5 — the original test asserted CollectionAssert.AreEqual (exact order) on items
+    // Issue 5 - the original test asserted CollectionAssert.AreEqual (exact order) on items
     // dequeued by a concurrent consumer. Because the producer and consumer run concurrently with
     // different SpinWait ratios, the dequeue order depends on thread scheduling and is not
     // guaranteed to be strictly sequential, making the test timing-sensitive and fragile.

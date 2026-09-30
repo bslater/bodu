@@ -10,7 +10,7 @@ using Bodu.Text.Toml.Nodes;
 namespace Bodu.Text.Toml.Samples.TomlDocuments.Scenarios;
 
 /// <summary>
-/// Demonstrates the mutable <see cref="TomlNode" /> DOM — the <c>JsonNode</c>-style layer for
+/// Demonstrates the mutable <see cref="TomlNode" /> DOM - the <c>JsonNode</c>-style layer for
 /// edit-in-place workflows: parse a document into a tree, read and rewrite values with indexers,
 /// graft new tables in, and emit the result, all without defining a POCO.
 /// </summary>

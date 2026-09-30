@@ -13,7 +13,7 @@ namespace Bodu.IO.Pst;
 public partial class PstFileTests
 {
     /// <summary>
-    /// Verifies that opening a real Unicode PST surfaces its header facts and node directory — the package's primary
+    /// Verifies that opening a real Unicode PST surfaces its header facts and node directory - the package's primary
     /// happy path.
     /// </summary>
     [TestMethod]

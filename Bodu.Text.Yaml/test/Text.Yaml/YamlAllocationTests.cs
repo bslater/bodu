@@ -11,7 +11,7 @@ namespace Bodu.Text.Yaml;
 
 /// <summary>
 /// Characterizes the managed-heap allocation profile of the principal parse and serialize paths, recording a baseline
-/// that allocation regressions can be measured against — the same contract <c>TomlAllocationTests</c> and
+/// that allocation regressions can be measured against - the same contract <c>TomlAllocationTests</c> and
 /// <c>BencodeAllocationTests</c> pin for the sibling packages. The materializing pipelines are bounded by a multiple
 /// of the input size.
 /// </summary>

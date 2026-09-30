@@ -1,12 +1,12 @@
 # Bodu.Globalization.Calendar.Caching
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 A read-through cache that sits **in front of** the notable-date service. The engine stays a pure
 computer that knows nothing of caching: `CachingNotableDateService` implements the same
 `INotableDateService` contract, so it drops in transparently wherever the service is consumed.
 
-> For the full walkthrough — quickstart, freshness, warm-up, and observability — see the
+> For the full walkthrough - quickstart, freshness, warm-up, and observability - see the
 > [Caching notable dates guide](../docs/guides/calendar/caching/notable-date-caching.md); the
 > per-backend surface is in [Backends and options](../docs/guides/calendar/caching/backends-and-options.md),
 > and [Writing a custom backend](../docs/guides/calendar/caching/custom-backend.md) covers the
@@ -32,7 +32,7 @@ services.AddCachedNotableDateService(/* … */);
   recomputes.
 - **Freshness has two independent triggers.** A time-to-live expires entries a fixed duration after
   computation, and a **resource-version token** invalidates every entry computed under a previous
-  resource — so a data reload always forces a recompute regardless of the time-to-live.
+  resource - so a data reload always forces a recompute regardless of the time-to-live.
 - **Concurrent cold misses coalesce.** The first caller for a cold (territory, year) computes;
   concurrent callers join that single flight instead of stampeding the engine.
 - **Storage is best-effort.** The shipped backends degrade gracefully: a failed read is a miss, a
@@ -61,7 +61,7 @@ real request does not pay the cold-compute cost.
 
 ## Out of scope
 
-Computing the dates themselves — that is
+Computing the dates themselves - that is
 [`Bodu.Globalization.Calendar`](https://www.nuget.org/packages/Bodu.Globalization.Calendar), which
 this package decorates. The rules come from the regional data packs
 (`Bodu.Globalization.Calendar.{Americas,AsiaPacific,Europe,MiddleEast,Africa}`).

@@ -15,7 +15,7 @@ namespace Bodu.Text.Encoding;
 public sealed partial class Base45Tests
 {
     /// <summary>
-    /// Verifies that RFC 9285 §4.3 encoding example 1 — the string <c>"AB"</c> — encodes to <c>"BB8"</c>.
+    /// Verifies that RFC 9285 §4.3 encoding example 1 - the string <c>"AB"</c> - encodes to <c>"BB8"</c>.
     /// </summary>
     [TestMethod]
     public void Encode_WhenRfcExample1_ShouldReturnBB8()
@@ -24,7 +24,7 @@ public sealed partial class Base45Tests
     }
 
     /// <summary>
-    /// Verifies that RFC 9285 §4.3 encoding example 2 — the string <c>"Hello!!"</c> — encodes to
+    /// Verifies that RFC 9285 §4.3 encoding example 2 - the string <c>"Hello!!"</c> - encodes to
     /// <c>"%69 VD92EX0"</c>, including the embedded space symbol.
     /// </summary>
     [TestMethod]
@@ -34,7 +34,7 @@ public sealed partial class Base45Tests
     }
 
     /// <summary>
-    /// Verifies that RFC 9285 §4.3 encoding example 3 — the string <c>"base-45"</c> — encodes to
+    /// Verifies that RFC 9285 §4.3 encoding example 3 - the string <c>"base-45"</c> - encodes to
     /// <c>"UJCLQE7W581"</c>.
     /// </summary>
     [TestMethod]
@@ -44,7 +44,7 @@ public sealed partial class Base45Tests
     }
 
     /// <summary>
-    /// Verifies that RFC 9285 §4.4 decoding example — the string <c>"QED8WEX0"</c> — decodes to the ASCII bytes for
+    /// Verifies that RFC 9285 §4.4 decoding example - the string <c>"QED8WEX0"</c> - decodes to the ASCII bytes for
     /// <c>"ietf!"</c>.
     /// </summary>
     [TestMethod]

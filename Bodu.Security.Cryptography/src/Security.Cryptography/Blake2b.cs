@@ -31,7 +31,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Supplying a non-empty <see cref="KeyedDeferredFinalBlockHashAlgorithm.Key" /> switches the instance into the keyed
-/// <c>BLAKE2b-MAC</c> mode defined in RFC 7693 Section 2.8. The key (1–64 bytes) is zero-padded to 128 bytes and
+/// <c>BLAKE2b-MAC</c> mode defined in RFC 7693 Section 2.8. The key (1-64 bytes) is zero-padded to 128 bytes and
 /// prepended as the first message block, and the key length is encoded into the parameter block so that keyed and
 /// unkeyed digests of the same message are always distinct.
 /// </para>
@@ -40,13 +40,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>Output size: configurable — 128, 160, 192, 224, 256, 384, or 512 bits.</description>
+/// <description>Output size: configurable - 128, 160, 192, 224, 256, 384, or 512 bits.</description>
 /// </item>
 /// <item>
 /// <description>Block size: 128 bytes (1024 bits); 8 × 64-bit state words; 12 rounds.</description>
 /// </item>
 /// <item>
-/// <description>Optional key: 1–64 bytes for BLAKE2b-MAC mode (RFC 7693 §2.8).</description>
+/// <description>Optional key: 1-64 bytes for BLAKE2b-MAC mode (RFC 7693 §2.8).</description>
 /// </item>
 /// <item>
 /// <description>Specification: RFC 7693; optimized for 64-bit hosts.</description>
@@ -54,7 +54,7 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// <para>
 /// <strong>When to choose BLAKE2b.</strong> The right pick on 64-bit platforms when SHA-2 / SHA-3 throughput matters
-/// but compatibility with those standards is not required — BLAKE2b is faster than SHA-512 in software while offering
+/// but compatibility with those standards is not required - BLAKE2b is faster than SHA-512 in software while offering
 /// the same security level. Use <see cref="Blake2s" /> on 32-bit hosts or for output sizes up to 32 bytes. For
 /// tree-hashing or genuinely large parallel workloads <see cref="Blake3" /> is faster again. As a keyed MAC,
 /// BLAKE2b-MAC is competitive with HMAC-SHA-256 / Poly1305 and avoids the double-hash overhead of HMAC.
@@ -171,7 +171,7 @@ public sealed partial class Blake2b
             HashSizeValue = value;
 
             // The digest length is encoded into the parameter block during state initialization, which the base
-            // performs at construction and after each completed hash — but not on a HashSize change. Rebuild the
+            // performs at construction and after each completed hash - but not on a HashSize change. Rebuild the
             // state now so the next hash uses the new digest length; otherwise it would run with the stale parameter
             // block baked at construction and produce a wrong digest.
             Initialize();

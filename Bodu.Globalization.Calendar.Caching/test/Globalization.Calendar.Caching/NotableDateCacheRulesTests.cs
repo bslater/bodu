@@ -153,7 +153,7 @@ public sealed class NotableDateCacheRulesTests
     }
 
     /// <summary>
-    /// Verifies that when duplicate qualifying entries exist for one year, the batch selection keeps the first — the
+    /// Verifies that when duplicate qualifying entries exist for one year, the batch selection keeps the first - the
     /// same first-match-wins rule the per-year selection applies.
     /// </summary>
     [TestMethod]

@@ -10,7 +10,7 @@ namespace Bodu.Financial.Samples.AggregatedRates;
 
 /// <summary>
 /// Entry point for the aggregated-rates sample: grouping several rate sources behind one entry point
-/// with priority fallback, averaging, per-pair routing, and the DI builder — against two offline feeds.
+/// with priority fallback, averaging, per-pair routing, and the DI builder - against two offline feeds.
 /// </summary>
 public static class Program
 {

@@ -10,8 +10,8 @@ using Bodu.IO.Compound;
 namespace Bodu.Formats.Outlook.Msg;
 
 /// <summary>
-/// Enumerates the indexed child storages of a message — the <c>__recip_version1.0_#NNNNNNNN</c> and
-/// <c>__attach_version1.0_#NNNNNNNN</c> series — in index order.
+/// Enumerates the indexed child storages of a message - the <c>__recip_version1.0_#NNNNNNNN</c> and
+/// <c>__attach_version1.0_#NNNNNNNN</c> series - in index order.
 /// </summary>
 /// <remarks>
 /// Under <see cref="CompoundValidationLevel.Strict" /> the series must be dense (indexes <c>0..n-1</c> without gaps or
@@ -30,7 +30,7 @@ internal static class MsgStorageWalker
     /// <param name="validationLevel">The validation level governing malformed-structure handling.</param>
     /// <returns>The matching storages in ascending index order.</returns>
     /// <exception cref="OutlookMsgFormatException">
-    /// The container is malformed, or — under <see cref="CompoundValidationLevel.Strict" /> — a suffix is malformed,
+    /// The container is malformed, or - under <see cref="CompoundValidationLevel.Strict" /> - a suffix is malformed,
     /// the series has gaps or duplicates, or its length differs from <paramref name="declaredCount" />.
     /// </exception>
     internal static List<CompoundStorage> EnumerateIndexed(

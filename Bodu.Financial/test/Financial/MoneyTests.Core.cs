@@ -540,7 +540,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that a bare decimal without ISO code fails to parse — currency is required.
+    /// Verifies that a bare decimal without ISO code fails to parse - currency is required.
     /// </summary>
     [TestMethod]
     public void Parse_WhenBareDecimal_ShouldFail()

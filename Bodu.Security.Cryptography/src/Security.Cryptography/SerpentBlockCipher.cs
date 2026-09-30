@@ -157,7 +157,7 @@ public abstract partial class SerpentBlockCipher
     /// <param name="tweak">The 16-byte tweak.</param>
     /// <param name="schedule">The destination buffer, sized for five 32-bit entries.</param>
     /// <remarks>
-    /// The schedule stores <c>[T0, T1, T2, T3, T0 ^ T1 ^ T2 ^ T3]</c> — the four little-endian tweak words followed by
+    /// The schedule stores <c>[T0, T1, T2, T3, T0 ^ T1 ^ T2 ^ T3]</c> - the four little-endian tweak words followed by
     /// their parity. Entries cycle modulo 5 at each tweak-injection point, mirroring the Threefish
     /// <c>[T0, T1, T0 ^ T1]</c> layout scaled to 32-bit state words.
     /// </remarks>

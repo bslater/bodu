@@ -8,7 +8,7 @@ Every populated cell is surfaced as an immutable <xref:Bodu.Formats.Excel.ExcelC
 
 A cell carries its zero-based `RowIndex` and `ColumnIndex`, a <xref:Bodu.Formats.Excel.ExcelCellKind>, and the value projection that matches the kind. Blank cells are never returned, so a worksheet is a sparse sequence of populated cells.
 
-## Pattern 1 — read a cell by kind
+## Pattern 1 - read a cell by kind
 
 ```csharp
 using Bodu.Formats.Excel;
@@ -25,7 +25,7 @@ static object? ValueOf(ExcelCell cell) => cell.Kind switch
 
 The projection matching the <xref:Bodu.Formats.Excel.ExcelCellKind> holds the value; the others are `null`. Read `StringValue` only on a `String` cell, `NumberValue` only on a `Number` cell, and so on. Numbers are raw `double` values with no date interpretation applied.
 
-## Pattern 2 — handle error cells
+## Pattern 2 - handle error cells
 
 ```csharp
 using Bodu.Formats.Excel;
@@ -43,7 +43,7 @@ if (cell.Kind == ExcelCellKind.Error)
 }
 ```
 
-<xref:Bodu.Formats.Excel.ExcelErrorCode> names the documented BIFF spreadsheet error codes (the same in BIFF5 and BIFF8) — there are seven, each a `byte` whose value matches the on-disk error code:
+<xref:Bodu.Formats.Excel.ExcelErrorCode> names the documented BIFF spreadsheet error codes (the same in BIFF5 and BIFF8) - there are seven, each a `byte` whose value matches the on-disk error code:
 
 | Member | Display | Meaning |
 |---|---|---|
@@ -55,11 +55,11 @@ if (cell.Kind == ExcelCellKind.Error)
 | <xref:Bodu.Formats.Excel.ExcelErrorCode.Number> | `#NUM!` | An invalid numeric value for a function or formula. |
 | <xref:Bodu.Formats.Excel.ExcelErrorCode.NotAvailable> | `#N/A` | A value that is not available to a function or formula. |
 
-An undocumented code is surfaced as the raw byte cast to the enumeration, so compare against the named members before relying on the symbol — the fall-through arm above formats any unrecognised value as a hex byte rather than assuming it maps to a known error.
+An undocumented code is surfaced as the raw byte cast to the enumeration, so compare against the named members before relying on the symbol - the fall-through arm above formats any unrecognised value as a hex byte rather than assuming it maps to a known error.
 
-## Pattern 3 — a formula cell's cached result
+## Pattern 3 - a formula cell's cached result
 
-The reader does not evaluate formulas. A formula cell is surfaced as whichever kind its **cached result** holds — the value Excel last computed and stored:
+The reader does not evaluate formulas. A formula cell is surfaced as whichever kind its **cached result** holds - the value Excel last computed and stored:
 
 ```csharp
 using Bodu.Formats.Excel;
@@ -70,9 +70,9 @@ while (reader.TryReadCell(out ExcelCell cell))
     Console.WriteLine($"{cell.Kind}: {ValueOf(cell)}");
 ```
 
-There is no separate "formula" cell kind — a formula cell is indistinguishable from a literal cell of the same kind, by design. The cached value is exactly what Excel stored.
+There is no separate "formula" cell kind - a formula cell is indistinguishable from a literal cell of the same kind, by design. The cached value is exactly what Excel stored.
 
-## Pattern 4 — detect and convert date-formatted numbers
+## Pattern 4 - detect and convert date-formatted numbers
 
 Excel stores dates as floating-point serial numbers, so a date cell is a `Number` cell whose *format* renders it as a date. The reader flags those cells but never reinterprets the number itself:
 
@@ -104,7 +104,7 @@ while (reader.TryReadCell(out ExcelCell cell))
 > [!IMPORTANT]
 > The 1900 epoch is `1899-12-30`, not `1900-01-01`. Excel deliberately keeps a historical bug that treats 1900 as a leap year, and <xref:Bodu.Formats.Excel.ExcelSerialDate> reproduces that arithmetic (it delegates to `DateTime.FromOADate`) so values round-trip with Excel for dates from `1900-03-01` onward. A serial number outside the representable OLE Automation date range raises <xref:System.ArgumentException>, so guard or catch when reading untrusted workbooks whose "date" column might hold an out-of-range number.
 
-## Pattern 5 — convert with the workbook shortcut
+## Pattern 5 - convert with the workbook shortcut
 
 ```csharp
 using Bodu.Formats.Excel;
@@ -113,11 +113,11 @@ DateTime? when = workbook.GetDateTime(cell);   // null for non-numeric cells
 string? formatCode = workbook.GetNumberFormatCode(cell.FormatIndex);
 ```
 
-<xref:Bodu.Formats.Excel.ExcelBinaryWorkbook.GetDateTime(Bodu.Formats.Excel.ExcelCell)> converts a numeric cell using the workbook's date system and returns `null` for any non-numeric cell, so it is safe to call on any cell. It applies the conversion to *every* numeric cell, not only date-formatted ones — inspect <xref:Bodu.Formats.Excel.ExcelCell.IsDateFormatted> first when only date-formatted cells should be treated as dates, otherwise a plain count or amount comes back as a meaningless calendar value.
+<xref:Bodu.Formats.Excel.ExcelBinaryWorkbook.GetDateTime(Bodu.Formats.Excel.ExcelCell)> converts a numeric cell using the workbook's date system and returns `null` for any non-numeric cell, so it is safe to call on any cell. It applies the conversion to *every* numeric cell, not only date-formatted ones - inspect <xref:Bodu.Formats.Excel.ExcelCell.IsDateFormatted> first when only date-formatted cells should be treated as dates, otherwise a plain count or amount comes back as a meaningless calendar value.
 
 `GetNumberFormatCode` resolves a cell's <xref:Bodu.Formats.Excel.ExcelCell.FormatIndex> to its format-code string (built-in or custom), or `null` when the index is unknown. A cell whose record carries no explicit format reports `FormatIndex` `0`, the General format. The format code is the same raw string Excel stores (for example `"0.00"` or `"yyyy-mm-dd"`); this reader does not render values through it.
 
-## Pattern 6 — convert coordinates to and from A1
+## Pattern 6 - convert coordinates to and from A1
 
 <!-- compile -->
 ```csharp
@@ -136,6 +136,6 @@ if (ExcelCellReference.TryParseA1("AB10", out int row, out int column))
 
 ## Where to go next
 
-- [Streaming vs materialized](worksheets-and-rows.md) — the two cell surfaces and when to use each.
-- [Reading workbooks](reading-workbooks.md) — the open path and reader options.
+- [Streaming vs materialized](worksheets-and-rows.md) - the two cell surfaces and when to use each.
+- [Reading workbooks](reading-workbooks.md) - the open path and reader options.
 - [Bodu.Formats.Excel API reference](xref:Bodu.Formats.Excel).

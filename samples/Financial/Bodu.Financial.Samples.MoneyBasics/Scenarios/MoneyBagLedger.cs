@@ -11,7 +11,7 @@ namespace Bodu.Financial.Samples.MoneyBasics.Scenarios;
 
 /// <summary>
 /// Demonstrates <see cref="MoneyBag" /> as an immutable multi-currency ledger: accumulate amounts
-/// per currency, read balances back, and convert the whole bag to one reporting currency — with a
+/// per currency, read balances back, and convert the whole bag to one reporting currency - with a
 /// full per-line audit trail when the conversion must be explainable.
 /// </summary>
 public static class MoneyBagLedger

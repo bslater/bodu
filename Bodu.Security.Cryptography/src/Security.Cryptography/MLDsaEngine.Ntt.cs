@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the complete number-theoretic transform over Z₈₃₈₀₄₁₇ used by ML-DSA (FIPS 204 Algorithms 41–45).
+/// Provides the complete number-theoretic transform over Z₈₃₈₀₄₁₇ used by ML-DSA (FIPS 204 Algorithms 41-45).
 /// </summary>
 internal static partial class MLDsaEngine
 {
@@ -20,7 +20,7 @@ internal static partial class MLDsaEngine
     /// <summary>256⁻¹ · 2^32 mod q: the inverse transform's final scaling by 256⁻¹, in Montgomery form.</summary>
     private const long InverseOf256Montgomery = 16382;
 
-    /// <summary>Twiddle factors ζ^BitRev₈(m) · 2^32 mod q for m = 0–255, in Montgomery form so that <see cref="MontgomeryReduce" /> of a product with one yields the plain product. Computed once at type initialization rather than transcribed, eliminating table-copy defects.</summary>
+    /// <summary>Twiddle factors ζ^BitRev₈(m) · 2^32 mod q for m = 0-255, in Montgomery form so that <see cref="MontgomeryReduce" /> of a product with one yields the plain product. Computed once at type initialization rather than transcribed, eliminating table-copy defects.</summary>
     private static readonly int[] s_zetas = BuildZetaTable();
 
     /// <summary>

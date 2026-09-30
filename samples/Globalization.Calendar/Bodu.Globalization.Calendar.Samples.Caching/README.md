@@ -11,9 +11,9 @@ cache hit below is proved deterministically by call count rather than by timing.
 dotnet run --project samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.Caching
 ```
 
-## Scenario 1 — ReadThroughCaching
+## Scenario 1 - ReadThroughCaching
 
-**Intent.** Show what the cache stores and why a whole civil year is the right unit — and that
+**Intent.** Show what the cache stores and why a whole civil year is the right unit - and that
 filters deliberately stay out of the cache key.
 
 **What it does.** Resolves a whole year, repeats the query, asks for a sub-range inside that year,
@@ -28,7 +28,7 @@ and runs a filtered query over it, reporting the engine counter each time.
   Filtered query from cache: 8 non-working dates, engine resolutions = 1  (filters are applied after the cache, never keyed into it - otherwise two callers with different filters would each pay full price)
 ```
 
-A year is the unit rules are evaluated in, so it is the smallest thing worth storing — which is
+A year is the unit rules are evaluated in, so it is the smallest thing worth storing - which is
 what makes a sub-range query a clip of something already computed rather than a miss. Keying on
 the filter would multiply entries for what is one result list filtered differently, so two
 callers with different filters would each pay full price.
@@ -36,9 +36,9 @@ callers with different filters would each pay full price.
 **APIs demonstrated.** `CachingNotableDateService`, `InMemoryNotableDateCache`,
 `NotableDateCachingOptions`, the filtered `Resolve` overload over a cached year.
 
-## Scenario 2 — FileBackedCaches
+## Scenario 2 - FileBackedCaches
 
-**Intent.** An in-memory cache is empty at every process start — exactly when a service is least
+**Intent.** An in-memory cache is empty at every process start - exactly when a service is least
 able to absorb the work. Show the file backends surviving the restart.
 
 **What it does.** Resolves a year through the JSON cache and lists the files written, then builds a
@@ -63,7 +63,7 @@ TOML is worth having when the cache is committed or inspected, since it diffs le
 **APIs demonstrated.** `JsonNotableDateCache`, `TomlNotableDateCache`,
 `FileNotableDateCacheOptions.CacheDirectory`.
 
-## Scenario 3 — WarmUp
+## Scenario 3 - WarmUp
 
 **Intent.** A read-through cache moves the cost rather than removing it, and the caller who pays
 is whoever asks first. Show warming paying it deliberately instead.
@@ -79,7 +79,7 @@ each straddle a year boundary, checking the engine counter before and after.
 ```
 
 The window is (territory, year) pairs because that is the cache's unit, so warming is exactly as
-granular as the cache is — nothing wasted and no gaps. In a hosted application the same thing
+granular as the cache is - nothing wasted and no gaps. In a hosted application the same thing
 runs as a background service with a rolling window; `AddNotableDateCacheWarmup` is sketched in the
 scenario's closing comment, and no-ops with a log message when the registered service is not the
 caching decorator.
@@ -87,7 +87,7 @@ caching decorator.
 **APIs demonstrated.** `CachingNotableDateService.Warm(territories, firstYear, lastYear)`, and the
 commented `AddNotableDateCacheWarmup` hosted-service form.
 
-## Scenario 4 — DiRegistration
+## Scenario 4 - DiRegistration
 
 **Intent.** Caching is a deployment decision, not an application one. Show it registered as a
 decorator so consumers never learn whether a cache exists.
@@ -102,7 +102,7 @@ resolves `INotableDateService` from the container, and reports the concrete type
   AU 2026-04-25: Anzac Day  (identical to the uncached result - consumers inject the interface and never learn a cache exists)
 ```
 
-The TTL matters because the cache holds computed rule output and rule data can be republished — so
+The TTL matters because the cache holds computed rule output and rule data can be republished - so
 the entry has to expire even though the calculation itself is deterministic. The durable backends
 slot into the same call, which is why moving to SQLite or Redis is a registration line rather than
 a refactor; both are sketched in the scenario's closing comment and omitted here to keep the

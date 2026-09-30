@@ -24,7 +24,7 @@ public partial class BiDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that added pairs can be looked up in both directions — value by key and key by value.
+    /// Verifies that added pairs can be looked up in both directions - value by key and key by value.
     /// </summary>
     [TestMethod]
     [TestCategory("Smoke")]

@@ -120,7 +120,7 @@ public partial class ConcurrentCircularBufferTests
     }
     /// <summary>
     /// Verifies that the explicit <see cref="ICollection.IsSynchronized" /> property on a
-    /// <see cref="ConcurrentCircularBuffer{T}" /> reports <see langword="false" /> — the type manages its own synchronisation.
+    /// <see cref="ConcurrentCircularBuffer{T}" /> reports <see langword="false" /> - the type manages its own synchronisation.
     /// </summary>
     [TestMethod]
     public void IsSynchronized_WhenAccessed_ShouldReturnFalse()
@@ -190,7 +190,7 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that two enumerators obtained from the non-generic <see cref="IEnumerable.GetEnumerator" /> are independent — exhausting
+    /// Verifies that two enumerators obtained from the non-generic <see cref="IEnumerable.GetEnumerator" /> are independent - exhausting
     /// one does not affect the other.
     /// </summary>
     [TestMethod]
@@ -232,7 +232,7 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ICollection.SyncRoot" /> throws <see cref="NotSupportedException" /> on every access — accessing the
+    /// Verifies that <see cref="ICollection.SyncRoot" /> throws <see cref="NotSupportedException" /> on every access - accessing the
     /// property must never lazily create a lock object that a caller could subsequently lock on.
     /// </summary>
     [TestMethod]

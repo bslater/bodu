@@ -6,7 +6,7 @@ title: Using delimited (CSV / TSV)
 
 `Bodu.Text.Delimited` reads and writes RFC 4180 delimited text through the quartet surfaces: the read-only `DelimitedDocument`, the `DelimitedSerializer` record binder, the mutable `DelimitedNode` DOM, and the token-level `Utf8DelimitedReader` / `Utf8DelimitedWriter`.
 
-## Pattern 1 — query a document
+## Pattern 1 - query a document
 
 <!-- compile -->
 ```csharp
@@ -24,7 +24,7 @@ for (int i = 0; i < root.GetArrayLength(); i++)
 
 In header mode, records are object elements (`GetProperty` / `TryGetProperty` / `EnumerateObject`); with `NoHeader = true`, they are positional arrays (`this[int]` / `GetArrayLength` / `EnumerateArray`).
 
-## Pattern 2 — typed records via the serializer
+## Pattern 2 - typed records via the serializer
 
 ```csharp
 using Bodu.Text.Delimited;
@@ -45,7 +45,7 @@ string back = DelimitedSerializer.Serialize(trades, options);                  /
 
 Scalars parse and format with `InvariantCulture`; `[PropertyName]`, `[Ignore]`, `[Required]`, and `[PropertyOrder]` apply per member.
 
-## Pattern 3 — stream records from a large file
+## Pattern 3 - stream records from a large file
 
 ```csharp
 await foreach (Trade trade in DelimitedSerializer.DeserializeAsyncEnumerableAsync<Trade>(stream, options))
@@ -54,13 +54,13 @@ await foreach (Trade trade in DelimitedSerializer.DeserializeAsyncEnumerableAsyn
 }
 ```
 
-Both directions are genuinely incremental: records are parsed and yielded as stream segments arrive (memory is bounded by the longest record, not the document), and the write direction — `SerializeAsync(stream, records)` where `records` is an `IAsyncEnumerable<Trade>` — encodes each record as it is produced, flushing in bounded batches.
+Both directions are genuinely incremental: records are parsed and yielded as stream segments arrive (memory is bounded by the longest record, not the document), and the write direction - `SerializeAsync(stream, records)` where `records` is an `IAsyncEnumerable<Trade>` - encodes each record as it is produced, flushing in bounded batches.
 
 ### Reflection-free binding
 
-Annotate a partial record type with `[DelimitedRecord]` and reference the `Bodu.Text.Formats.Generators` source generator, and a static `DelimitedFactory` property (`IDelimitedRecordFactory<Trade>`) is emitted at compile time. Passing it to the factory overloads — `Serialize(records, Trade.DelimitedFactory)` / `Deserialize(csvText, Trade.DelimitedFactory)` — avoids the reflection binder entirely, making the path trimming- and AOT-safe. The interface can also be implemented by hand.
+Annotate a partial record type with `[DelimitedRecord]` and reference the `Bodu.Text.Formats.Generators` source generator, and a static `DelimitedFactory` property (`IDelimitedRecordFactory<Trade>`) is emitted at compile time. Passing it to the factory overloads - `Serialize(records, Trade.DelimitedFactory)` / `Deserialize(csvText, Trade.DelimitedFactory)` - avoids the reflection binder entirely, making the path trimming- and AOT-safe. The interface can also be implemented by hand.
 
-## Pattern 4 — TSV and other dialects
+## Pattern 4 - TSV and other dialects
 
 The delimiter, quote, and comment characters live on the reader/writer options:
 
@@ -86,7 +86,7 @@ records.WriteTo(ref writer);
 writer.Flush();
 ```
 
-## Pattern 5 — dirty input
+## Pattern 5 - dirty input
 
 <!-- compile -->
 ```csharp

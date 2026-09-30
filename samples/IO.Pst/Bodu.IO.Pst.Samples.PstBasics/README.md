@@ -10,14 +10,14 @@ dotnet run --project samples/IO.Pst/Bodu.IO.Pst.Samples.PstBasics
 
 Everything runs offline against the committed `Data/sample1.pst` (Unicode
 format) and `Data/sample2.pst` (ANSI format), both Microsoft pstsdk test-corpus
-files under Apache-2.0 — see `Data/NOTICE.md` for provenance. PST files cannot
+files under Apache-2.0 - see `Data/NOTICE.md` for provenance. PST files cannot
 be authored by this library, so the sample ships real fixtures rather than
 generating them; point `Program.SamplePath` or `Program.AnsiSamplePath` at any
 other `.pst` of either format to explore your own archive.
 
-## Scenario 1 — DetectAndOpen
+## Scenario 1 - DetectAndOpen
 
-**Intent.** PST is not one format — the Unicode and ANSI variants differ in the width of nearly every field, so the layout has to be established from the header before anything else can be read.
+**Intent.** PST is not one format - the Unicode and ANSI variants differ in the width of nearly every field, so the layout has to be established from the header before anything else can be read.
 
 **What it does.** Detects whether a file is a PST before opening it, then opens one and reports the format variant and the content encoding the header declared, over both fixtures.
 
@@ -40,7 +40,7 @@ other `.pst` of either format to explore your own archive.
   node census     : Internal x12, NormalFolder x5, SearchFolder x2, NormalMessage x1, SearchUpdateQueue x2, SearchCriteria x2, ReceiveFolderTable x1, OutgoingQueueTable x1, HierarchyTable x6, ContentsTable x6, AssociatedContentsTable x6, SearchContentsTable x3, AttachmentTable x1, RecipientTable x1, 22 x1, 23 x1, 24 x1
 ```
 
-## Scenario 2 — NodesAndProperties
+## Scenario 2 - NodesAndProperties
 
 **Intent.** This is the substrate beneath the mail-store reader, and it stops deliberately short of MAPI semantics: it reports a property's tag and wire type, not what Outlook would call it.
 
@@ -71,9 +71,9 @@ other `.pst` of either format to explore your own archive.
   row 0x00080023 -> child SearchFolder
 ```
 
-## Scenario 3 — StreamingAndValidation
+## Scenario 3 - StreamingAndValidation
 
-**Intent.** A PST can be tens of gigabytes, so streaming node data is a requirement rather than an optimisation — and real files fail their own checksums, which is why validation is a level rather than a flag.
+**Intent.** A PST can be tens of gigabytes, so streaming node data is a requirement rather than an optimisation - and real files fail their own checksums, which is why validation is a level rather than a flag.
 
 **What it does.** Reads node data as a stream, opens a file under each validation level, and shows how different kinds of failure are classified.
 
@@ -87,7 +87,7 @@ other `.pst` of either format to explore your own archive.
   truncated copy rejected: PstFileFormatException (InvalidBlock)
 ```
 
-## Scenario 4 — ReadMailStore
+## Scenario 4 - ReadMailStore
 
 **Intent.** This is what the node layer is for, and the contrast is the point: the same bytes that were a tree of tagged blobs become a folder hierarchy of messages.
 
@@ -103,7 +103,7 @@ other `.pst` of either format to explore your own archive.
     [Top of Outlook data file] (0 messages)
       [Deleted Items] (0 messages)
       [Sample1] (1 messages)
-        Here is a sample message — Terry Mahaffey
+        Here is a sample message - Terry Mahaffey
         to Terry Mahaffey
         attachment: ByValue: leah_thumper.jpg
         body: With a sample attachment. It’s my daughter and our puppy. Ar…
@@ -115,7 +115,7 @@ named property 0x8000 resolves to {00062002-0000-0000-c000-000000000046}:0x00008
     [Top of Outlook data file] (0 messages)
       [Deleted Items] (0 messages)
       [Sample2] (1 messages)
-        Here is a sample message — Terry Mahaffey
+        Here is a sample message - Terry Mahaffey
         to Terry Mahaffey
         attachment: ByValue: leah_thumper.jpg
         body: With a sample attachment. It's my daughter and our puppy. Ar…

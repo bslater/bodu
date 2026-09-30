@@ -29,7 +29,7 @@ public static partial class StringExtensions
     /// Thrown when any key in <paramref name="replacements" /> is the empty string.
     /// </exception>
     /// <remarks>
-    /// Replacements are applied sequentially — output of an earlier replacement is visible to a later one. Pre-order
+    /// Replacements are applied sequentially - output of an earlier replacement is visible to a later one. Pre-order
     /// keys to avoid cascading substitutions when independence is required.
     /// </remarks>
     public static string ReplaceMany(this string value, IReadOnlyDictionary<string, string> replacements)

@@ -84,7 +84,7 @@ public partial class WebRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that a pair the feed does not serve — neither side being the base currency — is rejected through the
+    /// Verifies that a pair the feed does not serve - neither side being the base currency - is rejected through the
     /// provider's <see cref="WebRateProvider.ValidateRangeRequest" /> hook before any fetch is attempted.
     /// </summary>
     [TestMethod]

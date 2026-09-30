@@ -23,7 +23,7 @@ namespace Bodu.Collections.Generic;
 /// <see cref="TryGetPriority(TElement, out TPriority)" />, and the slot lookup used by
 /// <see cref="Update(TElement, TPriority)" />, <see cref="Remove(TElement)" />, and
 /// <see cref="EnqueueOrUpdate(TElement, TPriority)" /> into O(1) operations and the subsequent heap repair into O(log
-/// n) — the operations Dijkstra's algorithm, Prim's algorithm, and A* require.
+/// n) - the operations Dijkstra's algorithm, Prim's algorithm, and A* require.
 /// </para>
 /// <para>
 /// Elements must be non-null and unique within the queue. <see cref="Enqueue(TElement, TPriority)" /> throws
@@ -58,7 +58,7 @@ namespace Bodu.Collections.Generic;
 /// queue.Update("B", 3);                  // B's tentative cost improved
 /// queue.EnqueueOrUpdate("D", 7);         // adds D if absent, updates otherwise
 ///
-/// string next = queue.Dequeue();         // "C" — smallest priority
+/// string next = queue.Dequeue();         // "C" - smallest priority
 /// bool hasD   = queue.TryGetPriority("D", out int priority); // true, priority == 7
 ///]]>
 /// </code>

@@ -25,7 +25,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// The key is optional: assigning an empty array (or never assigning a key) places the instance in the standard unkeyed
 /// digest mode. Assigning a non-empty array of at most <see cref="MaximumKeySize" /> / 8 bytes switches the instance to
-/// the keyed MAC mode defined in RFC 7693 Section 2.8 — the key is zero-padded to the block size and prepended as the
+/// the keyed MAC mode defined in RFC 7693 Section 2.8 - the key is zero-padded to the block size and prepended as the
 /// first message block.
 /// </para>
 /// <para>
@@ -36,16 +36,16 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>When to derive from this class.</strong> Pick <see cref="KeyedDeferredFinalBlockHashAlgorithm" /> for
-/// BLAKE-family hashes that accept an optional, variable-length key per RFC 7693 §2.8 — the canonical users are
+/// BLAKE-family hashes that accept an optional, variable-length key per RFC 7693 §2.8 - the canonical users are
 /// <see cref="Blake2b" /> and <see cref="Blake2s" />. For BLAKE-family hashes without a key (e.g. <see cref="Blake3" />
-/// ) derive from <see cref="DeferredFinalBlockHashAlgorithm" />. For Merkle–Damgård keyed hashes with a fixed-length
+/// ) derive from <see cref="DeferredFinalBlockHashAlgorithm" />. For Merkle-Damgård keyed hashes with a fixed-length
 /// key (Poly1305, SipHash) derive from <see cref="KeyedBlockHashAlgorithm" />.
 /// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // BLAKE2b in keyed MAC mode — the key is optional and may be up to MaximumKeySize bits.
+/// // BLAKE2b in keyed MAC mode - the key is optional and may be up to MaximumKeySize bits.
 /// byte[] key = new byte[32];
 /// RandomNumberGenerator.Fill(key);
 ///

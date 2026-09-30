@@ -131,7 +131,7 @@ public sealed partial class DistributedRateCacheTests
     }
 
     /// <summary>
-    /// Verifies that a hand-written pre-C blob — one whose rate object has no <c>observedAtUtc</c> property — reads back
+    /// Verifies that a hand-written pre-C blob - one whose rate object has no <c>observedAtUtc</c> property - reads back
     /// with a <see langword="null" /> <see cref="CachedRate.ObservedAtUtc" /> and without error, confirming
     /// backward compatibility with blobs written before the upstream fetch instant was tracked.
     /// </summary>

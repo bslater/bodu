@@ -17,7 +17,7 @@ public partial class DateTimeExtensionsTests
 
     public static readonly FirstAndLastDateData[] FirstAndLastDayOfWeekTestData =
     [
-        // === Saturday–Sunday weekend => week starts Monday (2024-01-01), ends Sunday (2024-01-07)
+        // === Saturday-Sunday weekend => week starts Monday (2024-01-01), ends Sunday (2024-01-07)
         new() { Input = new DateTime(2024, 1, 1), Weekend = WorkingDaysOfWeek.MondayToFriday, ExpectedFirst = new DateTime(2024, 1, 1), ExpectedLast = new DateTime(2024, 1, 7) },
         new() { Input = new DateTime(2024, 1, 2), Weekend = WorkingDaysOfWeek.MondayToFriday, ExpectedFirst = new DateTime(2024, 1, 1), ExpectedLast = new DateTime(2024, 1, 7) },
         new() { Input = new DateTime(2024, 1, 3), Weekend = WorkingDaysOfWeek.MondayToFriday, ExpectedFirst = new DateTime(2024, 1, 1), ExpectedLast = new DateTime(2024, 1, 7) },
@@ -26,7 +26,7 @@ public partial class DateTimeExtensionsTests
         new() { Input = new DateTime(2024, 1, 6), Weekend = WorkingDaysOfWeek.MondayToFriday, ExpectedFirst = new DateTime(2024, 1, 1), ExpectedLast = new DateTime(2024, 1, 7) },
         new() { Input = new DateTime(2024, 1, 7), Weekend = WorkingDaysOfWeek.MondayToFriday, ExpectedFirst = new DateTime(2024, 1, 1), ExpectedLast = new DateTime(2024, 1, 7) },
 
-        // === Friday–Saturday weekend => week starts Sunday (2023-12-31), ends Saturday (2024-01-06)
+        // === Friday-Saturday weekend => week starts Sunday (2023-12-31), ends Saturday (2024-01-06)
         new() { Input = new DateTime(2023, 12, 31), Weekend = WorkingDaysOfWeek.SundayToThursday, ExpectedFirst = new DateTime(2023, 12, 31), ExpectedLast = new DateTime(2024, 1, 6) },
         new() { Input = new DateTime(2024, 1, 1), Weekend = WorkingDaysOfWeek.SundayToThursday, ExpectedFirst = new DateTime(2023, 12, 31), ExpectedLast = new DateTime(2024, 1, 6) },
         new() { Input = new DateTime(2024, 1, 2), Weekend = WorkingDaysOfWeek.SundayToThursday, ExpectedFirst = new DateTime(2023, 12, 31), ExpectedLast = new DateTime(2024, 1, 6) },
@@ -35,7 +35,7 @@ public partial class DateTimeExtensionsTests
         new() { Input = new DateTime(2024, 1, 5), Weekend = WorkingDaysOfWeek.SundayToThursday, ExpectedFirst = new DateTime(2023, 12, 31), ExpectedLast = new DateTime(2024, 1, 6) },
         new() { Input = new DateTime(2024, 1, 6), Weekend = WorkingDaysOfWeek.SundayToThursday, ExpectedFirst = new DateTime(2023, 12, 31), ExpectedLast = new DateTime(2024, 1, 6) },
 
-        // === Thursday–Friday weekend => week starts Saturday (2024-01-06), ends Friday (2024-01-12)
+        // === Thursday-Friday weekend => week starts Saturday (2024-01-06), ends Friday (2024-01-12)
         new() { Input = new DateTime(2024, 1, 6), Weekend = WorkingDaysOfWeek.SaturdayToWednesday, ExpectedFirst = new DateTime(2024, 1, 6), ExpectedLast = new DateTime(2024, 1, 12) },
         new() { Input = new DateTime(2024, 1, 7), Weekend = WorkingDaysOfWeek.SaturdayToWednesday, ExpectedFirst = new DateTime(2024, 1, 6), ExpectedLast = new DateTime(2024, 1, 12) },
         new() { Input = new DateTime(2024, 1, 8), Weekend = WorkingDaysOfWeek.SaturdayToWednesday, ExpectedFirst = new DateTime(2024, 1, 6), ExpectedLast = new DateTime(2024, 1, 12) },
@@ -62,7 +62,7 @@ public partial class DateTimeExtensionsTests
         new() { Input = new DateTime(2024, 1, 6), Weekend = WorkingDaysOfWeek.MondayToSaturday, ExpectedFirst = new DateTime(2024, 1, 1), ExpectedLast = new DateTime(2024, 1, 7) },
         new() { Input = new DateTime(2024, 1, 7), Weekend = WorkingDaysOfWeek.MondayToSaturday, ExpectedFirst = new DateTime(2024, 1, 1), ExpectedLast = new DateTime(2024, 1, 7) },
 
-        // === None => defaults to Monday–Sunday
+        // === None => defaults to Monday-Sunday
         new() { Input = new DateTime(2024, 1, 1), Weekend = WorkingDaysOfWeek.AllDays, ExpectedFirst = new DateTime(2024, 1, 1), ExpectedLast = new DateTime(2024, 1, 7) },
         new() { Input = new DateTime(2024, 1, 2), Weekend = WorkingDaysOfWeek.AllDays, ExpectedFirst = new DateTime(2024, 1, 1), ExpectedLast = new DateTime(2024, 1, 7) },
         new() { Input = new DateTime(2024, 1, 3), Weekend = WorkingDaysOfWeek.AllDays, ExpectedFirst = new DateTime(2024, 1, 1), ExpectedLast = new DateTime(2024, 1, 7) },

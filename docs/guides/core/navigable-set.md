@@ -4,7 +4,7 @@ title: Navigable set
 
 # Navigable set
 
-`NavigableSet<T>` is a sorted set augmented with order statistics — a comparer-ordered `ISet<T>` backed by a red-black tree whose nodes carry subtree sizes. That one augmentation turns the whole positional query family into O(log n) operations: nearest-neighbour lookups (`TryGetFloor` / `TryGetCeiling` / `TryGetHigher` / `TryGetLower`), rank and select (`IndexOf` / `GetAt`), and range counting (`CountInRange`), plus cheap `Ascending()` / `Descending()` / `Range(low, high)` views.
+`NavigableSet<T>` is a sorted set augmented with order statistics - a comparer-ordered `ISet<T>` backed by a red-black tree whose nodes carry subtree sizes. That one augmentation turns the whole positional query family into O(log n) operations: nearest-neighbour lookups (`TryGetFloor` / `TryGetCeiling` / `TryGetHigher` / `TryGetLower`), rank and select (`IndexOf` / `GetAt`), and range counting (`CountInRange`), plus cheap `Ascending()` / `Descending()` / `Range(low, high)` views.
 
 It fits problems where "sorted" is not enough and the *position* of an element matters: order books and price ladders (nearest quote at or below a limit), percentile and median tracking over a mutating population (k-th smallest in O(log n)), scheduling (next free slot after *t*), leaderboards (rank of a player, player at rank), and windowed counting (how many events between two timestamps) without iterating the window.
 
@@ -16,16 +16,16 @@ The BCL's sorted collections each miss part of this contract:
 
 Contract points worth keeping in mind:
 
-- **Set semantics.** Comparer-equal duplicates are rejected — `Add` returns `false` and keeps the stored element, exactly like `SortedSet<T>`.
+- **Set semantics.** Comparer-equal duplicates are rejected - `Add` returns `false` and keeps the stored element, exactly like `SortedSet<T>`.
 - **Null elements are rejected** with `ArgumentNullException`, consistent with the rest of the Bodu collection family. This deliberately diverges from `SortedSet<T>`, which permits `null` for reference types; a null-permitting sorted set would make the Try-pattern navigation results ambiguous.
 - **Views are live and fail-fast.** `Ascending()`, `Descending()`, and `Range(low, high)` re-resolve against the current tree each time they are iterated; mutating the set *during* an iteration throws `InvalidOperationException` on the next advance, matching the family convention.
-- `Range` bounds are **inclusive on both ends**, need not be present in the set, and the walk costs O(log n + k) — it descends straight to the first in-range element.
+- `Range` bounds are **inclusive on both ends**, need not be present in the set, and the walk costs O(log n + k) - it descends straight to the first in-range element.
 - `Min` / `Max` throw `InvalidOperationException` on an empty set; `TryGetMin` / `TryGetMax` are the non-throwing forms.
 - Not thread-safe.
 
 The backing-structure decision (order-statistic red-black tree with parent pointers, versus a skip list) is recorded in the design note at `Bodu.Collections/docs/navigable-collections-design.md`. [`NavigableDictionary<TKey,TValue>`](navigable-dictionary.md) is the key-value counterpart over the same node machinery.
 
-## Pattern 1 — nearest-neighbour queries
+## Pattern 1 - nearest-neighbour queries
 
 <!-- compile -->
 ```csharp
@@ -41,11 +41,11 @@ if (ladder.TryGetFloor(100.10m, out decimal bid))
 if (ladder.TryGetHigher(100.25m, out decimal ask))
     Console.WriteLine(ask);              // 101.00
 
-ladder.TryGetCeiling(100.10m, out decimal atOrAbove);  // 100.25 — least >= value
-ladder.TryGetLower(99.50m, out _);                     // false — nothing strictly below the minimum
+ladder.TryGetCeiling(100.10m, out decimal atOrAbove);  // 100.25 - least >= value
+ladder.TryGetLower(99.50m, out _);                     // false - nothing strictly below the minimum
 ```
 
-## Pattern 2 — rank, select, and range counting
+## Pattern 2 - rank, select, and range counting
 
 `IndexOf` is the zero-based rank (elements smaller than the value); `GetAt` is the inverse (the k-th smallest); `CountInRange` subtracts two rank walks, so none of the three iterates the set:
 
@@ -57,14 +57,14 @@ var latencies = new NavigableSet<int>();
 foreach (int sample in new[] { 12, 5, 210, 47, 8, 33, 90, 61 })
     latencies.Add(sample);
 
-int median = latencies.GetAt(latencies.Count / 2);   // k-th smallest — 47
+int median = latencies.GetAt(latencies.Count / 2);   // k-th smallest - 47
 int p90 = latencies.GetAt((int)(latencies.Count * 0.9) - 1);
 
-int rank = latencies.IndexOf(33);                    // 3 — three samples are smaller
-int fastPath = latencies.CountInRange(0, 50);        // 5 — O(log n), no iteration
+int rank = latencies.IndexOf(33);                    // 3 - three samples are smaller
+int fastPath = latencies.CountInRange(0, 50);        // 5 - O(log n), no iteration
 ```
 
-## Pattern 3 — directional and range views
+## Pattern 3 - directional and range views
 
 <!-- compile -->
 ```csharp
@@ -86,7 +86,7 @@ foreach (TimeOnly slot in schedule.Range(new TimeOnly(10, 0), new TimeOnly(14, 0
 // Views are live: a view captured before a mutation reflects it on the next fresh iteration.
 IEnumerable<TimeOnly> morning = schedule.Range(new TimeOnly(0, 0), new TimeOnly(12, 0));
 schedule.Add(new TimeOnly(11, 15));
-Console.WriteLine(morning.Count());      // 3 — 09:00, 10:30, 11:15
+Console.WriteLine(morning.Count());      // 3 - 09:00, 10:30, 11:15
 ```
 
 ## Choosing against the alternatives
@@ -95,13 +95,13 @@ Console.WriteLine(morning.Count());      // 3 — 09:00, 10:30, 11:15
 |---|---|
 | Sorted uniqueness only, no positional queries | `SortedSet<T>` (BCL) |
 | Sorted + floor/ceiling/rank/select/range-count | `NavigableSet<T>` |
-| Sorted key-value with positional access, rare writes | `SortedList<TKey,TValue>` (BCL) — accepts O(n) inserts |
+| Sorted key-value with positional access, rare writes | `SortedList<TKey,TValue>` (BCL) - accepts O(n) inserts |
 | Membership over dense integer universe | [`BitSet`](bit-set.md) |
 | Disjoint interval membership | [`RangeSet<T>`](range-dictionary.md) |
 
 ## See also
 
-- [Navigable dictionary](navigable-dictionary.md) — the key-value counterpart with the same query family.
-- [Choosing a collection](choosing-a-collection.md) — the full decision guide.
-- [Indexed and ordered sets](ordered-sets.md) — insertion-ordered (not comparer-ordered) unique collections.
-- [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.
+- [Navigable dictionary](navigable-dictionary.md) - the key-value counterpart with the same query family.
+- [Choosing a collection](choosing-a-collection.md) - the full decision guide.
+- [Indexed and ordered sets](ordered-sets.md) - insertion-ordered (not comparer-ordered) unique collections.
+- [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) - full namespace overview.

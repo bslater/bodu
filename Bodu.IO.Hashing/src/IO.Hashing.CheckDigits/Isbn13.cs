@@ -13,11 +13,11 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <remarks>
 /// <para>
 /// The ISBN-13 check scheme, introduced in 2007 by the International ISBN Agency, alternates weights of 1 and 3 across
-/// the twelve body digits — the rightmost data digit receives weight 3 — and the check digit is chosen so that the
+/// the twelve body digits - the rightmost data digit receives weight 3 - and the check digit is chosen so that the
 /// resulting weighted sum is a multiple of ten.
 /// </para>
 /// <para>
-/// The same algorithm underpins the EAN-13, UPC-A, GTIN-8, and GTIN-14 barcode families — see <see cref="Ean13" /> and
+/// The same algorithm underpins the EAN-13, UPC-A, GTIN-8, and GTIN-14 barcode families - see <see cref="Ean13" /> and
 /// its siblings for strict-length variants.
 /// </para>
 /// <para>
@@ -79,11 +79,11 @@ public sealed class Isbn13
 
     /// <summary>
     /// Determines whether the supplied sequence, comprising a twelve-digit body followed by a trailing ISBN-13 check
-    /// digit, is consistent — that is, whether the weighted sum evaluates to a multiple of ten.
+    /// digit, is consistent - that is, whether the weighted sum evaluates to a multiple of ten.
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence evaluates as valid under ISBN-13; otherwise, <see langword="false" /> —
+    /// <see langword="true" /> if the sequence evaluates as valid under ISBN-13; otherwise, <see langword="false" /> -
     /// including the case where <paramref name="digitsIncludingCheck" /> is empty or contains a character outside the
     /// range <c>'0'</c> to <c>'9'</c>.
     /// </returns>

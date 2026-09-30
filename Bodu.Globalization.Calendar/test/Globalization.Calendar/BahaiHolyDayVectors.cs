@@ -10,8 +10,8 @@ using Bodu.Test.Kat;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Loads the embedded Baha'i holy-day vector table — the fifty years 172-221 B.E. (2015-2064) fixed by the Universal
-/// House of Justice in its 50-year Badi table — as KAT rows for <c>[DynamicData]</c> binding.
+/// Loads the embedded Baha'i holy-day vector table - the fifty years 172-221 B.E. (2015-2064) fixed by the Universal
+/// House of Justice in its 50-year Badi table - as KAT rows for <c>[DynamicData]</c> binding.
 /// </summary>
 /// <remarks>
 /// <para>

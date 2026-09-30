@@ -46,7 +46,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 
     /// <summary>
     /// Verifies that <see cref="ICryptoTransform.TransformBlock(byte[], int, int, byte[], int)" /> produces
-    /// identical ciphertext irrespective of the output offset — encrypting the same plaintext into offset 0
+    /// identical ciphertext irrespective of the output offset - encrypting the same plaintext into offset 0
     /// of one buffer and offset <em>N</em> of another yields the same block of bytes at the respective
     /// output positions.
     /// </summary>
@@ -205,7 +205,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 
     /// <summary>
     /// Verifies that <see cref="ICryptoTransform.TransformBlock(byte[], int, int, byte[], int)" /> reads only
-    /// the selected input range when <c>inputOffset</c> is non-zero — the produced ciphertext matches the
+    /// the selected input range when <c>inputOffset</c> is non-zero - the produced ciphertext matches the
     /// result of encrypting the same payload at <c>inputOffset</c> 0.
     /// </summary>
     [TestMethod]

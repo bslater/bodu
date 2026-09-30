@@ -16,7 +16,7 @@ namespace Bodu.Financial.Currencies;
 /// <remarks>
 /// <para>
 /// The catalogue is populated from the source-generated <see cref="GeneratedCurrencyRegistration" /> list at first
-/// access — no runtime reflection scans the assembly. It covers the full active and historic ISO 4217 set; every entry
+/// access - no runtime reflection scans the assembly. It covers the full active and historic ISO 4217 set; every entry
 /// has a corresponding <see cref="CurrencyCode" /> member.
 /// </para>
 /// <para>

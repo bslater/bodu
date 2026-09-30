@@ -16,7 +16,7 @@ namespace Bodu.Financial;
 /// <remarks>
 /// <para>
 /// <see cref="Money" /> is the runtime-tagged counterpart of <see cref="Money{TCurrency}" />. Use it when the currency
-/// is data rather than part of the type — for example, when deserialising payloads that carry the currency code, or
+/// is data rather than part of the type - for example, when deserialising payloads that carry the currency code, or
 /// when modelling a generic invoicing engine that processes arbitrary currencies. The trade-off is that cross-currency
 /// arithmetic and comparison surface as <see cref="InvalidOperationException" /> at runtime instead of as compile
 /// errors.

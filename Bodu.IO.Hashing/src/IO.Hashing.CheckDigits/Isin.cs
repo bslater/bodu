@@ -14,7 +14,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <para>
 /// An ISIN comprises a two-letter country code, a nine-character national security identifier, and a single trailing
 /// check digit. To compute the check, every body character is expanded to its numeric value (digits as themselves,
-/// <c>'A'</c>–<c>'Z'</c> to 10–35) and the concatenated string of resulting digits is fed to the standard Luhn
+/// <c>'A'</c>-<c>'Z'</c> to 10-35) and the concatenated string of resulting digits is fed to the standard Luhn
 /// algorithm.
 /// </para>
 /// <para>
@@ -23,7 +23,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <see cref="Compute(ReadOnlySpan{char})" />.
 /// </para>
 /// <para>
-/// <b>Worked example.</b> For the body <c>"US037833100"</c> — Apple Inc. — the computed check digit is <c>'5'</c>, and
+/// <b>Worked example.</b> For the body <c>"US037833100"</c> - Apple Inc. - the computed check digit is <c>'5'</c>, and
 /// the resulting ISIN <c>"US0378331005"</c> is therefore valid.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
@@ -32,7 +32,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Apple Inc. — country code US, body "US037833100".
+/// // Apple Inc. - country code US, body "US037833100".
 /// char check = Isin.Compute("US037833100");   // '5'
 ///
 /// // Full-sequence validation.
@@ -79,7 +79,7 @@ public sealed class Isin
     /// <param name="body">The body characters. Each must be an ASCII decimal digit or uppercase Latin letter.</param>
     /// <returns>The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="body" /> contains any character outside <c>'0'</c>–<c>'9'</c> and <c>'A'</c>–
+    /// Thrown when <paramref name="body" /> contains any character outside <c>'0'</c>-<c>'9'</c> and <c>'A'</c>-
     /// <c>'Z'</c>.
     /// </exception>
     public static char Compute(ReadOnlySpan<char> body)
@@ -95,7 +95,7 @@ public sealed class Isin
     /// </summary>
     /// <param name="valueIncludingCheck">The complete twelve-character ISIN.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence evaluates as valid under ISIN; otherwise, <see langword="false" /> —
+    /// <see langword="true" /> if the sequence evaluates as valid under ISIN; otherwise, <see langword="false" /> -
     /// including the case where <paramref name="valueIncludingCheck" /> is empty, the length is wrong, any body
     /// character is outside the alphanumeric uppercase alphabet, or the check character is not a decimal digit.
     /// </returns>

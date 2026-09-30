@@ -13,9 +13,9 @@
 # violations are grandfathered until the offending line is touched; new code must comply.
 #
 # Checks:
-#   1. Banner       — every ADDED .cs file starts with the copyright banner (CLAUDE.md > File Header).
-#   2. FileScopedNs — every ADDED .cs file uses a file-scoped `namespace X;` (CLAUDE.md > Namespace Style).
-#   3. ResxMessage  — no string-literal exception message on ADDED src lines; messages come from the
+#   1. Banner       - every ADDED .cs file starts with the copyright banner (CLAUDE.md > File Header).
+#   2. FileScopedNs - every ADDED .cs file uses a file-scoped `namespace X;` (CLAUDE.md > Namespace Style).
+#   3. ResxMessage  - no string-literal exception message on ADDED src lines; messages come from the
 #                     *ResourceStrings resx via ThrowHelper (CLAUDE.md > Static Text and Exception Messages).
 #   4. Dash         - no em-dash (U+2014) or en-dash (U+2013) on an ADDED line of any text file, outside the
 #                     files bld/policy/dash-allowlist.txt names (CLAUDE.md > Documentation Tone > Punctuation).
@@ -52,7 +52,7 @@ emit() {
   # emit <file> <line> <message>
   local file="$1" line="$2" msg="$3"
   echo "::error file=${file},line=${line}::${msg}"
-  echo "  ✗ ${file}:${line} — ${msg}" >&2
+  echo "  ✗ ${file}:${line} - ${msg}" >&2
   violations=$((violations + 1))
 }
 
@@ -81,7 +81,7 @@ while IFS= read -r f; do
   # 2. File-scoped namespace. A compliant file declares `namespace X;`. Flag the block form
   #    `namespace X { ... }`. Files with no namespace at all (rare: global-scope helpers) are skipped.
   if grep -qE '^[[:space:]]*namespace[[:space:]]+[A-Za-z0-9_.]+[[:space:]]*;' "$f"; then
-    : # file-scoped — compliant
+    : # file-scoped - compliant
   elif grep -qE '^[[:space:]]*namespace[[:space:]]+[A-Za-z0-9_.]+' "$f"; then
     ns_line="$(grep -nE '^[[:space:]]*namespace[[:space:]]+[A-Za-z0-9_.]+' "$f" | head -1 | cut -d: -f1)"
     emit "$f" "${ns_line:-1}" "New file uses a block-scoped namespace; use a file-scoped 'namespace X;' (CLAUDE.md > Namespace Style)."
@@ -115,7 +115,7 @@ if [ "${#src_files[@]}" -gt 0 ]; then
         [ "${line:0:3}" = "+++" ] && continue
         content="${line:1}"
         trimmed="${content#"${content%%[![:space:]]*}"}"
-        # skip comment lines — doc examples and commented code are not live throws
+        # skip comment lines - doc examples and commented code are not live throws
         case "$trimmed" in
           //*|/\**|\**) newline=$((newline + 1)); continue ;;
         esac
@@ -168,7 +168,7 @@ done < <(git diff --unified=0 --diff-filter=ACMR "$base_ref" "$head_ref" -- "${d
 
 echo >&2
 if [ "$violations" -eq 0 ]; then
-  echo "Policy gate: OK — no Tier-1 violations in the change." >&2
+  echo "Policy gate: OK - no Tier-1 violations in the change." >&2
   exit 0
 fi
 echo "Policy gate: ${violations} violation(s) found." >&2

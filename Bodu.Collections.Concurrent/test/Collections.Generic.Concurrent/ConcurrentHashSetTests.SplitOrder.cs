@@ -26,8 +26,8 @@ public partial class ConcurrentHashSetTests
         Assert.AreEqual(expected, ConcurrentHashSet<int>.ReverseBits(value));
 
     /// <summary>
-    /// Verifies that <see cref="ConcurrentHashSet{T}.ReverseBits" /> is an involution — reversing twice returns the
-    /// original value — across a scripted sweep of bit patterns.
+    /// Verifies that <see cref="ConcurrentHashSet{T}.ReverseBits" /> is an involution - reversing twice returns the
+    /// original value - across a scripted sweep of bit patterns.
     /// </summary>
     [TestMethod]
     public void ReverseBits_WhenAppliedTwice_ShouldReturnOriginalValue()
@@ -70,7 +70,7 @@ public partial class ConcurrentHashSetTests
 
     /// <summary>
     /// Verifies that a bucket's sentinel key is a strict lower bound of the data key of every hash code that maps
-    /// into that bucket, for several table sizes — the ordering invariant that makes each bucket a contiguous run of
+    /// into that bucket, for several table sizes - the ordering invariant that makes each bucket a contiguous run of
     /// the split-ordered list.
     /// </summary>
     [TestMethod]

@@ -75,7 +75,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // Remove — single-item behaviour
+    // Remove - single-item behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -133,7 +133,7 @@ public partial class OrderedSetStorageTests
         CollectionAssert.AreEqual(new[] { 1, 2 }, Snapshot(sut));
     }
     // --------------------------------------------------------
-    // Remove — argument validation
+    // Remove - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -178,7 +178,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // RemoveAt — argument validation
+    // RemoveAt - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -200,7 +200,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // RemoveAt — positional behaviour
+    // RemoveAt - positional behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -246,7 +246,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // RemoveWhere — argument validation
+    // RemoveWhere - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -301,7 +301,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // RemoveWhere — predicate behaviour
+    // RemoveWhere - predicate behaviour
     // --------------------------------------------------------
 
     /// <summary>

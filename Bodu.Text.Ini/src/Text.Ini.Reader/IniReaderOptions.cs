@@ -10,7 +10,7 @@ namespace Bodu.Text.Ini.Reader;
 /// Provides configuration for a <see cref="Utf8IniReader" />, controlling comment recognition.
 /// </summary>
 /// <remarks>
-/// The reader is source-order and does not itself resolve duplicate sections/keys or apply case rules — those are
+/// The reader is source-order and does not itself resolve duplicate sections/keys or apply case rules - those are
 /// document-model concerns. Inline comments are deliberately not recognized: a value retains everything after the
 /// assignment to the end of the line, matching the safer <c>configparser</c> dialect and avoiding the classic
 /// <c>value ; not-a-comment</c> footgun.

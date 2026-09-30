@@ -8,7 +8,7 @@ title: Multiset
 
 Equality is governed by an `IEqualityComparer<T>` supplied at construction, so counting can be case-insensitive or structural. The element type is constrained to `notnull`; storage is a `Dictionary<T, int>` from each distinct element to its count.
 
-## Pattern 1 — counting occurrences
+## Pattern 1 - counting occurrences
 
 <!-- compile -->
 ```csharp
@@ -20,11 +20,11 @@ foreach (string token in "the cat sat on the mat".Split(' '))
     words.Add(token);
 
 int the   = words.CountOf("the");   // → 2
-int total = words.Count;            // → 6 — includes multiplicity
-int kinds = words.DistinctCount;    // → 5 — distinct elements only
+int total = words.Count;            // → 6 - includes multiplicity
+int kinds = words.DistinctCount;    // → 5 - distinct elements only
 ```
 
-`Count` reports the total number of elements including duplicates; `DistinctCount` reports the number of *distinct* elements. `CountOf` returns `0` for an absent element — no exception, no `TryGetValue` dance:
+`Count` reports the total number of elements including duplicates; `DistinctCount` reports the number of *distinct* elements. `CountOf` returns `0` for an absent element - no exception, no `TryGetValue` dance:
 
 <!-- compile -->
 ```csharp
@@ -33,12 +33,12 @@ var histogram = new Multiset<char>("mississippi");
 Console.WriteLine(histogram.Count);          // → 11
 Console.WriteLine(histogram.DistinctCount);  // → 4
 Console.WriteLine(histogram.CountOf('s'));   // → 4
-Console.WriteLine(histogram.CountOf('z'));   // → 0 — absent elements report zero
+Console.WriteLine(histogram.CountOf('z'));   // → 0 - absent elements report zero
 ```
 
 The `IEnumerable<T>` constructor seeds the bag with one count per source element, so any sequence becomes a histogram in one line.
 
-## Pattern 2 — adding and removing with explicit multiplicity
+## Pattern 2 - adding and removing with explicit multiplicity
 
 <!-- compile -->
 ```csharp
@@ -51,9 +51,9 @@ bool removedOne = inventory.Remove("widget");     // removes a single copy → 1
 bool removedAll = inventory.RemoveAll("widget");  // removes every copy → 0, returns true
 ```
 
-`Remove` removes a single copy and returns `false` when the element is absent; `RemoveAll` removes every copy of the element at once. An element whose count reaches zero leaves the bag entirely — `Contains` becomes `false` and the element no longer appears in `Distinct()` or `Frequencies()`. `Add(item, count)` throws <xref:System.ArgumentOutOfRangeException> when `count` is zero or negative.
+`Remove` removes a single copy and returns `false` when the element is absent; `RemoveAll` removes every copy of the element at once. An element whose count reaches zero leaves the bag entirely - `Contains` becomes `false` and the element no longer appears in `Distinct()` or `Frequencies()`. `Add(item, count)` throws <xref:System.ArgumentOutOfRangeException> when `count` is zero or negative.
 
-## Pattern 3 — enumerating distinct values and frequencies
+## Pattern 3 - enumerating distinct values and frequencies
 
 <!-- compile -->
 ```csharp
@@ -71,7 +71,7 @@ foreach (KeyValuePair<char, int> freq in bag.Frequencies().OrderBy(p => p.Key))
 
 Enumerating the multiset directly (`foreach (var item in bag)`) yields each element repeated according to its count. `Distinct()` and `Frequencies()` run in O(`DistinctCount`) and do not expand multiplicity; their order is **not guaranteed** (apply `OrderBy` as above when stable output matters). Both are fail-fast: mutating the bag mid-enumeration throws <xref:System.InvalidOperationException>.
 
-A typical reporting shape — top-N most frequent:
+A typical reporting shape - top-N most frequent:
 
 ```csharp
 var top2 = bag.Frequencies()
@@ -83,7 +83,7 @@ Console.WriteLine(string.Join(", ", top2.Select(p => $"{p.Key}×{p.Value}")));
 // → c×3, a×2
 ```
 
-## Pattern 4 — multiset algebra
+## Pattern 4 - multiset algebra
 
 Multiset operations combine counts rather than just membership. Each returns a new `Multiset<T>` (using the left operand's comparer) and mutates neither operand:
 
@@ -109,9 +109,9 @@ Dump(a.Except(b));     // → 1×1, 3×1
 | `Intersect` | minimum of the two counts |
 | `Except` | left count minus right count (floored at zero) |
 
-The operations are well defined only when both operands use equivalent comparers — combining a case-sensitive bag with a case-insensitive one produces comparer-dependent results.
+The operations are well defined only when both operands use equivalent comparers - combining a case-sensitive bag with a case-insensitive one produces comparer-dependent results.
 
-## Pattern 5 — case-insensitive counting
+## Pattern 5 - case-insensitive counting
 
 <!-- compile -->
 ```csharp
@@ -135,7 +135,7 @@ int errors = tally.CountOf("error");   // → 2
 
 ## When *not* to use it
 
-- **A hand-rolled `Dictionary<T, int>` is enough** when a single method only increments and reads counts. `Multiset<T>` earns its keep once you also need the total `Count` alongside `DistinctCount`, removal that automatically drops zero-count entries, multiplicity-aware enumeration and `CopyTo`, `ICollection<T>` interop, or the algebra operations — all of which the hand-rolled dictionary forces you to re-implement (and keep consistent) yourself.
+- **A hand-rolled `Dictionary<T, int>` is enough** when a single method only increments and reads counts. `Multiset<T>` earns its keep once you also need the total `Count` alongside `DistinctCount`, removal that automatically drops zero-count entries, multiplicity-aware enumeration and `CopyTo`, `ICollection<T>` interop, or the algebra operations - all of which the hand-rolled dictionary forces you to re-implement (and keep consistent) yourself.
 - **Duplicates should be rejected, not counted.** Use `HashSet<T>`, or [`IndexedSet<T>` / `OrderedSet<T>`](ordered-sets.md) when insertion order matters.
 - **Sorted frequency order is needed continuously.** The bag is hash-ordered; a `SortedDictionary<T, int>` keeps keys sorted on every read instead of paying an `OrderBy` per query.
 - **`null` elements.** The element type is constrained to `notnull`; a bag cannot count `null`.
@@ -162,10 +162,10 @@ int errors = tally.CountOf("error");   // → 2
 
 ## See also
 
-- [Indexed and ordered sets](ordered-sets.md) — when duplicates should be *rejected* rather than counted.
-- [Choosing a collection](choosing-a-collection.md) — the full decision guide.
-- [Core Foundations guides](../topics/core-foundations.md) — every guide in this topic.
-- [Core Foundations topic overview](../../docs/topics/core-foundations.md) — package map and install command.
-- [Bodu.Collections introduction](../../docs/collections/index.md) — namespaces, headline types, scenarios.
+- [Indexed and ordered sets](ordered-sets.md) - when duplicates should be *rejected* rather than counted.
+- [Choosing a collection](choosing-a-collection.md) - the full decision guide.
+- [Core Foundations guides](../topics/core-foundations.md) - every guide in this topic.
+- [Core Foundations topic overview](../../docs/topics/core-foundations.md) - package map and install command.
+- [Bodu.Collections introduction](../../docs/collections/index.md) - namespaces, headline types, scenarios.
 - [`Multiset<T>` API reference](xref:Bodu.Collections.Generic.Multiset`1)
 - [`Bodu.Collections.Generic` namespace landing](xref:Bodu.Collections.Generic)

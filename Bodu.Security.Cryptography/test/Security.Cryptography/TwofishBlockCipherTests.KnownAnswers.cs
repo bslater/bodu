@@ -33,7 +33,7 @@ internal sealed partial class TwofishBlockCipherTests
     private static readonly BlockCipherKnownAnswer[] Key256KnownAnswers = FilterByKeyLength(32);
 
     /// <summary>
-    /// Returns the curated KAT vectors for <paramref name="variant" /> — the full official AES-submission ECB suite
+    /// Returns the curated KAT vectors for <paramref name="variant" /> - the full official AES-submission ECB suite
     /// for that key size.
     /// </summary>
     /// <param name="variant">The key-size variant to source vectors for.</param>

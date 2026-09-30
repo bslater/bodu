@@ -103,8 +103,8 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that every input overload — stream, memory, span, array, the leaf-retaining computations and the
-    /// accumulator — produces the same root, on the sequential and the parallel instance.
+    /// Verifies that every input overload - stream, memory, span, array, the leaf-retaining computations and the
+    /// accumulator - produces the same root, on the sequential and the parallel instance.
     /// </summary>
     /// <param name="length">The input length in bytes.</param>
     [TestMethod]

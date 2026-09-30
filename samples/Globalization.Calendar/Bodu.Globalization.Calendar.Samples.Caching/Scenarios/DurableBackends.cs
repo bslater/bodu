@@ -12,8 +12,8 @@ using Microsoft.Extensions.Options;
 namespace Bodu.Globalization.Calendar.Samples.Caching.Scenarios;
 
 /// <summary>
-/// Demonstrates the two add-on cache backends — <c>Bodu.Globalization.Calendar.Caching.Sqlite</c> and
-/// <c>…Caching.Distributed</c> — behind the same <see cref="INotableDateCache" /> contract the in-memory and file
+/// Demonstrates the two add-on cache backends - <c>Bodu.Globalization.Calendar.Caching.Sqlite</c> and
+/// <c>…Caching.Distributed</c> - behind the same <see cref="INotableDateCache" /> contract the in-memory and file
 /// backends implement.
 /// </summary>
 public static class DurableBackends

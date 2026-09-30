@@ -13,7 +13,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// Use this adapter when an existing consumer already accepts <see cref="IRateProvider" /> but the rates should
-/// nevertheless come from a date-aware source — for example, a fixed reporting-period end-date used to convert many
+/// nevertheless come from a date-aware source - for example, a fixed reporting-period end-date used to convert many
 /// amounts consistently throughout a single accounting workflow.
 /// </para>
 /// </remarks>

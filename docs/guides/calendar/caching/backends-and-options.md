@@ -6,11 +6,11 @@ title: Cache backends and options
 
 [Caching notable dates](notable-date-caching.md) explains what the read-through decorator does. This page is the reference underneath it: every option type with its defaults, what each backend writes to disk, to SQLite, or to a distributed store, the write-status contract, the observability surface, and the composition rule that wires an add-on backend into `AddCachedNotableDateService`.
 
-Every backend shares one policy — freshness, version matching, and merge-and-prune are applied identically by the core — so the choice between them is only about *where* entries live and *who* can see them.
+Every backend shares one policy - freshness, version matching, and merge-and-prune are applied identically by the core - so the choice between them is only about *where* entries live and *who* can see them.
 
 ## Options reference
 
-### `NotableDateCachingOptions` — the decorator
+### `NotableDateCachingOptions` - the decorator
 
 <xref:Bodu.Globalization.Calendar.Caching.NotableDateCachingOptions> configures <xref:Bodu.Globalization.Calendar.Caching.CachingNotableDateService> itself. Under dependency injection it binds from the `Calendar:NotableDateCache` section.
 
@@ -40,16 +40,16 @@ if (!options.TryValidate(out string? error))
     throw new InvalidOperationException(error);
 ```
 
-### `NotableDateCacheOptions` — every backend
+### `NotableDateCacheOptions` - every backend
 
 <xref:Bodu.Globalization.Calendar.Caching.NotableDateCacheOptions> is the base for every backend's options and the options type of `InMemoryNotableDateCache`.
 
 | Property | Default | Meaning |
 |---|---|---|
-| `ThrowOnStorageFailure` | `false` | `false` keeps the contract's best-effort behaviour — a failed read is an empty read, a failed write is skipped and reported as `Failed`. `true` rethrows the storage exception as the store produced it (<xref:System.IO.IOException> or `UnauthorizedAccessException` for files; which one varies by platform). Argument validation always throws regardless. |
+| `ThrowOnStorageFailure` | `false` | `false` keeps the contract's best-effort behaviour - a failed read is an empty read, a failed write is skipped and reported as `Failed`. `true` rethrows the storage exception as the store produced it (<xref:System.IO.IOException> or `UnauthorizedAccessException` for files; which one varies by platform). Argument validation always throws regardless. |
 | `ValidateStorageOnStart` | `false` | `true` probes the backing store when the cache is constructed and throws if it is unusable, instead of discovering the fault on the first read or write. The SQLite and distributed registrations run this probe through options `ValidateOnStart`, so a misconfigured store fails host start-up. |
 
-### `FileNotableDateCacheOptions` — TOML and JSON files
+### `FileNotableDateCacheOptions` - TOML and JSON files
 
 <xref:Bodu.Globalization.Calendar.Caching.FileNotableDateCacheOptions> adds one property to the base:
 
@@ -77,7 +77,7 @@ if (!options.TryValidate(out string? error))
 | `KeyPrefix` | `null` | Prepended verbatim to every key so several logical caches can share one store; `null` for no prefix. White-space-only is rejected. |
 | `EntryExpirationMargin` | 1 hour | Each territory blob is written with an absolute server-side expiration of `Ttl + margin`, so an unqueried territory self-evicts. `null` disables server-side expiry; negative is rejected. |
 
-### `NotableDateCacheWarmupOptions` — start-up warm-up
+### `NotableDateCacheWarmupOptions` - start-up warm-up
 
 <xref:Bodu.Globalization.Calendar.Caching.NotableDateCacheWarmupOptions> binds from `Calendar:NotableDateCacheWarmup`:
 
@@ -91,7 +91,7 @@ if (!options.TryValidate(out string? error))
 
 ## The on-disk file schema (TOML and JSON)
 
-<xref:Bodu.Globalization.Calendar.Caching.TomlNotableDateCache> and <xref:Bodu.Globalization.Calendar.Caching.JsonNotableDateCache> write **one file per territory** — `<CacheDirectory>/<TERRITORY>.toml` or `.json`, the territory upper-cased and any character other than an ASCII letter, digit, or `-` replaced by `_`. Both serialize the same shallow document, <xref:Bodu.Globalization.Calendar.Caching.NotableDateCacheFile>: a `Territory`, an `Entries` array of <xref:Bodu.Globalization.Calendar.Caching.NotableDateCacheYearRow> (one per cached year, *including* a year that yielded nothing), and a flat `Occurrences` array of <xref:Bodu.Globalization.Calendar.Caching.NotableDateCacheOccurrenceRow>, each row carrying its own `Year` and `Version` so it can be associated back to its entry without nesting.
+<xref:Bodu.Globalization.Calendar.Caching.TomlNotableDateCache> and <xref:Bodu.Globalization.Calendar.Caching.JsonNotableDateCache> write **one file per territory** - `<CacheDirectory>/<TERRITORY>.toml` or `.json`, the territory upper-cased and any character other than an ASCII letter, digit, or `-` replaced by `_`. Both serialize the same shallow document, <xref:Bodu.Globalization.Calendar.Caching.NotableDateCacheFile>: a `Territory`, an `Entries` array of <xref:Bodu.Globalization.Calendar.Caching.NotableDateCacheYearRow> (one per cached year, *including* a year that yielded nothing), and a flat `Occurrences` array of <xref:Bodu.Globalization.Calendar.Caching.NotableDateCacheOccurrenceRow>, each row carrying its own `Year` and `Version` so it can be associated back to its entry without nesting.
 
 The file below was produced by resolving July 2026 for `US` with `ResourceVersion = "us-2026.1"` (it continues for all 29 occurrences of the year):
 
@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS notable_dates (
 
 ## The distributed key format
 
-`DistributedNotableDateCache` stores **one blob per territory** under the key `{KeyPrefix}notable-dates:{TERRITORY}` — with no prefix, `notable-dates:US`; with `KeyPrefix = "app1:"`, `app1:notable-dates:US`. The blob is the JSON form of the file schema above, written with an absolute expiration of `Ttl + EntryExpirationMargin` when the margin is non-`null`. `Clear()` removes the keys *this instance* has written; it cannot enumerate an `IDistributedCache`, so keys written by other processes are left to expire.
+`DistributedNotableDateCache` stores **one blob per territory** under the key `{KeyPrefix}notable-dates:{TERRITORY}` - with no prefix, `notable-dates:US`; with `KeyPrefix = "app1:"`, `app1:notable-dates:US`. The blob is the JSON form of the file schema above, written with an absolute expiration of `Ttl + EntryExpirationMargin` when the margin is non-`null`. `Clear()` removes the keys *this instance* has written; it cannot enumerate an `IDistributedCache`, so keys written by other processes are left to expire.
 
 ## `NotableDateCacheWriteStatus`
 
@@ -189,7 +189,7 @@ Every `StoreYear` answers a <xref:Bodu.Globalization.Calendar.Caching.NotableDat
 | Value | Meaning |
 |---|---|
 | `Stored` | Persisted; durable for the backend's lifetime (memory: the process; files/SQLite: the disk; distributed: until server-side expiry). |
-| `Skipped` | The cache deliberately stores nothing — <xref:Bodu.Globalization.Calendar.Caching.NullNotableDateCache> — and nothing was expected to be stored. |
+| `Skipped` | The cache deliberately stores nothing - <xref:Bodu.Globalization.Calendar.Caching.NullNotableDateCache> - and nothing was expected to be stored. |
 | `Failed` | A storage error was swallowed (`ThrowOnStorageFailure = false`); the next lookup of that year recomputes rather than trusting a write that never happened. |
 
 <!-- compile -->
@@ -205,7 +205,7 @@ NotableDateCacheWriteStatus skipped = NullNotableDateCache.Instance.StoreYear(en
 
 ## Observability
 
-Logging and metrics are described in full in [Caching notable dates — Observability](notable-date-caching.md#observability); the per-backend identifiers are:
+Logging and metrics are described in full in [Caching notable dates - Observability](notable-date-caching.md#observability); the per-backend identifiers are:
 
 | Backend | Storage-failure `EventId` | Meter | Instrument |
 |---|---|---|---|
@@ -213,11 +213,11 @@ Logging and metrics are described in full in [Caching notable dates — Observab
 | SQLite | 4611 | `Bodu.Globalization.Calendar.Caching.Sqlite` | `bodu.calendar.notable_date_cache.sqlite.storage_failures` |
 | Distributed | 4621 | `Bodu.Globalization.Calendar.Caching.Distributed` | `bodu.calendar.notable_date_cache.distributed.storage_failures` |
 
-The decorator's own events are 4601 (hit) and 4602 (miss) at the configured levels, 4605/4606 (refresh-ahead completed/failed), 4607 (warm-up territory skipped), and 4622–4625 for the hosted warm-up service. Storage-failure warnings are rate-limited to one per minute with the suppressed count attached; the counters are not rate-limited.
+The decorator's own events are 4601 (hit) and 4602 (miss) at the configured levels, 4605/4606 (refresh-ahead completed/failed), 4607 (warm-up territory skipped), and 4622-4625 for the hosted warm-up service. Storage-failure warnings are rate-limited to one per minute with the suppressed count attached; the counters are not rate-limited.
 
 ## Composition: wiring an add-on backend
 
-`AddCachedNotableDateService` wraps the already registered `INotableDateService` in the decorator. With no `cacheFactory` it constructs a `TomlNotableDateCache` in `CacheDirectory` and owns its lifetime. The SQLite and distributed registrations each add an `INotableDateCache` singleton to the container **but do not replace that default** — the decorator only uses them when you point it at the registered service:
+`AddCachedNotableDateService` wraps the already registered `INotableDateService` in the decorator. With no `cacheFactory` it constructs a `TomlNotableDateCache` in `CacheDirectory` and owns its lifetime. The SQLite and distributed registrations each add an `INotableDateCache` singleton to the container **but do not replace that default** - the decorator only uses them when you point it at the registered service:
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -238,7 +238,7 @@ services.AddCachedNotableDateService(
     cacheFactory: sp => sp.GetRequiredService<INotableDateCache>());
 ```
 
-The same rule applies to a cache you construct yourself or register by hand — `cacheFactory: _ => new JsonNotableDateCache(new FileNotableDateCacheOptions { CacheDirectory = "/var/cache/notable-dates" })` — and to the custom backends described in [Writing a cache backend](custom-backend.md). When a factory is supplied the container does not dispose the cache; register it as a singleton (as the add-ons do) so its lifetime is managed.
+The same rule applies to a cache you construct yourself or register by hand - `cacheFactory: _ => new JsonNotableDateCache(new FileNotableDateCacheOptions { CacheDirectory = "/var/cache/notable-dates" })` - and to the custom backends described in [Writing a cache backend](custom-backend.md). When a factory is supplied the container does not dispose the cache; register it as a singleton (as the add-ons do) so its lifetime is managed.
 
 Binding the same wiring from configuration:
 
@@ -274,8 +274,8 @@ void Register(IServiceCollection services, IConfiguration configuration)
 
 ## Where to go next
 
-- **[Caching notable dates](notable-date-caching.md)** — the concepts, quick-start, freshness, warm-up, and troubleshooting.
-- **[Writing a cache backend](custom-backend.md)** — the `INotableDateCache` contract, the invariants, and a complete in-memory backend.
-- **[Calendar dependency injection](../dependency-injection.md)** — registering the service the cache decorates.
+- **[Caching notable dates](notable-date-caching.md)** - the concepts, quick-start, freshness, warm-up, and troubleshooting.
+- **[Writing a cache backend](custom-backend.md)** - the `INotableDateCache` contract, the invariants, and a complete in-memory backend.
+- **[Calendar dependency injection](../dependency-injection.md)** - registering the service the cache decorates.
 - **[Bodu.Globalization.Calendar.Caching API reference](xref:Bodu.Globalization.Calendar.Caching)**
-- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

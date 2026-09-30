@@ -12,7 +12,7 @@ namespace Bodu.Financial.Currencies;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Implementations of <see cref="ICurrency" /> are tag types — they exist solely to parameterize
+/// Implementations of <see cref="ICurrency" /> are tag types - they exist solely to parameterize
 /// <see cref="Money{TCurrency}" /> and carry the currency's static metadata. They are never instantiated; the shipped
 /// implementations declare a private constructor and expose only static members.
 /// </para>
@@ -25,7 +25,7 @@ namespace Bodu.Financial.Currencies;
 /// <see cref="IsoCode" /> and <see cref="MinorUnits" /> are required. The remaining members (
 /// <see cref="CashRoundingIncrement" />, <see cref="IsHistoric" />, <see cref="DemonetizedOn" />,
 /// <see cref="SuccessorIsoCode" />) are <c>static virtual</c> with sensible defaults so existing custom implementations
-/// remain source-compatible — only the shipped <c>Bodu.Financial.Currencies</c> tags override the defaults to surface
+/// remain source-compatible - only the shipped <c>Bodu.Financial.Currencies</c> tags override the defaults to surface
 /// country-specific cash rounding or historic-currency metadata.
 /// </para>
 /// <example>
@@ -55,7 +55,7 @@ public interface ICurrency
     static abstract string IsoCode { get; }
 
     /// <summary>
-    /// Gets the number of fractional digits in the currency's minor unit — the precision
+    /// Gets the number of fractional digits in the currency's minor unit - the precision
     /// <see cref="Money{TCurrency}" /> rounds to on construction and formats by default.
     /// </summary>
     /// <value>

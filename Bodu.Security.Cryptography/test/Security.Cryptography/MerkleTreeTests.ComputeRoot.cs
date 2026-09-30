@@ -58,7 +58,7 @@ public partial class MerkleTreeTests
 
     /// <summary>
     /// Verifies that a one-entry tree's root is the entry's leaf hash and specifically <em>not</em> the entry's bare
-    /// digest — the property the leaf-domain prefix exists to provide.
+    /// digest - the property the leaf-domain prefix exists to provide.
     /// </summary>
     [TestMethod]
     public void ComputeRoot_WhenGivenOneEntry_ShouldReturnLeafHashAndNotTheBareDigest()
@@ -95,7 +95,7 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that a lone subtree root is promoted unchanged rather than re-hashed as a one-child node — the rule
+    /// Verifies that a lone subtree root is promoted unchanged rather than re-hashed as a one-child node - the rule
     /// that lets the level-by-level fold reproduce the recursive definition.
     /// </summary>
     [TestMethod]
@@ -127,7 +127,7 @@ public partial class MerkleTreeTests
     /// <remarks>
     /// There are two well-known wrong ways to reduce an odd node: re-hash it alone as a one-child node, which the
     /// package's former level-by-level hasher did, or duplicate it and hash it against itself, which is what Bitcoin
-    /// does. RFC 6962 does neither — it promotes the subtree root unchanged — and this pins the root against both
+    /// does. RFC 6962 does neither - it promotes the subtree root unchanged - and this pins the root against both
     /// alternatives. Under the duplicating construction a three-leaf tree collides with a four-leaf tree whose last
     /// leaf repeats the third, which is the forgery the CVE describes.
     /// </remarks>

@@ -7,8 +7,8 @@
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Provides allocation-aware operations over <see cref="Array" /> instances — clearing, copying, slicing, and reversing
-/// — that either match the missing primitives on <see cref="Array" /> or supply more ergonomic counterparts to the BCL
+/// Provides allocation-aware operations over <see cref="Array" /> instances - clearing, copying, slicing, and reversing
+/// - that either match the missing primitives on <see cref="Array" /> or supply more ergonomic counterparts to the BCL
 /// helpers.
 /// </summary>
 /// <remarks>
@@ -30,16 +30,16 @@ namespace Bodu.Extensions;
 /// <para>
 /// All methods validate their inputs through <see cref="ThrowHelper" /> and reject <see langword="null" /> arrays with
 /// <see cref="ArgumentNullException" />. <c>Reverse</c>, <c>Slice</c>, and <c>Copy</c> always allocate: each returns a
-/// new array and leaves the source untouched — <c>Reverse</c> copies the full source and reverses the nominated window
+/// new array and leaves the source untouched - <c>Reverse</c> copies the full source and reverses the nominated window
 /// on the copy, unlike the in-place <see cref="Array.Reverse(System.Array)" />. Only <c>Clear</c> mutates the source
-/// array. Operations are not thread-safe — callers are responsible for synchronizing access to a shared array.
+/// array. Operations are not thread-safe - callers are responsible for synchronizing access to a shared array.
 /// </para>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
 /// int[] source = { 1, 2, 3, 4, 5, 6 };
 ///
-/// // Reverse only the middle window — returns a new array; source is unchanged.
+/// // Reverse only the middle window - returns a new array; source is unchanged.
 /// int[] reversed = source.Reverse(1, 4); // => { 1, 5, 4, 3, 2, 6 }
 ///
 /// // Take a freshly allocated slice using a Range expression.

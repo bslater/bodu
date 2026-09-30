@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Drives <see cref="KatCensus" /> over the test assembly and refreshes the committed <c>kat-census.txt</c> artifact —
+/// Drives <see cref="KatCensus" /> over the test assembly and refreshes the committed <c>kat-census.txt</c> artifact -
 /// the go-forward inventory of every known-answer vector's inputs and outputs.
 /// </summary>
 /// <remarks>

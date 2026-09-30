@@ -180,7 +180,7 @@ public sealed class BoeRateProvider
     /// <inheritdoc />
     /// <remarks>
     /// Forwards <see cref="BoeRateProviderOptions.HistoryAvailability" />, which defaults to a fixed floor of 2 January
-    /// 1975 — the inception of the Bank of England's daily spot exchange-rate series.
+    /// 1975 - the inception of the Bank of England's daily spot exchange-rate series.
     /// </remarks>
     public override RateHistoryAvailability HistoryAvailability => _options.HistoryAvailability;
 
@@ -335,8 +335,8 @@ public sealed class BoeRateProvider
         }
         catch (Exception ex) when (ex is HttpRequestException or IOException or FormatException)
         {
-            // Only the failures a fetch is expected to produce — transport, stream, and malformed-feed errors
-            // (ExchangeRateFormatException derives from FormatException) — are logged as feed-load failures.
+            // Only the failures a fetch is expected to produce - transport, stream, and malformed-feed errors
+            // (ExchangeRateFormatException derives from FormatException) - are logged as feed-load failures.
             Log.FeedLoadFailed(_logger, _options.DownloadFailedLogLevel, startDate, endDate, ex);
             throw;
         }

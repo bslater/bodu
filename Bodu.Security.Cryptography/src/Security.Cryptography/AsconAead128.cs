@@ -86,7 +86,7 @@ namespace Bodu.Security.Cryptography;
 /// short round count are an advantage over GCM's GHASH multiplications. For general-purpose AEAD on commodity x86/ARM
 /// hardware <see cref="GcmModeTransform" /> remains faster thanks to AES-NI/PCLMULQDQ; for nonce-misuse resistance
 /// prefer <see cref="GcmSivModeTransform" /> or <see cref="SivModeTransform" />. Unlike the AES-based AEAD modes, Ascon
-/// does not depend on a separate block cipher — pair it with the related <see cref="AsconHash256" /> /
+/// does not depend on a separate block cipher - pair it with the related <see cref="AsconHash256" /> /
 /// <see cref="AsconHashA256" /> hashes or <see cref="AsconXof128" /> XOF when building a fully Ascon-based protocol.
 /// </para>
 /// </remarks>
@@ -256,7 +256,7 @@ public sealed class AsconAead128
     /// final state; the tag is then compared in constant time, and on mismatch
     /// <see cref="CryptographicOperations.ZeroMemory" /> clears the plaintext-length region of
     /// <paramref name="output" /> and the keyed sponge state is reset before <see cref="CryptographicException" /> is
-    /// thrown — no plaintext is observable to the caller, and the rejected message's permutation state does not outlive
+    /// thrown - no plaintext is observable to the caller, and the rejected message's permutation state does not outlive
     /// the call.
     /// </remarks>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
@@ -462,7 +462,7 @@ public sealed class AsconAead128
                 offset += Rate;
             }
 
-            // Final partial block: Ascon padding — 0x01 at the first unused byte position. The padded copy of the
+            // Final partial block: Ascon padding - 0x01 at the first unused byte position. The padded copy of the
             // caller's associated data is zeroed before it goes out of scope.
             Span<byte> pad = stackalloc byte[Rate];
             try
@@ -525,8 +525,8 @@ public sealed class AsconAead128
     /// </summary>
     /// <param name="tag">Destination span for the 16-byte authentication tag.</param>
     /// <remarks>
-    /// The pre-permute key-XOR targets <c>S2</c> and <c>S3</c> — the words immediately after the rate region (which
-    /// occupies <c>S0</c> and <c>S1</c> for <c>r = 128</c>) — matching the SP 800-232 / ascon-c reference for
+    /// The pre-permute key-XOR targets <c>S2</c> and <c>S3</c> - the words immediately after the rate region (which
+    /// occupies <c>S0</c> and <c>S1</c> for <c>r = 128</c>) - matching the SP 800-232 / ascon-c reference for
     /// Ascon-AEAD128.
     /// </remarks>
     private void Finalize(Span<byte> tag)

@@ -9,7 +9,7 @@ using System.Text;
 namespace Bodu.IO.Hashing.Extensions;
 
 /// <summary>
-/// Tests covering the <see cref="NonCryptographicHashAlgorithmExtensions" /> surface — including
+/// Tests covering the <see cref="NonCryptographicHashAlgorithmExtensions" /> surface - including
 /// <c>AppendData</c>, <c>AppendDataAsync</c>, <c>VerifyHash</c>, <c>VerifyHashAsync</c>,
 /// <c>TryVerifyHash</c>, and <c>TryVerifyHashAsync</c>. Tests for each method live in their own partial file.
 /// </summary>
@@ -17,7 +17,7 @@ namespace Bodu.IO.Hashing.Extensions;
 /// <para>
 /// Tests use <see cref="MonitoringNonCryptographicHashAlgorithm" />, a deterministic test-infrastructure algorithm
 /// that accumulates input bytes as a 32-bit unsigned integer sum. This makes the expected hash of any input
-/// trivially computable — <c>BitConverter.GetBytes((uint)sum)</c> — which is why the fixtures below use small byte
+/// trivially computable - <c>BitConverter.GetBytes((uint)sum)</c> - which is why the fixtures below use small byte
 /// arrays rather than published test vectors.
 /// </para>
 /// <para>

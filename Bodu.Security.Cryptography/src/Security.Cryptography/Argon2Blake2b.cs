@@ -16,14 +16,14 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Argon2 (RFC 9106) is defined as a mode of operation over BLAKE2b ([BLAKE2], RFC 7693) used both directly as
 /// <c>H^x</c> (for the pre-hashing digest) and through the variable-length hash <c>H'</c> (for the initial memory
-/// blocks and the final tag). The latter requires BLAKE2b outputs of any length in the range 1–64 bytes, whereas the
+/// blocks and the final tag). The latter requires BLAKE2b outputs of any length in the range 1-64 bytes, whereas the
 /// public <see cref="Blake2b" /> type intentionally restricts its output to a curated set of sizes. Argon2 therefore
-/// drives the BLAKE2b compression function, <see cref="Blake2bCore" />, directly — the kernels <see cref="Blake2b" />
+/// drives the BLAKE2b compression function, <see cref="Blake2bCore" />, directly - the kernels <see cref="Blake2b" />
 /// runs on too. Only the unkeyed digest is needed; Argon2 never uses BLAKE2b's keyed (MAC) mode.
 /// </para>
 /// <para>
-/// The digest is computed incrementally through <see cref="Hasher" />, so a caller can hash several inputs — the
-/// pre-hashing digest's length-prefixed password, salt, secret, and associated data — without first copying them into
+/// The digest is computed incrementally through <see cref="Hasher" />, so a caller can hash several inputs - the
+/// pre-hashing digest's length-prefixed password, salt, secret, and associated data - without first copying them into
 /// one buffer. Every buffer that holds input or state is cleared before it is released.
 /// </para>
 /// </remarks>
@@ -45,7 +45,7 @@ internal static partial class Argon2Blake2b
     /// </summary>
     /// <param name="input">The message to hash.</param>
     /// <param name="output">
-    /// The destination buffer; its length determines the digest size (1–64 bytes). It may overlap
+    /// The destination buffer; its length determines the digest size (1-64 bytes). It may overlap
     /// <paramref name="input" />.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">

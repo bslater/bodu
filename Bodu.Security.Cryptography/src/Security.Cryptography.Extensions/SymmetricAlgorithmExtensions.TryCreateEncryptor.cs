@@ -29,8 +29,8 @@ public static partial class SymmetricAlgorithmExtensions
     /// <remarks>
     /// <para>
     /// This method wraps <see cref="SymmetricAlgorithm.CreateEncryptor(byte[], byte[])" /> in a try/catch block. Any
-    /// exception raised by the underlying algorithm — for example, due to an invalid key length or unsupported IV size
-    /// — is suppressed and results in a <see langword="false" /> return value.
+    /// exception raised by the underlying algorithm - for example, due to an invalid key length or unsupported IV size
+    /// - is suppressed and results in a <see langword="false" /> return value.
     /// </para>
     /// </remarks>
     public static bool TryCreateEncryptor(

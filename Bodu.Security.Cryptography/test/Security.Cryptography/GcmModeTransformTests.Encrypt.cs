@@ -23,8 +23,8 @@ public sealed partial class GcmModeTransformTests
     private static readonly int[] s_crossCheckAadLengths = [0, 1, 17, 64, 100];
 
     /// <summary>
-    /// Verifies that the ciphertext and tag match the platform's <see cref="AesGcm" /> — an independent implementation
-    /// — for AES-128 and AES-256 across plaintext lengths that fit in one run of counters, straddle one, and span
+    /// Verifies that the ciphertext and tag match the platform's <see cref="AesGcm" /> - an independent implementation
+    /// - for AES-128 and AES-256 across plaintext lengths that fit in one run of counters, straddle one, and span
     /// several, with associated data of every alignment.
     /// </summary>
     [TestMethod]

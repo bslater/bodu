@@ -34,7 +34,7 @@
     centrally here only when SignAssembly is true and BoduPublicKey is populated, so unsigned builds
     are unaffected.
 
-    Gated on the same SignAssembly/BoduPublicKey pair that turns on signing, and idempotent — grants
+    Gated on the same SignAssembly/BoduPublicKey pair that turns on signing, and idempotent - grants
     that already carry a PublicKey are skipped. Runs after BoduDropTestInternalsVisibleToOnShipping
     (DependsOnTargets) so that on a shipping build the ".Test" grants are removed by their bare name
     before the key is appended; otherwise the appended suffix would defeat the ".Test" name match.
@@ -42,7 +42,7 @@
     The key is woven in by updating the matching items' _Parameter1 metadata in place. An in-place
     Update is used rather than a remove-and-re-add because re-adding through a literal Include while
     batching the new _Parameter1 over a separate item list synthesizes one spurious empty-named grant
-    ("<empty>, PublicKey=...", warning CS1700) whenever that list is empty — for example on a leaf
+    ("<empty>, PublicKey=...", warning CS1700) whenever that list is empty - for example on a leaf
     project whose only grants were ".Test" and have already been dropped on a shipping build. Update
     simply no-ops when nothing matches.
   -->

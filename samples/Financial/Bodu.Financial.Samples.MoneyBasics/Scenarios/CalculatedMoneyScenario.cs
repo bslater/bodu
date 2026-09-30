@@ -13,7 +13,7 @@ namespace Bodu.Financial.Samples.MoneyBasics.Scenarios;
 /// Demonstrates <see cref="CalculatedMoney" /> as the deferred-arithmetic tier: a full-precision
 /// <c>decimal</c> carrier that accumulates a multi-step calculation without rounding, then settles
 /// to a <see cref="Money" /> exactly once via <c>RoundToMoney</c>. Where <see cref="Money{TCurrency}" />
-/// rounds after every operation, <see cref="CalculatedMoney" /> rounds only at materialization — so the
+/// rounds after every operation, <see cref="CalculatedMoney" /> rounds only at materialization - so the
 /// single rounding decision (and which way the leftover half-cent falls) is explicit.
 /// </summary>
 public static class CalculatedMoneyScenario

@@ -10,8 +10,8 @@ namespace Bodu.Core.Samples.CoreToolbox.Scenarios;
 
 /// <summary>
 /// Demonstrates the <see cref="SequenceGenerator" /> catalogue: a family of lazily evaluated, deterministic
-/// integer / rational / string sequences. Each generator here is <em>bounded</em> — by a value window
-/// (<c>Fibonacci</c>) or an element count (<c>ThueMorse</c>, <c>LookAndSay</c>) — so enumeration terminates
+/// integer / rational / string sequences. Each generator here is <em>bounded</em> - by a value window
+/// (<c>Fibonacci</c>) or an element count (<c>ThueMorse</c>, <c>LookAndSay</c>) - so enumeration terminates
 /// and the printed output is finite.
 /// </summary>
 public static class SequenceGenerators

@@ -60,7 +60,7 @@ public partial class XmlDocFormatAnalyzerTests
 
     /// <summary>
     /// Verifies that a short single-line <c>&lt;summary&gt;</c> on a field is accepted as-is and does not
-    /// trigger BODU1001 — a field summary is canonical on one line when it fits the width.
+    /// trigger BODU1001 - a field summary is canonical on one line when it fits the width.
     /// </summary>
     [TestMethod]
     public async Task Analyze_WhenFieldSummaryIsShortSingleLine_ShouldNotReport()

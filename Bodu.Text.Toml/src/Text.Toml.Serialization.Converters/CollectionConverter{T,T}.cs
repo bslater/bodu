@@ -25,7 +25,7 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// <see cref="System.Collections.Concurrent.ConcurrentQueue{T}" /> that is dequeue (first-in) order, so a queue
 /// round-trips unchanged. For <see cref="Stack{T}" /> and
 /// <see cref="System.Collections.Concurrent.ConcurrentStack{T}" /> enumeration yields pop order (most recently pushed
-/// first), while reading pushes the document's elements in document order — so a serialize/deserialize round-trip
+/// first), while reading pushes the document's elements in document order - so a serialize/deserialize round-trip
 /// reverses a stack. <see cref="System.Collections.Concurrent.ConcurrentBag{T}" /> makes no enumeration-order guarantee
 /// in either direction.
 /// </para>

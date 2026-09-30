@@ -12,7 +12,7 @@ public partial class MultisetTests
 {
 
     // --------------------------------------------------------
-    // ICollection.CopyTo — multidimensional array
+    // ICollection.CopyTo - multidimensional array
     // --------------------------------------------------------
 
     /// <summary>
@@ -30,7 +30,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // ICollection.CopyTo — null array
+    // ICollection.CopyTo - null array
     // --------------------------------------------------------
 
     /// <summary>
@@ -49,7 +49,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // ICollection.CopyTo — array too small
+    // ICollection.CopyTo - array too small
     // --------------------------------------------------------
 
     /// <summary>
@@ -71,7 +71,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // ICollection.CopyTo — incompatible element type
+    // ICollection.CopyTo - incompatible element type
     // --------------------------------------------------------
 
     /// <summary>
@@ -92,7 +92,7 @@ public partial class MultisetTests
 
     /// <summary>
     /// Verifies that when a later element is incompatible with the destination array's element type, the non-generic
-    /// <c>ICollection.CopyTo</c> throws <see cref="ArgumentException"/> without partially populating the destination —
+    /// <c>ICollection.CopyTo</c> throws <see cref="ArgumentException"/> without partially populating the destination -
     /// the incompatible element type is validated before any element is written.
     /// </summary>
     [TestMethod]
@@ -115,7 +115,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // ICollection.CopyTo — negative index
+    // ICollection.CopyTo - negative index
     // --------------------------------------------------------
 
     /// <summary>
@@ -133,7 +133,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // ICollection.CopyTo — empty multiset
+    // ICollection.CopyTo - empty multiset
     // --------------------------------------------------------
 
     /// <summary>
@@ -151,7 +151,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // ICollection.CopyTo — with offset
+    // ICollection.CopyTo - with offset
     // --------------------------------------------------------
 
     /// <summary>

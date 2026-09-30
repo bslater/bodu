@@ -40,12 +40,12 @@ public static partial class HashAlgorithmExtensions
     /// data has been supplied.
     /// </para>
     /// <para>
-    /// Multiple <see cref="AppendDataAsync" /> calls — and calls interleaved with the synchronous
-    /// <see cref="AppendData(HashAlgorithm, System.ReadOnlySpan{byte})" /> — accumulate correctly because all of them
+    /// Multiple <see cref="AppendDataAsync" /> calls - and calls interleaved with the synchronous
+    /// <see cref="AppendData(HashAlgorithm, System.ReadOnlySpan{byte})" /> - accumulate correctly because all of them
     /// delegate to <see cref="HashAlgorithm.TransformBlock" />.
     /// </para>
     /// <para>
-    /// The read buffer is rented from <see cref="ArrayPool{T}.Shared" /> and returned — with its contents zeroed — in
+    /// The read buffer is rented from <see cref="ArrayPool{T}.Shared" /> and returned - with its contents zeroed - in
     /// all exit paths, including cancellation and exception propagation.
     /// </para>
     /// </remarks>

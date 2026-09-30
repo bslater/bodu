@@ -18,7 +18,7 @@ public static partial class StringExtensions
     /// ; otherwise the original <paramref name="value" />.
     /// </returns>
     /// <remarks>
-    /// Useful for collapsing the "missing" and "blank" cases into a single <see langword="null" /> sentinel — for
+    /// Useful for collapsing the "missing" and "blank" cases into a single <see langword="null" /> sentinel - for
     /// example, <c>request.Title.NullIfEmpty() ?? defaultTitle</c>.
     /// </remarks>
     public static string? NullIfEmpty(this string? value) =>

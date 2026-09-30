@@ -7,7 +7,7 @@
 namespace Bodu.IO.Compound;
 
 /// <summary>
-/// The exception thrown when a compound file cannot be authored or serialized — for example, when a storage contains a
+/// The exception thrown when a compound file cannot be authored or serialized - for example, when a storage contains a
 /// duplicate or invalid child name, the directory nesting is too deep, or a value cannot be represented in the
 /// container.
 /// </summary>

@@ -69,8 +69,8 @@ public partial class BigDecimalTests
     }
 
     /// <summary>
-    /// Verifies that values of the same sign and the same integer magnitude — where only an exact digit-level
-    /// comparison can decide — order correctly across differing scales. These rows exercise the full-rescale fallback
+    /// Verifies that values of the same sign and the same integer magnitude - where only an exact digit-level
+    /// comparison can decide - order correctly across differing scales. These rows exercise the full-rescale fallback
     /// of <see cref="BigDecimal.CompareTo(BigDecimal)" />.
     /// </summary>
     [TestMethod]

@@ -32,7 +32,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     /// <summary>
     /// Verifies that switching <see cref="Skein{T}.Key" /> from a non-empty value back to an empty
     /// array causes the next <see cref="HashAlgorithm.ComputeHash(byte[])" /> call to produce the
-    /// canonical plain-hash digest — the empty array is the documented sentinel for the unkeyed
+    /// canonical plain-hash digest - the empty array is the documented sentinel for the unkeyed
     /// profile and must not leave the algorithm in a stale Skein-MAC state.
     /// </summary>
     [TestMethod]

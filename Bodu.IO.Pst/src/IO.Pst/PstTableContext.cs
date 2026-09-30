@@ -11,7 +11,7 @@ namespace Bodu.IO.Pst;
 
 /// <summary>
 /// Represents a node's table context (<c>TC</c>): the LTP table of typed columns over identifier-keyed rows, with
-/// forward-only row enumeration and keyed row lookup — format-agnostic, with no MAPI semantics.
+/// forward-only row enumeration and keyed row lookup - format-agnostic, with no MAPI semantics.
 /// </summary>
 /// <remarks>
 /// Row enumeration streams the row matrix one block at a time and never materializes the whole table; each yielded row
@@ -115,8 +115,8 @@ public sealed class PstTableContext
     /// The row matrix does not resolve or holds fewer rows than the row index records.
     /// </exception>
     /// <remarks>
-    /// Hierarchy, contents, and attachment tables are usually consumed for their row identifiers alone — each names the
-    /// object node the row stands for — so this path reads the leading dword of each row in place and allocates nothing
+    /// Hierarchy, contents, and attachment tables are usually consumed for their row identifiers alone - each names the
+    /// object node the row stands for - so this path reads the leading dword of each row in place and allocates nothing
     /// per row.
     /// </remarks>
     public IEnumerable<uint> EnumerateRowIds()

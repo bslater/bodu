@@ -1,7 +1,7 @@
 # Bodu.Security.Cryptography.Samples.CustomHash
 
-Extending the hash catalogue: a complete consumer-authored digest — `AdditiveDigest`, a small 128-bit
-Merkle-Damgard block hash — built on the library's `BlockHashAlgorithm` base (the same base Tiger,
+Extending the hash catalogue: a complete consumer-authored digest - `AdditiveDigest`, a small 128-bit
+Merkle-Damgard block hash - built on the library's `BlockHashAlgorithm` base (the same base Tiger,
 Whirlpool, and the SHA-2 family derive from), plus a companion test project that derives the shared
 `BlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>` contract to prove the implementation. Offline and
 deterministic; no data files.
@@ -13,32 +13,32 @@ dotnet test samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.Cus
 
 > This is a teaching construction, not a cryptographic primitive: it is deterministic and well-defined
 > but makes no collision-resistance claims. Its value is showing that a consumer type slots into the exact
-> same `HashAlgorithm` surface — and the same shared test contract — as the shipped algorithms.
+> same `HashAlgorithm` surface - and the same shared test contract - as the shipped algorithms.
 
-## The implementation — `AdditiveDigest`
+## The implementation - `AdditiveDigest`
 
 `AdditiveDigest : BlockHashAlgorithm` consumes input in 16-byte blocks, mixing each into four 32-bit
 chaining words with an add / rotate / multiply / cross-diffuse round, and finalizes by appending a `0x80`
 pad byte plus the little-endian message bit-length before a last avalanche. The whole contract is four
-members — `AlgorithmName`, `ProcessBlock`, `PadBlock`, `ProcessFinalBlock` — plus `Initialize` to reset
+members - `AlgorithmName`, `ProcessBlock`, `PadBlock`, `ProcessFinalBlock` - plus `Initialize` to reset
 the chaining state and a public parameterless constructor. The base class drives residual buffering, block
 alignment, and final-block padding orchestration, so the derived type never re-implements the streaming
 plumbing that `HashAlgorithm` consumers rely on.
 
-Every scenario opens by printing a **What / Why / Expect** banner — the same three things this README
-records per scenario — so a transcript stands on its own and a reader can tell a correct run from a broken
+Every scenario opens by printing a **What / Why / Expect** banner - the same three things this README
+records per scenario - so a transcript stands on its own and a reader can tell a correct run from a broken
 one without opening the source. The `text` blocks below show the value lines only; run the sample to see
 the banner above each of them.
 
-## Scenario 1 — ImplementAndHash
+## Scenario 1 - ImplementAndHash
 
 **Intent.** Exercise the custom digest the way any consumer would: construct it and hash fixed inputs
 through the standard `HashAlgorithm.ComputeHash` surface, confirming a consumer-authored type is an
 ordinary hash with nothing special at the call site.
 
-**What it does.** Prints the algorithm name and hash size, then hashes four fixed inputs — the empty
+**What it does.** Prints the algorithm name and hash size, then hashes four fixed inputs - the empty
 input, `"abc"`, the quick-brown-fox pangram, and 32 repeated `0xAB` bytes (which spans multiple 16-byte
-blocks) — printing each digest as lowercase hex.
+blocks) - printing each digest as lowercase hex.
 
 **What to expect.**
 
@@ -59,7 +59,7 @@ initial chaining state, so even a zero-length message produces a fully mixed dig
 **APIs demonstrated.** Deriving `BlockHashAlgorithm` (the four abstract members plus `Initialize`), the
 inherited `HashAlgorithm.ComputeHash` / `HashSize` / `AlgorithmName` surface.
 
-## Scenario 2 — BesideTheBuiltIns
+## Scenario 2 - BesideTheBuiltIns
 
 **Intent.** Show the payoff of deriving the base class: the custom digest is a drop-in `HashAlgorithm`
 peer. A loop typed against the base class drives `AdditiveDigest` and a shipped `Tiger` identically, and
@@ -83,12 +83,12 @@ compares the streamed digest to the one-shot digest.
 
 The `Tiger/192` digest is the published `Tiger` test vector for the pangram, confirming the shipped hash
 is invoked correctly. The two `AdditiveDigest` lines agree because the base class buffers fragments into
-whole 16-byte blocks regardless of how input arrives — so streaming and one-shot always converge.
+whole 16-byte blocks regardless of how input arrives - so streaming and one-shot always converge.
 
 **APIs demonstrated.** `HashAlgorithm` polymorphism, the `AppendData(ReadOnlySpan<byte>)` streaming
 extension, `TransformFinalBlock` / `Hash`, running a shipped `Tiger` through the same surface.
 
-## The contract test — `Bodu.Security.Cryptography.Samples.CustomHash.Test`
+## The contract test - `Bodu.Security.Cryptography.Samples.CustomHash.Test`
 
 `AdditiveDigestTests` derives the library test suite's
 `BlockHashAlgorithmTests<AdditiveDigestTests, AdditiveDigest, AdditiveDigest.Variant>` (namespace
@@ -96,14 +96,14 @@ extension, `TransformFinalBlock` / `Hash`, running a shipped `Tiger` through the
 block size, boundary lengths, and five `MessageDigestKnownAnswer` rows over the canonical shared inputs),
 the `CreateAlgorithm` factory, and the dense incremental-input digest table (lengths 0 through 17, spanning
 the residual-buffer and 16-byte block boundaries). The inherited tests then verify the full block-buffered
-hashing contract — residual-buffer accumulation across transform calls, block-aligned vs. unaligned
+hashing contract - residual-buffer accumulation across transform calls, block-aligned vs. unaligned
 parity, padded-final-block correctness, streaming/async parity, `Initialize` reset semantics, disposal
-state, and property reflection — the same bar `Tiger`, `Whirlpool`, and `BLAKE2b` are held to. The digests
+state, and property reflection - the same bar `Tiger`, `Whirlpool`, and `BLAKE2b` are held to. The digests
 are self-computed (the algorithm is not a standardized primitive) and pin the output so any change surfaces
 as a failure.
 
 Result: **139 passed, 0 failed, 7 skipped** (the skipped cases are the base contract's inconclusive
-branches — for example the hash-size-constructor path, which `AdditiveDigest` intentionally omits). The
+branches - for example the hash-size-constructor path, which `AdditiveDigest` intentionally omits). The
 test project references `Bodu.Test`, the `Bodu.Security.Cryptography` source and `Bodu.Security.Cryptography.Test`
 projects (where the contract base and KAT records live, per the "colocate with the consumer" rule), and the
 sample, and runs in the default BVT tier.
@@ -123,5 +123,5 @@ Bodu.Security.Cryptography.Samples.CustomHash.Test/
 
 ## Related
 
-- `Bodu.Security.Cryptography.Samples.HashingMacAndKdf` — the shipped hash, MAC, XOF, KDF, and OTP catalogue
+- `Bodu.Security.Cryptography.Samples.HashingMacAndKdf` - the shipped hash, MAC, XOF, KDF, and OTP catalogue
   the custom digest joins.

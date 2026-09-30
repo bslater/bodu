@@ -70,8 +70,8 @@ public sealed class RateCacheBaseLockingTests
         Assert.IsTrue(cache.WriteEntered.Wait(TimeSpan.FromSeconds(30)));
 
         // A different pair's async store must not queue behind the held lock. Its write blocks on the same gate, so
-        // reaching WriteCount == 2 proves it entered concurrently. Task.Run keeps the call's synchronous prefix —
-        // which runs all the way into the gated write when nothing suspends — off the test thread.
+        // reaching WriteCount == 2 proves it entered concurrently. Task.Run keeps the call's synchronous prefix -
+        // which runs all the way into the gated write when nothing suspends - off the test thread.
         IRateCacheAsync seam = cache;
         Task<RateCacheWriteStatus> asyncStore = Task.Run(() => seam.StoreFetchedRangeAsync(
             other, new[] { new CachedRate(date, 1.1m, Now) }, date, date, Duration, Now, CancellationToken.None).AsTask());

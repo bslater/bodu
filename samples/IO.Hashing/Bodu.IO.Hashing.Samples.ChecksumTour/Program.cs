@@ -9,7 +9,7 @@ using Bodu.IO.Hashing.Samples.ChecksumTour.Scenarios;
 namespace Bodu.IO.Hashing.Samples.ChecksumTour;
 
 /// <summary>
-/// Entry point for the checksum-tour sample: the <c>Bodu.IO.Hashing</c> integrity surface — the
+/// Entry point for the checksum-tour sample: the <c>Bodu.IO.Hashing</c> integrity surface - the
 /// parametric CRC engine over its RevEng catalogue, the checksum families side by side, the
 /// streaming and resumable APIs, and the classic non-cryptographic hash functions. Everything
 /// runs offline against fixed inputs and the committed <c>Data/pangrams.txt</c>.

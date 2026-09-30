@@ -10,7 +10,7 @@ namespace Bodu.Formats.Outlook;
 /// Represents a violation of the Outlook personal-folders messaging conventions (MS-PST) while reading a mail store.
 /// </summary>
 /// <remarks>
-/// This exception reports messaging-level problems — a folder or message object that violates the format's structural
+/// This exception reports messaging-level problems - a folder or message object that violates the format's structural
 /// conventions, a table row that does not reference a valid node, a malformed name-to-id map. Container-level
 /// corruption (blocks, B-trees, heaps) propagates as the <c>Bodu.IO.Pst</c> <c>PstFileException</c> family instead.
 /// </remarks>

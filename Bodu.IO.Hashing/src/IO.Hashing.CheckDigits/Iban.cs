@@ -19,8 +19,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// MOD 97-10.
 /// </para>
 /// <para>
-/// The streaming surface accepts a body comprising <c>CC + BBAN</c> — that is, the IBAN with the check placeholder <i>
-/// omitted</i> — and produces the two check digits via <see cref="GetCurrentCheckDigits(Span{char})" />.
+/// The streaming surface accepts a body comprising <c>CC + BBAN</c> - that is, the IBAN with the check placeholder <i>
+/// omitted</i> - and produces the two check digits via <see cref="GetCurrentCheckDigits(Span{char})" />.
 /// <see cref="IsValid(ReadOnlySpan{char})" /> accepts the complete <c>CC + DD + BBAN</c> form; whitespace and other
 /// formatting characters are <b>not</b> tolerated, in keeping with ISO 13616 strict mode. Callers should normalize
 /// textual IBANs (for example, by removing spaces) before passing them in.
@@ -35,7 +35,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Single-call computation — body is the country code followed by the BBAN.
+/// // Single-call computation - body is the country code followed by the BBAN.
 /// string check = Iban.Compute("GBWEST12345698765432");   // "82"
 ///
 /// // Full-sequence validation against the complete IBAN.
@@ -89,7 +89,7 @@ public sealed class Iban
     /// Computes the IBAN check digits for the supplied country-code-plus-BBAN body without allocating a streaming
     /// instance.
     /// </summary>
-    /// <param name="body">The body characters — the complete IBAN minus its two-digit check sequence.</param>
+    /// <param name="body">The body characters - the complete IBAN minus its two-digit check sequence.</param>
     /// <returns>The check code as a two-character string of ASCII decimal digits.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="body" /> contains any character outside the alphanumeric uppercase alphabet.
@@ -106,12 +106,12 @@ public sealed class Iban
     /// 13616.
     /// </summary>
     /// <param name="iban">
-    /// The complete IBAN in canonical form — two-letter country code, two-digit check, then the BBAN — with no internal
+    /// The complete IBAN in canonical form - two-letter country code, two-digit check, then the BBAN - with no internal
     /// whitespace or formatting characters.
     /// </param>
     /// <returns>
     /// <see langword="true" /> if the IBAN is at least four characters long, alphanumeric, and its rearranged decimal
-    /// expansion has remainder <c>1</c> modulo 97; otherwise, <see langword="false" /> — including the case where
+    /// expansion has remainder <c>1</c> modulo 97; otherwise, <see langword="false" /> - including the case where
     /// <paramref name="iban" /> is empty.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> iban)
@@ -121,7 +121,7 @@ public sealed class Iban
         // Positions 2 and 3 must be ASCII decimal digits (the check code).
         if ((uint)(iban[2] - '0') > 9u || (uint)(iban[3] - '0') > 9u) return false;
 
-        // Rearrangement: BBAN + CC + DD — stream through MOD 97-10.
+        // Rearrangement: BBAN + CC + DD - stream through MOD 97-10.
         int r = 0;
         for (int i = 4; i < iban.Length; i++)
         {
@@ -195,7 +195,7 @@ public sealed class Iban
 
     /// <summary>
     /// Folds a single character into the running ISO 7064 mod-97 remainder, contributing a digit as its value and a
-    /// letter <c>A</c>–<c>Z</c> as the two-digit value <c>10</c>–<c>35</c>.
+    /// letter <c>A</c>-<c>Z</c> as the two-digit value <c>10</c>-<c>35</c>.
     /// </summary>
     /// <param name="r">The current mod-97 remainder.</param>
     /// <param name="ch">The character to fold in.</param>
@@ -205,7 +205,7 @@ public sealed class Iban
 
     /// <summary>
     /// Attempts to fold a single character into the running ISO 7064 mod-97 remainder, accepting digits and the letters
-    /// <c>A</c>–<c>Z</c>.
+    /// <c>A</c>-<c>Z</c>.
     /// </summary>
     /// <param name="r">The current mod-97 remainder, updated in place when the character is accepted.</param>
     /// <param name="ch">The character to fold in.</param>

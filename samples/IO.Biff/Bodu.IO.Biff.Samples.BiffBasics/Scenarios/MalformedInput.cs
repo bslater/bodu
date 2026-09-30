@@ -88,7 +88,7 @@ public static class MalformedInput
         }
         catch (BiffFormatException ex)
         {
-            Console.WriteLine($"  {label,-26}: format error at offset {ex.Offset?.ToString() ?? "n/a"} — {ex.Message}");
+            Console.WriteLine($"  {label,-26}: format error at offset {ex.Offset?.ToString() ?? "n/a"} - {ex.Message}");
         }
     }
 

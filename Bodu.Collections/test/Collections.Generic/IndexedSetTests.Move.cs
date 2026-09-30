@@ -69,7 +69,7 @@ public partial class IndexedSetTests
         });
     }
     // --------------------------------------------------------
-    // Move — argument validation
+    // Move - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -90,7 +90,7 @@ public partial class IndexedSetTests
     }
 
     // --------------------------------------------------------
-    // Move — behaviour
+    // Move - behaviour
     // --------------------------------------------------------
 
     /// <summary>

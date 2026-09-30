@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 
 public partial class HashAlgorithmExtensionsTests
 {
-    // ─── AppendDataAsync — argument validation ────────────────────────────────────────────────
+    // ─── AppendDataAsync - argument validation ────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithmExtensions.AppendDataAsync" /> throws
@@ -71,7 +71,7 @@ public partial class HashAlgorithmExtensionsTests
             await algorithm.AppendDataAsync(stream, bufferSize: -1));
     }
 
-    // ─── AppendDataAsync — correctness ────────────────────────────────────────────────────────
+    // ─── AppendDataAsync - correctness ────────────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithmExtensions.AppendDataAsync" /> with an empty stream
@@ -171,7 +171,7 @@ public partial class HashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that the hash produced after <see cref="HashAlgorithmExtensions.AppendDataAsync" />
-    /// with a small <paramref name="bufferSize" /> — forcing multiple read iterations — matches
+    /// with a small <paramref name="bufferSize" /> - forcing multiple read iterations - matches
     /// the result from a single-read operation on the same data.
     /// </summary>
     [TestMethod]
@@ -191,7 +191,7 @@ public partial class HashAlgorithmExtensionsTests
             "AppendDataAsync must produce the correct hash regardless of buffer size.");
     }
 
-    // ─── AppendDataAsync — stream variants ───────────────────────────────────────────────────
+    // ─── AppendDataAsync - stream variants ───────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithmExtensions.AppendDataAsync" /> with a
@@ -235,7 +235,7 @@ public partial class HashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithmExtensions.AppendDataAsync" /> with a
-    /// <see cref="ThrottledIncrementingByteStream" /> — which delays each read — still
+    /// <see cref="ThrottledIncrementingByteStream" /> - which delays each read - still
     /// accumulates all bytes correctly.
     /// </summary>
     [TestMethod]
@@ -272,7 +272,7 @@ public partial class HashAlgorithmExtensionsTests
             "AppendDataAsync must propagate IOException from a faulting source stream.");
     }
 
-    // ─── AppendDataAsync — cancellation ──────────────────────────────────────────────────────
+    // ─── AppendDataAsync - cancellation ──────────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithmExtensions.AppendDataAsync" /> throws

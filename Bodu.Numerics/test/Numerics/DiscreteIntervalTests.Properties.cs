@@ -79,8 +79,8 @@ public partial class DiscreteIntervalTests
 
     /// <summary>
     /// Verifies that reading <see cref="DiscreteInterval{T}.Count" /> throws <see cref="OverflowException" /> when the
-    /// integer count does not fit in <typeparamref name="T" /> — the full-domain interval has 2^N members, one more
-    /// than the type can represent — instead of silently wrapping to zero or a negative value.
+    /// integer count does not fit in <typeparamref name="T" /> - the full-domain interval has 2^N members, one more
+    /// than the type can represent - instead of silently wrapping to zero or a negative value.
     /// </summary>
     [TestMethod]
     public void Count_WhenCountExceedsTypeRange_ShouldThrowOverflowException()
@@ -103,7 +103,7 @@ public partial class DiscreteIntervalTests
 
     /// <summary>
     /// Verifies that <see cref="DiscreteInterval{T}.Count" /> still returns the exact count for the widest
-    /// representable window — one short of the full domain — and for arbitrary-precision integers, where the count can
+    /// representable window - one short of the full domain - and for arbitrary-precision integers, where the count can
     /// never overflow.
     /// </summary>
     [TestMethod]

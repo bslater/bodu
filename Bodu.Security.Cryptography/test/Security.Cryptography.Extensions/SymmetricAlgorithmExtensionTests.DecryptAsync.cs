@@ -15,8 +15,8 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// stream-shape coverage, cancellation, and error propagation.
 /// </summary>
 /// <remarks>
-/// <c>DecryptAsync</c> propagates all exceptions — <see cref="IOException" />,
-/// <see cref="OperationCanceledException" />, and null-argument errors — to the caller rather
+/// <c>DecryptAsync</c> propagates all exceptions - <see cref="IOException" />,
+/// <see cref="OperationCanceledException" />, and null-argument errors - to the caller rather
 /// than swallowing them.
 /// </remarks>
 public partial class SymmetricAlgorithmExtensionTests
@@ -55,7 +55,7 @@ public partial class SymmetricAlgorithmExtensionTests
     /// </summary>
     /// <remarks>
     /// The null-output check must fire before any decryption is attempted, so the input
-    /// content is irrelevant — a single zeroed block is sufficient.
+    /// content is irrelevant - a single zeroed block is sufficient.
     /// </remarks>
     [TestMethod]
     public async Task DecryptAsync_WhenOutputIsNull_ShouldThrowExactly()
@@ -105,7 +105,7 @@ public partial class SymmetricAlgorithmExtensionTests
         }
     }
 
-    // ─── Correctness — round-trip ────────────────────────────────────────────────────────────
+    // ─── Correctness - round-trip ────────────────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that the target stream remains open and writable after a successful
@@ -257,7 +257,7 @@ public partial class SymmetricAlgorithmExtensionTests
 
         byte[] cipherText = algorithm.Encrypt(CryptoTestUtilities.ByteSequence128);
 
-        // Fault after 32 bytes — mid-way through the ciphertext stream.
+        // Fault after 32 bytes - mid-way through the ciphertext stream.
         using var input = new FaultingStream(cipherText, throwAfterBytes: 32);
         using var output = new MemoryStream();
 
@@ -315,7 +315,7 @@ public partial class SymmetricAlgorithmExtensionTests
         }
         catch (OperationCanceledException)
         {
-            // Expected — accept either the base type or TaskCanceledException.
+            // Expected - accept either the base type or TaskCanceledException.
         }
     }
 }

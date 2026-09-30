@@ -34,7 +34,7 @@ public partial class PstTableContextTests
     }
 
     /// <summary>
-    /// Verifies that a table-context heap with no client root reports the table-context error category — it is the
+    /// Verifies that a table-context heap with no client root reports the table-context error category - it is the
     /// table that is malformed, not the heap addressing beneath it.
     /// </summary>
     [TestMethod]

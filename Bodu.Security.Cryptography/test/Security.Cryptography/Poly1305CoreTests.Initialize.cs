@@ -32,8 +32,8 @@ public sealed partial class Poly1305CoreTests
     }
 
     /// <summary>
-    /// Verifies that initializing a core part way through a message discards everything it held — key, accumulator and
-    /// partial block — so the next tag is the one a fresh core computes under the new key.
+    /// Verifies that initializing a core part way through a message discards everything it held - key, accumulator and
+    /// partial block - so the next tag is the one a fresh core computes under the new key.
     /// </summary>
     [TestMethod]
     public void Initialize_WhenCoreHoldsState_ShouldStartAFreshAuthentication()

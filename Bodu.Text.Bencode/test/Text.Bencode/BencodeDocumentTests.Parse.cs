@@ -11,8 +11,8 @@ namespace Bodu.Text.Bencode;
 
 /// <summary>
 /// Verifies that <see cref="BencodeDocument.Parse(byte[])" /> and its overloads accept exactly the canonical Bencode
-/// grammar — rejecting malformed input, trailing bytes, and over-deep nesting with
-/// <see cref="BencodeFormatException" /> — and that the parsed document is independent of the source buffer.
+/// grammar - rejecting malformed input, trailing bytes, and over-deep nesting with
+/// <see cref="BencodeFormatException" /> - and that the parsed document is independent of the source buffer.
 /// </summary>
 public partial class BencodeDocumentTests
 {
@@ -73,7 +73,7 @@ public partial class BencodeDocumentTests
     }
 
     /// <summary>
-    /// Verifies that canonical edge-case documents — empty containers, integer extremes, and an empty byte string —
+    /// Verifies that canonical edge-case documents - empty containers, integer extremes, and an empty byte string -
     /// parse into a document whose root reports the expected kind.
     /// </summary>
     /// <param name="testName">The human-readable scenario label.</param>

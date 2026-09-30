@@ -12,7 +12,7 @@ namespace Bodu.Text.Toml.Reader;
 /// <summary>
 /// Provides a forward-only, source-order reader for UTF-8 TOML bytes: a <see langword="ref struct" /> that holds the
 /// input span and scans it incrementally. Each <see cref="Read" /> advances to the next lexical token in document order
-/// — for example <c>[server.tls]</c> surfaces as <see cref="TomlTokenType.TableHeader" /> followed by a
+/// - for example <c>[server.tls]</c> surfaces as <see cref="TomlTokenType.TableHeader" /> followed by a
 /// <see cref="TomlTokenType.Key" /> per dotted segment, and <c>ports = [1, 2]</c> as a key, then
 /// <see cref="TomlTokenType.StartArray" />, two integers, and <see cref="TomlTokenType.EndArray" />.
 /// </summary>
@@ -20,21 +20,21 @@ namespace Bodu.Text.Toml.Reader;
 /// <para>
 /// The reader validates lexical well-formedness only: UTF-8 validity, string termination and escapes, number and
 /// date-time grammar, newline discipline, control characters, the bracket nesting bound, and the grammar features gated
-/// by <see cref="TomlSpecVersion" />. It enforces no structural semantics — duplicate keys, table redefinition,
+/// by <see cref="TomlSpecVersion" />. It enforces no structural semantics - duplicate keys, table redefinition,
 /// dotted-key rules, arrays of tables, and inline-table closedness are whole-document rules applied by the parsing
 /// entry points (<c>TomlSerializer</c>, <c>TomlNode.Parse</c>, <c>TomlDocument.Parse</c>, and the binding cursor
 /// <see cref="TomlDocumentReader" />). A document can therefore read cleanly here and still be rejected by those
 /// surfaces, and lexical errors are raised from <see cref="Read" /> as scanning reaches them, not from the constructor.
 /// </para>
 /// <para>
-/// Scalar values are validated and decoded as part of <see cref="Read" /> — a malformed number or date-time raises
-/// <see cref="TomlFormatException" /> from <see cref="Read" /> even when the consumer never asks for the value — and
+/// Scalar values are validated and decoded as part of <see cref="Read" /> - a malformed number or date-time raises
+/// <see cref="TomlFormatException" /> from <see cref="Read" /> even when the consumer never asks for the value - and
 /// the typed accessors return the decoded result. String content is the exception: <see cref="Read" /> validates it in
 /// place, and <see cref="GetString" /> materializes the string on demand from <see cref="ValueSpan" />.
 /// </para>
 /// <para>
-/// All positions — <see cref="TokenStartIndex" />, <see cref="ColumnNumber" />, and the positions carried by thrown
-/// <see cref="TomlFormatException" /> instances — are byte-true offsets into the UTF-8 source.
+/// All positions - <see cref="TokenStartIndex" />, <see cref="ColumnNumber" />, and the positions carried by thrown
+/// <see cref="TomlFormatException" /> instances - are byte-true offsets into the UTF-8 source.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -287,7 +287,7 @@ public ref partial struct Utf8TomlReader
     /// </value>
     /// <remarks>
     /// The depth counts only lexical bracket nesting. <c>[table]</c> and <c>[[array-of-tables]]</c> headers describe
-    /// structural — not lexical — nesting, so they do not contribute; the normalized
+    /// structural - not lexical - nesting, so they do not contribute; the normalized
     /// <see cref="TomlDocumentReader.CurrentDepth" /> reflects them instead.
     /// </remarks>
     public readonly int CurrentDepth
@@ -505,8 +505,8 @@ public ref partial struct Utf8TomlReader
     /// Advances the reader to the next token.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when a token was read; <see langword="false" /> at the end of the document, or — when
-    /// <see cref="IsFinalBlock" /> is <see langword="false" /> — when the buffer ends mid-token and the caller must
+    /// <see langword="true" /> when a token was read; <see langword="false" /> at the end of the document, or - when
+    /// <see cref="IsFinalBlock" /> is <see langword="false" /> - when the buffer ends mid-token and the caller must
     /// supply more data before retrying.
     /// </returns>
     /// <exception cref="TomlFormatException">Thrown when the source is not lexically valid TOML.</exception>
@@ -535,7 +535,7 @@ public ref partial struct Utf8TomlReader
     /// When the reader is positioned on a <see cref="TomlTokenType.Key" />, it advances over the remaining key segments
     /// onto the value and then skips it, finishing on the value's last token. When it is positioned on a
     /// <see cref="TomlTokenType.StartArray" /> or <see cref="TomlTokenType.StartInlineTable" />, it advances to the
-    /// matching end token, reading — and lexically validating — everything in between. On any other token the call has
+    /// matching end token, reading - and lexically validating - everything in between. On any other token the call has
     /// no effect.
     /// </remarks>
     /// <exception cref="TomlFormatException">Thrown when the skipped source is not lexically valid TOML.</exception>
@@ -1236,7 +1236,7 @@ public ref partial struct Utf8TomlReader
     /// and rejecting disallowed control characters.
     /// </summary>
     /// <remarks>
-    /// Both TOML v1.0.0 and v1.1.0 prohibit control characters other than tab (U+0000–U+0008, U+000A–U+001F, U+007F)
+    /// Both TOML v1.0.0 and v1.1.0 prohibit control characters other than tab (U+0000-U+0008, U+000A-U+001F, U+007F)
     /// inside a comment, so the rule is applied unconditionally.
     /// </remarks>
     /// <returns>

@@ -30,10 +30,10 @@ namespace Bodu.Text.Configuration;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Default mapping — split on '.' and ':', case-insensitive comparison.
+/// // Default mapping - split on '.' and ':', case-insensitive comparison.
 /// var k1 = new ConfigurationKey("Logging.Level.Default");
 /// var k2 = new ConfigurationKey("logging:level:default");
-/// Console.WriteLine(k1 == k2);              // True — same segment sequence under the default comparer
+/// Console.WriteLine(k1 == k2);              // True - same segment sequence under the default comparer
 /// Console.WriteLine(k1.Path);               // "Logging:Level:Default"
 /// Console.WriteLine(string.Join(",", k1.Segments)); // "Logging,Level,Default"
 ///

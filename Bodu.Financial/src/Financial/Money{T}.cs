@@ -19,7 +19,7 @@ namespace Bodu.Financial;
 /// </typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="Money{TCurrency}" /> represents a <b>settlement-grade</b> monetary value — an amount already rounded to
+/// <see cref="Money{TCurrency}" /> represents a <b>settlement-grade</b> monetary value - an amount already rounded to
 /// the currency's minor-unit precision and ready to be posted to a ledger, displayed to a user, or serialized to
 /// storage. It is deliberately not a calculation type: every operation that produces a <see cref="Money{TCurrency}" />
 /// returns a value that respects <c>TCurrency.MinorUnits</c>, so chained scalar operations round at each step rather
@@ -38,7 +38,7 @@ namespace Bodu.Financial;
 /// </para>
 /// <para>
 /// Scalar multiplication and division round their result to <c>TCurrency.MinorUnits</c>. For chains where rounding at
-/// each step would accumulate error — compound interest, unit-rate products, percentages — defer rounding: use
+/// each step would accumulate error - compound interest, unit-rate products, percentages - defer rounding: use
 /// <see cref="CalculatedMoney" /> for high-precision <see cref="decimal" /> calculation rounded once at settlement, or,
 /// when the calculation must be mathematically exact, perform it in <see cref="Bodu.Numerics.Fraction{T}" /> via
 /// <see cref="ToFraction" /> and snap to <see cref="Money{TCurrency}" /> only at the final settlement boundary with
@@ -93,7 +93,7 @@ public readonly partial struct Money<TCurrency>
     /// <param name="amount">The monetary amount in the major unit of <typeparamref name="TCurrency" />.</param>
     /// <remarks>
     /// <para>
-    /// The supplied amount is rounded to the currency's minor-unit precision using banker's rounding — midpoint values
+    /// The supplied amount is rounded to the currency's minor-unit precision using banker's rounding - midpoint values
     /// round toward the nearer even final digit, in both directions. For example, <c>new Money&lt;USD&gt;(1.225m)</c>
     /// is stored as <c>1.22m</c> (down toward the even hundredth <c>2</c>) while <c>new Money&lt;USD&gt;(1.235m)</c> is
     /// stored as <c>1.24m</c> (up toward the even hundredth <c>4</c>). Non-midpoint values round in the natural
@@ -104,7 +104,7 @@ public readonly partial struct Money<TCurrency>
     /// </para>
     /// </remarks>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when <typeparamref name="TCurrency" /> reports invalid metadata — an <see cref="ICurrency.IsoCode" />
+    /// Thrown when <typeparamref name="TCurrency" /> reports invalid metadata - an <see cref="ICurrency.IsoCode" />
     /// that is not exactly three uppercase ASCII letters, an <see cref="ICurrency.MinorUnits" /> outside the inclusive
     /// range <c>[0, 28]</c>, or a <see cref="ICurrency.CashRoundingIncrement" /> that is negative or finer than the
     /// currency's minor-unit precision.

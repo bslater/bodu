@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ================================================================================================================
-  Peru (PE) — notable-date resource pack
+  Peru (PE) - notable-date resource pack
   ================================================================================================================
 
   National rules are scoped to territory "PE". Peru's public holidays are national, so there are no
@@ -43,43 +43,43 @@
 
   <NotableDates>
 
-    <!-- Saints Peter and Paul (San Pedro y San Pablo) — 29 June. National holiday. Strategy: Fixed day-of-month. -->
+    <!-- Saints Peter and Paul (San Pedro y San Pablo) - 29 June. National holiday. Strategy: Fixed day-of-month. -->
     <NotableDate id="saints-peter-and-paul" displayName="Saints Peter and Paul" category="Religious" defaultNonWorkingDay="true">
       <Rules><Rule id="pe"><Applicability><Territory code="PE" /></Applicability>
         <Strategy><Fixed month="June" day="29" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Independence Day (Fiestas Patrias) — 28 July, marking the 1821 declaration of independence. Strategy: Fixed day-of-month. -->
+    <!-- Independence Day (Fiestas Patrias) - 28 July, marking the 1821 declaration of independence. Strategy: Fixed day-of-month. -->
     <NotableDate id="independence-day-pe" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="pe"><Applicability><Territory code="PE" /></Applicability>
         <Strategy><Fixed month="July" day="28" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Fiestas Patrias (second day) — 29 July, the national-holiday companion to Independence Day. Strategy: Fixed day-of-month. -->
+    <!-- Fiestas Patrias (second day) - 29 July, the national-holiday companion to Independence Day. Strategy: Fixed day-of-month. -->
     <NotableDate id="fiestas-patrias-day-two" displayName="Fiestas Patrias (Second Day)" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="pe"><Applicability><Territory code="PE" /></Applicability>
         <Strategy><Fixed month="July" day="29" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Battle of Junín (Batalla de Junín) — 6 August, a national holiday added in 2024 for the battle's bicentenary. Strategy: Fixed day-of-month. -->
+    <!-- Battle of Junín (Batalla de Junín) - 6 August, a national holiday added in 2024 for the battle's bicentenary. Strategy: Fixed day-of-month. -->
     <NotableDate id="battle-of-junin" displayName="Battle of Junín" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="pe"><Applicability fromYear="2024"><Territory code="PE" /></Applicability>
         <Strategy><Fixed month="August" day="6" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Saint Rose of Lima (Santa Rosa de Lima) — 30 August; the feast of the patroness of Peru and the Americas. Strategy: Fixed day-of-month. -->
+    <!-- Saint Rose of Lima (Santa Rosa de Lima) - 30 August; the feast of the patroness of Peru and the Americas. Strategy: Fixed day-of-month. -->
     <NotableDate id="santa-rosa-de-lima" displayName="Saint Rose of Lima" category="Religious" defaultNonWorkingDay="true">
       <Rules><Rule id="pe"><Applicability><Territory code="PE" /></Applicability>
         <Strategy><Fixed month="August" day="30" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Battle of Angamos (Combate de Angamos) — 8 October, commemorating the 1879 naval battle. Strategy: Fixed day-of-month. -->
+    <!-- Battle of Angamos (Combate de Angamos) - 8 October, commemorating the 1879 naval battle. Strategy: Fixed day-of-month. -->
     <NotableDate id="battle-of-angamos" displayName="Battle of Angamos" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="pe"><Applicability><Territory code="PE" /></Applicability>
         <Strategy><Fixed month="October" day="8" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Battle of Ayacucho (Batalla de Ayacucho) — 9 December, a national holiday added in 2022 marking the 1824 battle that sealed independence. Strategy: Fixed day-of-month. -->
+    <!-- Battle of Ayacucho (Batalla de Ayacucho) - 9 December, a national holiday added in 2022 marking the 1824 battle that sealed independence. Strategy: Fixed day-of-month. -->
     <NotableDate id="battle-of-ayacucho" displayName="Battle of Ayacucho" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="pe"><Applicability fromYear="2022"><Territory code="PE" /></Applicability>
         <Strategy><Fixed month="December" day="9" /></Strategy></Rule></Rules>

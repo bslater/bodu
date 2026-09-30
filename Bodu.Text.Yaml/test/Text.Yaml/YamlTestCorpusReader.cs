@@ -7,8 +7,8 @@
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Reads the <c>yaml/yaml-test-suite</c> corpus — mirrored into the repository as the <c>yaml-test-suite</c> git
-/// submodule — by walking its directory structure and classifying each case against the Bodu YAML Core Tree Profile in
+/// Reads the <c>yaml/yaml-test-suite</c> corpus - mirrored into the repository as the <c>yaml-test-suite</c> git
+/// submodule - by walking its directory structure and classifying each case against the Bodu YAML Core Tree Profile in
 /// code, producing a <see cref="YamlTestVector" /> the conformance run can execute.
 /// </summary>
 /// <remarks>
@@ -18,7 +18,7 @@ namespace Bodu.Text.Yaml;
 /// <c>git submodule update --init</c> to populate it, and the project's <c>None</c> glob copies it to the test output.
 /// </para>
 /// <para>
-/// Classification is derived from the case's own files — a case carrying an <c>error</c> file is one the suite expects
+/// Classification is derived from the case's own files - a case carrying an <c>error</c> file is one the suite expects
 /// to fail (<c>SupportedFail</c>); a case carrying an <c>in.json</c> expectation is supported-valid
 /// (<c>SupportedPass</c>). The only cases that cannot be derived from structure are the valid upstream cases the Bodu
 /// profile deliberately rejects (<c>UnsupportedFeatureRejected</c>) or parses without a value comparison

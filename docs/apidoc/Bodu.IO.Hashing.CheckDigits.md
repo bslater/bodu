@@ -6,19 +6,19 @@ uid: Bodu.IO.Hashing.CheckDigits
 
 ## Purpose
 
-**Bodu.IO.Hashing.CheckDigits** ships the catalogue of single-character and multi-character check-digit algorithms — Luhn, Damm, Verhoeff, plus the standard catalogues used by financial, retail, securities, and publishing identifiers (IBAN, LEI, EAN, GTIN, UPC, ISBN, ISIN, SEDOL, CUSIP, ABA routing, …). Every algorithm derives from the root <xref:Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm> through one of its three abstract bases — <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm> (decimal payload, single check digit), <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm> (alphanumeric payload, single check character), or <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm> (fixed-length multi-character check).
+**Bodu.IO.Hashing.CheckDigits** ships the catalogue of single-character and multi-character check-digit algorithms - Luhn, Damm, Verhoeff, plus the standard catalogues used by financial, retail, securities, and publishing identifiers (IBAN, LEI, EAN, GTIN, UPC, ISBN, ISIN, SEDOL, CUSIP, ABA routing, …). Every algorithm derives from the root <xref:Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm> through one of its three abstract bases - <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm> (decimal payload, single check digit), <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm> (alphanumeric payload, single check character), or <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm> (fixed-length multi-character check).
 
 ## Key types
 
-**Generic algorithms** — applicable to any identifier shape:
+**Generic algorithms** - applicable to any identifier shape:
 
 - <xref:Bodu.IO.Hashing.CheckDigits.Luhn>, <xref:Bodu.IO.Hashing.CheckDigits.Damm>, <xref:Bodu.IO.Hashing.CheckDigits.Verhoeff>, <xref:Bodu.IO.Hashing.CheckDigits.Gumm>
 
 **Financial / banking identifiers:**
 
-- <xref:Bodu.IO.Hashing.CheckDigits.AbaRoutingNumber> — ABA routing number (US).
-- <xref:Bodu.IO.Hashing.CheckDigits.Iban> — IBAN MOD-97.
-- <xref:Bodu.IO.Hashing.CheckDigits.Lei> — Legal Entity Identifier (ISO 17442).
+- <xref:Bodu.IO.Hashing.CheckDigits.AbaRoutingNumber> - ABA routing number (US).
+- <xref:Bodu.IO.Hashing.CheckDigits.Iban> - IBAN MOD-97.
+- <xref:Bodu.IO.Hashing.CheckDigits.Lei> - Legal Entity Identifier (ISO 17442).
 
 **Retail / GS1:**
 

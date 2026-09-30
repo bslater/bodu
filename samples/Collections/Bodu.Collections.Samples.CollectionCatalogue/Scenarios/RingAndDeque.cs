@@ -15,7 +15,7 @@ namespace Bodu.Collections.Samples.CollectionCatalogue.Scenarios;
 /// </summary>
 /// <remarks>
 /// Both are fixed-capacity, and the interesting question for either is the same one: what happens on a write that
-/// does not fit. A ring has one sensible answer — drop the oldest — but a double-ended queue has two ends, so the
+/// does not fit. A ring has one sensible answer - drop the oldest - but a double-ended queue has two ends, so the
 /// answer has to be configurable, which is what <see cref="DequeOverflowPolicy" /> exists for.
 /// </remarks>
 public static class RingAndDeque

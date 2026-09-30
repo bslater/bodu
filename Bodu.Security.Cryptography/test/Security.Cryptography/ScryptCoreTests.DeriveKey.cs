@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class ScryptCoreTests
 {
     /// <summary>
-    /// Verifies that a derivation returns its workspace — <c>N + 1</c> units of 128·r bytes — to the pool it came
+    /// Verifies that a derivation returns its workspace - <c>N + 1</c> units of 128·r bytes - to the pool it came
     /// from.
     /// </summary>
     [TestMethod]
@@ -59,7 +59,7 @@ public sealed partial class ScryptCoreTests
     }
 
     /// <summary>
-    /// Verifies that a derivation with a pool that retains nothing — as with the reuse switch set — produces RFC 7914's
+    /// Verifies that a derivation with a pool that retains nothing - as with the reuse switch set - produces RFC 7914's
     /// key and leaves nothing retained.
     /// </summary>
     [TestMethod]
@@ -74,7 +74,7 @@ public sealed partial class ScryptCoreTests
     }
 
     /// <summary>
-    /// Verifies that dividing a derivation's units among threads — at every bound from two to one per processor —
+    /// Verifies that dividing a derivation's units among threads - at every bound from two to one per processor -
     /// reproduces each OpenSSL corpus row with more than one unit.
     /// </summary>
     /// <param name="vector">The corpus row under test.</param>
@@ -94,7 +94,7 @@ public sealed partial class ScryptCoreTests
     }
 
     /// <summary>
-    /// Verifies that a derivation divided among threads by default — sixteen units of 1 MiB, the threshold — produces
+    /// Verifies that a derivation divided among threads by default - sixteen units of 1 MiB, the threshold - produces
     /// RFC 7914's key.
     /// </summary>
     [TestMethod]
@@ -106,8 +106,8 @@ public sealed partial class ScryptCoreTests
     }
 
     /// <summary>
-    /// Verifies that a derivation divided among threads returns each thread's workspace to the pool — never more than
-    /// the bound — and leaves every one of them all zero.
+    /// Verifies that a derivation divided among threads returns each thread's workspace to the pool - never more than
+    /// the bound - and leaves every one of them all zero.
     /// </summary>
     [TestMethod]
     public void DeriveKey_WhenUnitsRunOnThreads_ShouldReturnEveryWorkspaceAllZero()

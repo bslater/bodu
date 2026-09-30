@@ -13,7 +13,7 @@ namespace Bodu.IO.Hashing;
 /// </summary>
 /// <remarks>
 /// Arrays are allocated once and shared across all test runs. Test code must treat them as immutable even though
-/// <see cref="byte" /> arrays are mutable by the CLR — mutating a shared input would corrupt every other variant
+/// <see cref="byte" /> arrays are mutable by the CLR - mutating a shared input would corrupt every other variant
 /// relying on the same payload.
 /// </remarks>
 internal static class NonCryptographicHashSharedInputs

@@ -247,7 +247,7 @@ internal sealed class PropertyMetadata
     /// <returns>The typed instance expression.</returns>
     /// <remarks>
     /// A value-type target uses <see cref="Expression.Unbox" /> so member assignment mutates the caller's box in place
-    /// — the invariant the object converter's boxed assignment phase relies on — rather than a copied value.
+    /// - the invariant the object converter's boxed assignment phase relies on - rather than a copied value.
     /// </remarks>
     private UnaryExpression TypedTarget(ParameterExpression target)
     {

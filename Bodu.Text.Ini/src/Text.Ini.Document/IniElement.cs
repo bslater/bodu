@@ -9,8 +9,8 @@ using System.Collections;
 namespace Bodu.Text.Ini.Document;
 
 /// <summary>
-/// Represents a single element within an <see cref="IniDocument" /> — the root object, a section object, or a string
-/// value — shaped after <c>System.Text.Json</c>'s <c>JsonElement</c>.
+/// Represents a single element within an <see cref="IniDocument" /> - the root object, a section object, or a string
+/// value - shaped after <c>System.Text.Json</c>'s <c>JsonElement</c>.
 /// </summary>
 /// <remarks>
 /// The root object's properties are the document's hoisted global keys (string values) followed by its sections (object
@@ -75,7 +75,7 @@ public readonly struct IniElement
     /// Gets the value element for the specified property name.
     /// </summary>
     /// <param name="name">
-    /// The property name — a global key or section name on the root, or an entry key on a section.
+    /// The property name - a global key or section name on the root, or an entry key on a section.
     /// </param>
     /// <returns>The value element.</returns>
     /// <exception cref="ArgumentNullException">
@@ -96,7 +96,7 @@ public readonly struct IniElement
     /// Attempts to get the value element for the specified property name.
     /// </summary>
     /// <param name="name">
-    /// The property name — a global key or section name on the root, or an entry key on a section.
+    /// The property name - a global key or section name on the root, or an entry key on a section.
     /// </param>
     /// <param name="value">
     /// When this method returns <see langword="true" />, the value element; otherwise the default element.

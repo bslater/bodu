@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Recurrence;
 /// <para>
 /// The occurrence set is the ascending, duplicate-free union of every rule expansion and every explicit date, less any
 /// instant that matches an exception date. Each rule is anchored at <see cref="Start" />, so the start instant is
-/// emitted when a rule (or an explicit date) produces it — it is not added implicitly.
+/// emitted when a rule (or an explicit date) produces it - it is not added implicitly.
 /// </para>
 /// <para>
 /// The set can be built programmatically through the constructor, or parsed from an iCalendar property block with
@@ -267,8 +267,8 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     /// </returns>
     /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
     /// <remarks>
-    /// Due-ness evaluation is a previous-occurrence comparison — typically
-    /// <c>lastCompleted &lt; GetPreviousOccurrence(now, inclusive: true)</c> — so missed occurrences coalesce
+    /// Due-ness evaluation is a previous-occurrence comparison - typically
+    /// <c>lastCompleted &lt; GetPreviousOccurrence(now, inclusive: true)</c> - so missed occurrences coalesce
     /// structurally: the answer is a single instant, never a backlog.
     /// </remarks>
     public DateTime? GetPreviousOccurrence(DateTime before, bool inclusive = false)

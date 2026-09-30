@@ -68,7 +68,7 @@ public partial struct RunningStatistics<T>
     }
 
     /// <summary>
-    /// Gets the population variance of the accumulated samples — the squared deviations divided by <see cref="Count" />.
+    /// Gets the population variance of the accumulated samples - the squared deviations divided by <see cref="Count" />.
     /// </summary>
     /// <value>The population variance; zero for a single sample.</value>
     /// <exception cref="InvalidOperationException">The accumulator is empty.</exception>
@@ -83,7 +83,7 @@ public partial struct RunningStatistics<T>
     }
 
     /// <summary>
-    /// Gets the sample (Bessel-corrected) variance of the accumulated samples — the squared deviations divided by
+    /// Gets the sample (Bessel-corrected) variance of the accumulated samples - the squared deviations divided by
     /// <see cref="Count" /> − 1.
     /// </summary>
     /// <value>The unbiased sample variance.</value>
@@ -99,7 +99,7 @@ public partial struct RunningStatistics<T>
     }
 
     /// <summary>
-    /// Gets the population standard deviation — the square root of <see cref="PopulationVariance" />.
+    /// Gets the population standard deviation - the square root of <see cref="PopulationVariance" />.
     /// </summary>
     /// <value>The population standard deviation.</value>
     /// <exception cref="InvalidOperationException">The accumulator is empty.</exception>
@@ -107,7 +107,7 @@ public partial struct RunningStatistics<T>
         Math.Sqrt(PopulationVariance);
 
     /// <summary>
-    /// Gets the sample standard deviation — the square root of <see cref="SampleVariance" />.
+    /// Gets the sample standard deviation - the square root of <see cref="SampleVariance" />.
     /// </summary>
     /// <value>The sample standard deviation.</value>
     /// <exception cref="InvalidOperationException">The accumulator holds fewer than two samples.</exception>
