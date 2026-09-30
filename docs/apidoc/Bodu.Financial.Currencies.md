@@ -6,7 +6,7 @@ uid: Bodu.Financial.Currencies
 
 ## Purpose
 
-**Bodu.Financial.Currencies** is the currency-metadata namespace of the [`Bodu.Financial`](Bodu.Financial.md) package. It hosts the runtime metadata and lookup surface — the `ICurrency` contract, the `CurrencyInfo` record, the `CurrencyRegistry` catalogue, and the `ICurrencyLookup` resolution seam — alongside the shipped catalogue of 184 ISO 4217 currency tag types used as the `TCurrency` parameter on <xref:Bodu.Financial.Money`1>. Each currency is a sealed class with only static members — there is no instance to create, and the tag exists solely to carry the static metadata (`IsoCode`, `MinorUnits`, `CashRoundingIncrement`, and historic flags where applicable) that `Money<TCurrency>` needs.
+**Bodu.Financial.Currencies** is the currency-metadata namespace of the [`Bodu.Financial`](xref:Bodu.Financial) package. It hosts the runtime metadata and lookup surface — the `ICurrency` contract, the `CurrencyInfo` record, the `CurrencyRegistry` catalogue, and the `ICurrencyLookup` resolution seam — alongside the shipped catalogue of 184 ISO 4217 currency tag types used as the `TCurrency` parameter on <xref:Bodu.Financial.Money`1>. Each currency is a sealed class with only static members — there is no instance to create, and the tag exists solely to carry the static metadata (`IsoCode`, `MinorUnits`, `CashRoundingIncrement`, and historic flags where applicable) that `Money<TCurrency>` needs.
 
 ## Static documentation
 

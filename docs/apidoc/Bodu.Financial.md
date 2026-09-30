@@ -27,7 +27,7 @@ Reach for this library when you need monetary arithmetic that the compiler valid
 **Currency display**
 
 - <xref:Bodu.Financial.CurrencyDisplay> — currency symbol / display-name formatting for presenting an amount's currency.
-- The currency metadata surface — <xref:Bodu.Financial.Currencies.ICurrency>, <xref:Bodu.Financial.Currencies.CurrencyInfo>, <xref:Bodu.Financial.Currencies.CurrencyRegistry>, <xref:Bodu.Financial.Currencies.CurrencyLookupService>, <xref:Bodu.Financial.Currencies.CurrencyCode>, and the 184 sealed tag types — lives in the [`Bodu.Financial.Currencies`](Bodu.Financial.Currencies.md) namespace.
+- The currency metadata surface — <xref:Bodu.Financial.Currencies.ICurrency>, <xref:Bodu.Financial.Currencies.CurrencyInfo>, <xref:Bodu.Financial.Currencies.CurrencyRegistry>, <xref:Bodu.Financial.Currencies.CurrencyLookupService>, <xref:Bodu.Financial.Currencies.CurrencyCode>, and the 184 sealed tag types — lives in the [`Bodu.Financial.Currencies`](xref:Bodu.Financial.Currencies) namespace.
 
 **Rounding, allocation, formatting, and parsing**
 

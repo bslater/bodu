@@ -8,7 +8,7 @@ uid: Bodu.Financial.ExchangeRates.Caching
 
 ## Purpose
 
-**Bodu.Financial.ExchangeRates.Caching** is the caching and composition layer for the [`Bodu.Financial`](Bodu.Financial.md) exchange-rate provider stack. Rather than building caching or grouping into each provider, it ships two orthogonal pieces that each implement the same <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider> contract (and the timeless <xref:Bodu.Financial.ExchangeRates.IRateProvider>), so they drop in anywhere a provider is expected:
+**Bodu.Financial.ExchangeRates.Caching** is the caching and composition layer for the [`Bodu.Financial`](xref:Bodu.Financial) exchange-rate provider stack. Rather than building caching or grouping into each provider, it ships two orthogonal pieces that each implement the same <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider> contract (and the timeless <xref:Bodu.Financial.ExchangeRates.IRateProvider>), so they drop in anywhere a provider is expected:
 
 - **A read-through cache, one cache per provider.** <xref:Bodu.Financial.ExchangeRates.Caching.CachingRateProvider> wraps exactly one inner source over one single-provider cache. It serves fresh cached rates and delegates to the source only on a miss, then caches what the source returns.
 - **An aggregator that groups many providers.** <xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider> groups named children behind one entry point, combining them through a pluggable strategy with optional per-currency-pair routing.

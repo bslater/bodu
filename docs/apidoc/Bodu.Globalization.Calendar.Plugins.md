@@ -8,7 +8,7 @@ uid: Bodu.Globalization.Calendar.Plugins
 
 ## Purpose
 
-**Bodu.Globalization.Calendar.Plugins** loads external assemblies that contribute custom date-calculation algorithms to [`Bodu.Globalization.Calendar`](Bodu.Globalization.Calendar.md), behind an explicit, **deny-by-default** trust gate.
+**Bodu.Globalization.Calendar.Plugins** loads external assemblies that contribute custom date-calculation algorithms to [`Bodu.Globalization.Calendar`](xref:Bodu.Globalization.Calendar), behind an explicit, **deny-by-default** trust gate.
 
 A plugin assembly advertises itself with an assembly-level <xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginAttribute>. The host evaluates the assembly against an <xref:Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy> *before* activating any plugin type; a rejected assembly is never instantiated. Trusted plugins surface their <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> implementations, which are then registered into a <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry> for use by `<Algorithm key="…">` rules.
 

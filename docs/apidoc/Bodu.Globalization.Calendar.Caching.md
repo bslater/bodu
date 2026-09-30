@@ -7,7 +7,7 @@ uid: Bodu.Globalization.Calendar.Caching
 ## Purpose
 
 **Bodu.Globalization.Calendar.Caching** is the read-through caching layer for the
-[`Bodu.Globalization.Calendar`](Bodu.Globalization.Calendar.md) notable-date engine. Rather than building caching into
+[`Bodu.Globalization.Calendar`](xref:Bodu.Globalization.Calendar) notable-date engine. Rather than building caching into
 the engine, it ships <xref:Bodu.Globalization.Calendar.Caching.CachingNotableDateService>, a decorator that implements
 the same <xref:Bodu.Globalization.Calendar.INotableDateService> contract and serves each requested civil year from an
 <xref:Bodu.Globalization.Calendar.Caching.INotableDateCache>, recomputing a year through the wrapped service only on a

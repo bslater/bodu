@@ -8,7 +8,7 @@ uid: Bodu.Financial.Serialization.Json
 
 ## Purpose
 
-**Bodu.Financial.Serialization.Json** carries the `System.Text.Json` integration for [`Bodu.Financial`](Bodu.Financial.md). It supplies the six converters that round-trip <xref:Bodu.Financial.Money>, <xref:Bodu.Financial.Money`1>, <xref:Bodu.Financial.CalculatedMoney>, <xref:Bodu.Financial.MoneyBag>, <xref:Bodu.Financial.ExchangeRates.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRates.CurrencyPair> to and from JSON, together with a one-call extension that registers them under a chosen policy and a dependency-injection registration for containers.
+**Bodu.Financial.Serialization.Json** carries the `System.Text.Json` integration for [`Bodu.Financial`](xref:Bodu.Financial). It supplies the six converters that round-trip <xref:Bodu.Financial.Money>, <xref:Bodu.Financial.Money`1>, <xref:Bodu.Financial.CalculatedMoney>, <xref:Bodu.Financial.MoneyBag>, <xref:Bodu.Financial.ExchangeRates.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRates.CurrencyPair> to and from JSON, together with a one-call extension that registers them under a chosen policy and a dependency-injection registration for containers.
 
 The core `Bodu.Financial` library is serialization-agnostic — its monetary types carry no `[JsonConverter]` attribute. Add this package and call `AddFinancialJsonConverters` to opt into JSON support and select a wire policy across a whole `JsonSerializerOptions` instance.
 

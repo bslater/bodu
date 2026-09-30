@@ -8,7 +8,7 @@ uid: Bodu.Globalization.Calendar.Algorithms
 
 ## Purpose
 
-**Bodu.Globalization.Calendar.Algorithms** is the date-calculation layer of [`Bodu.Globalization.Calendar`](Bodu.Globalization.Calendar.md). It defines the strategy a rule uses to find its *nominal* date for a year, and the contract and registry for plugging in custom calculators.
+**Bodu.Globalization.Calendar.Algorithms** is the date-calculation layer of [`Bodu.Globalization.Calendar`](xref:Bodu.Globalization.Calendar). It defines the strategy a rule uses to find its *nominal* date for a year, and the contract and registry for plugging in custom calculators.
 
 Every <xref:Bodu.Globalization.Calendar.NotableDateRule> carries exactly one occurrence source: an <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> (13 single-date strategies) or an <xref:Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy> (four frequency-based recurrence sources). The loader maps each `<Strategy>` (or `<Recurrence>`) element in a rule document to one of these built-in strategies; you rarely construct them by hand, but they are the public vocabulary the engine resolves against. The most common are listed below — the [strategy reference](~/guides/calendar/strategy-reference.md) covers the full catalogue.
 

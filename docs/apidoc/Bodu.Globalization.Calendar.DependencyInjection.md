@@ -9,7 +9,7 @@ uid: Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions
 ## Purpose
 
 The **Bodu.Globalization.Calendar.DependencyInjection** package provides the `Microsoft.Extensions.DependencyInjection`
-integration for [`Bodu.Globalization.Calendar`](Bodu.Globalization.Calendar.md). It registers
+integration for [`Bodu.Globalization.Calendar`](xref:Bodu.Globalization.Calendar). It registers
 <xref:Bodu.Globalization.Calendar.INotableDateService> as a singleton over a loaded
 <xref:Bodu.Globalization.Calendar.NotableDateResource> (or a factory that produces one), so an ASP.NET Core application
 — or any `Microsoft.Extensions.*`-style host — can inject the calendar service rather than composing
@@ -98,7 +98,7 @@ builder.Services.AddReloadableNotableDateService<CalendarOptions>((sp, options) 
     AsiaPacificCalendarData.LoadResource(options.Territory));
 ```
 
-The [`Bodu.Globalization.Calendar.Caching`](Bodu.Globalization.Calendar.Caching.md) decorator composes with any of
+The [`Bodu.Globalization.Calendar.Caching`](xref:Bodu.Globalization.Calendar.Caching) decorator composes with any of
 these: `services.AddCachedNotableDateService(...)`, called after the registration it wraps, replaces the registered
 `INotableDateService` with a caching decorator over it and observes the reloadable provider automatically. See the
 [Calendar dependency injection](~/guides/calendar/dependency-injection.md) guide for the full walkthrough, including

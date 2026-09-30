@@ -20,9 +20,9 @@ Reach for this library when a `DateTime.DayOfWeek` check is not enough: when you
 
 ## Companion packages
 
-- [`Bodu.Globalization.Calendar.Builder`](Bodu.Globalization.Calendar.Builder.md) — a fluent C# API for authoring notable-date documents in code, with XML / JSON serialization and load/save.
-- [`Bodu.Globalization.Calendar.DependencyInjection`](Bodu.Globalization.Calendar.DependencyInjection.md) — `Microsoft.Extensions.DependencyInjection` integration: `services.AddNotableDateService(...)` / `AddReloadableNotableDateService(...)` register `INotableDateService` as a singleton over a loaded `NotableDateResource`.
-- [`Bodu.Globalization.Calendar.Plugins`](Bodu.Globalization.Calendar.Plugins.md) — trust-gated loading of external assemblies that contribute custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> implementations.
+- [`Bodu.Globalization.Calendar.Builder`](xref:Bodu.Globalization.Calendar.Builder) — a fluent C# API for authoring notable-date documents in code, with XML / JSON serialization and load/save.
+- [`Bodu.Globalization.Calendar.DependencyInjection`](xref:Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions) — `Microsoft.Extensions.DependencyInjection` integration: `services.AddNotableDateService(...)` / `AddReloadableNotableDateService(...)` register `INotableDateService` as a singleton over a loaded `NotableDateResource`.
+- [`Bodu.Globalization.Calendar.Plugins`](xref:Bodu.Globalization.Calendar.Plugins) — trust-gated loading of external assemblies that contribute custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> implementations.
 - [`Bodu.Globalization.Calendar.<Region>`](~/guides/calendar/data-packs.md) — curated public-holiday resources for the `Americas`, `AsiaPacific`, `Europe`, `MiddleEast`, and `Africa` territory bundles.
 
 ## Key types

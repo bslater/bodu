@@ -8,7 +8,7 @@ uid: Bodu.Financial.Extensions
 
 ## Purpose
 
-**Bodu.Financial.Extensions** is the extension-member namespace of the core [`Bodu.Financial`](Bodu.Financial.md) package. It carries the derived helpers that are deliberately kept off the value types themselves — sign and magnitude tests, clamping and comparison, compact `"$1.2K"` formatting, dated-provider conversion, audit conveniences on a lookup result, and the materializers that turn observations into an immutable book or a fixed provider — so that <xref:Bodu.Financial.Money>, <xref:Bodu.Financial.Money`1>, and <xref:Bodu.Financial.ExchangeRates.RateLookupResult> stay focused on construction, arithmetic, equality, and formatting.
+**Bodu.Financial.Extensions** is the extension-member namespace of the core [`Bodu.Financial`](xref:Bodu.Financial) package. It carries the derived helpers that are deliberately kept off the value types themselves — sign and magnitude tests, clamping and comparison, compact `"$1.2K"` formatting, dated-provider conversion, audit conveniences on a lookup result, and the materializers that turn observations into an immutable book or a fixed provider — so that <xref:Bodu.Financial.Money>, <xref:Bodu.Financial.Money`1>, and <xref:Bodu.Financial.ExchangeRates.RateLookupResult> stay focused on construction, arithmetic, equality, and formatting.
 
 Every member is a thin projection over the public surface of the type it extends and carries no state of its own. Add `using Bodu.Financial.Extensions;` to bring them into scope.
 
