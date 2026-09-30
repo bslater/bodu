@@ -1,9 +1,9 @@
 # Implementation plan: the cryptography speed-ups left for later
 
-**Status:** In progress — F1 to F7 done (§9) · **Source:** the "Left for later" items in
-[`crypto-performance.md`](crypto-performance.md) §10 and the open items in
-[`argon2-performance.md`](argon2-performance.md) §10.3, after `Bodu.Security.Cryptography` 1.1.0 ·
-**Target:** `Bodu.Security.Cryptography`, next lock-step release
+**Status:** In progress — F1 to F7 done (§9), F8 added after F7 · **Source:** the "Left for
+later" items in [`crypto-performance.md`](crypto-performance.md) §10 and the open items in
+[`argon2-performance.md`](argon2-performance.md) §10.3, after `Bodu.Security.Cryptography` 1.1.0,
+and F7's (§9) · **Target:** `Bodu.Security.Cryptography`, next lock-step release
 
 `crypto-performance.md` met every target it set and shipped in 1.1.0. On the way it measured a
 set of further gains that no target needed, and left them for later. This plan collects them,
@@ -261,6 +261,52 @@ Done: see §9 for the results and where the build departs from this design.
   A kernel that is not is gated off through `SimdCapabilities` until it is tuned.
 - **Tests:** none new. The results are recorded here, with the machine and runtime.
 
+### F8 — Poly1305 on ARM64
+
+Added after F7, from the items it left for later (§9). Of those, this is the one with a measured
+gain in reach: the gated kernels lose to their layout, so tuning them means redesigning them, and
+the other two items are checks rather than speed-ups.
+
+- **Problem:**
+  - ARM64 runs Poly1305 one block at a time through the scalar loop. F1's design had a two-lane
+    AdvSimd kernel, which waited for F7, since on ARM64 the scalar loop's products come from
+    `umulh` and might hold their own.
+  - F7 settled it. On the Neoverse N2 the scalar loop took 1 MiB at 1,610–1,653 MiB/s, and
+    OpenSSL's NEON code, on the same machine, at 3,156–3,174 MiB/s.
+  - Poly1305 is about a third of XChaCha20-Poly1305's time there: 0.61 ms of 1.73 ms per MiB.
+- **Design:**
+  - A `Vector128Kernel` in `Poly1305Core`, in the AVX2 kernel's shape at 128 bits: a block
+    to each 64-bit lane as five 26-bit limbs, two lanes to a vector.
+  - Each product is one `UMULL` or `UMLAL`, 32 × 32 → 64 bits, taking the multiplier's limb
+    from a lane of another vector (`MultiplyBySelectedScalarWideningLower[AndAdd]`), so that
+    a power of r and five times its upper limbs fill three vectors.
+  - Each lane takes every second block and multiplies by r². Two groups go per step, as F1's
+    `BlocksPaired` does: (h + m)·r⁴ + m′·r², whose second half does not wait on h. After the
+    last group the lanes multiply by r² and r, and sum into the scalar state.
+  - The powers are formed per run by the scalar multiply, r² and r⁴ alone, one or two
+    multiplications, and cleared after it.
+  - Dispatch selects the kernel from a threshold, and the paired loop from a second, measured
+    on the N2 and the M1. The scalar loop keeps shorter runs and the blocks after the last
+    whole group.
+  - The measurement uses F7's workflow, dispatched on the branch. The crypto harness gains a
+    case for each kernel at each length, which drives `Poly1305Core` with the kernel named,
+    so one run places both thresholds; the MAC and AEAD cases at lengths either side of them
+    check the choice in use.
+- **Target:**
+  - Poly1305 over 1 MiB on the N2 at least 1.5 times as fast as the scalar loop. OpenSSL
+    reaches 1.9 times.
+  - Per F7's rule, the kernel at least as fast as the scalar loop, on every machine
+    measured, wherever dispatch selects it.
+- **Tests:**
+  - As F1's: each loop, driven explicitly, is held to the reference over seeded messages,
+    piece-wise feeds, the largest limbs, runs after scalar blocks, and runs either side of
+    each threshold.
+  - The loops' entry points are checked for `NoInlining | AggressiveOptimization`.
+  - Dispatch's ARM64 choices have tests of their own, and the SIMD-off assembly checks the
+    scalar loop at the new thresholds.
+  - The ARM64 job runs them natively, and qemu in development.
+- **Constant time:** the only branches are on the message length, which is public.
+
 ---
 
 ## 4. Order and method
@@ -269,6 +315,7 @@ Done: see §9 for the results and where the build departs from this design.
    AdvSimd halves of F1 and F3.
 2. **F1, then F2,** which reuses F1's measurements.
 3. **F3, F4, F5 and F6,** in that order.
+4. **F8, after F7,** whose run found its gain and whose workflow measures it.
 
 Each item follows the same sequence:
 
