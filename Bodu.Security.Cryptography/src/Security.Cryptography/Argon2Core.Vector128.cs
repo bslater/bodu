@@ -150,7 +150,7 @@ internal static partial class Argon2Core
         /// <param name="c1">The second pair's <c>c</c> words.</param>
         /// <param name="d1">The second pair's <c>d</c> words.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void G1(
+        internal static void G1(
             ref Vector128<ulong> a0,
             ref Vector128<ulong> b0,
             ref Vector128<ulong> c0,
@@ -182,7 +182,7 @@ internal static partial class Argon2Core
         /// <param name="c1">The second pair's <c>c</c> words.</param>
         /// <param name="d1">The second pair's <c>d</c> words.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void G2(
+        internal static void G2(
             ref Vector128<ulong> a0,
             ref Vector128<ulong> b0,
             ref Vector128<ulong> c0,

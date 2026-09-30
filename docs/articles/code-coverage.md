@@ -168,8 +168,10 @@ Argon2's 128-bit compression kernel is written once over portable `Vector128`
 arithmetic and specialized by a five-member instruction-set shim, so nearly all
 of it runs on x64. On an AVX2 host the kernel-sweep test drives the AVX2, SSSE3
 and scalar kernels explicitly, whichever one dispatch picks, so one native pass
-covers all three. Only the ARM64 shim, `Argon2Core.AdvSimd.cs`, cannot run
-there: each of its members is an AdvSimd instruction.
+covers all three. The hybrid kernel ARM64 dispatches to is generic over the
+same shim, and a test drives it over the SSSE3 shim on x64. Only the ARM64 shim,
+`Argon2Core.AdvSimd.cs`, cannot run there: each of its members is an AdvSimd
+instruction.
 
 The GHASH and POLYVAL kernel behind GCM follows the same pattern. The carry-less
 kernel is written once against a shim, and the GHASH tests drive every kernel

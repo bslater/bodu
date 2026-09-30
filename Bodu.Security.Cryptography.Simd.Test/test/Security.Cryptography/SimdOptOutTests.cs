@@ -104,13 +104,15 @@ public sealed class SimdOptOutTests
 
     /// <summary>
     /// Verifies that with SIMD disabled, Poly1305 absorbs every run of whole blocks, however long, through its scalar
-    /// loop, whatever the processor supports: from each length at which a vector kernel would take over, up to 1 MiB.
+    /// loop, whatever the processor supports, on Apple's cores and elsewhere: from each length at which a vector kernel
+    /// would take over, up to 1 MiB.
     /// </summary>
     [TestMethod]
     public void Poly1305CoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarLoop()
     {
         int[] lengths =
         [
+            Poly1305Core.AppleAdvSimdMinimumBytes,
             Poly1305Core.AdvSimdMinimumBytes,
             Poly1305Core.Avx2MinimumBytes,
             Poly1305Core.Avx2PairedMinimumBytes,
@@ -119,7 +121,11 @@ public sealed class SimdOptOutTests
         ];
 
         foreach (int length in lengths)
+        {
             Assert.AreEqual(Poly1305Core.KernelKind.Scalar, Poly1305Core.SelectKernel(length), $"length {length}");
+            Assert.AreEqual(Poly1305Core.KernelKind.Scalar, Poly1305Core.SelectKernel(length, appleSilicon: false), $"length {length}, elsewhere");
+            Assert.AreEqual(Poly1305Core.KernelKind.Scalar, Poly1305Core.SelectKernel(length, appleSilicon: true), $"length {length}, on Apple's cores");
+        }
     }
 
     /// <summary>

@@ -148,44 +148,31 @@ internal static partial class Argon2Core
 
     /// <summary>
     /// Selects the compression kernel dispatch runs: on x64 the widest the processor supports and the process allows,
-    /// AVX2, then SSSE3; on ARM64 the AdvSimd kernel under .NET 8 and the scalar kernel under .NET 10; and the scalar
-    /// kernel everywhere else.
+    /// AVX2, then SSSE3; on ARM64 the hybrid kernel, which works rows and columns in pairs over AdvSimd and the general
+    /// registers at once; and the scalar kernel everywhere else.
     /// </summary>
     /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
     /// <remarks>
+    /// <para>
     /// Every gate honors the <see cref="SimdCapabilities.DisableSimdSwitchName" /> switch, which pins the scalar
     /// kernel.
+    /// </para>
+    /// <para>
+    /// On ARM64 the hybrid kernel ran 1.24 to 1.28 times as fast as the scalar kernel on a Neoverse N2 and 1.3 to 1.6
+    /// times as fast as the AdvSimd kernel on an Apple M1, under .NET 8 and .NET 10 alike. The AdvSimd kernel, which
+    /// holds one row in eight vector registers, ran slower than the scalar kernel on the N2 and runs only where a
+    /// caller names it.
+    /// </para>
     /// </remarks>
     internal static KernelKind SelectKernel()
     {
         if (SimdCapabilities.Avx2)
             return KernelKind.Avx2;
 
-        if (IsAdvSimdSelected)
-            return KernelKind.AdvSimd;
+        if (SimdCapabilities.AdvSimd)
+            return KernelKind.AdvSimdHybrid;
 
         return SimdCapabilities.Ssse3 ? KernelKind.Ssse3 : KernelKind.Scalar;
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether dispatch selects the AdvSimd kernel: under .NET 8 wherever
-    /// <see cref="SimdCapabilities.AdvSimd" /> allows it, and under .NET 10 only while
-    /// <see cref="SimdCapabilities.AdvSimdSingleState" />, which is closed, allows it.
-    /// </summary>
-    /// <remarks>
-    /// Under .NET 8 the AdvSimd kernel ran 1.3 to 1.6 times as fast as the scalar kernel on an Apple M1, and took 36 to
-    /// 48 percent of 1.0.0's CPU where the scalar kernel took 58 to 67 percent; on a Neoverse N2 it ran at 0.8 of the
-    /// scalar kernel's speed. Under .NET 10, whose scalar kernel is faster, the scalar kernel ran 1.25 times as fast as
-    /// the AdvSimd kernel on the N2 and about as fast on the M1.
-    /// </remarks>
-    private static bool IsAdvSimdSelected
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if NET10_0_OR_GREATER
-        get => SimdCapabilities.AdvSimdSingleState;
-#else
-        get => SimdCapabilities.AdvSimd;
-#endif
     }
 
     /// <summary>
@@ -201,7 +188,7 @@ internal static partial class Argon2Core
     {
         KernelKind.Auto or KernelKind.Scalar => true,
         KernelKind.Ssse3 => System.Runtime.Intrinsics.X86.Ssse3.IsSupported,
-        KernelKind.AdvSimd => System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported,
+        KernelKind.AdvSimd or KernelKind.AdvSimdHybrid => System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported,
         KernelKind.Avx2 => System.Runtime.Intrinsics.X86.Avx2.IsSupported,
         _ => false,
     };
@@ -231,6 +218,10 @@ internal static partial class Argon2Core
 
             case KernelKind.Ssse3:
                 FillMemory<Vector128Kernel<Ssse3Isa>>(matrix, geometry, workers);
+                break;
+
+            case KernelKind.AdvSimdHybrid:
+                FillMemory<HybridKernel<AdvSimdIsa>>(matrix, geometry, workers);
                 break;
 
             default:

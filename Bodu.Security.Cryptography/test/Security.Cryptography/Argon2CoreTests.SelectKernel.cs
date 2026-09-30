@@ -33,38 +33,17 @@ public sealed partial class Argon2CoreTests
     }
 
     /// <summary>
-    /// Verifies that under .NET 10 dispatch selects the scalar kernel on ARM64, where it ran faster than the AdvSimd
-    /// kernel on a Neoverse N2 and as fast on an Apple M1.
+    /// Verifies that dispatch selects the hybrid kernel on every ARM64 processor under both runtimes: it ran 1.24 to
+    /// 1.28 times as fast as the scalar kernel on a Neoverse N2, and 1.3 to 1.6 times as fast as the AdvSimd kernel on
+    /// an Apple M1.
     /// </summary>
     [TestMethod]
-    public void SelectKernel_WhenAdvSimdIsAvailableUnderNet10_ShouldReturnScalar()
+    public void SelectKernel_WhenAdvSimdIsAvailable_ShouldReturnAdvSimdHybrid()
     {
         if (!SimdCapabilities.AdvSimd)
             Assert.Inconclusive("AdvSimd is not available on this processor.");
 
-#if NET10_0_OR_GREATER
-        Assert.AreEqual(Argon2Core.KernelKind.Scalar, Argon2Core.SelectKernel());
-#else
-        Assert.Inconclusive("The runtime is not .NET 10 or later.");
-#endif
-    }
-
-    /// <summary>
-    /// Verifies that under .NET 8 dispatch selects the AdvSimd kernel on ARM64, which ran 1.5 to 1.6 times as fast as
-    /// the scalar kernel on an Apple M1, and took about a third of 1.0.0's CPU where the scalar kernel took nearly
-    /// two thirds.
-    /// </summary>
-    [TestMethod]
-    public void SelectKernel_WhenAdvSimdIsAvailableUnderNet8_ShouldReturnAdvSimd()
-    {
-        if (!SimdCapabilities.AdvSimd)
-            Assert.Inconclusive("AdvSimd is not available on this processor.");
-
-#if NET10_0_OR_GREATER
-        Assert.Inconclusive("The runtime is .NET 10 or later.");
-#else
-        Assert.AreEqual(Argon2Core.KernelKind.AdvSimd, Argon2Core.SelectKernel());
-#endif
+        Assert.AreEqual(Argon2Core.KernelKind.AdvSimdHybrid, Argon2Core.SelectKernel());
     }
 
     /// <summary>
@@ -110,6 +89,7 @@ public sealed partial class Argon2CoreTests
         Assert.AreEqual(System.Runtime.Intrinsics.X86.Avx2.IsSupported, Argon2Core.IsSupported(Argon2Core.KernelKind.Avx2));
         Assert.AreEqual(System.Runtime.Intrinsics.X86.Ssse3.IsSupported, Argon2Core.IsSupported(Argon2Core.KernelKind.Ssse3));
         Assert.AreEqual(System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported, Argon2Core.IsSupported(Argon2Core.KernelKind.AdvSimd));
+        Assert.AreEqual(System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported, Argon2Core.IsSupported(Argon2Core.KernelKind.AdvSimdHybrid));
     }
 
     /// <summary>

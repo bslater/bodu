@@ -116,7 +116,7 @@ bool ok = Argon2id.Verify(stored, candidate, pepper);   // pepper supplied at ve
 
 ## Threads, memory, and hardware
 
-A derivation divides its lanes among threads when they are large enough to be worth dividing - from about 1 MiB per lane, so `m=64 MiB, p=4` qualifies and `m=1 MiB, p=4` does not. It uses up to `Parallelism` threads, bounded by the processor count; the calling thread always takes part, so a derivation never waits on an idle thread pool. The tag never depends on the threads used: `p` is part of the result, the thread count is not.
+A derivation divides its lanes among threads when they are large enough to be worth dividing - from 768 KiB per lane, so `m=64 MiB, p=4` qualifies and `m=2 MiB, p=4` does not. It uses up to `Parallelism` threads, bounded by the processor count; the calling thread always takes part, so a derivation never waits on an idle thread pool. The tag never depends on the threads used: `p` is part of the result, the thread count is not.
 
 A service that already verifies many passwords at once gains nothing from spreading each derivation across every core, and can bound the threads per derivation instead:
 

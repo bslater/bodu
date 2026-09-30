@@ -8,12 +8,16 @@ name: Cryptography benchmarks
 #     the PMULL GHASH and POLYVAL kernels, and the umulh products run here and nowhere else in CI, where the
 #     build-test job proves them correct but does not time them.
 #   • A hosted x64 runner whose last-level cache is smaller than one 64 MiB Argon2 matrix, for Argon2's thread
-#     heuristic, which was tuned on a machine whose cache holds the whole matrix.
+#     heuristic, which was tuned on a machine whose cache holds the whole matrix. The pool mixes an AMD EPYC with AVX2
+#     and an Intel Xeon with AVX-512, so it also times the x64 kernels that spread one state across a vector's lanes
+#     (BLAKE2, BLAKE3's single block, scrypt, Argon2) where the common desktop runs them: the AVX2 kernels, with
+#     AVX-512 switched off, and the SSSE3 ones, with AVX2 switched off.
 #
 # Each machine builds the benchmarks from this checkout and against the published 1.0.0 package, then runs every
-# suite in three configurations, alternating their order from run to run: the kernels dispatch selects, the same build
-# with the library's DisableSimd switch set (its scalar paths), and 1.0.0. harness_matrix.py describes the suites and
-# prints the comparison into the job summary.
+# suite in its configurations, alternating their order from run to run: the kernels dispatch selects, the same build
+# with the library's DisableSimd switch set (its scalar paths), and 1.0.0, with the x64 suite also run with AVX-512 off
+# and with AVX2 off.
+# harness_matrix.py describes the suites and prints the comparison into the job summary.
 #
 # It runs on manual dispatch, and on a pull request that changes this file or harness_matrix.py, the script it runs,
 # so a change to either is exercised before it merges.
@@ -47,7 +51,7 @@ jobs:
           - os: macos-15
             suites: crypto,argon2,sweep
           - os: ubuntu-24.04
-            suites: argon2,sweep
+            suites: argon2,sweep,x64
     runs-on: ${{ matrix.os }}
     timeout-minutes: 180
 

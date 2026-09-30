@@ -5,16 +5,23 @@
     python3 harness_matrix.py summarize results
 
 ``run`` builds the benchmark project for each framework twice: from this checkout, and against the published 1.0.0
-package (``-p:BoduCryptoBaseline=1.0.0``). It then runs each suite in three configurations, reversing their order from
+package (``-p:BoduCryptoBaseline=1.0.0``). It then runs each suite in its configurations, reversing their order from
 one run to the next so that drift over the job falls on each of them alike:
 
 * ``vector``: this checkout, with the kernels dispatch selects;
+* ``avx2``: this checkout with the runtime's AVX-512 switched off (``DOTNET_EnableAVX512F=0`` for .NET 8,
+  ``DOTNET_EnableAVX512=0`` for .NET 10), so that on x64 the AVX2 kernels run where the AVX-512 ones would; the ``x64``
+  suite alone runs it, and on a processor without AVX-512 it repeats ``vector``;
+* ``ssse3``: this checkout with the runtime's AVX2 switched off (``DOTNET_EnableAVX2=0``), so that on x64 the SSSE3
+  kernels run where the AVX2 ones would; the ``x64`` suite alone runs it;
 * ``scalar``: this checkout with the library's ``DisableSimd`` switch set (``--disable-simd``), so every kernel gives
   way to its scalar path while the runtime and the BCL keep their vector code;
 * ``1.0.0``: the published package.
 
 The suites are ``crypto`` (``--crypto-harness`` over the cases that exercise the AdvSimd, PMULL and ``umulh`` paths),
-``argon2`` (``--argon2-harness``) and ``sweep`` (``--argon2-harness --sweep``). Each run of each configuration writes
+``x64`` (``--crypto-harness`` over the cases whose x64 kernels spread one state across a vector's lanes: BLAKE2,
+BLAKE3's single block, scrypt and Argon2), ``argon2`` (``--argon2-harness``) and ``sweep``
+(``--argon2-harness --sweep``). Each run of each configuration writes
 ``<out>/<suite>/<run>-<framework>-<configuration>.txt``.
 
 ``summarize`` prints a Markdown table per suite and framework: each case's range over the runs in every configuration,
@@ -31,24 +38,41 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 PROJECT = os.path.join(HERE, 'Bodu.Security.Cryptography.Benchmarks.csproj')
 ASSEMBLY = 'Bodu.Security.Cryptography.Benchmarks.dll'
-CONFIGURATIONS = ['vector', 'scalar', '1.0.0']
+CONFIGURATIONS = ['vector', 'avx2', 'ssse3', 'scalar', '1.0.0']
+
+# Each configuration: the build it runs, the harness arguments it adds, and the environment it sets.
+CONFIGURATION_SETTINGS = {
+    'vector': ('current', [], {}),
+    'avx2': ('current', [], {'DOTNET_EnableAVX512F': '0', 'DOTNET_EnableAVX512': '0'}),
+    'ssse3': ('current', [], {'DOTNET_EnableAVX2': '0'}),
+    'scalar': ('current', ['--disable-simd'], {}),
+    '1.0.0': ('1.0.0', [], {}),
+}
 
 # The crypto-harness cases whose code has an ARM64 path of its own: the AdvSimd kernels (BLAKE2b, BLAKE2s, BLAKE3,
 # CubeHash, ChaCha20 and Salsa20, Poly1305, Serpent-128, scrypt, Argon2), the PMULL GHASH and POLYVAL kernels (GCM,
 # GCM-SIV), and the umulh products of Poly1305's scalar loop and of Curve25519, which the library's switch leaves in
 # place. Poly1305 and its AEADs run at lengths either side of the AdvSimd kernel's thresholds, and the kernel cases time
-# each Poly1305 kernel on its own.
+# each Poly1305 kernel and each Argon2 kernel on its own.
 CRYPTO_FILTERS = [
     'hash/Bodu BLAKE2', 'hash/Bodu BLAKE3', 'hash/Bodu CubeHash',
     'stream/Bodu ChaCha20', 'stream/Bodu XChaCha20', 'stream/Bodu Salsa20', 'stream/Bodu XSalsa20',
-    'Poly1305 64 B', 'Poly1305 256 B', 'Poly1305 512 B', 'Poly1305 1 KiB', 'Poly1305 1 MiB', 'kernel/Poly1305', 'GCM',
+    'Poly1305 64 B', 'Poly1305 128 B', 'Poly1305 192 B', 'Poly1305 256 B', 'Poly1305 512 B', 'Poly1305 1 KiB',
+    'Poly1305 1 MiB', 'kernel/Poly1305', 'kernel/Argon2', 'GCM',
     'Serpent-128-', 'kdf/', 'asym/Bodu X25519', 'asym/Bodu Ed25519 sign', 'asym/Bodu Ed25519 verify',
 ]
 
-SUITE_ARGUMENTS = {
-    'crypto': ['--crypto-harness', *CRYPTO_FILTERS],
-    'argon2': ['--argon2-harness'],
-    'sweep': ['--argon2-harness', '--sweep'],
+# The crypto-harness cases whose x64 kernels spread one state across a vector's lanes, the layout F7 found losing on
+# ARM64: BLAKE2b, BLAKE2s, BLAKE3's single block, scrypt and Argon2. The ``avx2`` configuration runs their AVX2 kernels
+# whether or not the machine has AVX-512, and ``ssse3`` their 128-bit ones.
+X64_FILTERS = ['hash/Bodu BLAKE2', 'hash/Bodu BLAKE3', 'kdf/Bodu']
+
+# Each suite: its harness arguments, and the configurations it runs in.
+SUITES = {
+    'crypto': (['--crypto-harness', *CRYPTO_FILTERS], ['vector', 'scalar', '1.0.0']),
+    'x64': (['--crypto-harness', *X64_FILTERS], ['vector', 'avx2', 'ssse3', 'scalar', '1.0.0']),
+    'argon2': (['--argon2-harness'], ['vector', 'scalar', '1.0.0']),
+    'sweep': (['--argon2-harness', '--sweep'], ['vector', 'scalar', '1.0.0']),
 }
 
 CRYPTO_LINE = re.compile(r'^(\w+)\s+(.+?)\s{2,}([\d.,]+) (us|ms)\s+([\d.,]+) (MiB/s|op/s)\s+[\d,]+ B/op')
@@ -73,18 +97,24 @@ def run(out, runs, suites, frameworks):
         order = CONFIGURATIONS if run_number % 2 else list(reversed(CONFIGURATIONS))
         for framework in frameworks:
             for configuration in order:
-                binary = 'current' if configuration != '1.0.0' else '1.0.0'
+                binary, extra, environment = CONFIGURATION_SETTINGS[configuration]
                 for suite in suites:
-                    arguments = list(SUITE_ARGUMENTS[suite])
-                    if configuration == 'scalar':
-                        arguments.insert(0, '--disable-simd')
+                    suite_arguments, configurations = SUITES[suite]
+                    if configuration not in configurations:
+                        continue
 
+                    arguments = [*extra, *suite_arguments]
                     directory = os.path.join(out, suite)
                     os.makedirs(directory, exist_ok=True)
                     path = os.path.join(directory, f'{run_number}-{framework}-{configuration}.txt')
                     assembly = os.path.join(out, 'bin', binary, framework, ASSEMBLY)
                     print(f'::group::run {run_number} {framework} {configuration} {suite}', flush=True)
-                    result = subprocess.run(['dotnet', assembly, *arguments], capture_output=True, text=True, check=False)
+                    result = subprocess.run(
+                        ['dotnet', assembly, *arguments],
+                        capture_output=True,
+                        text=True,
+                        check=False,
+                        env={**os.environ, **environment})
                     with open(path, 'w', encoding='utf-8') as file:
                         file.write(result.stdout)
                         file.write(result.stderr)
@@ -131,8 +161,14 @@ def span(values):
 
 
 def speedup(vector, other, unit):
-    """Returns how many times faster the vector configuration is, by the medians: rates divide one way, times the other."""
+    """Returns how many times faster the first configuration is, by the medians: rates divide one way, times the other.
+
+    A median of zero, as a derivation shorter than the processor clock's resolution records for its processor time,
+    gives no ratio.
+    """
     a, b = statistics.median(vector), statistics.median(other)
+    if a == 0 or b == 0:
+        return '-'
     ratio = a / b if unit == 'MiB/s' else b / a
     return f'{ratio:.2f}×'
 
@@ -165,14 +201,16 @@ def summarize(out):
                     print(f'- `{configuration}`: {headers[configuration]}')
 
             print()
-            print('| Case | Unit | vector | scalar | 1.0.0 | vector vs scalar | vector vs 1.0.0 |')
-            print('|---|---|---|---|---|---|---|')
+            present = [c for c in CONFIGURATIONS if c in headers]
+            comparisons = [(a, b) for a, b in (('vector', 'scalar'), ('avx2', 'scalar'), ('ssse3', 'scalar'), ('vector', '1.0.0')) if a in present and b in present]
+            print('| Case | Unit | ' + ' | '.join(present) + ' | ' + ' | '.join(f'{a} vs {b}' for a, b in comparisons) + ' |')
+            print('|---|---|' + '---|' * (len(present) + len(comparisons)))
             for case, by_configuration in measured.items():
-                cells = [span(by_configuration[c]) if c in by_configuration else '-' for c in CONFIGURATIONS]
+                cells = [span(by_configuration[c]) if c in by_configuration else '-' for c in present]
                 versus = [
-                    speedup(by_configuration['vector'], by_configuration[c], units[case])
-                    if 'vector' in by_configuration and c in by_configuration else '-'
-                    for c in ('scalar', '1.0.0')
+                    speedup(by_configuration[a], by_configuration[b], units[case])
+                    if a in by_configuration and b in by_configuration else '-'
+                    for a, b in comparisons
                 ]
                 print(f'| {case} | {units[case]} | ' + ' | '.join(cells + versus) + ' |')
 

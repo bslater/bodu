@@ -27,8 +27,9 @@ namespace Bodu.Security.Cryptography.Benchmarks;
 /// process can be measured.
 /// </para>
 /// <para>
-/// <c>--argon2-harness --sweep</c> measures where threads pay instead: matrices of 1 to 32 MiB at p = 4, each with the
-/// default bound and, where the build has one, confined to one thread.
+/// <c>--argon2-harness --sweep</c> measures where threads pay instead: matrices of 256 KiB to 32 MiB at p = 4, each with
+/// the default bound and, where the build has one, confined to one thread; and below 3 MiB, where the library keeps a
+/// derivation on one thread, with every slice divided among threads regardless.
 /// </para>
 /// </remarks>
 internal static class Argon2Harness
@@ -85,20 +86,30 @@ internal static class Argon2Harness
     }
 
     /// <summary>
-    /// Measures where threads pay: for matrices of 1 to 32 MiB at p = 4, derivations with the default bound, which
-    /// divide a slice among threads once its segments reach 256 blocks (a 4 MiB matrix), and, where the build has a
-    /// bound, the same derivations confined to one thread.
+    /// Measures where threads pay: for matrices of 256 KiB to 32 MiB at p = 4, derivations with the default bound, which
+    /// divide a slice among threads once its segments reach the library's threshold (192 blocks, a 3 MiB matrix, where
+    /// 1.2.0 sets it), and, where the build has a bound, the same derivations confined to one thread. Below 3 MiB the
+    /// build's own derivations also run with every slice divided among threads, through <see cref="Argon2FillDriver" />,
+    /// to show whether the threshold could sit lower still.
     /// </summary>
     /// <param name="parameters">The parameters to vary the memory size of.</param>
     private static void Sweep(Argon2Parameters parameters)
     {
-        foreach (int mebibytes in new[] { 1, 2, 4, 8, 16, 32 })
+#if !BODU_CRYPTO_BASELINE
+        Argon2FillDriver driver = Argon2FillDriver.Create();
+#endif
+        foreach (int kibibytes in new[] { 256, 512, 1024, 2048, 3072, 4096, 8192, 16384, 32768 })
         {
-            Argon2Parameters sized = parameters with { MemoryKiB = mebibytes * 1024 };
-            Measure($"m = {mebibytes} MiB, p = 4", () => Argon2id.DeriveKey(Password, Salt, sized));
+            Argon2Parameters sized = parameters with { MemoryKiB = kibibytes };
+            string size = kibibytes < 1024
+                ? string.Create(CultureInfo.InvariantCulture, $"{kibibytes} KiB")
+                : string.Create(CultureInfo.InvariantCulture, $"{kibibytes / 1024} MiB");
+            Measure($"m = {size}, p = 4", () => Argon2id.DeriveKey(Password, Salt, sized));
 #if !BODU_CRYPTO_BASELINE
             var oneThread = new Argon2id(sized, maxDegreeOfParallelism: 1);
-            Measure($"m = {mebibytes} MiB, p = 4, one thread", () => oneThread.GetBytes(Password, Salt));
+            Measure($"m = {size}, p = 4, one thread", () => oneThread.GetBytes(Password, Salt));
+            if (kibibytes < 3072)
+                Measure($"m = {size}, p = 4, threaded", () => driver.DeriveKey(sized, Password, Salt, minimumParallelSegmentLength: 1));
 #endif
         }
     }

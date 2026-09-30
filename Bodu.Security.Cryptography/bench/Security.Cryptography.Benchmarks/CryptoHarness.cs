@@ -59,6 +59,9 @@ internal static class CryptoHarness
     /// </summary>
     private static readonly int[] s_shortAeadLengths = [0, 16, 128, 192, 320, 384, 448, 512, 576, 768, 960];
 
+    /// <summary>The message lengths below 256 bytes the MAC cases add, from 128 bytes, where Apple silicon's AdvSimd kernel takes over.</summary>
+    private static readonly int[] s_macThresholdLengths = [128, 192];
+
     /// <summary>
     /// The message lengths the Poly1305 kernel cases sweep: each side of every length at which dispatch moves from one
     /// kernel to the next, then up to the bulk input.
@@ -99,6 +102,9 @@ internal static class CryptoHarness
 #endif
         RunBlockCiphers();
         RunKeyDerivation();
+#if !BODU_CRYPTO_BASELINE
+        RunArgon2Kernels();
+#endif
         RunPublicKey();
     }
 
@@ -223,6 +229,14 @@ internal static class CryptoHarness
                 Measure("aead", $"BCL ChaCha20-Poly1305 {size}", length, () => bcl.Encrypt(nonce12, message, output.AsSpan(0, length), tag));
         }
 
+        // The MAC alone between the AdvSimd kernel's two thresholds: Apple silicon's kernel takes runs from 128 bytes,
+        // every other ARM64 processor's from 256.
+        foreach (int length in s_macThresholdLengths)
+        {
+            byte[] message = Random(length, 16);
+            Measure("mac", $"Bodu Poly1305 {SizeLabel(length)}", length, () => { using var mac = new Poly1305(); mac.Key = key32; mac.TryComputeHash(message, digest, out _); });
+        }
+
         using (var aes = new AesBlockCipher(key16))
         using (var aes2 = new AesBlockCipher(key32[..16]))
         {
@@ -287,6 +301,23 @@ internal static class CryptoHarness
             foreach ((string name, int kernel) in driver.Kernels)
                 Measure("kernel", $"Poly1305 {name} {SizeLabel(length)}", length, () => driver.ComputeTag(kernel, key, message, tag));
         }
+    }
+
+    /// <summary>
+    /// Measures Argon2id through each compression kernel the processor supports, named explicitly and on the calling
+    /// thread, with the parameters of the key-derivation case.
+    /// </summary>
+    private static void RunArgon2Kernels()
+    {
+        if (Program.IsSimdDisabled)
+            return;
+
+        var driver = Argon2FillDriver.Create();
+        byte[] password = Random(32, 21);
+        byte[] salt = Random(16, 22);
+        var argon2 = new Argon2Parameters { MemoryKiB = 19 * 1024, Iterations = 2, Parallelism = 1 };
+        foreach ((string name, int kernel) in driver.Kernels)
+            Measure("kernel", $"Argon2id {name} m=19 MiB t=2 p=1", 0, () => driver.DeriveKeyWithKernel(argon2, password, salt, kernel));
     }
 #endif
 
