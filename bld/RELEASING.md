@@ -212,7 +212,10 @@ unable to confirm that anything is new.
 | `/dev/` | the current master build | every merge to master |
 
 A tag run therefore publishes the docs as well as the packages, with no extra
-step. Only a plain `vMAJOR.MINOR.PATCH` tag does so — a prerelease is skipped
+step. Every API page names the package it ships in and that package's version, as MSBuild resolves
+it for the commit being documented (a `BoduPackageVersionOverride` included), so the root and
+`/<series>/` show the released versions and `/dev/` the versions master would pack. Nothing about
+a version needs editing in the docs when a package moves. Only a plain `vMAJOR.MINOR.PATCH` tag does so — a prerelease is skipped
 rather than allowed to replace the root, since it is not the latest release.
 
 Seeding or repairing a slot out of band is a manual run: Actions → *Build and
