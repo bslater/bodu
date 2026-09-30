@@ -25,6 +25,13 @@ namespace Bodu.CodeStyle.XmlDocumentation.Layout;
 /// the last fitting word boundary. Clause-aware wrapping is deliberately not applied.
 /// </para>
 /// <para>
+/// One exception: DocFX renders documentation text as Markdown, so a line the wrapper opens with an atom Markdown reads
+/// as the start of a block (see <see cref="IsMarkdownBlockMarker" />) would become a list, heading or quote. When the
+/// overflowing atom is such a marker, the break moves before the preceding word, which then opens the next line; when
+/// the line holds no such word, the marker stays on it, over budget. A marker at the start of the text is the author's
+/// and is left where it is.
+/// </para>
+/// <para>
 /// Adjacent atoms with no whitespace between them (for example a trailing <c>'.'</c> immediately after an inline
 /// <c>&lt;see /&gt;</c> reference) are treated as a single typographic unit and are never split across a line boundary,
 /// even when the join exceeds the budget.
@@ -62,6 +69,10 @@ internal static class DocWrapper
         var currentHasContent = false;
         string? pendingWhitespace = null;
 
+        // The offset in `current` of the whitespace before each word after the first: the places the running line
+        // could still be broken.
+        var breaks = new List<int>();
+
         foreach (var atom in atoms)
         {
             if (IsWhitespaceAtom(atom))
@@ -77,6 +88,7 @@ internal static class DocWrapper
             if (atom.IndexOf('\n') >= 0)
             {
                 AppendMultiLineAtom(atom, lines, current, ref currentHasContent, ref pendingWhitespace);
+                breaks.Clear();
                 continue;
             }
 
@@ -87,8 +99,23 @@ internal static class DocWrapper
             // '.' after </see>) and must not be split across a line boundary even when the join exceeds budget.
             if (!currentHasContent || current.Length + addedLength <= contentBudget || leadingWhitespace.Length == 0)
             {
-                current.Append(leadingWhitespace).Append(atom);
+                AppendAtom(current, breaks, leadingWhitespace, atom);
                 currentHasContent = true;
+                pendingWhitespace = null;
+                continue;
+            }
+
+            if (IsMarkdownBlockMarker(atom))
+            {
+                // The marker must not open the next line: break before the last word that can open it instead, or,
+                // when there is none, keep the marker on this line over budget.
+                var carryBreak = FindCarryBreak(current, breaks);
+                if (carryBreak >= 0)
+                {
+                    CarryTailToNextLine(lines, current, breaks, carryBreak);
+                }
+
+                AppendAtom(current, breaks, leadingWhitespace, atom);
                 pendingWhitespace = null;
                 continue;
             }
@@ -97,6 +124,7 @@ internal static class DocWrapper
             // line with the overflowing atom.
             lines.Add(current.ToString());
             current.Clear();
+            breaks.Clear();
             current.Append(atom);
             currentHasContent = true;
             pendingWhitespace = null;
@@ -108,6 +136,134 @@ internal static class DocWrapper
         }
 
         return lines;
+    }
+
+    /// <summary>
+    /// Determines whether a word, placed at the start of a line, would make Markdown begin a block rather than continue
+    /// the paragraph.
+    /// </summary>
+    /// <param name="word">The word, as it appears in the documentation source.</param>
+    /// <returns>
+    /// <see langword="true" /> for a bullet (<c>-</c>, <c>+</c>, <c>*</c>), a setext underline or thematic break (a run
+    /// of <c>-</c>, <c>=</c> or <c>*</c>), an ATX heading (one to six <c>#</c>), a block quote (a word beginning with
+    /// <c>&gt;</c>, raw or as the <c>&amp;gt;</c> entity), or an ordered list starting at one (<c>1.</c>, <c>1)</c>);
+    /// otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Only an ordered list that starts at one can interrupt a paragraph, so <c>2.</c> or <c>10)</c> opening a
+    /// continuation line is harmless and is not a marker.
+    /// </remarks>
+    internal static bool IsMarkdownBlockMarker(string word)
+    {
+        if (word.Length == 0) return false;
+
+        if (word == "+" || word == "1." || word == "1)") return true;
+        if (IsRunOf(word, '-') || IsRunOf(word, '=') || IsRunOf(word, '*')) return true;
+        if (word.Length <= 6 && IsRunOf(word, '#')) return true;
+
+        return word[0] == '>' || word.StartsWith("&gt;", StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Appends a word to the running line, recording the break opportunity its leading whitespace creates.
+    /// </summary>
+    /// <param name="current">The builder for the line currently being assembled.</param>
+    /// <param name="breaks">The break opportunities recorded on the running line.</param>
+    /// <param name="leadingWhitespace">The whitespace separating the word from the line so far; empty when joined.</param>
+    /// <param name="atom">The word atom to append.</param>
+    private static void AppendAtom(StringBuilder current, List<int> breaks, string leadingWhitespace, string atom)
+    {
+        if (leadingWhitespace.Length > 0)
+        {
+            breaks.Add(current.Length);
+        }
+
+        current.Append(leadingWhitespace).Append(atom);
+    }
+
+    /// <summary>
+    /// Finds the latest break on the running line whose following word can open a line, so that breaking there
+    /// carries that word, and everything after it, onto the next line.
+    /// </summary>
+    /// <param name="current">The builder for the line currently being assembled.</param>
+    /// <param name="breaks">The break opportunities recorded on the running line, in order.</param>
+    /// <returns>The offset of the chosen break, or <c>-1</c> when every candidate word is itself a block marker.</returns>
+    private static int FindCarryBreak(StringBuilder current, List<int> breaks)
+    {
+        for (var i = breaks.Count - 1; i >= 0; i--)
+        {
+            var wordStart = SkipWhitespace(current, breaks[i]);
+            var wordEnd = i + 1 < breaks.Count ? breaks[i + 1] : current.Length;
+            if (!IsMarkdownBlockMarker(current.ToString(wordStart, wordEnd - wordStart)))
+            {
+                return breaks[i];
+            }
+        }
+
+        return -1;
+    }
+
+    /// <summary>
+    /// Emits the running line up to a break and keeps the text after it as the start of the next line.
+    /// </summary>
+    /// <param name="lines">The accumulated output lines.</param>
+    /// <param name="current">The builder for the line currently being assembled; on return, the carried text.</param>
+    /// <param name="breaks">The break opportunities on the running line; on return, those within the carried text.</param>
+    /// <param name="carryBreak">The offset of the break to emit the line at.</param>
+    private static void CarryTailToNextLine(List<string> lines, StringBuilder current, List<int> breaks, int carryBreak)
+    {
+        var tailStart = SkipWhitespace(current, carryBreak);
+        var tail = current.ToString(tailStart, current.Length - tailStart);
+
+        lines.Add(current.ToString(0, carryBreak));
+        current.Clear().Append(tail);
+
+        var carried = new List<int>();
+        foreach (var offset in breaks)
+        {
+            if (offset > carryBreak)
+            {
+                carried.Add(offset - tailStart);
+            }
+        }
+
+        breaks.Clear();
+        breaks.AddRange(carried);
+    }
+
+    /// <summary>
+    /// Returns the offset of the first character at or after <paramref name="offset" /> that is not a space or tab.
+    /// </summary>
+    /// <param name="text">The text to scan.</param>
+    /// <param name="offset">The offset to start from.</param>
+    /// <returns>The offset of the first non-whitespace character, or the text's length when there is none.</returns>
+    private static int SkipWhitespace(StringBuilder text, int offset)
+    {
+        while (offset < text.Length && (text[offset] == ' ' || text[offset] == '\t'))
+        {
+            offset++;
+        }
+
+        return offset;
+    }
+
+    /// <summary>
+    /// Determines whether a word consists of one character repeated.
+    /// </summary>
+    /// <param name="word">The word to test; must not be empty.</param>
+    /// <param name="character">The character the word must consist of.</param>
+    /// <returns><see langword="true" /> if every character of the word is <paramref name="character" />.</returns>
+    private static bool IsRunOf(string word, char character)
+    {
+        for (var i = 0; i < word.Length; i++)
+        {
+            if (word[i] != character)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /// <summary>
