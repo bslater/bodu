@@ -131,6 +131,36 @@ public sealed partial class Ed25519Tests
     }
 
     /// <summary>
+    /// Verifies that signing a message longer than <see cref="Ed25519.StackHashMaximumMessageLength" /> into a span
+    /// allocates no more than verifying a signature over it: signing's two hashes of the message share the one
+    /// <see cref="IncrementalHash" /> that verification's one hash needs.
+    /// </summary>
+    /// <remarks>
+    /// Measured on the calling thread around each call, as for
+    /// <see cref="SignData_WhenMessageFitsTheStackHash_ForSpanOverload_ShouldAllocateNothing" />.
+    /// </remarks>
+    [TestMethod]
+    public void SignData_WhenMessageExceedsTheStackHash_ForSpanOverload_ShouldAllocateNoMoreThanVerification()
+    {
+        using var algorithm = new Ed25519();
+        algorithm.ImportPrivateKey(Convert.FromHexString(MessageHashingSeedHex));
+        byte[] message = MessagePattern(Ed25519.StackHashMaximumMessageLength + 1);
+        byte[] signature = new byte[Ed25519.SignatureSizeInBytes];
+        algorithm.SignData(message, signature);
+        Assert.IsTrue(algorithm.VerifyData(message, signature));
+
+        long before = GC.GetAllocatedBytesForCurrentThread();
+        algorithm.SignData(message, signature);
+        long signing = GC.GetAllocatedBytesForCurrentThread() - before;
+
+        before = GC.GetAllocatedBytesForCurrentThread();
+        _ = algorithm.VerifyData(message, signature);
+        long verifying = GC.GetAllocatedBytesForCurrentThread() - before;
+
+        Assert.IsTrue(signing <= verifying, $"SignData allocated {signing} bytes and VerifyData {verifying}.");
+    }
+
+    /// <summary>
     /// Yields message lengths either side of <see cref="Ed25519.StackHashMaximumMessageLength" />, around SHA-512's
     /// block boundaries, and well beyond the limit.
     /// </summary>
