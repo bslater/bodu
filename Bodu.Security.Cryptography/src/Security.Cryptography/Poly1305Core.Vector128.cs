@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
@@ -30,10 +31,10 @@ internal partial struct Poly1305Core
     /// four blocks into limbs together, one block to each 32-bit lane, the two of <c>m</c> in the lower halves and the
     /// two of <c>m′</c> in the upper. A product of two limbs is one <c>UMULL</c> or <c>UMLAL</c>, 32 × 32 → 64 bits, or
     /// <c>UMULL2</c> or <c>UMLAL2</c> for the upper halves, taking the multiplier's limb from one lane of another
-    /// vector, so that a multiplier's five limbs and five times its upper four fill three vectors. <c>XTN</c> narrows
-    /// the lanes' limbs once per step, after the carries. The step's state fits in ARM64's 32 vector registers; on a
-    /// Neoverse N2 and an Apple M1 it ran faster than taking one group per step at every length where either beat the
-    /// scalar loop.
+    /// vector, so that a multiplier's five limbs and five times its upper four fill three vectors. <c>USRA</c> adds
+    /// each limb's carry to the next in one instruction, and <c>XTN</c> narrows the lanes' limbs once per step, after
+    /// the carries. The step's state fits in ARM64's 32 vector registers; on a Neoverse N2 and an Apple M1 it ran
+    /// faster than taking one group per step at every length where either beat the scalar loop.
     /// </para>
     /// </remarks>
     private static class Vector128Kernel
@@ -336,7 +337,9 @@ internal partial struct Poly1305Core
             m1 = AdvSimd.ShiftLeftAndInsert(w0 >>> 26, w1, 6) & mask;
             m2 = AdvSimd.ShiftLeftAndInsert(w1 >>> 20, w2, 12) & mask;
             m3 = AdvSimd.ShiftLeftAndInsert(w2 >>> 14, w3, 18) & mask;
-            m4 = (w3 >>> 8) | Vector128.Create((uint)FullBlockBit26);
+
+            // The top limb's 24 bits sit below the 2^128 bit a full block sets, so USRA adds them to it.
+            m4 = AdvSimd.ShiftRightLogicalAdd(Vector128.Create((uint)FullBlockBit26), w3, 8);
         }
 
         /// <summary>
@@ -558,6 +561,7 @@ internal partial struct Poly1305Core
         /// <param name="d4">The lanes' limbs at 2^104.</param>
         /// <param name="mask">The 26-bit mask in every lane.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SuppressMessage("Performance", "CA1857:A constant is expected for the parameter", Justification = ".NET 8's reference assembly bounds the counts of the 64-bit USRA and SHRN overloads at 16, where the instructions take up to 64 and 32; .NET 8's JIT emits them with 26, and .NET 10's annotations allow it.")]
         private static void Carry(
             ref Vector128<ulong> d0,
             ref Vector128<ulong> d1,
@@ -566,31 +570,26 @@ internal partial struct Poly1305Core
             ref Vector128<ulong> d4,
             Vector128<ulong> mask)
         {
-            // Two chains run side by side: 0 → 1 → 2 → 3 → 4, and 3 → 4 → 0 (times 5) → 1.
-            Vector128<ulong> c = d0 >>> 26;
-            Vector128<ulong> e = d3 >>> 26;
+            // Two chains run side by side: 0 → 1 → 2 → 3 → 4, and 3 → 4 → 0 (times 5) → 1. USRA shifts a limb's carry
+            // and adds it to the next in one instruction.
+            d1 = AdvSimd.ShiftRightLogicalAdd(d1, d0, 26);
+            d4 = AdvSimd.ShiftRightLogicalAdd(d4, d3, 26);
             d0 &= mask;
-            d1 += c;
             d3 &= mask;
-            d4 += e;
 
-            c = d1 >>> 26;
-            e = d4 >>> 26;
+            // The carry out of 2^130 is below 2^31, so SHRN narrows it for UMLAL to multiply by 5 into the lowest limb.
+            d2 = AdvSimd.ShiftRightLogicalAdd(d2, d1, 26);
+            d0 = AdvSimd.MultiplyWideningLowerAndAdd(d0, AdvSimd.ShiftRightLogicalNarrowingLower(d4, 26), Vector64.Create(5u));
             d1 &= mask;
-            d2 += c;
             d4 &= mask;
-            d0 += e + (e << 2);
 
-            c = d2 >>> 26;
-            e = d0 >>> 26;
+            d3 = AdvSimd.ShiftRightLogicalAdd(d3, d2, 26);
+            d1 = AdvSimd.ShiftRightLogicalAdd(d1, d0, 26);
             d2 &= mask;
-            d3 += c;
             d0 &= mask;
-            d1 += e;
 
-            c = d3 >>> 26;
+            d4 = AdvSimd.ShiftRightLogicalAdd(d4, d3, 26);
             d3 &= mask;
-            d4 += c;
         }
 
         /// <summary>
