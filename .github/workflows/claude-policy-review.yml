@@ -35,7 +35,11 @@ concurrency:
 
 jobs:
   policy-review:
-    runs-on: ubuntu-latest
+    # Runs on one image, not the 24.04 and 26.04 pair the verification jobs use: this job posts a
+    # review comment, so it must run once. The label is named rather than ubuntu-latest so GitHub's
+    # move of that label to 26.04 cannot change it; switch it to ubuntu-26.04 when the others drop
+    # 24.04.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     # Dormant until armed. Set the repository variable ENABLE_CLAUDE_POLICY_AGENTS to 'true'
     # once ANTHROPIC_API_KEY is configured; until then every run skips and nothing blocks a
