@@ -24,13 +24,18 @@ on:
 permissions:
   contents: write
 
-# Serialises publishing. This guarded the Pages deployment when one existed; it now guards the
-# branch push, which needs it just as much — two runs racing to push gh-pages would leave one
-# rejected as a non-fast-forward. In-progress runs are never cancelled, so a publish always
-# finishes rather than leaving the branch half-written.
+# Serialises publishing, and only publishing. The "pages" group guards the gh-pages push: two runs
+# racing to push it would leave one rejected as a non-fast-forward, so the runs that can publish
+# (master and tag pushes, manual dispatches) queue there, and an in-progress one is never cancelled,
+# so a publish always finishes rather than leaving the branch half-written.
+#
+# A pull request never publishes, so it does not join that queue. A group holds one pending run,
+# and a newer run replaces it, so pull requests sharing "pages" had their queued docs builds
+# cancelled by every master push. Each pull request instead gets a group of its own, where a new
+# push supersedes that pull request's earlier run, in progress or not.
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: ${{ github.event_name == 'pull_request' && format('docs-pr-{0}', github.event.pull_request.number) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build-docs:
