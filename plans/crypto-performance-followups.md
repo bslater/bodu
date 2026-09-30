@@ -1381,3 +1381,145 @@ How it was done, and where it departs from the design above:
     `EncryptBlocks` is still the default, one `Encrypt` per block, so their ECB and CTR would gain from it.
   - ARM64's thirty-one general registers could hold Serpent-512's sixteen words too. F7's hardware run would show
     whether a resident path pays there.
+
+### F6 — counter mode without the counter run (done)
+
+F6's figures come from the second machine, F3's. The before build is this branch at a88da7a7, which adds the harness's
+ECB and 64-byte CTR rows beside each block cipher's CTR row, on master at 5f5a692e (#732); the after build is at
+50de4381, with F6's code. Both ran alternately, in each of the harness's five processor configurations on both runtimes,
+in two runs, the second in the opposite order. *CTR 1 MiB* and *CTR 64 B* run a new `CtrModeTransform` over
+`Serpent128Cipher` per call. *ECB bulk 1 MiB* encrypts the same number of blocks through `EncryptBlocks`, which F6 does
+not touch, and *Twofish-CTR 1 MiB* runs CTR's unchanged path, so the two show how far the runs drift on their own.
+*Change* is the ratio of the two ranges' midpoints, above 1 where F6 is faster. The CTR rows allocate the transform's 80
+bytes per call, before and after, and the ECB row nothing.
+
+| Serpent-128 (net10.0, this host's default) | Before F6 (MiB/s) | After F6 (MiB/s) | Change |
+|---|---|---|---|
+| CTR 1 MiB | 644–646 | 725–732 | 1.13× |
+| CTR 64 B | 195–196 | 201–218 | 1.07× |
+| ECB bulk 1 MiB | 672–682 | 731–736 | 1.08× |
+| Twofish-CTR 1 MiB | 128–144 | 142–144 | 1.05× |
+
+| Serpent-128 (net8.0, this host's default) | Before F6 (MiB/s) | After F6 (MiB/s) | Change |
+|---|---|---|---|
+| CTR 1 MiB | 547–556 | 545–597 | 1.04× |
+| CTR 64 B | 156–176 | 181–190 | 1.12× |
+| ECB bulk 1 MiB | 578–602 | 584–600 | 1.00× |
+| Twofish-CTR 1 MiB | 146–147 | 136–142 | 0.95× |
+
+The ECB and Twofish rows moved 0.95–1.08× on their own, so the two runs alone cannot separate a few percent from the
+drift. Five alternating A/B rounds of the Serpent-128 rows, each build in its own process, can:
+
+| Serpent-128 | Runtime | Before F6 (MiB/s) | After F6 (MiB/s) | Change (medians) |
+|---|---|---|---|---|
+| CTR 1 MiB | net10.0 | 609–652 | 708–725 | 1.14× |
+| CTR 1 MiB | net8.0 | 525–568 | 579–600 | 1.06× |
+| CTR 64 B | net10.0 | 182–203 | 193–223 | 1.09× |
+| CTR 64 B | net8.0 | 147–181 | 182–186 | 1.09× |
+| ECB bulk 1 MiB | net10.0 | 691–741 | 694–742 | 1.01× |
+| ECB bulk 1 MiB | net8.0 | 597–616 | 557–611 | 0.98× |
+
+The target, Serpent-128-CTR within 10% of `EncryptBlocks`, is met in every configuration on both runtimes. Over the A/B
+rounds CTR runs at 1.00 of ECB's median rate on .NET 10 and 0.98 on .NET 8, where it ran at 0.89 and 0.91. Over the two
+runs of every configuration it runs at 0.94–1.02, where it ran at 0.86–1.03:
+
+| CTR 1 MiB ÷ ECB 1 MiB | Runtime | this host's default | `DOTNET_PreferredVectorBitWidth=512` | AVX-512 off | AVX2 off | no vector instructions |
+|---|---|---|---|---|---|---|
+| Before F6 | net10.0 | 0.95 | 0.86 | 0.93 | 0.91 | 1.03 |
+| After F6 | net10.0 | 0.99 | 0.97 | 1.02 | 1.00 | 0.94 |
+| Before F6 | net8.0 | 0.93 | 0.91 | 0.93 | 1.02 | 1.03 |
+| After F6 | net8.0 | 0.97 | 0.95 | 1.02 | 0.98 | 0.98 |
+
+Every row's change, in every configuration:
+
+| Change (net10.0) | this host's default | `DOTNET_PreferredVectorBitWidth=512` | AVX-512 off | AVX2 off | no vector instructions |
+|---|---|---|---|---|---|
+| Serpent-128-CTR 1 MiB | 1.13× | 1.14× | 1.08× | 1.10× | 0.97× |
+| Serpent-128-CTR 64 B | 1.07× | 1.05× | 1.02× | 1.05× | 1.04× |
+| Serpent-128-ECB bulk 1 MiB | 1.08× | 1.02× | 0.98× | 1.00× | 1.06× |
+| Twofish-CTR 1 MiB | 1.05× | 0.95× | 1.02× | 1.01× | 1.01× |
+
+| Change (net8.0) | this host's default | `DOTNET_PreferredVectorBitWidth=512` | AVX-512 off | AVX2 off | no vector instructions |
+|---|---|---|---|---|---|
+| Serpent-128-CTR 1 MiB | 1.04× | 1.03× | 1.06× | 1.03× | 0.98× |
+| Serpent-128-CTR 64 B | 1.12× | 0.98× | 1.11× | 1.08× | 1.07× |
+| Serpent-128-ECB bulk 1 MiB | 1.00× | 0.99× | 0.97× | 1.07× | 1.02× |
+| Twofish-CTR 1 MiB | 0.95× | 0.95× | 0.94× | 1.03× | 1.01× |
+
+With no vector instructions, the two runs put CTR at 0.97–0.98× of its old rate, inside the ECB row's own drift there.
+Five alternating A/B rounds in that configuration settle it: the fused scalar loop runs a little faster than encrypting a
+run of counter blocks and XORing it in a second pass.
+
+| No vector instructions | Runtime | Before F6 (MiB/s) | After F6 (MiB/s) | Change (medians) |
+|---|---|---|---|---|
+| CTR 1 MiB | net10.0 | 82.5–86.4 | 83.3–88.6 | 1.04× |
+| CTR 1 MiB | net8.0 | 78.2–84.5 | 82.2–87.9 | 1.04× |
+| ECB bulk 1 MiB | net10.0 | 83.6–89.2 | 85.7–87.6 | 1.00× |
+| ECB bulk 1 MiB | net8.0 | 80.4–86.9 | 75.7–87.5 | 1.01× |
+
+There CTR runs at 1.00 of ECB's median rate on both runtimes, where it ran at 0.96–0.97.
+
+How it was done, and where it departs from the design above:
+
+- **An internal counter-mode entry.** `ICounterModeBlockCipher` extends `IBlockCipher` with
+  `XorCounterKeystream(ref counterHigh, ref counterLow, input, output)`. It combines the input with the keystream of
+  successive counter blocks, the counter a big-endian 128-bit integer held as two 64-bit halves that advances by one
+  per whole or partial block, modulo 2¹²⁸. `Serpent128Cipher` implements it over `SerpentCore.XorCounterKeystream`,
+  which dispatches as `EncryptBlocks` does: groups of eight blocks, then four, then single blocks, then a partial last
+  block.
+- **The counters in registers.** The eight- and four-block kernels gained `XorCounterBlocks`.
+  - Each lane's counter is four words in native order, one vector per word. The eight-block kernel's lanes follow the
+    order `Load`'s transpose leaves: the group's even-numbered blocks in the low 128-bit lane, its odd-numbered blocks
+    in the high.
+  - A byte reversal per word, one `vpshufb`, `pshufb` or `REV32`, gives the words Serpent reads from a big-endian
+    block. The rounds run, and the transposed keystream is XORed with the input as it is stored.
+  - Between groups the counters advance by eight or four. Each carry between words is formed by an unsigned compare and
+    applied by masks.
+  - The scalar path forms one block's words the same way and adds the carry out of the low half arithmetically. A
+    partial last block goes through a 16-byte stack buffer, cleared afterwards, because its bytes past the input hold
+    bare keystream.
+- **Departure: no branch on the counter.** The design did not ask for it. EAX's counter, though, is `N′ = OMAC(0, N)`
+  under the key. The run of counter blocks branched only on a carry out of the low 64 bits, which a random counter meets
+  once in 2⁶⁴ blocks. The kernels carry out of each 32-bit word, once in 2³² blocks, well within one long message. So
+  they carry by masks, and their time does not depend on the counter.
+- **The modes.**
+  - `CtrModeTransform` hands such a cipher the input up to the counter's wrap, which it computes from the two halves.
+    The block that takes the counter's last value is produced, and a call with input left over throws after writing it,
+    as the run of counter blocks did.
+  - `CounterKeystream.TransformBigEndian128`, the counter EAX and SIV share, hands it the whole input, wrapping silently
+    as before.
+  - Every other cipher keeps the run of counter blocks, as does every mode with another counter rule: GCM's `inc32`,
+    GCM-SIV's little-endian counter, and CCM's.
+- **Departure: EAX and SIV as well.** The design named CTR. EAX and SIV share the same big-endian counter through
+  `CounterKeystream.TransformBigEndian128`, so they take the entry at no extra cost. Neither is measured here: with
+  Serpent, both spend most of their time in CMAC, one block at a time.
+- **Generated code, on both runtimes.**
+  - Each counter kernel and the scalar loop is `NoInlining | AggressiveOptimization`.
+  - The kernels call nothing. Their only conditional jumps are the loops', and the one that skips the last round's
+    linear transform.
+  - With AVX-512VL's 32 registers nothing spills. With AVX2's 16, the .NET 8 eight-block kernel reloads two constant
+    vectors once per group.
+  - The scalar loop spills its loop state at block boundaries, not inside the rounds.
+- **Tests.**
+  - The mode tests landed first, and passed against the run of counter blocks. CTR's batching tests gained Serpent-128,
+    a message split into two calls at every byte, and counters that carry out of their last four and last eight bytes.
+    The wrap tests gained a wrap partway through a group, and a partial last block that takes the counter's last value.
+    `CounterKeystreamTests` hold EAX's and SIV's counter to a block-at-a-time reference: over lengths either side of a
+    block, a group and a run, from counters below each carry and the wrap, and in place.
+  - `SerpentCoreTests.XorCounterKeystream` drives every kernel explicitly against encrypting each counter block on its
+    own. It covers every length to forty blocks and a few past, each whole and with partial blocks of 1, 7 and 15 bytes.
+    It starts counters 1 to 17 blocks below a carry out of 32, 64 and 96 bits, and below the wrap, so each carry falls
+    in every lane of a group. It runs in place, and into a longer output that it must leave untouched past the input.
+    It checks the counter each kernel leaves, and each kernel's attributes.
+  - `Serpent128CipherTests.XorCounterKeystream` holds the cipher's entry to `Encrypt` of each counter block for every
+    key size, and checks the disposal and length guards.
+  - The AdvSimd kernel ran on ARM64 under qemu. `SerpentCoreTests`' counter tests pass there on .NET 8. On both
+    runtimes, a scratch check held CTR to `Encrypt` of each counter block over carries, in place and out. Under the
+    emulator, .NET 10 aborts inside MSTest's `CollectionAssert`, after the kernel has returned.
+  - The full suite passes on both runtimes.
+- **Left for later.**
+  - GCM's `inc32` counter, GCM-SIV's little-endian counter and CCM's counter each need their own increment rule in the
+    same kernels.
+  - The wide-block variants' CTR still encrypts one counter block per `Encrypt` call. F5 left their many-block kernel for
+    later.
+  - AES cannot fuse, because its rounds run in the BCL.
