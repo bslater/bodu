@@ -42,8 +42,8 @@ claims:
   is a cursor over that list. A `ref struct` whose entire mutable state lives in heap objects gets
   the *restrictions* of the `Utf8JsonReader` idiom (no boxing, no async, no capture) with none of
   the zero-allocation *benefits*.
-- **The four-representation pipeline is accurately described**, and the duplicated representations
-  - not raw speed - are correctly identified as the main cost. Per document parsed today the
+- **The four-representation pipeline is accurately described**, and the duplicated representations -
+  not raw speed - are correctly identified as the main cost. Per document parsed today the
   library allocates: a doc-sized UTF-16 string, a `TomlReaderNode` tree with boxed scalars, a
   token list re-boxing nothing but re-referencing everything, plus `StringBuilder`s and
   `Substring` copies along the way.
@@ -94,14 +94,14 @@ which is what the current implementation does. The proposal's step 3 ("make the 
 consume the new reader") is correct but incomplete: it is silent on the serializer, which is the
 larger consumer surface (~20 built-in converters plus any external custom converters).
 
-**(b) The architecture therefore needs three boxes, not two.** The proposal's target diagram -
+**(b) The architecture therefore needs three boxes, not two.** The proposal's target diagram
 
 ```
 UTF-8 bytes → Utf8TomlReader ─┬─ direct consumer
                               └─ TomlDocumentBuilder → object model
 ```
 
-- omits the binding layer. The honest target is:
+omits the binding layer. The honest target is:
 
 ```
 UTF-8 bytes

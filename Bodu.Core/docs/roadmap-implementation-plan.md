@@ -53,8 +53,8 @@ Every tranche inherits the repository conventions (see
   and published vector tables are `[TestCategory("Regression")]`; one
   happy-path `Smoke` test per new primary public type.
 - **Documentation.** Every new public type owes full XML docs (build
-  breaks on CS1591), a guide page `docs/guides/core/<feature>.md`, and
-  - for collection types - a row in
+  breaks on CS1591), a guide page `docs/guides/core/<feature>.md`, and -
+  for collection types - a row in
   `docs/guides/core/choosing-a-collection.md`.
 - **Commit discipline - incremental, per `CLAUDE.md`.** One branch per
   session; the branch accumulates work across the session with a fresh
@@ -107,8 +107,8 @@ D1 as final once Wave 1 tags.
 letting globalization-adjacent packages take the pattern without
 pulling all of Core. D1 dissolves that motive: post-split Core *is* the
 small primitive layer, and every Bodu package already references it.
-Recording the decision explicitly matters because it is equally one-way
-- moving `WeekPattern` after `Bodu.Core/v1.0.0` is breaking. Revisit
+Recording the decision explicitly matters because it is equally one-way -
+moving `WeekPattern` after `Bodu.Core/v1.0.0` is breaking. Revisit
 only if a concrete external consumer appears that cannot take Core at
 all.
 
@@ -639,8 +639,8 @@ document the precedence rule with a cross-reference to
 `Bodu.Text.Configuration`'s resolver precedence so the two describe
 layering the same way. (2) `DefaultingDictionary<TKey,TValue>` - a
 wrapper (or subclass-free decorator) whose indexer miss invokes a
-`Func<TKey,TValue>` value factory and stores the result (`defaultdict`
-- distinct from the existing non-storing `GetOrAdd` extension in
+`Func<TKey,TValue>` value factory and stores the result (`defaultdict` -
+distinct from the existing non-storing `GetOrAdd` extension in
 `IDictionaryExtensions`, which stays the lightweight option). Tests:
 precedence/enumeration-dedup backbone for the layered view;
 factory-invocation counting for the defaulting wrapper. Risk: low;

@@ -5,12 +5,12 @@
 document. Deviations from the sketches will be recorded here at their
 landing commits, following the `.msg` plan's convention.
 **Relates to:** [`ROADMAP.md`](../../ROADMAP.md) - *`Bodu.IO.Pst` → P2*;
-[`Bodu.IO.Pst/docs/pst-container-exploration.md`](../../Bodu.IO.Pst/docs/pst-container-exploration.md)
-- §7 (tranches P2/P3), §3 (the layering boundary);
-[`Bodu.IO.Pst/docs/ltp-implementation-plan.md`](../../Bodu.IO.Pst/docs/ltp-implementation-plan.md)
-- §9 (deferrals this plan absorbs);
-[`Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md`](../../Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md)
-- the template this plan mirrors, and deviation *(1)* (the shared
+[`Bodu.IO.Pst/docs/pst-container-exploration.md`](../../Bodu.IO.Pst/docs/pst-container-exploration.md) -
+§7 (tranches P2/P3), §3 (the layering boundary);
+[`Bodu.IO.Pst/docs/ltp-implementation-plan.md`](../../Bodu.IO.Pst/docs/ltp-implementation-plan.md) -
+§9 (deferrals this plan absorbs);
+[`Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md`](../../Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md) -
+the template this plan mirrors, and deviation *(1)* (the shared
 model's public constructors placed for this reader).
 
 **Numbering reconciliation.** The container exploration's tranche table

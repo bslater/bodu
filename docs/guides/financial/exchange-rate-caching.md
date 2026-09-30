@@ -102,8 +102,8 @@ From here: add [more providers behind one file](#sqlite-concurrency-durability-a
 
 `CachingRateProvider` caches exactly one source. It is **storage-agnostic**:
 it never chooses or constructs a cache, so you supply the
-[`IRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IRateCache)
-- and therefore the storage structure (TOML or JSON files, the on-disk layout and
+[`IRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IRateCache) -
+and therefore the storage structure (TOML or JSON files, the on-disk layout and
 partitioning, in-memory, SQLite, or distributed) - at the composition root. The
 provider classes never learn they are being cached.
 
@@ -271,8 +271,8 @@ The cache is deliberately layered so you can plug in at whichever level fits:
 
 ### The on-disk format
 
-A cache bound to provider `RBA` stores `AUD/USD` as `<directory>/RBA/AUDUSD.toml`
-- a per-provider subdirectory with one file per pair (this default layout, and how
+A cache bound to provider `RBA` stores `AUD/USD` as `<directory>/RBA/AUDUSD.toml` -
+a per-provider subdirectory with one file per pair (this default layout, and how
 to change it, is covered under [File layouts and date partitioning](#file-layouts-and-date-partitioning)).
 Each file opens with a **self-describing header** - the bound `Provider` and the
 pair's `From`/`To` currency codes - so a file carries its own identity rather than
@@ -349,8 +349,8 @@ var cache = new JsonFileRateCache(
 The [`Layout`](xref:Bodu.Financial.ExchangeRates.Caching.FileRateCacheOptions.Layout)
 option decides **where** a pair's rows are stored: the folder hierarchy, the file
 name, and whether the rows are **split across files by date**. It defaults to
-[`RateCacheFileLayout.SingleFile`](xref:Bodu.Financial.ExchangeRates.Caching.RateCacheFileLayout)
-- the `<directory>/<provider>/<from><to>.toml` layout shown above. The built-in
+[`RateCacheFileLayout.SingleFile`](xref:Bodu.Financial.ExchangeRates.Caching.RateCacheFileLayout) -
+the `<directory>/<provider>/<from><to>.toml` layout shown above. The built-in
 partitioned layouts isolate each pair in its own folder and write one file per
 calendar period, keyed by the period:
 

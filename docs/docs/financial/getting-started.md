@@ -79,8 +79,8 @@ Single-step variant: `principal.MultiplyExact(growth)`.
 
 ### Deferred rounding with `CalculatedMoney`
 
-When you only need to defer rounding across a chain of `decimal` steps
-- not full rational exactness - `Money<T>.ToCalculated()` returns a
+When you only need to defer rounding across a chain of `decimal` steps -
+not full rational exactness - `Money<T>.ToCalculated()` returns a
 runtime-tagged <xref:Bodu.Financial.CalculatedMoney> that carries the
 full `decimal` precision through arithmetic and rounds once, at the
 settlement boundary:

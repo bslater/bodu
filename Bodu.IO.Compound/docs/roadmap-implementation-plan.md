@@ -479,8 +479,8 @@ they can land before or after tagging without a major-version event.
   revisit only with a consumer that measurably cannot rewrite whole
   containers.
 - **Encrypted containers** (RC4 / agile encryption of Office documents)
-  and **damaged-file recovery** beyond `CompoundValidationLevel.Minimal`
-  - remain out of scope per the README; recovery heuristics belong in a
+  and **damaged-file recovery** beyond `CompoundValidationLevel.Minimal` -
+  remain out of scope per the README; recovery heuristics belong in a
   forensic tool, not a framework library.
 - **COM interop shims** (`IStream` / `ILockBytes` adapters) - the
   README's "managed counterpart" framing is deliberate; no COM surface.

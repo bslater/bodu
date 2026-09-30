@@ -389,8 +389,8 @@ pack's substitution and gazetted rules end to end):
   asserting the **exact** official date and substitute-day flag on every row. The feed's
   sixteen royal/proclamation one-offs (jubilees, the state funeral, the coronation, the
   Scottish World Cup day, the proclamation-moved 2020/2022 holidays) are outside the rule
-  model and documented as excluded. The initial 264-row measurement found one divergence
-  - the GOV.UK 2023 Scottish 2 January chained substitution (1 January on a Sunday puts
+  model and documented as excluded. The initial 264-row measurement found one divergence -
+  the GOV.UK 2023 Scottish 2 January chained substitution (1 January on a Sunday puts
   New Year's Day's in-lieu day on 2 January's own Monday, pushing 2 January to Tuesday
   3 January) - fixed red-green with a Saturday/Sunday/Monday `IfDayOfWeek` trigger on the
   conflict-aware substitute (2 January falls on a Monday exactly when 1 January is a

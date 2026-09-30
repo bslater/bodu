@@ -78,8 +78,8 @@ against three different anchors; runs next and previous at an exact grid point w
 flag both ways; queries an instant five years from its anchor; enumerates a window; and shows the
 `DateTimeOffset` overload preserving the anchor's offset.
 
-**What to expect.** The anchor itself is **not** an occurrence - the series starts one interval later
-- which is what makes an anchor a natural "last run" marker. Looking back before the first occurrence
+**What to expect.** The anchor itself is **not** an occurrence - the series starts one interval later -
+which is what makes an anchor a natural "last run" marker. Looking back before the first occurrence
 therefore has no answer. A query five years from its anchor lands on the grid exactly, because the
 position is computed arithmetically rather than by stepping:
 

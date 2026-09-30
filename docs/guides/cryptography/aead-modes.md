@@ -233,14 +233,14 @@ RFC 8452 defines GCM-SIV for 128- and 256-bit master keys, and the per-message k
 
 Every AEAD transform in this library is **stateful and single-use**. A second call to `Encrypt` or `Decrypt` on the same instance - *including after a tag-mismatch failure* - throws <xref:System.InvalidOperationException>. The contract is enforced uniformly across `GcmModeTransform`, `CcmModeTransform`, `EaxModeTransform`, `OcbModeTransform`, `GcmSivModeTransform`, and `SivModeTransform`.
 
-The pattern throughout these examples -
+The pattern throughout these examples is this one:
 
 ```csharp
 using (var cipher = new AesBlockCipher(key))
     cipherWithTag = new GcmModeTransform(cipher, iv).Encrypt(plaintext, associatedData: aad);
 ```
 
-- constructs a fresh `AesBlockCipher` and a fresh `GcmModeTransform` inside the `using`, runs one encryption, and lets them both fall out of scope. Build a separate transform for the matching `Decrypt`:
+It constructs a fresh `AesBlockCipher` and a fresh `GcmModeTransform` inside the `using`, runs one encryption, and lets them both fall out of scope. Build a separate transform for the matching `Decrypt`:
 
 ```csharp
 using (var cipher = new AesBlockCipher(key))

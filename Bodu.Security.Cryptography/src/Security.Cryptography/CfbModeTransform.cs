@@ -19,9 +19,9 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Both directions use the cipher's encryption primitive: encryption computes <c>Cᵢ = Pᵢ ⊕ E(IVᵢ)</c> and decryption
 /// <c>Pᵢ = Cᵢ ⊕ E(IVᵢ)</c>, with <c>IV₀</c> supplied by the caller and <c>IVᵢ₊₁ = Cᵢ</c> for subsequent blocks. See <b>
-/// panel 3</b> of the diagram above: the dashed feedback lines carry ciphertext blocks back into the next cipher input
-/// - the cipher runs the same direction (encrypt) for both encryption and decryption, and the plaintext simply XORs
-/// into or out of the resulting keystream.
+/// panel 3</b> of the diagram above: the dashed feedback lines carry ciphertext blocks back into the next cipher
+/// input - the cipher runs the same direction (encrypt) for both encryption and decryption, and the plaintext simply
+/// XORs into or out of the resulting keystream.
 /// </para>
 /// <para>
 /// The initialization vector must equal the cipher block size in length and should be unique and unpredictable per

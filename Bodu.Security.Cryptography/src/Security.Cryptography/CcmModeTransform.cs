@@ -43,11 +43,11 @@ namespace Bodu.Security.Cryptography;
 /// is encoded as a 2-byte big-endian prefix (supports up to 65 279 bytes).
 /// </para>
 /// <para>
-/// <strong>When to use CCM.</strong> Pick CCM when interoperability with constrained-environment standards is required
-/// - IEEE 802.15.4 / Zigbee, Bluetooth Mesh, IPsec ESP, and TLS 1.2 with the AES-CCM cipher suites all use it. CCM is
-/// two-pass over the message (CBC-MAC then CTR), so it is slower than <see cref="GcmModeTransform" /> on commodity
-/// hardware, but it has no Galois-field arithmetic and is easier to implement correctly on minimal microcontrollers.
-/// For new general-purpose AEAD on x86/ARM hosts prefer GCM; for nonce-misuse resistance prefer
+/// <strong>When to use CCM.</strong> Pick CCM when interoperability with constrained-environment standards is
+/// required - IEEE 802.15.4 / Zigbee, Bluetooth Mesh, IPsec ESP, and TLS 1.2 with the AES-CCM cipher suites all use it.
+/// CCM is two-pass over the message (CBC-MAC then CTR), so it is slower than <see cref="GcmModeTransform" /> on
+/// commodity hardware, but it has no Galois-field arithmetic and is easier to implement correctly on minimal
+/// microcontrollers. For new general-purpose AEAD on x86/ARM hosts prefer GCM; for nonce-misuse resistance prefer
 /// <see cref="GcmSivModeTransform" /> or <see cref="SivModeTransform" />.
 /// </para>
 /// <para>

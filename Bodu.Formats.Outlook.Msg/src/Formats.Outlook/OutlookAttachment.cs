@@ -18,8 +18,8 @@ namespace Bodu.Formats.Outlook;
 /// <remarks>
 /// The conveniences return <see langword="null" /> when the underlying property is absent; every attachment property
 /// remains reachable through <see cref="Properties" />. Content access is method-specific:
-/// <see cref="OpenContentStream" /> serves a by-value payload and <see cref="OpenMessage" /> serves an embedded message
-/// - each throws <see cref="NotSupportedException" /> for every other method kind.
+/// <see cref="OpenContentStream" /> serves a by-value payload and <see cref="OpenMessage" /> serves an embedded
+/// message - each throws <see cref="NotSupportedException" /> for every other method kind.
 /// </remarks>
 public sealed class OutlookAttachment
 {

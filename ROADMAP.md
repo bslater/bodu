@@ -1550,8 +1550,8 @@ filter were added to *Non-goals* instead.
   [`Bodu.IO.Pst/docs/ltp-implementation-plan.md`](Bodu.IO.Pst/docs/ltp-implementation-plan.md);
   **P2 (the `Bodu.Formats.Outlook.Pst` messaging reader plus the
   container hardening pass) executed 2026-08-31** per
-  [`Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md`](Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md)
-  - all tracked in the per-project *`Bodu.IO.Pst`* section above. Both
+  [`Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md`](Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md) -
+  all tracked in the per-project *`Bodu.IO.Pst`* section above. Both
   packages ship in release wave 3; the ANSI variant and OST deltas
   remain the demand-driven follow-ons.
 - **`Bodu.Formats.Excel.OpenXml`** - a read-only `.xlsx` value reader over

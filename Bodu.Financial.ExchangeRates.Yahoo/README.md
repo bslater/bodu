@@ -50,8 +50,8 @@ decimal latest = provider.GetRate("EUR", "GBP");
   in-memory store of the pairs and windows it has fetched this session; it does not persist
   anything to disk. For durable caching across processes, compose it with the generic
   caching provider - `AddCachedRateProvider<…>` from the
-  [`Bodu.Financial.ExchangeRates.Caching`](../Bodu.Financial.ExchangeRates.Caching) package
-  - rather than a provider-local cache.
+  [`Bodu.Financial.ExchangeRates.Caching`](../Bodu.Financial.ExchangeRates.Caching) package -
+  rather than a provider-local cache.
 
 ## HTTP client and lifetime
 

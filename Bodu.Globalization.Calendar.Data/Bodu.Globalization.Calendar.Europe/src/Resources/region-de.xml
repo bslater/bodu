@@ -15,8 +15,8 @@
       Ascension is re-scoped to a non-working public holiday (statutory nationwide); the other Easter feasts and
       Christmas carry the hub/catalogue defaults.
 
-    * Germany-specific concepts are declared INLINE: German Unity Day, the Second Day of Christmas, and - crucially
-      - the regional religious feasts. Each regional feast is scoped to exactly the Länder that observe it as a
+    * Germany-specific concepts are declared INLINE: German Unity Day, the Second Day of Christmas, and - crucially -
+      the regional religious feasts. Each regional feast is scoped to exactly the Länder that observe it as a
       statutory non-working day (Epiphany in BW/BY/ST; Corpus Christi in BW/BY/HE/NW/RP/SL; the Assumption in
       BY/SL; Reformation Day across the northern and eastern states; All Saints' in BW/BY/NW/RP/SL; Repentance and
       Prayer Day in SN). A plain "DE" national query returns none of them, and they resolve as non-working only in

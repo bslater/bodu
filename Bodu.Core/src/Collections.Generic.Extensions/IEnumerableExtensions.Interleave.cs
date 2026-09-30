@@ -37,8 +37,8 @@ public static partial class IEnumerableExtensions
     /// </para>
     /// <para>
     /// Inputs of unequal length do not truncate the result and do not throw: once an input is exhausted it is skipped
-    /// and the remaining inputs continue round-robin until all are exhausted. This is the round-robin scheduling shape
-    /// - fair rotation over the surviving inputs - so no separate <c>RoundRobin</c> operator is provided.
+    /// and the remaining inputs continue round-robin until all are exhausted. This is the round-robin scheduling
+    /// shape - fair rotation over the surviving inputs - so no separate <c>RoundRobin</c> operator is provided.
     /// </para>
     /// </remarks>
     /// <example>

@@ -309,8 +309,8 @@ Priority fallback is **first-available**, not best-available: if the primary
 returns a four-day-old `PreviousOnOrBefore` hit, that wins even when a
 lower-priority provider has the exact date. To combine providers differently -
 averaging, per-FX-pair routing, or a custom
-[`IRateAggregationStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy)
-- see the [caching and aggregating guide](exchange-rate-caching.md).
+[`IRateAggregationStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy) -
+see the [caching and aggregating guide](exchange-rate-caching.md).
 
 ## Pinning one date everywhere: the adapter
 

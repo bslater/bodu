@@ -25,8 +25,8 @@
     <!--
       Conflict-aware weekend substitute: as above, but skipNonWorkingDates is true, so the substitute steps over a
       day already claimed by another non-working holiday. This is what lets the paired holidays (New Year / Day after
-      New Year's Day, and Christmas / Boxing Day) keep their in-lieu days from colliding when both fall on a weekend
-      - the second advances past the day the first has already taken.
+      New Year's Day, and Christmas / Boxing Day) keep their in-lieu days from colliding when both fall on a weekend -
+      the second advances past the day the first has already taken.
     -->
     <AdjustmentPolicy id="working-day-substitute" priority="100">
       <Trigger type="IfWeekend" />

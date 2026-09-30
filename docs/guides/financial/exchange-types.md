@@ -239,8 +239,8 @@ and per-FX-pair routing are covered in the
 [`DatedRateProviderAdapter`](xref:Bodu.Financial.ExchangeRates.DatedRateProviderAdapter)
 exposes a dated provider through `IRateProvider` by pinning a
 fixed valuation date and options. **Reach for it** when an existing
-consumer - such as `MoneyBag.ConvertTo<TTarget>(IRateProvider)`
-- accepts only the timeless contract but the rates must come from a
+consumer - such as `MoneyBag.ConvertTo<TTarget>(IRateProvider)` -
+accepts only the timeless contract but the rates must come from a
 dated source resolved with one consistent policy (a reporting-period
 end-date, say).
 

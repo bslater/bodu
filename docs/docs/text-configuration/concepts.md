@@ -24,8 +24,8 @@ Because it derives from `IniDocumentBase`, every read member of the INI model is
 `doc.GlobalSection["root"]`, `doc.Sections[0].Name`, `section.Entries`, `section["indent_size"]`, and the typed
 `section.TryGetValue<T>(...)` accessors all work without first resolving a view. The document-level surface is
 read-only - `ConfigurationDocument` exposes no way to add or remove sections (that mutation surface lives on the
-standalone <xref:Bodu.Text.Configuration.IniDocument>, which adds `AddSection` / `GetOrAddSection` / `RemoveSection`)
-- but each <xref:Bodu.Text.Configuration.IniSection> stays editable through `AddEntry` / `SetEntry` / `RemoveEntry`,
+standalone <xref:Bodu.Text.Configuration.IniDocument>, which adds `AddSection` / `GetOrAddSection` / `RemoveSection`) -
+but each <xref:Bodu.Text.Configuration.IniSection> stays editable through `AddEntry` / `SetEntry` / `RemoveEntry`,
 which is how a value is changed before a round-trip `Save`.
 
 A **view** is the resolved snapshot for one **target path** - a flat dictionary of colon-delimited configuration keys
@@ -131,8 +131,8 @@ A configuration key has three concurrent forms:
 <xref:Bodu.Text.Configuration.ConfigurationKey> is the read-only struct that holds all three.
 `ConfigurationKey.Parse(rawKey)` is the entry point; `TryParse` is the non-throwing variant.
 
-Lookups on a <xref:Bodu.Text.Configuration.ConfigurationView> accept either the dotted or the colon-delimited form
-- `view["logging.level.default"]` and `view["logging:level:default"]` return the same value. The view stores keys in
+Lookups on a <xref:Bodu.Text.Configuration.ConfigurationView> accept either the dotted or the colon-delimited form -
+`view["logging.level.default"]` and `view["logging:level:default"]` return the same value. The view stores keys in
 the colon-delimited form to interoperate with `Microsoft.Extensions.Configuration`.
 
 ## Key mapping

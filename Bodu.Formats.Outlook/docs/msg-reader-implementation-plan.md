@@ -23,8 +23,8 @@ through `Bodu.IO.Compound`; the real-world corpus followed on
 deviation.
 **Relates to:** [`ROADMAP.md`](../../ROADMAP.md) - *New library
 candidates → `Bodu.Formats.Outlook.Msg`*;
-[`Bodu.IO.Compound/docs/roadmap-implementation-plan.md`](../../Bodu.IO.Compound/docs/roadmap-implementation-plan.md)
-- §8 (T5).
+[`Bodu.IO.Compound/docs/roadmap-implementation-plan.md`](../../Bodu.IO.Compound/docs/roadmap-implementation-plan.md) -
+§8 (T5).
 
 This plan turns the roadmap's `.msg` candidate into sequenced, scoped
 work. The `.msg` (Outlook message) container *is* an OLE2 / Compound

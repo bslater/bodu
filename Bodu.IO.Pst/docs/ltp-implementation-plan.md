@@ -49,8 +49,8 @@ tranches.
 - **HN**: block 0 starts with HNHDR - `ibHnpm`(2) `bSig`(1, `0xEC`)
   `bClientSig`(1: `0xBC` PC, `0x7C` TC, `0xB5` BTH) `hidUserRoot`(4)
   `rgbFillLevel`(4). Later blocks start with HNPAGEHDR (`ibHnpm`, 2),
-  except block index 8 and every 128 thereafter (HNBITMAPHDR, 66 bytes
-  - header parsing needs only `ibHnpm`, first in all three shapes).
+  except block index 8 and every 128 thereafter (HNBITMAPHDR, 66 bytes -
+  header parsing needs only `ibHnpm`, first in all three shapes).
   Each block carries an HNPAGEMAP at `ibHnpm`: `cAlloc`(2) `cFree`(2)
   `rgibAlloc[cAlloc+1]`(2 each), monotonically non-decreasing and in
   bounds. **HID** = 32-bit: type bits (low 5, must be 0), `hidIndex`

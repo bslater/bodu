@@ -11,8 +11,8 @@ namespace Bodu.Text.Toml.Reader;
 
 /// <summary>
 /// Provides a forward-only, source-order reader for UTF-8 TOML bytes: a <see langword="ref struct" /> that holds the
-/// input span and scans it incrementally. Each <see cref="Read" /> advances to the next lexical token in document order
-/// - for example <c>[server.tls]</c> surfaces as <see cref="TomlTokenType.TableHeader" /> followed by a
+/// input span and scans it incrementally. Each <see cref="Read" /> advances to the next lexical token in document
+/// order - for example <c>[server.tls]</c> surfaces as <see cref="TomlTokenType.TableHeader" /> followed by a
 /// <see cref="TomlTokenType.Key" /> per dotted segment, and <c>ports = [1, 2]</c> as a key, then
 /// <see cref="TomlTokenType.StartArray" />, two integers, and <see cref="TomlTokenType.EndArray" />.
 /// </summary>

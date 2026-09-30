@@ -226,8 +226,8 @@ payload under six different `Append` chunk patterns - one call, one byte at a ti
 `retainLeafHashes: true` with `FinishComputation` to issue an authentication path.
 
 **What to expect.** All six chunk patterns land on the same root, with the same `Length` and `LeafCount`, because
-`Append` re-blocks internally. Memory is one block plus one pending hash per level - logarithmic in the leaf count
-- so this works on inputs far larger than memory:
+`Append` re-blocks internally. Memory is one block plus one pending hash per level - logarithmic in the leaf count -
+so this works on inputs far larger than memory:
 
 ```text
   payload       : 1371 bytes, block size 256
