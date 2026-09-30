@@ -92,10 +92,11 @@ internal partial struct Poly1305Core
     internal const int Avx512MinimumBytes = 4096;
 
     /// <summary>The shortest run of whole blocks, in bytes, that dispatch gives the two-lane AdvSimd kernel on ARM64.</summary>
+    /// <remarks>
+    /// Measured on .NET 8 and .NET 10, the kernel caught the scalar loop at 256 bytes on a Neoverse N2, and at 128 on
+    /// an Apple M1; below 256 bytes the N2's scalar loop, with <c>umulh</c>, finished first.
+    /// </remarks>
     internal const int AdvSimdMinimumBytes = 256;
-
-    /// <summary>The shortest run of whole blocks, in bytes, that dispatch gives the AdvSimd kernel's paired loop.</summary>
-    internal const int AdvSimdPairedMinimumBytes = 512;
 
     /// <summary>
     /// Gets the shortest run of whole blocks, in bytes, that any kernel dispatch may select on this processor takes:
@@ -346,8 +347,7 @@ internal partial struct Poly1305Core
     /// Selects the kernel for a run of whole blocks. On x64: AVX-512 for long runs, AVX2 for shorter ones — two groups
     /// at a time from <see cref="Avx2PairedMinimumBytes" /> where AVX-512VL's registers hold them — and the scalar loop
     /// below <see cref="Avx2MinimumBytes" /> or where neither is available. On ARM64: AdvSimd from
-    /// <see cref="AdvSimdMinimumBytes" />, two groups at a time from <see cref="AdvSimdPairedMinimumBytes" />, and the
-    /// scalar loop below.
+    /// <see cref="AdvSimdMinimumBytes" />, and the scalar loop below.
     /// </summary>
     /// <param name="length">The length of the run, in bytes.</param>
     /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
@@ -364,7 +364,7 @@ internal partial struct Poly1305Core
     internal static KernelKind SelectKernel(int length)
     {
         if (SimdCapabilities.AdvSimd)
-            return length < AdvSimdMinimumBytes ? KernelKind.Scalar : length < AdvSimdPairedMinimumBytes ? KernelKind.AdvSimd : KernelKind.AdvSimdPaired;
+            return length < AdvSimdMinimumBytes ? KernelKind.Scalar : KernelKind.AdvSimd;
 
         if (length >= Avx512MinimumBytes && SimdCapabilities.Avx512F && Vector512.IsHardwareAccelerated)
             return KernelKind.Avx512;
@@ -388,7 +388,7 @@ internal partial struct Poly1305Core
         KernelKind.Auto or KernelKind.Scalar => true,
         KernelKind.Avx2 or KernelKind.Avx2Paired => Avx2.IsSupported,
         KernelKind.Avx512 => Avx512F.IsSupported,
-        KernelKind.AdvSimd or KernelKind.AdvSimdPaired => AdvSimd.Arm64.IsSupported,
+        KernelKind.AdvSimd => AdvSimd.Arm64.IsSupported,
         _ => false,
     };
 
@@ -396,12 +396,12 @@ internal partial struct Poly1305Core
     /// Returns the number of blocks a group of the specified kernel takes at once: one for each of its lanes.
     /// </summary>
     /// <param name="kernel">The kernel; not <see cref="KernelKind.Auto" />.</param>
-    /// <returns>8 for AVX-512, 4 for either AVX2 loop, 2 for either AdvSimd loop, and 1 for the scalar loop.</returns>
+    /// <returns>8 for AVX-512, 4 for either AVX2 loop, 2 for AdvSimd, and 1 for the scalar loop.</returns>
     internal static int LanesFor(KernelKind kernel) => kernel switch
     {
         KernelKind.Avx512 => 8,
         KernelKind.Avx2 or KernelKind.Avx2Paired => 4,
-        KernelKind.AdvSimd or KernelKind.AdvSimdPaired => 2,
+        KernelKind.AdvSimd => 2,
         _ => 1,
     };
 
@@ -463,8 +463,6 @@ internal partial struct Poly1305Core
             Vector256Kernel.BlocksPaired(ref this, ref message, groups);
         else if (kernel == KernelKind.Avx2)
             Vector256Kernel.Blocks(ref this, ref message, groups);
-        else if (kernel == KernelKind.AdvSimdPaired)
-            Vector128Kernel.BlocksPaired(ref this, ref message, groups);
         else
             Vector128Kernel.Blocks(ref this, ref message, groups);
 

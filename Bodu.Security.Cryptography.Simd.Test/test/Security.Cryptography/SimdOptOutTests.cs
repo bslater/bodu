@@ -112,7 +112,6 @@ public sealed class SimdOptOutTests
         int[] lengths =
         [
             Poly1305Core.AdvSimdMinimumBytes,
-            Poly1305Core.AdvSimdPairedMinimumBytes,
             Poly1305Core.Avx2MinimumBytes,
             Poly1305Core.Avx2PairedMinimumBytes,
             Poly1305Core.Avx512MinimumBytes,

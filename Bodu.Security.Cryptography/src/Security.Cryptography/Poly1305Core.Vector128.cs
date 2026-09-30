@@ -16,22 +16,24 @@ internal partial struct Poly1305Core
 {
     /// <summary>
     /// Absorbs groups of two blocks with AdvSimd on ARM64: one block in each 64-bit lane of 128-bit vectors, as five
-    /// 26-bit limbs.
+    /// 26-bit limbs, two groups per step.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// After every group but the last, each lane is multiplied by <c>r²</c>; after the last, the two lanes are
-    /// multiplied by <c>r²</c> and <c>r</c>, so that every block ends up multiplied by the power of <c>r</c> the scalar
-    /// loop would have given it. The accumulator enters in the first lane, with the first block, and the two lanes are
-    /// summed back into it.
+    /// Each lane takes every second block and is multiplied by <c>r²</c> per group; after the last group, the two lanes
+    /// are multiplied by <c>r²</c> and <c>r</c>, so that every block ends up multiplied by the power of <c>r</c> the
+    /// scalar loop would have given it. The accumulator enters in the first lane, with the first block, and the two
+    /// lanes are summed back into it.
     /// </para>
     /// <para>
-    /// A product of two limbs is one <c>UMULL</c> or <c>UMLAL</c>, 32 × 32 → 64 bits. They take each lane's limb from
-    /// the lower half of its 64-bit lane, where <c>XTN</c> narrows the limbs once per group after the carries, and the
-    /// multiplier's limb from one lane of another vector, so that a multiplier's five limbs and five times its upper
-    /// four fill three vectors. <see cref="BlocksPaired" /> takes two groups at a time, as <c>(h + m)·r⁴ + m′·r²</c>,
-    /// whose second half does not wait on <c>h</c>; with its two multipliers in six vectors, its state fits in ARM64's
-    /// 32 vector registers.
+    /// A step takes two groups as <c>(h + m)·r⁴ + m′·r²</c>, whose second half does not wait on <c>h</c>. It splits its
+    /// four blocks into limbs together, one block to each 32-bit lane, the two of <c>m</c> in the lower halves and the
+    /// two of <c>m′</c> in the upper. A product of two limbs is one <c>UMULL</c> or <c>UMLAL</c>, 32 × 32 → 64 bits, or
+    /// <c>UMULL2</c> or <c>UMLAL2</c> for the upper halves, taking the multiplier's limb from one lane of another
+    /// vector, so that a multiplier's five limbs and five times its upper four fill three vectors. <c>XTN</c> narrows
+    /// the lanes' limbs once per step, after the carries. The step's state fits in ARM64's 32 vector registers; on a
+    /// Neoverse N2 and an Apple M1 it ran faster than taking one group per step at every length where either beat the
+    /// scalar loop.
     /// </para>
     /// </remarks>
     private static class Vector128Kernel
@@ -43,44 +45,14 @@ internal partial struct Poly1305Core
         private const int GroupBytes = Lanes * BlockBytes;
 
         /// <summary>
-        /// Absorbs whole groups of two blocks into a core's accumulator, one group at a time.
-        /// </summary>
-        /// <param name="core">The core whose accumulator absorbs the blocks, under its key half <c>r</c>.</param>
-        /// <param name="message">The first byte of the first group.</param>
-        /// <param name="groups">The number of groups; at least one.</param>
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.AggressiveOptimization)]
-        internal static void Blocks(ref Poly1305Core core, ref byte message, int groups)
-        {
-            // r and r²; cleared before returning.
-            Span<ulong> powers = stackalloc ulong[2 * 5];
-            core.ComputePowers(powers);
-
-            Vector128<ulong> mask = Vector128.Create(Mask26);
-            Pack(powers[5..], out Vector128<uint> a, out Vector128<uint> b, out Vector128<uint> c);
-            LoadAccumulator(ref core, out Vector128<ulong> h0, out Vector128<ulong> h1, out Vector128<ulong> h2, out Vector128<ulong> h3, out Vector128<ulong> h4);
-
-            nint offset = 0;
-            for (int group = 1; group < groups; group++)
-            {
-                AddGroup(ref message, offset, ref h0, ref h1, ref h2, ref h3, ref h4, mask);
-                Products(Narrow(h0), Narrow(h1), Narrow(h2), Narrow(h3), Narrow(h4), a, b, c, out h0, out h1, out h2, out h3, out h4);
-                Carry(ref h0, ref h1, ref h2, ref h3, ref h4, mask);
-                offset += GroupBytes;
-            }
-
-            AddLastGroup(ref core, ref message, offset, powers, h0, h1, h2, h3, h4, mask);
-            CryptographicOperations.ZeroMemory(MemoryMarshal.AsBytes(powers));
-        }
-
-        /// <summary>
-        /// Absorbs whole groups of two blocks into a core's accumulator, two groups at a time while more than two
+        /// Absorbs whole groups of two blocks into a core's accumulator, two groups per step while more than two
         /// remain.
         /// </summary>
         /// <param name="core">The core whose accumulator absorbs the blocks, under its key half <c>r</c>.</param>
         /// <param name="message">The first byte of the first group.</param>
         /// <param name="groups">The number of groups; at least one.</param>
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.AggressiveOptimization)]
-        internal static void BlocksPaired(ref Poly1305Core core, ref byte message, int groups)
+        internal static void Blocks(ref Poly1305Core core, ref byte message, int groups)
         {
             // r, r² and r⁴; cleared before returning.
             Span<ulong> powers = stackalloc ulong[3 * 5];
@@ -95,11 +67,24 @@ internal partial struct Poly1305Core
             int group = 0;
             for (; groups - group > 2; group += 2)
             {
-                // m′·r² first, which needs nothing of h, then (h + m)·r⁴ into the same sums.
-                SplitGroup(ref message, offset + GroupBytes, out Vector128<ulong> m0, out Vector128<ulong> m1, out Vector128<ulong> m2, out Vector128<ulong> m3, out Vector128<ulong> m4, mask);
-                Products(Narrow(m0), Narrow(m1), Narrow(m2), Narrow(m3), Narrow(m4), a, b, c, out Vector128<ulong> p0, out Vector128<ulong> p1, out Vector128<ulong> p2, out Vector128<ulong> p3, out Vector128<ulong> p4);
-                AddGroup(ref message, offset, ref h0, ref h1, ref h2, ref h3, ref h4, mask);
-                AddProducts(Narrow(h0), Narrow(h1), Narrow(h2), Narrow(h3), Narrow(h4), d, e, f, ref p0, ref p1, ref p2, ref p3, ref p4);
+                // m′·r² from the upper halves first, which needs nothing of h, then (h + m)·r⁴ into the same sums. Taking
+                // the lower halves after the upper halves' last use leaves the JIT nothing to copy.
+                SplitFourBlocks(ref message, offset, out Vector128<uint> m0, out Vector128<uint> m1, out Vector128<uint> m2, out Vector128<uint> m3, out Vector128<uint> m4);
+                UpperHalfProducts(m0, m1, m2, m3, m4, a, b, c, out Vector128<ulong> p0, out Vector128<ulong> p1, out Vector128<ulong> p2, out Vector128<ulong> p3, out Vector128<ulong> p4);
+                AddProducts(
+                    Narrow(h0) + m0.GetLower(),
+                    Narrow(h1) + m1.GetLower(),
+                    Narrow(h2) + m2.GetLower(),
+                    Narrow(h3) + m3.GetLower(),
+                    Narrow(h4) + m4.GetLower(),
+                    d,
+                    e,
+                    f,
+                    ref p0,
+                    ref p1,
+                    ref p2,
+                    ref p3,
+                    ref p4);
                 h0 = p0;
                 h1 = p1;
                 h2 = p2;
@@ -309,6 +294,118 @@ internal partial struct Poly1305Core
         }
 
         /// <summary>
+        /// Splits two groups of blocks into five 26-bit limbs each, one block to each 32-bit lane, with the 2^128 bit a
+        /// full block sets: the first group's two blocks in the lower halves and the second group's in the upper.
+        /// </summary>
+        /// <param name="message">The first byte of the message.</param>
+        /// <param name="offset">The offset of the two groups' 64 bytes.</param>
+        /// <param name="m0">Receives the blocks' limbs at 2^0.</param>
+        /// <param name="m1">Receives the blocks' limbs at 2^26.</param>
+        /// <param name="m2">Receives the blocks' limbs at 2^52.</param>
+        /// <param name="m3">Receives the blocks' limbs at 2^78.</param>
+        /// <param name="m4">Receives the blocks' limbs at 2^104.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void SplitFourBlocks(
+            ref byte message,
+            nint offset,
+            out Vector128<uint> m0,
+            out Vector128<uint> m1,
+            out Vector128<uint> m2,
+            out Vector128<uint> m3,
+            out Vector128<uint> m4)
+        {
+            Vector128<uint> first = Vector128.LoadUnsafe(ref Unsafe.Add(ref message, offset)).AsUInt32();
+            Vector128<uint> second = Vector128.LoadUnsafe(ref Unsafe.Add(ref message, offset + BlockBytes)).AsUInt32();
+            Vector128<uint> third = Vector128.LoadUnsafe(ref Unsafe.Add(ref message, offset + (2 * BlockBytes))).AsUInt32();
+            Vector128<uint> fourth = Vector128.LoadUnsafe(ref Unsafe.Add(ref message, offset + (3 * BlockBytes))).AsUInt32();
+
+            // Each 32-bit word of the four blocks in one vector, a block to a lane: two rounds of UZP1 and UZP2, as
+            // .NET 8 has no LD4.
+            Vector128<uint> even = AdvSimd.Arm64.UnzipEven(first, second);
+            Vector128<uint> odd = AdvSimd.Arm64.UnzipOdd(first, second);
+            Vector128<uint> evenNext = AdvSimd.Arm64.UnzipEven(third, fourth);
+            Vector128<uint> oddNext = AdvSimd.Arm64.UnzipOdd(third, fourth);
+            Vector128<uint> w0 = AdvSimd.Arm64.UnzipEven(even, evenNext);
+            Vector128<uint> w1 = AdvSimd.Arm64.UnzipEven(odd, oddNext);
+            Vector128<uint> w2 = AdvSimd.Arm64.UnzipOdd(even, evenNext);
+            Vector128<uint> w3 = AdvSimd.Arm64.UnzipOdd(odd, oddNext);
+
+            // A limb that straddles two words takes the upper bits of one and, through SLI, the lower bits of the next.
+            Vector128<uint> mask = Vector128.Create((uint)Mask26);
+            m0 = w0 & mask;
+            m1 = AdvSimd.ShiftLeftAndInsert(w0 >>> 26, w1, 6) & mask;
+            m2 = AdvSimd.ShiftLeftAndInsert(w1 >>> 20, w2, 12) & mask;
+            m3 = AdvSimd.ShiftLeftAndInsert(w2 >>> 14, w3, 18) & mask;
+            m4 = (w3 >>> 8) | Vector128.Create((uint)FullBlockBit26);
+        }
+
+        /// <summary>
+        /// Forms the five limb sums of the product of the blocks in the upper halves of the lanes with a multiplier,
+        /// before any carry: the second of two groups, as <see cref="SplitFourBlocks" /> leaves them.
+        /// </summary>
+        /// <param name="m0">The blocks' limbs at 2^0.</param>
+        /// <param name="m1">The blocks' limbs at 2^26.</param>
+        /// <param name="m2">The blocks' limbs at 2^52.</param>
+        /// <param name="m3">The blocks' limbs at 2^78.</param>
+        /// <param name="m4">The blocks' limbs at 2^104.</param>
+        /// <param name="a">
+        /// The multiplier's limbs at 2^0, 2^26, 2^52 and 2^78, as <see cref="Pack" /> leaves them.
+        /// </param>
+        /// <param name="b">The multiplier's limb at 2^104, then five times those at 2^26, 2^52 and 2^78.</param>
+        /// <param name="c">Five times the multiplier's limb at 2^104, in the first lane.</param>
+        /// <param name="d0">Receives the sums at 2^0.</param>
+        /// <param name="d1">Receives the sums at 2^26.</param>
+        /// <param name="d2">Receives the sums at 2^52.</param>
+        /// <param name="d3">Receives the sums at 2^78.</param>
+        /// <param name="d4">Receives the sums at 2^104.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void UpperHalfProducts(
+            Vector128<uint> m0,
+            Vector128<uint> m1,
+            Vector128<uint> m2,
+            Vector128<uint> m3,
+            Vector128<uint> m4,
+            Vector128<uint> a,
+            Vector128<uint> b,
+            Vector128<uint> c,
+            out Vector128<ulong> d0,
+            out Vector128<ulong> d1,
+            out Vector128<ulong> d2,
+            out Vector128<ulong> d3,
+            out Vector128<ulong> d4)
+        {
+            d0 = AdvSimd.MultiplyBySelectedScalarWideningUpper(m0, a, 0);
+            d1 = AdvSimd.MultiplyBySelectedScalarWideningUpper(m0, a, 1);
+            d2 = AdvSimd.MultiplyBySelectedScalarWideningUpper(m0, a, 2);
+            d3 = AdvSimd.MultiplyBySelectedScalarWideningUpper(m0, a, 3);
+            d4 = AdvSimd.MultiplyBySelectedScalarWideningUpper(m0, b, 0);
+
+            d0 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d0, m1, c, 0);
+            d1 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d1, m1, a, 0);
+            d2 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d2, m1, a, 1);
+            d3 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d3, m1, a, 2);
+            d4 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d4, m1, a, 3);
+
+            d0 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d0, m2, b, 3);
+            d1 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d1, m2, c, 0);
+            d2 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d2, m2, a, 0);
+            d3 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d3, m2, a, 1);
+            d4 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d4, m2, a, 2);
+
+            d0 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d0, m3, b, 2);
+            d1 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d1, m3, b, 3);
+            d2 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d2, m3, c, 0);
+            d3 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d3, m3, a, 0);
+            d4 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d4, m3, a, 1);
+
+            d0 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d0, m4, b, 1);
+            d1 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d1, m4, b, 2);
+            d2 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d2, m4, b, 3);
+            d3 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d3, m4, c, 0);
+            d4 = AdvSimd.MultiplyBySelectedScalarWideningUpperAndAdd(d4, m4, a, 0);
+        }
+
+        /// <summary>
         /// Forms the five limb sums of each lane's product with a multiplier, before any carry.
         /// </summary>
         /// <param name="h0">The lanes' limbs at 2^0, narrowed to 32 bits.</param>
@@ -347,7 +444,7 @@ internal partial struct Poly1305Core
             d2 = AdvSimd.MultiplyBySelectedScalarWideningLower(h0, a, 2);
             d3 = AdvSimd.MultiplyBySelectedScalarWideningLower(h0, a, 3);
             d4 = AdvSimd.MultiplyBySelectedScalarWideningLower(h0, b, 0);
-            AddUpperProducts(h1, h2, h3, h4, a, b, c, ref d0, ref d1, ref d2, ref d3, ref d4);
+            AddHigherLimbProducts(h1, h2, h3, h4, a, b, c, ref d0, ref d1, ref d2, ref d3, ref d4);
         }
 
         /// <summary>
@@ -389,12 +486,12 @@ internal partial struct Poly1305Core
             d2 = AdvSimd.MultiplyBySelectedScalarWideningLowerAndAdd(d2, h0, a, 2);
             d3 = AdvSimd.MultiplyBySelectedScalarWideningLowerAndAdd(d3, h0, a, 3);
             d4 = AdvSimd.MultiplyBySelectedScalarWideningLowerAndAdd(d4, h0, b, 0);
-            AddUpperProducts(h1, h2, h3, h4, a, b, c, ref d0, ref d1, ref d2, ref d3, ref d4);
+            AddHigherLimbProducts(h1, h2, h3, h4, a, b, c, ref d0, ref d1, ref d2, ref d3, ref d4);
         }
 
         /// <summary>
         /// Adds the products of each lane's limbs at 2^26 and up with a multiplier to five limb sums: those that pass
-        /// 2^130 fold back in times 5, through the multiplier's limbs times 5.
+        /// 2^130 fold back in times 5, through five times the multiplier's limbs.
         /// </summary>
         /// <param name="h1">The lanes' limbs at 2^26, narrowed to 32 bits.</param>
         /// <param name="h2">The lanes' limbs at 2^52, narrowed to 32 bits.</param>
@@ -411,7 +508,7 @@ internal partial struct Poly1305Core
         /// <param name="d3">The sums at 2^78.</param>
         /// <param name="d4">The sums at 2^104.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void AddUpperProducts(
+        private static void AddHigherLimbProducts(
             Vector64<uint> h1,
             Vector64<uint> h2,
             Vector64<uint> h3,

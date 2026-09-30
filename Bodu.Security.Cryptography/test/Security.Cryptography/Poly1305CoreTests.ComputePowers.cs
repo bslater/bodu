@@ -11,9 +11,10 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class Poly1305CoreTests
 {
     /// <summary>
-    /// Verifies that each layout the vector kernels read — 10 and 15 limbs for AdvSimd, 20 and 25 for AVX2, 40 and 45 for
-    /// AVX-512 — holds <c>r</c> to <c>rⁿ</c>, then <c>r²ⁿ</c> where there is room, modulo 2^130 − 5, as five limbs each
-    /// narrow enough for the 32-bit multiplies, over seeded keys and the key whose clamped <c>r</c> is largest.
+    /// Verifies that each layout <see cref="Poly1305Core.ComputePowers" /> fills — 10, 15, 20, 25, 40 and 45 limbs, of
+    /// which the AdvSimd kernel reads 15, the AVX2 loops 20 and 25, and the AVX-512 kernel 45 — holds <c>r</c> to
+    /// <c>rⁿ</c>, then <c>r²ⁿ</c> where there is room, modulo 2^130 − 5, as five limbs each narrow enough for the
+    /// 32-bit multiplies, over seeded keys and the key whose clamped <c>r</c> is largest.
     /// </summary>
     /// <param name="length">The number of limbs in the layout.</param>
     [TestMethod]

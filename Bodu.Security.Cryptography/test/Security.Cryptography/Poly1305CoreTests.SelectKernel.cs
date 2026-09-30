@@ -116,35 +116,19 @@ public sealed partial class Poly1305CoreTests
     }
 
     /// <summary>
-    /// Verifies that dispatch gives runs from <see cref="Poly1305Core.AdvSimdMinimumBytes" /> up to
-    /// <see cref="Poly1305Core.AdvSimdPairedMinimumBytes" /> to the AdvSimd kernel's one-group loop on ARM64.
+    /// Verifies that dispatch gives runs of <see cref="Poly1305Core.AdvSimdMinimumBytes" /> or more to the AdvSimd
+    /// kernel on ARM64.
     /// </summary>
     /// <param name="length">The length of the run, in bytes.</param>
     [TestMethod]
     [DataRow(Poly1305Core.AdvSimdMinimumBytes)]
-    [DataRow(Poly1305Core.AdvSimdPairedMinimumBytes - Poly1305Core.BlockBytes)]
+    [DataRow(1 << 20)]
     public void SelectKernel_WhenRunReachesTheAdvSimdMinimum_ShouldReturnAdvSimd(int length)
     {
         if (!SimdCapabilities.AdvSimd)
             Assert.Inconclusive("AdvSimd is not available on this processor, or the process allows no vector code.");
 
         Assert.AreEqual(Poly1305Core.KernelKind.AdvSimd, Poly1305Core.SelectKernel(length));
-    }
-
-    /// <summary>
-    /// Verifies that dispatch gives runs of <see cref="Poly1305Core.AdvSimdPairedMinimumBytes" /> or more to the
-    /// AdvSimd kernel's paired loop on ARM64.
-    /// </summary>
-    /// <param name="length">The length of the run, in bytes.</param>
-    [TestMethod]
-    [DataRow(Poly1305Core.AdvSimdPairedMinimumBytes)]
-    [DataRow(1 << 20)]
-    public void SelectKernel_WhenRunReachesTheAdvSimdPairedMinimum_ShouldReturnAdvSimdPaired(int length)
-    {
-        if (!SimdCapabilities.AdvSimd)
-            Assert.Inconclusive("AdvSimd is not available on this processor, or the process allows no vector code.");
-
-        Assert.AreEqual(Poly1305Core.KernelKind.AdvSimdPaired, Poly1305Core.SelectKernel(length));
     }
 
     /// <summary>
@@ -191,5 +175,6 @@ public sealed partial class Poly1305CoreTests
         Assert.AreEqual(System.Runtime.Intrinsics.X86.Avx2.IsSupported, Poly1305Core.IsSupported(Poly1305Core.KernelKind.Avx2));
         Assert.AreEqual(System.Runtime.Intrinsics.X86.Avx2.IsSupported, Poly1305Core.IsSupported(Poly1305Core.KernelKind.Avx2Paired));
         Assert.AreEqual(System.Runtime.Intrinsics.X86.Avx512F.IsSupported, Poly1305Core.IsSupported(Poly1305Core.KernelKind.Avx512));
+        Assert.AreEqual(System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported, Poly1305Core.IsSupported(Poly1305Core.KernelKind.AdvSimd));
     }
 }

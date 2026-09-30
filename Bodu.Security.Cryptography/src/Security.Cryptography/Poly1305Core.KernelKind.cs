@@ -42,14 +42,9 @@ internal partial struct Poly1305Core
         Avx512,
 
         /// <summary>
-        /// Two blocks at once over 128-bit vectors on ARM64 with AdvSimd, one block in each 64-bit lane, one group of
-        /// two at a time.
+        /// Two blocks at once over 128-bit vectors on ARM64 with AdvSimd, one block in each 64-bit lane, two groups of
+        /// two per step.
         /// </summary>
         AdvSimd,
-
-        /// <summary>
-        /// The <see cref="AdvSimd" /> kernel taking two groups of two at a time, for longer runs.
-        /// </summary>
-        AdvSimdPaired,
     }
 }

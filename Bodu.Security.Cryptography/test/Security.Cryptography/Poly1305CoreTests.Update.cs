@@ -155,7 +155,6 @@ public sealed partial class Poly1305CoreTests
     [DataRow("Avx2Paired")]
     [DataRow("Avx512")]
     [DataRow("AdvSimd")]
-    [DataRow("AdvSimdPaired")]
     public void Update_WhenMessageIsSeededRandom_ForEachKernel_ShouldMatchReferenceImplementation(string kernel)
     {
         Poly1305Core.KernelKind kind = ParseSupportedKernel(kernel);
@@ -182,7 +181,6 @@ public sealed partial class Poly1305CoreTests
     [DataRow("Avx2Paired")]
     [DataRow("Avx512")]
     [DataRow("AdvSimd")]
-    [DataRow("AdvSimdPaired")]
     public void Update_WhenMessageArrivesInPieces_ForEachKernel_ShouldMatchReferenceImplementation(string kernel)
     {
         Poly1305Core.KernelKind kind = ParseSupportedKernel(kernel);
@@ -224,9 +222,6 @@ public sealed partial class Poly1305CoreTests
     [DataRow("AdvSimd", (byte)0xFF, (byte)0xFF)]
     [DataRow("AdvSimd", (byte)0xFF, (byte)0x00)]
     [DataRow("AdvSimd", (byte)0x00, (byte)0xFF)]
-    [DataRow("AdvSimdPaired", (byte)0xFF, (byte)0xFF)]
-    [DataRow("AdvSimdPaired", (byte)0xFF, (byte)0x00)]
-    [DataRow("AdvSimdPaired", (byte)0x00, (byte)0xFF)]
     public void Update_WhenLimbsRunLargest_ForEachKernel_ShouldMatchReferenceImplementation(string kernel, byte messageFill, byte sFill)
     {
         Poly1305Core.KernelKind kind = ParseSupportedKernel(kernel);
@@ -254,7 +249,6 @@ public sealed partial class Poly1305CoreTests
     [DataRow("Avx2Paired")]
     [DataRow("Avx512")]
     [DataRow("AdvSimd")]
-    [DataRow("AdvSimdPaired")]
     public void Update_WhenKernelFollowsScalarBlocks_ForEachKernel_ShouldMatchReferenceImplementation(string kernel)
     {
         Poly1305Core.KernelKind kind = ParseSupportedKernel(kernel);
@@ -292,8 +286,7 @@ public sealed partial class Poly1305CoreTests
     /// <summary>
     /// Verifies that dispatch produces the reference tag for runs of whole blocks either side of the lengths at which
     /// it moves from the scalar loop to AVX2, from AVX2's one-group loop to its paired loop, and from AVX2 to AVX-512 on
-    /// x64, and from the scalar loop to AdvSimd and from AdvSimd's one-group loop to its paired loop on ARM64, with and
-    /// without a partial block after them.
+    /// x64, and from the scalar loop to AdvSimd on ARM64, with and without a partial block after them.
     /// </summary>
     [TestMethod]
     public void Update_WhenRunLengthIsNearADispatchThreshold_ShouldMatchReferenceImplementation()
@@ -305,7 +298,6 @@ public sealed partial class Poly1305CoreTests
             Poly1305Core.Avx2PairedMinimumBytes,
             Poly1305Core.Avx512MinimumBytes,
             Poly1305Core.AdvSimdMinimumBytes,
-            Poly1305Core.AdvSimdPairedMinimumBytes,
         ];
 
         foreach (int threshold in thresholds)
@@ -346,7 +338,6 @@ public sealed partial class Poly1305CoreTests
             ("Poly1305Core.Blocks", core.GetMethod("Blocks", Instance)),
             ("Poly1305Core.KernelBlocks", core.GetMethod("KernelBlocks", Instance)),
             ("Vector128Kernel.Blocks", vector128?.GetMethod("Blocks", Static)),
-            ("Vector128Kernel.BlocksPaired", vector128?.GetMethod("BlocksPaired", Static)),
             ("Vector256Kernel.Blocks", vector256?.GetMethod("Blocks", Static)),
             ("Vector256Kernel.BlocksPaired", vector256?.GetMethod("BlocksPaired", Static)),
             ("Vector512Kernel.Blocks", vector512?.GetMethod("Blocks", Static)),
