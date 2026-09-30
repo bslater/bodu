@@ -46,6 +46,36 @@ public sealed partial class SerpentCoreTests
     }
 
     /// <summary>
+    /// Yields seeded keys and tweaks for a wide block, each with its oracle, its round keys with the tweak folded in,
+    /// and seeded blocks to transform under it.
+    /// </summary>
+    /// <param name="words">The number of words in a block: 8, 16 or 32.</param>
+    /// <param name="rounds">The number of rounds, a positive multiple of 8.</param>
+    /// <param name="seed">The seed of the generator.</param>
+    /// <returns>The cases, each named for its failure messages.</returns>
+    private static IEnumerable<(string Name, SerpentWideReference Reference, uint[] RoundKeys, byte[][] Blocks)> WideBlockCases(int words, int rounds, int seed)
+    {
+        var random = new Random(seed);
+        for (int c = 0; c < 4; c++)
+        {
+            byte[] key = new byte[words * 4];
+            byte[] tweak = new byte[16];
+            random.NextBytes(key);
+            random.NextBytes(tweak);
+            var reference = new SerpentWideReference(key, tweak, rounds);
+
+            byte[][] blocks = new byte[4][];
+            for (int b = 0; b < blocks.Length; b++)
+            {
+                blocks[b] = new byte[words * 4];
+                random.NextBytes(blocks[b]);
+            }
+
+            yield return ($"seeded key {c}", reference, reference.FoldedRoundKeys(), blocks);
+        }
+    }
+
+    /// <summary>
     /// Encrypts each block of a run on its own with the single-block entry point.
     /// </summary>
     /// <param name="roundKeys">The round keys.</param>
