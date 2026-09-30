@@ -161,8 +161,14 @@ def span(values):
 
 
 def speedup(vector, other, unit):
-    """Returns how many times faster the first configuration is, by the medians: rates divide one way, times the other."""
+    """Returns how many times faster the first configuration is, by the medians: rates divide one way, times the other.
+
+    A median of zero, as a derivation shorter than the processor clock's resolution records for its processor time,
+    gives no ratio.
+    """
     a, b = statistics.median(vector), statistics.median(other)
+    if a == 0 or b == 0:
+        return '-'
     ratio = a / b if unit == 'MiB/s' else b / a
     return f'{ratio:.2f}×'
 
