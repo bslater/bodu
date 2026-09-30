@@ -12,15 +12,15 @@ internal partial struct Poly1305Core
     /// Computes the powers of the key half <c>r</c> that the vector kernels multiply by, each as five 26-bit limbs.
     /// </summary>
     /// <param name="powers">
-    /// Receives <c>r</c> to <c>rⁿ</c> in order, five limbs each, for <c>n</c> of 4 or 8, then <c>r²ⁿ</c> where there is
-    /// room for it: 20, 25, 40 or 45 limbs in all.
+    /// Receives <c>r</c> to <c>rⁿ</c> in order, five limbs each, for <c>n</c> of 2, 4 or 8, then <c>r²ⁿ</c> where there
+    /// is room for it: 10, 15, 20, 25, 40 or 45 limbs in all.
     /// </param>
     /// <remarks>
-    /// The powers are formed by the scalar multiplication, from three for <c>r⁴</c> to eight for <c>r¹⁶</c>, arranged
-    /// so that at most four depend on one another: <c>r³</c> and <c>r⁴</c> both come from <c>r²</c>, <c>r⁵</c> to
+    /// The powers are formed by the scalar multiplication, from one for <c>r²</c> to eight for <c>r¹⁶</c>, arranged so
+    /// that at most four depend on one another: <c>r³</c> and <c>r⁴</c> both come from <c>r²</c>, <c>r⁵</c> to
     /// <c>r⁸</c> from <c>r⁴</c>, and <c>r²ⁿ</c> is <c>rⁿ</c> squared.
     /// </remarks>
-    private readonly void ComputePowers(Span<ulong> powers)
+    internal readonly void ComputePowers(Span<ulong> powers)
     {
         ulong r0 = _r0;
         ulong r1 = _r1;
@@ -28,46 +28,51 @@ internal partial struct Poly1305Core
         ulong s1 = _s1;
         ulong s2 = _s2;
 
-        // r², then r³ = r² · r and r⁴ = r² · r².
+        // r².
         ulong a0 = r0;
         ulong a1 = r1;
         ulong a2 = r2;
         Multiply(ref a0, ref a1, ref a2, r0, r1, r2, s1, s2);
 
-        ulong b0 = a0;
-        ulong b1 = a1;
-        ulong b2 = a2;
-        Multiply(ref b0, ref b1, ref b2, r0, r1, r2, s1, s2);
+        ToRadix26(r0, r1, r2, powers);
+        ToRadix26(a0, a1, a2, powers[5..]);
 
+        // The highest power so far, which r²ⁿ squares.
         ulong c0 = a0;
         ulong c1 = a1;
         ulong c2 = a2;
-        Multiply(ref c0, ref c1, ref c2, a0, a1, a2, a1 * 20, a2 * 20);
-
-        ToRadix26(r0, r1, r2, powers);
-        ToRadix26(a0, a1, a2, powers[5..]);
-        ToRadix26(b0, b1, b2, powers[10..]);
-        ToRadix26(c0, c1, c2, powers[15..]);
-
-        if (powers.Length >= 40)
+        if (powers.Length >= 20)
         {
-            // r⁵ to r⁸: r, r², r³ and r⁴, each times r⁴.
-            ulong u1 = c1 * 20;
-            ulong u2 = c2 * 20;
-            Multiply(ref r0, ref r1, ref r2, c0, c1, c2, u1, u2);
-            Multiply(ref a0, ref a1, ref a2, c0, c1, c2, u1, u2);
-            Multiply(ref b0, ref b1, ref b2, c0, c1, c2, u1, u2);
-            Multiply(ref c0, ref c1, ref c2, c0, c1, c2, u1, u2);
+            // r³ = r² · r and r⁴ = r² · r².
+            ulong b0 = a0;
+            ulong b1 = a1;
+            ulong b2 = a2;
+            Multiply(ref b0, ref b1, ref b2, r0, r1, r2, s1, s2);
+            Multiply(ref c0, ref c1, ref c2, a0, a1, a2, a1 * 20, a2 * 20);
 
-            ToRadix26(r0, r1, r2, powers[20..]);
-            ToRadix26(a0, a1, a2, powers[25..]);
-            ToRadix26(b0, b1, b2, powers[30..]);
-            ToRadix26(c0, c1, c2, powers[35..]);
+            ToRadix26(b0, b1, b2, powers[10..]);
+            ToRadix26(c0, c1, c2, powers[15..]);
+
+            if (powers.Length >= 40)
+            {
+                // r⁵ to r⁸: r, r², r³ and r⁴, each times r⁴.
+                ulong u1 = c1 * 20;
+                ulong u2 = c2 * 20;
+                Multiply(ref r0, ref r1, ref r2, c0, c1, c2, u1, u2);
+                Multiply(ref a0, ref a1, ref a2, c0, c1, c2, u1, u2);
+                Multiply(ref b0, ref b1, ref b2, c0, c1, c2, u1, u2);
+                Multiply(ref c0, ref c1, ref c2, c0, c1, c2, u1, u2);
+
+                ToRadix26(r0, r1, r2, powers[20..]);
+                ToRadix26(a0, a1, a2, powers[25..]);
+                ToRadix26(b0, b1, b2, powers[30..]);
+                ToRadix26(c0, c1, c2, powers[35..]);
+            }
         }
 
-        if (powers.Length % 20 == 5)
+        if (powers.Length % 10 == 5)
         {
-            // r²ⁿ: the highest power so far, r⁴ or r⁸, squared.
+            // r²ⁿ: the highest power so far, r², r⁴ or r⁸, squared.
             Multiply(ref c0, ref c1, ref c2, c0, c1, c2, c1 * 20, c2 * 20);
             ToRadix26(c0, c1, c2, powers[^5..]);
         }

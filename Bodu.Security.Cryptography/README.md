@@ -184,7 +184,7 @@ These primitives dispatch to vector, carry-less-multiply or wide-multiply instru
 | AES, in every mode | the platform `Aes` (AES-NI where the OS provider uses it) | the platform `Aes` (the AES instructions where the OS provider uses them) |
 | GHASH and POLYVAL (GCM, GMAC, GCM-SIV) | PCLMULQDQ | PMULL |
 | ChaCha20, XChaCha20, Salsa20, XSalsa20 | AVX-512 (16 blocks at a time), AVX2 (8) or SSSE3 (4) | AdvSimd (4) |
-| Poly1305 (and the Poly1305 AEADs) | AVX-512 (8 blocks at a time) or AVX2 (4) from 512 bytes; BMI2 `mulx` for 64-bit products below that | `umulh` for 64-bit products |
+| Poly1305 (and the Poly1305 AEADs) | AVX-512 (8 blocks at a time) or AVX2 (4) from 512 bytes; BMI2 `mulx` for 64-bit products below that | AdvSimd (2 blocks at a time) from 256 bytes; `umulh` for 64-bit products below that |
 | X25519, Ed25519 | BMI2 `mulx` for 64-bit products | `umulh` for 64-bit products |
 | BLAKE2b | AVX-512 or AVX2, else SSSE3 | — |
 | BLAKE2s | AVX-512 or SSSE3 | — |

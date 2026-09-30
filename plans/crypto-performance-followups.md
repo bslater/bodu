@@ -1,9 +1,9 @@
 # Implementation plan: the cryptography speed-ups left for later
 
-**Status:** In progress — F1 to F7 done (§9) · **Source:** the "Left for later" items in
-[`crypto-performance.md`](crypto-performance.md) §10 and the open items in
-[`argon2-performance.md`](argon2-performance.md) §10.3, after `Bodu.Security.Cryptography` 1.1.0 ·
-**Target:** `Bodu.Security.Cryptography`, next lock-step release
+**Status:** Done — F1 to F8 (§9), F8 added after F7 · **Source:** the "Left for
+later" items in [`crypto-performance.md`](crypto-performance.md) §10 and the open items in
+[`argon2-performance.md`](argon2-performance.md) §10.3, after `Bodu.Security.Cryptography` 1.1.0,
+and F7's (§9) · **Target:** `Bodu.Security.Cryptography`, next lock-step release
 
 `crypto-performance.md` met every target it set and shipped in 1.1.0. On the way it measured a
 set of further gains that no target needed, and left them for later. This plan collects them,
@@ -261,6 +261,52 @@ Done: see §9 for the results and where the build departs from this design.
   A kernel that is not is gated off through `SimdCapabilities` until it is tuned.
 - **Tests:** none new. The results are recorded here, with the machine and runtime.
 
+### F8 — Poly1305 on ARM64
+
+Added after F7, from the items it left for later (§9). Of those, this is the one with a measured
+gain in reach: the gated kernels lose to their layout, so tuning them means redesigning them, and
+the other two items are checks rather than speed-ups.
+
+- **Problem:**
+  - ARM64 runs Poly1305 one block at a time through the scalar loop. F1's design had a two-lane
+    AdvSimd kernel, which waited for F7, since on ARM64 the scalar loop's products come from
+    `umulh` and might hold their own.
+  - F7 settled it. On the Neoverse N2 the scalar loop took 1 MiB at 1,610–1,653 MiB/s, and
+    OpenSSL's NEON code, on the same machine, at 3,156–3,174 MiB/s.
+  - Poly1305 is about a third of XChaCha20-Poly1305's time there: 0.61 ms of 1.73 ms per MiB.
+- **Design:**
+  - A `Vector128Kernel` in `Poly1305Core`, in the AVX2 kernel's shape at 128 bits: a block
+    to each 64-bit lane as five 26-bit limbs, two lanes to a vector.
+  - Each product is one `UMULL` or `UMLAL`, 32 × 32 → 64 bits, taking the multiplier's limb
+    from a lane of another vector (`MultiplyBySelectedScalarWideningLower[AndAdd]`), so that
+    a power of r and five times its upper limbs fill three vectors.
+  - Each lane takes every second block and multiplies by r². Two groups go per step, as F1's
+    `BlocksPaired` does: (h + m)·r⁴ + m′·r², whose second half does not wait on h. After the
+    last group the lanes multiply by r² and r, and sum into the scalar state.
+  - The powers are formed per run by the scalar multiply, r² and r⁴ alone, one or two
+    multiplications, and cleared after it.
+  - Dispatch selects the kernel from a threshold, and the paired loop from a second, measured
+    on the N2 and the M1. The scalar loop keeps shorter runs and the blocks after the last
+    whole group.
+  - The measurement uses F7's workflow, dispatched on the branch. The crypto harness gains a
+    case for each kernel at each length, which drives `Poly1305Core` with the kernel named,
+    so one run places both thresholds; the MAC and AEAD cases at lengths either side of them
+    check the choice in use.
+- **Target:**
+  - Poly1305 over 1 MiB on the N2 at least 1.5 times as fast as the scalar loop. OpenSSL
+    reaches 1.9 times.
+  - Per F7's rule, the kernel at least as fast as the scalar loop, on every machine
+    measured, wherever dispatch selects it.
+- **Tests:**
+  - As F1's: each loop, driven explicitly, is held to the reference over seeded messages,
+    piece-wise feeds, the largest limbs, runs after scalar blocks, and runs either side of
+    each threshold.
+  - The loops' entry points are checked for `NoInlining | AggressiveOptimization`.
+  - Dispatch's ARM64 choices have tests of their own, and the SIMD-off assembly checks the
+    scalar loop at the new thresholds.
+  - The ARM64 job runs them natively, and qemu in development.
+- **Constant time:** the only branches are on the message length, which is public.
+
 ---
 
 ## 4. Order and method
@@ -269,6 +315,7 @@ Done: see §9 for the results and where the build departs from this design.
    AdvSimd halves of F1 and F3.
 2. **F1, then F2,** which reuses F1's measurements.
 3. **F3, F4, F5 and F6,** in that order.
+4. **F8, after F7,** whose run found its gain and whose workflow measures it.
 
 Each item follows the same sequence:
 
@@ -326,8 +373,8 @@ As `crypto-performance.md` §6:
 
 Figures are from the `--crypto-harness` of `Bodu.Security.Cryptography.Benchmarks`. F1's and F2's
 are from the same 4-vCPU Xeon VM as §1, at 2.8 GHz with AVX-512F/VL but no IFMA; F3's section
-describes the machine the work moved to, where F4's, F5's and F6's were measured as well; F7's come from GitHub's
-hosted runners, as its section describes. Each is the range over
+describes the machine the work moved to, where F4's, F5's and F6's were measured as well; F7's and F8's come from
+GitHub's hosted runners, as F7's section describes. Each is the range over
 two runs of the median of five rounds. The baselines were measured the same day on this
 branch before the item's code, with the harness change that added the case in place.
 
@@ -1774,3 +1821,126 @@ How it was done, and where it departs from the design above:
   - Argon2's thread threshold below 4 MiB. At the threshold the threads already cut the wall time 1.4–2.9 times on
     all three machines, so it may sit too high. Measuring below it needs the harness to reach the internal
     `FillOptions`.
+
+### F8 — Poly1305 on ARM64 (done)
+
+F8's figures come from F7's workflow, on the Neoverse N2 and the Apple M1; the EPYC runs only the Argon2 suites. The
+crypto harness gained a case for each Poly1305 kernel at each length from 64 bytes to 1 MiB, which calls the library's
+core with the kernel named, whatever dispatch would select, so one run places every threshold. The workflow ran on
+three builds: the design's, with its two loops as separate kinds; one that splits a step's four blocks together; and
+the build as it merges, which also carries with `USRA`.
+
+**The kernel against the scalar loop.** The scalar loop's time over the kernel's, by the medians of the final build's
+two runs; above 1, the kernel ran faster:
+
+| Bytes | N2, .NET 8 | N2, .NET 10 | M1, .NET 8 | M1, .NET 10 |
+|---|---|---|---|---|
+| 64 | 0.75 | 0.75 | 0.92 | 0.89 |
+| 128 | 0.88 | 0.88 | 1.18 | 1.14 |
+| 192 | 0.98 | 0.98 | 1.41 | 1.39 |
+| 256 | 1.06 | 1.05 | 1.69 | 1.57 |
+| 384 | 1.18 | 1.17 | 1.83 | 1.83 |
+| 512 | 1.27 | 1.24 | 2.11 | 2.13 |
+| 1 KiB | 1.47 | 1.38 | 2.74 | 2.65 |
+| 4 KiB | 1.70 | 1.55 | 3.21 | 3.48 |
+| 16 KiB | 1.77 | 1.60 | 3.86 | 3.76 |
+| 1 MiB | 1.80 | 1.62 | 3.77 | 3.96 |
+
+Dispatch gives the kernel runs of 256 bytes or more, where it ran faster than the scalar loop on both processors and
+both runtimes. The M1's kernel caught up at 128 bytes and the N2's at 256: below that the N2's scalar loop, whose
+`umulh` multiplies 64 by 64 bits, finished first. Dispatch cannot tell the two processors apart, so the N2's threshold
+serves both.
+
+Over 1 MiB on the N2 the kernel ran Poly1305 1.80 times as fast as the scalar loop under .NET 8 and 1.62 times under
+.NET 10, against the target's 1.5. That is 2,898 and 2,674 MiB/s, where OpenSSL's NEON code, on the same machine, ran
+at 3,161–3,163 MiB/s.
+
+**The three builds.** The scalar loop's time over each loop's for 1 MiB on the N2, by the medians of each run, with the
+vector instructions a step of four blocks takes under .NET 10:
+
+| Build | Instructions | .NET 8 | .NET 10 |
+|---|---|---|---|
+| The design's one-group loop: one group of two per step | — | 1.29 | 1.27 |
+| The design's paired loop: two groups per step, each split into limbs on its own | 118 | 1.52 | 1.49 |
+| The step's four blocks split together, one to each 32-bit lane | 109 | 1.70 | 1.62 |
+| The same, carrying with `USRA` (the build as it merges) | 100 | 1.80 | 1.62 |
+
+The first build ran the design's two loops as two kinds. On both processors the paired loop ran faster than the
+one-group loop at every length where either beat the scalar loop, 256 bytes and up on the N2 and 192 and up on the
+M1, so the one-group loop and its threshold went. Its 1.49–1.52 times sat at the target's edge, which the next two
+builds cleared by cutting the instructions around the step's 50 multiplies. The carry's change registered under .NET 8
+alone: the kernel took 364 µs per MiB before it and 345 after, while under .NET 10 it took 373 both times.
+
+**The MAC and the AEADs.** On the N2, vector ÷ 1.0.0 for 1 MiB, in F7's last run, before F8, and in F8's last. Each
+run measures 1.0.0 afresh, so each ratio holds within its run:
+
+| 1 MiB on the N2 | .NET 8, before | .NET 8, after | .NET 10, before | .NET 10, after |
+|---|---|---|---|---|
+| Poly1305 | 1.63 | 2.93 | 1.50 | 2.43 |
+| XChaCha20-Poly1305 | 2.07 | 2.47 | 1.97 | 2.27 |
+| XSalsa20-Poly1305 | 2.45 | 3.01 | 2.01 | 2.39 |
+
+In MiB/s, XChaCha20-Poly1305 went from 574–579 to 668–681, and XSalsa20-Poly1305 from 677–688 to 817–832. At 256
+bytes, the shortest run the kernel takes, the MAC ran 1.03–1.04 times as fast as the scalar configuration on the N2,
+and at 1 KiB 1.31–1.38 times.
+
+How it was done, and where it departs from the design above:
+
+- **The harness.**
+  - `Poly1305KernelDriver` calls `Poly1305Core`'s `Initialize`, `Update(KernelKind, …)` and `Finish` through a
+    dynamic method bound to the library's module, since the core is internal to the library; the kernels are the
+    library's own compiled code.
+  - It lists the kernels the processor supports, and the crypto harness times each at twelve lengths,
+    `kernel/Poly1305 <kernel> <length>`.
+  - `harness_matrix.py` runs those rows and the MAC and AEAD rows at 64, 256 and 512 bytes, 1 KiB and 1 MiB.
+- **The kernel.** `Poly1305Core.Vector128Kernel.Blocks` takes two groups of two blocks per step while more than two
+  groups remain, then one group, then the last, whose lanes it multiplies by `r²` and `r` and sums into the scalar
+  state. A step:
+  - loads its four blocks and gathers each 32-bit word of all four into one vector with two rounds of `UZP1` and
+    `UZP2`, then forms the five limbs with shifts, `SLI` for a limb that straddles two words, masks, and `USRA` to add
+    the top limb to the bit a full block sets: one block to each 32-bit lane, the first group in the lower halves and
+    the second in the upper;
+  - multiplies the second group by `r²` in place with `UMULL2` and `UMLAL2`
+    (`MultiplyBySelectedScalarWideningUpper[AndAdd]`), taking each of the multiplier's limbs from a lane of another
+    register, so that a power of `r` and five times its upper limbs fill three registers;
+  - adds the first group to the accumulator, narrowed with `XTN`, and multiplies the sum by `r⁴` with `UMULL` and
+    `UMLAL` into the same sums;
+  - carries once, in two chains side by side, each carry one `USRA` and a mask. The carry out of 2^130, below 2^31, is
+    narrowed by `SHRN` and folded back in times 5 by one `UMLAL`.
+
+  `ComputePowers` forms `r²` and `r⁴`, two scalar multiplications, and the kernel clears them before it returns.
+  `AdvSimdMinimumBytes` is 256. `KernelMinimumBytes`, the shortest run any kernel takes on the processor at hand, lets
+  the block loop send shorter runs to the scalar loop without consulting dispatch.
+- **The generated code.** Under qemu the step compiles without spills on both runtimes, the .NET 10.0.12 that the
+  runners used included.
+  - The two runtimes emit the same instructions, except that .NET 8 loads the masks and the full-block bit from the
+    constant pool at each use, twelve loads a step, where .NET 10 keeps the 64-bit mask in a register and forms the
+    32-bit one, the full-block bit and the 5 once a step.
+  - Both copy three product sums into the accumulator's registers, for the `USRA`s that write them.
+  - Taking the lower halves before the upper halves' products made both runtimes copy the message limbs, so the upper
+    halves go first.
+- **CA1857.** .NET 8's reference assembly bounds the shift counts of the 64-bit `USRA` and `SHRN` overloads at 16,
+  though the instructions take up to 64 and 32. .NET 8's JIT emits them with 26, and .NET 10's annotations allow it,
+  so the carry suppresses the analyzer with that reason.
+- **Tests.** As the design has them, with one AdvSimd kind:
+  - Every Update test that drives each kernel drives it.
+  - `ComputePowers`, now internal, is held to `BigInteger` powers of `r` in every layout it fills.
+  - Dispatch's ARM64 choices, the kernel minimum and `IsSupported` have tests of their own, and the SIMD-off assembly
+    checks the scalar loop at every threshold.
+  - The ARM64 jobs run them natively. Under qemu, the Poly1305 core, MAC and AEAD classes passed on both runtimes.
+  - The kernel is new code, so its tests came with it rather than first.
+- **Departure: one kind, not two.** The design selected the paired loop from a second threshold. The first run found
+  it faster wherever the one-group loop ran, so there is one `AdvSimd` kind, and the one-group loop is gone.
+- **Departure: the workflow ran on the pull request.** The design dispatched F7's workflow on the branch, but the
+  integration that opened the pull request may not dispatch workflows. The workflow already ran on a pull request that
+  changes it; it now also runs on one that changes `harness_matrix.py`, whose filters choose the cases and whose parser
+  reads them.
+- **Constant time.** The kernel branches only on the run's length, which is public.
+- **Left for later.**
+  - .NET 10's step. On the N2 it ran 8% slower than .NET 8's, and the carry's change did not register there, though
+    the two differ only in how they form constants.
+  - `LD4`, which .NET 10 exposes as `AdvSimd.Arm64.Load4xVector128AndUnzip`, would load a step's four blocks with
+    their words already gathered, in place of four loads and eight `UZP`s.
+  - The M1's crossover. Its kernel caught the scalar loop at 128 bytes, but runs of 128 to 255 bytes take the scalar
+    loop, because on the N2 that loop is faster there.
+  - OpenSSL splits one group's blocks with integer instructions, whose pipes the vector code leaves idle.
