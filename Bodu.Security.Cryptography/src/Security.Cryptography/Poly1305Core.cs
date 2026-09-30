@@ -91,25 +91,30 @@ internal partial struct Poly1305Core
     /// </remarks>
     internal const int Avx512MinimumBytes = 4096;
 
-    /// <summary>The shortest run of whole blocks, in bytes, that dispatch gives the two-lane AdvSimd kernel on ARM64.</summary>
+    /// <summary>The shortest run of whole blocks, in bytes, that dispatch gives the two-lane AdvSimd kernel on ARM64 processors other than Apple's.</summary>
     /// <remarks>
-    /// Measured on .NET 8 and .NET 10, the kernel caught the scalar loop at 256 bytes on a Neoverse N2, and at 128 on
-    /// an Apple M1; below 256 bytes the N2's scalar loop, with <c>umulh</c>, finished first.
+    /// Measured on .NET 8 and .NET 10, the kernel caught the scalar loop at 256 bytes on a Neoverse N2; below it the
+    /// N2's scalar loop, with <c>umulh</c>, finished first.
     /// </remarks>
     internal const int AdvSimdMinimumBytes = 256;
 
     /// <summary>The shortest run of whole blocks, in bytes, that dispatch gives the two-lane AdvSimd kernel on Apple's cores (<see cref="SimdCapabilities.AppleSilicon" />).</summary>
+    /// <remarks>
+    /// Measured on .NET 8 and .NET 10, the kernel caught the scalar loop at 128 bytes on an Apple M1, whose scalar loop
+    /// ran 128 to 255 bytes at 0.71 to 0.88 of the kernel's speed. Apple's cores have four 128-bit vector pipes to the
+    /// N2's two.
+    /// </remarks>
     internal const int AppleAdvSimdMinimumBytes = 128;
 
     /// <summary>
     /// Gets the shortest run of whole blocks, in bytes, that any kernel dispatch may select on this processor takes:
-    /// <see cref="AdvSimdMinimumBytes" /> on ARM64 and <see cref="Avx2MinimumBytes" /> elsewhere. Shorter runs go
-    /// straight to the scalar loop.
+    /// <see cref="AppleAdvSimdMinimumBytes" /> on Apple's cores, <see cref="AdvSimdMinimumBytes" /> on other ARM64
+    /// processors, and <see cref="Avx2MinimumBytes" /> elsewhere. Shorter runs go straight to the scalar loop.
     /// </summary>
     internal static int KernelMinimumBytes
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => AdvSimd.Arm64.IsSupported ? AdvSimdMinimumBytes : Avx2MinimumBytes;
+        get => SimdCapabilities.AppleSilicon ? AppleAdvSimdMinimumBytes : AdvSimd.Arm64.IsSupported ? AdvSimdMinimumBytes : Avx2MinimumBytes;
     }
 
     /// <summary>The first limb of the clamped key half <c>r</c>.</summary>
@@ -350,7 +355,8 @@ internal partial struct Poly1305Core
     /// Selects the kernel for a run of whole blocks. On x64: AVX-512 for long runs, AVX2 for shorter ones - two groups
     /// at a time from <see cref="Avx2PairedMinimumBytes" /> where AVX-512VL's registers hold them - and the scalar loop
     /// below <see cref="Avx2MinimumBytes" /> or where neither is available. On ARM64: AdvSimd from
-    /// <see cref="AdvSimdMinimumBytes" />, and the scalar loop below.
+    /// <see cref="AppleAdvSimdMinimumBytes" /> on Apple's cores (<see cref="SimdCapabilities.AppleSilicon" />) and from
+    /// <see cref="AdvSimdMinimumBytes" /> elsewhere, and the scalar loop below.
     /// </summary>
     /// <param name="length">The length of the run, in bytes.</param>
     /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
@@ -379,7 +385,7 @@ internal partial struct Poly1305Core
     internal static KernelKind SelectKernel(int length, bool appleSilicon)
     {
         if (SimdCapabilities.AdvSimd)
-            return length < AdvSimdMinimumBytes ? KernelKind.Scalar : KernelKind.AdvSimd;
+            return length < (appleSilicon ? AppleAdvSimdMinimumBytes : AdvSimdMinimumBytes) ? KernelKind.Scalar : KernelKind.AdvSimd;
 
         if (length >= Avx512MinimumBytes && SimdCapabilities.Avx512F && Vector512.IsHardwareAccelerated)
             return KernelKind.Avx512;

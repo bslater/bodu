@@ -176,7 +176,9 @@ internal static class SimdCapabilities
     /// </para>
     /// <para>
     /// Argon2 consults this gate only under .NET 10. Under .NET 8 its AdvSimd kernel ran 1.3 to 1.6 times as fast as
-    /// the scalar kernel on the M1, where the scalar kernel took 58 to 67 percent of 1.0.0's CPU, so it runs there.
+    /// the scalar kernel on the M1, where the scalar kernel took 58 to 67 percent of 1.0.0's CPU, so it runs there on
+    /// Apple's cores (<see cref="AppleSilicon" />), and not on others, where it ran at 0.77 to 0.80 of the scalar
+    /// kernel's speed on the N2.
     /// </para>
     /// <para>
     /// The AdvSimd kernels that give each lane a state of its own (ChaCha20 and Salsa20 over several blocks, BLAKE3
@@ -200,8 +202,10 @@ internal static class SimdCapabilities
     /// </value>
     /// <remarks>
     /// <para>
-    /// Where an Apple M1 and a Neoverse N2 disagreed on a kernel, dispatch passes this value to choose between them.
-    /// Apple's cores have four 128-bit vector pipes, where the N2 has two.
+    /// Where an Apple M1 and a Neoverse N2 disagreed on a kernel, dispatch passes this value to choose between them:
+    /// Poly1305's AdvSimd kernel takes runs from 128 bytes on Apple's cores and from 256 elsewhere, and under .NET 8
+    /// Argon2 selects its AdvSimd kernel on Apple's cores alone. Apple's cores have four 128-bit vector pipes, where
+    /// the N2 has two.
     /// </para>
     /// <para>
     /// The value describes the platform rather than gating a code path, so the disable switch does not close it; the
