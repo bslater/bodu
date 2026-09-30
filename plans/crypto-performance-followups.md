@@ -1,9 +1,9 @@
 # Implementation plan: the cryptography speed-ups left for later
 
-**Status:** Done - F1 to F8 (§9), F8 added after F7 · **Source:** the "Left for
+**Status:** F1 to F8 done (§9), F8 added after F7; F9 to F13, added after F8, in progress · **Source:** the "Left for
 later" items in [`crypto-performance.md`](crypto-performance.md) §10 and the open items in
 [`argon2-performance.md`](argon2-performance.md) §10.3, after `Bodu.Security.Cryptography` 1.1.0,
-and F7's (§9) · **Target:** `Bodu.Security.Cryptography`, next lock-step release
+and F7's and F8's (§9) · **Target:** `Bodu.Security.Cryptography` 1.2.0, out of band
 
 `crypto-performance.md` met every target it set and shipped in 1.1.0. On the way it measured a
 set of further gains that no target needed, and left them for later. This plan collects them,
@@ -307,6 +307,98 @@ the other two items are checks rather than speed-ups.
   - The ARM64 job runs them natively, and qemu in development.
 - **Constant time:** the only branches are on the message length, which is public.
 
+### F9 - BLAKE2b's x64 kernels without AVX-512
+
+Added after F8, with F10 to F13, from the items F7 and F8 left for later (§9). The five go in one pull request.
+
+- **Problem:**
+  - F7 measured x64's single-state kernels on this machine with AVX-512 and then AVX2 switched off. All of them won
+    but BLAKE2b's: with AVX-512 off its AVX2 kernel ran at 0.95-1.08 of the scalar path, and with AVX2 off its SSSE3
+    kernel at 0.88-0.96, over two alternating runs.
+  - AVX2 without AVX-512 is the common desktop: AMD's Zen 2 and Zen 3, and Intel's client cores since Alder Lake.
+- **Design:**
+  - A five-round alternating A/B on this machine under both runtimes: the AVX2 and SSSE3 kernels, switched in with
+    `DOTNET_EnableAVX512F=0` / `DOTNET_EnableAVX512=0` and `DOTNET_EnableAVX2=0`, against the scalar path
+    (`--disable-simd`), at 64 bytes and 1 MiB, with BLAKE2s as the control.
+  - F7's workflow runs the hash and key-derivation rows on its AVX2 machine too, the EPYC, where the AVX2 kernels meet
+    a processor that has no AVX-512 to switch off.
+  - A kernel that loses under both runtimes is gated off, as F7 gated ARM64's; one that loses under one runtime is
+    selected by runtime, as Argon2's AdvSimd kernel is.
+- **Target:** per F7's rule, every x64 kernel at least as fast as its scalar path wherever dispatch selects it.
+- **Tests:** a change to dispatch is a change of behaviour, so its selection tests change first and fail against the
+  current dispatch.
+
+### F10 - Argon2's thread threshold
+
+- **Problem:** Argon2 divides a slice among threads once its segments reach 256 blocks, a 4 MiB matrix at p = 4. At
+  that threshold F7's sweep found threads cutting the wall time 1.4-2.9 times on all three hosted machines, so it may
+  sit too high. The harness could not look below it: the threshold lives in the internal `Argon2Core.FillOptions`.
+- **Design:**
+  - The sweep reaches `FillOptions` through a driver in the manner of F8's `Poly1305KernelDriver`: a dynamic method
+    bound to the library's module calls `Argon2Core.DeriveTag` with the threshold the harness names.
+  - It times matrices of 1 to 4 MiB at p = 4, divided among threads from the first block, against one thread, here
+    and on the three hosted machines, under both runtimes.
+  - The threshold moves down to the shortest segment at which the threads win on every machine measured.
+- **Target:** threads wherever they cut the wall time on every machine measured, and nowhere they add to it.
+- **Tests:** `FillOptions`' default and `ResolveWorkers` at the new threshold, changed first.
+
+### F11 - Poly1305's AdvSimd step
+
+- **Problem:** three items F8 left for later, each about the same step of four blocks:
+  - .NET 10's step ran 8% slower than .NET 8's on the N2, 373 against 345 µs per MiB, though the two emit the same
+    instructions but for how they form three constants. .NET 10 forms the 32-bit mask, the full-block bit and 5 with
+    `MOVI` and `MVNI` in every step, in the vector pipes the step is bound by; .NET 8 loads them.
+  - `LD4`, which .NET 10 exposes as `AdvSimd.Arm64.Load4xVector128AndUnzip`, would load the four blocks with their
+    words already gathered, in place of four loads and eight `UZP`s.
+  - OpenSSL splits blocks into limbs with integer instructions, whose pipes the vector code leaves idle.
+- **Design:**
+  - Each is a variant of the step, built as a kernel kind of its own for as long as the measurement takes, so that
+    one run of F7's workflow times all of them against each other and the scalar loop at every length, on the N2 and
+    the M1: the harness's kernel rows list every kind the processor supports.
+    - The constants formed once, before the loop, and passed into the step.
+    - `LD4` under .NET 10, over the message pinned for the loop.
+    - The integer split: each limb of two blocks packed into one 64-bit value with integer shifts and masks, and moved
+      into the vector with `Vector128.Create(ulong, ulong)`.
+  - The fastest variant on both processors becomes the step, per runtime where the runtimes disagree, and the other
+    kinds go.
+- **Target:** .NET 10's step at least as fast as .NET 8's on the N2; any change kept only where it runs faster on both
+  processors.
+- **Tests:** as F8's. Every kind, the temporary ones included, is driven explicitly and held to the reference, and its
+  entry point checked for `NoInlining | AggressiveOptimization`.
+- **Constant time:** unchanged; the variants branch only on the run's length.
+
+### F12 - Apple silicon's own choices
+
+- **Problem:** two choices on which the M1 and the N2 disagree, and dispatch cannot tell them apart:
+  - Poly1305's AdvSimd kernel caught the scalar loop at 128 bytes on the M1 and at 256 on the N2, so the M1 runs 128
+    to 255 bytes through the scalar loop, which it takes at 0.71-0.88 of the kernel's speed.
+  - Argon2's AdvSimd kernel ran 1.3-1.6 times as fast as the scalar kernel on the M1 under .NET 8, and met ARG-N-002
+    there only with it, but at 0.77-0.80 of the scalar kernel's speed on the N2, which runs it too, since under .NET 8
+    dispatch selects it on every ARM64 processor.
+- **Design:**
+  - Every Apple platform on ARM64 - macOS, iOS, tvOS and Mac Catalyst - runs on Apple's own cores, whose four vector
+    pipes the M1 measured. A `SimdCapabilities` member reports it.
+  - There, Poly1305's AdvSimd kernel takes runs from 128 bytes, and Argon2 selects its AdvSimd kernel under .NET 8.
+    Every other ARM64 processor keeps the N2's choices: the kernel from 256 bytes, and Argon2's scalar kernel under
+    both runtimes.
+  - Each dispatch takes the platform as an argument inside, so the tests can drive both choices on any machine.
+- **Target:** on the M1, runs of 128 to 255 bytes at the kernel's speed; on the N2 under .NET 8, Argon2 at its scalar
+  kernel's; nothing else changes.
+- **Tests:** dispatch's choices for each platform, changed first.
+
+### F13 - the gated ARM64 kernels
+
+- **Problem:** F7 gated the AdvSimd kernels that spread one state across a vector's lanes: BLAKE2b, BLAKE2s, BLAKE3's
+  single block, scrypt, and Argon2 under .NET 10. They lose on the N2 to their layout, not their rotations, so tuning
+  them means redesigning them.
+- **Design:**
+  - Count each round's operations in the vector layout and in the scalar code, and set them against the pipes each
+    processor has: two 128-bit vector pipes on the N2, four on the M1.
+  - Where a layout that gives each lane a state of its own is open to the primitive, weigh it the same way before
+    building it. Argon2's compression is the one candidate: each of its sixteen rounds is independent of seven others.
+- **Target:** a redesign only where the count says it can beat the scalar path on the N2; otherwise the gate stays,
+  with the reason recorded.
+
 ---
 
 ## 4. Order and method
@@ -316,6 +408,8 @@ the other two items are checks rather than speed-ups.
 2. **F1, then F2,** which reuses F1's measurements.
 3. **F3, F4, F5 and F6,** in that order.
 4. **F8, after F7,** whose run found its gain and whose workflow measures it.
+5. **F9 to F13, after F8,** from what F7 and F8 left for later, in one pull request, since three of them
+   need the same runs of F7's workflow.
 
 Each item follows the same sequence:
 
@@ -325,7 +419,7 @@ Each item follows the same sequence:
 3. The generated code is compared on both runtimes.
 4. The before and after figures are recorded in a results section added to this plan.
 
-Each item is its own pull request.
+Each item is its own pull request, but for F9 to F13, which share one.
 
 ## 5. Validation
 
@@ -342,8 +436,8 @@ As `crypto-performance.md` §6:
 ## 6. Compatibility and version
 
 - Output is unchanged, and no public API change is planned.
-- The work ships with the next lock-step `BoduBaseVersion` bump. For this package that bump
-  must move past the out-of-band 1.1.0 (`bld/RELEASING.md`).
+- The work ships as `Bodu.Security.Cryptography` 1.2.0, out of band, with `Bodu.Core` 1.0.1, which carries the
+  vector rotations the kernels call (`bld/RELEASING.md`). The next lock-step release has to move past both.
 
 ## 7. Risks
 
