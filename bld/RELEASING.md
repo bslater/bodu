@@ -280,9 +280,27 @@ worth releasing on their own, whether a fix or a feature release.
    `PackageValidationBaselineVersion` up to the version just published. Until
    then the strict comparison runs against the release before it, so removing
    an API the out-of-band release added would still pass it.
-5. For release notes, tag the released commit with a name that does not start
-   with `v` (e.g. `Bodu.Security.Cryptography-1.1.0`), so neither the release
-   nor the docs workflow triggers, and attach a GitHub Release to that tag.
+5. For release notes, once nuget.org lists the packages, tag the released
+   commit `<PackageId>-<version>` (e.g. `Bodu.Security.Cryptography-1.1.0`),
+   one tag per package the run released, and attach a GitHub Release to each.
+   The name must not start with `v`, so neither the release nor the docs
+   workflow triggers. The released commit is the one the Release run built,
+   shown on its run page: tag it rather than `master`, which may have moved on.
+   The tags are lightweight, and either way below makes one:
+
+   - **On GitHub:** Releases → *Draft a new release* → *Choose a tag*: type
+     the name and pick *Create new tag on publish*. Under *Target*, pick the
+     released commit from *Recent commits*. Title the release
+     `<PackageId> <version>`, paste its notes rather than generating them, and
+     publish it.
+   - **From a clone:** tag and push, then draft the release on the existing
+     tag.
+
+     ```bash
+     git fetch origin
+     git tag Bodu.Security.Cryptography-1.2.0 <released-commit>
+     git push origin Bodu.Security.Cryptography-1.2.0
+     ```
 6. The next lock-step release must move past the out-of-band version, because
    that version is already on nuget.org for this package. When
    `BoduBaseVersion` reaches it, the manifest check fails until the override
