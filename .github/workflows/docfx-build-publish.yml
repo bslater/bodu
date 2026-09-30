@@ -28,9 +28,15 @@ permissions:
 # branch push, which needs it just as much — two runs racing to push gh-pages would leave one
 # rejected as a non-fast-forward. In-progress runs are never cancelled, so a publish always
 # finishes rather than leaving the branch half-written.
+#
+# Only runs that can publish share the "pages" group. A pull request's run never publishes, so each
+# pull request has a group of its own. GitHub keeps one waiting run per group and cancels it when
+# another queues, so a shared group let a push to master cancel a pull request's waiting docs
+# build, and a pull request cancel master's waiting publish. A new push to a pull request cancels
+# that pull request's earlier run, as the policy gate's does.
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: ${{ github.event_name == 'pull_request' && format('docs-pr-{0}', github.event.pull_request.number) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   # Runs on both Ubuntu 24.04 and 26.04 while GitHub moves ubuntu-latest from one to the other,
