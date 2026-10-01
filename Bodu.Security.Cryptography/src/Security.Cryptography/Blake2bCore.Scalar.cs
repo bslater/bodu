@@ -184,31 +184,38 @@ internal static partial class Blake2bCore
     /// <param name="x">The first message word.</param>
     /// <param name="y">The second message word.</param>
     /// <remarks>
+    /// <para>
+    /// Each message word is added to <paramref name="a" /> before <paramref name="b" /> is. The word
+    /// <paramref name="b" /> is the last that the step before computes, so adding it last leaves one addition, not two,
+    /// waiting on it.
+    /// </para>
+    /// <para>
     /// On .NET 10 the rotations go through Bodu.Core's
     /// <see cref="NumericExtensions.RotateBitsRightUnchecked(ulong, int)" />, which the JIT inlines to the same
     /// instruction as <see cref="BitOperations.RotateRight(ulong, int)" />. On .NET 8 they call
     /// <see cref="BitOperations" /> directly: there the wrapper costs one more inline per rotation, and across the 96
     /// calls to this method that <c>CompressScalar</c> unrolls, that exhausts the JIT's inline budget, so this method
     /// and the message loads stop being inlined and the scalar path runs about 3.4 times slower.
+    /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void G(ref ulong a, ref ulong b, ref ulong c, ref ulong d, ulong x, ulong y)
     {
 #if NET10_0_OR_GREATER
-        a += b + x;
+        a = a + x + b;
         d = (d ^ a).RotateBitsRightUnchecked(32);
         c += d;
         b = (b ^ c).RotateBitsRightUnchecked(24);
-        a += b + y;
+        a = a + y + b;
         d = (d ^ a).RotateBitsRightUnchecked(16);
         c += d;
         b = (b ^ c).RotateBitsRightUnchecked(63);
 #else
-        a += b + x;
+        a = a + x + b;
         d = BitOperations.RotateRight(d ^ a, 32);
         c += d;
         b = BitOperations.RotateRight(b ^ c, 24);
-        a += b + y;
+        a = a + y + b;
         d = BitOperations.RotateRight(d ^ a, 16);
         c += d;
         b = BitOperations.RotateRight(b ^ c, 63);
@@ -221,8 +228,12 @@ internal static partial class Blake2bCore
     /// <param name="block">The first byte of the block.</param>
     /// <param name="index">The word's index, from 0 to 15.</param>
     /// <returns>The message word.</returns>
+    /// <remarks>
+    /// The index is native-sized so that a vector kernel's gather, which reads it from σ, scales it within the address
+    /// rather than in a register of its own, and the load can fold into the instruction that inserts the word.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong M(ref byte block, int index)
+    private static ulong M(ref byte block, nuint index)
     {
         ulong word = Unsafe.ReadUnaligned<ulong>(ref Unsafe.Add(ref block, index * sizeof(ulong)));
         return BitConverter.IsLittleEndian ? word : BinaryPrimitives.ReverseEndianness(word);

@@ -21,12 +21,16 @@ internal static partial class Blake2bCore
     /// <remarks>
     /// <para>
     /// The working vector is held as four rows of four words, so lane <c>i</c> of the rows is column <c>i</c> and one
-    /// vector <c>G</c> mixes all four columns. Rotating the second, third and fourth rows by one, two and three lanes
-    /// turns the diagonals into columns for the second half of a round, and rotating them back restores the rows.
+    /// vector <c>G</c> mixes all four columns. Rotating the first row by three lanes and the third and fourth by one
+    /// and two turns the diagonals into columns for the second half of a round, lane <c>i</c> holding the diagonal
+    /// through word <c>i</c> of the second row, and rotating them back restores the rows. The second row stays in
+    /// place: it is the row that each half of a round computes last and that the next half reads first, so no rotation
+    /// stands between the two, and the latency of the lane rotations, AVX2's <c>VPERMQ</c> on every host that runs this
+    /// kernel, overlaps the end of each half.
     /// </para>
     /// <para>
-    /// Each round's message words are gathered straight from the block as the schedule σ names them. The lane rotations
-    /// are AVX2's <c>VPERMQ</c> on every host that runs this kernel.
+    /// Each round's message words are gathered straight from the block as the schedule σ names them, the diagonal
+    /// half's in the order its lanes hold the diagonals.
     /// </para>
     /// </remarks>
     internal readonly struct Vector256Kernel<TIsa>
@@ -63,8 +67,8 @@ internal static partial class Blake2bCore
                     ref d,
                     Load(ref block, ref s, 0, 2, 4, 6),
                     Load(ref block, ref s, 1, 3, 5, 7),
-                    Load(ref block, ref s, 8, 10, 12, 14),
-                    Load(ref block, ref s, 9, 11, 13, 15));
+                    Load(ref block, ref s, 14, 8, 10, 12),
+                    Load(ref block, ref s, 15, 9, 11, 13));
             }
 
             (h0 ^ a ^ c).StoreUnsafe(ref h);
@@ -95,15 +99,15 @@ internal static partial class Blake2bCore
         {
             G(ref a, ref b, ref c, ref d, columnX, columnY);
 
-            b = Avx2.Permute4x64(b, 0b00_11_10_01);
-            c = Avx2.Permute4x64(c, 0b01_00_11_10);
-            d = Avx2.Permute4x64(d, 0b10_01_00_11);
+            a = Avx2.Permute4x64(a, 0b10_01_00_11);
+            c = Avx2.Permute4x64(c, 0b00_11_10_01);
+            d = Avx2.Permute4x64(d, 0b01_00_11_10);
 
             G(ref a, ref b, ref c, ref d, diagonalX, diagonalY);
 
-            b = Avx2.Permute4x64(b, 0b10_01_00_11);
-            c = Avx2.Permute4x64(c, 0b01_00_11_10);
-            d = Avx2.Permute4x64(d, 0b00_11_10_01);
+            a = Avx2.Permute4x64(a, 0b00_11_10_01);
+            c = Avx2.Permute4x64(c, 0b10_01_00_11);
+            d = Avx2.Permute4x64(d, 0b01_00_11_10);
         }
 
         /// <summary>
@@ -115,14 +119,19 @@ internal static partial class Blake2bCore
         /// <param name="d">The fourth row.</param>
         /// <param name="x">The first message word of each <c>G</c>.</param>
         /// <param name="y">The second message word of each <c>G</c>.</param>
+        /// <remarks>
+        /// Each message word is added to <paramref name="a" /> before <paramref name="b" /> is. The row
+        /// <paramref name="b" /> is the last that the step before computes, so adding it last leaves one addition, not
+        /// two, waiting on it.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void G(ref Vector256<ulong> a, ref Vector256<ulong> b, ref Vector256<ulong> c, ref Vector256<ulong> d, Vector256<ulong> x, Vector256<ulong> y)
         {
-            a += b + x;
+            a = a + x + b;
             d = TIsa.RotateRight32(d ^ a);
             c += d;
             b = TIsa.RotateRight24(b ^ c);
-            a += b + y;
+            a = a + y + b;
             d = TIsa.RotateRight16(d ^ a);
             c += d;
             b = TIsa.RotateRight63(b ^ c);
@@ -138,12 +147,15 @@ internal static partial class Blake2bCore
         /// <param name="k2">The σ entry naming the word for lane 2.</param>
         /// <param name="k3">The σ entry naming the word for lane 3.</param>
         /// <returns>The four words.</returns>
+        /// <remarks>
+        /// Each half is built a word at a time, so that each word's load folds into the <c>vmovq</c> or <c>vpinsrq</c>
+        /// that places it. Built from four arguments at once, the JIT loaded three of the words into general registers,
+        /// each with its own index arithmetic, and then moved them across to the vector registers.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Vector256<ulong> Load(ref byte block, ref byte schedule, int k0, int k1, int k2, int k3) =>
             Vector256.Create(
-                M(ref block, Unsafe.Add(ref schedule, k0)),
-                M(ref block, Unsafe.Add(ref schedule, k1)),
-                M(ref block, Unsafe.Add(ref schedule, k2)),
-                M(ref block, Unsafe.Add(ref schedule, k3)));
+                Vector128.CreateScalarUnsafe(M(ref block, Unsafe.Add(ref schedule, k0))).WithElement(1, M(ref block, Unsafe.Add(ref schedule, k1))),
+                Vector128.CreateScalarUnsafe(M(ref block, Unsafe.Add(ref schedule, k2))).WithElement(1, M(ref block, Unsafe.Add(ref schedule, k3))));
     }
 }

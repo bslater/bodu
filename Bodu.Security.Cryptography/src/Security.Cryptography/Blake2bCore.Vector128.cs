@@ -7,6 +7,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
 
 namespace Bodu.Security.Cryptography;
 
@@ -22,9 +23,12 @@ internal static partial class Blake2bCore
     /// <remarks>
     /// <para>
     /// Each row of the working vector is held as two vectors of two words, so each <c>G</c> call mixes two columns at
-    /// once and a round's four columns take two. Turning the diagonals into columns rotates the second row by one word
-    /// and the fourth by three, which splice the halves with <see cref="Argon2Core.IVector128Isa.UpperThenLower" />,
-    /// and the third by two, which only swaps them.
+    /// once and a round's four columns take two. Turning the diagonals into columns rotates the first row by three
+    /// words and the third by one, which splice the halves with <see cref="Argon2Core.IVector128Isa.UpperThenLower" />,
+    /// and the fourth by two, which only swaps them. The second row stays in place: it is the row that each half of a
+    /// round computes last and that the next half reads first, so no splice stands between the two. Each pair of
+    /// vectors then holds the diagonals through two words of the second row, and the diagonal half's message words are
+    /// gathered in that order.
     /// </para>
     /// <para>
     /// This kernel serves x64 processors with SSSE3 but not AVX2, and ARM64. Additions, XORs and the rotation by 63
@@ -66,10 +70,10 @@ internal static partial class Blake2bCore
 
                 G(ref a0, ref b0, ref c0, ref d0, Load(ref block, ref s, 0, 2), Load(ref block, ref s, 1, 3));
                 G(ref a1, ref b1, ref c1, ref d1, Load(ref block, ref s, 4, 6), Load(ref block, ref s, 5, 7));
-                Diagonalize(ref b0, ref b1, ref c0, ref c1, ref d0, ref d1);
-                G(ref a0, ref b0, ref c0, ref d0, Load(ref block, ref s, 8, 10), Load(ref block, ref s, 9, 11));
-                G(ref a1, ref b1, ref c1, ref d1, Load(ref block, ref s, 12, 14), Load(ref block, ref s, 13, 15));
-                Undiagonalize(ref b0, ref b1, ref c0, ref c1, ref d0, ref d1);
+                Diagonalize(ref a0, ref a1, ref c0, ref c1, ref d0, ref d1);
+                G(ref a0, ref b0, ref c0, ref d0, Load(ref block, ref s, 14, 8), Load(ref block, ref s, 15, 9));
+                G(ref a1, ref b1, ref c1, ref d1, Load(ref block, ref s, 10, 12), Load(ref block, ref s, 11, 13));
+                Undiagonalize(ref a0, ref a1, ref c0, ref c1, ref d0, ref d1);
             }
 
             (h0 ^ a0 ^ c0).StoreUnsafe(ref h);
@@ -87,14 +91,19 @@ internal static partial class Blake2bCore
         /// <param name="d">Two words of the fourth row.</param>
         /// <param name="x">The first message word of each <c>G</c>.</param>
         /// <param name="y">The second message word of each <c>G</c>.</param>
+        /// <remarks>
+        /// Each message word is added to <paramref name="a" /> before <paramref name="b" /> is. The row
+        /// <paramref name="b" /> is the last that the step before computes, so adding it last leaves one addition, not
+        /// two, waiting on it.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void G(ref Vector128<ulong> a, ref Vector128<ulong> b, ref Vector128<ulong> c, ref Vector128<ulong> d, Vector128<ulong> x, Vector128<ulong> y)
         {
-            a += b + x;
+            a = a + x + b;
             d = TIsa.RotateRight32(d ^ a);
             c += d;
             b = TIsa.RotateRight24(b ^ c);
-            a += b + y;
+            a = a + y + b;
             d = TIsa.RotateRight16(d ^ a);
             c += d;
             b = b ^ c;
@@ -102,61 +111,61 @@ internal static partial class Blake2bCore
         }
 
         /// <summary>
-        /// Rotates the second row one word left, the third two, and the fourth three, so the diagonals become columns.
+        /// Rotates the first row three words left, the third one, and the fourth two, so the diagonals become columns.
         /// </summary>
-        /// <param name="b0">The first half of the second row.</param>
-        /// <param name="b1">The second half of the second row.</param>
+        /// <param name="a0">The first half of the first row.</param>
+        /// <param name="a1">The second half of the first row.</param>
         /// <param name="c0">The first half of the third row.</param>
         /// <param name="c1">The second half of the third row.</param>
         /// <param name="d0">The first half of the fourth row.</param>
         /// <param name="d1">The second half of the fourth row.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Diagonalize(
-            ref Vector128<ulong> b0,
-            ref Vector128<ulong> b1,
+            ref Vector128<ulong> a0,
+            ref Vector128<ulong> a1,
             ref Vector128<ulong> c0,
             ref Vector128<ulong> c1,
             ref Vector128<ulong> d0,
             ref Vector128<ulong> d1)
         {
-            Vector128<ulong> t = TIsa.UpperThenLower(b0, b1);
-            b1 = TIsa.UpperThenLower(b1, b0);
-            b0 = t;
+            Vector128<ulong> t = TIsa.UpperThenLower(a1, a0);
+            a1 = TIsa.UpperThenLower(a0, a1);
+            a0 = t;
 
-            (c0, c1) = (c1, c0);
+            t = TIsa.UpperThenLower(c0, c1);
+            c1 = TIsa.UpperThenLower(c1, c0);
+            c0 = t;
 
-            t = TIsa.UpperThenLower(d1, d0);
-            d1 = TIsa.UpperThenLower(d0, d1);
-            d0 = t;
+            (d0, d1) = (d1, d0);
         }
 
         /// <summary>
         /// Undoes <see cref="Diagonalize" />, restoring the rows.
         /// </summary>
-        /// <param name="b0">The first half of the second row.</param>
-        /// <param name="b1">The second half of the second row.</param>
+        /// <param name="a0">The first half of the first row.</param>
+        /// <param name="a1">The second half of the first row.</param>
         /// <param name="c0">The first half of the third row.</param>
         /// <param name="c1">The second half of the third row.</param>
         /// <param name="d0">The first half of the fourth row.</param>
         /// <param name="d1">The second half of the fourth row.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Undiagonalize(
-            ref Vector128<ulong> b0,
-            ref Vector128<ulong> b1,
+            ref Vector128<ulong> a0,
+            ref Vector128<ulong> a1,
             ref Vector128<ulong> c0,
             ref Vector128<ulong> c1,
             ref Vector128<ulong> d0,
             ref Vector128<ulong> d1)
         {
-            Vector128<ulong> t = TIsa.UpperThenLower(b1, b0);
-            b1 = TIsa.UpperThenLower(b0, b1);
-            b0 = t;
+            Vector128<ulong> t = TIsa.UpperThenLower(a0, a1);
+            a1 = TIsa.UpperThenLower(a1, a0);
+            a0 = t;
 
-            (c0, c1) = (c1, c0);
+            t = TIsa.UpperThenLower(c1, c0);
+            c1 = TIsa.UpperThenLower(c0, c1);
+            c0 = t;
 
-            t = TIsa.UpperThenLower(d0, d1);
-            d1 = TIsa.UpperThenLower(d1, d0);
-            d0 = t;
+            (d0, d1) = (d1, d0);
         }
 
         /// <summary>
@@ -167,8 +176,17 @@ internal static partial class Blake2bCore
         /// <param name="k0">The σ entry naming the word for lane 0.</param>
         /// <param name="k1">The σ entry naming the word for lane 1.</param>
         /// <returns>The two words.</returns>
+        /// <remarks>
+        /// Where SSE4.1 is available the vector is built a word at a time, so that each word's load folds into the
+        /// <c>vmovq</c> or <c>vpinsrq</c> that places it, rather than passing through a general register.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Vector128<ulong> Load(ref byte block, ref byte schedule, int k0, int k1) =>
-            Vector128.Create(M(ref block, Unsafe.Add(ref schedule, k0)), M(ref block, Unsafe.Add(ref schedule, k1)));
+        private static Vector128<ulong> Load(ref byte block, ref byte schedule, int k0, int k1)
+        {
+            if (Sse41.IsSupported)
+                return Vector128.CreateScalarUnsafe(M(ref block, Unsafe.Add(ref schedule, k0))).WithElement(1, M(ref block, Unsafe.Add(ref schedule, k1)));
+
+            return Vector128.Create(M(ref block, Unsafe.Add(ref schedule, k0)), M(ref block, Unsafe.Add(ref schedule, k1)));
+        }
     }
 }
