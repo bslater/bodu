@@ -167,7 +167,7 @@
 <tr>
 <td><strong>Text filtering</strong></td>
 <td><code>Bodu.Text.Filtering</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td><code>Bodu.Core</code></td>
 <td><a href="text-filtering/index.html">Bodu.Text.Filtering</a></td>
 <td><a href="text-filtering/getting-started.html">Get started</a></td>
@@ -175,7 +175,7 @@
 <tr>
 <td><strong>Text formats (umbrella)</strong></td>
 <td><code>Bodu.Text.Formats</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td><code>Bodu.Text.Delimited</code>, <code>Bodu.Text.DotEnv</code>, <code>Bodu.Text.Ini</code></td>
 <td><a href="formats/index.html">Bodu.Text.Formats</a></td>
 <td><a href="formats/getting-started.html">Get started</a></td>
@@ -183,7 +183,7 @@
 <tr>
 <td><strong>Delimited (CSV / TSV)</strong></td>
 <td><code>Bodu.Text.Delimited</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td><code>Bodu.Text.Serialization</code>, <code>Bodu.Core</code></td>
 <td><a href="formats/index.html">Bodu.Text.Formats</a></td>
 <td><a href="formats/getting-started.html">Get started</a></td>
@@ -191,7 +191,7 @@
 <tr>
 <td><strong>DotEnv</strong></td>
 <td><code>Bodu.Text.DotEnv</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td><code>Bodu.Text.Serialization</code>, <code>Bodu.Core</code></td>
 <td><a href="formats/index.html">Bodu.Text.Formats</a></td>
 <td><a href="formats/getting-started.html">Get started</a></td>
@@ -199,7 +199,7 @@
 <tr>
 <td><strong>INI</strong></td>
 <td><code>Bodu.Text.Ini</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td><code>Bodu.Text.Serialization</code>, <code>Bodu.Core</code></td>
 <td><a href="formats/index.html">Bodu.Text.Formats</a></td>
 <td><a href="formats/getting-started.html">Get started</a></td>
@@ -231,7 +231,7 @@
 <tr>
 <td><strong>YAML serializer</strong></td>
 <td><code>Bodu.Text.Yaml</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td><code>Bodu.Text.Serialization</code>, <code>Bodu.Core</code></td>
 <td><a href="serialization/yaml/index.html">Bodu.Text.Yaml</a></td>
 <td><a href="serialization/yaml/getting-started.html">Get started</a></td>
@@ -332,7 +332,7 @@
 </tr>
 <tr>
 <td><code>Bodu.Globalization.Recurrence</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>RFC 5545 (iCalendar) recurrence rules - <code>RecurrenceRule</code> / <code>RecurrenceRuleBuilder</code> / <code>RecurrenceSet</code> parsing, formatting, and occurrence enumeration - plus <code>CronExpression</code> cron-schedule parsing and <code>AnchoredInterval</code> instant-anchored intervals, every form answering both next- and previous-occurrence queries.</td>
 <td><code>Bodu.Core</code></td>
 </tr>
@@ -356,7 +356,7 @@
 </tr>
 <tr>
 <td><code>Bodu.Numerics.Serialization.Json</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td><code>System.Text.Json</code> converters, converter factories, and the <code>AddNumericsJsonConverters()</code> registration for the <code>Bodu.Numerics</code> types (<code>Fraction&lt;T&gt;</code>, <code>BigDecimal</code>, <code>Interval&lt;T&gt;</code>, <code>DiscreteInterval&lt;T&gt;</code>, <code>IntervalSet&lt;T&gt;</code>), keeping the core numerics library serialization-agnostic.</td>
 <td><code>Bodu.Numerics</code>, <code>System.Text.Json</code></td>
 </tr>
@@ -396,7 +396,7 @@
 </tr>
 <tr>
 <td><code>Bodu.IO.Biff</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>A low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy <code>.xls</code> workbooks - the substrate beneath <code>Bodu.Formats.Excel.Binary</code>, in the same relation <code>Bodu.IO.Pst</code> has to <code>Bodu.Formats.Outlook.Pst</code>. The forward-only, allocation-free <code>BiffReader</code> frames each record, establishes the version from BOF and the code page from CODEPAGE, and exposes typed accessors for cell, sheet, and workbook-globals records; <code>BiffSstReader</code> walks the BIFF8 shared string table across its CONTINUE records; <code>BiffWriter</code> emits BIFF5 or BIFF8 records. No compound-file dependency, no workbook or cell model, no formula evaluation.</td>
 <td><code>Bodu.Core</code>, <code>System.Text.Encoding.CodePages</code></td>
 </tr>
@@ -454,7 +454,7 @@
 <tbody>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>Web exchange-rate provider infrastructure: the abstract <code>WebRateProvider</code> and <code>PairWebRateProvider&lt;TSeries&gt;</code> bases every per-source provider package builds on, plus the shared fetch machinery - <code>WebRateProviderOptions</code>, single-flight request coalescing (<code>SingleFlightCoordinator&lt;TKey&gt;</code>), on-disk raw-response caching (<code>FileSystemByteCache&lt;TKey&gt;</code>), <code>HttpClient</code> construction (<code>RateProviderHttpClientFactory</code>), and the pair-load contracts (<code>IPairRateLoader</code>, <code>IPairRateSource&lt;TSeries&gt;</code>). Keeps the HTTP machinery out of the core <code>Bodu.Financial</code> package.</td>
 <td><code>Bodu.Financial</code>, <code>Bodu.Core</code>, <code>Microsoft.Extensions.Logging.Abstractions</code></td>
 </tr>
@@ -466,31 +466,31 @@
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Rba</code></td>
-<td>Stable</td>
+<td>Preview</td>
 <td>Downloads and parses the RBA's published daily exchange-rate <code>.xls</code> files, serving them as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API and in-memory plus on-disk caching. Includes its own <code>AddRbaExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>RbaRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
 <td><code>Bodu.Formats.Excel.Binary</code>, <code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Boe</code></td>
-<td>Stable</td>
+<td>Preview</td>
 <td>Queries the Bank of England's Interactive Statistical Database (IADB) CSV endpoint for daily spot rates, serving them as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API and in-memory plus on-disk caching. Includes its own <code>AddBoeExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>BoeRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
 <td><code>Bodu.Text.Delimited</code>, <code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Ecb</code></td>
-<td>Stable</td>
+<td>Preview</td>
 <td>Downloads and parses the ECB's published <code>eurofxref</code> euro foreign-exchange reference-rate XML feeds, serving them as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API and in-memory plus on-disk caching. Includes its own <code>AddEcbExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>EcbRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
 <td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Yahoo</code></td>
-<td>Stable</td>
+<td>Preview</td>
 <td>Fetches and parses the Yahoo Finance v8 chart JSON service, serving the results as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API over arbitrary currency pairs. Includes its own <code>AddYahooExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>YahooRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
 <td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Ofx</code></td>
-<td>Stable</td>
+<td>Preview</td>
 <td>Fetches and parses the OFX (ofx.com) public spot-rate-history JSON service, serving the results as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API over arbitrary currency pairs. Includes its own <code>AddOfxExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>OfxRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
 <td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
@@ -777,7 +777,7 @@ dotnet add package Bodu.Globalization.Calendar.MiddleEast
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 2fc7983 · Built: 2026-10-01 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 69ce7ee · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>
