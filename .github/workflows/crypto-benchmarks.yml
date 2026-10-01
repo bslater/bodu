@@ -46,17 +46,20 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # TEMPORARY (issue #743): three x64 jobs, each a fresh draw from the hosted pool, on the BLAKE2 suite alone, so
-          # that one dispatch has three chances at an AMD Zen 4 with AVX-512. Restore the three entries before merging.
-          - os: ubuntu-24.04
-            suites: blake2
-            copy: 1
-          - os: ubuntu-24.04
-            suites: blake2
-            copy: 2
-          - os: ubuntu-24.04
-            suites: blake2
-            copy: 3
+          # TEMPORARY (issue #743): eight x64 jobs, each a fresh draw from the hosted pool, on the BLAKE2 suite, so
+          # that one dispatch has eight chances at an AMD Zen 4 with AVX-512, and the two ARM64 runners, whose BLAKE2
+          # dispatch selects the scalar kernels. Each times this checkout beside the base build that a later step
+          # checks out. Restore the three entries before merging.
+          - { os: ubuntu-24.04, suites: blake2, copy: 1 }
+          - { os: ubuntu-24.04, suites: blake2, copy: 2 }
+          - { os: ubuntu-24.04, suites: blake2, copy: 3 }
+          - { os: ubuntu-24.04, suites: blake2, copy: 4 }
+          - { os: ubuntu-24.04, suites: blake2, copy: 5 }
+          - { os: ubuntu-24.04, suites: blake2, copy: 6 }
+          - { os: ubuntu-24.04, suites: blake2, copy: 7 }
+          - { os: ubuntu-24.04, suites: blake2, copy: 8 }
+          - { os: ubuntu-24.04-arm, suites: blake2-arm, copy: 1 }
+          - { os: macos-15, suites: blake2-arm, copy: 1 }
     runs-on: ${{ matrix.os }}
     timeout-minutes: 180
 
@@ -78,6 +81,14 @@ jobs:
           dotnet pack Bodu.CodeStyle.XmlDocumentation/Bodu.CodeStyle.XmlDocumentation.csproj \
             --configuration Release \
             --output "${{ github.workspace }}/local-packages"
+
+      - name: 'Check out the base build (TEMPORARY, issue #743)'
+        run: |
+          git fetch --no-tags --depth=1 origin d74c5e4addf982ee3e2b008c0058bb9b651de1f3
+          git worktree add "$RUNNER_TEMP/base" FETCH_HEAD
+          ln -s "${{ github.workspace }}/local-packages" "$RUNNER_TEMP/base/local-packages"
+          project="$RUNNER_TEMP/base/Bodu.Security.Cryptography/bench/Bodu.Security.Cryptography.Benchmarks.csproj"
+          echo "BODU_BASE_PROJECT=$project" >> "$GITHUB_ENV"
 
       - name: Report processor
         run: |

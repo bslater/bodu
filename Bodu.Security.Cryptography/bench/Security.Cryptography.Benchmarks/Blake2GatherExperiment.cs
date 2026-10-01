@@ -927,6 +927,224 @@ public readonly struct B_Fixed : IBlake2bKernel
     }
 }
 
+/// <summary>The fixed kernel, with each G adding the message word before b, the operand that arrives last.</summary>
+public readonly struct S_Reassoc : IBlake2sKernel
+{
+    public static string Name => "reassoc";
+    public static bool IsSupported => Avx512F.VL.IsSupported;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static uint M(ref byte block, nuint index) => Unsafe.ReadUnaligned<uint>(ref Unsafe.Add(ref block, index * sizeof(uint)));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static Vector128<uint> Load(ref byte block, ref byte s, int k0, int k1, int k2, int k3) =>
+        Vector128.CreateScalarUnsafe(M(ref block, Unsafe.Add(ref s, k0)))
+            .WithElement(1, M(ref block, Unsafe.Add(ref s, k1)))
+            .WithElement(2, M(ref block, Unsafe.Add(ref s, k2)))
+            .WithElement(3, M(ref block, Unsafe.Add(ref s, k3)));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void G(ref Vector128<uint> a, ref Vector128<uint> b, ref Vector128<uint> c, ref Vector128<uint> d, Vector128<uint> x, Vector128<uint> y)
+    {
+        a = a + x + b;
+        d = B2s.Ror16(d ^ a);
+        c += d;
+        b = B2s.Ror12(b ^ c);
+        a = a + y + b;
+        d = B2s.Ror8(d ^ a);
+        c += d;
+        b = B2s.Ror7(b ^ c);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.AggressiveOptimization)]
+    public static void Compress(ref uint h, ref byte block, ulong counter, uint finalization)
+    {
+        Vector128<uint> h0 = Vector128.LoadUnsafe(ref h);
+        Vector128<uint> h1 = Vector128.LoadUnsafe(ref h, 4);
+        Vector128<uint> a = h0, b = h1;
+        Vector128<uint> c = Vector128.Create(B2s.Iv0, B2s.Iv1, B2s.Iv2, B2s.Iv3);
+        Vector128<uint> d = Vector128.Create(B2s.Iv4 ^ (uint)counter, B2s.Iv5 ^ (uint)(counter >> 32), B2s.Iv6 ^ finalization, B2s.Iv7);
+        ref byte sigma = ref MemoryMarshal.GetReference(B2s.Sigma);
+        for (int round = 0; round < 10; round++)
+        {
+            ref byte s = ref Unsafe.Add(ref sigma, round * 16);
+            Vector128<uint> cx = Load(ref block, ref s, 0, 2, 4, 6), cy = Load(ref block, ref s, 1, 3, 5, 7), dx = Load(ref block, ref s, 8, 10, 12, 14), dy = Load(ref block, ref s, 9, 11, 13, 15);
+            G(ref a, ref b, ref c, ref d, cx, cy);
+            B2s.Diagonalize(ref b, ref c, ref d);
+            G(ref a, ref b, ref c, ref d, dx, dy);
+            B2s.Undiagonalize(ref b, ref c, ref d);
+        }
+
+        (h0 ^ a ^ c).StoreUnsafe(ref h);
+        (h1 ^ b ^ d).StoreUnsafe(ref h, 4);
+    }
+}
+
+/// <summary>The fixed kernel, with each G adding the message word before b, the operand that arrives last.</summary>
+public readonly struct B_Reassoc : IBlake2bKernel
+{
+    public static string Name => "reassoc";
+    public static bool IsSupported => Avx512F.VL.IsSupported;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static ulong M(ref byte block, nuint index) => Unsafe.ReadUnaligned<ulong>(ref Unsafe.Add(ref block, index * sizeof(ulong)));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static Vector256<ulong> Load(ref byte block, ref byte s, int k0, int k1, int k2, int k3) =>
+        Vector256.Create(
+            Vector128.CreateScalarUnsafe(M(ref block, Unsafe.Add(ref s, k0))).WithElement(1, M(ref block, Unsafe.Add(ref s, k1))),
+            Vector128.CreateScalarUnsafe(M(ref block, Unsafe.Add(ref s, k2))).WithElement(1, M(ref block, Unsafe.Add(ref s, k3))));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void G(ref Vector256<ulong> a, ref Vector256<ulong> b, ref Vector256<ulong> c, ref Vector256<ulong> d, Vector256<ulong> x, Vector256<ulong> y)
+    {
+        a = a + x + b;
+        d = Avx512F.VL.RotateRight(d ^ a, 32);
+        c += d;
+        b = Avx512F.VL.RotateRight(b ^ c, 24);
+        a = a + y + b;
+        d = Avx512F.VL.RotateRight(d ^ a, 16);
+        c += d;
+        b = Avx512F.VL.RotateRight(b ^ c, 63);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.AggressiveOptimization)]
+    public static void Compress(ref ulong h, ref byte block, ulong counter, ulong finalization)
+    {
+        Vector256<ulong> h0 = Vector256.LoadUnsafe(ref h);
+        Vector256<ulong> h1 = Vector256.LoadUnsafe(ref h, 4);
+        Vector256<ulong> a = h0, b = h1;
+        Vector256<ulong> c = Vector256.Create(B2b.Iv0, B2b.Iv1, B2b.Iv2, B2b.Iv3);
+        Vector256<ulong> d = Vector256.Create(B2b.Iv4 ^ counter, B2b.Iv5, B2b.Iv6 ^ finalization, B2b.Iv7);
+        ref byte sigma = ref MemoryMarshal.GetReference(B2b.Sigma);
+        for (int round = 0; round < 12; round++)
+        {
+            ref byte s = ref Unsafe.Add(ref sigma, round * 16);
+            Vector256<ulong> cx = Load(ref block, ref s, 0, 2, 4, 6), cy = Load(ref block, ref s, 1, 3, 5, 7), dx = Load(ref block, ref s, 8, 10, 12, 14), dy = Load(ref block, ref s, 9, 11, 13, 15);
+            G(ref a, ref b, ref c, ref d, cx, cy);
+            B2b.Diagonalize(ref b, ref c, ref d);
+            G(ref a, ref b, ref c, ref d, dx, dy);
+            B2b.Undiagonalize(ref b, ref c, ref d);
+        }
+
+        (h0 ^ a ^ c).StoreUnsafe(ref h);
+        (h1 ^ b ^ d).StoreUnsafe(ref h, 4);
+    }
+}
+
+/// <summary>The reassoc kernel, diagonalizing rows a, c and d so that b, which each half computes last, is never permuted.</summary>
+public readonly struct S_ReAcd : IBlake2sKernel
+{
+    public static string Name => "reacd";
+    public static bool IsSupported => Avx512F.VL.IsSupported;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static uint M(ref byte block, nuint index) => Unsafe.ReadUnaligned<uint>(ref Unsafe.Add(ref block, index * sizeof(uint)));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static Vector128<uint> Load(ref byte block, ref byte s, int k0, int k1, int k2, int k3) =>
+        Vector128.CreateScalarUnsafe(M(ref block, Unsafe.Add(ref s, k0)))
+            .WithElement(1, M(ref block, Unsafe.Add(ref s, k1)))
+            .WithElement(2, M(ref block, Unsafe.Add(ref s, k2)))
+            .WithElement(3, M(ref block, Unsafe.Add(ref s, k3)));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void G(ref Vector128<uint> a, ref Vector128<uint> b, ref Vector128<uint> c, ref Vector128<uint> d, Vector128<uint> x, Vector128<uint> y)
+    {
+        a = a + x + b;
+        d = B2s.Ror16(d ^ a);
+        c += d;
+        b = B2s.Ror12(b ^ c);
+        a = a + y + b;
+        d = B2s.Ror8(d ^ a);
+        c += d;
+        b = B2s.Ror7(b ^ c);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.AggressiveOptimization)]
+    public static void Compress(ref uint h, ref byte block, ulong counter, uint finalization)
+    {
+        Vector128<uint> h0 = Vector128.LoadUnsafe(ref h);
+        Vector128<uint> h1 = Vector128.LoadUnsafe(ref h, 4);
+        Vector128<uint> a = h0, b = h1;
+        Vector128<uint> c = Vector128.Create(B2s.Iv0, B2s.Iv1, B2s.Iv2, B2s.Iv3);
+        Vector128<uint> d = Vector128.Create(B2s.Iv4 ^ (uint)counter, B2s.Iv5 ^ (uint)(counter >> 32), B2s.Iv6 ^ finalization, B2s.Iv7);
+        ref byte sigma = ref MemoryMarshal.GetReference(B2s.Sigma);
+        for (int round = 0; round < 10; round++)
+        {
+            ref byte s = ref Unsafe.Add(ref sigma, round * 16);
+            Vector128<uint> cx = Load(ref block, ref s, 0, 2, 4, 6), cy = Load(ref block, ref s, 1, 3, 5, 7), dx = Load(ref block, ref s, 14, 8, 10, 12), dy = Load(ref block, ref s, 15, 9, 11, 13);
+            G(ref a, ref b, ref c, ref d, cx, cy);
+            a = Sse2.Shuffle(a, 0b10_01_00_11);
+            c = Sse2.Shuffle(c, 0b00_11_10_01);
+            d = Sse2.Shuffle(d, 0b01_00_11_10);
+            G(ref a, ref b, ref c, ref d, dx, dy);
+            a = Sse2.Shuffle(a, 0b00_11_10_01);
+            c = Sse2.Shuffle(c, 0b10_01_00_11);
+            d = Sse2.Shuffle(d, 0b01_00_11_10);
+        }
+
+        (h0 ^ a ^ c).StoreUnsafe(ref h);
+        (h1 ^ b ^ d).StoreUnsafe(ref h, 4);
+    }
+}
+
+/// <summary>The reassoc kernel, diagonalizing rows a, c and d so that b, which each half computes last, is never permuted.</summary>
+public readonly struct B_ReAcd : IBlake2bKernel
+{
+    public static string Name => "reacd";
+    public static bool IsSupported => Avx512F.VL.IsSupported;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static ulong M(ref byte block, nuint index) => Unsafe.ReadUnaligned<ulong>(ref Unsafe.Add(ref block, index * sizeof(ulong)));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static Vector256<ulong> Load(ref byte block, ref byte s, int k0, int k1, int k2, int k3) =>
+        Vector256.Create(
+            Vector128.CreateScalarUnsafe(M(ref block, Unsafe.Add(ref s, k0))).WithElement(1, M(ref block, Unsafe.Add(ref s, k1))),
+            Vector128.CreateScalarUnsafe(M(ref block, Unsafe.Add(ref s, k2))).WithElement(1, M(ref block, Unsafe.Add(ref s, k3))));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void G(ref Vector256<ulong> a, ref Vector256<ulong> b, ref Vector256<ulong> c, ref Vector256<ulong> d, Vector256<ulong> x, Vector256<ulong> y)
+    {
+        a = a + x + b;
+        d = Avx512F.VL.RotateRight(d ^ a, 32);
+        c += d;
+        b = Avx512F.VL.RotateRight(b ^ c, 24);
+        a = a + y + b;
+        d = Avx512F.VL.RotateRight(d ^ a, 16);
+        c += d;
+        b = Avx512F.VL.RotateRight(b ^ c, 63);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.AggressiveOptimization)]
+    public static void Compress(ref ulong h, ref byte block, ulong counter, ulong finalization)
+    {
+        Vector256<ulong> h0 = Vector256.LoadUnsafe(ref h);
+        Vector256<ulong> h1 = Vector256.LoadUnsafe(ref h, 4);
+        Vector256<ulong> a = h0, b = h1;
+        Vector256<ulong> c = Vector256.Create(B2b.Iv0, B2b.Iv1, B2b.Iv2, B2b.Iv3);
+        Vector256<ulong> d = Vector256.Create(B2b.Iv4 ^ counter, B2b.Iv5, B2b.Iv6 ^ finalization, B2b.Iv7);
+        ref byte sigma = ref MemoryMarshal.GetReference(B2b.Sigma);
+        for (int round = 0; round < 12; round++)
+        {
+            ref byte s = ref Unsafe.Add(ref sigma, round * 16);
+            Vector256<ulong> cx = Load(ref block, ref s, 0, 2, 4, 6), cy = Load(ref block, ref s, 1, 3, 5, 7), dx = Load(ref block, ref s, 14, 8, 10, 12), dy = Load(ref block, ref s, 15, 9, 11, 13);
+            G(ref a, ref b, ref c, ref d, cx, cy);
+            a = Avx2.Permute4x64(a, 0b10_01_00_11);
+            c = Avx2.Permute4x64(c, 0b00_11_10_01);
+            d = Avx2.Permute4x64(d, 0b01_00_11_10);
+            G(ref a, ref b, ref c, ref d, dx, dy);
+            a = Avx2.Permute4x64(a, 0b00_11_10_01);
+            c = Avx2.Permute4x64(c, 0b10_01_00_11);
+            d = Avx2.Permute4x64(d, 0b01_00_11_10);
+        }
+
+        (h0 ^ a ^ c).StoreUnsafe(ref h);
+        (h1 ^ b ^ d).StoreUnsafe(ref h, 4);
+    }
+}
+
 /// <summary>Verifies each variant against the library and yields the cases the harness measures.</summary>
 public static class Experiment
 {
@@ -951,8 +1169,8 @@ public static class Experiment
             cases.Add(($"BLAKE2b {T.Name}", () => B2b.Hash<T>(data)));
         }
 
-        S<S_Current>(); S<S_Fixed>(); S<S_Interleaved>(); S<S_Variable>(); S<S_StackCopy>(); S<S_Permute>(); S<S_V100>();
-        B<B_Current>(); B<B_Fixed>(); B<B_Interleaved>(); B<B_Variable>(); B<B_StackCopy>(); B<B_Permute>(); B<B_V100>();
+        S<S_Current>(); S<S_Fixed>(); S<S_Reassoc>(); S<S_ReAcd>(); S<S_Interleaved>(); S<S_V100>();
+        B<B_Current>(); B<B_Fixed>(); B<B_Reassoc>(); B<B_ReAcd>(); B<B_Interleaved>(); B<B_V100>();
         return cases;
     }
 }
