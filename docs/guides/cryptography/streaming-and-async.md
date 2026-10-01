@@ -39,7 +39,7 @@ Because the transform is created from the algorithm's current `Key` / `IV` / `Bl
 
 ## Pattern 2 - the same, awaitable
 
-`EncryptAsync` / `DecryptAsync` have the same signatures plus a `CancellationToken`, and delegate to `ICryptoTransformExtensions.TransformAsync`. Cancellation is honoured between reads and **before the final block is flushed**: a token that fires after the last read but before finalization throws and leaves the target stream partial. An already-cancelled token surfaces as `TaskCanceledException` (an `OperationCanceledException`).
+`EncryptAsync` / `DecryptAsync` have the same signatures plus a `CancellationToken`, and delegate to `ICryptoTransformExtensions.TransformAsync`. Cancellation is honoured between reads and **before the final block is flushed**: a token that fires after the last read but before finalization throws and leaves the target stream partial. A cancelled or failed transform is never finalized, so a partial target holds only the whole blocks already transformed, never a padded final block. An already-cancelled token surfaces as `TaskCanceledException` (an `OperationCanceledException`) and writes nothing to the target.
 
 <!-- compile -->
 ```csharp
@@ -185,6 +185,7 @@ byte[] digest = await HashAlgorithmHelper.HashDataAsync(HashAlgorithmFactory.Fro
 - **Pooled buffers are cleared.** `TransformAsync`, `AppendData`, `AppendDataAsync`, the `MerkleTree` block and leaf loops, and the helper all rent from `ArrayPool<byte>.Shared` and return with `clearArray: true`, on success, cancellation, and exception paths alike, so plaintext never lingers in a pool.
 - **Streams are never disposed** by these members; the caller owns both ends.
 - **Cancellation is cooperative.** It is checked per read and, for `TransformAsync`, before the final block; a partially written target is the caller's to discard. Already-cancelled tokens fail fast before any I/O.
+- **Failures never finalize.** When a stream transform is cancelled or its source throws, the transform is not finalized: the target keeps only the output already written, and no padded final block is appended that could make it pass for a complete ciphertext.
 - **Instances are not thread-safe - with one exception.** Hashes and transforms are single-caller objects. `MerkleTree` is immutable and safe to share across threads, provided its factory returns a fresh `HashAlgorithm` on each call; a parallel instance spreads leaf hashing across workers *inside* one call and folds them in order on the calling thread.
 
 ## API summary

@@ -122,6 +122,19 @@ public static partial class ICryptoTransformExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="bufferSize" /> is less than or equal to zero.
     /// </exception>
+    /// <remarks>
+    /// <para>
+    /// The final block is written only when <paramref name="sourceStream" /> has been read to its end. If reading or
+    /// transforming fails partway through, the exception propagates and <paramref name="targetStream" /> holds only the
+    /// output already written; the transform is never finalized, so no padded final block is appended to the partial
+    /// output. Treat a target that saw a failure as incomplete and discard it.
+    /// </para>
+    /// <para>
+    /// Neither stream is disposed. When <paramref name="targetStream" /> is itself a <see cref="CryptoStream" />, its
+    /// final block is flushed after a successful transform, as chaining one <see cref="CryptoStream" /> into another
+    /// does.
+    /// </para>
+    /// </remarks>
     /// <example>
     /// <code>
     ///<![CDATA[
@@ -143,8 +156,10 @@ public static partial class ICryptoTransformExtensions
         byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try
         {
-            // leaveOpen: true because targetStream is caller-owned and must not be disposed here.
-            var cryptoStream = new CryptoStream(targetStream, transform, CryptoStreamMode.Write, leaveOpen: true);
+            // leaveOpen: true because targetStream is caller-owned and must not be disposed here. The CryptoStream
+            // writes through a detachable wrapper so that a failure can keep its final block out of the target.
+            var output = new DetachableWriteStream(targetStream);
+            var cryptoStream = new CryptoStream(output, transform, CryptoStreamMode.Write, leaveOpen: true);
             bool completed = false;
             try
             {
@@ -158,6 +173,11 @@ public static partial class ICryptoTransformExtensions
                 }
 
                 cryptoStream.FlushFinalBlock();
+
+                // The wrapper hides a chained CryptoStream from FlushFinalBlock, which would otherwise finalize it.
+                if (targetStream is CryptoStream { HasFlushedFinalBlock: false } chained)
+                    chained.FlushFinalBlock();
+
                 completed = true;
                 return totalBytesRead;
             }
@@ -169,9 +189,12 @@ public static partial class ICryptoTransformExtensions
                 }
                 else
                 {
-                    // The primary flow failed before FlushFinalBlock completed, so Dispose will
-                    // attempt to finalize an incomplete transform and raise a CryptographicException
-                    // of its own. Swallow that secondary exception so the original cause propagates.
+                    // The primary flow failed before FlushFinalBlock completed. Dispose finalizes the
+                    // transform, so detach the wrapper first: the final block it flushes is discarded
+                    // instead of being appended to the caller's partial output, while Dispose still
+                    // clears the CryptoStream's buffers. Dispose may also raise a CryptographicException
+                    // of its own; swallow it so the original cause propagates.
+                    output.Detach();
                     try
                     {
                         cryptoStream.Dispose();

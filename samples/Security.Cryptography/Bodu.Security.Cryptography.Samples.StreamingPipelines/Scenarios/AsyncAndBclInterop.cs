@@ -26,7 +26,7 @@ public static class AsyncAndBclInterop
             "Async pipelines and the BCL's own Aes",
             what: "Encrypts and decrypts the 200 KiB payload with EncryptAsync / DecryptAsync, tries again with an already-cancelled token, then drives a System.Security.Cryptography Aes instance through the same Encrypt(Stream, Stream) extension, through TransformAsync over its CreateEncryptor() transform, and through Transform(ReadOnlySpan<byte>), comparing all three with Aes.EncryptCbc.",
             why: "Server code reads and writes streams asynchronously, and a request that is abandoned should stop encrypting rather than run to the end. The extensions hang off SymmetricAlgorithm and ICryptoTransform rather than off Bodu types, so one helper surface serves the framework ciphers and the library's alike, and agreement with the framework's own one-shot call is the proof that no padding or chaining detail differs.",
-            expect: "The async ciphertext equals the synchronous one and decrypts back to the payload. The cancelled call throws TaskCanceledException, and whatever reached the target is incomplete and must be discarded. All three Aes routes print True against EncryptCbc.");
+            expect: "The async ciphertext equals the synchronous one and decrypts back to the payload. The cancelled call throws TaskCanceledException without writing anything, so the target is still 0 bytes long. All three Aes routes print True against EncryptCbc.");
 
         var payload = SamplePayload.Create();
 
@@ -53,8 +53,9 @@ public static class AsyncAndBclInterop
         Console.WriteLine($"    EncryptAsync == Encrypt(byte[]) : {ciphertext.AsSpan().SequenceEqual(twofish.Encrypt(payload))}");
         Console.WriteLine($"    DecryptAsync recovers payload   : {recoveredOut.ToArray().AsSpan().SequenceEqual(payload)}");
 
-        // A token that has already fired stops the pipeline at its first read. Treat the target as garbage after any
-        // cancellation: the extensions do not roll back what they have written, so a partial output must be discarded.
+        // A token that has already fired stops the pipeline at its first read, before anything reaches the target. A
+        // cancellation that lands mid-stream leaves the blocks already written there, never a finalized padding block, so
+        // treat a target that saw any cancellation as incomplete.
         using var cancelled = new CancellationTokenSource();
         cancelled.Cancel();
         using var abandonedIn = new MemoryStream(payload);
@@ -70,7 +71,7 @@ public static class AsyncAndBclInterop
             outcome = ex.GetType().Name;
         }
 
-        Console.WriteLine($"    cancelled token                 : {outcome} (discard the partial target)");
+        Console.WriteLine($"    cancelled token                 : {outcome}, target length {abandonedOut.Length} B");
         Console.WriteLine();
 
         // The same extensions over the framework's Aes. Its defaults are CBC with PKCS#7 padding.

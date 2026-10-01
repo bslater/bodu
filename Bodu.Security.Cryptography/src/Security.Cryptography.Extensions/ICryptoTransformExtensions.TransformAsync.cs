@@ -42,7 +42,16 @@ public static partial class ICryptoTransformExtensions
     /// is skipped, leaving <paramref name="targetStream" /> in a partial state.
     /// </para>
     /// <para>
-    /// Neither <paramref name="sourceStream" /> nor <paramref name="targetStream" /> is disposed by this method.
+    /// The final block is written only when <paramref name="sourceStream" /> has been read to its end. If the operation
+    /// is cancelled or fails partway through, the exception propagates and <paramref name="targetStream" /> holds only
+    /// the output already written; the transform is never finalized, so no padded final block is appended to the
+    /// partial output, and a token that is already cancelled writes nothing at all. Treat a target that saw a failure
+    /// as incomplete and discard it.
+    /// </para>
+    /// <para>
+    /// Neither <paramref name="sourceStream" /> nor <paramref name="targetStream" /> is disposed by this method. When
+    /// <paramref name="targetStream" /> is itself a <see cref="CryptoStream" />, its final block is flushed after a
+    /// successful transform, as chaining one <see cref="CryptoStream" /> into another does.
     /// </para>
     /// </remarks>
     /// <example>
@@ -75,7 +84,10 @@ public static partial class ICryptoTransformExtensions
         byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try
         {
-            var cryptoStream = new CryptoStream(targetStream, transform, CryptoStreamMode.Write, leaveOpen: true);
+            // The CryptoStream writes through a detachable wrapper so that a failure can keep its final block out of
+            // the caller's target.
+            var output = new DetachableWriteStream(targetStream);
+            var cryptoStream = new CryptoStream(output, transform, CryptoStreamMode.Write, leaveOpen: true);
             bool completed = false;
 
             try
@@ -104,6 +116,11 @@ public static partial class ICryptoTransformExtensions
                 cancellationToken.ThrowIfCancellationRequested();
 
                 await cryptoStream.FlushFinalBlockAsync(cancellationToken).ConfigureAwait(false);
+
+                // The wrapper hides a chained CryptoStream from FlushFinalBlockAsync, which would otherwise finalize it.
+                if (targetStream is CryptoStream { HasFlushedFinalBlock: false } chained)
+                    await chained.FlushFinalBlockAsync(cancellationToken).ConfigureAwait(false);
+
                 completed = true;
             }
             finally
@@ -115,10 +132,13 @@ public static partial class ICryptoTransformExtensions
                 else
                 {
                     // Any failure before FlushFinalBlockAsync completed leaves the transform in
-                    // an incomplete state; DisposeAsync will attempt to finalize the block and
-                    // may raise a secondary CryptographicException that would mask the original
-                    // cause (cancellation or I/O failure). Swallow that secondary exception so
-                    // the primary exception propagates.
+                    // an incomplete state. DisposeAsync finalizes it, so detach the wrapper first:
+                    // the final block it flushes is discarded instead of being appended to the
+                    // caller's partial output, while DisposeAsync still clears the CryptoStream's
+                    // buffers. DisposeAsync may also raise a secondary CryptographicException that
+                    // would mask the original cause (cancellation or I/O failure); swallow it so the
+                    // primary exception propagates.
+                    output.Detach();
                     try
                     {
                         await cryptoStream.DisposeAsync().ConfigureAwait(false);

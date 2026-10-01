@@ -307,6 +307,28 @@ public partial class ICryptoTransformExtensionsTests
             "Only the whole blocks transformed before the fault may reach the target.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
+    /// flushes the final block of a target that is itself a <see cref="CryptoStream" /> after a successful transform, as
+    /// chaining one <see cref="CryptoStream" /> into another does.
+    /// </summary>
+    [TestMethod]
+    public async Task TransformAsync_Stream_WhenTargetIsCryptoStream_ShouldFlushItsFinalBlock()
+    {
+        using var aes = Aes.Create();
+        aes.Key = new byte[32];
+        aes.IV = new byte[16];
+        using ICryptoTransform encryptor = aes.CreateEncryptor();
+        using ICryptoTransform chainedEncryptor = aes.CreateEncryptor();
+        using var sink = new MemoryStream();
+        await using var chained = new CryptoStream(sink, chainedEncryptor, CryptoStreamMode.Write, leaveOpen: true);
+        using var source = new MemoryStream(new byte[40]);
+
+        await encryptor.TransformAsync(source, chained, bufferSize: 16);
+
+        Assert.IsTrue(chained.HasFlushedFinalBlock, "A chained CryptoStream target must be finalized on success.");
+    }
+
     // ---------------------------------------------------------------------------------------------------------------
     // TransformAsync(ReadOnlyMemory<byte>, Memory<byte>, CancellationToken)
     // ---------------------------------------------------------------------------------------------------------------
