@@ -221,7 +221,10 @@ rather than allowed to replace the root, since it is not the latest release.
 Seeding or repairing a slot out of band is a manual run: Actions → *Build and
 Publish DocFX Sites* → *Run workflow* from **master**, with `publish_slot` set to
 the slot (`1.0`, `dev`). Use it for a series whose tag predates this workflow, or
-a root that needs rebuilding before the next tag is cut.
+a root that needs rebuilding before the next tag is cut. An
+[out-of-band release](#out-of-band-single-package-release) needs one, because
+its tags do not start with `v` and so publish nothing: that section's step 6 is
+this run.
 
 Dispatching the release **tag** is not the shortcut it looks like, and does not
 work. `workflow_dispatch` runs the workflow as defined at the ref you dispatch,
@@ -301,7 +304,30 @@ worth releasing on their own, whether a fix or a feature release.
      git tag Bodu.Security.Cryptography-1.2.0 <released-commit>
      git push origin Bodu.Security.Cryptography-1.2.0
      ```
-6. The next lock-step release must move past the out-of-band version, because
+6. Republish the docs root, which nothing refreshes after an out-of-band
+   release: the root and `/<series>/` are written only by a `v*` tag or a
+   manual run, so until one of those they name the package's previous
+   version. Once nuget.org lists the packages, run Actions → *Build and
+   Publish DocFX Sites* → *Run workflow* from **master**, with `publish_slot`
+   set to the current series (`1.0`). The run writes the root and
+   `/<series>/` from one build (see
+   [Documentation for a release](#documentation-for-a-release)).
+
+   The run documents master, not the released commit, under each package's
+   released version, so run it before other changes merge. Anything master
+   has gained since the released commit reaches the root with it; this lists
+   the files that could carry it:
+
+   ```bash
+   git fetch origin
+   git diff --name-only <released-commit> origin/master -- '*/src/*.cs' docs/
+   ```
+
+   Internal code does not show on the site. A changed public member, XML
+   documentation comment or guide does, under the version just released.
+   Weigh any such change against leaving the root a release behind; the next
+   `v*` tag corrects either.
+7. The next lock-step release must move past the out-of-band version, because
    that version is already on nuget.org for this package. When
    `BoduBaseVersion` reaches it, the manifest check fails until the override
    and the pinned baseline are removed.
