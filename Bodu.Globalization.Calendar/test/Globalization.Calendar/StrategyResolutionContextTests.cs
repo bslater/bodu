@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar;
 /// <see langword="null" /> for missing, unknown-rule, and ambiguous references.
 /// </summary>
 [TestClass]
-public class StrategyResolutionContextTests
+public partial class StrategyResolutionContextTests
 {
     private const string Resource = """
         <?xml version="1.0" encoding="utf-8"?>
