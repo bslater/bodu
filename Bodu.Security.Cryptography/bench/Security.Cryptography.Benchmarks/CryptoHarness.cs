@@ -95,9 +95,6 @@ internal static class CryptoHarness
         Console.WriteLine(Describe());
 
         RunHashes();
-#if !BODU_CRYPTO_BASELINE
-        RunBlake2Experiment();
-#endif
         RunStreamCiphers();
         RunAeadsAndModes();
 #if !BODU_CRYPTO_BASELINE
@@ -282,20 +279,6 @@ internal static class CryptoHarness
     }
 
 #if !BODU_CRYPTO_BASELINE
-    /// <summary>
-    /// TEMPORARY (issue #743): measures each BLAKE2 message-gather variant over 1 MiB, after holding it to the library's
-    /// digest.
-    /// </summary>
-    private static void RunBlake2Experiment()
-    {
-        if (Program.IsSimdDisabled)
-            return;
-
-        byte[] bulk = Random(BulkLength, 1);
-        foreach ((string name, Action run) in Blake2Experiment.Experiment.Cases(bulk))
-            Measure("kernel", name + " 1 MiB", BulkLength, run);
-    }
-
     /// <summary>
     /// Measures Poly1305 through each kernel the processor supports, named explicitly, at lengths either side of the
     /// dispatch thresholds, to show where each kernel overtakes the one below it.
